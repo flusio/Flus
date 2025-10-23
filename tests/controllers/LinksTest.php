@@ -1052,41 +1052,23 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/delete", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\DeleteLink::class),
             'from' => "/links/{$link->id}",
         ]);
 
-        $this->assertResponseCode($response, 302, '/');
+        $this->assertResponseCode($response, 302, "/links/{$link->id}");
         $this->assertFalse(models\Link::exists($link->id));
-    }
-
-    public function testDeleteRedirectsToRedirectToIfGiven(): void
-    {
-        $user = $this->login();
-        $link = LinkFactory::create([
-            'user_id' => $user->id,
-        ]);
-
-        $response = $this->appRun('POST', "/links/{$link->id}/delete", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => "/links/{$link->id}",
-            'redirect_to' => '/bookmarks',
-        ]);
-
-        $this->assertResponseCode($response, 302, '/bookmarks');
     }
 
     public function testDeleteRedirectsIfNotConnected(): void
     {
-        $user = UserFactory::create([
-            'csrf' => 'a token',
-        ]);
+        $user = UserFactory::create();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/delete", [
-            'csrf' => 'a token',
+            'csrf_token' => $this->csrfToken(forms\DeleteLink::class),
             'from' => "/links/{$link->id}",
         ]);
 
@@ -1103,7 +1085,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/delete", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\DeleteLink::class),
             'from' => "/links/{$link->id}",
         ]);
 
@@ -1119,12 +1101,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/delete", [
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
             'from' => "/links/{$link->id}",
         ]);
 
         $this->assertResponseCode($response, 302, "/links/{$link->id}");
         $this->assertTrue(models\Link::exists($link->id));
-        $this->assertSame('A security verification failed.', \Minz\Flash::get('error'));
+        $this->assertStringContainsString('A security verification failed', \Minz\Flash::get('error'));
     }
 }

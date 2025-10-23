@@ -312,10 +312,6 @@
                         action="<?= url('delete link', ['id' => $link->id]) ?>"
                         data-turbo-confirm="<?= _('Are you sure that you want to delete this link?') ?>"
                     >
-                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-                        <input type="hidden" name="from" value="<?= $from ?>" />
-                        <input type="hidden" name="redirect_to" value="<?= $from ?>" />
-
                         <button
                             type="submit"
                             class="popup__item popup__item--button"
@@ -324,6 +320,9 @@
                             <?= icon('trash') ?>
                             <?= _('Delete') ?>
                         </button>
+
+                        <input type="hidden" name="csrf_token" value="<?= csrf_token('DeleteLink') ?>" />
+                        <input type="hidden" name="from" value="<?= $from ?>" />
                     </form>
                 <?php endif; ?>
             </nav>

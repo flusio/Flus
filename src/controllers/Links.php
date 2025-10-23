@@ -316,23 +316,21 @@ class Links extends BaseController
     }
 
     /**
-     * Delete a link
+     * Delete a link.
      *
      * @request_param string id
      * @request_param string from default is /links/:id
-     * @request_param string redirect_to default is /
+     * @request_param string csrf_token
      *
      * @response 302 /login?redirect_to=:from if not connected
      * @response 404 if the link doesn’t exist or user hasn't access
      * @response 302 :from if csrf is invalid
-     * @response 302 :redirect_to on success
+     * @response 302 :from on success
      */
     public function delete(Request $request): Response
     {
         $link_id = $request->parameters->getString('id', '');
         $from = $request->parameters->getString('from', \Minz\Url::for('link', ['id' => $link_id]));
-        $redirect_to = $request->parameters->getString('redirect_to', \Minz\Url::for('home'));
-        $csrf = $request->parameters->getString('csrf', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -341,13 +339,16 @@ class Links extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\App\Csrf::validate($csrf)) {
-            \Minz\Flash::set('error', _('A security verification failed.'));
+        $form = new forms\DeleteLink();
+        $form->handleRequest($request);
+
+        if (!$form->validate()) {
+            \Minz\Flash::set('error', $form->error('@base'));
             return Response::found($from);
         }
 
-        models\Link::delete($link->id);
+        $link->remove();
 
-        return Response::found($redirect_to);
+        return Response::found($from);
     }
 }
