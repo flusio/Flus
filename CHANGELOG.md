@@ -1,5 +1,11 @@
 # Changelog of Flus
 
+## 2025-10-23 - v2.0.6
+
+### Bug fixes
+
+- Fix performance when refreshing news ([1692ce6d](https://github.com/flusio/Flus/commit/1692ce6d))
+
 ## 2025-10-22 - v2.0.5
 
 ### Migration notes
