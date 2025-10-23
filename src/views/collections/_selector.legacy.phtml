@@ -7,30 +7,55 @@
             tabindex="-1"
             data-collections-selector-target="dataCollections"
         >
-            <?php foreach ($form->collectionsValues() as $group_name => $collections): ?>
-                <?php if ($group_name !== ''): ?>
-                    <optgroup label="<?= protect($group_name) ?>">
-                <?php endif; ?>
+            <?php $collections = $groups_to_collections[null] ?? []; ?>
+            <?php foreach ($collections as $collection): ?>
+                <option
+                    value="<?= $collection->id ?>"
+                    <?= in_array($collection->id, $collection_ids) ? 'selected' : '' ?>
+                    <?= $collection->is_public ? 'data-public' : '' ?>
+                    data-illustration="<?= url_media('covers', $collection->image_filename, 'collection-card.png') ?>"
+                >
+                    <?= protect($collection->name()) ?>
+                </option>
+            <?php endforeach; ?>
 
-                <?php foreach ($collections as $collection): ?>
-                    <option
-                        value="<?= $collection->id ?>"
-                        <?= $form->isCollectionSelected($collection) ? 'selected' : '' ?>
-                        <?= $collection->is_public ? 'data-public' : '' ?>
-                        data-illustration="<?= url_media('covers', $collection->image_filename, 'collection-card.png') ?>"
-                    >
-                        <?= protect($collection->name()) ?>
-                    </option>
-                <?php endforeach; ?>
-
-                <?php if ($group_name !== ''): ?>
+            <?php foreach ($groups as $group): ?>
+                <?php if (isset($groups_to_collections[$group->id])): ?>
+                    <optgroup label="<?= protect($group->name) ?>">
+                        <?php $collections = $groups_to_collections[$group->id]; ?>
+                        <?php foreach ($collections as $collection): ?>
+                            <option
+                                value="<?= $collection->id ?>"
+                                <?= in_array($collection->id, $collection_ids) ? 'selected' : '' ?>
+                                <?= $collection->is_public ? 'data-public' : '' ?>
+                                data-illustration="<?= url_media('covers', $collection->image_filename, 'collection-card.png') ?>"
+                            >
+                                <?= protect($collection->name()) ?>
+                            </option>
+                        <?php endforeach; ?>
                     </optgroup>
                 <?php endif; ?>
             <?php endforeach; ?>
+
+            <?php if ($shared_collections): ?>
+                <optgroup label="<?= _('Shared with me') ?>">
+                    <?php foreach ($shared_collections as $collection): ?>
+                        <option
+                            value="<?= $collection->id ?>"
+                            <?= in_array($collection->id, $collection_ids) ? 'selected' : '' ?>
+                            <?= $collection->is_public ? 'data-public' : '' ?>
+                            data-illustration="<?= url_media('covers', $collection->image_filename, 'collection-card.png') ?>"
+                            data-by="<?= _f('By %s', protect($collection->owner()->username)) ?>"
+                        >
+                            <?= protect($collection->name()) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </optgroup>
+            <?php endif; ?>
         </select>
 
         <div data-collections-selector-target="dataNewCollections">
-            <?php foreach ($form->new_collection_names as $name): ?>
+            <?php foreach ($new_collection_names as $name): ?>
                 <input
                     type="hidden"
                     name="new_collection_names[]"
@@ -45,29 +70,11 @@
             <?= _('Select a collection') ?>
         </label>
 
-        <?php if ($form->isInvalid('collection_ids')): ?>
-            <p id="collection-ids-error" class="form-group__error">
-                <?= _('Error:') ?>
-                <?= $form->error('collection_ids') ?>
-            </p>
-        <?php endif; ?>
-
-        <?php if ($form->isInvalid('new_collection_names')): ?>
-            <p class="form-group__error">
-                <?= _('Error:') ?>
-                <?= $form->error('new_collection_names') ?>
-            </p>
-        <?php endif; ?>
-
         <div class="form-group__stack">
             <select
                 id="collections-selector-select"
                 data-collections-selector-target="select"
                 data-action="collections-selector#attach"
-                <?php if ($form->isInvalid('collection_ids')): ?>
-                    aria-errormessage="collection-ids-error"
-                    aria-invalid="true"
-                <?php endif; ?>
             ></select>
 
             <button type="button" data-action="collections-selector#showInput">
@@ -83,7 +90,7 @@
         <label for="new-name">
             <?= _('What do you want to name the collection?') ?>
             <span class="label__help">
-                <?= _f('(max. %d characters)', $form->collection_name_max_length) ?>
+                <?= _f('(max. %d characters)', $name_max_length) ?>
             </span>
         </label>
 
@@ -92,7 +99,7 @@
                 id="new-name"
                 name=""
                 type="text"
-                maxlength="<?= $form->collection_name_max_length ?>"
+                maxlength="<?= $name_max_length ?>"
                 data-collections-selector-target="input"
             />
 

@@ -447,6 +447,24 @@ class User
     }
 
     /**
+     * Return a link with the given URL owned by the user. Any matching link
+     * that already exists in the database is returned.
+     */
+    public function findOrBuildLink(string $url): Link
+    {
+        $link = Link::findBy([
+            'user_id' => $this->id,
+            'url_hash' => Link::hashUrl($url),
+        ]);
+
+        if (!$link) {
+            $link = new Link($url, $this->id, is_hidden: false);
+        }
+
+        return $link;
+    }
+
+    /**
      * Return a link owned by the user, with the same URL, if any.
      */
     public function correspondingOwnedLink(Link $link): ?Link

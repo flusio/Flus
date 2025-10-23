@@ -5,6 +5,7 @@ namespace App\controllers;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
+use App\forms;
 use App\models;
 use App\search_engine;
 use App\services;
@@ -146,205 +147,77 @@ class Links extends BaseController
      *
      * @request_param string url The URL to prefill the URL input (default is '')
      * @request_param string collection_id Collection to check (default is bookmarks id)
-     * @request_param string from The page to redirect to after creation (default is /links/new)
      *
-     * @response 302 /login?redirect_to=:from if not connected
+     * @response 302 /login?redirect_to=/links/new if not connected
      * @response 200
      */
     public function new(Request $request): Response
     {
         $default_url = $request->parameters->getString('url', '');
-        $from = $request->parameters->getString('from', \Minz\Url::for('new link'));
+        $default_collection_id = $request->parameters->getString('collection_id');
 
+        $from = \Minz\Url::for('new link', [
+            'url' => $default_url,
+            'collection_id' => $default_collection_id,
+        ]);
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
-        $bookmarks = $user->bookmarks();
-
-        $groups = models\Group::listBy(['user_id' => $user->id]);
-        $groups = utils\Sorter::localeSort($groups, 'name');
-
-        $collections = $user->collections();
-        $collections = utils\Sorter::localeSort($collections, 'name');
-        $collections = array_merge([$bookmarks], $collections);
-        $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
-
-        $shared_collections = $user->sharedCollections([], [
-            'access_type' => 'write',
-        ]);
-        $shared_collections = utils\Sorter::localeSort($shared_collections, 'name');
-
-        $default_collection_id = $request->parameters->getString('collection_id');
         if ($default_collection_id) {
             $default_collection_ids = [$default_collection_id];
         } else {
+            $bookmarks = $user->bookmarks();
             $default_collection_ids = [$bookmarks->id];
         }
 
-        return Response::ok('links/new.phtml', [
-            'url' => $default_url,
-            'is_hidden' => false,
+        $link = new models\Link($default_url, $user->id);
+        $form = new forms\NewLink([
             'collection_ids' => $default_collection_ids,
-            'new_collection_names' => [],
-            'name_max_length' => models\Collection::NAME_MAX_LENGTH,
-            'groups' => $groups,
-            'groups_to_collections' => $groups_to_collections,
-            'shared_collections' => $shared_collections,
-            'from' => $from,
+        ], $link);
+
+        return Response::ok('links/new.phtml', [
+            'form' => $form,
         ]);
     }
 
     /**
      * Create a link for the current user.
      *
-     * @request_param string csrf
      * @request_param string url
-     * @request_param boolean is_hidden
      * @request_param string[] collection_ids
      * @request_param string[] new_collection_names
-     * @request_param string from
-     *     The page to redirect to after creation (default is /links/new).
+     * @request_param boolean is_hidden
+     * @request_param string csrf
      *
-     * @response 302 /login?redirect_to=:from
+     * @response 302 /login?redirect_to=/links/new
      *     If not connected.
      * @response 400
      *     If CSRF or the url is invalid, if one collection id doesn't exist
      *     or if both collection_ids and new_collection_names parameters are
      *     missing/empty.
-     * @response 302 :from
+     * @response 302 /links/:id
      *     On success.
      */
     public function create(Request $request): Response
     {
         $url = $request->parameters->getString('url', '');
-        $is_hidden = $request->parameters->getBoolean('is_hidden');
-        /** @var string[] */
-        $collection_ids = $request->parameters->getArray('collection_ids', []);
-        /** @var string[] */
-        $new_collection_names = $request->parameters->getArray('new_collection_names', []);
-        $from = $request->parameters->getString('from', \Minz\Url::for('new link', ['url' => $url]));
-        $csrf = $request->parameters->getString('csrf', '');
 
+        $from = \Minz\Url::for('new link', ['url' => $url]);
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
-        $bookmarks = $user->bookmarks();
+        $link = $user->findOrBuildLink($url);
+        $form = new forms\NewLink(model: $link);
 
-        $groups = models\Group::listBy(['user_id' => $user->id]);
-        $groups = utils\Sorter::localeSort($groups, 'name');
+        $form->handleRequest($request);
 
-        $collections = $user->collections();
-        $collections = utils\Sorter::localeSort($collections, 'name');
-        $collections = array_merge([$bookmarks], $collections);
-        $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
-
-        $shared_collections = $user->sharedCollections([], [
-            'access_type' => 'write',
-        ]);
-        $shared_collections = utils\Sorter::localeSort($shared_collections, 'name');
-
-        if (!\App\Csrf::validate($csrf)) {
+        if (!$form->validate()) {
             return Response::badRequest('links/new.phtml', [
-                'url' => $url,
-                'is_hidden' => $is_hidden,
-                'collection_ids' => $collection_ids,
-                'new_collection_names' => $new_collection_names,
-                'name_max_length' => models\Collection::NAME_MAX_LENGTH,
-                'groups' => $groups,
-                'groups_to_collections' => $groups_to_collections,
-                'shared_collections' => $shared_collections,
-                'from' => $from,
-                'error' => _('A security verification failed: you should retry to submit the form.'),
+                'form' => $form,
             ]);
         }
 
-        $link = new models\Link($url, $user->id, $is_hidden);
+        $link = $form->model();
 
-        if (!$link->validate()) {
-            return Response::badRequest('links/new.phtml', [
-                'url' => $url,
-                'is_hidden' => $is_hidden,
-                'collection_ids' => $collection_ids,
-                'new_collection_names' => $new_collection_names,
-                'name_max_length' => models\Collection::NAME_MAX_LENGTH,
-                'groups' => $groups,
-                'groups_to_collections' => $groups_to_collections,
-                'shared_collections' => $shared_collections,
-                'from' => $from,
-                'errors' => $link->errors(),
-            ]);
-        }
-
-        if (empty($collection_ids) && empty($new_collection_names)) {
-            return Response::badRequest('links/new.phtml', [
-                'url' => $url,
-                'is_hidden' => $is_hidden,
-                'collection_ids' => $collection_ids,
-                'new_collection_names' => $new_collection_names,
-                'name_max_length' => models\Collection::NAME_MAX_LENGTH,
-                'groups' => $groups,
-                'groups_to_collections' => $groups_to_collections,
-                'shared_collections' => $shared_collections,
-                'from' => $from,
-                'errors' => [
-                    'collection_ids' => _('The link must be associated to a collection.'),
-                ],
-            ]);
-        }
-
-        if (!$user->canWriteCollections($collection_ids)) {
-            return Response::badRequest('links/new.phtml', [
-                'url' => $url,
-                'is_hidden' => $is_hidden,
-                'collection_ids' => $collection_ids,
-                'new_collection_names' => $new_collection_names,
-                'name_max_length' => models\Collection::NAME_MAX_LENGTH,
-                'groups' => $groups,
-                'groups_to_collections' => $groups_to_collections,
-                'shared_collections' => $shared_collections,
-                'from' => $from,
-                'errors' => [
-                    'collection_ids' => _('One of the associated collection doesn’t exist.'),
-                ],
-            ]);
-        }
-
-        $link_collections = [];
-
-        foreach ($collection_ids as $collection_id) {
-            $collection = models\Collection::find($collection_id);
-            if ($collection) {
-                $link_collections[] = $collection;
-            }
-        }
-
-        foreach ($new_collection_names as $name) {
-            $new_collection = models\Collection::init($user->id, $name, '', false);
-
-            if (!$new_collection->validate()) {
-                return Response::badRequest('links/new.phtml', [
-                    'url' => $url,
-                    'is_hidden' => $is_hidden,
-                    'collection_ids' => $collection_ids,
-                    'new_collection_names' => $new_collection_names,
-                    'name_max_length' => models\Collection::NAME_MAX_LENGTH,
-                    'groups' => $groups,
-                    'groups_to_collections' => $groups_to_collections,
-                    'shared_collections' => $shared_collections,
-                    'from' => $from,
-                    'errors' => $new_collection->errors(),
-                ]);
-            }
-
-            $new_collection->save();
-            $link_collections[] = $new_collection;
-        }
-
-        $existing_link = models\Link::findBy([
-            'user_id' => $user->id,
-            'url_hash' => models\Link::hashUrl($link->url),
-        ]);
-        if ($existing_link) {
-            $link = $existing_link;
-        } else {
+        if (!$link->isPersisted()) {
             $link_fetcher_service = new services\LinkFetcher([
                 'http_timeout' => 10,
                 'ignore_rate_limit' => true,
@@ -352,9 +225,19 @@ class Links extends BaseController
             $link_fetcher_service->fetch($link);
         }
 
+        $link_collections = $form->selectedCollections();
+
+        foreach ($form->newCollections() as $collection) {
+            $collection->save();
+
+            $link_collections[] = $collection;
+        }
+
         $link->addCollections($link_collections);
 
-        return Response::found($from);
+        return Response::redirect('link', [
+            'id' => $link->id,
+        ]);
     }
 
     /**

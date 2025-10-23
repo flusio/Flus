@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2025-09-01 10:41+0200\n"
-"PO-Revision-Date: 2025-09-01 10:43+0200\n"
+"POT-Creation-Date: 2025-10-23 16:16+0200\n"
+"PO-Revision-Date: 2025-10-23 16:16+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.7\n"
 "X-Poedit-Basepath: ../../../src\n"
 "X-Poedit-KeywordsList: _f;_n:1,2;_nf:1,2;Translatable\n"
 "X-Poedit-SearchPath-0: .\n"
@@ -40,13 +40,21 @@ msgstr "Cacher"
 msgid "Show"
 msgstr "Afficher"
 
+#: cli/Pocket.php:77 jobs/PocketImportator.php:117
+msgid "Pocket links"
+msgstr "Liens Pocket"
+
+#: cli/Pocket.php:81 jobs/PocketImportator.php:121
+msgid "All your links imported from Pocket."
+msgstr "Tous vos liens importés depuis Pocket."
+
 #: controllers/Collections.php:91 controllers/Collections.php:295
 #: controllers/Feeds.php:100 controllers/Groups.php:84
-#: controllers/Links.php:255 controllers/Links.php:416
-#: controllers/Mastodon.php:187 controllers/Mastodon.php:267
-#: controllers/News.php:64 controllers/Passwords.php:89
-#: controllers/Passwords.php:192 controllers/Registrations.php:103
-#: controllers/Support.php:62 controllers/collections/Filters.php:98
+#: controllers/Links.php:308 controllers/Mastodon.php:187
+#: controllers/Mastodon.php:267 controllers/News.php:64
+#: controllers/Passwords.php:89 controllers/Passwords.php:192
+#: controllers/Registrations.php:103 controllers/Support.php:62
+#: controllers/collections/Filters.php:98
 #: controllers/collections/Followers.php:47
 #: controllers/collections/Followers.php:88
 #: controllers/collections/Groups.php:115
@@ -69,7 +77,7 @@ msgstr "L’une des thématiques associées n’existe pas."
 
 #: controllers/Collections.php:364 controllers/Exportations.php:54
 #: controllers/Groups.php:151 controllers/Importations.php:45
-#: controllers/Links.php:469 controllers/Mastodon.php:75
+#: controllers/Links.php:361 controllers/Mastodon.php:75
 #: controllers/Notes.php:87 controllers/Notes.php:134
 #: controllers/Sessions.php:136 controllers/collections/Read.php:85
 #: controllers/collections/Read.php:162 controllers/collections/Read.php:233
@@ -93,14 +101,6 @@ msgstr "Aucun flux valide n’a été détecté à cette adresse."
 #: controllers/Groups.php:111
 msgid "You already have a group with this name."
 msgstr "Vous avez déjà un groupe portant le même nom."
-
-#: controllers/Links.php:288
-msgid "The link must be associated to a collection."
-msgstr "Le lien doit être associé à une collection."
-
-#: controllers/Links.php:305 controllers/links/Collections.php:145
-msgid "One of the associated collection doesn’t exist."
-msgstr "L’une des collections associées n’existe pas."
 
 #: controllers/Mastodon.php:83
 msgid "The URL is invalid."
@@ -193,6 +193,10 @@ msgstr "Vous avez déjà une importation Pocket en cours."
 msgid "You didn’t authorize us to access your Pocket data."
 msgstr "Vous n’avez pas autorisé l’accès à vos données Pocket."
 
+#: controllers/links/Collections.php:145 forms/NewLink.php:215
+msgid "One of the associated collection doesn’t exist."
+msgstr "L’une des collections associées n’existe pas."
+
 #: controllers/my/Account.php:101 controllers/my/Security.php:203
 #: forms/Login.php:59
 msgid "The password is incorrect."
@@ -243,6 +247,14 @@ msgstr ""
 "Que faites-vous ? Vous ne pouvez pas vous connecter en tant qu’utilisateur "
 "support."
 
+#: forms/NewLink.php:105
+msgid "Shared with me"
+msgstr "Partagées avec moi"
+
+#: forms/NewLink.php:201
+msgid "The link must be associated to a collection."
+msgstr "Le lien doit être associé à une collection."
+
 #: jobs/PocketImportator.php:36
 msgid ""
 "We tried to import from Pocket, but pocket_consumer_key is missing (please "
@@ -258,14 +270,6 @@ msgid ""
 msgstr ""
 "Nous avons essayé d’importer depuis Pocket, mais vous n’avez pas autorisé "
 "l’accès à vos données Pocket."
-
-#: jobs/PocketImportator.php:117
-msgid "Pocket links"
-msgstr "Liens Pocket"
-
-#: jobs/PocketImportator.php:121
-msgid "All your links imported from Pocket."
-msgstr "Tous vos liens importés depuis Pocket."
 
 #: jobs/PocketImportator.php:125
 msgid "Pocket favorite"
@@ -308,19 +312,19 @@ msgstr "Le nom est obligatoire."
 msgid "The name must be less than {max} characters."
 msgstr "Le nom ne doit pas faire plus de {max} caractères."
 
-#: models/Collection.php:133 models/Collection.php:195
+#: models/Collection.php:136 models/Collection.php:198
 msgid "Bookmarks"
 msgstr "Signets"
 
-#: models/Collection.php:144 models/Collection.php:197
+#: models/Collection.php:147 models/Collection.php:200
 msgid "Links read"
 msgstr "Liens lus"
 
-#: models/Collection.php:155
+#: models/Collection.php:158
 msgid "Links never to read"
 msgstr "Liens à ne jamais lire"
 
-#: models/Collection.php:166 models/Collection.php:199
+#: models/Collection.php:169 models/Collection.php:202
 msgid "News"
 msgstr "Journal"
 
@@ -340,19 +344,19 @@ msgstr "Le filtre est obligatoire."
 msgid "The filter is invalid."
 msgstr "Le filtre est invalide."
 
-#: models/Link.php:32
+#: models/Link.php:29
 msgid "The title is required."
 msgstr "Le titre est obligatoire."
 
-#: models/Link.php:38
+#: models/Link.php:35
 msgid "The link is required."
 msgstr "Le lien est obligatoire."
 
-#: models/Link.php:41
+#: models/Link.php:38
 msgid "The link is invalid."
 msgstr "Le lien est invalide."
 
-#: models/Link.php:58
+#: models/Link.php:55
 msgid "The reading time must be greater or equal to 0."
 msgstr "Le temps de lecture doit être supérieur ou égal à 0."
 
@@ -628,9 +632,10 @@ msgstr "Mes liens"
 msgid "Feeds"
 msgstr "Flux"
 
-#: views/_layouts/connected.phtml:120 views/collections/_selector.phtml:83
-#: views/collections/groups/edit.phtml:88 views/links/searches/show.phtml:9
-#: views/links/searches/show.phtml:21
+#: views/_layouts/connected.phtml:120
+#: views/collections/_selector.legacy.phtml:83
+#: views/collections/_selector.phtml:76 views/collections/groups/edit.phtml:88
+#: views/links/searches/show.phtml:9 views/links/searches/show.phtml:21
 msgid "New"
 msgstr "Nouveau"
 
@@ -767,8 +772,7 @@ msgstr "Page suivante"
 #: views/groups/edit.phtml:44 views/importations/opml/show.phtml:104
 #: views/links/collections/index.phtml:36
 #: views/links/collections/index.phtml:43 views/links/edit.phtml:44
-#: views/links/edit.phtml:73 views/links/new.phtml:42 views/links/new.phtml:59
-#: views/links/new.phtml:66 views/links/repairing/new.phtml:50
+#: views/links/edit.phtml:73 views/links/repairing/new.phtml:50
 #: views/links/searches/show.phtml:66 views/links/show.phtml:295
 #: views/mastodon/show.phtml:77 views/mastodon/show.phtml:132
 #: views/my/account/deletion.phtml:63 views/my/preferences/edit.phtml:41
@@ -831,7 +835,8 @@ msgstr "Ajouter un lien"
 msgid "Feed %s"
 msgstr "Flux %s"
 
-#: views/collections/_collection.phtml:20 views/collections/_selector.phtml:48
+#: views/collections/_collection.phtml:20
+#: views/collections/_selector.legacy.phtml:48
 #, php-format
 msgid "By %s"
 msgstr "Par %s"
@@ -840,8 +845,9 @@ msgstr "Par %s"
 msgid "no links"
 msgstr "aucun lien"
 
-#: views/collections/_collection.phtml:47 views/collections/_selector.phtml:134
-#: views/collections/show.phtml:59
+#: views/collections/_collection.phtml:47
+#: views/collections/_selector.legacy.phtml:134
+#: views/collections/_selector.phtml:127 views/collections/show.phtml:59
 msgid "public"
 msgstr "publique"
 
@@ -868,44 +874,54 @@ msgid ""
 msgstr ""
 "<strong>%s</strong> a ajouté ce lien à <strong>%s</strong> (partagée par %s)."
 
-#: views/collections/_selector.phtml:41 views/links/index.phtml:79
-msgid "Shared with me"
-msgstr "Partagées avec moi"
-
-#: views/collections/_selector.phtml:70
+#: views/collections/_selector.legacy.phtml:70
+#: views/collections/_selector.phtml:45
 msgid "Select a collection"
 msgstr "Sélectionner une collection"
 
-#: views/collections/_selector.phtml:91
+#: views/collections/_selector.legacy.phtml:91
+#: views/collections/_selector.phtml:84
 msgid "What do you want to name the collection?"
 msgstr "Comment voulez-vous nommer la collection ?"
 
-#: views/collections/_selector.phtml:93 views/collections/edit.phtml:31
+#: views/collections/_selector.legacy.phtml:93
+#: views/collections/_selector.phtml:86 views/collections/edit.phtml:31
 #: views/collections/groups/edit.phtml:39 views/collections/new.phtml:30
 #: views/groups/edit.phtml:25 views/mastodon/show.phtml:61
 #, php-format
 msgid "(max. %d characters)"
 msgstr "(max. %d caractères)"
 
-#: views/collections/_selector.phtml:109
+#: views/collections/_selector.legacy.phtml:109
+#: views/collections/_selector.phtml:102
 msgid "Add"
 msgstr "Ajouter"
 
-#: views/collections/_selector.phtml:113
+#: views/collections/_selector.legacy.phtml:113
+#: views/collections/_selector.phtml:106
 msgid "Cancel the creation of the collection"
 msgstr "Annuler la création de la collection"
 
-#: views/collections/_selector.phtml:117
+#: views/collections/_selector.legacy.phtml:117
+#: views/collections/_selector.phtml:110
 msgid "Cancel"
 msgstr "Annuler"
 
-#: views/collections/_selector.phtml:135
+#: views/collections/_selector.legacy.phtml:135
+#: views/collections/_selector.phtml:128
 msgid "new"
 msgstr "nouvelle"
 
-#: views/collections/_selector.phtml:146
+#: views/collections/_selector.legacy.phtml:146
+#: views/collections/_selector.phtml:139
 msgid "Unselect"
 msgstr "Désélectionner"
+
+#: views/collections/_selector.phtml:50 views/collections/_selector.phtml:57
+#: views/links/new.phtml:26 views/links/new.phtml:63
+#: views/sessions/new.phtml:34 views/sessions/new.phtml:61
+msgid "Error:"
+msgstr "Erreur :"
 
 #: views/collections/edit.phtml:3 views/collections/edit.phtml:13
 msgid "Collection edition"
@@ -1040,7 +1056,7 @@ msgstr "Les dimensions minimales recommandées sont de 1100x400px."
 msgid "New link"
 msgstr "Nouveau lien"
 
-#: views/collections/links/new.phtml:23 views/links/new.phtml:24
+#: views/collections/links/new.phtml:23 views/links/new.phtml:21
 #: views/links/repairing/new.phtml:31
 msgid "What’s the address of the link?"
 msgstr "Quelle est l’adresse du lien ?"
@@ -1055,11 +1071,11 @@ msgstr ""
 "votre navigateur."
 
 #: views/collections/links/new.phtml:61 views/links/collections/index.phtml:75
-#: views/links/new.phtml:91
+#: views/links/new.phtml:80
 msgid "Hide this link in public collections"
 msgstr "Masquer ce lien dans les collections publiques"
 
-#: views/collections/links/new.phtml:67 views/links/new.phtml:97
+#: views/collections/links/new.phtml:67 views/links/new.phtml:86
 msgid "Add the link"
 msgstr "Ajouter le lien"
 
@@ -1615,7 +1631,7 @@ msgstr "Ranger le lien"
 msgid "Storing a link"
 msgstr "Rangement d’un lien"
 
-#: views/links/collections/index.phtml:31 views/links/new.phtml:54
+#: views/links/collections/index.phtml:31 views/links/new.phtml:53
 msgid "Collections"
 msgstr "Collections"
 
@@ -2791,10 +2807,6 @@ msgstr "Connexion"
 #: views/sessions/new.phtml:21
 msgid "Your account and your data are now deleted."
 msgstr "Votre compte ainsi que vos données sont maintenant supprimées."
-
-#: views/sessions/new.phtml:34 views/sessions/new.phtml:61
-msgid "Error:"
-msgstr "Erreur :"
 
 #: views/sessions/new.phtml:56
 msgid "Password"
