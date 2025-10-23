@@ -258,16 +258,18 @@ class Links extends BaseController
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $link = models\Link::find($link_id);
-        if ($link && auth\LinksAccess::canUpdate($user, $link)) {
-            return Response::ok('links/edit.phtml', [
-                'link' => $link,
-                'title' => $link->title,
-                'reading_time' => $link->reading_time,
-                'from' => $from,
-            ]);
-        } else {
+
+        if (!$link || !auth\LinksAccess::canUpdate($user, $link)) {
             return Response::notFound('not_found.phtml');
         }
+
+        $form = new forms\EditLink(model: $link);
+
+        return Response::ok('links/edit.phtml', [
+            'link' => $link,
+            'form' => $form,
+            'from' => $from,
+        ]);
     }
 
     /**
@@ -287,10 +289,7 @@ class Links extends BaseController
     public function update(Request $request): Response
     {
         $link_id = $request->parameters->getString('id', '');
-        $new_title = $request->parameters->getString('title', '');
-        $new_reading_time = $request->parameters->getInteger('reading_time', 0);
         $from = $request->parameters->getString('from', \Minz\Url::for('link', ['id' => $link_id]));
-        $csrf = $request->parameters->getString('csrf', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -299,33 +298,18 @@ class Links extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\App\Csrf::validate($csrf)) {
+        $form = new forms\EditLink(model: $link);
+        $form->handleRequest($request);
+
+        if (!$form->validate()) {
             return Response::badRequest('links/edit.phtml', [
                 'link' => $link,
-                'title' => $new_title,
-                'reading_time' => $new_reading_time,
+                'form' => $form,
                 'from' => $from,
-                'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
         }
 
-        $old_title = $link->title;
-        $old_reading_time = $link->reading_time;
-
-        $link->title = trim($new_title);
-        $link->reading_time = $new_reading_time;
-        if (!$link->validate()) {
-            $link->title = $old_title;
-            $link->reading_time = $old_reading_time;
-            return Response::badRequest('links/edit.phtml', [
-                'link' => $link,
-                'title' => $new_title,
-                'reading_time' => $new_reading_time,
-                'from' => $from,
-                'errors' => $link->errors(),
-            ]);
-        }
-
+        $link = $form->model();
         $link->save();
 
         return Response::found($from);

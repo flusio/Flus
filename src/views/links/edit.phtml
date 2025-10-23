@@ -2,7 +2,7 @@
     $this->layout('base.phtml', [
         'title' => _('Link edition'),
         'canonical' => url_full('edit link', ['id' => $link->id]),
-        'has_errors' => $error || $errors,
+        'has_errors' => $form->isInvalid(),
         'modal_enabled' => true,
     ]);
 ?>
@@ -17,38 +17,37 @@
     </p>
 
     <form data-turbo-preserve-scroll method="post" action="<?= url('update link', ['id' => $link->id]) ?>">
-        <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
+        <?= $this->include('alerts/_error.phtml', ['message' => $form->error('@base')]) ?>
 
-        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-        <input type="hidden" name="from" value="<?= $from ?>" />
-
-        <div class="form-group <?= isset($errors['title']) ? 'form-group--invalid' : '' ?>">
+        <div class="form-group">
             <label for="title">
                 <?= _('The title of your link') ?>
             </label>
+
+            <?php if ($form->isInvalid('title')): ?>
+                <p id="title-error" class="form-group__error">
+                    <?= _('Error:') ?>
+                    <?= $form->error('title') ?>
+                </p>
+            <?php endif; ?>
 
             <input
                 id="title"
                 name="title"
                 type="text"
-                value="<?= $title ?>"
+                value="<?= protect($form->title) ?>"
                 required
                 autocomplete="off"
                 autofocus
                 aria-describedby="title-desc"
-            />
-
-            <div id="title-desc">
-                <?php if (isset($errors['title'])): ?>
-                    <p class="form-group__error">
-                        <span class="sr-only"><?= _('Error') ?></span>
-                        <?= $errors['title'] ?>
-                    </p>
+                <?php if ($form->isInvalid('title')): ?>
+                    aria-errormessage="title-error"
+                    aria-invalid="true"
                 <?php endif; ?>
-            </div>
+            />
         </div>
 
-        <div class="form-group <?= isset($errors['reading_time']) ? 'form-group--invalid' : '' ?>">
+        <div class="form-group">
             <label for="reading-time">
                 <?= _('It takes') ?>
 
@@ -58,23 +57,25 @@
                     type="number"
                     min="0"
                     class="input--number-3"
-                    value="<?= $reading_time ?>"
+                    value="<?= $form->reading_time ?>"
                     required
                     autocomplete="off"
                     aria-describedby="reading-time-desc"
+                    <?php if ($form->isInvalid('reading_time')): ?>
+                        aria-errormessage="reading-time-error"
+                        aria-invalid="true"
+                    <?php endif; ?>
                 />
 
                 <?= _('minutes to consult.') ?>
             </label>
 
-            <div id="reading-time-desc">
-                <?php if (isset($errors['reading_time'])): ?>
-                    <p class="form-group__error">
-                        <span class="sr-only"><?= _('Error') ?></span>
-                        <?= $errors['reading_time'] ?>
-                    </p>
-                <?php endif; ?>
-            </div>
+            <?php if ($form->isInvalid('reading_time')): ?>
+                <p id="reading-time-error" class="form-group__error">
+                    <?= _('Error:') ?>
+                    <?= $form->error('reading_time') ?>
+                </p>
+            <?php endif; ?>
         </div>
 
         <div class="form__actions">
@@ -82,5 +83,8 @@
                 <?= _('Save changes') ?>
             </button>
         </div>
+
+        <input type="hidden" name="csrf_token" value="<?= csrf_token($form) ?>" />
+        <input type="hidden" name="from" value="<?= $from ?>" />
     </form>
 </div>

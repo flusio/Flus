@@ -889,7 +889,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/edit", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\EditLink::class),
             'title' => $new_title,
             'reading_time' => $new_reading_time,
         ]);
@@ -915,7 +915,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('bookmarks');
 
         $response = $this->appRun('POST', "/links/{$link->id}/edit", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\EditLink::class),
             'title' => $new_title,
             'from' => $from,
         ]);
@@ -939,7 +939,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/edit", [
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
             'title' => $new_title,
         ]);
 
@@ -963,7 +963,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/edit", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\EditLink::class),
             'title' => $new_title,
         ]);
 
@@ -988,7 +988,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/edit", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\EditLink::class),
             'title' => $new_title,
         ]);
 
@@ -1011,7 +1011,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/links/not-the-id/edit', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\EditLink::class),
             'title' => $new_title,
         ]);
 
@@ -1035,7 +1035,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/edit", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\EditLink::class),
             'title' => $new_title,
         ]);
 
