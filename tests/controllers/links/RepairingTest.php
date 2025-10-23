@@ -2,6 +2,7 @@
 
 namespace App\controllers\links;
 
+use App\forms;
 use App\models;
 use tests\factories\LinkFactory;
 use tests\factories\UserFactory;
@@ -9,6 +10,7 @@ use tests\factories\UserFactory;
 class RepairingTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\CsrfHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
@@ -109,7 +111,7 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', "/links/{$link->id}/repair", [
             'url' => $new_url,
             'force_sync' => false,
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\links\RepairLink::class),
             'from' => \Minz\Url::for('home'),
         ]);
 
@@ -146,7 +148,7 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', "/links/{$link->id}/repair", [
             'url' => $new_url,
             'force_sync' => true,
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\links\RepairLink::class),
             'from' => \Minz\Url::for('home'),
         ]);
 
@@ -181,7 +183,7 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', "/links/{$link->id}/repair", [
             'url' => $new_url,
             'force_sync' => false,
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\links\RepairLink::class),
             'from' => \Minz\Url::for('home'),
         ]);
 
@@ -200,9 +202,7 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateRedirectsIfNotConnected(): void
     {
-        $user = UserFactory::create([
-            'csrf' => 'a token',
-        ]);
+        $user = UserFactory::create();
         /** @var string */
         $old_url = $this->fakeUnique('url');
         /** @var string */
@@ -215,7 +215,7 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', "/links/{$link->id}/repair", [
             'url' => $new_url,
             'force_sync' => false,
-            'csrf' => 'a token',
+            'csrf_token' => $this->csrfToken(forms\links\RepairLink::class),
             'from' => \Minz\Url::for('home'),
         ]);
 
@@ -239,7 +239,7 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', '/links/not-an-id/repair', [
             'url' => $new_url,
             'force_sync' => false,
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\links\RepairLink::class),
             'from' => \Minz\Url::for('home'),
         ]);
 
@@ -264,7 +264,7 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', "/links/{$link->id}/repair", [
             'url' => $new_url,
             'force_sync' => false,
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\links\RepairLink::class),
             'from' => \Minz\Url::for('home'),
         ]);
 
@@ -288,7 +288,7 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', "/links/{$link->id}/repair", [
             'url' => $new_url,
             'force_sync' => false,
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
             'from' => \Minz\Url::for('home'),
         ]);
 
@@ -313,7 +313,7 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', "/links/{$link->id}/repair", [
             'url' => $new_url,
             'force_sync' => false,
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\links\RepairLink::class),
             'from' => \Minz\Url::for('home'),
         ]);
 

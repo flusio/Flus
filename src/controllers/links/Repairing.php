@@ -6,6 +6,7 @@ use Minz\Request;
 use Minz\Response;
 use App\auth;
 use App\controllers\BaseController;
+use App\forms;
 use App\models;
 use App\services;
 
@@ -41,11 +42,14 @@ class Repairing extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
+        $form = new forms\RepairLink([
+            'url' => $link->url,
+            'force_sync' => $link->title === $link->url,
+        ]);
+
         return Response::ok('links/repairing/new.phtml', [
             'link' => $link,
-            'url' => $link->url,
-            'url_cleared' => \SpiderBits\ClearUrls::clear($link->url),
-            'force_sync' => $link->title === $link->url,
+            'form' => $form,
             'from' => $from,
         ]);
     }
@@ -71,9 +75,6 @@ class Repairing extends BaseController
     public function create(Request $request): Response
     {
         $link_id = $request->parameters->getString('id', '');
-        $url = $request->parameters->getString('url', '');
-        $force_sync = $request->parameters->getBoolean('force_sync');
-        $csrf = $request->parameters->getString('csrf', '');
         $from = $request->parameters->getString('from', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
@@ -84,36 +85,25 @@ class Repairing extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\App\Csrf::validate($csrf)) {
+        $form = new forms\RepairLink();
+        $form->handleRequest($request);
+
+        if (!$form->validate()) {
             return Response::badRequest('links/repairing/new.phtml', [
                 'link' => $link,
-                'url' => $url,
-                'url_cleared' => $url,
-                'force_sync' => $force_sync,
+                'form' => $form,
                 'from' => $from,
-                'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
         }
 
         $old_link = models\Link::copy($link, $user->id);
 
-        $link->url = \SpiderBits\Url::sanitize($url);
-
-        if (!$link->validate()) {
-            return Response::badRequest('links/repairing/new.phtml', [
-                'link' => $link,
-                'url' => $url,
-                'url_cleared' => $url,
-                'force_sync' => $force_sync,
-                'from' => $from,
-                'errors' => $link->errors(),
-            ]);
-        }
+        $link->url = $form->url;
 
         $link_fetcher_service = new services\LinkFetcher([
             'http_timeout' => 10,
             'ignore_rate_limit' => true,
-            'force_sync' => $force_sync,
+            'force_sync' => $form->force_sync,
         ]);
         $link_fetcher_service->fetch($link);
 
