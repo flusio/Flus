@@ -202,14 +202,19 @@ class Link
      *
      * @param Collection[] $collections
      */
-    public function setCollections(array $collections, ?\DateTimeImmutable $at = null): void
-    {
+    public function setCollections(
+        array $collections,
+        ?\DateTimeImmutable $at = null,
+        bool $sync_publication_frequency = true,
+    ): void {
         $collection_ids = array_column($collections, 'id');
         LinkToCollection::setCollections($this->id, $collection_ids, $at);
 
-        foreach ($collections as $collection) {
-            $collection->syncPublicationFrequencyPerYear();
-            $collection->save();
+        if ($sync_publication_frequency) {
+            foreach ($collections as $collection) {
+                $collection->syncPublicationFrequencyPerYear();
+                $collection->save();
+            }
         }
     }
 
@@ -218,23 +223,31 @@ class Link
      *
      * @param Collection[] $collections
      */
-    public function addCollections(array $collections, ?\DateTimeImmutable $at = null): void
-    {
+    public function addCollections(
+        array $collections,
+        ?\DateTimeImmutable $at = null,
+        bool $sync_publication_frequency = true,
+    ): void {
         $collection_ids = array_column($collections, 'id');
         LinkToCollection::attach([$this->id], $collection_ids, $at);
 
-        foreach ($collections as $collection) {
-            $collection->syncPublicationFrequencyPerYear();
-            $collection->save();
+        if ($sync_publication_frequency) {
+            foreach ($collections as $collection) {
+                $collection->syncPublicationFrequencyPerYear();
+                $collection->save();
+            }
         }
     }
 
     /**
      * Add the link to a collection.
      */
-    public function addCollection(Collection $collection, ?\DateTimeImmutable $at = null): void
-    {
-        $this->addCollections([$collection], $at);
+    public function addCollection(
+        Collection $collection,
+        ?\DateTimeImmutable $at = null,
+        bool $sync_publication_frequency = true,
+    ): void {
+        $this->addCollections([$collection], $at, $sync_publication_frequency);
     }
 
     /**
@@ -242,23 +255,29 @@ class Link
      *
      * @param Collection[] $collections
      */
-    public function removeCollections(array $collections): void
-    {
+    public function removeCollections(
+        array $collections,
+        bool $sync_publication_frequency = true,
+    ): void {
         $collection_ids = array_column($collections, 'id');
         LinkToCollection::detach([$this->id], $collection_ids);
 
-        foreach ($collections as $collection) {
-            $collection->syncPublicationFrequencyPerYear();
-            $collection->save();
+        if ($sync_publication_frequency) {
+            foreach ($collections as $collection) {
+                $collection->syncPublicationFrequencyPerYear();
+                $collection->save();
+            }
         }
     }
 
     /**
      * Remove the link from a collection.
      */
-    public function removeCollection(Collection $collection): void
-    {
-        $this->removeCollections([$collection]);
+    public function removeCollection(
+        Collection $collection,
+        bool $sync_publication_frequency = true,
+    ): void {
+        $this->removeCollections([$collection], $sync_publication_frequency);
     }
 
     /**

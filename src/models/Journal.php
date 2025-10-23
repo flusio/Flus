@@ -45,7 +45,11 @@ class Journal
             $link->save();
 
             // And don't forget to add the link to the news collection!
-            $link->addCollection($news, at: $news_link->published_at);
+            $link->addCollection(
+                $news,
+                at: $news_link->published_at,
+                sync_publication_frequency: false,
+            );
         }
 
         Link::groupLinksBySources($news->id);
