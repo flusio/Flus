@@ -2,6 +2,7 @@
 
 namespace App\controllers\links;
 
+use App\forms;
 use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\CollectionShareFactory;
@@ -12,6 +13,7 @@ use tests\factories\UserFactory;
 class CollectionsTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\CsrfHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
@@ -357,7 +359,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
             'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection_2->id],
             'is_hidden' => $is_hidden,
@@ -405,7 +407,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
             'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection->id],
         ]);
@@ -435,7 +437,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $content = $this->fake('sentence');
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
             'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection->id],
             'content' => $content,
@@ -464,7 +466,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $content = '#foo #Bar';
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
             'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection->id],
             'content' => $content,
@@ -497,7 +499,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
             'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection->id],
             'mark_as_read' => '1',
@@ -542,7 +544,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('collection', ['id' => $other_collection->id]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
             'from' => $from,
             'collection_ids' => [$owned_collection->id],
         ]);
@@ -596,7 +598,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
             'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection->id],
         ]);
@@ -621,7 +623,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Collection::count());
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
             'from' => \Minz\Url::for('bookmarks'),
             'new_collection_names' => [$collection_name],
         ]);
@@ -658,7 +660,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
             'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection_2->id],
         ]);
@@ -698,7 +700,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
             'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection_2->id],
         ]);
@@ -729,13 +731,13 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
             'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection->id],
         ]);
 
-        $this->assertResponseCode($response, 302, '/bookmarks');
-        $this->assertSame('One of the associated collection doesn’t exist.', \Minz\Flash::get('error'));
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'One of the associated collection doesn’t exist.');
         $this->assertSame(0, models\LinkToCollection::count());
     }
 
@@ -751,13 +753,13 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
             'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection->id],
         ]);
 
-        $this->assertResponseCode($response, 302, '/bookmarks');
-        $this->assertSame('One of the associated collection doesn’t exist.', \Minz\Flash::get('error'));
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'One of the associated collection doesn’t exist.');
         $this->assertSame(0, models\LinkToCollection::count());
     }
 
@@ -778,13 +780,13 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
             'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection->id],
         ]);
 
-        $this->assertResponseCode($response, 302, '/bookmarks');
-        $this->assertSame('One of the associated collection doesn’t exist.', \Minz\Flash::get('error'));
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'One of the associated collection doesn’t exist.');
         $this->assertSame(0, models\LinkToCollection::count());
     }
 
@@ -798,17 +800,15 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
             'from' => \Minz\Url::for('bookmarks'),
             'new_collection_names' => [$collection_name],
         ]);
 
         $this->assertSame(0, models\Collection::count());
 
-        $this->assertResponseCode($response, 302, '/bookmarks');
-        $this->assertEquals([
-            'name' => 'The name must be less than 100 characters.',
-        ], \Minz\Flash::get('errors'));
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The name must be less than 100 characters.');
         $this->assertSame(0, models\LinkToCollection::count());
     }
 
@@ -824,13 +824,13 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
             'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection->id],
         ]);
 
-        $this->assertResponseCode($response, 302, '/bookmarks');
-        $this->assertSame('A security verification failed.', \Minz\Flash::get('error'));
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'A security verification failed');
         $this->assertSame(0, models\LinkToCollection::count());
     }
 }
