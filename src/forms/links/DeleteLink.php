@@ -1,8 +1,8 @@
 <?php
 
-namespace App\forms;
+namespace App\forms\links;
 
-use App\models;
+use App\forms\BaseForm;
 use Minz\Form;
 
 /**

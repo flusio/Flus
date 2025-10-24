@@ -1,7 +1,8 @@
 <?php
 
-namespace App\forms;
+namespace App\forms\links;
 
+use App\forms\BaseForm;
 use App\models;
 use Minz\Form;
 use Minz\Translatable;

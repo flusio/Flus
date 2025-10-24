@@ -42,7 +42,7 @@ class Repairing extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        $form = new forms\RepairLink([
+        $form = new forms\links\RepairLink([
             'url' => $link->url,
             'force_sync' => $link->title === $link->url,
         ]);
@@ -85,7 +85,7 @@ class Repairing extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        $form = new forms\RepairLink();
+        $form = new forms\links\RepairLink();
         $form->handleRequest($request);
 
         if (!$form->validate()) {
