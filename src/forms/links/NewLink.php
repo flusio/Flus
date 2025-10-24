@@ -1,12 +1,12 @@
 <?php
 
-namespace App\forms;
+namespace App\forms\links;
 
 use App\auth;
+use App\forms\BaseForm;
 use App\models;
 use App\utils;
 use Minz\Form;
-use Minz\Translatable;
 use Minz\Validable;
 
 /**
@@ -25,7 +25,7 @@ class NewLink extends BaseForm
     public array $collection_ids = [];
 
     /** @var string[] */
-    #[Form\Field(bind: false, transform: '\App\forms\NewLink::trimArray')]
+    #[Form\Field(bind: false, transform: '\App\forms\links\NewLink::trimArray')]
     public array $new_collection_names = [];
 
     #[Form\Field]

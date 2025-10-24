@@ -170,7 +170,7 @@ class Links extends BaseController
         }
 
         $link = new models\Link($default_url, $user->id);
-        $form = new forms\NewLink([
+        $form = new forms\links\NewLink([
             'collection_ids' => $default_collection_ids,
         ], $link);
 
@@ -205,7 +205,7 @@ class Links extends BaseController
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $link = $user->findOrBuildLink($url);
-        $form = new forms\NewLink(model: $link);
+        $form = new forms\links\NewLink(model: $link);
 
         $form->handleRequest($request);
 
@@ -263,7 +263,7 @@ class Links extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        $form = new forms\EditLink(model: $link);
+        $form = new forms\links\EditLink(model: $link);
 
         return Response::ok('links/edit.phtml', [
             'link' => $link,
@@ -298,7 +298,7 @@ class Links extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        $form = new forms\EditLink(model: $link);
+        $form = new forms\links\EditLink(model: $link);
         $form->handleRequest($request);
 
         if (!$form->validate()) {
@@ -339,7 +339,7 @@ class Links extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        $form = new forms\DeleteLink();
+        $form = new forms\links\DeleteLink();
         $form->handleRequest($request);
 
         if (!$form->validate()) {

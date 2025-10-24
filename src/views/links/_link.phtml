@@ -321,7 +321,7 @@
                             <?= _('Delete') ?>
                         </button>
 
-                        <input type="hidden" name="csrf_token" value="<?= csrf_token('DeleteLink') ?>" />
+                        <input type="hidden" name="csrf_token" value="<?= csrf_token('links\\DeleteLink') ?>" />
                         <input type="hidden" name="from" value="<?= $from ?>" />
                     </form>
                 <?php endif; ?>
