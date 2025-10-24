@@ -126,27 +126,27 @@
                 <div class="col--extend cols cols--always cols--gap-small">
                     <?php if (!$is_read || $in_bookmarks): ?>
                         <form data-turbo-preserve-scroll method="post" action="<?= url('mark link as read', ['id' => $link->id, 'from' => $current_url]) ?>">
-                            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-
                             <button class="button--icon" title="<?= _('Mark as read') ?>">
                                 <?= icon('check') ?>
                                 <span class="sr-only">
                                     <?= _('Mark as read') ?>
                                 </span>
                             </button>
+
+                            <input type="hidden" name="csrf_token" value="<?= csrf_token('links\\MarkLinkAsRead') ?>" />
                         </form>
                     <?php endif; ?>
 
                     <?php if (!$in_bookmarks): ?>
                         <form data-turbo-preserve-scroll method="post" action="<?= url('read link later', ['id' => $link->id, 'from' => $current_url]) ?>">
-                            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-
                             <button class="button--icon" title="<?= _('Read later') ?>">
                                 <?= icon('bookmark') ?>
                                 <span class="sr-only">
                                     <?= _('Read later') ?>
                                 </span>
                             </button>
+
+                            <input type="hidden" name="csrf_token" value="<?= csrf_token('links\\MarkLinkAsReadLater') ?>" />
                         </form>
                     <?php endif; ?>
                 </div>
