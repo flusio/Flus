@@ -162,11 +162,9 @@ class Links extends BaseController
         ]);
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
+        $default_collection_ids = [];
         if ($default_collection_id) {
-            $default_collection_ids = [$default_collection_id];
-        } else {
-            $bookmarks = $user->bookmarks();
-            $default_collection_ids = [$bookmarks->id];
+            $default_collection_ids[] = $default_collection_id;
         }
 
         $link = new models\Link($default_url, $user->id);
@@ -226,14 +224,16 @@ class Links extends BaseController
         }
 
         $link_collections = $form->selectedCollections();
-
         foreach ($form->newCollections() as $collection) {
             $collection->save();
-
             $link_collections[] = $collection;
         }
 
         $link->addCollections($link_collections);
+
+        if ($form->read_later) {
+            $user->markAsReadLater($link);
+        }
 
         return Response::redirect('link', [
             'id' => $link->id,
