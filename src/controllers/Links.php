@@ -162,15 +162,13 @@ class Links extends BaseController
         ]);
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
+        $default_collection_ids = [];
         if ($default_collection_id) {
-            $default_collection_ids = [$default_collection_id];
-        } else {
-            $bookmarks = $user->bookmarks();
-            $default_collection_ids = [$bookmarks->id];
+            $default_collection_ids[] = $default_collection_id;
         }
 
         $link = new models\Link($default_url, $user->id);
-        $form = new forms\NewLink([
+        $form = new forms\links\NewLink([
             'collection_ids' => $default_collection_ids,
         ], $link);
 
@@ -205,7 +203,7 @@ class Links extends BaseController
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $link = $user->findOrBuildLink($url);
-        $form = new forms\NewLink(model: $link);
+        $form = new forms\links\NewLink(model: $link);
 
         $form->handleRequest($request);
 
@@ -226,14 +224,16 @@ class Links extends BaseController
         }
 
         $link_collections = $form->selectedCollections();
-
         foreach ($form->newCollections() as $collection) {
             $collection->save();
-
             $link_collections[] = $collection;
         }
 
         $link->addCollections($link_collections);
+
+        if ($form->read_later) {
+            $user->markAsReadLater($link);
+        }
 
         return Response::redirect('link', [
             'id' => $link->id,
@@ -258,16 +258,18 @@ class Links extends BaseController
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $link = models\Link::find($link_id);
-        if ($link && auth\LinksAccess::canUpdate($user, $link)) {
-            return Response::ok('links/edit.phtml', [
-                'link' => $link,
-                'title' => $link->title,
-                'reading_time' => $link->reading_time,
-                'from' => $from,
-            ]);
-        } else {
+
+        if (!$link || !auth\LinksAccess::canUpdate($user, $link)) {
             return Response::notFound('not_found.phtml');
         }
+
+        $form = new forms\links\EditLink(model: $link);
+
+        return Response::ok('links/edit.phtml', [
+            'link' => $link,
+            'form' => $form,
+            'from' => $from,
+        ]);
     }
 
     /**
@@ -287,10 +289,7 @@ class Links extends BaseController
     public function update(Request $request): Response
     {
         $link_id = $request->parameters->getString('id', '');
-        $new_title = $request->parameters->getString('title', '');
-        $new_reading_time = $request->parameters->getInteger('reading_time', 0);
         $from = $request->parameters->getString('from', \Minz\Url::for('link', ['id' => $link_id]));
-        $csrf = $request->parameters->getString('csrf', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -299,56 +298,39 @@ class Links extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\App\Csrf::validate($csrf)) {
+        $form = new forms\links\EditLink(model: $link);
+        $form->handleRequest($request);
+
+        if (!$form->validate()) {
             return Response::badRequest('links/edit.phtml', [
                 'link' => $link,
-                'title' => $new_title,
-                'reading_time' => $new_reading_time,
+                'form' => $form,
                 'from' => $from,
-                'error' => _('A security verification failed: you should retry to submit the form.'),
             ]);
         }
 
-        $old_title = $link->title;
-        $old_reading_time = $link->reading_time;
-
-        $link->title = trim($new_title);
-        $link->reading_time = $new_reading_time;
-        if (!$link->validate()) {
-            $link->title = $old_title;
-            $link->reading_time = $old_reading_time;
-            return Response::badRequest('links/edit.phtml', [
-                'link' => $link,
-                'title' => $new_title,
-                'reading_time' => $new_reading_time,
-                'from' => $from,
-                'errors' => $link->errors(),
-            ]);
-        }
-
+        $link = $form->model();
         $link->save();
 
         return Response::found($from);
     }
 
     /**
-     * Delete a link
+     * Delete a link.
      *
      * @request_param string id
      * @request_param string from default is /links/:id
-     * @request_param string redirect_to default is /
+     * @request_param string csrf_token
      *
      * @response 302 /login?redirect_to=:from if not connected
      * @response 404 if the link doesn’t exist or user hasn't access
      * @response 302 :from if csrf is invalid
-     * @response 302 :redirect_to on success
+     * @response 302 :from on success
      */
     public function delete(Request $request): Response
     {
         $link_id = $request->parameters->getString('id', '');
         $from = $request->parameters->getString('from', \Minz\Url::for('link', ['id' => $link_id]));
-        $redirect_to = $request->parameters->getString('redirect_to', \Minz\Url::for('home'));
-        $csrf = $request->parameters->getString('csrf', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -357,13 +339,16 @@ class Links extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        if (!\App\Csrf::validate($csrf)) {
-            \Minz\Flash::set('error', _('A security verification failed.'));
+        $form = new forms\links\DeleteLink();
+        $form->handleRequest($request);
+
+        if (!$form->validate()) {
+            \Minz\Flash::set('error', $form->error('@base'));
             return Response::found($from);
         }
 
-        models\Link::delete($link->id);
+        $link->remove();
 
-        return Response::found($redirect_to);
+        return Response::found($from);
     }
 }

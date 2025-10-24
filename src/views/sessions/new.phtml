@@ -68,7 +68,7 @@
                     id="current-password"
                     name="password"
                     type="password"
-                    value="<?= $form->password ?>"
+                    value=""
                     required
                     data-input-password-target="input"
                     autocomplete="current-password"
@@ -97,7 +97,7 @@
             </button>
         </div>
 
-        <input type="hidden" name="csrf_token" value="<?= $form->csrfToken() ?>" />
+        <input type="hidden" name="csrf_token" value="<?= csrf_token($form) ?>" />
         <input type="hidden" name="redirect_to" value="<?= $redirect_to ?>" />
     </form>
 

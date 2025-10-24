@@ -425,7 +425,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\LinkToCollection::count());
 
         $response = $this->appRun('POST', '/links/new', [
-            'csrf_token' => $this->csrfToken(forms\NewLink::class),
+            'csrf_token' => $this->csrfToken(forms\links\NewLink::class),
             'url' => $url,
             'collection_ids' => [$collection->id],
         ]);
@@ -447,23 +447,41 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testCreateAllowsToCreateHiddenLinks(): void
     {
         $user = $this->login();
-        $collection = CollectionFactory::create([
-            'user_id' => $user->id,
-            'type' => 'collection',
-        ]);
         $url = 'https://flus.fr/carnet/';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
 
         $response = $this->appRun('POST', '/links/new', [
-            'csrf_token' => $this->csrfToken(forms\NewLink::class),
+            'csrf_token' => $this->csrfToken(forms\links\NewLink::class),
             'url' => $url,
-            'collection_ids' => [$collection->id],
             'is_hidden' => true,
         ]);
 
         $link = models\Link::take();
         $this->assertNotNull($link);
         $this->assertTrue($link->is_hidden);
+    }
+
+    public function testCreateAllowsToAddToReadLater(): void
+    {
+        $user = $this->login();
+        $bookmarks = $user->bookmarks();
+        $url = 'https://flus.fr/carnet/';
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
+
+        $this->assertSame(0, models\Link::count());
+
+        $response = $this->appRun('POST', '/links/new', [
+            'csrf_token' => $this->csrfToken(forms\links\NewLink::class),
+            'url' => $url,
+            'read_later' => true,
+        ]);
+
+        $this->assertSame(1, models\Link::count());
+
+        $link = models\Link::take();
+        $this->assertNotNull($link);
+        $this->assertTrue($link->isInBookmarksOf($user));
+        $this->assertResponseCode($response, 302, "/links/{$link->id}");
     }
 
     public function testCreateDoesNotCreateLinkIfItExists(): void
@@ -484,7 +502,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\LinkToCollection::count());
 
         $response = $this->appRun('POST', '/links/new', [
-            'csrf_token' => $this->csrfToken(forms\NewLink::class),
+            'csrf_token' => $this->csrfToken(forms\links\NewLink::class),
             'url' => $url,
             'collection_ids' => [$collection->id],
         ]);
@@ -515,7 +533,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\LinkToCollection::count());
 
         $response = $this->appRun('POST', '/links/new', [
-            'csrf_token' => $this->csrfToken(forms\NewLink::class),
+            'csrf_token' => $this->csrfToken(forms\links\NewLink::class),
             'url' => $url,
             'collection_ids' => [$collection->id],
         ]);
@@ -554,7 +572,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\LinkToCollection::count());
 
         $response = $this->appRun('POST', '/links/new', [
-            'csrf_token' => $this->csrfToken(forms\NewLink::class),
+            'csrf_token' => $this->csrfToken(forms\links\NewLink::class),
             'url' => $url,
             'collection_ids' => [$collection_1->id, $collection_2->id],
         ]);
@@ -588,7 +606,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\LinkToCollection::count());
 
         $response = $this->appRun('POST', '/links/new', [
-            'csrf_token' => $this->csrfToken(forms\NewLink::class),
+            'csrf_token' => $this->csrfToken(forms\links\NewLink::class),
             'url' => $url,
             'collection_ids' => [$collection->id],
         ]);
@@ -613,7 +631,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Collection::count());
 
         $response = $this->appRun('POST', '/links/new', [
-            'csrf_token' => $this->csrfToken(forms\NewLink::class),
+            'csrf_token' => $this->csrfToken(forms\links\NewLink::class),
             'url' => $url,
             'new_collection_names' => [$collection_name],
         ]);
@@ -636,17 +654,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testCreateRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create();
-        $collection = CollectionFactory::create([
-            'user_id' => $user->id,
-            'type' => 'collection',
-        ]);
         $url = 'https://flus.fr/carnet/';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
 
         $response = $this->appRun('POST', '/links/new', [
-            'csrf_token' => $this->csrfToken(forms\NewLink::class),
+            'csrf_token' => $this->csrfToken(forms\links\NewLink::class),
             'url' => $url,
-            'collection_ids' => [$collection->id],
         ]);
 
         $url_encoded = urlencode($url);
@@ -658,15 +671,10 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
-        $collection = CollectionFactory::create([
-            'user_id' => $user->id,
-            'type' => 'collection',
-        ]);
 
         $response = $this->appRun('POST', '/links/new', [
             'csrf_token' => 'not the token',
             'url' => 'https://github.com/flusio/Flus',
-            'collection_ids' => [$collection->id],
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -677,18 +685,13 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfUrlIsInvalid(): void
     {
         $user = $this->login();
-        $collection = CollectionFactory::create([
-            'user_id' => $user->id,
-            'type' => 'collection',
-        ]);
         /** @var string */
         $url = $this->fake('domainName');
         $url = 'ftp://' . $url;
 
         $response = $this->appRun('POST', '/links/new', [
-            'csrf_token' => $this->csrfToken(forms\NewLink::class),
+            'csrf_token' => $this->csrfToken(forms\links\NewLink::class),
             'url' => $url,
-            'collection_ids' => [$collection->id],
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -699,14 +702,9 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfUrlIsMissing(): void
     {
         $user = $this->login();
-        $collection = CollectionFactory::create([
-            'user_id' => $user->id,
-            'type' => 'collection',
-        ]);
 
         $response = $this->appRun('POST', '/links/new', [
-            'csrf_token' => $this->csrfToken(forms\NewLink::class),
-            'collection_ids' => [$collection->id],
+            'csrf_token' => $this->csrfToken(forms\links\NewLink::class),
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -724,28 +722,13 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/links/new', [
-            'csrf_token' => $this->csrfToken(forms\NewLink::class),
+            'csrf_token' => $this->csrfToken(forms\links\NewLink::class),
             'url' => 'https://github.com/flusio/Flus',
             'collection_ids' => [$collection->id],
         ]);
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'One of the associated collection doesn’t exist.');
-        $this->assertSame(0, models\Link::count());
-    }
-
-    public function testCreateFailsIfCollectionIsMissing(): void
-    {
-        $user = $this->login();
-
-        $response = $this->appRun('POST', '/links/new', [
-            'csrf_token' => $this->csrfToken(forms\NewLink::class),
-            'url' => 'https://github.com/flusio/Flus',
-            'collection_ids' => [],
-        ]);
-
-        $this->assertResponseCode($response, 400);
-        $this->assertResponseContains($response, 'The link must be associated to a collection.');
         $this->assertSame(0, models\Link::count());
     }
 
@@ -766,7 +749,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
 
         $response = $this->appRun('POST', '/links/new', [
-            'csrf_token' => $this->csrfToken(forms\NewLink::class),
+            'csrf_token' => $this->csrfToken(forms\links\NewLink::class),
             'url' => $url,
             'collection_ids' => [$collection->id],
         ]);
@@ -789,7 +772,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
 
         $response = $this->appRun('POST', '/links/new', [
-            'csrf_token' => $this->csrfToken(forms\NewLink::class),
+            'csrf_token' => $this->csrfToken(forms\links\NewLink::class),
             'url' => $url,
             'collection_ids' => [$collection->id],
         ]);
@@ -809,7 +792,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
 
         $response = $this->appRun('POST', '/links/new', [
-            'csrf_token' => $this->csrfToken(forms\NewLink::class),
+            'csrf_token' => $this->csrfToken(forms\links\NewLink::class),
             'url' => $url,
             'new_collection_names' => [$collection_name],
         ]);
@@ -817,7 +800,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The name must be less than 100 characters');
         $this->assertSame(0, models\Link::count());
-        $this->assertSame(1, models\Collection::count()); // this counts the bookmarks collection
+        $this->assertSame(0, models\Collection::count());
     }
 
     public function testEditRendersCorrectly(): void
@@ -889,7 +872,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/edit", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\links\EditLink::class),
             'title' => $new_title,
             'reading_time' => $new_reading_time,
         ]);
@@ -915,7 +898,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $from = \Minz\Url::for('bookmarks');
 
         $response = $this->appRun('POST', "/links/{$link->id}/edit", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\links\EditLink::class),
             'title' => $new_title,
             'from' => $from,
         ]);
@@ -939,7 +922,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/edit", [
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
             'title' => $new_title,
         ]);
 
@@ -963,7 +946,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/edit", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\links\EditLink::class),
             'title' => $new_title,
         ]);
 
@@ -988,7 +971,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/edit", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\links\EditLink::class),
             'title' => $new_title,
         ]);
 
@@ -1011,7 +994,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/links/not-the-id/edit', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\links\EditLink::class),
             'title' => $new_title,
         ]);
 
@@ -1035,7 +1018,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/edit", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\links\EditLink::class),
             'title' => $new_title,
         ]);
 
@@ -1052,41 +1035,23 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/delete", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\links\DeleteLink::class),
             'from' => "/links/{$link->id}",
         ]);
 
-        $this->assertResponseCode($response, 302, '/');
+        $this->assertResponseCode($response, 302, "/links/{$link->id}");
         $this->assertFalse(models\Link::exists($link->id));
-    }
-
-    public function testDeleteRedirectsToRedirectToIfGiven(): void
-    {
-        $user = $this->login();
-        $link = LinkFactory::create([
-            'user_id' => $user->id,
-        ]);
-
-        $response = $this->appRun('POST', "/links/{$link->id}/delete", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => "/links/{$link->id}",
-            'redirect_to' => '/bookmarks',
-        ]);
-
-        $this->assertResponseCode($response, 302, '/bookmarks');
     }
 
     public function testDeleteRedirectsIfNotConnected(): void
     {
-        $user = UserFactory::create([
-            'csrf' => 'a token',
-        ]);
+        $user = UserFactory::create();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/delete", [
-            'csrf' => 'a token',
+            'csrf_token' => $this->csrfToken(forms\links\DeleteLink::class),
             'from' => "/links/{$link->id}",
         ]);
 
@@ -1103,7 +1068,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/delete", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\links\DeleteLink::class),
             'from' => "/links/{$link->id}",
         ]);
 
@@ -1119,12 +1084,14 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/delete", [
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
             'from' => "/links/{$link->id}",
         ]);
 
         $this->assertResponseCode($response, 302, "/links/{$link->id}");
         $this->assertTrue(models\Link::exists($link->id));
-        $this->assertSame('A security verification failed.', \Minz\Flash::get('error'));
+        $error = \Minz\Flash::get('error');
+        $this->assertTrue(is_string($error));
+        $this->assertStringContainsString('A security verification failed', $error);
     }
 }

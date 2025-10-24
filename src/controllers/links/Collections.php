@@ -2,13 +2,14 @@
 
 namespace App\controllers\links;
 
-use Minz\Request;
-use Minz\Response;
 use App\auth;
 use App\controllers\BaseController;
+use App\forms;
 use App\jobs;
 use App\models;
 use App\utils;
+use Minz\Request;
+use Minz\Response;
 
 /**
  * Handle the requests related to the links collections.
@@ -38,20 +39,18 @@ class Collections extends BaseController
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $link = models\Link::find($link_id);
-        $notes = [];
+
         if (!$link || !auth\LinksAccess::canView($user, $link)) {
             return Response::notFound('not_found.phtml');
         }
 
-        if ($link->user_id !== $user->id) {
-            $existing_link = models\Link::findBy([
-                'user_id' => $user->id,
-                'url_hash' => models\Link::hashUrl($link->url),
-            ]);
-
-            if ($existing_link) {
-                $link = $existing_link;
-            }
+        // Make sure that if the user has already saved the link's URL, we work
+        // with this one instead of a link potentially owned by another user.
+        // In particular, this allows to be sure that the collections are
+        // correctly selected.
+        $existing_link = $user->correspondingOwnedLink($link);
+        if ($existing_link) {
+            $link = $existing_link;
         }
 
         if (auth\LinksAccess::canUpdate($user, $link)) {
@@ -60,40 +59,14 @@ class Collections extends BaseController
             $collection_ids = [];
         }
 
-        $groups = models\Group::listBy(['user_id' => $user->id]);
-        $groups = utils\Sorter::localeSort($groups, 'name');
-
-        $collections = $user->collections();
-        $collections = utils\Sorter::localeSort($collections, 'name');
-        $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
-
-        $shared_collections = $user->sharedCollections([], [
-            'access_type' => 'write',
-        ]);
-        $shared_collections = utils\Sorter::localeSort($shared_collections, 'name');
-        $collections_by_others = models\Collection::listWritableContainingNotOwnedLinkWithUrl(
-            $user->id,
-            $link->url_hash,
-        );
-        $collections_by_others = utils\Sorter::localeSort($collections_by_others, 'name');
-
-        $mastodon_configured = models\MastodonAccount::existsBy([
-            'user_id' => $user->id,
-        ]);
+        $form = new forms\links\EditLinkCollections([
+            'collection_ids' => $collection_ids,
+            'mark_as_read' => $mark_as_read,
+        ], $link);
 
         return Response::ok('links/collections/index.phtml', [
             'link' => $link,
-            'collection_ids' => $collection_ids,
-            'new_collection_names' => [],
-            'name_max_length' => models\Collection::NAME_MAX_LENGTH,
-            'groups' => $groups,
-            'groups_to_collections' => $groups_to_collections,
-            'shared_collections' => $shared_collections,
-            'collections_by_others' => $collections_by_others,
-            'mark_as_read' => $mark_as_read,
-            'content' => '',
-            'share_on_mastodon' => false,
-            'mastodon_configured' => $mastodon_configured,
+            'form' => $form,
             'from' => $from,
         ]);
     }
@@ -123,16 +96,7 @@ class Collections extends BaseController
     public function update(Request $request): Response
     {
         $link_id = $request->parameters->getString('id', '');
-        /** @var string[] */
-        $new_collection_ids = $request->parameters->getArray('collection_ids', []);
-        /** @var string[] */
-        $new_collection_names = $request->parameters->getArray('new_collection_names', []);
-        $is_hidden = $request->parameters->getBoolean('is_hidden');
-        $mark_as_read = $request->parameters->getBoolean('mark_as_read');
-        $content = trim($request->parameters->getString('content', ''));
-        $share_on_mastodon = $request->parameters->getBoolean('share_on_mastodon');
         $from = $request->parameters->getString('from', '');
-        $csrf = $request->parameters->getString('csrf', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
@@ -141,66 +105,48 @@ class Collections extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        if (!$user->canWriteCollections($new_collection_ids)) {
-            \Minz\Flash::set('error', _('One of the associated collection doesn’t exist.'));
-            return Response::found($from);
-        }
-
-        if (!\App\Csrf::validate($csrf)) {
-            \Minz\Flash::set('error', _('A security verification failed.'));
-            return Response::found($from);
-        }
-
-        $link_collections = [];
-
-        foreach ($new_collection_ids as $collection_id) {
-            $collection = models\Collection::find($collection_id);
-            if ($collection) {
-                $link_collections[] = $collection;
-            }
-        }
-
-        foreach ($new_collection_names as $name) {
-            $new_collection = models\Collection::init($user->id, $name, '', false);
-
-            if (!$new_collection->validate()) {
-                \Minz\Flash::set('errors', $new_collection->errors());
-                return Response::found($from);
-            }
-
-            $new_collection->save();
-            $link_collections[] = $new_collection;
-        }
-
         if (!auth\LinksAccess::canUpdate($user, $link)) {
             $link = $user->obtainLink($link);
             utils\SourceHelper::setLinkSource($link, $from);
         }
 
-        $link->is_hidden = $is_hidden;
+        $form = new forms\links\EditLinkCollections(model: $link);
+
+        $form->handleRequest($request);
+
+        if (!$form->validate()) {
+            return Response::badRequest('links/collections/index.phtml', [
+                'link' => $link,
+                'form' => $form,
+                'from' => $from,
+            ]);
+        }
+
+        $link = $form->model();
         $link->save();
+
+        $link_collections = $form->selectedCollections();
+        foreach ($form->newCollections() as $collection) {
+            $collection->save();
+            $link_collections[] = $collection;
+        }
 
         $link->setCollections($link_collections);
 
-        if ($content) {
-            $note = new models\Note($user->id, $link->id, $content);
+        $note = $form->note();
+        if ($note) {
             $note->save();
-        }
-
-        if ($mark_as_read) {
-            $user->markAsRead($link);
         }
 
         $link->refreshTags();
 
-        $mastodon_configured = models\MastodonAccount::existsBy([
-            'user_id' => $user->id,
-        ]);
+        if ($form->mark_as_read) {
+            $user->markAsRead($link);
+        }
 
-        if ($mastodon_configured && $share_on_mastodon) {
-            $note_id = isset($note) ? $note->id : null;
+        if ($form->shouldShareOnMastodon()) {
             $share_on_mastodon_job = new jobs\ShareOnMastodon();
-            $share_on_mastodon_job->performAsap($user->id, $link->id, $note_id);
+            $share_on_mastodon_job->performAsap($user->id, $link->id, $note?->id);
         }
 
         return Response::found($from);

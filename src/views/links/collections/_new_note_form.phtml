@@ -1,0 +1,46 @@
+<div class="form-group">
+    <label for="content">
+        <?= _('What do you retain from this content?') ?>
+        <span class="label__help">
+            <?= _('(optional)') ?>
+        </span>
+    </label>
+
+    <?php if ($form->isInvalid('content')): ?>
+        <p id="content-error" class="form-group__error">
+            <?= _('Error:') ?>
+            <?= $form->error('content') ?>
+        </p>
+    <?php endif; ?>
+
+    <textarea
+        id="content"
+        name="content"
+        data-controller="text-editor"
+        data-action="text-editor#refresh keyup->autosave#save"
+        aria-describedby="content-caption"
+        <?php if ($form->isInvalid('content')): ?>
+            aria-errormessage="content-error"
+            aria-invalid="true"
+        <?php endif; ?>
+    ><?= protect($form->content) ?></textarea>
+
+    <p class="form-group__caption" id="content-caption">
+        <?= _('You can format the content in Markdown and use #tags.') ?>
+    </p>
+</div>
+
+<?php if ($form->isMastodonConfigured()): ?>
+    <div class="form-group">
+        <input
+            type="checkbox"
+            id="share-on-mastodon"
+            name="share_on_mastodon"
+            <?= $form->share_on_mastodon ? 'checked' : '' ?>
+        />
+
+        <label class="label--checkbox" for="share-on-mastodon">
+            <?= _('Share on Mastodon') ?>
+        </label>
+    </div>
+<?php endif; ?>

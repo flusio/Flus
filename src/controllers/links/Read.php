@@ -6,6 +6,7 @@ use Minz\Request;
 use Minz\Response;
 use App\auth;
 use App\controllers\BaseController;
+use App\forms;
 use App\models;
 use App\utils;
 
@@ -36,12 +37,14 @@ class Read extends BaseController
     {
         $from = $request->parameters->getString('from', '');
         $link_id = $request->parameters->getString('id', '');
-        $csrf = $request->parameters->getString('csrf', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
-        if (!\App\Csrf::validate($csrf)) {
-            \Minz\Flash::set('error', _('A security verification failed.'));
+        $form = new forms\links\MarkLinkAsRead();
+        $form->handleRequest($request);
+
+        if (!$form->validate()) {
+            \Minz\Flash::set('error', $form->error('@base'));
             return Response::found($from);
         }
 
@@ -82,12 +85,14 @@ class Read extends BaseController
     {
         $from = $request->parameters->getString('from', '');
         $link_id = $request->parameters->getString('id', '');
-        $csrf = $request->parameters->getString('csrf', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
-        if (!\App\Csrf::validate($csrf)) {
-            \Minz\Flash::set('error', _('A security verification failed.'));
+        $form = new forms\links\MarkLinkAsReadLater();
+        $form->handleRequest($request);
+
+        if (!$form->validate()) {
+            \Minz\Flash::set('error', $form->error('@base'));
             return Response::found($from);
         }
 
@@ -128,12 +133,14 @@ class Read extends BaseController
     {
         $from = $request->parameters->getString('from', '');
         $link_id = $request->parameters->getString('id', '');
-        $csrf = $request->parameters->getString('csrf', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
-        if (!\App\Csrf::validate($csrf)) {
-            \Minz\Flash::set('error', _('A security verification failed.'));
+        $form = new forms\links\MarkLinkAsNever();
+        $form->handleRequest($request);
+
+        if (!$form->validate()) {
+            \Minz\Flash::set('error', $form->error('@base'));
             return Response::found($from);
         }
 
@@ -173,12 +180,14 @@ class Read extends BaseController
     {
         $from = $request->parameters->getString('from', '');
         $link_id = $request->parameters->getString('id', '');
-        $csrf = $request->parameters->getString('csrf', '');
 
         $user = $this->requireCurrentUser(redirect_after_login: $from);
 
-        if (!\App\Csrf::validate($csrf)) {
-            \Minz\Flash::set('error', _('A security verification failed.'));
+        $form = new forms\links\MarkLinkAsUnread();
+        $form->handleRequest($request);
+
+        if (!$form->validate()) {
+            \Minz\Flash::set('error', $form->error('@base'));
             return Response::found($from);
         }
 

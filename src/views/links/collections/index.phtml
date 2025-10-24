@@ -2,7 +2,7 @@
     $this->layout('base.phtml', [
         'title' => _('Storing a link'),
         'canonical' => url_full('link collections', ['id' => $link->id]),
-        'has_errors' => $error || $errors,
+        'has_errors' => $form->isInvalid(),
         'modal_enabled' => true,
     ]);
 ?>
@@ -23,29 +23,12 @@
         data-controller="autosave"
         data-action="turbo:submit-start@document->autosave#clear"
     >
-        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-        <input type="hidden" name="from" value="<?= $from ?>" />
-        <input type="hidden" name="mark_as_read" value="<?= $mark_as_read ?>" />
+        <?= $this->include('alerts/_error.phtml', ['message' => $form->error('@base')]) ?>
 
         <fieldset aria-describedby="collections-desc">
             <legend><?= _('Collections') ?></legend>
 
-            <div id="collections-desc">
-                <?php if (isset($errors['collection_ids'])): ?>
-                    <p class="form-group__error">
-                        <span class="sr-only"><?= _('Error') ?></span>
-                        <?= $errors['collection_ids'] ?>
-                    </p>
-                <?php endif; ?>
-
-                <?php if (isset($errors['name'])): ?>
-                    <p class="form-group__error">
-                        <span class="sr-only"><?= _('Error') ?></span>
-                        <?= $errors['name'] ?>
-                    </p>
-                <?php endif; ?>
-            </div>
-
+            <?php $collections_by_others = $form->collectionsByOthers(); ?>
             <?php if ($collections_by_others): ?>
                 <?= $this->include('collections/_collections_by_others.phtml', [
                     'collections' => $collections_by_others,
@@ -53,13 +36,8 @@
                 ]) ?>
             <?php endif; ?>
 
-            <?= $this->include('collections/_selector.legacy.phtml', [
-                'groups' => $groups,
-                'groups_to_collections' => $groups_to_collections,
-                'shared_collections' => $shared_collections,
-                'collection_ids' => $collection_ids,
-                'new_collection_names' => $new_collection_names,
-                'name_max_length' => $name_max_length,
+            <?= $this->include('collections/_selector.phtml', [
+                'form' => $form,
             ]) ?>
         </fieldset>
 
@@ -68,7 +46,7 @@
                 type="checkbox"
                 id="is-hidden"
                 name="is_hidden"
-                <?= $link->is_hidden ? 'checked' : '' ?>
+                <?= $form->is_hidden ? 'checked' : '' ?>
             />
 
             <label class="label--checkbox" for="is-hidden">
@@ -107,89 +85,29 @@
                         <?php endforeach; ?>
                     </article>
 
-                    <div class="form-group">
-                        <label for="content">
-                            <?= _('What do you retain from this content?') ?>
-                            <span class="label__help">
-                                <?= _('(optional)') ?>
-                            </span>
-                        </label>
-
-                        <textarea
-                            id="content"
-                            name="content"
-                            data-controller="text-editor"
-                            data-action="text-editor#refresh keyup->autosave#save"
-                            aria-describedby="content-desc"
-                        ><?= $content ?></textarea>
-
-                        <p class="form-group__caption" id="content-desc">
-                            <?= _('You can format the content in Markdown and use #tags.') ?>
-                        </p>
-                    </div>
-
-                    <?php if ($mastodon_configured): ?>
-                        <div class="form-group">
-                            <input
-                                type="checkbox"
-                                id="share-on-mastodon"
-                                name="share_on_mastodon"
-                                <?= $share_on_mastodon ? 'checked' : '' ?>
-                            />
-
-                            <label class="label--checkbox" for="share-on-mastodon">
-                                <?= _('Share on Mastodon') ?>
-                            </label>
-                        </div>
-                    <?php endif; ?>
+                    <?= $this->include('links/collections/_new_note_form.phtml', [
+                        'form' => $form,
+                    ]) ?>
                 </div>
             </details>
         <?php else: ?>
-            <div class="form-group">
-                <label for="content">
-                    <?= _('What do you retain from this content?') ?>
-                    <span class="label__help">
-                        <?= _('(optional)') ?>
-                    </span>
-                </label>
-
-                <textarea
-                    id="content"
-                    name="content"
-                    data-controller="text-editor"
-                    data-action="text-editor#refresh keyup->autosave#save"
-                    aria-describedby="content-desc"
-                ><?= $content ?></textarea>
-
-                <p class="form-group__caption" id="content-desc">
-                    <?= _('You can format the content in Markdown and use #tags.') ?>
-                </p>
-            </div>
-
-            <?php if ($mastodon_configured): ?>
-                <div class="form-group">
-                    <input
-                        type="checkbox"
-                        id="share-on-mastodon"
-                        name="share_on_mastodon"
-                        <?= $share_on_mastodon ? 'checked' : '' ?>
-                    />
-
-                    <label class="label--checkbox" for="share-on-mastodon">
-                        <?= _('Share on Mastodon') ?>
-                    </label>
-                </div>
-            <?php endif; ?>
+            <?= $this->include('links/collections/_new_note_form.phtml', [
+                'form' => $form,
+            ]) ?>
         <?php endif; ?>
 
         <div class="form__actions">
             <button type="submit" class="button--primary">
-                <?php if ($mark_as_read): ?>
+                <?php if ($form->mark_as_read): ?>
                     <?= _('Store the link and mark as read') ?>
                 <?php else: ?>
                     <?= _('Store the link') ?>
                 <?php endif; ?>
             </button>
         </div>
+
+        <input type="hidden" name="csrf_token" value="<?= csrf_token($form) ?>" />
+        <input type="hidden" name="mark_as_read" value="<?= $form->mark_as_read ?>" />
+        <input type="hidden" name="from" value="<?= $from ?>" />
     </form>
 </div>

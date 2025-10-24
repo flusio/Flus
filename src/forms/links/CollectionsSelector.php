@@ -1,61 +1,41 @@
 <?php
 
-namespace App\forms;
+namespace App\forms\links;
 
 use App\auth;
 use App\models;
 use App\utils;
 use Minz\Form;
-use Minz\Translatable;
 use Minz\Validable;
 
 /**
- * @extends BaseForm<models\Link>
- *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class NewLink extends BaseForm
+trait CollectionsSelector
 {
-    #[Form\Field(transform: '\SpiderBits\Url::sanitize')]
-    public string $url = '';
-
     /** @var string[] */
     #[Form\Field(bind: false)]
     public array $collection_ids = [];
 
     /** @var string[] */
-    #[Form\Field(bind: false, transform: '\App\forms\NewLink::trimArray')]
+    #[Form\Field(bind: false, transform: '\App\utils\ArrayHelper::trim')]
     public array $new_collection_names = [];
-
-    #[Form\Field]
-    public bool $is_hidden = false;
 
     public int $collection_name_max_length = models\Collection::NAME_MAX_LENGTH;
 
     /** @var ?array<string, models\Collection[]> */
     private ?array $cache_collection_values = null;
 
-    /**
-     * @param array<string, mixed> $default_values
-     */
-    public function __construct(array $default_values = [], ?models\Link $model = null)
+    public function user(): models\User
     {
-        if ($model) {
-            $default_collection_ids = $default_values['collection_ids'] ?? [];
-            $model_collection_ids = array_column($model->collections(), 'id');
+        $user = auth\CurrentUser::get();
 
-            if (!is_array($default_collection_ids)) {
-                throw new \LogicException('collection_ids must be an array.');
-            }
-
-            $default_values['collection_ids'] = array_merge(
-                $default_collection_ids,
-                $model_collection_ids
-            );
+        if (!$user) {
+            throw new \LogicException('User must be connected.');
         }
 
-        parent::__construct($default_values, $model);
+        return $user;
     }
 
     /**
@@ -72,22 +52,15 @@ class NewLink extends BaseForm
             return $this->cache_collection_values;
         }
 
-        $user = auth\CurrentUser::get();
-
-        if (!$user) {
-            throw new \LogicException('User must be connected.');
-        }
+        $user = $this->user();
 
         $collection_values = [];
 
         $groups = models\Group::listBy(['user_id' => $user->id]);
         $groups = utils\Sorter::localeSort($groups, 'name');
 
-        $bookmarks = $user->bookmarks();
-
         $collections = $user->collections();
         $collections = utils\Sorter::localeSort($collections, 'name');
-        $collections = array_merge([$bookmarks], $collections);
         $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
 
         $shared_collections = $user->sharedCollections(options: [
@@ -196,32 +169,18 @@ class NewLink extends BaseForm
     }
 
     /**
-     * Trim a list of strings.
-     *
-     * @param string[] $strings
-     * @return string[]
+     * @return models\Collection[]
      */
-    public static function trimArray(array $strings): array
+    public function collectionsByOthers(): array
     {
-        return array_map('trim', $strings);
-    }
+        $user = $this->user();
 
-    /**
-     * Check that at least one collection is selected or created.
-     */
-    #[Validable\Check]
-    public function checkAtLeastOneCollection(): void
-    {
-        if (
-            count($this->collection_ids) === 0 &&
-            count($this->new_collection_names) === 0
-        ) {
-            $this->addError(
-                'collection_ids',
-                'collectionRequired',
-                _('The link must be associated to a collection.'),
-            );
-        }
+        $collections_by_others = models\Collection::listWritableContainingNotOwnedLinkWithUrl(
+            $user->id,
+            $this->model()->url_hash,
+        );
+
+        return utils\Sorter::localeSort($collections_by_others, 'name');
     }
 
     /**
