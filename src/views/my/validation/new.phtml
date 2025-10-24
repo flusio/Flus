@@ -35,8 +35,8 @@
                 </button>
             </div>
 
-            <input type="hidden" name="csrf_token" value="<?= $form->csrfToken() ?>" />
-            <input type="hidden" name="t" value="<?= $form->t ?>" />
+            <input type="hidden" name="csrf_token" value="<?= csrf_token($form) ?>" />
+            <input type="hidden" name="t" value="<?= protect($form->t) ?>" />
         <?php endif; ?>
     </form>
 
