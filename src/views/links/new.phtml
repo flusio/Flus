@@ -58,26 +58,28 @@
         </fieldset>
 
         <div class="form-group">
-            <?php if ($form->isInvalid('is_hidden')): ?>
-                <p id="is-hidden-error" class="form-group__error">
-                    <?= _('Error:') ?>
-                    <?= $form->error('is_hidden') ?>
-                </p>
-            <?php endif; ?>
-
             <input
                 type="checkbox"
                 id="is-hidden"
                 name="is_hidden"
                 <?= $form->is_hidden ? 'checked' : '' ?>
-                <?php if ($form->isInvalid('is_hidden')): ?>
-                    aria-errormessage="is-hidden-error"
-                    aria-invalid="true"
-                <?php endif; ?>
             />
 
             <label class="label--checkbox" for="is-hidden">
                 <?= _('Hide this link in public collections') ?>
+            </label>
+        </div>
+
+        <div class="form-group">
+            <input
+                type="checkbox"
+                id="read-later"
+                name="read_later"
+                <?= $form->read_later ? 'checked' : '' ?>
+            />
+
+            <label class="label--checkbox" for="read-later">
+                <?= _('Mark to read later?') ?>
             </label>
         </div>
 
