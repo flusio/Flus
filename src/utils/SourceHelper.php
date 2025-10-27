@@ -11,18 +11,6 @@ use App\models;
 class SourceHelper
 {
     /**
-     * Set the source_* properties of a link if possible.
-     */
-    public static function setLinkSource(models\Link $link, string $from): void
-    {
-        list($source_type, $source_resource_id) = self::extractFromPath($from);
-        if ($source_type) {
-            $link->source_type = $source_type;
-            $link->source_resource_id = $source_resource_id;
-        }
-    }
-
-    /**
      * Return the source type and resource id from a path.
      *
      * For instance:

@@ -55,7 +55,7 @@ class Read extends BaseController
 
         $link = $user->obtainLink($link);
         if (!$link->isPersisted()) {
-            utils\SourceHelper::setLinkSource($link, $from);
+            $link->setSourceFrom($from);
             $link->save();
         }
 
@@ -103,7 +103,7 @@ class Read extends BaseController
 
         $link = $user->obtainLink($link);
         if (!$link->isPersisted()) {
-            utils\SourceHelper::setLinkSource($link, $from);
+            $link->setSourceFrom($from);
             $link->save();
         }
 

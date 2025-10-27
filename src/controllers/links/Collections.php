@@ -107,7 +107,7 @@ class Collections extends BaseController
 
         if (!auth\LinksAccess::canUpdate($user, $link)) {
             $link = $user->obtainLink($link);
-            utils\SourceHelper::setLinkSource($link, $from);
+            $link->setSourceFrom($from);
         }
 
         $form = new forms\links\EditLinkCollections(model: $link);

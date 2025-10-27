@@ -354,6 +354,18 @@ class Link
     }
 
     /**
+     * Set the source properties of the link if "from" is a supported internal path.
+     */
+    public function setSourceFrom(string $from): void
+    {
+        list($source_type, $source_resource_id) = utils\SourceHelper::extractFromPath($from);
+        if ($source_type) {
+            $this->source_type = $source_type;
+            $this->source_resource_id = $source_resource_id;
+        }
+    }
+
+    /**
      * Return whether or not the given user has the link URL in its bookmarks.
      */
     public function isInBookmarksOf(?User $user): bool
