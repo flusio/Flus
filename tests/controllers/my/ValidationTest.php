@@ -78,15 +78,6 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Faccount%2Fvalidation');
     }
 
-    public function testShowRedirectsIfATokenIsPassed(): void
-    {
-        $response = $this->appRun('GET', '/my/account/validation', [
-            't' => 'some-token'
-        ]);
-
-        $this->assertResponseCode($response, 302, '/my/account/validation/new?t=some-token');
-    }
-
     public function testNewRendersCorrectly(): void
     {
         $response = $this->appRun('GET', '/my/account/validation/new', [

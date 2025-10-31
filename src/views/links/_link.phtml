@@ -55,7 +55,7 @@
                         class="link__meta-warning"
                         data-controller="modal-opener"
                         data-action="modal-opener#fetch"
-                        data-modal-opener-href-value="<?= url('repairing link', ['id' => $link->id, 'from' => $this->safe('from')]) ?>"
+                        data-modal-opener-href-value="<?= url('repairing link', ['id' => $link->id]) ?>"
                         aria-haspopup="dialog"
                         aria-controls="modal"
                     >
@@ -243,7 +243,7 @@
 
             <nav class="popup__container popup__container--over" role="menu">
                 <?php if ($display_never): ?>
-                    <form data-turbo-preserve-scroll method="post" action="<?= url('mark link to never read', ['id' => $link->id, 'from' => url('news')]) ?>" role="menuitem">
+                    <form data-turbo-preserve-scroll method="post" action="<?= url('mark link to never read', ['id' => $link->id]) ?>" role="menuitem">
                         <button class="popup__item popup__item--button">
                             <?= icon('times') ?>
                             <?= _('Remove from the news') ?>
@@ -278,7 +278,7 @@
                         class="popup__item popup__item--button"
                         data-controller="modal-opener"
                         data-action="modal-opener#fetch"
-                        data-modal-opener-href-value="<?= url('edit link', ['id' => $link->id, 'from' => $this->safe('from')]) ?>"
+                        data-modal-opener-href-value="<?= url('edit link', ['id' => $link->id]) ?>"
                         aria-haspopup="dialog"
                         aria-controls="modal"
                         role="menuitem"
@@ -293,7 +293,7 @@
                         class="popup__item popup__item--button"
                         data-controller="modal-opener"
                         data-action="modal-opener#fetch"
-                        data-modal-opener-href-value="<?= url('repairing link', ['id' => $link->id, 'from' => $this->safe('from')]) ?>"
+                        data-modal-opener-href-value="<?= url('repairing link', ['id' => $link->id]) ?>"
                         aria-haspopup="dialog"
                         aria-controls="modal"
                         role="menuitem"
@@ -322,7 +322,6 @@
                         </button>
 
                         <input type="hidden" name="csrf_token" value="<?= csrf_token('links\\DeleteLink') ?>" />
-                        <input type="hidden" name="from" value="<?= $from ?>" />
                     </form>
                 <?php endif; ?>
             </nav>
@@ -330,7 +329,7 @@
 
         <div class="link__actions-group">
             <?php if ($display_mark_as_read): ?>
-                <form data-turbo-preserve-scroll method="post" action="<?= url('mark link as read', ['id' => $link->id, 'from' => $this->safe('from')]) ?>">
+                <form data-turbo-preserve-scroll method="post" action="<?= url('mark link as read', ['id' => $link->id]) ?>">
                     <button class="button--icon button--ghost button--smaller" title="<?= _('Mark as read') ?>">
                         <?= icon('check') ?>
                         <span class="sr-only">
@@ -343,7 +342,7 @@
             <?php endif; ?>
 
             <?php if ($display_mark_as_unread): ?>
-                <form data-turbo-preserve-scroll method="post" action="<?= url('mark link as unread', ['id' => $link->id, 'from' => $this->safe('from')]) ?>">
+                <form data-turbo-preserve-scroll method="post" action="<?= url('mark link as unread', ['id' => $link->id]) ?>">
                     <button class="button--icon button--ghost button--smaller" title="<?= _('Remove from read list') ?>">
                         <?= icon('uncheck') ?>
                         <span class="sr-only">
@@ -356,7 +355,7 @@
             <?php endif; ?>
 
             <?php if ($display_read_later): ?>
-                <form data-turbo-preserve-scroll method="post" action="<?= url('read link later', ['id' => $link->id, 'from' => $this->safe('from')]) ?>">
+                <form data-turbo-preserve-scroll method="post" action="<?= url('read link later', ['id' => $link->id]) ?>">
                     <button class="button--icon button--ghost button--smaller" title="<?= _('Read later') ?>">
                         <?= icon('bookmark') ?>
                         <span class="sr-only">
@@ -372,7 +371,7 @@
                 class="button--icon button--ghost button--smaller"
                 data-controller="modal-opener"
                 data-action="modal-opener#fetch"
-                data-modal-opener-href-value="<?= url('link collections', ['id' => $link->id, 'mark_as_read' => $storing_must_mark_as_read, 'from' => $this->safe('from')]) ?>"
+                data-modal-opener-href-value="<?= url('link collections', ['id' => $link->id, 'mark_as_read' => $storing_must_mark_as_read]) ?>"
                 aria-haspopup="dialog"
                 aria-controls="modal"
                 title="<?= _('Store the link') ?>"

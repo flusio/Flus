@@ -330,7 +330,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', "/links/{$link->id}");
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 403);
     }
 
     public function testNewRendersCorrectly(): void
@@ -407,8 +407,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     {
         $response = $this->appRun('GET', '/links/new');
 
-        $from_encoded = urlencode('/links/new?url=');
-        $this->assertResponseCode($response, 302, "/login?redirect_to={$from_encoded}");
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Flinks%2Fnew');
     }
 
     public function testCreateCreatesLinkAndRedirects(): void
@@ -662,9 +661,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
 
-        $url_encoded = urlencode($url);
-        $from_encoded = urlencode("/links/new?url={$url_encoded}");
-        $this->assertResponseCode($response, 302, "/login?redirect_to={$from_encoded}");
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Flinks%2Fnew');
         $this->assertSame(0, models\Link::count());
     }
 
@@ -827,7 +824,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', "/links/{$link->id}/edit");
 
-        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link->id}");
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link->id}%2Fedit");
     }
 
     public function testEditFailsIfTheLinkDoesNotExist(): void
@@ -850,7 +847,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', "/links/{$link->id}/edit");
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 403);
     }
 
     public function testUpdateChangesTheLinkAndRedirects(): void
@@ -877,35 +874,10 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'reading_time' => $new_reading_time,
         ]);
 
-        $this->assertResponseCode($response, 302, "/links/{$link->id}");
+        $this->assertResponseCode($response, 302, "/links/{$link->id}/edit");
         $link = $link->reload();
         $this->assertSame($new_title, $link->title);
         $this->assertSame($new_reading_time, $link->reading_time);
-    }
-
-    public function testUpdateRedirectsToFrom(): void
-    {
-        /** @var string */
-        $old_title = $this->fake('words', 3, true);
-        /** @var string */
-        $new_title = $this->fake('words', 5, true);
-        $user = $this->login();
-        $link = LinkFactory::create([
-            'user_id' => $user->id,
-            'fetched_at' => \Minz\Time::now(),
-            'title' => $old_title,
-        ]);
-        $from = \Minz\Url::for('bookmarks');
-
-        $response = $this->appRun('POST', "/links/{$link->id}/edit", [
-            'csrf_token' => $this->csrfToken(forms\links\EditLink::class),
-            'title' => $new_title,
-            'from' => $from,
-        ]);
-
-        $this->assertResponseCode($response, 302, $from);
-        $link = $link->reload();
-        $this->assertSame($new_title, $link->title);
     }
 
     public function testUpdateFailsIfCsrfIsInvalid(): void
@@ -975,7 +947,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'title' => $new_title,
         ]);
 
-        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link->id}");
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link->id}%2Fedit");
         $link = $link->reload();
         $this->assertSame($old_title, $link->title);
     }
@@ -1022,7 +994,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'title' => $new_title,
         ]);
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 403);
         $link = $link->reload();
         $this->assertSame($old_title, $link->title);
     }
@@ -1036,10 +1008,9 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/delete", [
             'csrf_token' => $this->csrfToken(forms\links\DeleteLink::class),
-            'from' => "/links/{$link->id}",
         ]);
 
-        $this->assertResponseCode($response, 302, "/links/{$link->id}");
+        $this->assertResponseCode($response, 302, '/');
         $this->assertFalse(models\Link::exists($link->id));
     }
 
@@ -1052,10 +1023,9 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/delete", [
             'csrf_token' => $this->csrfToken(forms\links\DeleteLink::class),
-            'from' => "/links/{$link->id}",
         ]);
 
-        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link->id}");
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
         $this->assertTrue(models\Link::exists($link->id));
     }
 
@@ -1069,10 +1039,9 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/delete", [
             'csrf_token' => $this->csrfToken(forms\links\DeleteLink::class),
-            'from' => "/links/{$link->id}",
         ]);
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 403);
         $this->assertTrue(models\Link::exists($link->id));
     }
 
@@ -1085,10 +1054,9 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/delete", [
             'csrf_token' => 'not the token',
-            'from' => "/links/{$link->id}",
         ]);
 
-        $this->assertResponseCode($response, 302, "/links/{$link->id}");
+        $this->assertResponseCode($response, 302, '/');
         $this->assertTrue(models\Link::exists($link->id));
         $error = \Minz\Flash::get('error');
         $this->assertTrue(is_string($error));

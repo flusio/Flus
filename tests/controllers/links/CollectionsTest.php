@@ -45,9 +45,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection_1->id,
         ]);
 
-        $response = $this->appRun('GET', "/links/{$link->id}/collections", [
-            'from' => \Minz\Url::for('bookmarks'),
-        ]);
+        $response = $this->appRun('GET', "/links/{$link->id}/collections");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $collection_name);
@@ -64,7 +62,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('GET', "/links/{$link->id}/collections", [
-            'from' => \Minz\Url::for('bookmarks'),
             'mark_as_read' => '1',
         ]);
 
@@ -104,9 +101,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection_owned->id,
         ]);
 
-        $response = $this->appRun('GET', "/links/{$link_not_owned->id}/collections", [
-            'from' => \Minz\Url::for('bookmarks'),
-        ]);
+        $response = $this->appRun('GET', "/links/{$link_not_owned->id}/collections");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseTemplateName($response, 'links/collections/index.phtml');
@@ -128,9 +123,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
 
-        $response = $this->appRun('GET', "/links/{$link_2->id}/collections", [
-            'from' => \Minz\Url::for('bookmarks'),
-        ]);
+        $response = $this->appRun('GET', "/links/{$link_2->id}/collections");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseTemplateName($response, 'links/collections/index.phtml');
@@ -166,9 +159,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'type' => 'write',
         ]);
 
-        $response = $this->appRun('GET', "/links/{$link->id}/collections", [
-            'from' => \Minz\Url::for('bookmarks'),
-        ]);
+        $response = $this->appRun('GET', "/links/{$link->id}/collections");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $other_link->id);
@@ -202,9 +193,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'type' => 'write',
         ]);
 
-        $response = $this->appRun('GET', "/links/{$link->id}/collections", [
-            'from' => \Minz\Url::for('bookmarks'),
-        ]);
+        $response = $this->appRun('GET', "/links/{$link->id}/collections");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $owner_link->id);
@@ -226,9 +215,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'type' => 'write',
         ]);
 
-        $response = $this->appRun('GET', "/links/{$link->id}/collections", [
-            'from' => \Minz\Url::for('bookmarks'),
-        ]);
+        $response = $this->appRun('GET', "/links/{$link->id}/collections");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $collection->id);
@@ -258,9 +245,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
 
-        $response = $this->appRun('GET', "/links/{$link->id}/collections", [
-            'from' => \Minz\Url::for('bookmarks'),
-        ]);
+        $response = $this->appRun('GET', "/links/{$link->id}/collections");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseNotContains($response, $collection_name);
@@ -287,9 +272,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'type' => 'read',
         ]);
 
-        $response = $this->appRun('GET', "/links/{$link->id}/collections", [
-            'from' => \Minz\Url::for('bookmarks'),
-        ]);
+        $response = $this->appRun('GET', "/links/{$link->id}/collections");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseNotContains($response, $collection->id);
@@ -308,11 +291,9 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'type' => 'bookmarks',
         ]);
 
-        $response = $this->appRun('GET', "/links/{$link->id}/collections", [
-            'from' => \Minz\Url::for('bookmarks'),
-        ]);
+        $response = $this->appRun('GET', "/links/{$link->id}/collections");
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fbookmarks');
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link->id}%2Fcollections");
     }
 
     public function testIndexFailsIfLinkIsNotAccessible(): void
@@ -330,11 +311,9 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'type' => 'bookmarks',
         ]);
 
-        $response = $this->appRun('GET', "/links/{$link->id}/collections", [
-            'from' => \Minz\Url::for('bookmarks'),
-        ]);
+        $response = $this->appRun('GET', "/links/{$link->id}/collections");
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 403);
     }
 
     public function testUpdateChangesCollectionsAndRedirects(): void
@@ -360,12 +339,11 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
-            'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection_2->id],
             'is_hidden' => $is_hidden,
         ]);
 
-        $this->assertResponseCode($response, 302, '/bookmarks');
+        $this->assertResponseCode($response, 302, "/links/{$link->id}/collections");
         $link_to_collection_1 = models\LinkToCollection::findBy([
             'link_id' => $link->id,
             'collection_id' => $collection_1->id,
@@ -408,11 +386,10 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
-            'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection->id],
         ]);
 
-        $this->assertResponseCode($response, 302, '/bookmarks');
+        $this->assertResponseCode($response, 302, "/links/{$link->id}/collections");
         $link_to_collection = models\LinkToCollection::findBy([
             'link_id' => $link->id,
             'collection_id' => $collection->id,
@@ -438,12 +415,11 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
-            'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection->id],
             'content' => $content,
         ]);
 
-        $this->assertResponseCode($response, 302, '/bookmarks');
+        $this->assertResponseCode($response, 302, "/links/{$link->id}/collections");
         $this->assertSame(1, models\Note::count());
         $note = models\Note::take();
         $this->assertNotNull($note);
@@ -467,7 +443,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
-            'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection->id],
             'content' => $content,
         ]);
@@ -500,12 +475,11 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
-            'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection->id],
             'mark_as_read' => '1',
         ]);
 
-        $this->assertResponseCode($response, 302, '/bookmarks');
+        $this->assertResponseCode($response, 302, "/links/{$link->id}/collections");
         $exists_in_bookmarks = models\LinkToCollection::exists($link_to_bookmarks->id);
         $exists_in_news = models\LinkToCollection::exists($link_to_news->id);
         $link_to_read_list = models\LinkToCollection::findBy([
@@ -545,8 +519,9 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
-            'from' => $from,
             'collection_ids' => [$owned_collection->id],
+        ], headers: [
+            'Referer' => $from,
         ]);
 
         $this->assertResponseCode($response, 302, $from);
@@ -599,11 +574,10 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
-            'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection->id],
         ]);
 
-        $this->assertResponseCode($response, 302, '/bookmarks');
+        $this->assertResponseCode($response, 302, "/links/{$link->id}/collections");
         $link_to_collection = models\LinkToCollection::findBy([
             'link_id' => $link->id,
             'collection_id' => $collection->id,
@@ -624,7 +598,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
-            'from' => \Minz\Url::for('bookmarks'),
             'new_collection_names' => [$collection_name],
         ]);
 
@@ -635,7 +608,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'name' => $collection_name,
         ]);
-        $this->assertResponseCode($response, 302, '/bookmarks');
+        $this->assertResponseCode($response, 302, "/links/{$link->id}/collections");
         $this->assertNotNull($collection);
         $this->assertContains($collection->id, array_column($link->collections(), 'id'));
     }
@@ -661,11 +634,10 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
-            'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection_2->id],
         ]);
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fbookmarks');
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link->id}%2Fcollections");
         $link_to_collection_1 = models\LinkToCollection::findBy([
             'link_id' => $link->id,
             'collection_id' => $collection_1->id,
@@ -701,11 +673,10 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
-            'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection_2->id],
         ]);
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 403);
         $link_to_collection_1 = models\LinkToCollection::findBy([
             'link_id' => $link->id,
             'collection_id' => $collection_1->id,
@@ -732,7 +703,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
-            'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection->id],
         ]);
 
@@ -754,7 +724,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
-            'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection->id],
         ]);
 
@@ -781,7 +750,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
-            'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection->id],
         ]);
 
@@ -801,7 +769,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
-            'from' => \Minz\Url::for('bookmarks'),
             'new_collection_names' => [$collection_name],
         ]);
 
@@ -825,7 +792,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf_token' => 'not the token',
-            'from' => \Minz\Url::for('bookmarks'),
             'collection_ids' => [$collection->id],
         ]);
 

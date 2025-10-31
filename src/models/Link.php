@@ -16,6 +16,7 @@ class Link
 {
     use dao\Link;
     use Database\Recordable;
+    use Database\Resource;
     use Validable;
 
     #[Database\Column]

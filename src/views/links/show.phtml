@@ -125,7 +125,7 @@
             <div class="cols cols--always cols--gap-small">
                 <div class="col--extend cols cols--always cols--gap-small">
                     <?php if (!$is_read || $in_bookmarks): ?>
-                        <form data-turbo-preserve-scroll method="post" action="<?= url('mark link as read', ['id' => $link->id, 'from' => $current_url]) ?>">
+                        <form data-turbo-preserve-scroll method="post" action="<?= url('mark link as read', ['id' => $link->id]) ?>">
                             <button class="button--icon" title="<?= _('Mark as read') ?>">
                                 <?= icon('check') ?>
                                 <span class="sr-only">
@@ -138,7 +138,7 @@
                     <?php endif; ?>
 
                     <?php if (!$in_bookmarks): ?>
-                        <form data-turbo-preserve-scroll method="post" action="<?= url('read link later', ['id' => $link->id, 'from' => $current_url]) ?>">
+                        <form data-turbo-preserve-scroll method="post" action="<?= url('read link later', ['id' => $link->id]) ?>">
                             <button class="button--icon" title="<?= _('Read later') ?>">
                                 <?= icon('bookmark') ?>
                                 <span class="sr-only">
@@ -154,7 +154,7 @@
                 <button
                     data-controller="modal-opener"
                     data-action="modal-opener#fetch"
-                    data-modal-opener-href-value="<?= url('link collections', ['id' => $link->id, 'from' => $current_url]) ?>"
+                    data-modal-opener-href-value="<?= url('link collections', ['id' => $link->id]) ?>"
                     aria-haspopup="dialog"
                     aria-controls="modal"
                 >
@@ -221,7 +221,7 @@
                                                             class="popup__item popup__item--button"
                                                             data-controller="modal-opener"
                                                             data-action="modal-opener#fetch"
-                                                            data-modal-opener-href-value="<?= url('edit note', ['id' => $note->id, 'from' => url('link', ['id' => $link->id])]) ?>"
+                                                            data-modal-opener-href-value="<?= url('edit note', ['id' => $note->id]) ?>"
                                                             aria-haspopup="dialog"
                                                             aria-controls="modal"
                                                             role="menuitem"
@@ -263,7 +263,7 @@
                 <?php endif; ?>
             </div>
 
-            <?php if ($can_update): ?>
+            <?php if (can($current_user, 'update', $link)): ?>
                 <form
                     data-turbo-preserve-scroll
                     method="post"
