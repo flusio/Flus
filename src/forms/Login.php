@@ -4,6 +4,7 @@ namespace App\forms;
 
 use App\models;
 use Minz\Form;
+use Minz\Request;
 use Minz\Translatable;
 use Minz\Validable;
 
@@ -20,18 +21,29 @@ class Login extends BaseForm
     #[Form\Field]
     public string $password = '';
 
-    public function __construct()
-    {
-        $default_values = [];
+    #[Form\Field]
+    public string $redirect_to = '';
 
+    /**
+     * @param array<string, mixed> $default_values
+     */
+    public function __construct(array $default_values = [])
+    {
         if (\App\Configuration::$application['demo']) {
-            $default_values = [
-                'email' => 'demo@flus.io',
-                'password' => 'demo',
-            ];
+            $default_values['email'] = 'demo@flus.io';
+            $default_values['password'] = 'demo';
         }
 
         parent::__construct($default_values);
+    }
+
+    #[Form\OnHandleRequest]
+    public function forceRedirectableRedirectTo(Request $request): void
+    {
+        $router = \Minz\Engine::router();
+        if (!$router->isRedirectable($this->redirect_to)) {
+            $this->redirect_to = \Minz\Url::for('home');
+        }
     }
 
     #[Validable\Check]

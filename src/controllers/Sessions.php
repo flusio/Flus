@@ -28,14 +28,23 @@ class Sessions extends BaseController
      */
     public function new(Request $request): Response
     {
-        $redirect_to = $request->parameters->getString('redirect_to', \Minz\Url::for('home'));
+        $redirect_to = $request->parameters->getString('redirect_to');
+
+        $router = \Minz\Engine::router();
+        if (!$redirect_to || !$router->isRedirectable($redirect_to)) {
+            $redirect_to = \Minz\Url::for('home');
+        }
+
         if (auth\CurrentUser::get()) {
             return Response::found($redirect_to);
         }
 
-        return Response::ok('sessions/new.phtml', [
-            'form' => new forms\Login(),
+        $form = new forms\Login([
             'redirect_to' => $redirect_to,
+        ]);
+
+        return Response::ok('sessions/new.phtml', [
+            'form' => $form,
         ]);
     }
 
@@ -47,46 +56,36 @@ class Sessions extends BaseController
      * @request_param string password
      * @request_param string redirect_to
      *
-     * @response 302 :redirect_to
-     *     If the user is already connected.
      * @response 400
-     *     If the CSRF is invalid, email doesn't match with a User or if password is wrong.
+     *     If at least one of the parameters is invalid.
      * @response 302 :redirect_to
      *     On success.
      */
     public function create(Request $request): Response
     {
-        $redirect_to = $request->parameters->getString('redirect_to', \Minz\Url::for('home'));
-
-        $router = \Minz\Engine::router();
-        if (!$router->isRedirectable($redirect_to)) {
-            $redirect_to = \Minz\Url::for('home');
-        }
-
-        if (auth\CurrentUser::get()) {
-            return Response::found($redirect_to);
-        }
-
         $form = new forms\Login();
         $form->handleRequest($request);
 
         if (!$form->validate()) {
             return Response::badRequest('sessions/new.phtml', [
                 'form' => $form,
-                'redirect_to' => $redirect_to,
             ]);
         }
 
-        $user = $form->user();
+        $response = Response::found($form->redirect_to);
 
-        $session = auth\CurrentUser::createBrowserSession($user, $request);
-        $session_token = $session->token();
+        if (!auth\CurrentUser::get()) {
+            $user = $form->user();
 
-        $response = Response::found($redirect_to);
-        $response->setCookie('session_token', $session_token->token, [
-            'expires' => $session_token->expired_at->getTimestamp(),
-            'samesite' => 'Lax',
-        ]);
+            $session = auth\CurrentUser::createBrowserSession($user, $request);
+            $session_token = $session->token();
+
+            $response->setCookie('session_token', $session_token->token, [
+                'expires' => $session_token->expired_at->getTimestamp(),
+                'samesite' => 'Lax',
+            ]);
+        }
+
         return $response;
     }
 
