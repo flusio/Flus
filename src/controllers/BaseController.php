@@ -56,6 +56,19 @@ class BaseController
     }
 
     /**
+     * Handle the AccessDeniedError to show a 403 page.
+     */
+    #[Controller\ErrorHandler(auth\AccessDeniedError::class)]
+    public function showForbiddenOnAccessDeniedError(
+        Request $request,
+        auth\AccessDeniedError $error,
+    ): Response {
+        return Response::forbidden('forbidden.phtml', [
+            'error' => $error,
+        ]);
+    }
+
+    /**
      * Handle the \Minz\Errors\MissingRecordError to show a 404 page.
      */
     #[Controller\ErrorHandler(\Minz\Errors\MissingRecordError::class)]
