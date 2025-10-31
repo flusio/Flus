@@ -37,10 +37,9 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/read", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsRead::class),
-            'from' => \Minz\Url::for('bookmarks'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/bookmarks');
+        $this->assertResponseCode($response, 302, '/');
         $this->assertFalse(models\LinkToCollection::exists($link_to_bookmarks->id));
         $this->assertFalse(models\LinkToCollection::exists($link_to_news->id));
         $link_to_read_list = models\LinkToCollection::findBy([
@@ -62,10 +61,9 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/read", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsRead::class),
-            'from' => \Minz\Url::for('bookmarks'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/bookmarks');
+        $this->assertResponseCode($response, 302, '/');
         $this->assertSame(1, models\LinkToCollection::count());
         $link_to_read_list = models\LinkToCollection::findBy([
             'link_id' => $link->id,
@@ -100,7 +98,8 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/read", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsRead::class),
-            'from' => $from,
+        ], headers: [
+            'Referer' => $from,
         ]);
 
         $this->assertResponseCode($response, 302, $from);
@@ -143,10 +142,9 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/read", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsRead::class),
-            'from' => \Minz\Url::for('bookmarks'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fbookmarks');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
         $this->assertTrue(models\LinkToCollection::exists($link_to_bookmarks->id));
         $this->assertTrue(models\LinkToCollection::exists($link_to_news->id));
         $link_to_read_list = models\LinkToCollection::findBy([
@@ -176,10 +174,9 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/read", [
             'csrf_token' => 'not the token',
-            'from' => \Minz\Url::for('bookmarks'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/bookmarks');
+        $this->assertResponseCode($response, 302, '/');
         $error = \Minz\Flash::get('error');
         $this->assertTrue(is_string($error));
         $this->assertStringContainsString('A security verification failed', $error);
@@ -214,10 +211,9 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/read", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsRead::class),
-            'from' => \Minz\Url::for('bookmarks'),
         ]);
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 403);
         $this->assertTrue(models\LinkToCollection::exists($link_to_bookmarks->id));
         $this->assertTrue(models\LinkToCollection::exists($link_to_news->id));
         $link_to_read_list = models\LinkToCollection::findBy([
@@ -242,10 +238,9 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/later", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsReadLater::class),
-            'from' => \Minz\Url::for('bookmarks'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/bookmarks');
+        $this->assertResponseCode($response, 302, '/');
         $this->assertFalse(models\LinkToCollection::exists($link_to_news->id));
         $link_to_bookmarks = models\LinkToCollection::findBy([
             'link_id' => $link->id,
@@ -265,10 +260,9 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/later", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsReadLater::class),
-            'from' => \Minz\Url::for('bookmarks'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/bookmarks');
+        $this->assertResponseCode($response, 302, '/');
         $this->assertSame(1, models\LinkToCollection::count());
         $link_to_bookmarks = models\LinkToCollection::findBy([
             'link_id' => $link->id,
@@ -298,7 +292,8 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/later", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsReadLater::class),
-            'from' => $from,
+        ], headers: [
+            'Referer' => $from,
         ]);
 
         $this->assertResponseCode($response, 302, $from);
@@ -335,10 +330,9 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/later", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsReadLater::class),
-            'from' => \Minz\Url::for('bookmarks'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fbookmarks');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
         $this->assertTrue(models\LinkToCollection::exists($link_to_news->id));
         $link_to_bookmarks = models\LinkToCollection::findBy([
             'link_id' => $link->id,
@@ -362,10 +356,9 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/later", [
             'csrf_token' => 'not the token',
-            'from' => \Minz\Url::for('bookmarks'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/bookmarks');
+        $this->assertResponseCode($response, 302, '/');
         $error = \Minz\Flash::get('error');
         $this->assertTrue(is_string($error));
         $this->assertStringContainsString('A security verification failed', $error);
@@ -394,10 +387,9 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/later", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsReadLater::class),
-            'from' => \Minz\Url::for('bookmarks'),
         ]);
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 403);
         $this->assertTrue(models\LinkToCollection::exists($link_to_news->id));
         $link_to_bookmarks = models\LinkToCollection::findBy([
             'link_id' => $link->id,
@@ -426,10 +418,9 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/never", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsNever::class),
-            'from' => \Minz\Url::for('bookmarks'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/bookmarks');
+        $this->assertResponseCode($response, 302, '/');
         $this->assertFalse(models\LinkToCollection::exists($link_to_news->id));
         $this->assertFalse(models\LinkToCollection::exists($link_to_bookmarks->id));
         $link_to_never_list = models\LinkToCollection::findBy([
@@ -464,10 +455,9 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/never", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsNever::class),
-            'from' => \Minz\Url::for('bookmarks'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/bookmarks');
+        $this->assertResponseCode($response, 302, '/');
         // The initial link is not modified since it's not owned by the logged
         // user.
         $this->assertTrue(models\LinkToCollection::exists($link_to_news->id));
@@ -506,10 +496,9 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/never", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsNever::class),
-            'from' => \Minz\Url::for('bookmarks'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fbookmarks');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
         $this->assertTrue(models\LinkToCollection::exists($link_to_news->id));
         $this->assertTrue(models\LinkToCollection::exists($link_to_bookmarks->id));
         $link_to_never_list = models\LinkToCollection::findBy([
@@ -539,10 +528,9 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/never", [
             'csrf_token' => 'not the token',
-            'from' => \Minz\Url::for('bookmarks'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/bookmarks');
+        $this->assertResponseCode($response, 302, '/');
         $error = \Minz\Flash::get('error');
         $this->assertTrue(is_string($error));
         $this->assertStringContainsString('A security verification failed', $error);
@@ -577,10 +565,9 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/never", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsNever::class),
-            'from' => \Minz\Url::for('bookmarks'),
         ]);
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 403);
         $this->assertTrue(models\LinkToCollection::exists($link_to_news->id));
         $this->assertTrue(models\LinkToCollection::exists($link_to_bookmarks->id));
         $link_to_never_list = models\LinkToCollection::findBy([
@@ -604,10 +591,9 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/delete", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsUnread::class),
-            'from' => \Minz\Url::for('bookmarks'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/bookmarks');
+        $this->assertResponseCode($response, 302, '/');
         $this->assertFalse(models\LinkToCollection::exists($link_to_read->id));
     }
 
@@ -625,10 +611,9 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/delete", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsUnread::class),
-            'from' => \Minz\Url::for('bookmarks'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fbookmarks');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
         $this->assertTrue(models\LinkToCollection::exists($link_to_read->id));
     }
 
@@ -646,10 +631,9 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/delete", [
             'csrf_token' => 'not the token',
-            'from' => \Minz\Url::for('bookmarks'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/bookmarks');
+        $this->assertResponseCode($response, 302, '/');
         $error = \Minz\Flash::get('error');
         $this->assertTrue(is_string($error));
         $this->assertStringContainsString('A security verification failed', $error);
@@ -671,10 +655,9 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/delete", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsUnread::class),
-            'from' => \Minz\Url::for('bookmarks'),
         ]);
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 403);
         $this->assertTrue(models\LinkToCollection::exists($link_to_read->id));
     }
 }

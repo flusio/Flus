@@ -9,6 +9,7 @@ use App\controllers\BaseController;
 use App\forms;
 use App\models;
 use App\services;
+use App\utils;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -20,27 +21,23 @@ class Repairing extends BaseController
      * Show the page to repair a link (change URL and resynchronize it).
      *
      * @request_param string id
-     * @request_param string from
      *
-     * @response 302 /login?redirect_to=:from
-     *     If the user is not connected.
-     * @response 404
-     *     If the link doesn't exist or not accessible by the current user.
      * @response 200
      *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the link doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot update the link.
      */
     public function new(Request $request): Response
     {
-        $link_id = $request->parameters->getString('id', '');
-        $from = $request->parameters->getString('from', '');
+        $user = auth\CurrentUser::require();
+        $link = models\Link::requireFromRequest($request);
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
-
-        $link = models\Link::find($link_id);
-        $can_update = $link && auth\LinksAccess::canUpdate($user, $link);
-        if (!$can_update) {
-            return Response::notFound('not_found.phtml');
-        }
+        auth\Access::require($user, 'update', $link);
 
         $form = new forms\links\RepairLink([
             'url' => $link->url,
@@ -50,7 +47,6 @@ class Repairing extends BaseController
         return Response::ok('links/repairing/new.phtml', [
             'link' => $link,
             'form' => $form,
-            'from' => $from,
         ]);
     }
 
@@ -60,30 +56,28 @@ class Repairing extends BaseController
      * @request_param string id
      * @request_param string url
      * @request_param boolean force_sync
-     * @request_param string from
-     * @request_param string csrf
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=:from
-     *     If the user is not connected.
      * @response 404
-     *     If the link doesn't exist or not accessible by the current user.
+     *     If the link cannot be updated by the current user.
      * @response 400
-     *     If the csrf or url is invalid.
+     *     If at least one of the parameters is invalid.
      * @response 302 :from
      *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the link doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot update the link.
      */
     public function create(Request $request): Response
     {
-        $link_id = $request->parameters->getString('id', '');
-        $from = $request->parameters->getString('from', '');
+        $user = auth\CurrentUser::require();
+        $link = models\Link::requireFromRequest($request);
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
-
-        $link = models\Link::find($link_id);
-        $can_update = $link && auth\LinksAccess::canUpdate($user, $link);
-        if (!$can_update) {
-            return Response::notFound('not_found.phtml');
-        }
+        auth\Access::require($user, 'update', $link);
 
         $form = new forms\links\RepairLink();
         $form->handleRequest($request);
@@ -92,7 +86,6 @@ class Repairing extends BaseController
             return Response::badRequest('links/repairing/new.phtml', [
                 'link' => $link,
                 'form' => $form,
-                'from' => $from,
             ]);
         }
 
@@ -112,6 +105,6 @@ class Repairing extends BaseController
         $old_link->save();
         $user->removeFromJournal($old_link);
 
-        return Response::found($from);
+        return Response::found(utils\RequestHelper::from($request));
     }
 }

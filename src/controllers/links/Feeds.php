@@ -20,19 +20,20 @@ class Feeds extends BaseController
      *
      * @request_param string id
      *
-     * @response 404
-     *     if the link doesn't exist or is inaccessible
      * @response 200
+     *     On success.
+     *
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the link doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot view the link.
      */
     public function show(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $link_id = $request->parameters->getString('id', '');
-        $link = models\Link::find($link_id);
+        $link = models\Link::requireFromRequest($request);
 
-        if (!$link || !auth\LinksAccess::canView($user, $link)) {
-            return Response::notFound('not_found.phtml');
-        }
+        auth\Access::require($user, 'view', $link);
 
         $locale = $link->owner()->locale;
         utils\Locale::setCurrentLocale($locale);

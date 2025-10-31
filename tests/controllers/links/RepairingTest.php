@@ -27,9 +27,7 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
 
-        $response = $this->appRun('GET', "/links/{$link->id}/repair", [
-            'from' => \Minz\Url::for('home'),
-        ]);
+        $response = $this->appRun('GET', "/links/{$link->id}/repair");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseTemplateName($response, 'links/repairing/new.phtml');
@@ -46,11 +44,9 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
 
-        $response = $this->appRun('GET', "/links/{$link->id}/repair", [
-            'from' => \Minz\Url::for('home'),
-        ]);
+        $response = $this->appRun('GET', "/links/{$link->id}/repair");
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link->id}%2Frepair");
     }
 
     public function testNewFailsIfTheLinkDoesNotExist(): void
@@ -63,9 +59,7 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
 
-        $response = $this->appRun('GET', '/links/not-an-id/repair', [
-            'from' => \Minz\Url::for('home'),
-        ]);
+        $response = $this->appRun('GET', '/links/not-an-id/repair');
 
         $this->assertResponseCode($response, 404);
     }
@@ -81,11 +75,9 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
 
-        $response = $this->appRun('GET', "/links/{$link->id}/repair", [
-            'from' => \Minz\Url::for('home'),
-        ]);
+        $response = $this->appRun('GET', "/links/{$link->id}/repair");
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 403);
     }
 
     public function testCreateChangesTheUrlAndRedirect(): void
@@ -112,10 +104,9 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
             'url' => $new_url,
             'force_sync' => false,
             'csrf_token' => $this->csrfToken(forms\links\RepairLink::class),
-            'from' => \Minz\Url::for('home'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/');
+        $this->assertResponseCode($response, 302, "/links/{$link->id}/repair");
         $link = $link->reload();
         $this->assertSame($new_url, $link->url);
         $this->assertSame($old_title, $link->title);
@@ -149,10 +140,9 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
             'url' => $new_url,
             'force_sync' => true,
             'csrf_token' => $this->csrfToken(forms\links\RepairLink::class),
-            'from' => \Minz\Url::for('home'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/');
+        $this->assertResponseCode($response, 302, "/links/{$link->id}/repair");
         $link = $link->reload();
         $this->assertSame($new_url, $link->url);
         $this->assertSame('Carnet de Flus', $link->title);
@@ -184,10 +174,9 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
             'url' => $new_url,
             'force_sync' => false,
             'csrf_token' => $this->csrfToken(forms\links\RepairLink::class),
-            'from' => \Minz\Url::for('home'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/');
+        $this->assertResponseCode($response, 302, "/links/{$link->id}/repair");
         $link = models\Link::findBy([
             'url' => $old_url,
         ]);
@@ -216,10 +205,9 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
             'url' => $new_url,
             'force_sync' => false,
             'csrf_token' => $this->csrfToken(forms\links\RepairLink::class),
-            'from' => \Minz\Url::for('home'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link->id}%2Frepair");
         $link = $link->reload();
         $this->assertSame($old_url, $link->url);
     }
@@ -240,7 +228,6 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
             'url' => $new_url,
             'force_sync' => false,
             'csrf_token' => $this->csrfToken(forms\links\RepairLink::class),
-            'from' => \Minz\Url::for('home'),
         ]);
 
         $this->assertResponseCode($response, 404);
@@ -265,10 +252,9 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
             'url' => $new_url,
             'force_sync' => false,
             'csrf_token' => $this->csrfToken(forms\links\RepairLink::class),
-            'from' => \Minz\Url::for('home'),
         ]);
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 403);
         $link = $link->reload();
         $this->assertSame($old_url, $link->url);
     }
@@ -289,7 +275,6 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
             'url' => $new_url,
             'force_sync' => false,
             'csrf_token' => 'not the token',
-            'from' => \Minz\Url::for('home'),
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -314,7 +299,6 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
             'url' => $new_url,
             'force_sync' => false,
             'csrf_token' => $this->csrfToken(forms\links\RepairLink::class),
-            'from' => \Minz\Url::for('home'),
         ]);
 
         $this->assertResponseCode($response, 400);
