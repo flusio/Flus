@@ -155,6 +155,23 @@ class CurrentUser
     }
 
     /**
+     * Always return the logged-in user.
+     *
+     * @throws MissingCurrentUserError
+     *     If the user is not logged-in.
+     */
+    public static function require(): models\User
+    {
+        $current_user = self::get();
+
+        if (!$current_user) {
+            throw new MissingCurrentUserError();
+        }
+
+        return $current_user;
+    }
+
+    /**
      * Return the current session if any.
      */
     public static function session(): ?models\Session

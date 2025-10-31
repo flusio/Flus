@@ -4,6 +4,7 @@ namespace App\controllers;
 
 use App\auth;
 use App\models;
+use App\utils;
 use Minz\Controller;
 use Minz\Request;
 use Minz\Response;
@@ -38,21 +39,31 @@ class BaseController
 
     /**
      * Handle the MissingCurrentUserError to redirect to the login page.
+     *
+     * errors\MissingCurrentUserError is deprecated but is still handled by
+     * this method.
      */
     #[Controller\ErrorHandler(errors\MissingCurrentUserError::class)]
+    #[Controller\ErrorHandler(auth\MissingCurrentUserError::class)]
     public function redirectOnMissingCurrentUser(
         Request $request,
-        errors\MissingCurrentUserError $error,
+        errors\MissingCurrentUserError|auth\MissingCurrentUserError $error,
     ): Response {
-        $redirect_to = $error->redirect_after_login;
-
-        if (!$redirect_to) {
-            $redirect_to = $request->selfUri();
+        $redirect_to = '';
+        if ($error instanceof errors\MissingCurrentUserError) {
+            $redirect_to = $error->redirect_after_login;
         }
 
-        return Response::redirect('login', [
-            'redirect_to' => $redirect_to,
-        ]);
+        if ($redirect_to === '') {
+            $redirect_to = utils\RequestHelper::from($request);
+        }
+
+        $login_parameters = [];
+        if ($redirect_to) {
+            $login_parameters['redirect_to'] = $redirect_to;
+        }
+
+        return Response::redirect('login', $login_parameters);
     }
 
     /**
