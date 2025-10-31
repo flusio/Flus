@@ -55,19 +55,16 @@ class BaseController
         ]);
     }
 
-    public function isPathRedirectable(string $path): bool
-    {
-        $router = \Minz\Engine::router();
-
-        if ($router === null) {
-            return false;
-        }
-
-        try {
-            $router->match('GET', $path);
-            return true;
-        } catch (\Minz\Errors\RouteNotFoundError $e) {
-            return false;
-        }
+    /**
+     * Handle the \Minz\Errors\MissingRecordError to show a 404 page.
+     */
+    #[Controller\ErrorHandler(\Minz\Errors\MissingRecordError::class)]
+    public function showNotFoundOnMissingRecordError(
+        Request $request,
+        \Minz\Errors\MissingRecordError $error,
+    ): Response {
+        return Response::notFound('not_found.phtml', [
+            'error' => $error,
+        ]);
     }
 }

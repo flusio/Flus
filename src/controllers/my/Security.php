@@ -143,7 +143,9 @@ class Security extends BaseController
     public function confirmation(Request $request): Response
     {
         $from = $request->parameters->getString('from', \Minz\Url::for('security'));
-        if (!$this->isPathRedirectable($from)) {
+
+        $router = \Minz\Engine::router();
+        if (!$router->isRedirectable($from)) {
             $from = \Minz\Url::for('security');
         }
 
@@ -180,7 +182,8 @@ class Security extends BaseController
     {
         $from = $request->parameters->getString('from', \Minz\Url::for('security'));
 
-        if (!$this->isPathRedirectable($from)) {
+        $router = \Minz\Engine::router();
+        if (!$router->isRedirectable($from)) {
             $from = \Minz\Url::for('security');
         }
 

@@ -58,7 +58,8 @@ class Sessions extends BaseController
     {
         $redirect_to = $request->parameters->getString('redirect_to', \Minz\Url::for('home'));
 
-        if (!$this->isPathRedirectable($redirect_to)) {
+        $router = \Minz\Engine::router();
+        if (!$router->isRedirectable($redirect_to)) {
             $redirect_to = \Minz\Url::for('home');
         }
 
