@@ -308,6 +308,17 @@ class Link
         return $notepad;
     }
 
+    /**
+     * Return a new note.
+     *
+     * It is initialized with this link and the link's user. The note is not
+     * saved in database yet.
+     */
+    public function initNote(): Note
+    {
+        return new Note($this->user_id, $this->id);
+    }
+
     public function numberNotes(): int
     {
         if ($this->number_notes !== null) {

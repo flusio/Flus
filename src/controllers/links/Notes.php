@@ -6,6 +6,7 @@ use Minz\Request;
 use Minz\Response;
 use App\auth;
 use App\controllers\BaseController;
+use App\forms;
 use App\jobs;
 use App\models;
 
@@ -34,65 +35,51 @@ class Notes extends BaseController
      * @request_param string link_id
      * @request_param string content
      * @request_param boolean share_on_mastodon
-     * @request_param string csrf
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=/links/:link_id if not connected
-     * @response 404 if the link doesn't exist or not associated to the current user
-     * @response 400 if csrf or content is invalid
+     * @response 400
+     *     If at least one of the parameters is invalid.
      * @response 302 /links/:link_id
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the link doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot update the link.
      */
     public function create(Request $request): Response
     {
-        $link_id = $request->parameters->getString('link_id', '');
-        $content = $request->parameters->getString('content', '');
-        $share_on_mastodon = $request->parameters->getBoolean('share_on_mastodon');
-        $csrf = $request->parameters->getString('csrf', '');
+        $user = auth\CurrentUser::require();
+        $link = models\Link::requireFromRequest($request, parameter: 'link_id');
 
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('link', ['id' => $link_id]));
+        auth\Access::require($user, 'update', $link);
 
-        $link = models\Link::find($link_id);
-        $can_update = $link && auth\LinksAccess::canUpdate($user, $link);
-        if (!$can_update) {
-            return Response::notFound('not_found.phtml');
-        }
-
-        $mastodon_configured = models\MastodonAccount::existsBy([
-            'user_id' => $user->id,
+        $note = $link->initNote();
+        $form = new forms\notes\NewNote(model: $note, options: [
+            'enable_mastodon' => $user->isMastodonEnabled(),
         ]);
 
-        if (!\App\Csrf::validate($csrf)) {
+        $form->handleRequest($request);
+
+        if (!$form->validate()) {
             return Response::badRequest('links/show.phtml', [
                 'link' => $link,
-                'can_update' => $can_update,
-                'content' => $content,
-                'share_on_mastodon' => $share_on_mastodon,
-                'mastodon_configured' => $mastodon_configured,
-                'error' => _('A security verification failed: you should retry to submit the form.'),
+                'form' => $form,
             ]);
         }
 
-        $note = new models\Note($user->id, $link->id, $content);
-
-        if (!$note->validate()) {
-            return Response::badRequest('links/show.phtml', [
-                'link' => $link,
-                'can_update' => $can_update,
-                'content' => $content,
-                'share_on_mastodon' => $share_on_mastodon,
-                'mastodon_configured' => $mastodon_configured,
-                'errors' => $note->errors(),
-            ]);
-        }
-
+        $note = $form->model();
         $note->save();
 
         $link->refreshTags();
 
-        if ($mastodon_configured && $share_on_mastodon) {
+        if ($form->shouldShareOnMastodon()) {
             $share_on_mastodon_job = new jobs\ShareOnMastodon();
             $share_on_mastodon_job->performAsap($user->id, $link->id, $note->id);
         }
 
-        return Response::redirect('link', ['id' => $link_id]);
+        return Response::redirect('link', ['id' => $link->id]);
     }
 }

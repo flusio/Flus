@@ -3,6 +3,7 @@
 namespace App\forms\links;
 
 use App\forms\BaseForm;
+use App\forms\ShareOnMastodon;
 use App\models;
 use Minz\Form;
 
@@ -15,6 +16,7 @@ use Minz\Form;
 class EditLinkCollections extends BaseForm
 {
     use CollectionsSelector;
+    use ShareOnMastodon;
 
     #[Form\Field]
     public bool $is_hidden = false;
@@ -25,9 +27,6 @@ class EditLinkCollections extends BaseForm
     #[Form\Field(bind: false, transform: 'trim')]
     public string $content = '';
 
-    #[Form\Field(bind: false)]
-    public bool $share_on_mastodon = false;
-
     public function note(): ?models\Note
     {
         if (!$this->content) {
@@ -36,18 +35,5 @@ class EditLinkCollections extends BaseForm
 
         $user = $this->user();
         return new models\Note($user->id, $this->model()->id, $this->content);
-    }
-
-    public function isMastodonConfigured(): bool
-    {
-        $user = $this->user();
-        return models\MastodonAccount::existsBy([
-            'user_id' => $user->id,
-        ]);
-    }
-
-    public function shouldShareOnMastodon(): bool
-    {
-        return $this->isMastodonConfigured() && $this->share_on_mastodon;
     }
 }

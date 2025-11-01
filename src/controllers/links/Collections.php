@@ -64,6 +64,7 @@ class Collections extends BaseController
             'mark_as_read' => $mark_as_read,
         ], $link, [
             'user' => $user,
+            'enable_mastodon' => $user->isMastodonEnabled(),
         ]);
 
         return Response::ok('links/collections/index.phtml', [
@@ -112,6 +113,7 @@ class Collections extends BaseController
 
         $form = new forms\links\EditLinkCollections(model: $link, options: [
             'user' => $user,
+            'enable_mastodon' => $user->isMastodonEnabled(),
         ]);
         $form->handleRequest($request);
 

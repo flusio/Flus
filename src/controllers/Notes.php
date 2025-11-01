@@ -5,7 +5,9 @@ namespace App\controllers;
 use Minz\Request;
 use Minz\Response;
 use App\auth;
+use App\forms;
 use App\models;
+use App\utils;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -19,32 +21,28 @@ class Notes extends BaseController
      * @request_param string id
      * @request_param string from
      *
-     * @response 302 /login?redirect_to=:from
-     *     If the user is not connected.
-     * @response 404
-     *     If the note doesn’t exist or user hasn't access to it.
      * @response 200
      *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the note doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot update the note.
      */
     public function edit(Request $request): Response
     {
-        $note_id = $request->parameters->getString('id', '');
-        $from = $request->parameters->getString('from', '');
+        $user = auth\CurrentUser::require();
+        $note = models\Note::requireFromRequest($request);
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
+        auth\Access::require($user, 'update', $note);
 
-        $note = models\Note::findBy([
-            'id' => $note_id,
-            'user_id' => $user->id,
-        ]);
-        if (!$note) {
-            return Response::notFound('not_found.phtml');
-        }
+        $form = new forms\notes\EditNote(model: $note);
 
         return Response::ok('notes/edit.phtml', [
             'note' => $note,
-            'content' => $note->content,
-            'from' => $from,
+            'form' => $form,
         ]);
     }
 
@@ -53,86 +51,71 @@ class Notes extends BaseController
      *
      * @request_param string id
      * @request_param string content
-     * @request_param string from
-     * @request_param string csrf
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=:from
-     *     If the user is not connected.
-     * @response 404
-     *     If the note doesn’t exist or user hasn't access to it.
-     * @response 302
-     * @flash error
-     *     If the CSRF or the content are invalid.
+     * @response 400
+     *     If at least one of the parameters is invalid.
      * @response 302 :from
      *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the note doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot update the note.
      */
     public function update(Request $request): Response
     {
-        $note_id = $request->parameters->getString('id');
-        $content = $request->parameters->getString('content', '');
-        $from = $request->parameters->getString('from', '');
-        $csrf = $request->parameters->getString('csrf', '');
+        $user = auth\CurrentUser::require();
+        $note = models\Note::requireFromRequest($request);
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
+        auth\Access::require($user, 'update', $note);
 
-        $note = models\Note::findBy([
-            'id' => $note_id,
-            'user_id' => $user->id,
-        ]);
-        if (!$note) {
-            return Response::notFound('not_found.phtml');
+        $form = new forms\notes\EditNote(model: $note);
+
+        $form->handleRequest($request);
+
+        if (!$form->validate()) {
+            return Response::badRequest('notes/edit.phtml', [
+                'note' => $note,
+                'form' => $form,
+            ]);
         }
 
-        if (!\App\Csrf::validate($csrf)) {
-            \Minz\Flash::set('error', _('A security verification failed.'));
-            return Response::found($from);
-        }
-
-        $note->content = trim($content);
-
-        if (!$note->validate()) {
-            \Minz\Flash::set('errors', $note->errors());
-            return Response::found($from);
-        }
-
+        $note = $form->model();
         $note->save();
 
         $note->link()->refreshTags();
 
-        return Response::found($from);
+        return Response::found(utils\RequestHelper::from($request));
     }
 
     /**
      * Delete a note
      *
      * @request_param string id
-     * @request_param string redirect_to default is /
      *
-     * @response 302 /login?redirect_to=:redirect_to if not connected
-     * @response 404 if the note doesn’t exist or user hasn't access
-     * @response 302 :redirect_to if csrf is invalid
-     * @response 302 :redirect_to on success
+     * @response 302 :from
+     *     If the CSRF token is invalid.
+     * @response 302 :from
+     *     On success.
      */
     public function delete(Request $request): Response
     {
-        $note_id = $request->parameters->getString('id', '');
-        $redirect_to = $request->parameters->getString('redirect_to', \Minz\Url::for('home'));
-        $csrf = $request->parameters->getString('csrf', '');
+        $user = auth\CurrentUser::require();
+        $note = models\Note::requireFromRequest($request);
 
-        $user = $this->requireCurrentUser(redirect_after_login: $redirect_to);
+        auth\Access::require($user, 'delete', $note);
 
-        $note = models\Note::findBy([
-            'id' => $note_id,
-            'user_id' => $user->id,
-        ]);
+        $from = utils\RequestHelper::from($request);
 
-        if (!$note) {
-            return Response::notFound('not_found.phtml');
-        }
+        $form = new forms\notes\DeleteNote();
+        $form->handleRequest($request);
 
-        if (!\App\Csrf::validate($csrf)) {
-            \Minz\Flash::set('error', _('A security verification failed.'));
-            return Response::found($redirect_to);
+        if (!$form->validate()) {
+            \Minz\Flash::set('error', $form->error('@base'));
+            return Response::found($from);
         }
 
         $link = $note->link();
@@ -141,6 +124,6 @@ class Notes extends BaseController
 
         $link->refreshTags();
 
-        return Response::found($redirect_to);
+        return Response::found($from);
     }
 }

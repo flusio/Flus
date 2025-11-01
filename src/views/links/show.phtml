@@ -43,7 +43,7 @@
             ],
         ],
         'open_graph' => $open_graph,
-        'has_errors' => $error || $errors,
+        'has_errors' => $form && $form->isInvalid(),
     ]);
 ?>
 
@@ -239,13 +239,12 @@
                                                             data-turbo-confirm="<?= _('Are you sure that you want to delete this note?') ?>"
                                                             role="menuitem"
                                                         >
-                                                            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-                                                            <input type="hidden" name="redirect_to" value="<?= url('link', ['id' => $link->id]) ?>" />
-
                                                             <button type="submit" class="popup__item popup__item--button">
                                                                 <?= icon('trash') ?>
                                                                 <?= _('Delete') ?>
                                                             </button>
+
+                                                            <input type="hidden" name="csrf_token" value="<?= csrf_token('notes\\DeleteNote') ?>" />
                                                         </form>
                                                     </nav>
                                                 </details>
@@ -263,7 +262,7 @@
                 <?php endif; ?>
             </div>
 
-            <?php if (can($current_user, 'update', $link)): ?>
+            <?php if ($form): ?>
                 <form
                     data-turbo-preserve-scroll
                     method="post"
@@ -271,14 +270,19 @@
                     data-controller="autosave"
                     data-action="turbo:submit-start@document->autosave#clear"
                 >
-                    <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
+                    <?= $this->include('alerts/_error.phtml', ['message' => $form->error('@base')]) ?>
 
-                    <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-
-                    <div class="form-group <?= isset($errors['content']) ? 'form-group--invalid' : '' ?>">
+                    <div class="form-group">
                         <label for="content">
                             <?= _('What do you retain from this content?') ?>
                         </label>
+
+                        <?php if ($form->isInvalid('content')): ?>
+                            <p id="content-error" class="form-group__error">
+                                <?= _('Error:') ?>
+                                <?= $form->error('content') ?>
+                            </p>
+                        <?php endif; ?>
 
                         <textarea
                             id="content"
@@ -286,30 +290,25 @@
                             required
                             data-controller="text-editor"
                             data-action="text-editor#refresh keyup->autosave#save"
-                            aria-describedby="content-desc"
-                        ><?= $content ?></textarea>
-
-                        <div id="content-desc">
-                            <?php if (isset($errors['content'])): ?>
-                                <p class="form-group__error">
-                                    <span class="sr-only"><?= _('Error') ?></span>
-                                    <?= $errors['content'] ?>
-                                </p>
+                            aria-describedby="content-caption"
+                            <?php if ($form->isInvalid('content')): ?>
+                                aria-errormessage="content-error"
+                                aria-invalid="true"
                             <?php endif; ?>
+                        ><?= protect($form->content) ?></textarea>
 
-                            <p class="form-group__caption">
-                                <?= _('You can format the content in Markdown and use #tags.') ?>
-                            </p>
-                        </div>
+                        <p id="content-caption" class="form-group__caption">
+                            <?= _('You can format the content in Markdown and use #tags.') ?>
+                        </p>
                     </div>
 
-                    <?php if ($mastodon_configured): ?>
+                    <?php if ($form->isMastodonEnabled()): ?>
                         <div class="form-group">
                             <input
                                 type="checkbox"
                                 id="share-on-mastodon"
                                 name="share_on_mastodon"
-                                <?= $share_on_mastodon ? 'checked' : '' ?>
+                                <?= $form->share_on_mastodon ? 'checked' : '' ?>
                             />
 
                             <label class="label--checkbox" for="share-on-mastodon">
@@ -323,6 +322,8 @@
                             <?= _('Add a note') ?>
                         </button>
                     </div>
+
+                    <input type="hidden" name="csrf_token" value="<?= csrf_token($form) ?>" />
                 </form>
             <?php endif; ?>
         </div>

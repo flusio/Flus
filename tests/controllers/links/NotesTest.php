@@ -2,6 +2,7 @@
 
 namespace App\controllers\links;
 
+use App\forms;
 use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\CollectionShareFactory;
@@ -12,6 +13,7 @@ use tests\factories\UserFactory;
 class NotesTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\CsrfHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
@@ -35,7 +37,7 @@ class NotesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Note::count());
 
         $response = $this->appRun('POST', "/links/{$link->id}/notes", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\notes\NewNote::class),
             'content' => $content,
         ]);
 
@@ -60,7 +62,7 @@ class NotesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Note::count());
 
         $response = $this->appRun('POST', "/links/{$link->id}/notes", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\notes\NewNote::class),
             'content' => $content,
         ]);
 
@@ -71,20 +73,18 @@ class NotesTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateRedirectsIfNotConnected(): void
     {
-        $user = UserFactory::create([
-            'csrf' => 'the token',
-        ]);
+        $user = UserFactory::create();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
         $content = $this->fake('paragraphs', 3, true);
 
         $response = $this->appRun('POST', "/links/{$link->id}/notes", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\notes\NewNote::class),
             'content' => $content,
         ]);
 
-        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link->id}");
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link->id}%2Fnotes");
         $this->assertSame(0, models\Note::count());
     }
 
@@ -100,11 +100,11 @@ class NotesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Note::count());
 
         $response = $this->appRun('POST', "/links/{$link->id}/notes", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\notes\NewNote::class),
             'content' => $content,
         ]);
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 403);
         $this->assertSame(0, models\Note::count());
     }
 
@@ -119,7 +119,7 @@ class NotesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Note::count());
 
         $response = $this->appRun('POST', "/links/{$link->id}/notes", [
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
             'content' => $content,
         ]);
 
@@ -139,7 +139,7 @@ class NotesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Note::count());
 
         $response = $this->appRun('POST', "/links/{$link->id}/notes", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\notes\NewNote::class),
             'content' => $content,
         ]);
 

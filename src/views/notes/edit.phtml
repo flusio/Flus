@@ -2,7 +2,7 @@
     $this->layout('base.phtml', [
         'title' => _('Note edition'),
         'canonical' => url_full('edit note', ['id' => $note->id]),
-        'has_errors' => $error || $errors,
+        'has_errors' => $form->isInvalid(),
         'modal_enabled' => true,
     ]);
 ?>
@@ -19,15 +19,19 @@
         data-controller="autosave"
         data-action="turbo:submit-start@document->autosave#clear"
     >
-        <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
+        <?= $this->include('alerts/_error.phtml', ['message' => $form->error('@base')]) ?>
 
-        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-        <input type="hidden" name="from" value="<?= $from ?>" />
-
-        <div class="form-group <?= isset($errors['content']) ? 'form-group--invalid' : '' ?>">
+        <div class="form-group">
             <label for="content">
                 <?= _('Your note') ?>
             </label>
+
+            <?php if ($form->isInvalid('content')): ?>
+                <p id="content-error" class="form-group__error">
+                    <?= _('Error:') ?>
+                    <?= $form->error('content') ?>
+                </p>
+            <?php endif; ?>
 
             <textarea
                 id="content"
@@ -35,21 +39,16 @@
                 required
                 data-controller="text-editor"
                 data-action="text-editor#refresh keyup->autosave#save"
-                aria-describedby="content-desc"
-            ><?= $content ?></textarea>
-
-            <div id="content-desc">
-                <?php if (isset($errors['content'])): ?>
-                    <p class="form-group__error">
-                        <span class="sr-only"><?= _('Error') ?></span>
-                        <?= $errors['content'] ?>
-                    </p>
+                aria-describedby="content-caption"
+                <?php if ($form->isInvalid('content')): ?>
+                    aria-errormessage="content-error"
+                    aria-invalid="true"
                 <?php endif; ?>
+            ><?= protect($form->content) ?></textarea>
 
-                <p class="form-group__caption">
-                    <?= _('You can format the content in Markdown and use #tags.') ?>
-                </p>
-            </div>
+            <p id="content-caption" class="form-group__caption">
+                <?= _('You can format the content in Markdown and use #tags.') ?>
+            </p>
         </div>
 
         <div class="form__actions">
@@ -57,5 +56,7 @@
                 <?= _('Save changes') ?>
             </button>
         </div>
+
+        <input type="hidden" name="csrf_token" value="<?= csrf_token($form) ?>" />
     </form>
 </div>

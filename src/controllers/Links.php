@@ -122,19 +122,16 @@ class Links extends BaseController
             auth\CurrentUser::require();
         }
 
-        if ($user) {
-            $mastodon_configured = models\MastodonAccount::existsBy([
-                'user_id' => $user->id,
+        $form = null;
+        if ($user && auth\Access::can($user, 'update', $link)) {
+            $form = new forms\notes\NewNote(options: [
+                'enable_mastodon' => $user->isMastodonEnabled(),
             ]);
-        } else {
-            $mastodon_configured = false;
         }
 
         return Response::ok('links/show.phtml', [
             'link' => $link,
-            'content' => '',
-            'share_on_mastodon' => false,
-            'mastodon_configured' => $mastodon_configured,
+            'form' => $form,
         ]);
     }
 

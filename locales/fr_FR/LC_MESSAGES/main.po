@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2025-11-01 17:46+0100\n"
-"PO-Revision-Date: 2025-11-01 17:46+0100\n"
+"POT-Creation-Date: 2025-11-01 19:16+0100\n"
+"PO-Revision-Date: 2025-11-01 19:16+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -59,11 +59,11 @@ msgstr "Tous vos liens importés depuis Pocket."
 #: controllers/collections/Groups.php:115
 #: controllers/collections/Images.php:106 controllers/collections/Links.php:98
 #: controllers/collections/Shares.php:99 controllers/collections/Shares.php:212
-#: controllers/links/Notes.php:78 controllers/links/Searches.php:100
-#: controllers/my/Account.php:94 controllers/my/Preferences.php:75
-#: controllers/my/Profile.php:66 controllers/my/Security.php:83
-#: controllers/my/Security.php:198 controllers/my/Subscription.php:66
-#: controllers/my/Validation.php:146 forms/BaseForm.php:24
+#: controllers/links/Searches.php:100 controllers/my/Account.php:94
+#: controllers/my/Preferences.php:75 controllers/my/Profile.php:66
+#: controllers/my/Security.php:83 controllers/my/Security.php:198
+#: controllers/my/Subscription.php:66 controllers/my/Validation.php:130
+#: forms/BaseForm.php:24
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
 "Une vérification de sécurité a échoué : vous devriez essayer de resoumettre "
@@ -75,8 +75,7 @@ msgstr "L’une des thématiques associées n’existe pas."
 
 #: controllers/Collections.php:364 controllers/Exportations.php:54
 #: controllers/Groups.php:151 controllers/Importations.php:45
-#: controllers/Mastodon.php:75 controllers/Notes.php:87
-#: controllers/Notes.php:134 controllers/Sessions.php:137
+#: controllers/Mastodon.php:75 controllers/Sessions.php:136
 #: controllers/collections/Read.php:85 controllers/collections/Read.php:162
 #: controllers/collections/Read.php:233 controllers/importations/Opml.php:69
 #: controllers/importations/Pocket.php:100
@@ -110,7 +109,7 @@ msgstr "Le serveur Mastodon a renvoyé une erreur, veuillez essayer plus tard."
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
-#: controllers/Passwords.php:80 forms/Login.php:50
+#: controllers/Passwords.php:80 forms/Login.php:62
 msgid "We can’t find any account with this email address."
 msgstr "Nous ne trouvons pas de compte associé à cette adresse courriel."
 
@@ -189,7 +188,7 @@ msgid "You didn’t authorize us to access your Pocket data."
 msgstr "Vous n’avez pas autorisé l’accès à vos données Pocket."
 
 #: controllers/my/Account.php:101 controllers/my/Security.php:206
-#: forms/Login.php:59
+#: forms/Login.php:71
 msgid "The password is incorrect."
 msgstr "Le mot de passe est incorrect."
 
@@ -232,7 +231,7 @@ msgstr ""
 msgid "The token has expired or has been invalidated."
 msgstr "Le token a expiré ou a été invalidé."
 
-#: forms/Login.php:68
+#: forms/Login.php:80
 msgid "What are you trying to do? You can’t login to the support account."
 msgstr ""
 "Que faites-vous ? Vous ne pouvez pas vous connecter en tant qu’utilisateur "
@@ -242,15 +241,15 @@ msgstr ""
 msgid "Shared with me"
 msgstr "Partagées avec moi"
 
-#: forms/links/CollectionsSelector.php:198
+#: forms/links/CollectionsSelector.php:194
 msgid "One of the associated collection doesn’t exist."
 msgstr "L’une des collections associées n’existe pas."
 
-#: forms/links/RepairLink.php:19 models/Link.php:35
+#: forms/links/RepairLink.php:19 models/Link.php:36
 msgid "The link is required."
 msgstr "Le lien est obligatoire."
 
-#: forms/links/RepairLink.php:22 models/Link.php:38
+#: forms/links/RepairLink.php:22 models/Link.php:39
 msgid "The link is invalid."
 msgstr "Le lien est invalide."
 
@@ -343,15 +342,15 @@ msgstr "Le filtre est obligatoire."
 msgid "The filter is invalid."
 msgstr "Le filtre est invalide."
 
-#: models/Link.php:29
+#: models/Link.php:30
 msgid "The title is required."
 msgstr "Le titre est obligatoire."
 
-#: models/Link.php:55
+#: models/Link.php:56
 msgid "The reading time must be greater or equal to 0."
 msgstr "Le temps de lecture doit être supérieur ou égal à 0."
 
-#: models/Note.php:29
+#: models/Note.php:30
 msgid "The content is required."
 msgstr "Le contenu est obligatoire."
 
@@ -760,12 +759,11 @@ msgstr "Page suivante"
 #: views/collections/new.phtml:93 views/collections/shares/index.phtml:53
 #: views/collections/shares/index.phtml:101 views/feeds/new.phtml:42
 #: views/groups/edit.phtml:44 views/importations/opml/show.phtml:104
-#: views/links/searches/show.phtml:66 views/links/show.phtml:295
-#: views/mastodon/show.phtml:77 views/mastodon/show.phtml:132
-#: views/my/account/deletion.phtml:63 views/my/preferences/edit.phtml:41
-#: views/my/profile/edit.phtml:56 views/my/profile/edit.phtml:92
-#: views/my/security/confirmation.phtml:59 views/my/security/show.phtml:41
-#: views/my/security/show.phtml:81 views/notes/edit.phtml:44
+#: views/links/searches/show.phtml:66 views/mastodon/show.phtml:77
+#: views/mastodon/show.phtml:132 views/my/account/deletion.phtml:63
+#: views/my/preferences/edit.phtml:41 views/my/profile/edit.phtml:56
+#: views/my/profile/edit.phtml:92 views/my/security/confirmation.phtml:59
+#: views/my/security/show.phtml:41 views/my/security/show.phtml:81
 #: views/passwords/edit.phtml:58 views/passwords/forgot.phtml:48
 #: views/registrations/new.phtml:51 views/registrations/new.phtml:76
 #: views/registrations/new.phtml:122 views/registrations/new.phtml:146
@@ -868,7 +866,8 @@ msgstr "Sélectionner une collection"
 #: views/collections/_selector.phtml:50 views/collections/_selector.phtml:57
 #: views/links/collections/_new_note_form.phtml:11 views/links/edit.phtml:29
 #: views/links/edit.phtml:75 views/links/new.phtml:26
-#: views/links/repairing/new.phtml:33 views/sessions/new.phtml:34
+#: views/links/repairing/new.phtml:33 views/links/show.phtml:282
+#: views/notes/edit.phtml:31 views/sessions/new.phtml:34
 #: views/sessions/new.phtml:61
 msgid "Error:"
 msgstr "Erreur :"
@@ -938,7 +937,7 @@ msgstr "Afficher la collection publiquement"
 #: views/collections/groups/edit.phtml:105 views/groups/edit.phtml:53
 #: views/links/edit.phtml:83 views/mastodon/show.phtml:86
 #: views/my/preferences/edit.phtml:99 views/my/profile/edit.phtml:101
-#: views/my/security/show.phtml:94 views/notes/edit.phtml:57
+#: views/my/security/show.phtml:94 views/notes/edit.phtml:56
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
 
@@ -1216,7 +1215,7 @@ msgstr ""
 "les liens qui lui sont attachés."
 
 #: views/collections/show.phtml:199 views/links/_link.phtml:321
-#: views/links/show.phtml:247
+#: views/links/show.phtml:244
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -1597,26 +1596,26 @@ msgstr "Réparer"
 msgid "Are you sure that you want to delete this link?"
 msgstr "Êtes-vous sur·e de vouloir supprimer ce lien ?"
 
-#: views/links/_link.phtml:334 views/links/_link.phtml:337
+#: views/links/_link.phtml:333 views/links/_link.phtml:336
 #: views/links/show.phtml:129 views/links/show.phtml:132
 msgid "Mark as read"
 msgstr "Marquer comme lu"
 
-#: views/links/_link.phtml:347 views/links/_link.phtml:350
+#: views/links/_link.phtml:346 views/links/_link.phtml:349
 msgid "Remove from read list"
 msgstr "Retirer des liens lus"
 
-#: views/links/_link.phtml:360 views/links/_link.phtml:363
+#: views/links/_link.phtml:359 views/links/_link.phtml:362
 #: views/links/show.phtml:142 views/links/show.phtml:145
 msgid "Read later"
 msgstr "Lire plus tard"
 
-#: views/links/_link.phtml:378 views/links/_link.phtml:382
+#: views/links/_link.phtml:377 views/links/_link.phtml:381
 #: views/links/collections/index.phtml:104 views/links/show.phtml:162
 msgid "Store the link"
 msgstr "Ranger le lien"
 
-#: views/links/collections/_new_note_form.phtml:3 views/links/show.phtml:280
+#: views/links/collections/_new_note_form.phtml:3 views/links/show.phtml:277
 msgid "What do you retain from this content?"
 msgstr "Que retenez-vous de ce contenu ?"
 
@@ -1625,7 +1624,7 @@ msgstr "Que retenez-vous de ce contenu ?"
 msgid "You can format the content in Markdown and use #tags."
 msgstr "Vous pouvez formater le contenu en Markdown et utiliser des #tags."
 
-#: views/links/collections/_new_note_form.phtml:43 views/links/show.phtml:316
+#: views/links/collections/_new_note_form.phtml:43 views/links/show.phtml:315
 msgid "Share on Mastodon"
 msgstr "Partager vers Mastodon"
 
@@ -1778,19 +1777,19 @@ msgstr "Ce lien étant masqué, les notes sont privées."
 msgid "Are you sure that you want to delete this note?"
 msgstr "Êtes-vous sur·e de vouloir supprimer cette note ?"
 
-#: views/links/show.phtml:261
+#: views/links/show.phtml:260
 msgid "No notes have yet been taken."
 msgstr "Aucune note n’a encore été prise."
 
-#: views/links/show.phtml:323
+#: views/links/show.phtml:322
 msgid "Add a note"
 msgstr "Ajouter une note"
 
-#: views/links/show.phtml:333
+#: views/links/show.phtml:334
 msgid "See notes from:"
 msgstr "Voir les notes de :"
 
-#: views/links/show.phtml:345
+#: views/links/show.phtml:346
 msgid "(yourself)"
 msgstr "(vous-même)"
 
@@ -2279,7 +2278,7 @@ msgstr "Cette page n’existe pas."
 msgid "Note edition"
 msgstr "Modification d’une note"
 
-#: views/notes/edit.phtml:29
+#: views/notes/edit.phtml:26
 msgid "Your note"
 msgstr "Votre note"
 

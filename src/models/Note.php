@@ -16,6 +16,7 @@ class Note
 {
     use dao\BulkQueries;
     use Database\Recordable;
+    use Database\Resource;
     use Validable;
 
     #[Database\Column]

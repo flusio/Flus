@@ -2,6 +2,7 @@
 
 namespace App\controllers;
 
+use App\forms;
 use App\models;
 use tests\factories\LinkFactory;
 use tests\factories\NoteFactory;
@@ -10,6 +11,7 @@ use tests\factories\UserFactory;
 class NotesTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\CsrfHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
@@ -24,11 +26,8 @@ class NotesTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'content' => $content,
         ]);
-        $from = \Minz\Url::for('home');
 
-        $response = $this->appRun('GET', "/notes/{$note->id}/edit", [
-            'from' => $from,
-        ]);
+        $response = $this->appRun('GET', "/notes/{$note->id}/edit");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseTemplateName($response, 'notes/edit.phtml');
@@ -42,13 +41,10 @@ class NotesTest extends \PHPUnit\Framework\TestCase
         $note = NoteFactory::create([
             'content' => $content,
         ]);
-        $from = \Minz\Url::for('home');
 
-        $response = $this->appRun('GET', "/notes/{$note->id}/edit", [
-            'from' => $from,
-        ]);
+        $response = $this->appRun('GET', "/notes/{$note->id}/edit");
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Fnotes%2F{$note->id}%2Fedit");
     }
 
     public function testEditFailsIfNoteDoesNotExist(): void
@@ -60,11 +56,8 @@ class NotesTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'content' => $content,
         ]);
-        $from = \Minz\Url::for('home');
 
-        $response = $this->appRun('GET', '/notes/not-an-id/edit', [
-            'from' => $from,
-        ]);
+        $response = $this->appRun('GET', '/notes/not-an-id/edit');
 
         $this->assertResponseCode($response, 404);
     }
@@ -79,13 +72,10 @@ class NotesTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'content' => $content,
         ]);
-        $from = \Minz\Url::for('home');
 
-        $response = $this->appRun('GET', "/notes/{$note->id}/edit", [
-            'from' => $from,
-        ]);
+        $response = $this->appRun('GET', "/notes/{$note->id}/edit");
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 403);
     }
 
     public function testUpdateChangesContentAndRedirect(): void
@@ -99,15 +89,13 @@ class NotesTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'content' => $old_content,
         ]);
-        $from = \Minz\Url::for('home');
 
         $response = $this->appRun('POST', "/notes/{$note->id}/edit", [
             'content' => $new_content,
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\notes\EditNote::class),
         ]);
 
-        $this->assertResponseCode($response, 302, $from);
+        $this->assertResponseCode($response, 302, "/notes/{$note->id}/edit");
         $note = $note->reload();
         $this->assertSame($new_content, $note->content);
     }
@@ -125,15 +113,13 @@ class NotesTest extends \PHPUnit\Framework\TestCase
             'link_id' => $link->id,
             'content' => $old_content,
         ]);
-        $from = \Minz\Url::for('home');
 
         $response = $this->appRun('POST', "/notes/{$note->id}/edit", [
             'content' => $new_content,
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\notes\EditNote::class),
         ]);
 
-        $this->assertResponseCode($response, 302, $from);
+        $this->assertResponseCode($response, 302, "/notes/{$note->id}/edit");
         $note = $note->reload();
         $this->assertSame($new_content, $note->content);
         $link = $link->reload();
@@ -142,9 +128,7 @@ class NotesTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateRedirectsToLoginIfNotConnected(): void
     {
-        $user = UserFactory::create([
-            'csrf' => 'a token',
-        ]);
+        $user = UserFactory::create();
         /** @var string */
         $old_content = $this->fakeUnique('sentence');
         /** @var string */
@@ -153,15 +137,13 @@ class NotesTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'content' => $old_content,
         ]);
-        $from = \Minz\Url::for('home');
 
         $response = $this->appRun('POST', "/notes/{$note->id}/edit", [
             'content' => $new_content,
-            'csrf' => 'a token',
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\notes\EditNote::class),
         ]);
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Fnotes%2F{$note->id}%2Fedit");
         $note = $note->reload();
         $this->assertSame($old_content, $note->content);
     }
@@ -177,12 +159,10 @@ class NotesTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'content' => $old_content,
         ]);
-        $from = \Minz\Url::for('home');
 
         $response = $this->appRun('POST', '/notes/not-an-id/edit', [
             'content' => $new_content,
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\notes\EditNote::class),
         ]);
 
         $this->assertResponseCode($response, 404);
@@ -202,15 +182,13 @@ class NotesTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'content' => $old_content,
         ]);
-        $from = \Minz\Url::for('home');
 
         $response = $this->appRun('POST', "/notes/{$note->id}/edit", [
             'content' => $new_content,
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\notes\EditNote::class),
         ]);
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 403);
         $note = $note->reload();
         $this->assertSame($old_content, $note->content);
     }
@@ -225,18 +203,14 @@ class NotesTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'content' => $old_content,
         ]);
-        $from = \Minz\Url::for('home');
 
         $response = $this->appRun('POST', "/notes/{$note->id}/edit", [
             'content' => $new_content,
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\notes\EditNote::class),
         ]);
 
-        $this->assertResponseCode($response, 302, $from);
-        $this->assertEquals([
-            'content' => 'The content is required.',
-        ], \Minz\Flash::get('errors'));
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The content is required');
         $note = $note->reload();
         $this->assertSame($old_content, $note->content);
     }
@@ -252,16 +226,14 @@ class NotesTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'content' => $old_content,
         ]);
-        $from = \Minz\Url::for('home');
 
         $response = $this->appRun('POST', "/notes/{$note->id}/edit", [
             'content' => $new_content,
-            'csrf' => 'not the token',
-            'from' => $from,
+            'csrf_token' => 'not the token',
         ]);
 
-        $this->assertResponseCode($response, 302, $from);
-        $this->assertSame('A security verification failed.', \Minz\Flash::get('error'));
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'A security verification failed');
         $note = $note->reload();
         $this->assertSame($old_content, $note->content);
     }
@@ -274,7 +246,7 @@ class NotesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/notes/{$note->id}/delete", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\notes\DeleteNote::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/');
@@ -294,7 +266,7 @@ class NotesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/notes/{$note->id}/delete", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\notes\DeleteNote::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/');
@@ -303,33 +275,15 @@ class NotesTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals([], $link->tags);
     }
 
-    public function testDeleteRedirectsToRedirectToIfGiven(): void
-    {
-        $user = $this->login();
-        $note = NoteFactory::create([
-            'user_id' => $user->id,
-        ]);
-
-        $response = $this->appRun('POST', "/notes/{$note->id}/delete", [
-            'csrf' => \App\Csrf::generate(),
-            'redirect_to' => \Minz\Url::for('bookmarks'),
-        ]);
-
-        $this->assertResponseCode($response, 302, '/bookmarks');
-        $this->assertFalse(models\Note::exists($note->id));
-    }
-
     public function testDeleteRedirectsIfNotConnected(): void
     {
-        $user = UserFactory::create([
-            'csrf' => 'a token',
-        ]);
+        $user = UserFactory::create();
         $note = NoteFactory::create([
             'user_id' => $user->id,
         ]);
 
         $response = $this->appRun('POST', "/notes/{$note->id}/delete", [
-            'csrf' => 'a token',
+            'csrf_token' => $this->csrfToken(forms\notes\DeleteNote::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
@@ -345,10 +299,10 @@ class NotesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/notes/{$note->id}/delete", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\notes\DeleteNote::class),
         ]);
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 403);
         $this->assertTrue(models\Note::exists($note->id));
     }
 
@@ -360,11 +314,13 @@ class NotesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/notes/{$note->id}/delete", [
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertSame('A security verification failed.', \Minz\Flash::get('error'));
         $this->assertTrue(models\Note::exists($note->id));
+        $error = \Minz\Flash::get('error');
+        $this->assertTrue(is_string($error));
+        $this->assertStringContainsString('A security verification failed', $error);
     }
 }

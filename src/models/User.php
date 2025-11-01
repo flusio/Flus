@@ -656,6 +656,16 @@ class User
     }
 
     /**
+     * Return whether the user has configured a Mastodon account.
+     */
+    public function isMastodonEnabled(): bool
+    {
+        return MastodonAccount::existsBy([
+            'user_id' => $this->id,
+        ]);
+    }
+
+    /**
      * Return a password hash. If password is empty, password_hash will be empty as well.
      */
     public static function passwordHash(string $password): string
