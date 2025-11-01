@@ -2,13 +2,13 @@
 
 namespace App\controllers\links;
 
-use Minz\Request;
-use Minz\Response;
 use App\auth;
 use App\controllers\BaseController;
 use App\forms;
 use App\models;
 use App\utils;
+use Minz\Request;
+use Minz\Response;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -19,26 +19,30 @@ class Read extends BaseController
     /**
      * Mark a link as read and remove it from bookmarks.
      *
-     * @request_param string csrf
      * @request_param string id
-     * @request_param string from
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=:from
-     *     if not connected
-     * @response 404
-     *     if the link doesn't exist, or is not accessible to the current user
      * @response 302 :from
      * @flash error
-     *     if CSRF is invalid
+     *     If the CSRF token is invalid.
      * @response 302 :from
-     *     on success
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the link doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot view the link.
      */
     public function create(Request $request): Response
     {
-        $from = $request->parameters->getString('from', '');
-        $link_id = $request->parameters->getString('id', '');
+        $user = auth\CurrentUser::require();
+        $link = models\Link::requireFromRequest($request);
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
+        auth\Access::require($user, 'view', $link);
+
+        $from = utils\RequestHelper::from($request);
 
         $form = new forms\links\MarkLinkAsRead();
         $form->handleRequest($request);
@@ -48,12 +52,8 @@ class Read extends BaseController
             return Response::found($from);
         }
 
-        $link = models\Link::find($link_id);
-        if (!$link || !auth\LinksAccess::canView($user, $link)) {
-            return Response::notFound('not_found.phtml');
-        }
-
         $link = $user->obtainLink($link);
+
         if (!$link->isPersisted()) {
             $link->setSourceFrom($from);
             $link->save();
@@ -67,26 +67,30 @@ class Read extends BaseController
     /**
      * Remove a link from news and add it to bookmarks.
      *
-     * @request_param string csrf
      * @request_param string id
-     * @request_param string from
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=:from
-     *     if not connected
-     * @response 404
-     *     if the link doesn't exist, or is not accessible to the current user
      * @response 302 :from
      * @flash error
-     *     if CSRF is invalid
+     *     If the CSRF token is invalid.
      * @response 302 :from
-     *     on success
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the link doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot view the link.
      */
     public function later(Request $request): Response
     {
-        $from = $request->parameters->getString('from', '');
-        $link_id = $request->parameters->getString('id', '');
+        $user = auth\CurrentUser::require();
+        $link = models\Link::requireFromRequest($request);
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
+        auth\Access::require($user, 'view', $link);
+
+        $from = utils\RequestHelper::from($request);
 
         $form = new forms\links\MarkLinkAsReadLater();
         $form->handleRequest($request);
@@ -96,12 +100,8 @@ class Read extends BaseController
             return Response::found($from);
         }
 
-        $link = models\Link::find($link_id);
-        if (!$link || !auth\LinksAccess::canView($user, $link)) {
-            return Response::notFound('not_found.phtml');
-        }
-
         $link = $user->obtainLink($link);
+
         if (!$link->isPersisted()) {
             $link->setSourceFrom($from);
             $link->save();
@@ -115,26 +115,30 @@ class Read extends BaseController
     /**
      * Remove a link from news and bookmarks and add it to the never list.
      *
-     * @request_param string csrf
      * @request_param string id
-     * @request_param string from
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=:from
-     *     if not connected
-     * @response 404
-     *     if the link doesn't exist, or is not accessible to the current user
      * @response 302 :from
      * @flash error
-     *     if CSRF is invalid
+     *     If the CSRF token is invalid.
      * @response 302 :from
-     *     on success
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the link doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot view the link.
      */
     public function never(Request $request): Response
     {
-        $from = $request->parameters->getString('from', '');
-        $link_id = $request->parameters->getString('id', '');
+        $user = auth\CurrentUser::require();
+        $link = models\Link::requireFromRequest($request);
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
+        auth\Access::require($user, 'view', $link);
+
+        $from = utils\RequestHelper::from($request);
 
         $form = new forms\links\MarkLinkAsNever();
         $form->handleRequest($request);
@@ -142,11 +146,6 @@ class Read extends BaseController
         if (!$form->validate()) {
             \Minz\Flash::set('error', $form->error('@base'));
             return Response::found($from);
-        }
-
-        $link = models\Link::find($link_id);
-        if (!$link || !auth\LinksAccess::canView($user, $link)) {
-            return Response::notFound('not_found.phtml');
         }
 
         $link = $user->obtainLink($link);
@@ -162,26 +161,30 @@ class Read extends BaseController
     /**
      * Mark a link as unread by removing it from read list.
      *
-     * @request_param string csrf
      * @request_param string id
-     * @request_param string from
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=:from
-     *     if not connected
-     * @response 404
-     *     if the link doesn't exist, or is not accessible to the current user
      * @response 302 :from
      * @flash error
-     *     if CSRF is invalid
+     *     If the CSRF token is invalid.
      * @response 302 :from
-     *     on success
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the link doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot update the link.
      */
     public function delete(Request $request): Response
     {
-        $from = $request->parameters->getString('from', '');
-        $link_id = $request->parameters->getString('id', '');
+        $user = auth\CurrentUser::require();
+        $link = models\Link::requireFromRequest($request);
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
+        auth\Access::require($user, 'update', $link);
+
+        $from = utils\RequestHelper::from($request);
 
         $form = new forms\links\MarkLinkAsUnread();
         $form->handleRequest($request);
@@ -189,11 +192,6 @@ class Read extends BaseController
         if (!$form->validate()) {
             \Minz\Flash::set('error', $form->error('@base'));
             return Response::found($from);
-        }
-
-        $link = models\Link::find($link_id);
-        if (!$link || !auth\LinksAccess::canUpdate($user, $link)) {
-            return Response::notFound('not_found.phtml');
         }
 
         models\LinkToCollection::markAsUnread($user, [$link->id]);

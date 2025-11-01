@@ -24,25 +24,23 @@ class Collections extends BaseController
      *
      * @request_param string id
      * @request_param boolean mark_as_read
-     * @request_param string from
      *
-     * @response 302 /login?redirect_to=:from
-     * @response 404 if the link is not found
      * @response 200
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the link doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot view the link.
      */
     public function index(Request $request): Response
     {
-        $link_id = $request->parameters->getString('id', '');
-        $mark_as_read = $request->parameters->getBoolean('mark_as_read');
-        $from = $request->parameters->getString('from', '');
+        $user = auth\CurrentUser::require();
+        $link = models\Link::requireFromRequest($request);
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
-
-        $link = models\Link::find($link_id);
-
-        if (!$link || !auth\LinksAccess::canView($user, $link)) {
-            return Response::notFound('not_found.phtml');
-        }
+        auth\Access::require($user, 'view', $link);
 
         // Make sure that if the user has already saved the link's URL, we work
         // with this one instead of a link potentially owned by another user.
@@ -59,22 +57,24 @@ class Collections extends BaseController
             $collection_ids = [];
         }
 
+        $mark_as_read = $request->parameters->getBoolean('mark_as_read');
+
         $form = new forms\links\EditLinkCollections([
             'collection_ids' => $collection_ids,
             'mark_as_read' => $mark_as_read,
-        ], $link);
+        ], $link, [
+            'user' => $user,
+        ]);
 
         return Response::ok('links/collections/index.phtml', [
             'link' => $link,
             'form' => $form,
-            'from' => $from,
         ]);
     }
 
     /**
      * Update the link collections list
      *
-     * @request_param string csrf
      * @request_param string id
      * @request_param string[] collection_ids
      * @request_param string[] new_collection_names
@@ -82,43 +82,43 @@ class Collections extends BaseController
      * @request_param boolean mark_as_read
      * @request_param string content
      * @request_param string share_on_mastodon
-     * @request_param string from
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=:from
-     *     If not connected.
-     * @response 404
-     *     If the link is not found.
-     * @response 302 :from
-     *     If CSRF, collection_ids or new_collection_names are invalid.
+     * @response 400
+     *     If at least one of the parameters is invalid.
      * @response 302 :from
      *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the link doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot view the link.
      */
     public function update(Request $request): Response
     {
-        $link_id = $request->parameters->getString('id', '');
-        $from = $request->parameters->getString('from', '');
+        $user = auth\CurrentUser::require();
+        $link = models\Link::requireFromRequest($request);
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
+        auth\Access::require($user, 'view', $link);
 
-        $link = models\Link::find($link_id);
-        if (!$link || !auth\LinksAccess::canView($user, $link)) {
-            return Response::notFound('not_found.phtml');
-        }
+        $from = utils\RequestHelper::from($request);
 
         if (!auth\LinksAccess::canUpdate($user, $link)) {
             $link = $user->obtainLink($link);
             $link->setSourceFrom($from);
         }
 
-        $form = new forms\links\EditLinkCollections(model: $link);
-
+        $form = new forms\links\EditLinkCollections(model: $link, options: [
+            'user' => $user,
+        ]);
         $form->handleRequest($request);
 
         if (!$form->validate()) {
             return Response::badRequest('links/collections/index.phtml', [
                 'link' => $link,
                 'form' => $form,
-                'from' => $from,
             ]);
         }
 

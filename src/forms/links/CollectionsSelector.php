@@ -29,10 +29,10 @@ trait CollectionsSelector
 
     public function user(): models\User
     {
-        $user = auth\CurrentUser::get();
+        $user = $this->options->get('user');
 
-        if (!$user) {
-            throw new \LogicException('User must be connected.');
+        if (!($user instanceof models\User)) {
+            throw new \LogicException('User must be passed as an option of the form.');
         }
 
         return $user;
@@ -149,11 +149,7 @@ trait CollectionsSelector
      */
     public function newCollections(): array
     {
-        $user = auth\CurrentUser::get();
-
-        if (!$user) {
-            throw new \LogicException('User must be connected.');
-        }
+        $user = $this->user();
 
         $collections = [];
         foreach ($this->new_collection_names as $name) {

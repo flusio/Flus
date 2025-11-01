@@ -21,10 +21,6 @@ class Notes extends BaseController
      * @request_param string link_id
      *
      * @response 302 /links/:id
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function index(Request $request): Response
     {
@@ -44,10 +40,6 @@ class Notes extends BaseController
      * @response 404 if the link doesn't exist or not associated to the current user
      * @response 400 if csrf or content is invalid
      * @response 302 /links/:link_id
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function create(Request $request): Response
     {

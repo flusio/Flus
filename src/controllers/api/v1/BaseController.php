@@ -59,8 +59,6 @@ class BaseController
     {
         $router = \Minz\Engine::router();
 
-        assert($router !== null);
-
         $authorized_methods = $router->allowedMethodsForPath($request->path());
         $authorized_methods_without_options = array_diff($authorized_methods, ['OPTIONS']);
 
@@ -80,8 +78,6 @@ class BaseController
     public function options(Request $request): Response
     {
         $router = \Minz\Engine::router();
-
-        assert($router !== null);
 
         $authorized_methods = $router->allowedMethodsForPath($request->path());
         $authorized_methods_without_options = array_diff($authorized_methods, ['OPTIONS']);

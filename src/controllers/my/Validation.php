@@ -21,30 +21,14 @@ class Validation extends BaseController
     /**
      * Display the validation page.
      *
-     * @response 302 /my/account/validation?t=:t
-     *     If the url was called with a token (temporary while migrating to
-     *     the new system).
-     * @response 302 /login?redirect_to=/my/account/validation
-     *     If the user is not connected
      * @response 200
-     *     If the current user is not yet validated
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function show(Request $request): Response
     {
-        $token = $request->parameters->getString('t');
-        if ($token) {
-            return Response::redirect('new account validation', [
-                't' => $token,
-            ]);
-        }
-
-        $current_user = auth\CurrentUser::get();
-
-        if (!$current_user) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('account validation'),
-            ]);
-        }
+        auth\CurrentUser::require();
 
         return Response::ok('my/validation/show.phtml');
     }
@@ -75,9 +59,9 @@ class Validation extends BaseController
      * @request_param string csrf_token
      *
      * @response 400
-     *     If the token or if the csrf token are invalid.
+     *     If at least one of the parameters is invalid.
      * @response 302 /my/account/validation
-     *     If the account has been validated.
+     *     On success.
      */
     public function create(Request $request): Response
     {

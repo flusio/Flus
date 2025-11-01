@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2025-10-30 10:12+0100\n"
-"PO-Revision-Date: 2025-10-30 10:13+0100\n"
+"POT-Creation-Date: 2025-11-01 17:46+0100\n"
+"PO-Revision-Date: 2025-11-01 17:46+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.7\n"
+"X-Generator: Poedit 3.8\n"
 "X-Poedit-Basepath: ../../../src\n"
 "X-Poedit-KeywordsList: _f;_n:1,2;_nf:1,2;Translatable\n"
 "X-Poedit-SearchPath-0: .\n"
@@ -62,7 +62,7 @@ msgstr "Tous vos liens importés depuis Pocket."
 #: controllers/links/Notes.php:78 controllers/links/Searches.php:100
 #: controllers/my/Account.php:94 controllers/my/Preferences.php:75
 #: controllers/my/Profile.php:66 controllers/my/Security.php:83
-#: controllers/my/Security.php:195 controllers/my/Subscription.php:66
+#: controllers/my/Security.php:198 controllers/my/Subscription.php:66
 #: controllers/my/Validation.php:146 forms/BaseForm.php:24
 msgid "A security verification failed: you should retry to submit the form."
 msgstr ""
@@ -76,7 +76,7 @@ msgstr "L’une des thématiques associées n’existe pas."
 #: controllers/Collections.php:364 controllers/Exportations.php:54
 #: controllers/Groups.php:151 controllers/Importations.php:45
 #: controllers/Mastodon.php:75 controllers/Notes.php:87
-#: controllers/Notes.php:134 controllers/Sessions.php:136
+#: controllers/Notes.php:134 controllers/Sessions.php:137
 #: controllers/collections/Read.php:85 controllers/collections/Read.php:162
 #: controllers/collections/Read.php:233 controllers/importations/Opml.php:69
 #: controllers/importations/Pocket.php:100
@@ -188,7 +188,7 @@ msgstr "Vous avez déjà une importation Pocket en cours."
 msgid "You didn’t authorize us to access your Pocket data."
 msgstr "Vous n’avez pas autorisé l’accès à vos données Pocket."
 
-#: controllers/my/Account.php:101 controllers/my/Security.php:203
+#: controllers/my/Account.php:101 controllers/my/Security.php:206
 #: forms/Login.php:59
 msgid "The password is incorrect."
 msgstr "Le mot de passe est incorrect."
@@ -474,48 +474,48 @@ msgstr "%s sur %s"
 msgid "This email has been sent by %s (%s)"
 msgstr "Ce courriel a été envoyé par %s (%s)"
 
-#: utils/view_helpers.php:93
+#: utils/view_helpers.php:101
 #, php-format
 msgid "%d link per day"
 msgid_plural "%d links per day"
 msgstr[0] "%d lien par jour"
 msgstr[1] "%d liens par jour"
 
-#: utils/view_helpers.php:97
+#: utils/view_helpers.php:105
 #, php-format
 msgid "%d link per week"
 msgid_plural "%d links per week"
 msgstr[0] "%d lien par semaine"
 msgstr[1] "%d liens par semaine"
 
-#: utils/view_helpers.php:101
+#: utils/view_helpers.php:109
 #, php-format
 msgid "%d link per month"
 msgid_plural "%d links per month"
 msgstr[0] "%d lien par mois"
 msgstr[1] "%d liens par mois"
 
-#: utils/view_helpers.php:105
+#: utils/view_helpers.php:113
 #, php-format
 msgid "%d link per year"
 msgid_plural "%d links per year"
 msgstr[0] "%d lien par an"
 msgstr[1] "%d liens par an"
 
-#: utils/view_helpers.php:108
+#: utils/view_helpers.php:116
 msgid "Inactive"
 msgstr "Inactif"
 
-#: utils/view_helpers.php:154
+#: utils/view_helpers.php:162
 msgid "< 1 min"
 msgstr "< 1 min"
 
-#: utils/view_helpers.php:156
+#: utils/view_helpers.php:164
 #, php-format
 msgid "%s&nbsp;min"
 msgstr "%s&nbsp;min"
 
-#: utils/view_helpers.php:283
+#: utils/view_helpers.php:291
 msgid "you"
 msgstr "vous"
 
@@ -789,13 +789,15 @@ msgstr "Mauvaise requête"
 msgid "The request is invalid."
 msgstr "La requête est invalide."
 
-#: views/bad_request.phtml:22 views/internal_server_error.phtml:22
-#: views/not_found.phtml:22 views/unauthorized.phtml:22
+#: views/bad_request.phtml:22 views/forbidden.phtml:22
+#: views/internal_server_error.phtml:22 views/not_found.phtml:22
+#: views/unauthorized.phtml:22
 msgid "Back to the previous page"
 msgstr "Retour à la page précédente"
 
-#: views/bad_request.phtml:26 views/internal_server_error.phtml:26
-#: views/not_found.phtml:26 views/unauthorized.phtml:26
+#: views/bad_request.phtml:26 views/forbidden.phtml:26
+#: views/internal_server_error.phtml:26 views/not_found.phtml:26
+#: views/unauthorized.phtml:26
 msgid "Back to the home page"
 msgstr "Retour à la page d’accueil"
 
@@ -1343,6 +1345,14 @@ msgstr "Quelle est l’adresse du site ou du flux à suivre ?"
 #: views/feeds/new.phtml:55
 msgid "Add the feed"
 msgstr "Ajouter le flux"
+
+#: views/forbidden.phtml:3
+msgid "Access forbidden"
+msgstr "Accès interdit"
+
+#: views/forbidden.phtml:10
+msgid "You cannot access this page."
+msgstr "Vous ne pouvez pas accéder à cette page."
 
 #: views/groups/edit.phtml:3 views/groups/edit.phtml:12
 msgid "Group edition"

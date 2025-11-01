@@ -46,6 +46,14 @@ function csrf_token(mixed $form = null): string
 }
 
 /**
+ * Return whether or not a user can perform an action on a subject.
+ */
+function can(?models\User $user, string $action, object $subject): bool
+{
+    return \App\auth\Access::can($user, $action, $subject);
+}
+
+/**
  * Format a datetime in the current locale.
  *
  * @see https://www.php.net/manual/class.intldateformatter.php

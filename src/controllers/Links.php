@@ -26,13 +26,15 @@ class Links extends BaseController
      * @request_param string q
      * @request_param integer page
      *
-     * @response 302 /login?redirect_to=/links
-     *     if the user is not connected
      * @response 200
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function index(Request $request): Response
     {
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('links'));
+        $user = auth\CurrentUser::require();
 
         $query = $request->parameters->getString('q');
         $pagination_page = $request->parameters->getInteger('page', 1);
@@ -99,30 +101,25 @@ class Links extends BaseController
      *
      * @request_param string id
      *
-     * @response 302 /login?redirect_to=/links/:id
-     *     if user is not connected and the link is not public
-     * @response 404
-     *     if the link doesn't exist or is inaccessible to current user
      * @response 200
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the link requires the users to be logged in while they are not.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the link doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the authenticated user cannot view the link.
      */
     public function show(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $link_id = $request->parameters->getString('id', '');
-        $link = models\Link::find($link_id);
+        $link = models\Link::requireFromRequest($request);
 
-        if (!$link) {
-            return Response::notFound('not_found.phtml');
-        }
-
-        $can_view = auth\LinksAccess::canView($user, $link);
-        $can_update = auth\LinksAccess::canUpdate($user, $link);
-        if (!$can_view && $user) {
-            return Response::notFound('not_found.phtml');
-        } elseif (!$can_view) {
-            return Response::redirect('login', [
-                'redirect_to' => \Minz\Url::for('link', ['id' => $link_id]),
-            ]);
+        if ($user) {
+            auth\Access::require($user, 'view', $link);
+        } elseif (!auth\Access::can($user, 'view', $link)) {
+            auth\CurrentUser::require();
         }
 
         if ($user) {
@@ -135,7 +132,6 @@ class Links extends BaseController
 
         return Response::ok('links/show.phtml', [
             'link' => $link,
-            'can_update' => $can_update,
             'content' => '',
             'share_on_mastodon' => false,
             'mastodon_configured' => $mastodon_configured,
@@ -145,22 +141,23 @@ class Links extends BaseController
     /**
      * Show the page to add a link.
      *
-     * @request_param string url The URL to prefill the URL input (default is '')
-     * @request_param string collection_id Collection to check (default is bookmarks id)
+     * @request_param string url
+     *     An optional URL to prefill the URL input.
+     * @request_param string collection_id
+     *     An optional collection to select by default.
      *
-     * @response 302 /login?redirect_to=/links/new if not connected
      * @response 200
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function new(Request $request): Response
     {
+        $user = auth\CurrentUser::require();
+
         $default_url = $request->parameters->getString('url', '');
         $default_collection_id = $request->parameters->getString('collection_id');
-
-        $from = \Minz\Url::for('new link', [
-            'url' => $default_url,
-            'collection_id' => $default_collection_id,
-        ]);
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
 
         $default_collection_ids = [];
         if ($default_collection_id) {
@@ -170,7 +167,9 @@ class Links extends BaseController
         $link = new models\Link($default_url, $user->id);
         $form = new forms\links\NewLink([
             'collection_ids' => $default_collection_ids,
-        ], $link);
+        ], $link, [
+            'user' => $user,
+        ]);
 
         return Response::ok('links/new.phtml', [
             'form' => $form,
@@ -183,27 +182,28 @@ class Links extends BaseController
      * @request_param string url
      * @request_param string[] collection_ids
      * @request_param string[] new_collection_names
+     * @request_param boolean read_later
      * @request_param boolean is_hidden
-     * @request_param string csrf
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=/links/new
-     *     If not connected.
      * @response 400
-     *     If CSRF or the url is invalid, if one collection id doesn't exist
-     *     or if both collection_ids and new_collection_names parameters are
-     *     missing/empty.
+     *     If at least one of the parameters is invalid.
      * @response 302 /links/:id
      *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function create(Request $request): Response
     {
+        $user = auth\CurrentUser::require();
+
         $url = $request->parameters->getString('url', '');
 
-        $from = \Minz\Url::for('new link', ['url' => $url]);
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
-
         $link = $user->findOrBuildLink($url);
-        $form = new forms\links\NewLink(model: $link);
+        $form = new forms\links\NewLink(model: $link, options: [
+            'user' => $user,
+        ]);
 
         $form->handleRequest($request);
 
@@ -244,59 +244,58 @@ class Links extends BaseController
      * Show the update link page.
      *
      * @request_param string id
-     * @request_param string from (default is /links/:id)
      *
-     * @response 302 /login?redirect_to=:from if not connected
-     * @response 404 if the link doesn't exist or not associated to the current user
      * @response 200
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the link doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot update the link.
      */
     public function edit(Request $request): Response
     {
-        $link_id = $request->parameters->getString('id', '');
-        $from = $request->parameters->getString('from', \Minz\Url::for('link', ['id' => $link_id]));
+        $user = auth\CurrentUser::require();
+        $link = models\Link::requireFromRequest($request);
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
-
-        $link = models\Link::find($link_id);
-
-        if (!$link || !auth\LinksAccess::canUpdate($user, $link)) {
-            return Response::notFound('not_found.phtml');
-        }
+        auth\Access::require($user, 'update', $link);
 
         $form = new forms\links\EditLink(model: $link);
 
         return Response::ok('links/edit.phtml', [
             'link' => $link,
             'form' => $form,
-            'from' => $from,
         ]);
     }
 
     /**
      * Update a link.
      *
-     * @request_param string csrf
      * @request_param string id
      * @request_param string title
      * @request_param integer reading_time
-     * @request_param string from (default is /links/:id)
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=/links/:id if not connected
-     * @response 404 if the link doesn't exist or not associated to the current user
-     * @response 400 :from if csrf token or title are invalid
+     * @response 400
+     *     If at least one of the parameters is invalid.
      * @response 302 :from
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the link doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot update the link.
      */
     public function update(Request $request): Response
     {
-        $link_id = $request->parameters->getString('id', '');
-        $from = $request->parameters->getString('from', \Minz\Url::for('link', ['id' => $link_id]));
+        $user = auth\CurrentUser::require();
+        $link = models\Link::requireFromRequest($request);
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
-
-        $link = models\Link::find($link_id);
-        if (!$link || !auth\LinksAccess::canUpdate($user, $link)) {
-            return Response::notFound('not_found.phtml');
-        }
+        auth\Access::require($user, 'update', $link);
 
         $form = new forms\links\EditLink(model: $link);
         $form->handleRequest($request);
@@ -305,39 +304,41 @@ class Links extends BaseController
             return Response::badRequest('links/edit.phtml', [
                 'link' => $link,
                 'form' => $form,
-                'from' => $from,
             ]);
         }
 
         $link = $form->model();
         $link->save();
 
-        return Response::found($from);
+        return Response::found(utils\RequestHelper::from($request));
     }
 
     /**
      * Delete a link.
      *
      * @request_param string id
-     * @request_param string from default is /links/:id
      * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=:from if not connected
-     * @response 404 if the link doesn’t exist or user hasn't access
-     * @response 302 :from if csrf is invalid
-     * @response 302 :from on success
+     * @response 302 :from
+     *     If the CSRF token is invalid.
+     * @response 302 :from
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the link doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot delete the link.
      */
     public function delete(Request $request): Response
     {
-        $link_id = $request->parameters->getString('id', '');
-        $from = $request->parameters->getString('from', \Minz\Url::for('link', ['id' => $link_id]));
+        $user = auth\CurrentUser::require();
+        $link = models\Link::requireFromRequest($request);
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
+        auth\Access::require($user, 'delete', $link);
 
-        $link = models\Link::find($link_id);
-        if (!$link || !auth\LinksAccess::canDelete($user, $link)) {
-            return Response::notFound('not_found.phtml');
-        }
+        $from = utils\RequestHelper::from($request);
 
         $form = new forms\links\DeleteLink();
         $form->handleRequest($request);
