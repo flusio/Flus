@@ -14,15 +14,19 @@
     </div>
 
     <form method="post" action="<?= url('create feed') ?>">
-        <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
+        <?= $this->include('alerts/_error.phtml', ['message' => $form->error('@base')]) ?>
 
-        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-        <input type="hidden" name="from" value="<?= $from ?>" />
-
-        <div class="form-group <?= isset($errors['url']) ? 'form-group--invalid' : '' ?>">
+        <div class="form-group">
             <label for="url">
                 <?= _('What’s the address of the website or feed to follow?') ?>
             </label>
+
+            <?php if ($form->isInvalid('url')): ?>
+                <p id="url-error" class="form-group__error">
+                    <?= _('Error:') ?>
+                    <?= $form->error('url') ?>
+                </p>
+            <?php endif; ?>
 
             <input
                 id="url"
@@ -30,24 +34,19 @@
                 type="url"
                 placeholder="https://…"
                 required
-                value="<?= $url ?>"
+                value="<?= protect($form->url) ?>"
                 autocomplete="off"
                 autofocus
-                aria-describedby="url-desc"
+                aria-describedby="url-caption"
+                <?php if ($form->isInvalid('url')): ?>
+                    aria-errormessage="url-error"
+                    aria-invalid="true"
+                <?php endif; ?>
             />
 
-            <div id="url-desc">
-                <?php if (isset($errors['url'])): ?>
-                    <p class="form-group__error">
-                        <span class="sr-only"><?= _('Error') ?></span>
-                        <?= $errors['url'] ?>
-                    </p>
-                <?php endif; ?>
-
-                <p class="form-group__caption">
-                    <?= _('It can be copy-paste from the <abbr>URL</abbr> bar, at the top of your browser.') ?>
-                </p>
-            </div>
+            <p id="url-caption" class="form-group__caption">
+                <?= _('It can be copy-paste from the <abbr>URL</abbr> bar, at the top of your browser.') ?>
+            </p>
         </div>
 
         <div class="form__actions">
@@ -55,5 +54,7 @@
                 <?= _('Add the feed') ?>
             </button>
         </div>
+
+        <input type="hidden" name="csrf_token" value="<?= csrf_token($form) ?>" />
     </form>
 </div>

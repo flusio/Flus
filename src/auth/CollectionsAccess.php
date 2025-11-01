@@ -66,15 +66,6 @@ class CollectionsAccess
         );
     }
 
-    public static function canUpdateRead(?models\User $user, models\Collection $collection): bool
-    {
-        return (
-            $user &&
-            $user->id === $collection->user_id &&
-            ($collection->type === 'collection' || $collection->type === 'news')
-        );
-    }
-
     public static function canAddLinks(?models\User $user, models\Collection $collection): bool
     {
         if (!$user) {

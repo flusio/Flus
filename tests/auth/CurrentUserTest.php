@@ -11,6 +11,7 @@ use tests\factories\UserFactory;
 class CurrentUserTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\InitializerHelper;
+    use \Minz\Tests\TimeHelper;
     use \tests\FakerHelper;
 
     #[\PHPUnit\Framework\Attributes\Before]
@@ -21,6 +22,7 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateBrowserSessionCreatesASession(): void
     {
+        $this->freeze();
         $user = UserFactory::create();
         $request = new Request(
             'GET',

@@ -2,12 +2,13 @@
 
 namespace App\controllers\collections;
 
-use Minz\Request;
-use Minz\Response;
 use App\auth;
 use App\controllers\BaseController;
+use App\forms;
 use App\models;
 use App\utils;
+use Minz\Request;
+use Minz\Response;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -17,95 +18,72 @@ class Images extends BaseController
 {
     /**
      * @request_param string id
-     * @request_param string from
      *
-     * @response 302 /login?redirect_to=:from
-     *     If not connected
-     * @response 404
-     *     If the collection doesn’t exist or is inaccessible
      * @response 200
-     *     On success
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the collection doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot update the collection.
      */
     public function edit(Request $request): Response
     {
-        $from = $request->parameters->getString('from', '');
+        $user = auth\CurrentUser::require();
+        $collection = models\Collection::requireFromRequest($request);
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
+        auth\Access::require($user, 'update', $collection);
 
-        $collection_id = $request->parameters->getString('id', '');
-        $collection = models\Collection::find($collection_id);
-
-        $can_update = $collection && auth\CollectionsAccess::canUpdate($user, $collection);
-        if (!$can_update) {
-            return Response::notFound('not_found.phtml');
-        }
+        $form = new forms\collections\EditCollectionImage();
 
         return Response::ok('collections/images/edit.phtml', [
             'collection' => $collection,
-            'from' => $from,
+            'form' => $form,
         ]);
     }
 
     /**
      * @request_param string id
      * @request_param file image
-     * @request_param string csrf
-     * @request_param string from
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=:from
-     *     If not connected
-     * @response 404
-     *     If the collection doesn’t exist or is inaccessible
      * @response 400
-     *     If CSRF or file is invalid
+     *     If at least one of the parameters is invalid.
      * @response 302 :from
-     *     On success
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the collection doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot update the collection.
      */
     public function update(Request $request): Response
     {
-        $image_file = $request->parameters->getFile('image');
-        $collection_id = $request->parameters->getString('id', '');
-        $from = $request->parameters->getString('from', '');
-        $csrf = $request->parameters->getString('csrf', '');
+        $user = auth\CurrentUser::require();
+        $collection = models\Collection::requireFromRequest($request);
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
+        auth\Access::require($user, 'update', $collection);
 
-        $collection = models\Collection::find($collection_id);
+        $form = new forms\collections\EditCollectionImage();
 
-        $can_update = $collection && auth\CollectionsAccess::canUpdate($user, $collection);
-        if (!$can_update) {
-            return Response::notFound('not_found.phtml');
-        }
+        $form->handleRequest($request);
 
-        if (!$image_file) {
+        if (!$form->validate()) {
             return Response::badRequest('collections/images/edit.phtml', [
                 'collection' => $collection,
-                'from' => $from,
-                'error' => _('The file is required.'),
+                'form' => $form,
             ]);
         }
 
-        if ($image_file->isTooLarge()) {
-            return Response::badRequest('collections/images/edit.phtml', [
-                'collection' => $collection,
-                'from' => $from,
-                'error' => _('This file is too large.'),
-            ]);
-        } elseif ($image_file->error) {
-            return Response::badRequest('collections/images/edit.phtml', [
-                'collection' => $collection,
-                'from' => $from,
-                'error' => vsprintf(_('This file cannot be uploaded (error %d).'), [$image_file->error]),
-            ]);
-        }
+        $image_file = $form->image;
 
-        if (!\App\Csrf::validate($csrf)) {
-            return Response::badRequest('collections/images/edit.phtml', [
-                'collection' => $collection,
-                'from' => $from,
-                'error' => _('A security verification failed: you should retry to submit the form.'),
-            ]);
-        }
+        // Cannot be null as $form->validate() is true, which means the
+        // $form->image attribute is set.
+        assert($image_file !== null);
 
         $media_path = \App\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($collection->id);
@@ -122,28 +100,11 @@ class Images extends BaseController
             @mkdir($large_path, 0755, true);
         }
 
-        $image_data = $image_file->content();
+        $image_data = $image_file->content() ?: '';
 
-        $card_image = null;
-        $cover_image = null;
-        $large_image = null;
-
-        if ($image_data !== false) {
-            try {
-                $card_image = models\Image::fromString($image_data);
-                $cover_image = models\Image::fromString($image_data);
-                $large_image = models\Image::fromString($image_data);
-            } catch (\DomainException $e) {
-            }
-        }
-
-        if (!$card_image || !$cover_image || !$large_image) {
-            return Response::badRequest('collections/images/edit.phtml', [
-                'collection' => $collection,
-                'from' => $from,
-                'error' => _('The photo must be <abbr>PNG</abbr> or <abbr>JPG</abbr>.'),
-            ]);
-        }
+        $card_image = models\Image::fromString($image_data);
+        $cover_image = models\Image::fromString($image_data);
+        $large_image = models\Image::fromString($image_data);
 
         $card_image->resize(300, 150);
         $cover_image->resize(300, 300);
@@ -163,6 +124,6 @@ class Images extends BaseController
         $collection->image_filename = $image_filename;
         $collection->save();
 
-        return Response::found($from);
+        return Response::found(utils\RequestHelper::from($request));
     }
 }

@@ -2,11 +2,13 @@
 
 namespace App\controllers\collections;
 
-use Minz\Request;
-use Minz\Response;
 use App\auth;
 use App\controllers\BaseController;
+use App\forms;
 use App\models;
+use App\utils;
+use Minz\Request;
+use Minz\Response;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -15,36 +17,38 @@ use App\models;
 class Followers extends BaseController
 {
     /**
-     * Make the current user following the given collection
+     * Make the current user following the given collection.
      *
      * @request_param string id
-     * @request_param string from
-     * @request_param string csrf
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=:from
-     *     if not connected
-     * @response 404
-     *     if the collection doesn’t exist or user hasn't access
      * @response 302 :from
-     *     if CSRF is invalid
+     * @flash error
+     *     If the CSRF token is invalid.
      * @response 302 :from
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the collection doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot view the collection.
      */
     public function create(Request $request): Response
     {
-        $collection_id = $request->parameters->getString('id', '');
-        $from = $request->parameters->getString('from', '');
-        $csrf = $request->parameters->getString('csrf', '');
+        $user = auth\CurrentUser::require();
+        $collection = models\Collection::requireFromRequest($request);
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
+        auth\Access::require($user, 'view', $collection);
 
-        $collection = models\Collection::find($collection_id);
-        $can_view = $collection && auth\CollectionsAccess::canView($user, $collection);
-        if (!$can_view) {
-            return Response::notFound('not_found.phtml');
-        }
+        $from = utils\RequestHelper::from($request);
 
-        if (!\App\Csrf::validate($csrf)) {
-            \Minz\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
+        $form = new forms\collections\FollowCollection();
+        $form->handleRequest($request);
+
+        if (!$form->validate()) {
+            \Minz\Flash::set('error', $form->error('@base'));
             return Response::found($from);
         }
 
@@ -57,35 +61,34 @@ class Followers extends BaseController
     }
 
     /**
-     * Make the current user following the given collection
+     * Make the current user unfollowing the given collection.
      *
      * @request_param string id
-     * @request_param string from
-     * @request_param string csrf
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=:from
-     *     if not connected
-     * @response 404
-     *     if the collection doesn’t exist
      * @response 302 :from
-     *     if CSRF is invalid
+     * @flash error
+     *     If the CSRF token is invalid.
      * @response 302 :from
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the collection doesn't exist.
      */
     public function delete(Request $request): Response
     {
-        $collection_id = $request->parameters->getString('id', '');
-        $from = $request->parameters->getString('from', '');
-        $csrf = $request->parameters->getString('csrf', '');
+        $user = auth\CurrentUser::require();
+        $collection = models\Collection::requireFromRequest($request);
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
+        $from = utils\RequestHelper::from($request);
 
-        $collection = models\Collection::find($collection_id);
-        if (!$collection) {
-            return Response::notFound('not_found.phtml');
-        }
+        $form = new forms\collections\UnfollowCollection();
+        $form->handleRequest($request);
 
-        if (!\App\Csrf::validate($csrf)) {
-            \Minz\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
+        if (!$form->validate()) {
+            \Minz\Flash::set('error', $form->error('@base'));
             return Response::found($from);
         }
 

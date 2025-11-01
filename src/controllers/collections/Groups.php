@@ -2,163 +2,113 @@
 
 namespace App\controllers\collections;
 
-use Minz\Request;
-use Minz\Response;
 use App\auth;
 use App\controllers\BaseController;
+use App\forms;
 use App\models;
 use App\utils;
+use Minz\Request;
+use Minz\Response;
 
 class Groups extends BaseController
 {
     /**
      * @request_param string id
-     * @request_param string from
      *
-     * @response 302 /login?redirect_to=:from
-     *     If not connected
      * @response 404
-     *     If the collection doesn’t exist or is inaccessible
+     *     If the user cannot update the collection and is not following the
+     *     collection.
      * @response 200
-     *     On success
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the collection doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot view the collection.
      */
     public function edit(Request $request): Response
     {
-        $from = $request->parameters->getString('from', '');
-        $collection_id = $request->parameters->getString('id', '');
+        $user = auth\CurrentUser::require();
+        $collection = models\Collection::requireFromRequest($request);
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
+        auth\Access::require($user, 'view', $collection);
 
-        $collection = models\Collection::find($collection_id);
-
-        $can_view = $collection && auth\CollectionsAccess::canView($user, $collection);
-        if (!$can_view) {
-            return Response::notFound('not_found.phtml');
-        }
-
-        $can_update = auth\CollectionsAccess::canUpdateGroup($user, $collection);
+        $can_update_group = auth\Access::can($user, 'updateGroup', $collection);
         $is_following = $user->isFollowing($collection->id);
-        if (!$can_update && !$is_following) {
+        if (!$can_update_group && !$is_following) {
             return Response::notFound('not_found.phtml');
         }
 
-        $existing_group = $collection->groupForUser($user->id);
-        if ($existing_group) {
-            $name = $existing_group->name;
-        } else {
-            $name = '';
-        }
+        $group = $collection->groupForUser($user->id);
 
-        $groups = models\Group::listBy([
-            'user_id' => $user->id,
+        $form = new forms\collections\EditCollectionGroup([
+            'name' => $group ? $group->name : '',
+        ], options: [
+            'user' => $user,
         ]);
-        $groups = utils\Sorter::localeSort($groups, 'name');
 
         return Response::ok('collections/groups/edit.phtml', [
             'collection' => $collection,
-            'groups' => $groups,
-            'from' => $from,
-            'name' => $name,
-            'name_max_length' => models\Group::NAME_MAX_LENGTH,
+            'form' => $form,
         ]);
     }
 
     /**
      * @request_param string id
      * @request_param string name
-     * @request_param string csrf
-     * @request_param string from
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=:from
-     *     If not connected
      * @response 404
-     *     If the collection doesn’t exist or is inaccessible
+     *     If the user cannot update the collection and is not following the
+     *     collection.
      * @response 400
-     *     If CSRF or name is invalid
+     *     If at least one of the parameters is invalid.
      * @response 302 :from
-     *     On success
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the collection doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot view the collection.
      */
     public function update(Request $request): Response
     {
-        $from = $request->parameters->getString('from', '');
-        $name = $request->parameters->getString('name', '');
-        $collection_id = $request->parameters->getString('id', '');
-        $csrf = $request->parameters->getString('csrf', '');
+        $user = auth\CurrentUser::require();
+        $collection = models\Collection::requireFromRequest($request);
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
+        auth\Access::require($user, 'view', $collection);
 
-        $collection = models\Collection::find($collection_id);
-
-        $can_view = $collection && auth\CollectionsAccess::canView($user, $collection);
-        if (!$can_view) {
-            return Response::notFound('not_found.phtml');
-        }
-
-        $can_update = auth\CollectionsAccess::canUpdateGroup($user, $collection);
+        $can_update_group = auth\Access::can($user, 'updateGroup', $collection);
         $is_following = $user->isFollowing($collection->id);
-        if (!$can_update && !$is_following) {
+        if (!$can_update_group && !$is_following) {
             return Response::notFound('not_found.phtml');
         }
 
-        $groups = models\Group::listBy([
-            'user_id' => $user->id,
+        $form = new forms\collections\EditCollectionGroup(options: [
+            'user' => $user,
         ]);
-        $groups = utils\Sorter::localeSort($groups, 'name');
 
-        if (!\App\Csrf::validate($csrf)) {
+        $form->handleRequest($request);
+
+        if (!$form->validate()) {
             return Response::badRequest('collections/groups/edit.phtml', [
                 'collection' => $collection,
-                'groups' => $groups,
-                'from' => $from,
-                'name' => $name,
-                'name_max_length' => models\Group::NAME_MAX_LENGTH,
-                'error' => _('A security verification failed: you should retry to submit the form.'),
+                'form' => $form,
             ]);
         }
 
-        if ($name) {
-            $group = new models\Group($user->id, $name);
+        $group = $form->group();
 
-            if (!$group->validate()) {
-                return Response::badRequest('collections/groups/edit.phtml', [
-                    'collection' => $collection,
-                    'groups' => $groups,
-                    'from' => $from,
-                    'name' => $name,
-                    'name_max_length' => models\Group::NAME_MAX_LENGTH,
-                    'errors' => $group->errors(),
-                ]);
-            }
-
-            $existing_group_key = array_search($group->name, array_column($groups, 'name'));
-            if ($existing_group_key !== false) {
-                $group = $groups[$existing_group_key];
-            } else {
-                $group->save();
-            }
-
-            $group_id = $group->id;
-        } else {
-            $group_id = null;
+        if ($group && !$group->isPersisted()) {
+            $group->save();
         }
 
-        if ($can_update) {
-            $collection->group_id = $group_id;
-            $collection->save();
-        }
+        $user->setCollectionGroup($collection, $group);
 
-        if ($is_following) {
-            $followed_collection = models\FollowedCollection::findBy([
-                'user_id' => $user->id,
-                'collection_id' => $collection->id,
-            ]);
-
-            if ($followed_collection) {
-                $followed_collection->group_id = $group_id;
-                $followed_collection->save();
-            }
-        }
-
-        return Response::found($from);
+        return Response::found(utils\RequestHelper::from($request));
     }
 }

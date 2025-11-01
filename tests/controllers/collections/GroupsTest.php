@@ -2,6 +2,7 @@
 
 namespace App\controllers\collections;
 
+use App\forms;
 use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\CollectionShareFactory;
@@ -12,6 +13,7 @@ use tests\factories\UserFactory;
 class GroupsTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\CsrfHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
@@ -27,11 +29,8 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'name' => $collection_name,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('GET', "/collections/{$collection->id}/group", [
-            'from' => $from,
-        ]);
+        $response = $this->appRun('GET', "/collections/{$collection->id}/group");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseTemplateName($response, 'collections/groups/edit.phtml');
@@ -52,11 +51,8 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'group_id' => $group->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('GET', "/collections/{$collection->id}/group", [
-            'from' => $from,
-        ]);
+        $response = $this->appRun('GET', "/collections/{$collection->id}/group");
 
         $this->assertResponseContains($response, $group_name);
     }
@@ -76,11 +72,8 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'collection_id' => $collection->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('GET', "/collections/{$collection->id}/group", [
-            'from' => $from,
-        ]);
+        $response = $this->appRun('GET', "/collections/{$collection->id}/group");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseTemplateName($response, 'collections/groups/edit.phtml');
@@ -113,11 +106,8 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
             'group_id' => $group->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('GET', "/collections/{$collection->id}/group", [
-            'from' => $from,
-        ]);
+        $response = $this->appRun('GET', "/collections/{$collection->id}/group");
 
         $this->assertResponseContains($response, $group_name);
         $this->assertResponseNotContains($response, $other_group_name);
@@ -130,14 +120,10 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('GET', "/collections/{$collection->id}/group", [
-            'from' => $from,
-        ]);
+        $response = $this->appRun('GET', "/collections/{$collection->id}/group");
 
-        $from_encoded = urlencode($from);
-        $this->assertResponseCode($response, 302, "/login?redirect_to={$from_encoded}");
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Fcollections%2F{$collection->id}%2Fgroup");
     }
 
     public function testEditFailsIfCollectionDoesNotExist(): void
@@ -147,11 +133,8 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('GET', '/collections/not-an-id/group', [
-            'from' => $from,
-        ]);
+        $response = $this->appRun('GET', '/collections/not-an-id/group');
 
         $this->assertResponseCode($response, 404);
     }
@@ -165,11 +148,8 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('GET', "/collections/{$collection->id}/group", [
-            'from' => $from,
-        ]);
+        $response = $this->appRun('GET', "/collections/{$collection->id}/group");
 
         $this->assertResponseCode($response, 404);
     }
@@ -187,11 +167,8 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
             'type' => 'write',
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('GET', "/collections/{$collection->id}/group", [
-            'from' => $from,
-        ]);
+        $response = $this->appRun('GET', "/collections/{$collection->id}/group");
 
         $this->assertResponseCode($response, 404);
     }
@@ -205,15 +182,13 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionGroup::class),
             'name' => $group_name,
         ]);
 
-        $this->assertResponseCode($response, 302, $from);
+        $this->assertResponseCode($response, 302, "/collections/{$collection->id}/group");
     }
 
     public function testUpdateCreatesGroup(): void
@@ -226,13 +201,11 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'group_id' => null,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $this->assertSame(0, models\Group::count());
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionGroup::class),
             'name' => $group_name,
         ]);
 
@@ -261,13 +234,11 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
             'group_id' => null,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $this->assertSame(0, models\Group::count());
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionGroup::class),
             'name' => $group_name,
         ]);
 
@@ -289,15 +260,13 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'group_id' => $group->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionGroup::class),
             'name' => '',
         ]);
 
-        $this->assertResponseCode($response, 302, $from);
+        $this->assertResponseCode($response, 302, "/collections/{$collection->id}/group");
         $collection = $collection->reload();
         $this->assertNull($collection->group_id);
     }
@@ -316,13 +285,11 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'name' => $group_name,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $this->assertSame(1, models\Group::count());
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionGroup::class),
             'name' => $group_name,
         ]);
 
@@ -333,9 +300,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateRedirectsIfNotConnected(): void
     {
-        $user = UserFactory::create([
-            'csrf' => 'a token',
-        ]);
+        $user = UserFactory::create();
         /** @var string */
         $group_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
@@ -343,16 +308,13 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'group_id' => null,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
-            'csrf' => 'a token',
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionGroup::class),
             'name' => $group_name,
         ]);
 
-        $from_encoded = urlencode($from);
-        $this->assertResponseCode($response, 302, "/login?redirect_to={$from_encoded}");
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Fcollections%2F{$collection->id}%2Fgroup");
         $this->assertSame(0, models\Group::count());
     }
 
@@ -365,11 +327,9 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/not-an-id/group", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionGroup::class),
             'name' => $group_name,
         ]);
 
@@ -388,11 +348,9 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionGroup::class),
             'name' => $group_name,
         ]);
 
@@ -416,11 +374,9 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
             'type' => 'write',
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionGroup::class),
             'name' => $group_name,
         ]);
 
@@ -439,11 +395,9 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionGroup::class),
             'name' => $group_name,
         ]);
 
@@ -463,11 +417,9 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'group_id' => null,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
-            'csrf' => 'not the token',
-            'from' => $from,
+            'csrf_token' => 'not the token',
             'name' => $group_name,
         ]);
 

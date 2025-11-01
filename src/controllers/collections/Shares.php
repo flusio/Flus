@@ -2,49 +2,41 @@
 
 namespace App\controllers\collections;
 
-use Minz\Request;
-use Minz\Response;
 use App\auth;
 use App\controllers\BaseController;
+use App\forms;
 use App\models;
 use App\utils;
+use Minz\Request;
+use Minz\Response;
 
 class Shares extends BaseController
 {
     /**
      * @request_param string id
-     * @request_param string from
      *
-     * @response 302 /login?redirect_to=:from
-     *     If not connected
-     * @response 404
-     *     If the collection doesn’t exist or is inaccessible
      * @response 200
-     *     On success
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the collection doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot update the collection.
      */
     public function index(Request $request): Response
     {
-        $current_user = auth\CurrentUser::get();
-        $from = $request->parameters->getString('from', '');
-        if (!$current_user) {
-            return Response::redirect('login', [
-                'redirect_to' => $from,
-            ]);
-        }
+        $user = auth\CurrentUser::require();
+        $collection = models\Collection::requireFromRequest($request);
 
-        $collection_id = $request->parameters->getString('id', '');
-        $collection = models\Collection::find($collection_id);
-
-        $can_update = $collection && auth\CollectionsAccess::canUpdate($current_user, $collection);
-        if (!$can_update) {
-            return Response::notFound('not_found.phtml');
-        }
+        auth\Access::require($user, 'update', $collection);
 
         return Response::ok('collections/shares/index.phtml', [
             'collection' => $collection,
-            'from' => $from,
-            'type' => 'read',
-            'user_id' => '',
+            'form' => new forms\collections\ShareCollection(options: [
+                'collection' => $collection,
+            ]),
         ]);
     }
 
@@ -52,207 +44,94 @@ class Shares extends BaseController
      * @request_param string id
      * @request_param string user_id
      * @request_param string type
-     * @request_param string csrf
-     * @request_param string from
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=:from
-     *     If not connected
-     * @response 404
-     *     If the collection doesn’t exist or is inaccessible
      * @response 400
-     *     If user_id is the same as the current user id, or user_id doesn't
-     *     exist, or collection is already shared with user_id, or type or CSRF
-     *     is invalid
+     *     If at least one of the parameters is invalid.
      * @response 200
-     *     On success
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the collection doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot update the collection.
      */
     public function create(Request $request): Response
     {
-        $current_user = auth\CurrentUser::get();
-        $from = $request->parameters->getString('from', '');
-        if (!$current_user) {
-            return Response::redirect('login', [
-                'redirect_to' => $from,
-            ]);
-        }
+        $user = auth\CurrentUser::require();
+        $collection = models\Collection::requireFromRequest($request);
 
-        $collection_id = $request->parameters->getString('id', '');
-        $user_id = $request->parameters->getString('user_id', '');
-        $type = $request->parameters->getString('type', '');
-        $csrf = $request->parameters->getString('csrf', '');
+        auth\Access::require($user, 'update', $collection);
 
-        // We also accept profiles URLs
-        $user_id = $this->extractUserId($user_id);
-
-        $collection = models\Collection::find($collection_id);
-        $can_update = $collection && auth\CollectionsAccess::canUpdate($current_user, $collection);
-        if (!$can_update) {
-            return Response::notFound('not_found.phtml');
-        }
-
-        if (!\App\Csrf::validate($csrf)) {
-            return Response::badRequest('collections/shares/index.phtml', [
-                'collection' => $collection,
-                'from' => $from,
-                'type' => $type,
-                'user_id' => $user_id,
-                'error' => _('A security verification failed: you should retry to submit the form.'),
-            ]);
-        }
-
-        if ($current_user->id === $user_id) {
-            return Response::badRequest('collections/shares/index.phtml', [
-                'collection' => $collection,
-                'from' => $from,
-                'type' => $type,
-                'user_id' => $user_id,
-                'errors' => [
-                    'user_id' => _('You can’t share access with yourself.'),
-                ],
-            ]);
-        }
-
-        $support_user = models\User::supportUser();
-        if (
-            !models\User::exists($user_id) ||
-            $support_user->id === $user_id
-        ) {
-            return Response::badRequest('collections/shares/index.phtml', [
-                'collection' => $collection,
-                'from' => $from,
-                'type' => $type,
-                'user_id' => $user_id,
-                'errors' => [
-                    'user_id' => _('This user doesn’t exist.'),
-                ],
-            ]);
-        }
-
-        $existing_collection_share = models\CollectionShare::findBy([
-            'collection_id' => $collection->id,
-            'user_id' => $user_id,
+        $form = new forms\collections\ShareCollection(options: [
+            'collection' => $collection,
         ]);
-        if ($existing_collection_share) {
+
+        $form->handleRequest($request);
+
+        if (!$form->validate()) {
             return Response::badRequest('collections/shares/index.phtml', [
                 'collection' => $collection,
-                'from' => $from,
-                'type' => $type,
-                'user_id' => $user_id,
-                'errors' => [
-                    'user_id' => _('The collection is already shared with this user.'),
-                ],
+                'form' => $form,
             ]);
         }
 
-        $collection_share = new models\CollectionShare($user_id, $collection->id, $type);
-
-        if (!$collection_share->validate()) {
-            return Response::badRequest('collections/shares/index.phtml', [
-                'collection' => $collection,
-                'from' => $from,
-                'type' => $type,
-                'user_id' => $user_id,
-                'errors' => $collection_share->errors(),
-            ]);
-        }
-
-        $collection_share->save();
+        $collection->shareWith($form->user(), $form->type());
 
         return Response::ok('collections/shares/index.phtml', [
             'collection' => $collection,
-            'from' => $from,
-            'type' => 'read',
-            'user_id' => '',
+            'form' => new forms\collections\ShareCollection(options: [
+                'collection' => $collection,
+            ]),
         ]);
     }
 
     /**
      * @request_param string id
-     * @request_param string from
-     * @request_param string csrf
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=:from
-     *     If not connected
-     * @response 404
-     *     If the shared collection doesn’t exist or is inaccessible
-     * @response 400
-     *     If CSRF is invalid
+     * @response 302 :from
+     * @flash error
+     *     If the CSRF token is invalid.
      * @response 200
-     *     On success
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the collection doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot update the collection.
      */
     public function delete(Request $request): Response
     {
-        $current_user = auth\CurrentUser::get();
-        $from = $request->parameters->getString('from', '');
-        if (!$current_user) {
-            return Response::redirect('login', [
-                'redirect_to' => $from,
-            ]);
-        }
+        $user = auth\CurrentUser::require();
+        $collection = models\Collection::requireFromRequest($request);
 
-        $csrf = $request->parameters->getString('csrf', '');
-        $collection_share_id = $request->parameters->getInteger('id', -1);
-        $collection_share = models\CollectionShare::find($collection_share_id);
-        if (!$collection_share) {
-            return Response::notFound('not_found.phtml');
-        }
+        auth\Access::require($user, 'update', $collection);
 
-        $collection = models\Collection::find($collection_share->collection_id);
-        $can_update = $collection && auth\CollectionsAccess::canUpdate($current_user, $collection);
-        if (!$can_update) {
-            return Response::notFound('not_found.phtml');
-        }
+        $form = new forms\collections\UnshareCollection();
+        $form->handleRequest($request);
 
-        if (!\App\Csrf::validate($csrf)) {
+        if (!$form->validate()) {
+            \Minz\Flash::set('error', $form->error('@base'));
             return Response::badRequest('collections/shares/index.phtml', [
                 'collection' => $collection,
-                'from' => $from,
-                'type' => 'read',
-                'user_id' => '',
-                'error' => _('A security verification failed: you should retry to submit the form.'),
+                'form' => new forms\collections\ShareCollection(options: [
+                    'collection' => $collection,
+                ]),
             ]);
         }
 
-        models\CollectionShare::delete($collection_share->id);
+        $collection->unshareWith($form->user());
 
         return Response::ok('collections/shares/index.phtml', [
             'collection' => $collection,
-            'from' => $from,
-            'type' => 'read',
-            'user_id' => '',
+            'form' => new forms\collections\ShareCollection(options: [
+                'collection' => $collection,
+            ]),
         ]);
-    }
-
-    /**
-     * Extract a user_id from a string.
-     *
-     * The string can be the user_id, or the URL to the profile of a user.
-     * This method doesn't check if the id exists or is valid.
-     */
-    private function extractUserId(string $string): string
-    {
-        $string = trim($string);
-        $url = \SpiderBits\Url::sanitize($string);
-        $base_url = \Minz\Url::baseUrl();
-
-        if (!str_starts_with($url, $base_url)) {
-            return $string;
-        }
-
-        $parsed_url = parse_url($url);
-        $path = $parsed_url['path'] ?? '/';
-
-        $result = preg_match('#^/p/(?P<id>\d+)$#', $path, $matches);
-        if ($result !== 1) {
-            return $string;
-        }
-
-        $user_id = $matches['id'];
-
-        if (!models\User::exists($user_id)) {
-            return $string;
-        }
-
-        return $user_id;
     }
 }

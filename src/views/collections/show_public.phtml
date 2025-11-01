@@ -167,46 +167,43 @@
                             <div class="popup__separator"></div>
 
                             <form method="post" action="<?= url('mark collection as read', ['id' => $collection->id]) ?>" role="menuitem">
-                                <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-                                <input type="hidden" name="from" value="<?= url('collection', $current_url_params) ?>" />
-
                                 <button class="popup__item popup__item--button">
                                     <?= icon('check') ?>
                                     <?= _('Mark all as read') ?>
                                 </button>
+
+                                <input type="hidden" name="csrf_token" value="<?= csrf_token('collections\\MarkCollectionAsRead') ?>" />
                             </form>
 
                             <form method="post" action="<?= url('never read collection', ['id' => $collection->id]) ?>" role="menuitem">
-                                <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-                                <input type="hidden" name="from" value="<?= url('collection', $current_url_params) ?>" />
-
                                 <button class="popup__item popup__item--button">
                                     <?= icon('times') ?>
                                     <?= _('Remove the links from the news') ?>
                                 </button>
+
+                                <input type="hidden" name="csrf_token" value="<?= csrf_token('collections\\MarkCollectionAsNever') ?>" />
                             </form>
 
                             <div class="popup__separator"></div>
 
                             <form method="post" action="<?= url('unfollow collection', ['id' => $collection->id]) ?>" role="menuitem">
-                                <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-                                <input type="hidden" name="from" value="<?= url('collection', $current_url_params) ?>" />
-
                                 <button class="popup__item popup__item--button">
                                     <?= icon('feed-stop') ?>
                                     <?= _('Unfollow') ?>
                                 </button>
+
+                                <input type="hidden" name="csrf_token" value="<?= csrf_token('collections\\UnfollowCollection') ?>" />
                             </form>
                         </nav>
                     </details>
                 <?php else: ?>
                     <form method="post" action="<?= url('follow collection', ['id' => $collection->id]) ?>">
-                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-                        <input type="hidden" name="from" value="<?= url('collection', $current_url_params) ?>" />
                         <button class="button--small">
                             <?= icon('feed') ?>
                             <?= _('Follow') ?>
                         </button>
+
+                        <input type="hidden" name="csrf_token" value="<?= csrf_token('collections\\FollowCollection') ?>" />
                     </form>
                 <?php endif; ?>
             <?php else: ?>

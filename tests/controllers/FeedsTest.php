@@ -2,6 +2,7 @@
 
 namespace App\controllers;
 
+use App\forms;
 use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\GroupFactory;
@@ -11,6 +12,7 @@ use tests\factories\UserFactory;
 class FeedsTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\CsrfHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
@@ -108,9 +110,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
 
-        $response = $this->appRun('GET', '/feeds/new', [
-            'from' => \Minz\Url::for('feeds'),
-        ]);
+        $response = $this->appRun('GET', '/feeds/new');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseTemplateName($response, 'feeds/new.phtml');
@@ -119,11 +119,9 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
 
     public function testNewRedirectsIfNotConnected(): void
     {
-        $response = $this->appRun('GET', '/feeds/new', [
-            'from' => \Minz\Url::for('feeds'),
-        ]);
+        $response = $this->appRun('GET', '/feeds/new');
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Ffeeds');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Ffeeds%2Fnew');
     }
 
     public function testCreateCreatesAFeedAndRedirectToTheFeed(): void
@@ -135,9 +133,8 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
 
         $response = $this->appRun('POST', '/feeds/new', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\collections\NewFeed::class),
             'url' => $feed_url,
-            'from' => \Minz\Url::for('feeds'),
         ]);
 
         $this->assertSame(1, models\Collection::countBy(['type' => 'feed']));
@@ -159,9 +156,8 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
 
         $response = $this->appRun('POST', '/feeds/new', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\collections\NewFeed::class),
             'url' => $url,
-            'from' => \Minz\Url::for('feeds'),
         ]);
 
         $this->assertSame(1, models\Collection::countBy(['type' => 'feed']));
@@ -178,12 +174,11 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
 
         $response = $this->appRun('POST', '/feeds/new', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\collections\NewFeed::class),
             'url' => $feed_url,
-            'from' => \Minz\Url::for('feeds'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Ffeeds');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Ffeeds%2Fnew');
         $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
     }
 
@@ -194,9 +189,8 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
 
         $response = $this->appRun('POST', '/feeds/new', [
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
             'url' => $feed_url,
-            'from' => \Minz\Url::for('feeds'),
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -210,9 +204,8 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $feed_url = 'ftp://flus.fr/carnet/feeds/all.atom.xml';
 
         $response = $this->appRun('POST', '/feeds/new', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\collections\NewFeed::class),
             'url' => $feed_url,
-            'from' => \Minz\Url::for('feeds'),
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -226,9 +219,8 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $feed_url = '';
 
         $response = $this->appRun('POST', '/feeds/new', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\collections\NewFeed::class),
             'url' => $feed_url,
-            'from' => \Minz\Url::for('feeds'),
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -255,9 +247,8 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         );
 
         $response = $this->appRun('POST', '/feeds/new', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\collections\NewFeed::class),
             'url' => $feed_url,
-            'from' => \Minz\Url::for('feeds'),
         ]);
 
         $this->assertResponseCode($response, 400);

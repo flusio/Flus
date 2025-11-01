@@ -135,6 +135,11 @@ class User
         return $this->email === $support_email;
     }
 
+    public function isOwning(Link|Collection $object): bool
+    {
+        return $object->user_id === $this->id;
+    }
+
     /**
      * Return the user' bookmarks collection
      */
@@ -205,6 +210,35 @@ class User
         }
 
         return $never_list;
+    }
+
+    public function initCollection(): Collection
+    {
+        return Collection::initCollection($this->id);
+    }
+
+    /**
+     * Set the collection's group for the user.
+     *
+     * If the collection is owned by the user, the group is attached to the
+     * current collection. Otherwise, the group is attached to the
+     * corresponding FollowedCollection.
+     *
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the user doesn't own the collection and is not following it.
+     */
+    public function setCollectionGroup(Collection $collection, ?Group $group): void
+    {
+        $group_id = $group ? $group->id : null;
+
+        if ($this->isOwning($collection)) {
+            $collection->group_id = $group_id;
+            $collection->save();
+        } else {
+            $followed_collection = $this->followedCollection($collection->id);
+            $followed_collection->group_id = $group_id;
+            $followed_collection->save();
+        }
     }
 
     /**
@@ -337,6 +371,20 @@ class User
         // oneself, otherwise the same id could be present in both counts.
         $count_writable_collections = $count_owned_collections + $count_shared_collections;
         return $count_writable_collections === count($collection_ids);
+    }
+
+    /**
+     * Return the corresponding FollowedCollection.
+     *
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the user is not following the collection.
+     */
+    public function followedCollection(string $collection_id): FollowedCollection
+    {
+        return FollowedCollection::requireBy([
+            'user_id' => $this->id,
+            'collection_id' => $collection_id,
+        ]);
     }
 
     /**

@@ -1,0 +1,127 @@
+<?php
+
+namespace App\forms\collections;
+
+use App\forms\BaseForm;
+use App\models;
+use Minz\Form;
+use Minz\Request;
+use Minz\Translatable;
+use Minz\Validable;
+
+/**
+ * @phpstan-import-type ShareType from models\CollectionShare
+ *
+ * @author  Marien Fressinaud <dev@marienfressinaud.fr>
+ * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
+ */
+class ShareCollection extends BaseForm
+{
+    #[Form\Field]
+    #[Validable\Presence(
+        message: new Translatable('The type is required.'),
+    )]
+    #[Validable\Inclusion(
+        in: models\CollectionShare::VALID_TYPES,
+        message: new Translatable('The type is invalid.'),
+    )]
+    public string $type = 'read';
+
+    #[Form\Field(transform: 'trim')]
+    public string $user_id = '';
+
+    private ?models\User $cache_user = null;
+
+    public function user(): models\User
+    {
+        if ($this->cache_user === null) {
+            $this->cache_user = models\User::require($this->user_id);
+        }
+
+        return $this->cache_user;
+    }
+
+    /**
+     * @return ShareType
+     */
+    public function type(): string
+    {
+        if (!in_array($this->type, models\CollectionShare::VALID_TYPES)) {
+            throw new \LogicException("Type {$this->type} is invalid.");
+        }
+
+        return $this->type;
+    }
+
+    public function collection(): models\Collection
+    {
+        $collection = $this->options->get('collection');
+
+        if (!($collection instanceof models\Collection)) {
+            throw new \LogicException('Collection must be passed as an option of the form.');
+        }
+
+        return $collection;
+    }
+
+    #[Form\OnHandleRequest]
+    public function extractUserIdFromProfileUrl(Request $request): void
+    {
+        $profile_url = \SpiderBits\Url::sanitize($this->user_id);
+        $base_url = \Minz\Url::baseUrl();
+
+        if (!str_starts_with($profile_url, $base_url)) {
+            return;
+        }
+
+        $parsed_url = parse_url($profile_url);
+        $path = $parsed_url['path'] ?? '/';
+
+        $result = preg_match('#^/p/(?P<id>\d+)$#', $path, $matches);
+        if ($result !== 1) {
+            return;
+        }
+
+        $this->user_id = $matches['id'];
+    }
+
+    #[Validable\Check]
+    public function checkUserIdIsValid(): void
+    {
+        $collection = $this->collection();
+        $support_user = models\User::supportUser();
+
+        if (
+            !models\User::exists($this->user_id) ||
+            $support_user->id === $this->user_id
+        ) {
+            $this->addError(
+                'user_id',
+                'user_id.unknown',
+                _('This user doesn’t exist.'),
+            );
+            return;
+        }
+
+
+        if ($collection->user_id === $this->user_id) {
+            $this->addError(
+                'user_id',
+                'user_id.same_as_owner',
+                _('You can’t share access with the owner of the collection.'),
+            );
+            return;
+        }
+
+        $user = $this->user();
+
+        if ($collection->sharedWith($user)) {
+            $this->addError(
+                'user_id',
+                'user_id.already_shared',
+                _('The collection is already shared with this user.'),
+            );
+            return;
+        }
+    }
+}

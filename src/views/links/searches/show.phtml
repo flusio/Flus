@@ -131,21 +131,21 @@
                     <div class="card__footer card__footer--centered">
                         <?php if ($current_user->isFollowing($feed->id)): ?>
                             <form data-turbo-preserve-scroll method="post" action="<?= url('unfollow collection', ['id' => $feed->id]) ?>">
-                                <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-                                <input type="hidden" name="from" value="<?= $from ?>" />
                                 <button>
                                     <?= icon('feed-stop') ?>
                                     <?= _('Unfollow') ?>
                                 </button>
+
+                                <input type="hidden" name="csrf_token" value="<?= csrf_token('collections\\UnfollowCollection') ?>" />
                             </form>
                         <?php else: ?>
                             <form data-turbo-preserve-scroll method="post" action="<?= url('follow collection', ['id' => $feed->id]) ?>">
-                                <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-                                <input type="hidden" name="from" value="<?= $from ?>" />
                                 <button>
                                     <?= icon('feed') ?>
                                     <?= _('Follow') ?>
                                 </button>
+
+                                <input type="hidden" name="csrf_token" value="<?= csrf_token('collections\\FollowCollection') ?>" />
                             </form>
                         <?php endif; ?>
                     </div>

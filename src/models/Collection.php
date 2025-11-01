@@ -10,6 +10,8 @@ use Minz\Validable;
 /**
  * Represent a list containing a set of links.
  *
+ * @phpstan-import-type ShareType from CollectionShare
+ *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
@@ -18,6 +20,7 @@ class Collection
 {
     use dao\Collection;
     use Database\Recordable;
+    use Database\Resource;
     use Validable;
 
     public const VALID_TYPES = ['bookmarks', 'news', 'read', 'never', 'collection', 'feed'];
@@ -186,6 +189,24 @@ class Collection
         return $collection;
     }
 
+    public static function findOrBuildFeed(string $feed_url): self
+    {
+        $feed_url = \SpiderBits\Url::sanitize($feed_url);
+        $support_user = User::supportUser();
+
+        $feed = Collection::findBy([
+            'type' => 'feed',
+            'feed_url' => $feed_url,
+            'user_id' => $support_user->id,
+        ]);
+
+        if (!$feed) {
+            $feed = self::initFeed($support_user->id, $feed_url);
+        }
+
+        return $feed;
+    }
+
     /**
      * Return the name of the collection.
      *
@@ -292,12 +313,23 @@ class Collection
     }
 
     /**
+     * Set the collection's topics.
+     *
+     * @param Topic[] $topics
+     */
+    public function setTopics(array $topics): void
+    {
+        $topic_ids = array_column($topics, 'id');
+        CollectionToTopic::set($this->id, $topic_ids);
+    }
+
+    /**
      * Return the CollectionShares attached to the current collection
      *
      * @see CollectionShare::listComputedByCollectionId
      *
      * @param array{
-     *     'access_type'?: 'any'|'read'|'write',
+     *     'access_type'?: ShareType|'any',
      * } $options
      *
      * @return CollectionShare[]
@@ -313,6 +345,28 @@ class Collection
     }
 
     /**
+     * Share the collection with the given user.
+     *
+     * @param ShareType $access_type
+     */
+    public function shareWith(User $user, string $access_type): void
+    {
+        $collection_share = new CollectionShare($user->id, $this->id, $access_type);
+        $collection_share->save();
+    }
+
+    /**
+     * Unshare the collection with the given user.
+     */
+    public function unshareWith(User $user): void
+    {
+        CollectionShare::deleteBy([
+            'collection_id' => $this->id,
+            'user_id' => $user->id,
+        ]);
+    }
+
+    /**
      * Return whether the collections is shared with the given user.
      *
      * If $access_type is 'any' or 'read', the method returns true just if a
@@ -320,6 +374,8 @@ class Collection
      *
      * If $access_type is 'write', the method will check that the collection
      * share has a 'write' type.
+     *
+     * @param ShareType|'any' $access_type
      */
     public function sharedWith(User $user, string $access_type = 'any'): bool
     {

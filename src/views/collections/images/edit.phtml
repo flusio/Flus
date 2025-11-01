@@ -2,7 +2,7 @@
     $this->layout('base.phtml', [
         'title' => _('Collection illustration'),
         'canonical' => url_full('edit image collection', ['id' => $collection->id]),
-        'has_errors' => $error || $errors,
+        'has_errors' => $form->isInvalid(),
         'modal_enabled' => true,
     ]);
 ?>
@@ -28,16 +28,20 @@
         data-controller="autosubmit form-file"
         enctype="multipart/form-data"
     >
-        <?= $this->include('alerts/_error.phtml', ['message' => $this->safe('error')]) ?>
+        <?= $this->include('alerts/_error.phtml', ['message' => $form->error('@base')]) ?>
 
-        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-        <input type="hidden" name="from" value="<?= $from ?>" />
+        <?php if ($form->isInvalid('image')): ?>
+            <p id="image-error" class="form-group__error text--center">
+                <?= _('Error:') ?>
+                <?= $form->error('image') ?>
+            </p>
+        <?php endif; ?>
 
         <input
             type="file"
             name="image"
             id="image"
-            accept="image/png, image/jpeg"
+            accept="<?= $form->imageAcceptedMimetypes() ?>"
             data-action="autosubmit#submit"
             data-form-file-target="file"
             hidden
@@ -49,24 +53,21 @@
                 class="button--primary"
                 data-action="form-file#openFile"
                 data-autosubmit-target="actionButton"
-                aria-describedby="file-desc"
+                aria-describedby="file-caption"
+                <?php if ($form->isInvalid('image')): ?>
+                    aria-errormessage="image-error"
+                    aria-invalid="true"
+                <?php endif; ?>
             >
                 <?= _('Upload an image') ?>
             </button>
         </div>
 
-        <div id="file-desc">
-            <?php if (isset($errors['image_filename'])): ?>
-                <p class="form-group__error">
-                    <span class="sr-only"><?= _('Error') ?></span>
-                    <?= $errors['image_filename'] ?>
-                </p>
-            <?php endif; ?>
+        <p id="file-caption" class="form-group__caption text--centered">
+            <?= _('<abbr>PNG</abbr>, <abbr>JPG</abbr> and <abbr>WEBP</abbr> images only.') ?><br />
+            <?= _('The minimum recommended dimensions are 1100x400px.') ?>
+        </p>
 
-            <p class="form-group__caption text--centered">
-                <?= _('<abbr>PNG</abbr> or <abbr>JPG</abbr> images only.') ?><br />
-                <?= _('The minimum recommended dimensions are 1100x400px.') ?>
-            </p>
-        </div>
+        <input type="hidden" name="csrf_token" value="<?= csrf_token($form) ?>" />
     </form>
 </div>

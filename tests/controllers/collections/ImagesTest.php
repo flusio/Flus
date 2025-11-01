@@ -2,6 +2,7 @@
 
 namespace App\controllers\collections;
 
+use App\forms;
 use App\models;
 use App\utils;
 use tests\factories\CollectionFactory;
@@ -11,6 +12,7 @@ use tests\factories\UserFactory;
 class ImagesTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\CsrfHelper;
     use \Minz\Tests\FilesHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
@@ -27,11 +29,8 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'name' => $collection_name,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('GET', "/collections/{$collection->id}/image", [
-            'from' => $from,
-        ]);
+        $response = $this->appRun('GET', "/collections/{$collection->id}/image");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseTemplateName($response, 'collections/images/edit.phtml');
@@ -54,11 +53,8 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'type' => 'write',
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('GET', "/collections/{$collection->id}/image", [
-            'from' => $from,
-        ]);
+        $response = $this->appRun('GET', "/collections/{$collection->id}/image");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseTemplateName($response, 'collections/images/edit.phtml');
@@ -72,14 +68,10 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('GET', "/collections/{$collection->id}/image", [
-            'from' => $from,
-        ]);
+        $response = $this->appRun('GET', "/collections/{$collection->id}/image");
 
-        $from_encoded = urlencode($from);
-        $this->assertResponseCode($response, 302, "/login?redirect_to={$from_encoded}");
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Fcollections%2F{$collection->id}%2Fimage");
     }
 
     public function testEditFailsIfCollectionDoesNotExist(): void
@@ -89,11 +81,8 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('GET', '/collections/not-an-id/image', [
-            'from' => $from,
-        ]);
+        $response = $this->appRun('GET', '/collections/not-an-id/image');
 
         $this->assertResponseCode($response, 404);
     }
@@ -106,13 +95,10 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'user_id' => $other_user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('GET', "/collections/{$collection->id}/image", [
-            'from' => $from,
-        ]);
+        $response = $this->appRun('GET', "/collections/{$collection->id}/image");
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 403);
     }
 
     public function testEditFailsIfCollectionIsSharedWithReadAccess(): void
@@ -128,13 +114,10 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'type' => 'read',
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('GET', "/collections/{$collection->id}/image", [
-            'from' => $from,
-        ]);
+        $response = $this->appRun('GET', "/collections/{$collection->id}/image");
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 403);
     }
 
     public function testUpdateRedirectsToFrom(): void
@@ -149,17 +132,16 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         ]);
         $file = [
             'tmp_name' => $tmp_filepath,
+            'name' => 'image.png',
             'error' => UPLOAD_ERR_OK,
         ];
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/image", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionImage::class),
             'image' => $file,
         ]);
 
-        $this->assertResponseCode($response, 302, $from);
+        $this->assertResponseCode($response, 302, "/collections/{$collection->id}/image");
     }
 
     public function testUpdateSetsImageFilename(): void
@@ -174,13 +156,12 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         ]);
         $file = [
             'tmp_name' => $tmp_filepath,
+            'name' => 'image.png',
             'error' => UPLOAD_ERR_OK,
         ];
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/image", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionImage::class),
             'image' => $file,
         ]);
 
@@ -214,17 +195,16 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         ]);
         $file = [
             'tmp_name' => $tmp_filepath,
+            'name' => 'image.png',
             'error' => UPLOAD_ERR_OK,
         ];
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/image", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionImage::class),
             'image' => $file,
         ]);
 
-        $this->assertResponseCode($response, 302, $from);
+        $this->assertResponseCode($response, 302, "/collections/{$collection->id}/image");
         $collection = $collection->reload();
         $this->assertNotNull($collection->image_filename);
     }
@@ -233,9 +213,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
     {
         $image_filepath = \App\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
-        $user = UserFactory::create([
-            'csrf' => 'a token',
-        ]);
+        $user = UserFactory::create();
         $collection = CollectionFactory::create([
             'type' => 'collection',
             'user_id' => $user->id,
@@ -243,18 +221,16 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         ]);
         $file = [
             'tmp_name' => $tmp_filepath,
+            'name' => 'image.png',
             'error' => UPLOAD_ERR_OK,
         ];
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/image", [
-            'csrf' => 'a token',
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionImage::class),
             'image' => $file,
         ]);
 
-        $from_encoded = urlencode($from);
-        $this->assertResponseCode($response, 302, "/login?redirect_to={$from_encoded}");
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Fcollections%2F{$collection->id}%2Fimage");
         $collection = $collection->reload();
         $this->assertNull($collection->image_filename);
     }
@@ -271,13 +247,12 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         ]);
         $file = [
             'tmp_name' => $tmp_filepath,
+            'name' => 'image.png',
             'error' => UPLOAD_ERR_OK,
         ];
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', '/collections/not-an-id/image', [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionImage::class),
             'image' => $file,
         ]);
 
@@ -299,17 +274,16 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         ]);
         $file = [
             'tmp_name' => $tmp_filepath,
+            'name' => 'image.png',
             'error' => UPLOAD_ERR_OK,
         ];
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/image", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionImage::class),
             'image' => $file,
         ]);
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 403);
         $collection = $collection->reload();
         $this->assertNull($collection->image_filename);
     }
@@ -332,17 +306,16 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         ]);
         $file = [
             'tmp_name' => $tmp_filepath,
+            'name' => 'image.png',
             'error' => UPLOAD_ERR_OK,
         ];
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/image", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionImage::class),
             'image' => $file,
         ]);
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 403);
         $collection = $collection->reload();
         $this->assertNull($collection->image_filename);
     }
@@ -359,13 +332,12 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         ]);
         $file = [
             'tmp_name' => $tmp_filepath,
+            'name' => 'image.png',
             'error' => UPLOAD_ERR_OK,
         ];
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/image", [
-            'csrf' => 'not the token',
-            'from' => $from,
+            'csrf_token' => 'not the token',
             'image' => $file,
         ]);
 
@@ -384,11 +356,9 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'image_filename' => null,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/image", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionImage::class),
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -410,19 +380,18 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         ]);
         $file = [
             'tmp_name' => $tmp_filepath,
+            'name' => 'image.png',
             'error' => UPLOAD_ERR_OK,
         ];
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/image", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionImage::class),
             'image' => $file,
         ]);
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseTemplateName($response, 'collections/images/edit.phtml');
-        $this->assertResponseContains($response, 'The photo must be <abbr>PNG</abbr> or <abbr>JPG</abbr>');
+        $this->assertResponseContains($response, 'The file type must be one of the following: PNG, JPG, JPEG, WEBP.');
         $collection = $collection->reload();
         $this->assertNull($collection->image_filename);
     }
@@ -439,14 +408,13 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         ]);
         $file = [
             'tmp_name' => $tmp_filepath,
+            'name' => 'image.png',
             'error' => UPLOAD_ERR_OK,
             'is_uploaded_file' => false, // this is possible only during tests!
         ];
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/image", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionImage::class),
             'image' => $file,
         ]);
 
@@ -470,13 +438,12 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         ]);
         $file = [
             'tmp_name' => $tmp_filepath,
+            'name' => 'image.png',
             'error' => $error,
         ];
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/image", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionImage::class),
             'image' => $file,
         ]);
 
@@ -500,13 +467,12 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         ]);
         $file = [
             'tmp_name' => $tmp_filepath,
+            'name' => 'image.png',
             'error' => $error,
         ];
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/image", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionImage::class),
             'image' => $file,
         ]);
 

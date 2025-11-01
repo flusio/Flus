@@ -2,13 +2,14 @@
 
 namespace App\controllers\collections;
 
-use Minz\Request;
-use Minz\Response;
 use App\auth;
 use App\controllers\BaseController;
+use App\forms;
 use App\models;
 use App\services;
 use App\utils;
+use Minz\Request;
+use Minz\Response;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -21,33 +22,29 @@ class Links extends BaseController
      *
      * @request_param string id
      *     The collection id to which to add the new link
-     * @request_param string from
-     *     The page to redirect to after creation
      *
-     * @response 302 /login?redirect_to=:from
-     *     If not connected
-     * @response 404
-     *     If the collection doesn't exist, or if user has not write access to it
      * @response 200
-     *     On success
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the collection doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot add links to the collection.
      */
     public function new(Request $request): Response
     {
-        $collection_id = $request->parameters->getString('id', '');
-        $from = $request->parameters->getString('from', '');
+        $user = auth\CurrentUser::require();
+        $collection = models\Collection::requireFromRequest($request);
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
+        auth\Access::require($user, 'addLinks', $collection);
 
-        $collection = models\Collection::find($collection_id);
-        if (!$collection || !auth\CollectionsAccess::canAddLinks($user, $collection)) {
-            return Response::notFound('not_found.phtml');
-        }
+        $form = new forms\collections\AddLinkToCollection();
 
         return Response::ok('collections/links/new.phtml', [
             'collection' => $collection,
-            'url' => '',
-            'is_hidden' => false,
-            'from' => $from,
+            'form' => $form,
         ]);
     }
 
@@ -60,67 +57,45 @@ class Links extends BaseController
      *     The URL of the link to add
      * @request_param boolean is_hidden
      *     Whether the link should be hidden or not
-     * @request_param string from
-     *     The page to redirect to after creation
-     * @request_param string csrf
+     * @request_param string csrf_token
      *     The CSRF token
      *
-     * @response 302 /login?redirect_to=:from
-     *     If not connected
-     * @response 404
-     *     If the collection doesn't exist, or if user has not write access to it
      * @response 400
-     *     If the CSRF or the url is invalid
+     *     If at least one of the parameters is invalid.
      * @response 302 :from
-     *     On success
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the collection doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot add links to the collection.
      */
     public function create(Request $request): Response
     {
-        $collection_id = $request->parameters->getString('id', '');
+        $user = auth\CurrentUser::require();
+        $collection = models\Collection::requireFromRequest($request);
+
+        auth\Access::require($user, 'addLinks', $collection);
+
         $url = $request->parameters->getString('url', '');
-        $is_hidden = $request->parameters->getBoolean('is_hidden');
-        $from = $request->parameters->getString('from', '');
-        $csrf = $request->parameters->getString('csrf', '');
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
+        $link = $user->findOrBuildLink($url);
+        $form = new forms\collections\AddLinkToCollection(model: $link);
 
-        $collection = models\Collection::find($collection_id);
-        if (!$collection || !auth\CollectionsAccess::canAddLinks($user, $collection)) {
-            return Response::notFound('not_found.phtml');
-        }
+        $form->handleRequest($request);
 
-        if (!\App\Csrf::validate($csrf)) {
+        if (!$form->validate()) {
             return Response::badRequest('collections/links/new.phtml', [
                 'collection' => $collection,
-                'url' => $url,
-                'is_hidden' => $is_hidden,
-                'from' => $from,
-                'error' => _('A security verification failed: you should retry to submit the form.'),
+                'form' => $form,
             ]);
         }
 
-        $link = new models\Link($url, $user->id, $is_hidden);
+        $link = $form->model();
 
-        if (!$link->validate()) {
-            return Response::badRequest('collections/links/new.phtml', [
-                'collection' => $collection,
-                'url' => $url,
-                'is_hidden' => $is_hidden,
-                'from' => $from,
-                'errors' => $link->errors(),
-            ]);
-        }
-
-        $existing_link = models\Link::findBy([
-            'user_id' => $user->id,
-            // Can't use $link->url_hash directly since it's a calculated
-            // property, generated in database (and the link is not yet saved).
-            'url_hash' => models\Link::hashUrl($link->url),
-        ]);
-
-        if ($existing_link) {
-            $link = $existing_link;
-        } else {
+        if (!$link->isPersisted()) {
             $link_fetcher_service = new services\LinkFetcher([
                 'http_timeout' => 10,
                 'ignore_rate_limit' => true,
@@ -130,6 +105,6 @@ class Links extends BaseController
 
         $link->addCollection($collection);
 
-        return Response::found($from);
+        return Response::found(utils\RequestHelper::from($request));
     }
 }

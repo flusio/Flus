@@ -3,7 +3,7 @@
         'title' => _('New collection'),
         'canonical' => url_full('new collection'),
         'current_tab' => 'collections',
-        'has_errors' => $error || $errors,
+        'has_errors' => $form->isInvalid(),
         'modal_enabled' => true,
     ]);
 ?>
@@ -13,127 +13,9 @@
         <h1 id="modal-title"><?= _('New collection') ?></h1>
     </div>
 
-    <form
-        method="post"
-        action="<?= url('create collection') ?>"
-        data-controller="autosave"
-        data-action="turbo:submit-start@document->autosave#clear"
-    >
-        <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
-
-        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-
-        <div class="form-group <?= isset($errors['name']) ? 'form-group--invalid' : '' ?>">
-            <label for="name">
-                <?= _('What do you want to name this collection?') ?>
-                <span class="label__help">
-                    <?= _f('(max. %d characters)', $name_max_length) ?>
-                </span>
-            </label>
-
-            <input
-                id="name"
-                name="name"
-                type="text"
-                required
-                value="<?= $name ?>"
-                autofocus
-                maxlength="<?= $name_max_length ?>"
-                aria-describedby="name-desc"
-                data-action="keyup->autosave#save"
-            />
-
-            <div id="name-desc">
-                <?php if (isset($errors['name'])): ?>
-                    <p class="form-group__error">
-                        <span class="sr-only"><?= _('Error') ?></span>
-                        <?= $errors['name'] ?>
-                    </p>
-                <?php endif; ?>
-            </div>
-        </div>
-
-        <div class="form-group <?= isset($errors['description']) ? 'form-group--invalid' : '' ?>">
-            <label for="description">
-                <?= _('What’s the purpose of this collection?') ?>
-                <span class="label__help">
-                    <?= _('(optional)') ?>
-                </span>
-            </label>
-
-            <textarea
-                id="description"
-                name="description"
-                data-controller="text-editor"
-                data-action="text-editor#refresh keyup->autosave#save"
-                aria-describedby="description-desc"
-            ><?= $description ?></textarea>
-
-            <div id="description-desc">
-                <?php if (isset($errors['description'])): ?>
-                    <p class="form-group__error">
-                        <span class="sr-only"><?= _('Error') ?></span>
-                        <?= $errors['description'] ?>
-                    </p>
-                <?php endif; ?>
-
-                <p class="form-group__caption">
-                    <?= _('You can format the description in Markdown.') ?>
-                </p>
-            </div>
-        </div>
-
-        <?php if ($topics): ?>
-            <fieldset aria-describedby="topics-desc">
-                <legend><?= _('What topics will be covered?') ?></legend>
-
-                <div id="topics-desc">
-                    <?php if (isset($errors['topic_ids'])): ?>
-                        <p class="form-group__error">
-                            <span class="sr-only"><?= _('Error') ?></span>
-                            <?= $errors['topic_ids'] ?>
-                        </p>
-                    <?php endif; ?>
-                </div>
-
-                <div class="topics-selector">
-                    <?php foreach ($topics as $topic): ?>
-                        <div class="topics-selector__item">
-                            <input
-                                type="checkbox"
-                                id="topic-<?= $topic->id ?>"
-                                class="topics-selector__checkbox"
-                                name="topic_ids[]"
-                                value="<?= $topic->id ?>"
-                                <?= in_array($topic->id, $topic_ids) ? 'checked' : '' ?>
-                            />
-
-                            <label class="topics-selector__label" for="topic-<?= $topic->id ?>">
-                                <?= protect($topic->label) ?>
-                            </label>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            </fieldset>
-        <?php endif; ?>
-
-        <div class="form-group">
-            <input
-                type="checkbox"
-                id="is_public"
-                name="is_public"
-                <?= $is_public ? 'checked' : '' ?>
-            />
-
-            <label class="label--checkbox" for="is_public">
-                <?= _('Show the collection publicly') ?>
-            </label>
-        </div>
-
-        <div class="form__actions">
-            <button type="submit" class="button--primary">
-                <?= _('Create the collection') ?>
-            </button>
-        </div>
-    </form>
+    <?= $this->include('collections/_form.phtml', [
+        'form' => $form,
+        'action' => url('create collection'),
+        'submit_label' => _('Create the collection'),
+    ]) ?>
 </div>

@@ -6,111 +6,80 @@ use Minz\Request;
 use Minz\Response;
 use App\auth;
 use App\controllers\BaseController;
+use App\forms;
 use App\models;
+use App\utils;
 
 class Filters extends BaseController
 {
     /**
      * @request_param string id
-     * @request_param string from
      *
-     * @response 302 /login?redirect_to=:from
-     *     If not connected
-     * @response 404
-     *     If the collection doesn’t exist or is not followed
      * @response 200
-     *     On success
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the collection doesn't exist or is not followed by the user.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot view the collection.
      */
     public function edit(Request $request): Response
     {
-        $from = $request->parameters->getString('from', '');
+        $user = auth\CurrentUser::require();
+        $collection = models\Collection::requireFromRequest($request);
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
+        auth\Access::require($user, 'view', $collection);
 
-        $collection_id = $request->parameters->getString('id', '');
-        $collection = models\Collection::find($collection_id);
-
-        $can_view = $collection && auth\CollectionsAccess::canView($user, $collection);
-        if (!$can_view) {
-            return Response::notFound('not_found.phtml');
-        }
-
-        $followed_collection = models\FollowedCollection::findBy([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
-        if (!$followed_collection) {
-            return Response::notFound('not_found.phtml');
-        }
+        $followed_collection = $user->followedCollection($collection->id);
+        $form = new forms\collections\EditTimeFilter(model: $followed_collection);
 
         return Response::ok('collections/filters/edit.phtml', [
             'collection' => $collection,
-            'from' => $from,
-            'time_filter' => $followed_collection->time_filter,
+            'form' => $form,
         ]);
     }
 
     /**
      * @request_param string id
      * @request_param string time_filter
-     * @request_param string csrf
-     * @request_param string from
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=:from
-     *     If not connected
-     * @response 404
-     *     If the collection doesn’t exist or is not followed
      * @response 400
-     *     If CSRF or time_filter is invalid
+     *     If at least one of the parameters is invalid.
      * @response 302 :from
-     *     On success
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the collection doesn't exist or is not followed by the user.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot view the collection.
      */
     public function update(Request $request): Response
     {
-        $from = $request->parameters->getString('from', '');
+        $user = auth\CurrentUser::require();
+        $collection = models\Collection::requireFromRequest($request);
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
+        auth\Access::require($user, 'view', $collection);
 
-        $time_filter = $request->parameters->getString('time_filter', '');
-        $collection_id = $request->parameters->getString('id', '');
-        $csrf = $request->parameters->getString('csrf', '');
+        $followed_collection = $user->followedCollection($collection->id);
+        $form = new forms\collections\EditTimeFilter(model: $followed_collection);
 
-        $collection = models\Collection::find($collection_id);
+        $form->handleRequest($request);
 
-        $can_view = $collection && auth\CollectionsAccess::canView($user, $collection);
-        if (!$can_view) {
-            return Response::notFound('not_found.phtml');
-        }
-
-        $followed_collection = models\FollowedCollection::findBy([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
-        if (!$followed_collection) {
-            return Response::notFound('not_found.phtml');
-        }
-
-        if (!\App\Csrf::validate($csrf)) {
+        if (!$form->validate()) {
             return Response::badRequest('collections/filters/edit.phtml', [
                 'collection' => $collection,
-                'from' => $from,
-                'time_filter' => $time_filter,
-                'error' => _('A security verification failed: you should retry to submit the form.'),
+                'form' => $form,
             ]);
         }
 
-        $followed_collection->time_filter = $time_filter;
-        if (!$followed_collection->validate()) {
-            return Response::badRequest('collections/filters/edit.phtml', [
-                'collection' => $collection,
-                'from' => $from,
-                'time_filter' => $time_filter,
-                'errors' => $followed_collection->errors(),
-            ]);
-        }
-
+        $followed_collection = $form->model();
         $followed_collection->save();
 
-        return Response::found($from);
+        return Response::found(utils\RequestHelper::from($request));
     }
 }

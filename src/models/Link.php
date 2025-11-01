@@ -378,6 +378,19 @@ class Link
     }
 
     /**
+     * Return whether or not the given user has the link URL in its news.
+     */
+    public function isInNewsOf(?User $user): bool
+    {
+        if (!$user) {
+            return false;
+        }
+
+        $news = $user->news();
+        return Link::isUrlInCollectionId($news->id, $this->url);
+    }
+
+    /**
      * Return whether or not the given user has the link URL in its bookmarks.
      */
     public function isInBookmarksOf(?User $user): bool

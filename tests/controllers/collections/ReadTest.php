@@ -2,17 +2,16 @@
 
 namespace App\controllers\collections;
 
+use App\forms;
 use App\models;
 use tests\factories\CollectionFactory;
-use tests\factories\CollectionShareFactory;
-use tests\factories\FollowedCollectionFactory;
 use tests\factories\LinkFactory;
-use tests\factories\LinkToCollectionFactory;
 use tests\factories\UserFactory;
 
 class ReadTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\CsrfHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
@@ -22,184 +21,86 @@ class ReadTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $news = $user->news();
-        $read_list = $user->readList();
-        $link = LinkFactory::create([
-            'user_id' => $user->id,
-        ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
-
-        $response = $this->appRun('POST', "/collections/{$news->id}/read", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => \Minz\Url::for('news'),
-        ]);
-
-        $this->assertResponseCode($response, 302, '/news');
-        $exists_in_news = models\LinkToCollection::exists($link_to_news->id);
-        $link_to_read_list = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $read_list->id,
-        ]);
-        $this->assertFalse($exists_in_news, 'The link should not be in news.');
-        $this->assertNotNull($link_to_read_list, 'The link should be in read list.');
-    }
-
-    public function testCreateRemovesFromBookmarks(): void
-    {
-        $user = $this->login();
-        $news = $user->news();
         $bookmarks = $user->bookmarks();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
-        $link_to_bookmarks = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
+        $link->addCollections([$news, $bookmarks]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => \Minz\Url::for('news'),
+            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsRead::class),
         ]);
 
-        $this->assertResponseCode($response, 302, '/news');
-        $exists_in_bookmarks = models\LinkToCollection::exists($link_to_bookmarks->id);
-        $this->assertFalse($exists_in_bookmarks, 'The link should not be in bookmarks.');
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertTrue($link->isReadBy($user), 'The link should be in read list.');
+        $this->assertFalse($link->isInNewsOf($user), 'The link should not be in news.');
+        $this->assertFalse($link->isInBookmarksOf($user), 'The link should not be in bookmarks.');
     }
 
-    public function testCreateMarksLinksAsReadFromFollowed(): void
+    public function testCreateMarksLinksAsReadFromPublicCollection(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
-        $read_list = $user->readList();
-        /** @var string */
-        $url = $this->fake('url');
-        $link = LinkFactory::create([
+        $public_link = LinkFactory::create([
             'user_id' => $other_user->id,
-            'url' => $url,
             'is_hidden' => false,
+        ]);
+        $hidden_link = LinkFactory::create([
+            'user_id' => $other_user->id,
+            'is_hidden' => true,
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
+        $public_link->addCollection($collection);
+        $hidden_link->addCollection($collection);
+        $referer = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/read", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsRead::class),
+        ], headers: [
+            'Referer' => $referer,
         ]);
 
-        $this->assertResponseCode($response, 302, $from);
+        $this->assertResponseCode($response, 302, $referer);
+        $this->assertSame(1, models\Link::countBy(['user_id' => $user->id]));
         $new_link = models\Link::findBy([
             'user_id' => $user->id,
-            'url' => $url,
         ]);
         $this->assertNotNull($new_link);
+        $this->assertSame($public_link->url, $new_link->url);
         $this->assertSame('collection', $new_link->source_type);
         $this->assertSame($collection->id, $new_link->source_resource_id);
-        $link_to_read_list = models\LinkToCollection::findBy([
-            'link_id' => $new_link->id,
-            'collection_id' => $read_list->id,
-        ]);
-        $this->assertNotNull($link_to_read_list, 'The link should be in read list.');
+        $this->assertTrue($new_link->isReadBy($user), 'The link should be in read list.');
     }
 
-    public function testCreateMarksHiddenLinksAsReadFromFollowedIfCollectionIsShared(): void
+    public function testCreateMarksHiddenLinksAsReadIfCollectionIsShared(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
-        $read_list = $user->readList();
-        /** @var string */
-        $url = $this->fake('url');
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
-            'url' => $url,
             'is_hidden' => true,
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
+            'is_public' => true,
         ]);
-        $link_to_collection = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
-        CollectionShareFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $link->addCollection($collection);
+        $collection->shareWith($user, 'read');
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/read", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => \Minz\Url::for('news'),
+            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsRead::class),
         ]);
 
-        $this->assertResponseCode($response, 302, '/news');
+        $this->assertResponseCode($response, 302, '/');
         $new_link = models\Link::findBy([
             'user_id' => $user->id,
-            'url' => $url,
+            'url' => $link->url,
         ]);
         $this->assertNotNull($new_link);
-        $link_to_read_list = models\LinkToCollection::findBy([
-            'link_id' => $new_link->id,
-            'collection_id' => $read_list->id,
-        ]);
-        $this->assertNotNull($link_to_read_list, 'The link should be in read list.');
-    }
-
-    public function testCreateDoesNotMarkHiddenLinksAsReadFromFollowedIfCollectionIsNotShared(): void
-    {
-        $user = $this->login();
-        $other_user = UserFactory::create();
-        $read_list = $user->readList();
-        /** @var string */
-        $url = $this->fake('url');
-        $link = LinkFactory::create([
-            'user_id' => $other_user->id,
-            'url' => $url,
-            'is_hidden' => true,
-        ]);
-        $collection = CollectionFactory::create([
-            'user_id' => $other_user->id,
-        ]);
-        $link_to_collection = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
-
-        $response = $this->appRun('POST', "/collections/{$collection->id}/read", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => \Minz\Url::for('news'),
-        ]);
-
-        $this->assertResponseCode($response, 302, '/news');
-        $new_link = models\Link::findBy([
-            'user_id' => $user->id,
-            'url' => $url,
-        ]);
-        $this->assertNull($new_link);
+        $this->assertTrue($new_link->isReadBy($user), 'The link should be in read list.');
     }
 
     public function testCreateMarksLinksAsReadForSpecificDate(): void
@@ -209,29 +110,22 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link1 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_to_news1 = LinkToCollectionFactory::create([
-            'link_id' => $link1->id,
-            'collection_id' => $news->id,
-            'created_at' => new \DateTimeImmutable('2024-03-25'),
-        ]);
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_to_news2 = LinkToCollectionFactory::create([
-            'link_id' => $link2->id,
-            'collection_id' => $news->id,
-            'created_at' => new \DateTimeImmutable('2024-03-26'),
-        ]);
+        $link1->addCollection($news, at: new \DateTimeImmutable('2024-03-25'));
+        $link2->addCollection($news, at: new \DateTimeImmutable('2024-03-26'));
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => \Minz\Url::for('news'),
+            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsRead::class),
             'date' => '2024-03-25',
         ]);
 
-        $this->assertResponseCode($response, 302, '/news');
-        $this->assertFalse(models\LinkToCollection::exists($link_to_news1->id));
-        $this->assertTrue(models\LinkToCollection::exists($link_to_news2->id));
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertTrue($link1->isReadBy($user), 'The link should be in read list.');
+        $this->assertFalse($link1->isInNewsOf($user), 'The link should not be in news.');
+        $this->assertFalse($link2->isReadBy($user), 'The link should not be in read list.');
+        $this->assertTrue($link2->isInNewsOf($user), 'The link should be in news.');
     }
 
     public function testCreateMarksLinksAsReadForSpecificSource(): void
@@ -245,115 +139,84 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'source_type' => 'collection',
             'source_resource_id' => $source1->id,
         ]);
-        $link_to_news1 = LinkToCollectionFactory::create([
-            'link_id' => $link1->id,
-            'collection_id' => $news->id,
-        ]);
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
             'source_type' => 'collection',
             'source_resource_id' => $source2->id,
         ]);
-        $link_to_news2 = LinkToCollectionFactory::create([
-            'link_id' => $link2->id,
-            'collection_id' => $news->id,
-        ]);
+        $link1->addCollection($news);
+        $link2->addCollection($news);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => \Minz\Url::for('news'),
+            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsRead::class),
             'source' => "collection#{$source1->id}",
         ]);
 
-        $this->assertResponseCode($response, 302, '/news');
-        $this->assertFalse(models\LinkToCollection::exists($link_to_news1->id));
-        $this->assertTrue(models\LinkToCollection::exists($link_to_news2->id));
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertTrue($link1->isReadBy($user), 'The link should be in read list.');
+        $this->assertFalse($link1->isInNewsOf($user), 'The link should not be in news.');
+        $this->assertFalse($link2->isReadBy($user), 'The link should not be in read list.');
+        $this->assertTrue($link2->isInNewsOf($user), 'The link should be in news.');
     }
 
     public function testCreateRedirectsToLoginIfNotConnected(): void
     {
         $user = UserFactory::create();
         $news = $user->news();
-        $read_list = $user->readList();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
+        $link->addCollection($news);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => \Minz\Url::for('news'),
+            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsRead::class),
         ]);
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fnews');
-        $exists_in_news = models\LinkToCollection::exists($link_to_news->id);
-        $link_to_read_list = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $read_list->id,
-        ]);
-        $this->assertTrue($exists_in_news, 'The link should be in news.');
-        $this->assertNull($link_to_read_list, 'The link should not be in read list.');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
+        $this->assertFalse($link->isReadBy($user), 'The link should not be in read list.');
+        $this->assertTrue($link->isInNewsOf($user), 'The link should be in news.');
     }
 
     public function testCreateFailsIfCollectionIsInaccessible(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
-        $news = $other_user->news();
-        $read_list = $user->readList();
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
         ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
+            'is_public' => false,
+        ]);
+        $link->addCollection($collection);
+
+        $response = $this->appRun('POST', "/collections/{$collection->id}/read", [
+            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsRead::class),
         ]);
 
-        $response = $this->appRun('POST', "/collections/{$news->id}/read", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => \Minz\Url::for('news'),
-        ]);
-
-        $this->assertResponseCode($response, 404);
-        $exists_in_news = models\LinkToCollection::exists($link_to_news->id);
-        $link_to_read_list = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $read_list->id,
-        ]);
-        $this->assertTrue($exists_in_news, 'The link should be in news.');
-        $this->assertNull($link_to_read_list, 'The link should not be in read list.');
+        $this->assertResponseCode($response, 403);
+        $this->assertFalse($link->isReadBy($user), 'The link should not be in read list.');
     }
 
     public function testCreateFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
         $news = $user->news();
-        $read_list = $user->readList();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
+        $link->addCollection($news);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read", [
-            'csrf' => 'not the token',
-            'from' => \Minz\Url::for('news'),
+            'csrf_token' => 'not the token',
         ]);
 
-        $this->assertResponseCode($response, 302, '/news');
-        $this->assertSame('A security verification failed.', \Minz\Flash::get('error'));
-        $exists_in_news = models\LinkToCollection::exists($link_to_news->id);
-        $link_to_read_list = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $read_list->id,
-        ]);
-        $this->assertTrue($exists_in_news, 'The link should be in news.');
-        $this->assertNull($link_to_read_list, 'The link should not be in read list.');
+        $this->assertResponseCode($response, 302, '/');
+        $error = \Minz\Flash::get('error');
+        $this->assertTrue(is_string($error));
+        $this->assertStringContainsString('A security verification failed', $error);
+        $this->assertFalse($link->isReadBy($user), 'The link should not be in read list.');
+        $this->assertTrue($link->isInNewsOf($user), 'The link should be in news.');
     }
 
     public function testLaterMarksNewsLinksToReadLaterAndRedirects(): void
@@ -364,215 +227,102 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
+        $link->addCollection($news);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/later", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => \Minz\Url::for('news'),
+            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsReadLater::class),
         ]);
 
-        $this->assertResponseCode($response, 302, '/news');
-        $exists_in_news = models\LinkToCollection::exists($link_to_news->id);
-        $link_to_bookmarks = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
-        $this->assertFalse($exists_in_news, 'The link should no longer be in news.');
-        $this->assertNotNull($link_to_bookmarks, 'The link should be in bookmarks.');
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertTrue($link->isInBookmarksOf($user), 'The link should be in bookmarks.');
+        $this->assertFalse($link->isInNewsOf($user), 'The link should not be in news.');
     }
 
-    public function testLaterJustRemovesFromNewsIfAlreadyBookmarked(): void
-    {
-        $user = $this->login();
-        $bookmarks = $user->bookmarks();
-        $news = $user->news();
-        $link = LinkFactory::create([
-            'user_id' => $user->id,
-        ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
-        $link_to_bookmarks = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
-
-        $response = $this->appRun('POST', "/collections/{$news->id}/read/later", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => \Minz\Url::for('news'),
-        ]);
-
-        $this->assertResponseCode($response, 302, '/news');
-        $exists_in_news = models\LinkToCollection::exists($link_to_news->id);
-        $exists_in_bookmarks = models\LinkToCollection::exists($link_to_bookmarks->id);
-        $this->assertFalse($exists_in_news, 'The link should no longer be in news.');
-        $this->assertTrue($exists_in_bookmarks, 'The link should be in bookmarks.');
-    }
-
-    public function testLaterMarksLinksToReadLaterFromFollowed(): void
+    public function testLaterMarksLinksToReadLaterFromPublicCollection(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
-        $bookmarks = $user->bookmarks();
-        /** @var string */
-        $url = $this->fake('url');
-        $link = LinkFactory::create([
+        $public_link = LinkFactory::create([
             'user_id' => $other_user->id,
-            'url' => $url,
             'is_hidden' => false,
+        ]);
+        $hidden_link = LinkFactory::create([
+            'user_id' => $other_user->id,
+            'is_hidden' => true,
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
+        $public_link->addCollection($collection);
+        $hidden_link->addCollection($collection);
+        $referer = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/read/later", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsReadLater::class),
+        ], headers: [
+            'Referer' => $referer,
         ]);
 
-        $this->assertResponseCode($response, 302, $from);
+        $this->assertResponseCode($response, 302, $referer);
+        $this->assertSame(1, models\Link::countBy(['user_id' => $user->id]));
         $new_link = models\Link::findBy([
             'user_id' => $user->id,
-            'url' => $url,
         ]);
         $this->assertNotNull($new_link);
         $this->assertSame('collection', $new_link->source_type);
         $this->assertSame($collection->id, $new_link->source_resource_id);
-        $link_to_bookmarks = models\LinkToCollection::findBy([
-            'link_id' => $new_link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
-        $this->assertNotNull($link_to_bookmarks, 'The link should be in the bookmarks.');
+        $this->assertTrue($new_link->isInBookmarksOf($user), 'The link should be in bookmarks.');
     }
 
-    public function testLaterMarksHiddenLinksToReadLaterFromFollowedIfCollectionIsShared(): void
+    public function testLaterMarksHiddenLinksToReadLaterIfCollectionIsShared(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
-        $bookmarks = $user->bookmarks();
-        /** @var string */
-        $url = $this->fake('url');
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
-            'url' => $url,
             'is_hidden' => true,
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
         ]);
-        $link_to_collection = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
-        CollectionShareFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $link->addCollection($collection);
+        $collection->shareWith($user, 'read');
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/read/later", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => \Minz\Url::for('news'),
+            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsReadLater::class),
         ]);
 
-        $this->assertResponseCode($response, 302, '/news');
+        $this->assertResponseCode($response, 302, '/');
         $new_link = models\Link::findBy([
             'user_id' => $user->id,
-            'url' => $url,
+            'url' => $link->url,
         ]);
         $this->assertNotNull($new_link);
-        $link_to_bookmarks = models\LinkToCollection::findBy([
-            'link_id' => $new_link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
-        $this->assertNotNull($link_to_bookmarks, 'The link should be in the bookmarks.');
-    }
-
-    public function testLaterDoesNotMarkHiddenLinksToReadLaterFromFollowedIfCollectionIsNotShared(): void
-    {
-        $user = $this->login();
-        $other_user = UserFactory::create();
-        $bookmarks = $user->bookmarks();
-        /** @var string */
-        $url = $this->fake('url');
-        $link = LinkFactory::create([
-            'user_id' => $other_user->id,
-            'url' => $url,
-            'is_hidden' => true,
-        ]);
-        $collection = CollectionFactory::create([
-            'user_id' => $other_user->id,
-        ]);
-        $link_to_collection = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
-
-        $response = $this->appRun('POST', "/collections/{$collection->id}/read/later", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => \Minz\Url::for('news'),
-        ]);
-
-        $this->assertResponseCode($response, 302, '/news');
-        $new_link = models\Link::findBy([
-            'user_id' => $user->id,
-            'url' => $url,
-        ]);
-        $this->assertNull($new_link);
+        $this->assertTrue($new_link->isInBookmarksOf($user), 'The link should be in bookmarks.');
     }
 
     public function testLaterMarksNewsLinksToReadLaterForSpecificDate(): void
     {
         $user = $this->login();
-        $bookmarks = $user->bookmarks();
         $news = $user->news();
         $link1 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_to_news1 = LinkToCollectionFactory::create([
-            'link_id' => $link1->id,
-            'collection_id' => $news->id,
-            'created_at' => new \DateTimeImmutable('2024-03-25'),
-        ]);
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_to_news2 = LinkToCollectionFactory::create([
-            'link_id' => $link2->id,
-            'collection_id' => $news->id,
-            'created_at' => new \DateTimeImmutable('2024-03-26'),
-        ]);
+        $link1->addCollection($news, at: new \DateTimeImmutable('2024-03-25'));
+        $link2->addCollection($news, at: new \DateTimeImmutable('2024-03-26'));
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/later", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => \Minz\Url::for('news'),
+            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsReadLater::class),
             'date' => '2024-03-25',
         ]);
 
-        $this->assertResponseCode($response, 302, '/news');
-        $this->assertFalse(models\LinkToCollection::exists($link_to_news1->id));
-        $this->assertTrue(models\LinkToCollection::exists($link_to_news2->id));
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertTrue($link1->isInBookmarksOf($user), 'The link should be in bookmarks.');
+        $this->assertFalse($link2->isInBookmarksOf($user), 'The link should not be in bookmarks.');
     }
 
     public function testLaterMarksNewsLinksToReadLaterForSpecificSource(): void
@@ -587,115 +337,81 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'source_type' => 'collection',
             'source_resource_id' => $source1->id,
         ]);
-        $link_to_news1 = LinkToCollectionFactory::create([
-            'link_id' => $link1->id,
-            'collection_id' => $news->id,
-        ]);
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
             'source_type' => 'collection',
             'source_resource_id' => $source2->id,
         ]);
-        $link_to_news2 = LinkToCollectionFactory::create([
-            'link_id' => $link2->id,
-            'collection_id' => $news->id,
-        ]);
+        $link1->addCollection($news);
+        $link2->addCollection($news);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/later", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => \Minz\Url::for('news'),
+            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsReadLater::class),
             'source' => "collection#{$source1->id}",
         ]);
 
-        $this->assertResponseCode($response, 302, '/news');
-        $this->assertFalse(models\LinkToCollection::exists($link_to_news1->id));
-        $this->assertTrue(models\LinkToCollection::exists($link_to_news2->id));
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertTrue($link1->isInBookmarksOf($user), 'The link should be in bookmarks.');
+        $this->assertFalse($link2->isInBookmarksOf($user), 'The link should not be in bookmarks.');
     }
 
     public function testLaterRedirectsToLoginIfNotConnected(): void
     {
         $user = UserFactory::create();
-        $bookmarks = $user->bookmarks();
         $news = $user->news();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
+        $link->addCollection($news);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/later", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => \Minz\Url::for('news'),
+            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsReadLater::class),
         ]);
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fnews');
-        $exists_in_news = models\LinkToCollection::exists($link_to_news->id);
-        $link_to_bookmarks = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
-        $this->assertTrue($exists_in_news, 'The link should still be in news.');
-        $this->assertNull($link_to_bookmarks, 'The link should not be in bookmarks.');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
+        $this->assertFalse($link->isInBookmarksOf($user), 'The link should not be in bookmarks.');
+        $this->assertTrue($link->isInNewsOf($user), 'The link should be in news.');
     }
 
     public function testLaterFailsIfCollectionIsInaccessible(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
-        $bookmarks = $user->bookmarks();
-        $news = $other_user->news();
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
         ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
+            'is_public' => false,
+        ]);
+        $link->addCollection($collection);
+
+        $response = $this->appRun('POST', "/collections/{$collection->id}/read/later", [
+            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsReadLater::class),
         ]);
 
-        $response = $this->appRun('POST', "/collections/{$news->id}/read/later", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => \Minz\Url::for('news'),
-        ]);
-
-        $this->assertResponseCode($response, 404);
-        $exists_in_news = models\LinkToCollection::exists($link_to_news->id);
-        $link_to_bookmarks = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
-        $this->assertTrue($exists_in_news, 'The link should still be in news.');
-        $this->assertNull($link_to_bookmarks, 'The link should not be in bookmarks.');
+        $this->assertResponseCode($response, 403);
+        $this->assertFalse($link->isInBookmarksOf($user), 'The link should not be in bookmarks.');
     }
 
     public function testLaterFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
-        $bookmarks = $user->bookmarks();
         $news = $user->news();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
+        $link->addCollection($news);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/later", [
-            'csrf' => 'not the token',
-            'from' => \Minz\Url::for('news'),
+            'csrf_token' => 'not the token',
         ]);
 
-        $this->assertResponseCode($response, 302, '/news');
-        $this->assertSame('A security verification failed.', \Minz\Flash::get('error'));
-        $exists_in_news = models\LinkToCollection::exists($link_to_news->id);
-        $link_to_bookmarks = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
-        $this->assertTrue($exists_in_news, 'The link should still be in news.');
-        $this->assertNull($link_to_bookmarks, 'The link should not be in bookmarks.');
+        $this->assertResponseCode($response, 302, '/');
+        $error = \Minz\Flash::get('error');
+        $this->assertTrue(is_string($error));
+        $this->assertStringContainsString('A security verification failed', $error);
+        $this->assertFalse($link->isInBookmarksOf($user), 'The link should not be in bookmarks.');
     }
 
     public function testNeverMarksNewsLinksToNeverReadAndRedirects(): void
@@ -703,160 +419,80 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $bookmarks = $user->bookmarks();
         $news = $user->news();
-        $never_list = $user->neverList();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
-        $link_to_bookmarks = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
+        $link->addCollections([$news, $bookmarks]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/never", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => \Minz\Url::for('news'),
+            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsNever::class),
         ]);
 
-        $this->assertResponseCode($response, 302, '/news');
-        $exists_in_news = models\LinkToCollection::exists($link_to_news->id);
-        $exists_in_bookmarks = models\LinkToCollection::exists($link_to_bookmarks->id);
-        $link_to_never_list = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $never_list->id,
-        ]);
-        $this->assertFalse($exists_in_news, 'The link should no longer be in news.');
-        $this->assertFalse($exists_in_bookmarks, 'The link should no longer be in bookmarks.');
-        $this->assertNotNull($link_to_never_list, 'The link should be in the never list.');
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertTrue($link->isInNeverList($user), 'The link should be in never list.');
+        $this->assertFalse($link->isInNewsOf($user), 'The link should not be in news.');
+        $this->assertFalse($link->isInBookmarksOf($user), 'The link should not be in bookmarks.');
     }
 
-    public function testNeverMarksLinksToNeverReadFromFollowed(): void
+    public function testNeverMarksLinksToNeverReadFromPublicCollection(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
-        $never_list = $user->neverList();
-        /** @var string */
-        $url = $this->fake('url');
-        $link = LinkFactory::create([
+        $public_link = LinkFactory::create([
             'user_id' => $other_user->id,
-            'url' => $url,
             'is_hidden' => false,
+        ]);
+        $hidden_link = LinkFactory::create([
+            'user_id' => $other_user->id,
+            'is_hidden' => true,
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $public_link->addCollection($collection);
+        $hidden_link->addCollection($collection);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/read/never", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => \Minz\Url::for('news'),
+            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsNever::class),
         ]);
 
-        $this->assertResponseCode($response, 302, '/news');
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertSame(1, models\Link::countBy(['user_id' => $user->id]));
         $new_link = models\Link::findBy([
             'user_id' => $user->id,
-            'url' => $url,
         ]);
         $this->assertNotNull($new_link);
-        $link_to_never_list = models\LinkToCollection::findBy([
-            'link_id' => $new_link->id,
-            'collection_id' => $never_list->id,
-        ]);
-        $this->assertNotNull($link_to_never_list, 'The link should be in the never list.');
+        $this->assertSame($public_link->url, $new_link->url);
+        $this->assertTrue($new_link->isInNeverList($user), 'The link should be in never list.');
     }
 
-    public function testNeverMarksHiddenLinksToNeverReadFromFollowedIfCollectionIsShared(): void
+    public function testNeverMarksHiddenLinksToNeverReadIfCollectionIsShared(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
-        $never_list = $user->neverList();
-        /** @var string */
-        $url = $this->fake('url');
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
-            'url' => $url,
             'is_hidden' => true,
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
+            'is_public' => true,
         ]);
-        $link_to_collection = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
-        CollectionShareFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $link->addCollection($collection);
+        $collection->shareWith($user, 'read');
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/read/never", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => \Minz\Url::for('news'),
+            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsNever::class),
         ]);
 
-        $this->assertResponseCode($response, 302, '/news');
+        $this->assertResponseCode($response, 302, '/');
         $new_link = models\Link::findBy([
             'user_id' => $user->id,
-            'url' => $url,
+            'url' => $link->url,
         ]);
         $this->assertNotNull($new_link);
-        $link_to_never_list = models\LinkToCollection::findBy([
-            'link_id' => $new_link->id,
-            'collection_id' => $never_list->id,
-        ]);
-        $this->assertNotNull($link_to_never_list, 'The link should be in the never list.');
-    }
-
-    public function testNeverDoesNotMarkHiddenLinksToNeverReadFromFollowedIfCollectionIsNotShared(): void
-    {
-        $user = $this->login();
-        $other_user = UserFactory::create();
-        $never_list = $user->neverList();
-        /** @var string */
-        $url = $this->fake('url');
-        $link = LinkFactory::create([
-            'user_id' => $other_user->id,
-            'url' => $url,
-            'is_hidden' => true,
-        ]);
-        $collection = CollectionFactory::create([
-            'user_id' => $other_user->id,
-        ]);
-        $link_to_collection = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
-
-        $response = $this->appRun('POST', "/collections/{$collection->id}/read/never", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => \Minz\Url::for('news'),
-        ]);
-
-        $this->assertResponseCode($response, 302, '/news');
-        $new_link = models\Link::findBy([
-            'user_id' => $user->id,
-            'url' => $url,
-        ]);
-        $this->assertNull($new_link);
+        $this->assertTrue($new_link->isInNeverList($user), 'The link should be in never list.');
     }
 
     public function testNeverMarksNewsLinksToNeverReadForSpecificDate(): void
@@ -866,29 +502,20 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link1 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_to_news1 = LinkToCollectionFactory::create([
-            'link_id' => $link1->id,
-            'collection_id' => $news->id,
-            'created_at' => new \DateTimeImmutable('2024-03-25'),
-        ]);
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_to_news2 = LinkToCollectionFactory::create([
-            'link_id' => $link2->id,
-            'collection_id' => $news->id,
-            'created_at' => new \DateTimeImmutable('2024-03-26'),
-        ]);
+        $link1->addCollection($news, at: new \DateTimeImmutable('2024-03-25'));
+        $link2->addCollection($news, at: new \DateTimeImmutable('2024-03-26'));
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/never", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => \Minz\Url::for('news'),
+            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsNever::class),
             'date' => '2024-03-25',
         ]);
 
-        $this->assertResponseCode($response, 302, '/news');
-        $this->assertFalse(models\LinkToCollection::exists($link_to_news1->id));
-        $this->assertTrue(models\LinkToCollection::exists($link_to_news2->id));
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertTrue($link1->isInNeverList($user), 'The link should be in never list.');
+        $this->assertFalse($link2->isInNeverList($user), 'The link should not be in never list.');
     }
 
     public function testNeverMarksNewsLinksToNeverReadForSpecificSource(): void
@@ -902,135 +529,81 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'source_type' => 'collection',
             'source_resource_id' => $source1->id,
         ]);
-        $link_to_news1 = LinkToCollectionFactory::create([
-            'link_id' => $link1->id,
-            'collection_id' => $news->id,
-        ]);
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
             'source_type' => 'collection',
             'source_resource_id' => $source2->id,
         ]);
-        $link_to_news2 = LinkToCollectionFactory::create([
-            'link_id' => $link2->id,
-            'collection_id' => $news->id,
-        ]);
+        $link1->addCollection($news);
+        $link2->addCollection($news);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/never", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => \Minz\Url::for('news'),
+            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsNever::class),
             'source' => "collection#{$source1->id}",
         ]);
 
-        $this->assertResponseCode($response, 302, '/news');
-        $this->assertFalse(models\LinkToCollection::exists($link_to_news1->id));
-        $this->assertTrue(models\LinkToCollection::exists($link_to_news2->id));
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertTrue($link1->isInNeverList($user), 'The link should be in never list.');
+        $this->assertFalse($link2->isInNeverList($user), 'The link should not be in never list.');
     }
 
     public function testNeverRedirectsToLoginIfNotConnected(): void
     {
         $user = UserFactory::create();
-        $bookmarks = $user->bookmarks();
         $news = $user->news();
-        $never_list = $user->neverList();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
-        $link_to_bookmarks = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
+        $link->addCollection($news);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/never", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => \Minz\Url::for('news'),
+            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsNever::class),
         ]);
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fnews');
-        $exists_in_news = models\LinkToCollection::exists($link_to_news->id);
-        $exists_in_bookmarks = models\LinkToCollection::exists($link_to_bookmarks->id);
-        $link_to_never_list = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $never_list->id,
-        ]);
-        $this->assertTrue($exists_in_news, 'The link should be in news.');
-        $this->assertTrue($exists_in_bookmarks, 'The link should be in bookmarks.');
-        $this->assertNull($link_to_never_list, 'The link should not be in the never list.');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
+        $this->assertFalse($link->isInNeverList($user), 'The link should not be in never list.');
+        $this->assertTrue($link->isInNewsOf($user), 'The link should be in news.');
     }
 
     public function testNeverFailsIfCollectionIsInaccessible(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
-        $bookmarks = $other_user->bookmarks();
-        $news = $other_user->news();
-        $never_list = $user->neverList();
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
         ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
+            'is_public' => false,
         ]);
-        $link_to_bookmarks = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
+        $link->addCollection($collection);
+
+        $response = $this->appRun('POST', "/collections/{$collection->id}/read/never", [
+            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsNever::class),
         ]);
 
-        $response = $this->appRun('POST', "/collections/{$news->id}/read/never", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => \Minz\Url::for('news'),
-        ]);
-
-        $this->assertResponseCode($response, 404);
-        $exists_in_news = models\LinkToCollection::exists($link_to_news->id);
-        $exists_in_bookmarks = models\LinkToCollection::exists($link_to_bookmarks->id);
-        $link_to_never_list = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $never_list->id,
-        ]);
-        $this->assertTrue($exists_in_news, 'The link should be in news.');
-        $this->assertTrue($exists_in_bookmarks, 'The link should be in bookmarks.');
-        $this->assertNull($link_to_never_list, 'The link should not be in the never list.');
+        $this->assertResponseCode($response, 403);
+        $this->assertFalse($link->isInNeverList($user), 'The link should not be in never list.');
     }
 
     public function testNeverFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
-        $bookmarks = $user->bookmarks();
         $news = $user->news();
-        $never_list = $user->neverList();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
-        $link_to_bookmarks = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
+        $link->addCollection($news);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/never", [
-            'csrf' => 'not the token',
-            'from' => \Minz\Url::for('news'),
+            'csrf_token' => 'not the token',
         ]);
 
-        $this->assertResponseCode($response, 302, '/news');
-        $this->assertSame('A security verification failed.', \Minz\Flash::get('error'));
-        $exists_in_news = models\LinkToCollection::exists($link_to_news->id);
-        $exists_in_bookmarks = models\LinkToCollection::exists($link_to_bookmarks->id);
-        $link_to_never_list = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $never_list->id,
-        ]);
-        $this->assertTrue($exists_in_news, 'The link should be in news.');
-        $this->assertTrue($exists_in_bookmarks, 'The link should be in bookmarks.');
-        $this->assertNull($link_to_never_list, 'The link should not be in the never list.');
+        $this->assertResponseCode($response, 302, '/');
+        $error = \Minz\Flash::get('error');
+        $this->assertTrue(is_string($error));
+        $this->assertStringContainsString('A security verification failed', $error);
+        $this->assertFalse($link->isInNeverList($user), 'The link should not be in never list.');
+        $this->assertTrue($link->isInNewsOf($user), 'The link should be in news.');
     }
 }

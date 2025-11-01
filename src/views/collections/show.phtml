@@ -157,29 +157,27 @@
                         <div class="popup__separator"></div>
 
                         <form method="post" action="<?= url('unfollow collection', ['id' => $collection->id]) ?>" role="menuitem">
-                            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-                            <input type="hidden" name="from" value="<?= url('collection', $current_url_params) ?>" />
-
                             <button class="popup__item popup__item--button">
                                 <?= icon('feed-stop') ?>
                                 <?= _('Unfollow') ?>
                             </button>
+
+                            <input type="hidden" name="csrf_token" value="<?= csrf_token('collections\\UnfollowCollection') ?>" />
                         </form>
                     <?php elseif ($is_shared): ?>
                         <div class="popup__separator"></div>
 
                         <form method="post" action="<?= url('follow collection', ['id' => $collection->id]) ?>" role="menuitem">
-                            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-                            <input type="hidden" name="from" value="<?= url('collection', $current_url_params) ?>" />
-
                             <button class="popup__item popup__item--button">
                                 <?= icon('feed') ?>
                                 <?= _('Follow') ?>
                             </button>
+
+                            <input type="hidden" name="csrf_token" value="<?= csrf_token('collections\\FollowCollection') ?>" />
                         </form>
                     <?php endif; ?>
 
-                    <?php if ($collection->user_id === $current_user->id): ?>
+                    <?php if (can($current_user, 'delete', $collection)): ?>
                         <div class="popup__separator"></div>
 
                         <form
@@ -187,9 +185,6 @@
                             action="<?= url('delete collection', ['id' => $collection->id]) ?>"
                             data-turbo-confirm="<?= _('Are you sure that you want to delete this collection? You may lose the links that are attached only to this collection.') ?>"
                         >
-                            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-                            <input type="hidden" name="from" value="<?= url('collection', $current_url_params) ?>" />
-
                             <button
                                 type="submit"
                                 class="popup__item popup__item--button"
@@ -198,6 +193,8 @@
                                 <?= icon('trash') ?>
                                 <?= _('Delete') ?>
                             </button>
+
+                            <input type="hidden" name="csrf_token" value="<?= csrf_token('collections\\DeleteCollection') ?>" />
                         </form>
                     <?php endif; ?>
                 </nav>

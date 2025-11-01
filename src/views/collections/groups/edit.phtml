@@ -2,7 +2,7 @@
     $this->layout('base.phtml', [
         'title' => _('Collection group'),
         'canonical' => url_full('edit group collection', ['id' => $collection->id]),
-        'has_errors' => $error || $errors,
+        'has_errors' => $form->isInvalid(),
         'modal_enabled' => true,
     ]);
 ?>
@@ -23,38 +23,43 @@
     </div>
 
     <form method="post" action="<?= url('update group collection', ['id' => $collection->id]) ?>">
-        <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
+        <?= $this->include('alerts/_error.phtml', ['message' => $form->error('@base')]) ?>
 
-        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-        <input type="hidden" name="from" value="<?= $from ?>" />
-
-        <div
-            class="form-group group-selector <?= isset($errors['name']) ? 'form-group--invalid' : '' ?>"
-            data-controller="group-selector"
-        >
+        <div class="form-group group-selector" data-controller="group-selector">
             <div class="group-selector__group-input" data-group-selector-target="groupInput">
                 <label for="name">
                     <?= _('How to name the group?') ?>
                     <span class="label__help">
-                        <?= _f('(max. %d characters)', $name_max_length) ?>
+                        <?= _f('(max. %d characters)', $form->group_name_max_length) ?>
                     </span>
                 </label>
+
+                <?php if ($form->isInvalid('name')): ?>
+                    <p id="name-error" class="form-group__error">
+                        <?= _('Error:') ?>
+                        <?= $form->error('name') ?>
+                    </p>
+                <?php endif; ?>
 
                 <input
                     id="name"
                     name=""
                     type="text"
-                    value="<?= $name ?>"
+                    value="<?= protect($form->name) ?>"
                     list="group-names"
                     autocomplete="off"
                     autofocus
-                    maxlength="<?= $name_max_length ?>"
+                    maxlength="<?= $form->group_name_max_length ?>"
                     data-group-selector-target="input"
                     aria-describedby="name-desc"
+                    <?php if ($form->isInvalid('name')): ?>
+                        aria-errormessage="name-error"
+                        aria-invalid="true"
+                    <?php endif; ?>
                 />
 
                 <datalist id="group-names">
-                    <?php foreach ($groups as $group): ?>
+                    <?php foreach ($form->groups() as $group): ?>
                         <option value="<?= protect($group->name) ?>">
                     <?php endforeach; ?>
                 </datalist>
@@ -65,6 +70,13 @@
                     <?= _('Select a group') ?>
                 </label>
 
+                <?php if ($form->isInvalid('name')): ?>
+                    <p id="name-error" class="form-group__error">
+                        <?= _('Error:') ?>
+                        <?= $form->error('name') ?>
+                    </p>
+                <?php endif; ?>
+
                 <div class="form-group__stack">
                     <select
                         id="name"
@@ -72,12 +84,12 @@
                         data-group-selector-target="select"
                         aria-describedby="name-desc"
                      >
-                        <option <?= $name === '' ? 'selected' : '' ?> value="">
+                         <option <?= $form->name === '' ? 'selected' : '' ?> value="">
                             <?= _('No groups') ?>
                         </option>
 
-                        <?php foreach ($groups as $group): ?>
-                            <option <?= $this->safe('name') === $group->name ? 'selected' : '' ?> value="<?= $group->name ?>">
+                        <?php foreach ($form->groups() as $group): ?>
+                            <option <?= $form->isGroupSelected($group) ? 'selected' : '' ?> value="<?= $group->name ?>">
                                 <?= protect($group->name) ?>
                             </option>
                         <?php endforeach; ?>
@@ -89,15 +101,6 @@
                     </button>
                 </div>
             </div>
-
-            <div id="name-desc">
-                <?php if (isset($errors['name'])): ?>
-                    <p class="form-group__error">
-                        <span class="sr-only"><?= _('Error') ?></span>
-                        <?= $errors['name'] ?>
-                    </p>
-                <?php endif; ?>
-            </div>
         </div>
 
         <div class="form__actions">
@@ -105,5 +108,7 @@
                 <?= _('Save changes') ?>
             </button>
         </div>
+
+        <input type="hidden" name="csrf_token" value="<?= csrf_token($form) ?>" />
     </form>
 </div>

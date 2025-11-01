@@ -2,7 +2,7 @@
     $this->layout('base.phtml', [
         'title' => _('Settings for the news'),
         'canonical' => url_full('edit collection filter', ['id' => $collection->id]),
-        'has_errors' => $error || $errors,
+        'has_errors' => $form->isInvalid(),
         'modal_enabled' => true,
     ]);
 ?>
@@ -17,15 +17,17 @@
     </p>
 
     <form method="post" action="<?= url('update collection filter', ['id' => $collection->id]) ?>">
-        <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
-
-        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-        <input type="hidden" name="from" value="<?= $from ?>" />
+        <?= $this->include('alerts/_error.phtml', ['message' => $form->error('@base')]) ?>
 
         <fieldset>
             <legend><?= _('How to filter the links from this feed in the news?') ?></legend>
 
-            <?= $this->include('alerts/_error.phtml', ['message' => $errors['time_filter'] ?? null]) ?>
+            <?php if ($form->isInvalid('time_filter')): ?>
+                <p id="time-filter-error" class="form-group__error">
+                    <?= _('Error:') ?>
+                    <?= $form->error('time_filter') ?>
+                </p>
+            <?php endif; ?>
 
             <div class="form-group">
                 <input
@@ -33,8 +35,12 @@
                     id="time-filter-strict"
                     name="time_filter"
                     value="strict"
-                    <?= $time_filter === 'strict' ? 'checked' : '' ?>
+                    <?= $form->time_filter === 'strict' ? 'checked' : '' ?>
                     aria-describedby="time-filter-strict-caption"
+                    <?php if ($form->isInvalid('time_filter')): ?>
+                        aria-errormessage="time-filter-error"
+                        aria-invalid="true"
+                    <?php endif; ?>
                 />
 
                 <label class="label--radio" for="time-filter-strict">
@@ -52,8 +58,12 @@
                     id="time-filter-normal"
                     name="time_filter"
                     value="normal"
-                    <?= $time_filter === 'normal' ? 'checked' : '' ?>
+                    <?= $form->time_filter === 'normal' ? 'checked' : '' ?>
                     aria-describedby="time-filter-normal-caption"
+                    <?php if ($form->isInvalid('time_filter')): ?>
+                        aria-errormessage="time-filter-error"
+                        aria-invalid="true"
+                    <?php endif; ?>
                 />
 
                 <label class="label--radio" for="time-filter-normal">
@@ -71,8 +81,12 @@
                     id="time-filter-all"
                     name="time_filter"
                     value="all"
-                    <?= $time_filter === 'all' ? 'checked' : '' ?>
+                    <?= $form->time_filter === 'all' ? 'checked' : '' ?>
                     aria-describedby="time-filter-all-caption"
+                    <?php if ($form->isInvalid('time_filter')): ?>
+                        aria-errormessage="time-filter-error"
+                        aria-invalid="true"
+                    <?php endif; ?>
                 />
 
                 <label class="label--radio" for="time-filter-all">
@@ -90,5 +104,7 @@
                 <?= _('Save changes') ?>
             </button>
         </div>
+
+        <input type="hidden" name="csrf_token" value="<?= csrf_token($form) ?>" />
     </form>
 </div>

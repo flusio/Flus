@@ -2,7 +2,7 @@
     $this->layout('base.phtml', [
         'title' => _('New link'),
         'canonical' => url_full('new collection link', ['id' => $collection->id]),
-        'has_errors' => $error || $errors,
+        'has_errors' => $form->isInvalid(),
         'modal_enabled' => true,
     ]);
 ?>
@@ -13,15 +13,19 @@
     </div>
 
     <form method="post" action="<?= url('create collection link', ['id' => $collection->id]) ?>">
-        <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
+        <?= $this->include('alerts/_error.phtml', ['message' => $form->error('@base')]) ?>
 
-        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-        <input type="hidden" name="from" value="<?= $from ?>" />
-
-        <div class="form-group <?= isset($errors['url']) ? 'form-group--invalid' : '' ?>">
+        <div class="form-group">
             <label for="url">
                 <?= _('What’s the address of the link?') ?>
             </label>
+
+            <?php if ($form->isInvalid('url')): ?>
+                <p id="url-error" class="form-group__error">
+                    <?= _('Error:') ?>
+                    <?= $form->error('url') ?>
+                </p>
+            <?php endif; ?>
 
             <input
                 id="url"
@@ -29,24 +33,19 @@
                 type="url"
                 placeholder="https://…"
                 required
-                value="<?= $url ?>"
+                value="<?= protect($form->url) ?>"
                 autocomplete="off"
                 autofocus
-                aria-describedby="url-desc"
+                aria-describedby="url-caption"
+                <?php if ($form->isInvalid('url')): ?>
+                    aria-errormessage="url-error"
+                    aria-invalid="true"
+                <?php endif; ?>
             />
 
-            <div id="url-desc">
-                <?php if (isset($errors['url'])): ?>
-                    <p class="form-group__error">
-                        <span class="sr-only"><?= _('Error') ?></span>
-                        <?= $errors['url'] ?>
-                    </p>
-                <?php endif; ?>
-
-                <p class="form-group__caption">
-                    <?= _('It can be copy-paste from the <abbr>URL</abbr> bar, at the top of your browser.') ?>
-                </p>
-            </div>
+            <p id="url-caption" class="form-group__caption">
+                <?= _('It can be copy-paste from the <abbr>URL</abbr> bar, at the top of your browser.') ?>
+            </p>
         </div>
 
         <div class="form-group">
@@ -54,7 +53,7 @@
                 type="checkbox"
                 id="is-hidden"
                 name="is_hidden"
-                <?= $is_hidden ? 'checked' : '' ?>
+                <?= $form->is_hidden ? 'checked' : '' ?>
             />
 
             <label class="label--checkbox" for="is-hidden">
@@ -67,5 +66,7 @@
                 <?= _('Add the link') ?>
             </button>
         </div>
+
+        <input type="hidden" name="csrf_token" value="<?= csrf_token($form) ?>" />
     </form>
 </div>

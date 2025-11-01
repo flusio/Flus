@@ -2,6 +2,7 @@
 
 namespace App\controllers\collections;
 
+use App\forms;
 use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\CollectionShareFactory;
@@ -11,6 +12,7 @@ use tests\factories\UserFactory;
 class FollowersTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\CsrfHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
@@ -25,16 +27,14 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $this->assertSame(0, models\FollowedCollection::count());
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/follow", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\FollowCollection::class),
         ]);
 
-        $this->assertResponseCode($response, 302, $from);
+        $this->assertResponseCode($response, 302, '/');
         $this->assertSame(1, models\FollowedCollection::count());
         $followed_collection = models\FollowedCollection::take();
         $this->assertNotNull($followed_collection);
@@ -55,14 +55,12 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
             'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/follow", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\FollowCollection::class),
         ]);
 
-        $this->assertResponseCode($response, 302, $from);
+        $this->assertResponseCode($response, 302, '/');
         $this->assertSame(1, models\FollowedCollection::count());
         $followed_collection = models\FollowedCollection::take();
         $this->assertNotNull($followed_collection);
@@ -78,15 +76,12 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/follow", [
-            'csrf' => 'a token',
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\FollowCollection::class),
         ]);
 
-        $from_encoded = urlencode($from);
-        $this->assertResponseCode($response, 302, "/login?redirect_to={$from_encoded}");
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
         $this->assertSame(0, models\FollowedCollection::count());
     }
 
@@ -99,11 +94,9 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', '/collections/unknown/follow', [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\FollowCollection::class),
         ]);
 
         $this->assertResponseCode($response, 404);
@@ -119,14 +112,12 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => false,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/follow", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\FollowCollection::class),
         ]);
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 403);
         $this->assertSame(0, models\FollowedCollection::count());
     }
 
@@ -139,14 +130,12 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/follow", [
-            'csrf' => 'not the token',
-            'from' => $from,
+            'csrf_token' => 'not the token',
         ]);
 
-        $this->assertResponseCode($response, 302, $from);
+        $this->assertResponseCode($response, 302, '/');
         $this->assertSame(
             'A security verification failed: you should retry to submit the form.',
             \Minz\Flash::get('error'),
@@ -167,14 +156,12 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'collection_id' => $collection->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/unfollow", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\UnfollowCollection::class),
         ]);
 
-        $this->assertResponseCode($response, 302, $from);
+        $this->assertResponseCode($response, 302, '/');
         $this->assertSame(0, models\FollowedCollection::count());
     }
 
@@ -195,14 +182,12 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'collection_id' => $collection->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/unfollow", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\UnfollowCollection::class),
         ]);
 
-        $this->assertResponseCode($response, 302, $from);
+        $this->assertResponseCode($response, 302, '/');
         $this->assertSame(0, models\FollowedCollection::count());
     }
 
@@ -221,14 +206,12 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'collection_id' => $collection->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/unfollow", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\UnfollowCollection::class),
         ]);
 
-        $this->assertResponseCode($response, 302, $from);
+        $this->assertResponseCode($response, 302, '/');
         $this->assertSame(0, models\FollowedCollection::count());
     }
 
@@ -245,15 +228,12 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'collection_id' => $collection->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/unfollow", [
-            'csrf' => 'a token',
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\UnfollowCollection::class),
         ]);
 
-        $from_encoded = urlencode($from);
-        $this->assertResponseCode($response, 302, "/login?redirect_to={$from_encoded}");
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
         $this->assertSame(1, models\FollowedCollection::count());
     }
 
@@ -270,11 +250,9 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'collection_id' => $collection->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', '/collections/unknown/unfollow', [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\UnfollowCollection::class),
         ]);
 
         $this->assertResponseCode($response, 404);
@@ -294,14 +272,12 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'collection_id' => $collection->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/unfollow", [
-            'csrf' => 'not the token',
-            'from' => $from,
+            'csrf_token' => 'not the token',
         ]);
 
-        $this->assertResponseCode($response, 302, $from);
+        $this->assertResponseCode($response, 302, '/');
         $this->assertSame(
             'A security verification failed: you should retry to submit the form.',
             \Minz\Flash::get('error'),

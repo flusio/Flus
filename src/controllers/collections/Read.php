@@ -2,12 +2,13 @@
 
 namespace App\controllers\collections;
 
-use Minz\Request;
-use Minz\Response;
 use App\auth;
 use App\controllers\BaseController;
+use App\forms;
 use App\models;
 use App\utils;
+use Minz\Request;
+use Minz\Response;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -19,72 +20,44 @@ class Read extends BaseController
      * Mark links of the collection as read and remove them from bookmarks.
      *
      * @request_param string id
-     * @request_param string csrf
-     * @request_param string from
      * @request_param date date
      * @request_param string source
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=:from
-     *     if not connected
-     * @response 404
-     *     if the collection doesn’t exist or is inaccessible
      * @response 302 :from
      * @flash error
-     *     if CSRF is invalid
+     *     If the CSRF token is invalid.
      * @response 302 :from
-     *     on success
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the collection doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot view the collection.
      */
     public function create(Request $request): Response
     {
-        $from = $request->parameters->getString('from', '');
-        $csrf = $request->parameters->getString('csrf', '');
-        $collection_id = $request->parameters->getString('id', '');
-        $date = $request->parameters->getDatetime('date', format: 'Y-m-d');
-        $source = $request->parameters->getString('source', '');
+        $user = auth\CurrentUser::require();
+        $collection = models\Collection::requireFromRequest($request);
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
+        auth\Access::require($user, 'view', $collection);
 
-        $collection = models\Collection::find($collection_id);
-        $links = [];
+        $from = utils\RequestHelper::from($request);
 
-        $options = [];
+        $form = new forms\collections\MarkCollectionAsRead(options: [
+            'collection' => $collection,
+            'user' => $user,
+        ]);
+        $form->handleRequest($request);
 
-        if ($date) {
-            $options['published_date'] = $date;
-        }
-
-        if ($source) {
-            $options['source'] = $source;
-        }
-
-        if ($collection && auth\CollectionsAccess::canUpdateRead($user, $collection)) {
-            $links = $collection->links(options: $options);
-        } elseif ($collection && $user->isFollowing($collection->id)) {
-            $options['hidden'] = $collection->sharedWith($user);
-            $collection_links = $collection->links(options: $options);
-            $links = $user->obtainLinks($collection_links);
-            list($source_type, $source_resource_id) = utils\SourceHelper::extractFromPath($from);
-
-            $links_to_create = [];
-            foreach ($links as $link) {
-                if (!$link->isPersisted()) {
-                    $link->created_at = \Minz\Time::now();
-                    if ($source_type) {
-                        $link->source_type = $source_type;
-                        $link->source_resource_id = $source_resource_id;
-                    }
-                    $links_to_create[] = $link;
-                }
-            }
-            models\Link::bulkInsert($links_to_create);
-        } else {
-            return Response::notFound('not_found.phtml');
-        }
-
-        if (!\App\Csrf::validate($csrf)) {
-            \Minz\Flash::set('error', _('A security verification failed.'));
+        if (!$form->validate()) {
+            \Minz\Flash::set('error', $form->error('@base'));
             return Response::found($from);
         }
+
+        $links = $form->links();
 
         $user->markAsRead($links);
 
@@ -95,73 +68,44 @@ class Read extends BaseController
      * Remove links of the collection from news and add them to bookmarks.
      *
      * @request_param string id
-     * @request_param string csrf
-     * @request_param string from
      * @request_param date date
      * @request_param string source
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=:from
-     *     if not connected
-     * @response 404
-     *     if the collection doesn’t exist or is inaccessible
      * @response 302 :from
      * @flash error
-     *     if CSRF is invalid
+     *     If the CSRF token is invalid.
      * @response 302 :from
-     *     on success
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the collection doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot view the collection.
      */
     public function later(Request $request): Response
     {
-        $from = $request->parameters->getString('from', '');
-        $csrf = $request->parameters->getString('csrf', '');
-        $collection_id = $request->parameters->getString('id', '');
-        $date = $request->parameters->getDatetime('date', format: 'Y-m-d');
-        $source = $request->parameters->getString('source', '');
+        $user = auth\CurrentUser::require();
+        $collection = models\Collection::requireFromRequest($request);
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
+        auth\Access::require($user, 'view', $collection);
 
-        $collection = models\Collection::find($collection_id);
-        $links = [];
+        $from = utils\RequestHelper::from($request);
 
-        $options = [];
+        $form = new forms\collections\MarkCollectionAsReadLater(options: [
+            'collection' => $collection,
+            'user' => $user,
+        ]);
+        $form->handleRequest($request);
 
-        if ($date) {
-            $options['published_date'] = $date;
-        }
-
-        if ($source) {
-            $options['source'] = $source;
-        }
-
-        if ($collection && auth\CollectionsAccess::canUpdateRead($user, $collection)) {
-            $links = $collection->links(options: $options);
-        } elseif ($collection && $user->isFollowing($collection->id)) {
-            $options['hidden'] = $collection->sharedWith($user);
-            $collection_links = $collection->links(options: $options);
-            $links = $user->obtainLinks($collection_links);
-
-            list($source_type, $source_resource_id) = utils\SourceHelper::extractFromPath($from);
-
-            $links_to_create = [];
-            foreach ($links as $link) {
-                if (!$link->isPersisted()) {
-                    $link->created_at = \Minz\Time::now();
-                    if ($source_type) {
-                        $link->source_type = $source_type;
-                        $link->source_resource_id = $source_resource_id;
-                    }
-                    $links_to_create[] = $link;
-                }
-            }
-            models\Link::bulkInsert($links_to_create);
-        } else {
-            return Response::notFound('not_found.phtml');
-        }
-
-        if (!\App\Csrf::validate($csrf)) {
-            \Minz\Flash::set('error', _('A security verification failed.'));
+        if (!$form->validate()) {
+            \Minz\Flash::set('error', $form->error('@base'));
             return Response::found($from);
         }
+
+        $links = $form->links();
 
         $user->markAsReadLater($links);
 
@@ -172,67 +116,44 @@ class Read extends BaseController
      * Remove links of the collection from news and bookmarks and add them to the never list.
      *
      * @request_param string id
-     * @request_param string csrf
-     * @request_param string from
      * @request_param date date
      * @request_param string source
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=:from
-     *     if not connected
-     * @response 404
-     *     if the collection doesn’t exist or is inaccessible
      * @response 302 :from
      * @flash error
-     *     if CSRF is invalid
+     *     If the CSRF token is invalid.
      * @response 302 :from
-     *     on success
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the collection doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot view the collection.
      */
     public function never(Request $request): Response
     {
-        $from = $request->parameters->getString('from', '');
-        $csrf = $request->parameters->getString('csrf', '');
-        $collection_id = $request->parameters->getString('id', '');
-        $date = $request->parameters->getDatetime('date', format: 'Y-m-d');
-        $source = $request->parameters->getString('source', '');
+        $user = auth\CurrentUser::require();
+        $collection = models\Collection::requireFromRequest($request);
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
+        auth\Access::require($user, 'view', $collection);
 
-        $collection = models\Collection::find($collection_id);
-        $links = [];
+        $from = utils\RequestHelper::from($request);
 
-        $options = [];
+        $form = new forms\collections\MarkCollectionAsNever(options: [
+            'collection' => $collection,
+            'user' => $user,
+        ]);
+        $form->handleRequest($request);
 
-        if ($date) {
-            $options['published_date'] = $date;
-        }
-
-        if ($source) {
-            $options['source'] = $source;
-        }
-
-        if ($collection && auth\CollectionsAccess::canUpdateRead($user, $collection)) {
-            $links = $collection->links(options: $options);
-        } elseif ($collection && $user->isFollowing($collection->id)) {
-            $options['hidden'] = $collection->sharedWith($user);
-            $collection_links = $collection->links(options: $options);
-            $links = $user->obtainLinks($collection_links);
-
-            $links_to_create = [];
-            foreach ($links as $link) {
-                if (!$link->isPersisted()) {
-                    $link->created_at = \Minz\Time::now();
-                    $links_to_create[] = $link;
-                }
-            }
-            models\Link::bulkInsert($links_to_create);
-        } else {
-            return Response::notFound('not_found.phtml');
-        }
-
-        if (!\App\Csrf::validate($csrf)) {
-            \Minz\Flash::set('error', _('A security verification failed.'));
+        if (!$form->validate()) {
+            \Minz\Flash::set('error', $form->error('@base'));
             return Response::found($from);
         }
+
+        $links = $form->links();
 
         $user->removeFromJournal($links);
 

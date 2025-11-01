@@ -23,22 +23,24 @@ class Feeds extends BaseController
      *     Indicate if <link rel=alternate> should point directly to the
      *     external websites (true) or not (false, default).
      *
-     * @response 404
-     *     if the collection doesn’t exist or is inaccessible
      * @response 301 :feed_url
-     *     if the collection is a feed
+     *     If the collection is a feed.
      * @response 200
+     *     On success.
+     *
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the collection doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot view the collection.
      */
     public function show(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $collection_id = $request->parameters->getString('id', '');
+        $collection = models\Collection::requireFromRequest($request);
+
         $direct = $request->parameters->getBoolean('direct');
 
-        $collection = models\Collection::find($collection_id);
-        if (!$collection || !auth\CollectionsAccess::canView($user, $collection)) {
-            return Response::notFound('not_found.phtml');
-        }
+        auth\Access::require($user, 'view', $collection);
 
         if ($collection->type === 'feed') {
             /** @var string */

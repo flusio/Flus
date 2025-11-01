@@ -2,6 +2,7 @@
 
 namespace App\controllers\collections;
 
+use App\forms;
 use App\models;
 use tests\factories\UserFactory;
 use tests\factories\CollectionFactory;
@@ -10,6 +11,7 @@ use tests\factories\FollowedCollectionFactory;
 class FiltersTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\CsrfHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
@@ -31,11 +33,8 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'collection_id' => $collection->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('GET', "/collections/{$collection->id}/filter", [
-            'from' => $from,
-        ]);
+        $response = $this->appRun('GET', "/collections/{$collection->id}/filter");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseTemplateName($response, 'collections/filters/edit.phtml');
@@ -58,14 +57,10 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'collection_id' => $collection->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('GET', "/collections/{$collection->id}/filter", [
-            'from' => $from,
-        ]);
+        $response = $this->appRun('GET', "/collections/{$collection->id}/filter");
 
-        $encoded_from = urlencode($from);
-        $this->assertResponseCode($response, 302, "/login?redirect_to={$encoded_from}");
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Fcollections%2F{$collection->id}%2Ffilter");
     }
 
     public function testEditFailsIfCollectionIsPrivate(): void
@@ -84,13 +79,10 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'collection_id' => $collection->id,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('GET', "/collections/{$collection->id}/filter", [
-            'from' => $from,
-        ]);
+        $response = $this->appRun('GET', "/collections/{$collection->id}/filter");
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 403);
     }
 
     public function testEditFailsIfCollectionIsNotFollowed(): void
@@ -105,11 +97,8 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
             'name' => $collection_name,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
-        $response = $this->appRun('GET', "/collections/{$collection->id}/filter", [
-            'from' => $from,
-        ]);
+        $response = $this->appRun('GET', "/collections/{$collection->id}/filter");
 
         $this->assertResponseCode($response, 404);
     }
@@ -132,15 +121,13 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
             'time_filter' => $old_time_filter,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/filter", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\EditTimeFilter::class),
             'time_filter' => $new_time_filter,
         ]);
 
-        $this->assertResponseCode($response, 302, $from);
+        $this->assertResponseCode($response, 302, "/collections/{$collection->id}/filter");
         $followed_collection = $followed_collection->reload();
         $this->assertSame($new_time_filter, $followed_collection->time_filter);
     }
@@ -163,16 +150,13 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
             'time_filter' => $old_time_filter,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/filter", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\EditTimeFilter::class),
             'time_filter' => $new_time_filter,
         ]);
 
-        $encoded_from = urlencode($from);
-        $this->assertResponseCode($response, 302, "/login?redirect_to={$encoded_from}");
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Fcollections%2F{$collection->id}%2Ffilter");
         $followed_collection = $followed_collection->reload();
         $this->assertSame($old_time_filter, $followed_collection->time_filter);
     }
@@ -195,15 +179,13 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
             'time_filter' => $old_time_filter,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/filter", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\EditTimeFilter::class),
             'time_filter' => $new_time_filter,
         ]);
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 403);
         $followed_collection = $followed_collection->reload();
         $this->assertSame($old_time_filter, $followed_collection->time_filter);
     }
@@ -221,11 +203,9 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/filter", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\EditTimeFilter::class),
             'time_filter' => $new_time_filter,
         ]);
 
@@ -250,11 +230,9 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
             'time_filter' => $old_time_filter,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/filter", [
-            'csrf' => 'not the token',
-            'from' => $from,
+            'csrf_token' => 'not the token',
             'time_filter' => $new_time_filter,
         ]);
 
@@ -282,11 +260,9 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
             'time_filter' => $old_time_filter,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/filter", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\EditTimeFilter::class),
             'time_filter' => $new_time_filter,
         ]);
 
@@ -296,7 +272,7 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_time_filter, $followed_collection->time_filter);
     }
 
-    public function testUpdateFailsIfTimeFilterIsMissing(): void
+    public function testUpdateFailsIfTimeFilterIsEmpty(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -313,11 +289,10 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
             'time_filter' => $old_time_filter,
         ]);
-        $from = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/filter", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\collections\EditTimeFilter::class),
+            'time_filter' => '',
         ]);
 
         $this->assertResponseCode($response, 400);

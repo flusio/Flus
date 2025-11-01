@@ -2,12 +2,13 @@
 
 namespace App\controllers;
 
-use Minz\Request;
-use Minz\Response;
 use App\auth;
+use App\forms;
 use App\models;
 use App\services;
 use App\utils;
+use Minz\Request;
+use Minz\Response;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -18,13 +19,15 @@ class Feeds extends BaseController
     /**
      * List the followed feeds/collections of the current user.
      *
-     * @response 302 /login?redirect_to=/feeds
-     *     if the user is not connected
      * @response 200
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function index(Request $request): Response
     {
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('feeds'));
+        $user = auth\CurrentUser::require();
 
         $groups = models\Group::listBy(['user_id' => $user->id]);
         $groups = utils\Sorter::localeSort($groups, 'name');
@@ -50,102 +53,58 @@ class Feeds extends BaseController
     /**
      * Show the page to add a feed.
      *
-     * @request_param string from
-     *     The page to redirect to after creation (default is /feeds)
-     *
-     * @response 302 /login?redirect_to=:from if not connected
      * @response 200
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function new(Request $request): Response
     {
-        $from = $request->parameters->getString('from', \Minz\Url::for('feeds'));
+        $user = auth\CurrentUser::require();
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
+        $form = new forms\collections\NewFeed();
 
         return Response::ok('feeds/new.phtml', [
-            'url' => '',
-            'from' => $from,
+            'form' => $form,
         ]);
     }
 
     /**
      * Create a feed if needed, and add the current user as a follower.
      *
-     * @request_param string csrf
-     * @request_param string url It must be a valid non-empty URL
-     * @request_param string from The page to redirect to if not connected
+     * @request_param string url
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=:from if not connected
-     * @response 400 if CSRF or the url is invalid
-     * @response 302 /collections/:id on success
+     * @response 400
+     *     If at least one of the parameters is invalid.
+     * @response 302 /collections/:id
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function create(Request $request): Response
     {
-        $user = auth\CurrentUser::get();
-        $url = $request->parameters->getString('url', '');
-        $from = $request->parameters->getString('from', '');
-        $csrf = $request->parameters->getString('csrf', '');
+        $user = auth\CurrentUser::require();
 
-        $url = \SpiderBits\Url::sanitize($url);
-        $support_user = models\User::supportUser();
+        $form = new forms\collections\NewFeed();
 
-        if (!$user) {
-            return Response::redirect('login', ['redirect_to' => $from]);
-        }
+        $form->handleRequest($request);
 
-        if (!\App\Csrf::validate($csrf)) {
+        if (!$form->validate()) {
             return Response::badRequest('feeds/new.phtml', [
-                'url' => $url,
-                'from' => $from,
-                'error' => _('A security verification failed: you should retry to submit the form.'),
+                'form' => $form,
             ]);
         }
 
-        $default_link = models\Link::findBy([
-            'user_id' => $support_user->id,
-            'url_hash' => models\Link::hashUrl($url),
-        ]);
-        if (!$default_link) {
-            $default_link = new models\Link($url, $support_user->id, false);
-        }
+        $feed = $form->feed();
 
-        if (!$default_link->validate()) {
-            return Response::badRequest('feeds/new.phtml', [
-                'url' => $url,
-                'from' => $from,
-                'errors' => $default_link->errors(),
-            ]);
-        }
-
-        $link_fetcher_service = new services\LinkFetcher([
-            'http_timeout' => 10,
-            'ignore_rate_limit' => true,
-        ]);
-        $link_fetcher_service->fetch($default_link);
-
-        if (count($default_link->url_feeds) === 0) {
-            return Response::badRequest('feeds/new.phtml', [
-                'url' => $url,
-                'from' => $from,
-                'errors' => [
-                    'url' => _('There is no valid feeds at this address.'),
-                ],
-            ]);
-        }
-
-        $feed_url = $default_link->url_feeds[0];
-        $feed = models\Collection::findBy([
-            'type' => 'feed',
-            'feed_url' => $feed_url,
-            'user_id' => $support_user->id,
-        ]);
-        if (!$feed) {
+        if (!$feed->isPersisted()) {
             $feed_fetcher_service = new services\FeedFetcher([
                 'http_timeout' => 10,
                 'ignore_rate_limit' => true,
             ]);
-
-            $feed = models\Collection::initFeed($support_user->id, $feed_url);
             $feed_fetcher_service->fetch($feed);
         }
 

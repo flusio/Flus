@@ -137,7 +137,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', "/collections/{$collection->id}/feed.atom.xml");
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 403);
     }
 
     public function testAliasRedirectsToShow(): void
