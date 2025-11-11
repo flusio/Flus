@@ -449,9 +449,14 @@ class User
     /**
      * Return a link with the given URL owned by the user. Any matching link
      * that already exists in the database is returned.
+     *
+     * The URL is sanitized before being searched, so you don't have to do it
+     * yourself.
      */
     public function findOrBuildLink(string $url): Link
     {
+        $url = \SpiderBits\Url::sanitize($url);
+
         $link = Link::findBy([
             'user_id' => $this->id,
             'url_hash' => Link::hashUrl($url),
