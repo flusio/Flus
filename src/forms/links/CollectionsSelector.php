@@ -14,6 +14,8 @@ use Minz\Validable;
  */
 trait CollectionsSelector
 {
+    use utils\Memoizer;
+
     /** @var string[] */
     #[Form\Field(bind: false)]
     public array $collection_ids = [];
@@ -23,9 +25,6 @@ trait CollectionsSelector
     public array $new_collection_names = [];
 
     public int $collection_name_max_length = models\Collection::NAME_MAX_LENGTH;
-
-    /** @var ?array<string, models\Collection[]> */
-    private ?array $cache_collection_values = null;
 
     public function user(): models\User
     {
@@ -48,45 +47,41 @@ trait CollectionsSelector
      */
     public function collectionsValues(): array
     {
-        if ($this->cache_collection_values !== null) {
-            return $this->cache_collection_values;
-        }
+        return $this->memoize('collections_values', function (): array {
+            $user = $this->user();
 
-        $user = $this->user();
+            $collection_values = [];
 
-        $collection_values = [];
+            $groups = models\Group::listBy(['user_id' => $user->id]);
+            $groups = utils\Sorter::localeSort($groups, 'name');
 
-        $groups = models\Group::listBy(['user_id' => $user->id]);
-        $groups = utils\Sorter::localeSort($groups, 'name');
+            $collections = $user->collections();
+            $collections = utils\Sorter::localeSort($collections, 'name');
+            $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
 
-        $collections = $user->collections();
-        $collections = utils\Sorter::localeSort($collections, 'name');
-        $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
+            $shared_collections = $user->sharedCollections(options: [
+                'access_type' => 'write',
+            ]);
+            $shared_collections = utils\Sorter::localeSort($shared_collections, 'name');
 
-        $shared_collections = $user->sharedCollections(options: [
-            'access_type' => 'write',
-        ]);
-        $shared_collections = utils\Sorter::localeSort($shared_collections, 'name');
+            // Add the collections with no groups first.
+            $collection_values[''] = $groups_to_collections[''] ?? [];
 
-        // Add the collections with no groups first.
-        $collection_values[''] = $groups_to_collections[''] ?? [];
-
-        // Add the collections with groups then
-        foreach ($groups as $group) {
-            if (isset($groups_to_collections[$group->id])) {
-                $collection_values[$group->name] = $groups_to_collections[$group->id];
+            // Add the collections with groups then
+            foreach ($groups as $group) {
+                if (isset($groups_to_collections[$group->id])) {
+                    $collection_values[$group->name] = $groups_to_collections[$group->id];
+                }
             }
-        }
 
-        // Finally, add the shared collections like it was a distinct group.
-        if ($shared_collections) {
-            $share_group_name = _('Shared with me');
-            $collection_values[$share_group_name] = $shared_collections;
-        }
+            // Finally, add the shared collections like it was a distinct group.
+            if ($shared_collections) {
+                $share_group_name = _('Shared with me');
+                $collection_values[$share_group_name] = $shared_collections;
+            }
 
-        $this->cache_collection_values = $collection_values;
-
-        return $collection_values;
+            return $collection_values;
+        });
     }
 
     /**

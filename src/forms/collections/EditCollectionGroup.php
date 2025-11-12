@@ -14,28 +14,25 @@ use Minz\Validable;
  */
 class EditCollectionGroup extends BaseForm
 {
+    use utils\Memoizer;
+
     #[Form\Field(transform: 'trim')]
     public string $name = '';
 
     public int $group_name_max_length = models\Group::NAME_MAX_LENGTH;
-
-    /** @var ?models\Group[] */
-    private ?array $cache_groups = null;
 
     /**
      * @return models\Group[]
      */
     public function groups(): array
     {
-        if ($this->cache_groups === null) {
+        return $this->memoize('groups', function (): array {
             $user = $this->user();
             $groups = models\Group::listBy([
                 'user_id' => $user->id,
             ]);
-            $this->cache_groups = utils\Sorter::localeSort($groups, 'name');
-        }
-
-        return $this->cache_groups;
+            return utils\Sorter::localeSort($groups, 'name');
+        });
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\forms\collections;
 
 use App\forms\BaseForm;
 use App\models;
+use App\utils;
 use Minz\Form;
 use Minz\Request;
 use Minz\Translatable;
@@ -17,6 +18,8 @@ use Minz\Validable;
  */
 class ShareCollection extends BaseForm
 {
+    use utils\Memoizer;
+
     #[Form\Field]
     #[Validable\Presence(
         message: new Translatable('The type is required.'),
@@ -30,15 +33,11 @@ class ShareCollection extends BaseForm
     #[Form\Field(transform: 'trim')]
     public string $user_id = '';
 
-    private ?models\User $cache_user = null;
-
     public function user(): models\User
     {
-        if ($this->cache_user === null) {
-            $this->cache_user = models\User::require($this->user_id);
-        }
-
-        return $this->cache_user;
+        return $this->memoize('user', function (): models\User {
+            return models\User::require($this->user_id);
+        });
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\forms\links;
 
 use App\forms\BaseForm;
 use App\models;
+use App\utils;
 use Minz\Form;
 use Minz\Translatable;
 use Minz\Validable;
@@ -14,6 +15,8 @@ use Minz\Validable;
  */
 class RepairLink extends BaseForm
 {
+    use utils\Memoizer;
+
     #[Form\Field(transform: '\SpiderBits\Url::sanitize')]
     #[Validable\Presence(
         message: new Translatable('The link is required.'),
@@ -26,15 +29,11 @@ class RepairLink extends BaseForm
     #[Form\Field]
     public bool $force_sync = false;
 
-    private ?string $cache_url_cleared = null;
-
     public function urlCleared(): string
     {
-        if ($this->cache_url_cleared === null) {
-            $this->cache_url_cleared = \SpiderBits\ClearUrls::clear($this->url);
-        }
-
-        return $this->cache_url_cleared;
+        return $this->memoize('url_cleared', function (): string {
+            return \SpiderBits\ClearUrls::clear($this->url);
+        });
     }
 
     public function hasDetectedTrackers(): bool
