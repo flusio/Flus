@@ -276,9 +276,7 @@
             data-controller="news-refresher"
             data-news-refresher-url-value="<?= url('news available') ?>"
         >
-            <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
-
-            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+            <?= $this->include('alerts/_error.phtml', ['message' => $form->error('@base')]) ?>
 
             <div class="text--centered">
                 <button
@@ -289,6 +287,8 @@
                     <?= _('Refresh the news') ?>
                 </button>
             </div>
+
+            <input type="hidden" name="csrf_token" value="<?= csrf_token($form) ?>" />
         </form>
     </div>
 <?php endif; ?>

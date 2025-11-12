@@ -2,6 +2,7 @@
 
 namespace App\controllers;
 
+use App\forms;
 use App\models;
 use App\utils;
 use tests\factories\CollectionFactory;
@@ -13,6 +14,7 @@ use tests\factories\UserFactory;
 class NewsTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\CsrfHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
@@ -187,7 +189,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/news', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\FillNews::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/news');
@@ -250,7 +252,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/news', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\FillNews::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/news');
@@ -297,7 +299,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/news', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\FillNews::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/news');
@@ -318,7 +320,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
 
         $response = $this->appRun('POST', '/news', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\FillNews::class),
         ]);
 
         $this->assertTrue(\Minz\Flash::get('no_news'));
@@ -355,7 +357,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/news', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\FillNews::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fnews');
@@ -396,7 +398,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/news', [
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
         ]);
 
         $this->assertResponseCode($response, 400);

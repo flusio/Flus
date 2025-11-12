@@ -2,11 +2,12 @@
 
 namespace App\controllers;
 
-use Minz\Request;
-use Minz\Response;
 use App\auth;
+use App\forms;
 use App\models;
 use App\utils;
+use Minz\Request;
+use Minz\Response;
 
 /**
  * Handle the requests related to the news.
@@ -19,49 +20,57 @@ class News extends BaseController
     /**
      * Show the news page.
      *
-     * @response 302 /login?redirect_to=/news
-     *     if not connected
      * @response 200
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function index(): Response
     {
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('news'));
+        $user = auth\CurrentUser::require();
 
         $news = $user->news();
         $links = $news->links(['published_at', 'number_notes']);
         $links_timeline = new utils\LinksTimeline($links);
 
+        $form = new forms\FillNews();
+
         return Response::ok('news/index.phtml', [
             'news' => $news,
             'links_timeline' => $links_timeline,
             'no_news' => \Minz\Flash::pop('no_news'),
+            'form' => $form,
         ]);
     }
 
     /**
      * Fill the news page with links to read (from bookmarks and followed
-     * collections)
+     * collections).
      *
-     * @request_param string csrf
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=/news
-     *     if not connected
      * @response 400
-     *     if csrf is invalid
+     *     If the CSRF token is invalid.
      * @response 302 /news
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function create(Request $request): Response
     {
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('news'));
+        $user = auth\CurrentUser::require();
 
-        $csrf = $request->parameters->getString('csrf', '');
+        $form = new forms\FillNews();
+        $form->handleRequest($request);
 
-        if (!\App\Csrf::validate($csrf)) {
+        if (!$form->validate()) {
             return Response::badRequest('news/index.phtml', [
                 'news' => $user->news(),
                 'links_timeline' => new utils\LinksTimeline([]),
                 'no_news' => false,
-                'error' => _('A security verification failed: you should retry to submit the form.'),
+                'form' => $form,
             ]);
         }
 
@@ -78,13 +87,15 @@ class News extends BaseController
     /**
      * Return a JSON telling if there are new links available for the news.
      *
-     * @response 302 /login?redirect_to=/news
-     *     if not connected
      * @response 200
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function showAvailable(Request $request): Response
     {
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('news'));
+        $user = auth\CurrentUser::require();
 
         return Response::json(200, [
             'available' => models\Link::anyFromFollowedCollections($user->id),
