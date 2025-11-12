@@ -12,6 +12,7 @@ use Minz\Database;
 class Importation
 {
     use Database\Recordable;
+    use Database\Resource;
 
     public const VALID_TYPES = ['pocket', 'opml'];
     public const VALID_STATUSES = ['ongoing', 'finished', 'error'];

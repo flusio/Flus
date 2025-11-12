@@ -2,10 +2,12 @@
 
 namespace App\controllers;
 
+use App\auth;
+use App\forms;
+use App\models;
+use App\utils;
 use Minz\Request;
 use Minz\Response;
-use App\auth;
-use App\models;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -17,43 +19,39 @@ class Importations extends BaseController
      * Delete an importation
      *
      * @request_param string id
-     * @request_param string from
-     * @request_param string csrf
+     * @request_param string redirect_to
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=:from if not connected
-     * @response 404 if the importation doesn’t exist or user hasn't access
-     * @response 302 :from if csrf is invalid
-     * @response 302 /collections on success
+     * @response 302 :from
+     * @flash error
+     *     If the CSRF token is invalid.
+     * @response 302 :redirect_to
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the importation doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot delete the importation.
      */
     public function delete(Request $request): Response
     {
-        $importation_id = $request->parameters->getString('id', '');
-        $from = $request->parameters->getString('from', '');
-        $csrf = $request->parameters->getString('csrf', '');
+        $user = auth\CurrentUser::require();
+        $importation = models\Importation::requireFromRequest($request);
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
+        auth\Access::require($user, 'delete', $importation);
 
-        $importation = models\Importation::findBy([
-            'id' => $importation_id,
-            'user_id' => $user->id,
-        ]);
-        if (!$importation) {
-            return Response::notFound('not_found.phtml');
+        $form = new forms\DeleteImportation();
+        $form->handleRequest($request);
+
+        if (!$form->validate()) {
+            \Minz\Flash::set('error', $form->error('@base'));
+            return Response::found(utils\RequestHelper::from($request));
         }
 
-        if (!\App\Csrf::validate($csrf)) {
-            \Minz\Flash::set('error', _('A security verification failed.'));
-            return Response::found($from);
-        }
+        $importation->remove();
 
-        $importation_type = $importation->type;
-
-        models\Importation::delete($importation->id);
-
-        if ($importation_type === 'pocket') {
-            return Response::redirect('links');
-        } else {
-            return Response::redirect('feeds');
-        }
+        return Response::found($form->redirect_to);
     }
 }

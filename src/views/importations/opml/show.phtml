@@ -45,27 +45,27 @@
         ]) ?>
 
         <form method="post" action="<?= url('delete importation', ['id' => $importation->id]) ?>">
-            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-            <input type="hidden" name="from" value="<?= url('opml') ?>" />
-
             <div class="form__actions">
                 <button type="submit" class="button--primary">
                     <?= _('Ok!') ?>
                 </button>
             </div>
+
+            <input type="hidden" name="csrf_token" value="<?= csrf_token('DeleteImportation') ?>" />
+            <input type="hidden" name="redirect_to" value="<?= url('feeds') ?>" />
         </form>
     <?php elseif ($importation && $importation->status === 'error'): ?>
         <?= $this->include('alerts/_error.phtml', ['message' => protect($importation->error)]) ?>
 
         <form method="post" action="<?= url('delete importation', ['id' => $importation->id]) ?>">
-            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-            <input type="hidden" name="from" value="<?= url('opml') ?>" />
-
             <div class="form__actions">
                 <button type="submit" class="button--primary">
                     <?= _('Ok!') ?>
                 </button>
             </div>
+
+            <input type="hidden" name="csrf_token" value="<?= csrf_token('DeleteImportation') ?>" />
+            <input type="hidden" name="redirect_to" value="<?= url('feeds') ?>" />
         </form>
     <?php else: ?>
         <form

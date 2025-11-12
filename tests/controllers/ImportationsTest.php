@@ -2,6 +2,7 @@
 
 namespace App\controllers;
 
+use App\forms;
 use App\models;
 use tests\factories\ImportationFactory;
 use tests\factories\UserFactory;
@@ -9,6 +10,7 @@ use tests\factories\UserFactory;
 class ImportationsTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\CsrfHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
@@ -19,12 +21,11 @@ class ImportationsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $importation = ImportationFactory::create([
             'user_id' => $user->id,
-            'type' => 'pocket',
         ]);
 
         $response = $this->appRun('POST', "/importations/{$importation->id}/delete", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => \Minz\Url::for('pocket'),
+            'csrf_token' => $this->csrfToken(forms\DeleteImportation::class),
+            'redirect_to' => '/links',
         ]);
 
         $this->assertResponseCode($response, 302, '/links');
@@ -33,19 +34,17 @@ class ImportationsTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteRedirectsIfNotConnected(): void
     {
-        $user = UserFactory::create([
-            'csrf' => 'a token',
-        ]);
+        $user = UserFactory::create();
         $importation = ImportationFactory::create([
             'user_id' => $user->id,
         ]);
 
         $response = $this->appRun('POST', "/importations/{$importation->id}/delete", [
-            'csrf' => 'a token',
-            'from' => \Minz\Url::for('pocket'),
+            'csrf_token' => $this->csrfToken(forms\DeleteImportation::class),
+            'redirect_to' => \Minz\Url::for('links'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fpocket');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
         $this->assertTrue(models\Importation::exists($importation->id));
     }
 
@@ -58,11 +57,11 @@ class ImportationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/importations/{$importation->id}/delete", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => \Minz\Url::for('pocket'),
+            'csrf_token' => $this->csrfToken(forms\DeleteImportation::class),
+            'redirect_to' => \Minz\Url::for('links'),
         ]);
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 403);
         $this->assertTrue(models\Importation::exists($importation->id));
     }
 
@@ -74,12 +73,14 @@ class ImportationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/importations/{$importation->id}/delete", [
-            'csrf' => 'not the token',
-            'from' => \Minz\Url::for('pocket'),
+            'csrf_token' => 'not the token',
+            'redirect_to' => \Minz\Url::for('links'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/pocket');
-        $this->assertSame('A security verification failed.', \Minz\Flash::get('error'));
+        $this->assertResponseCode($response, 302, '/');
+        $error = \Minz\Flash::get('error');
+        $this->assertTrue(is_string($error));
+        $this->assertStringContainsString('A security verification failed', $error);
         $this->assertTrue(models\Importation::exists($importation->id));
     }
 }

@@ -35,6 +35,8 @@ class Access
             $access_class = LinksAccess::class;
         } elseif ($subject instanceof models\Note) {
             $access_class = NotesAccess::class;
+        } elseif ($subject instanceof models\Importation) {
+            $access_class = ImportationsAccess::class;
         } else {
             throw new \InvalidArgumentException("{$subject_class} subject is not supported");
         }
