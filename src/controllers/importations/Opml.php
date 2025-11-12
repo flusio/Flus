@@ -2,12 +2,13 @@
 
 namespace App\controllers\importations;
 
-use Minz\Request;
-use Minz\Response;
 use App\auth;
 use App\controllers\BaseController;
+use App\forms;
 use App\jobs;
 use App\models;
+use Minz\Request;
+use Minz\Response;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -18,103 +19,68 @@ class Opml extends BaseController
     /**
      * Display the Opml importation main page
      *
-     * @response 302 /login?redirect_to=/opml
-     *    If the user is not connected
      * @response 200
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function show(Request $request): Response
     {
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('opml'));
+        $user = auth\CurrentUser::require();
 
-        $importation = models\Importation::findBy([
-            'type' => 'opml',
-            'user_id' => $user->id,
+        $form = new forms\importations\OpmlImportation(options: [
+            'user' => $user,
         ]);
+
         return Response::ok('importations/opml/show.phtml', [
-            'importation' => $importation,
+            'form' => $form,
         ]);
     }
 
     /**
      * Initialize a new Opml importation and register an OpmlImportator job.
      *
-     * @request_param string $csrf
+     * @request_param file opml
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=/opml
-     *    If the user is not connected
      * @response 400
-     *    If the CSRF token is invalid or if an import of opml type already exists
+     *    If the CSRF token is invalid or if an OPML import already exists.
      * @response 302 /opml
-     *    On success
+     *    On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function import(Request $request): Response
     {
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('opml'));
-        $csrf = $request->parameters->getString('csrf', '');
+        $user = auth\CurrentUser::require();
 
-        $importation = models\Importation::findBy([
-            'type' => 'opml',
-            'user_id' => $user->id,
+        $form = new forms\importations\OpmlImportation(options: [
+            'user' => $user,
         ]);
-        if ($importation) {
+        $form->handleRequest($request);
+
+        if (!$form->validate()) {
             return Response::badRequest('importations/opml/show.phtml', [
-                'importation' => $importation,
-                'error' => _('You already have an ongoing OPML importation.')
+                'form' => $form,
             ]);
         }
 
-        if (!\App\Csrf::validate($csrf)) {
-            return Response::badRequest('importations/opml/show.phtml', [
-                'importation' => null,
-                'error' => _('A security verification failed.'),
+        $importation = $form->importation();
+
+        if (!$importation) {
+            $form->addError(
+                'opml',
+                'failed_upload',
+                _('This file cannot be uploaded.'),
+            );
+
+            return Response::internalServerError('importations/opml/show.phtml', [
+                'form' => $form,
             ]);
         }
 
-        $opml_file = $request->parameters->getFile('opml');
-        if (!$opml_file) {
-            return Response::badRequest('importations/opml/show.phtml', [
-                'importation' => null,
-                'errors' => [
-                    'opml' => _('The file is required.'),
-                ],
-            ]);
-        }
-
-        if ($opml_file->isTooLarge()) {
-            return Response::badRequest('importations/opml/show.phtml', [
-                'importation' => null,
-                'errors' => [
-                    'opml' => _('This file is too large.'),
-                ],
-            ]);
-        } elseif ($opml_file->error) {
-            return Response::badRequest('importations/opml/show.phtml', [
-                'importation' => null,
-                'errors' => [
-                    'opml' => vsprintf(_('This file cannot be uploaded (error %d).'), [$opml_file->error]),
-                ],
-            ]);
-        }
-
-        $importations_filepath = \App\Configuration::$data_path . '/importations';
-        if (!file_exists($importations_filepath)) {
-            @mkdir($importations_filepath);
-        }
-
-        $opml_filepath = "{$importations_filepath}/opml_{$user->id}.xml";
-        $is_moved = $opml_file->move($opml_filepath);
-        if (!$is_moved) {
-            return Response::badRequest('importations/opml/show.phtml', [
-                'importation' => null,
-                'errors' => [
-                    'opml' => _('This file cannot be uploaded.'),
-                ],
-            ]);
-        }
-
-        $importation = new models\Importation('opml', $user->id, [
-            'opml_filepath' => $opml_filepath,
-        ]);
         $importation->save();
         $importator_job = new jobs\OpmlImportator();
         $importator_job->performAsap($importation->id);

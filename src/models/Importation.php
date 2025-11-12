@@ -85,6 +85,21 @@ class Importation
         $this->error = $error;
     }
 
+    public function isOngoing(): bool
+    {
+        return $this->status === 'ongoing';
+    }
+
+    public function isFinished(): bool
+    {
+        return $this->status === 'finished';
+    }
+
+    public function isInError(): bool
+    {
+        return $this->status === 'error';
+    }
+
     /**
      * @return array{
      *     'import_bookmarks': bool,
@@ -111,5 +126,13 @@ class Importation
         }
 
         return $clean_options;
+    }
+
+    public static function findOpmlByUser(User $user): ?self
+    {
+        return self::findBy([
+            'type' => 'opml',
+            'user_id' => $user->id,
+        ]);
     }
 }

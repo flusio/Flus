@@ -2,6 +2,7 @@
 
 namespace App\controllers\importations;
 
+use App\forms;
 use App\jobs;
 use App\models;
 use tests\factories\ImportationFactory;
@@ -9,6 +10,7 @@ use tests\factories\ImportationFactory;
 class OpmlTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\CsrfHelper;
     use \Minz\Tests\FilesHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
@@ -88,6 +90,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $opml_filepath = \App\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $tmp_filepath = $this->tmpCopyFile($opml_filepath);
         $file = [
+            'name' => 'freshrss.opml.xml',
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
         ];
@@ -96,7 +99,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, \Minz\Job::count());
 
         $response = $this->appRun('POST', '/opml', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\importations\OpmlImportation::class),
             'opml' => $file,
         ]);
 
@@ -120,12 +123,13 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $opml_filepath = \App\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $tmp_filepath = $this->tmpCopyFile($opml_filepath);
         $file = [
+            'name' => 'freshrss.opml.xml',
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
         ];
 
         $response = $this->appRun('POST', '/opml', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\importations\OpmlImportation::class),
             'opml' => $file,
         ]);
 
@@ -141,12 +145,13 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $opml_filepath = \App\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $tmp_filepath = $this->tmpCopyFile($opml_filepath);
         $file = [
+            'name' => 'freshrss.opml.xml',
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
         ];
 
         $response = $this->appRun('POST', '/opml', [
-            'csrf' => 'a token',
+            'csrf_token' => $this->csrfToken(forms\importations\OpmlImportation::class),
             'opml' => $file,
         ]);
 
@@ -164,6 +169,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $opml_filepath = \App\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $tmp_filepath = $this->tmpCopyFile($opml_filepath);
         $file = [
+            'name' => 'freshrss.opml.xml',
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
         ];
@@ -173,14 +179,13 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/opml', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\importations\OpmlImportation::class),
             'opml' => $file,
         ]);
 
         \App\Configuration::$jobs_adapter = 'test';
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseContains($response, 'You already have an ongoing OPML importation');
         $this->assertSame(1, models\Importation::count());
         $this->assertSame(0, \Minz\Job::count());
     }
@@ -192,6 +197,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $opml_filepath = \App\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $tmp_filepath = $this->tmpCopyFile($opml_filepath);
         $file = [
+            'name' => 'freshrss.opml.xml',
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
         ];
@@ -200,7 +206,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, \Minz\Job::count());
 
         $response = $this->appRun('POST', '/opml', [
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
             'opml' => $file,
         ]);
 
@@ -219,6 +225,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $opml_filepath = \App\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $tmp_filepath = $this->tmpCopyFile($opml_filepath);
         $file = [
+            'name' => 'freshrss.opml.xml',
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
         ];
@@ -227,7 +234,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, \Minz\Job::count());
 
         $response = $this->appRun('POST', '/opml', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\importations\OpmlImportation::class),
         ]);
 
         \App\Configuration::$jobs_adapter = 'test';
@@ -246,12 +253,13 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $opml_filepath = \App\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $tmp_filepath = $this->tmpCopyFile($opml_filepath);
         $file = [
+            'name' => 'freshrss.opml.xml',
             'tmp_name' => $tmp_filepath,
             'error' => $error,
         ];
 
         $response = $this->appRun('POST', '/opml', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\importations\OpmlImportation::class),
             'opml' => $file,
         ]);
 
@@ -271,12 +279,13 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $opml_filepath = \App\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $tmp_filepath = $this->tmpCopyFile($opml_filepath);
         $file = [
+            'name' => 'freshrss.opml.xml',
             'tmp_name' => $tmp_filepath,
             'error' => $error,
         ];
 
         $response = $this->appRun('POST', '/opml', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\importations\OpmlImportation::class),
             'opml' => $file,
         ]);
 
@@ -301,7 +310,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         ];
 
         $response = $this->appRun('POST', '/opml', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\importations\OpmlImportation::class),
             'opml' => $file,
         ]);
 

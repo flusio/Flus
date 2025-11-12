@@ -2,11 +2,13 @@
     $this->layout('base.phtml', [
         'title' => _('Importation from an OPML file'),
         'canonical' => url_full('opml'),
-        'has_errors' => $error || $errors,
+        'has_errors' => $form->isInvalid(),
         'back_options' => [
             'track' => false,
         ],
     ]);
+
+    $importation = $form->currentImportation();
 ?>
 
 <div class="section section--small section--longbottom">
@@ -18,9 +20,7 @@
         <?= _('<abbr>OPML</abbr> enables you to import your feeds from another software.') ?>
     </p>
 
-    <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
-
-    <?php if ($importation && $importation->status === 'ongoing'): ?>
+    <?php if ($importation && $importation->isOngoing()): ?>
         <p class="paragraph--featured" role="alert">
             <?= _('We’re importing your data…') ?>
         </p>
@@ -39,7 +39,7 @@
              data-autosubmit-timeout-value="4000"
         >
         </form>
-    <?php elseif ($importation && $importation->status === 'finished'): ?>
+    <?php elseif ($importation && $importation->isFinished()): ?>
         <?= $this->include('alerts/_success.phtml', [
             'message' => _('We’ve imported your data from your <abbr>OPML</abbr> file. We’re now going to fetch their links in background.')
         ]) ?>
@@ -54,7 +54,7 @@
             <input type="hidden" name="csrf_token" value="<?= csrf_token('DeleteImportation') ?>" />
             <input type="hidden" name="redirect_to" value="<?= url('feeds') ?>" />
         </form>
-    <?php elseif ($importation && $importation->status === 'error'): ?>
+    <?php elseif ($importation && $importation->isInError()): ?>
         <?= $this->include('alerts/_error.phtml', ['message' => protect($importation->error)]) ?>
 
         <form method="post" action="<?= url('delete importation', ['id' => $importation->id]) ?>">
@@ -74,13 +74,20 @@
             data-controller="autosubmit form-file"
             enctype="multipart/form-data"
         >
-            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+            <?= $this->include('alerts/_error.phtml', ['message' => $form->error('@base')]) ?>
+
+            <?php if ($form->isInvalid('opml')): ?>
+                <p id="opml-error" class="form-group__error text--center">
+                    <?= _('Error:') ?>
+                    <?= $form->error('opml') ?>
+                </p>
+            <?php endif; ?>
 
             <input
                 type="file"
                 name="opml"
                 id="opml"
-                accept=".opml, .xml"
+                accept="<?= $form->acceptedMimetypes() ?>"
                 data-action="autosubmit#submit"
                 data-form-file-target="file"
                 hidden
@@ -98,14 +105,7 @@
                 </button>
             </div>
 
-            <div id="opml-desc">
-                <?php if (isset($errors['opml'])): ?>
-                    <p class="form-group__error">
-                        <span class="sr-only"><?= _('Error') ?></span>
-                        <?= $errors['opml'] ?>
-                    </p>
-                <?php endif; ?>
-            </div>
+            <input type="hidden" name="csrf_token" value="<?= csrf_token($form) ?>" />
         </form>
     <?php endif; ?>
 </div>
