@@ -22,43 +22,49 @@
         data-controller="autosave"
         data-action="turbo:submit-start@document->autosave#clear"
     >
-        <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
+        <?= $this->include('alerts/_error.phtml', ['message' => $form->error('@base')]) ?>
 
         <?php if ($message_sent): ?>
             <?= $this->include('alerts/_success.phtml', ['message' => _('Your message has been sent.')]) ?>
         <?php endif; ?>
 
-        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-
-        <div class="form-group <?= isset($errors['subject']) ? 'form-group--invalid' : '' ?>">
+        <div class="form-group">
             <label for="subject">
                 <?= _('Subject') ?>
             </label>
+
+            <?php if ($form->isInvalid('subject')): ?>
+                <p id="subject-error" class="form-group__error">
+                    <?= _('Error:') ?>
+                    <?= $form->error('subject') ?>
+                </p>
+            <?php endif; ?>
 
             <input
                 id="subject"
                 name="subject"
                 type="text"
-                value="<?= $subject ?>"
+                value="<?= protect($form->subject) ?>"
                 required
-                aria-describedby="subject-desc"
                 data-action="keyup->autosave#save"
-            />
-
-            <div id="subject-desc">
-                <?php if (isset($errors['subject'])): ?>
-                    <p class="form-group__error">
-                        <span class="sr-only"><?= _('Error') ?></span>
-                        <?= $errors['subject'] ?>
-                    </p>
+                <?php if ($form->isInvalid('subject')): ?>
+                    aria-errormessage="subject-error"
+                    aria-invalid="true"
                 <?php endif; ?>
-            </div>
+            />
         </div>
 
-        <div class="form-group <?= isset($errors['message']) ? 'form-group--invalid' : '' ?>">
+        <div class="form-group">
             <label for="message">
                 <?= _('Your message') ?>
             </label>
+
+            <?php if ($form->isInvalid('message')): ?>
+                <p id="message-error" class="form-group__error">
+                    <?= _('Error:') ?>
+                    <?= $form->error('message') ?>
+                </p>
+            <?php endif; ?>
 
             <textarea
                 id="message"
@@ -67,16 +73,11 @@
                 data-controller="text-editor"
                 data-action="text-editor#refresh keyup->autosave#save"
                 aria-describedby="message-desc"
-            ><?= $message ?></textarea>
-
-            <div id="message-desc">
-                <?php if (isset($errors['message'])): ?>
-                    <p class="form-group__error">
-                        <span class="sr-only"><?= _('Error') ?></span>
-                        <?= $errors['message'] ?>
-                    </p>
+                <?php if ($form->isInvalid('message')): ?>
+                    aria-errormessage="message-error"
+                    aria-invalid="true"
                 <?php endif; ?>
-            </div>
+            ><?= protect($form->message) ?></textarea>
         </div>
 
         <p class="paragraph--placeholder">
@@ -88,6 +89,8 @@
                 <?= _('Send your message') ?>
             </button>
         </div>
+
+        <input type="hidden" name="csrf_token" value="<?= csrf_token($form) ?>" />
     </form>
 
     <hr />

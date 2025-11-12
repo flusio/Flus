@@ -2,12 +2,13 @@
 
 namespace App\controllers;
 
+use App\auth;
+use App\forms;
+use App\mailers;
+use App\services;
 use Minz\Mailer;
 use Minz\Request;
 use Minz\Response;
-use App\auth;
-use App\mailers;
-use App\services;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -16,19 +17,22 @@ use App\services;
 class Support extends BaseController
 {
     /**
-     * Show the support form
+     * Show the support form.
      *
-     * @response 302 /login?redirect_to=/support
-     *     if not connected
      * @response 200
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function show(): Response
     {
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('support'));
+        $user = auth\CurrentUser::require();
+
+        $form = new forms\Support();
 
         return Response::ok('support/show.phtml', [
-            'subject' => '',
-            'message' => '',
+            'form' => $form,
             'message_sent' => \Minz\Flash::pop('message_sent'),
         ]);
     }
@@ -36,72 +40,70 @@ class Support extends BaseController
     /**
      * Send the email to support email
      *
-     * @request_param string csrf
      * @request_param string subject
      * @request_param string message
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=/support
-     *     if not connected
      * @response 400
-     *     if the csrf, title or message are invalid
+     *     If at least one of the parameters is invalid.
+     * @response 500
+     *     If sending the message to Bileto failed.
      * @response 302 /support
+     * @flash message_sent
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function create(Request $request): Response
     {
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('support'));
+        $user = auth\CurrentUser::require();
 
-        $subject = trim($request->parameters->getString('subject', ''));
-        $message = trim($request->parameters->getString('message', ''));
-        $csrf = $request->parameters->getString('csrf', '');
+        $form = new forms\Support();
+        $form->handleRequest($request);
 
-        if (!\App\Csrf::validate($csrf)) {
+        if (!$form->validate()) {
             return Response::badRequest('support/show.phtml', [
-                'subject' => $subject,
-                'message' => $message,
+                'form' => $form,
                 'message_sent' => false,
-                'error' => _('A security verification failed: you should retry to submit the form.'),
-            ]);
-        }
-
-        $errors = [];
-        if (strlen($subject) <= 0) {
-            $errors['subject'] = _('The subject is required.');
-        }
-        if (strlen($message) <= 0) {
-            $errors['message'] = _('The message is required.');
-        }
-
-        if ($errors) {
-            return Response::badRequest('support/show.phtml', [
-                'subject' => $subject,
-                'message' => $message,
-                'message_sent' => false,
-                'errors' => $errors,
             ]);
         }
 
         $bileto = new services\Bileto();
 
         if ($bileto->isEnabled()) {
-            $result = $bileto->sendMessage($user, $subject, $message);
+            $result = $bileto->sendMessage($user, $form->subject, $form->message);
         } else {
             $mailer_job = new Mailer\Job();
-            $mailer_job->performAsap(mailers\Support::class, 'sendMessage', $user->id, $subject, $message);
+            $mailer_job->performAsap(
+                mailers\Support::class,
+                'sendMessage',
+                $user->id,
+                $form->subject,
+                $form->message,
+            );
 
             $mailer_job = new Mailer\Job();
-            $mailer_job->performAsap(mailers\Support::class, 'sendNotification', $user->id, $subject);
+            $mailer_job->performAsap(
+                mailers\Support::class,
+                'sendNotification',
+                $user->id,
+                $form->subject,
+            );
 
             $result = true;
         }
 
         if (!$result) {
+            $form->addError(
+                '@base',
+                'server_error',
+                _('The message could not be sent due to a server-side problem.'),
+            );
+
             return Response::internalServerError('support/show.phtml', [
-                'subject' => $subject,
-                'message' => $message,
+                'form' => $form,
                 'message_sent' => false,
-                'errors' => [
-                    'message' => _('The message could not be sent due to a server-side problem.'),
-                ],
             ]);
         }
 

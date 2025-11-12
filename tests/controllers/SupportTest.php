@@ -2,12 +2,14 @@
 
 namespace App\controllers;
 
+use App\forms;
 use App\models;
 use tests\factories\UserFactory;
 
 class SupportTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\CsrfHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\MailerAsserts;
     use \Minz\Tests\ResponseAsserts;
@@ -57,7 +59,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/support', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Support::class),
             'subject' => $subject,
             'message' => $message,
         ]);
@@ -105,7 +107,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
         );
 
         $response = $this->appRun('POST', '/support', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Support::class),
             'subject' => $subject,
             'message' => $message,
         ]);
@@ -132,7 +134,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/support', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Support::class),
             'subject' => $subject,
             'message' => $message,
         ]);
@@ -156,7 +158,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/support', [
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
             'subject' => $subject,
             'message' => $message,
         ]);
@@ -181,7 +183,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/support', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Support::class),
             'subject' => $subject,
             'message' => $message,
         ]);
@@ -206,7 +208,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/support', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Support::class),
             'subject' => $subject,
             'message' => $message,
         ]);
