@@ -293,7 +293,7 @@ class PocketTest extends \PHPUnit\Framework\TestCase
             'csrf' => 'a token',
         ]);
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fpocket');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
         $pocket_account = $pocket_account->reload();
         $this->assertNull($pocket_account->request_token);
     }

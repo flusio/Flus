@@ -2,13 +2,13 @@
 
 namespace App\controllers\importations;
 
-use Minz\Request;
-use Minz\Response;
 use App\auth;
 use App\controllers\BaseController;
 use App\jobs;
 use App\models;
 use App\services;
+use Minz\Request;
+use Minz\Response;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -17,13 +17,15 @@ use App\services;
 class Pocket extends BaseController
 {
     /**
-     * Display the Pocket importation main page
+     * Display the Pocket importation main page.
      *
      * @response 404
-     *    If the pocket_consumer_key is not set in conf
-     * @response 302 /login?redirect_to=/pocket
-     *    If the user is not connected
+     *    If the pocket_consumer_key is not set in conf.
      * @response 200
+     *    On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function show(Request $request): Response
     {
@@ -31,15 +33,13 @@ class Pocket extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('pocket'));
+        $user = auth\CurrentUser::require();
+        $importation = models\Importation::findPocketByUser($user);
+        $pocket_account = models\PocketAccount::findByUser($user);
 
-        $importation = models\Importation::findBy([
-            'type' => 'pocket',
-            'user_id' => $user->id,
-        ]);
         return Response::ok('importations/pocket/show.phtml', [
             'importation' => $importation,
-            'pocket_account' => models\PocketAccount::findBy(['user_id' => $user->id]),
+            'pocket_account' => $pocket_account,
         ]);
     }
 
@@ -51,14 +51,15 @@ class Pocket extends BaseController
      * @request_param boolean $import_favorites
      *
      * @response 404
-     *    If the pocket_consumer_key is not set in conf
-     * @response 302 /login?redirect_to=/pocket
-     *    If the user is not connected
+     *     If the pocket_consumer_key is not set in conf.
      * @response 400
-     *    If the CSRF token is invalid, if user has no access token or if an
-     *    import of pocket type already exists
+     *     If at least one of the parameters is invalid, if user has no access
+     *     token or if an import of pocket type already exists.
      * @response 302 /pocket
-     *    On success
+     *    On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function import(Request $request): Response
     {
@@ -66,16 +67,10 @@ class Pocket extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('pocket'));
+        $user = auth\CurrentUser::require();
+        $importation = models\Importation::findPocketByUser($user);
+        $pocket_account = models\PocketAccount::findByUser($user);
 
-        $pocket_account = models\PocketAccount::findBy([
-            'user_id' => $user->id,
-        ]);
-
-        $importation = models\Importation::findBy([
-            'type' => 'pocket',
-            'user_id' => $user->id,
-        ]);
         if ($importation) {
             return Response::badRequest('importations/pocket/show.phtml', [
                 'importation' => $importation,
@@ -120,13 +115,15 @@ class Pocket extends BaseController
      * @request_param string $csrf
      *
      * @response 404
-     *    If the pocket_consumer_key is not set in conf
-     * @response 302 /login?redirect_to=/pocket
-     *    If the user is not connected
+     *    If the pocket_consumer_key is not set in conf.
      * @response 302 /pocket
      * @flash error
-     *    If the CSRF token is invalid or if Pocket returns an error
+     *    If the CSRF token is invalid or if Pocket returns an error.
      * @response 302 https://getpocket.com/auth/authorize?request_token=:token&redirect_url=:url
+     *    On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function requestAccess(Request $request): Response
     {
@@ -134,7 +131,7 @@ class Pocket extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('pocket'));
+        $user = auth\CurrentUser::require();
 
         $csrf = $request->parameters->getString('csrf', '');
         if (!\App\Csrf::validate($csrf)) {
@@ -165,12 +162,14 @@ class Pocket extends BaseController
      * Display the Pocket authorization waiting page
      *
      * @response 404
-     *    If the pocket_consumer_key is not set in conf
-     * @response 302 /login?redirect_to=/pocket/auth
-     *    If the user is not connected
+     *    If the pocket_consumer_key is not set in conf.
      * @response 302 /pocket
-     *    If the user has no request token
+     *    If the user has no request token.
      * @response 200
+     *    On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function authorization(Request $request): Response
     {
@@ -178,11 +177,8 @@ class Pocket extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('pocket auth'));
-
-        $pocket_account = models\PocketAccount::findBy([
-            'user_id' => $user->id,
-        ]);
+        $user = auth\CurrentUser::require();
+        $pocket_account = models\PocketAccount::findByUser($user);
 
         if (!$pocket_account || !$pocket_account->request_token) {
             return Response::redirect('pocket');
@@ -197,17 +193,16 @@ class Pocket extends BaseController
      * @request_param string $csrf
      *
      * @response 404
-     *    If the pocket_consumer_key is not set in conf
-     * @response 302 /login?redirect_to=/pocket/auth
-     *    If the user is not connected
+     *    If the pocket_consumer_key is not set in conf.
      * @response 302 /pocket
-     *    If the user has no request token
+     *    If the user has no request token.
      * @response 400
-     *    If the CSRF token is invalid
+     *    If the CSRF token is invalid.
      * @response 302 /pocket
      * @flash error
-     *    If Pocket returns an error
+     *    If Pocket returns an error.
      * @response 302 /pocket
+     *    On success.
      */
     public function authorize(Request $request): Response
     {
@@ -215,11 +210,8 @@ class Pocket extends BaseController
             return Response::notFound('not_found.phtml');
         }
 
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('pocket auth'));
-
-        $pocket_account = models\PocketAccount::findBy([
-            'user_id' => $user->id,
-        ]);
+        $user = auth\CurrentUser::require();
+        $pocket_account = models\PocketAccount::findByUser($user);
 
         if (!$pocket_account || !$pocket_account->request_token) {
             return Response::redirect('pocket');

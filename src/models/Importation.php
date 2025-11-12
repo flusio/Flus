@@ -128,6 +128,14 @@ class Importation
         return $clean_options;
     }
 
+    public static function findPocketByUser(User $user): ?self
+    {
+        return self::findBy([
+            'type' => 'pocket',
+            'user_id' => $user->id,
+        ]);
+    }
+
     public static function findOpmlByUser(User $user): ?self
     {
         return self::findBy([

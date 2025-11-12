@@ -38,4 +38,11 @@ class PocketAccount
     {
         $this->user_id = $user_id;
     }
+
+    public static function findByUser(User $user): ?self
+    {
+        return self::findBy([
+            'user_id' => $user->id,
+        ]);
+    }
 }
