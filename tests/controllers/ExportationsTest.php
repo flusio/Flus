@@ -2,6 +2,7 @@
 
 namespace App\controllers;
 
+use App\forms;
 use App\jobs;
 use App\models;
 use App\services;
@@ -11,6 +12,7 @@ use tests\factories\UserFactory;
 class ExportationsTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\CsrfHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
@@ -36,7 +38,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseTemplateName($response, 'exportations/show.phtml');
-        $this->assertResponseContains($response, 'Generate a data archive');
+        $this->assertResponseContains($response, 'Generate a new data archive');
     }
 
     public function testShowRendersCorrectlyIfAnExportationIsOngoing(): void
@@ -102,7 +104,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, \Minz\Job::count());
 
         $response = $this->appRun('POST', '/exportations', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Exportation::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/exportations');
@@ -134,7 +136,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(file_exists($filepath));
 
         $response = $this->appRun('POST', '/exportations', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Exportation::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/exportations');
@@ -156,7 +158,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, \Minz\Job::count());
 
         $response = $this->appRun('POST', '/exportations', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Exportation::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/exportations');
@@ -170,7 +172,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create();
 
         $response = $this->appRun('POST', '/exportations', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Exportation::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fexportations');
@@ -190,7 +192,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, \Minz\Job::count()); // in real life, a job should exist
 
         $response = $this->appRun('POST', '/exportations', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Exportation::class),
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -205,7 +207,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
 
         $response = $this->appRun('POST', '/exportations', [
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -254,7 +256,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/exportations/download');
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fexportations');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fexportations%2Fdownload');
     }
 
     public function testDownloadFailsIfFileDoesNotExist(): void

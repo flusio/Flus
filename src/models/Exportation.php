@@ -59,4 +59,26 @@ class Exportation
         $this->status = 'error';
         $this->error = $error;
     }
+
+    public function isOngoing(): bool
+    {
+        return $this->status === 'ongoing';
+    }
+
+    public function isFinished(): bool
+    {
+        return $this->status === 'finished';
+    }
+
+    public function isInError(): bool
+    {
+        return $this->status === 'error';
+    }
+
+    public static function findByUser(User $user): ?Exportation
+    {
+        return self::findBy([
+            'user_id' => $user->id,
+        ]);
+    }
 }

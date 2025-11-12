@@ -2,11 +2,12 @@
 
 namespace App\controllers;
 
-use Minz\Request;
-use Minz\Response;
 use App\auth;
+use App\forms;
 use App\jobs;
 use App\models;
+use Minz\Request;
+use Minz\Response;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -15,61 +16,56 @@ use App\models;
 class Exportations extends BaseController
 {
     /**
-     * @response 302 /login?redirect_to=/exportations
-     *     If user is not connected
      * @response 200
-     *     On success
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function show(Request $request): Response
     {
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('exportation'));
+        $user = auth\CurrentUser::require();
 
-        $exportation = models\Exportation::findBy([
-            'user_id' => $user->id,
+        $form = new forms\Exportation(options: [
+            'user' => $user,
         ]);
 
         return Response::ok('exportations/show.phtml', [
-            'exportation' => $exportation,
+            'form' => $form,
         ]);
     }
 
     /**
-     * @request_param string csrf
+     * @request_param string csrf_token
      *
      * @response 400
-     *     If CSRF is invalid, or if an exportation is already ongoing
-     * @response 302 /login?redirect_to=/exportations
-     *     If user is not connected
+     *     If the CSRF token is invalid, or if an exportation is already ongoing.
      * @response 302 /exportations
-     *     On success
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function create(Request $request): Response
     {
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('exportation'));
-        $csrf = $request->parameters->getString('csrf', '');
+        $user = auth\CurrentUser::require();
 
-        if (!\App\Csrf::validate($csrf)) {
-            return Response::badRequest('exportations/show.phtml', [
-                'exportation' => null,
-                'error' => _('A security verification failed.'),
-            ]);
-        }
-
-        $exportation = models\Exportation::findBy([
-            'user_id' => $user->id,
+        $form = new forms\Exportation(options: [
+            'user' => $user,
         ]);
-        if ($exportation && $exportation->status !== 'ongoing') {
-            @unlink($exportation->filepath);
-            models\Exportation::delete($exportation->id);
-        } elseif ($exportation) {
+
+        $form->handleRequest($request);
+
+        if (!$form->validate()) {
             return Response::badRequest('exportations/show.phtml', [
-                'exportation' => $exportation,
-                'error' => _('You already have an ongoing exportation.'),
+                'form' => $form,
             ]);
         }
 
-        $exportation = new models\Exportation($user->id);
+        $exportation = $form->exportation();
+
         $exportation->save();
+
         $exportator_job = new jobs\Exportator();
         $exportator_job->performAsap($exportation->id);
 
@@ -77,23 +73,25 @@ class Exportations extends BaseController
     }
 
     /**
-     * @response 302 /login?redirect_to=/exportations
-     *     If user is not connected
      * @response 404
-     *     If there’s no archive to download
+     *     If there’s no archive to download.
      * @response 200
-     *     On success
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function download(Request $request): Response
     {
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('exportation'));
+        $user = auth\CurrentUser::require();
 
-        $exportation = models\Exportation::findBy([
-            'user_id' => $user->id,
-            'status' => 'finished',
-        ]);
+        $exportation = models\Exportation::findByUser($user);
 
-        if (!$exportation || !file_exists($exportation->filepath)) {
+        if (
+            !$exportation ||
+            !$exportation->isFinished() ||
+            !file_exists($exportation->filepath)
+        ) {
             return Response::notFound('not_found.phtml');
         }
 
