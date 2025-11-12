@@ -4,6 +4,28 @@ namespace App\utils;
 
 class PaginationTest extends \PHPUnit\Framework\TestCase
 {
+    public function testConstructorFailsIfCurrentPageIsLessThan1(): void
+    {
+        $this->expectException(PaginationOutOfBoundsError::class);
+
+        $number_elements = 300;
+        $number_per_page = 30;
+        $initial_current_page = 0;
+
+        new Pagination($number_elements, $number_per_page, $initial_current_page);
+    }
+
+    public function testConstructorFailsIfCurrentPageIsMoreThanTotalPages(): void
+    {
+        $this->expectException(PaginationOutOfBoundsError::class);
+
+        $number_elements = 300;
+        $number_per_page = 30;
+        $initial_current_page = 11;
+
+        new Pagination($number_elements, $number_per_page, $initial_current_page);
+    }
+
     public function testNumberElements(): void
     {
         $number_elements = 300;
@@ -50,30 +72,6 @@ class PaginationTest extends \PHPUnit\Framework\TestCase
         $current_page = $pagination->currentPage();
 
         $this->assertSame($initial_current_page, $current_page);
-    }
-
-    public function testCurrentPageIsBoundedBy1(): void
-    {
-        $number_elements = 300;
-        $number_per_page = 30;
-        $initial_current_page = 0;
-        $pagination = new Pagination($number_elements, $number_per_page, $initial_current_page);
-
-        $current_page = $pagination->currentPage();
-
-        $this->assertSame(1, $current_page);
-    }
-
-    public function testCurrentPageIsBoundedByTotalPages(): void
-    {
-        $number_elements = 300;
-        $number_per_page = 30;
-        $initial_current_page = 11;
-        $pagination = new Pagination($number_elements, $number_per_page, $initial_current_page);
-
-        $current_page = $pagination->currentPage();
-
-        $this->assertSame(10, $current_page);
     }
 
     public function testCurrentOffset(): void

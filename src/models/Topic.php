@@ -15,6 +15,7 @@ class Topic
 {
     use dao\Topic;
     use Database\Recordable;
+    use Database\Resource;
     use Validable;
 
     public const LABEL_MAX_SIZE = 30;

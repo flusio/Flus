@@ -25,24 +25,33 @@ class Pagination
     /**
      * Initialize a pagination object.
      *
-     * current_page is bounded between 1 and total_pages.
+     * @throws PaginationOutOfBoundsError
+     *     If the current_page is out of the pagination bounds.
      */
     public function __construct(int $number_elements, int $number_per_page, int $current_page)
     {
         $this->number_elements = $number_elements;
+
         if ($number_per_page < 1) {
             $this->number_per_page = 1;
         } else {
             $this->number_per_page = $number_per_page;
         }
+
         $this->total_pages = max(1, intval(ceil($this->number_elements / $this->number_per_page)));
+
         if ($current_page < 1) {
-            $this->current_page = 1;
+            throw new PaginationOutOfBoundsError(
+                "Requested page ({$current_page}) is less than 1."
+            );
         } elseif ($current_page > $this->total_pages) {
-            $this->current_page = $this->total_pages;
+            throw new PaginationOutOfBoundsError(
+                "Requested page ({$current_page}) is more than total pages ({$this->total_pages})."
+            );
         } else {
             $this->current_page = $current_page;
         }
+
         $this->current_offset = $this->number_per_page * ($this->current_page - 1);
     }
 

@@ -42,23 +42,4 @@ class BookmarksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fbookmarks');
     }
-
-    public function testIndexRedirectsIfPageIsOutOfBound(): void
-    {
-        $user = $this->login();
-        $bookmarks = $user->bookmarks();
-        $link = LinkFactory::create([
-            'user_id' => $user->id,
-        ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
-
-        $response = $this->appRun('GET', '/bookmarks', [
-            'page' => 0,
-        ]);
-
-        $this->assertResponseCode($response, 302, '/bookmarks?page=1');
-    }
 }

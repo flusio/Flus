@@ -136,39 +136,6 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $collection_name);
     }
 
-    public function testShowRedirectsIfPageIsOutOfBound(): void
-    {
-        /** @var string */
-        $topic_label = $this->fakeUnique('sentence');
-        /** @var string */
-        $collection_name = $this->fakeUnique('sentence');
-        $topic = TopicFactory::create([
-            'label' => $topic_label,
-        ]);
-        $collection = CollectionFactory::create([
-            'name' => $collection_name,
-            'type' => 'collection',
-            'is_public' => true,
-        ]);
-        CollectionToTopicFactory::create([
-            'collection_id' => $collection->id,
-            'topic_id' => $topic->id,
-        ]);
-        $link = LinkFactory::create([
-            'is_hidden' => false,
-        ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
-
-        $response = $this->appRun('GET', "/topics/{$topic->id}", [
-            'page' => 0,
-        ]);
-
-        $this->assertResponseCode($response, 302, "/topics/{$topic->id}?page=1");
-    }
-
     public function testShowFailsIfTopicDoesNotExist(): void
     {
         $response = $this->appRun('GET', '/topics/not-an-id');

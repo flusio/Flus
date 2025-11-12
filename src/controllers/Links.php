@@ -31,6 +31,8 @@ class Links extends BaseController
      *
      * @throws auth\MissingCurrentUserError
      *     If the user is not connected.
+     * @throws utils\PaginationOutOfBoundsError
+     *     If the requested page is out of the pagination bounds.
      */
     public function index(Request $request): Response
     {
@@ -47,13 +49,6 @@ class Links extends BaseController
             $number_per_page = 30;
 
             $pagination = new utils\Pagination($number_links, $number_per_page, $pagination_page);
-
-            if ($pagination_page !== $pagination->currentPage()) {
-                return Response::redirect('links', [
-                    'q' => $query,
-                    'page' => $pagination->currentPage(),
-                ]);
-            }
 
             $links = search_engine\LinksSearcher::getLinks(
                 $user,

@@ -2,11 +2,11 @@
 
 namespace App\controllers;
 
-use Minz\Request;
-use Minz\Response;
 use App\auth;
 use App\models;
 use App\utils;
+use Minz\Request;
+use Minz\Response;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -19,26 +19,24 @@ class Read extends BaseController
      *
      * @request_param integer page
      *
-     * @response 302 /login?redirect_to=/read
-     *     if not connected
-     * @response 302 /read?page=:bounded_page
-     *     if page is invalid
      * @response 200
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws utils\PaginationOutOfBoundsError
+     *     If the requested page is out of the pagination bounds.
      */
     public function index(Request $request): Response
     {
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('read list'));
+        $user = auth\CurrentUser::require();
 
         $read_list = $user->readList();
+        $page = $request->parameters->getInteger('page', 1);
+
         $number_links = models\Link::countByCollectionId($read_list->id);
-        $pagination_page = $request->parameters->getInteger('page', 1);
-        $number_per_page = 30;
-        $pagination = new utils\Pagination($number_links, $number_per_page, $pagination_page);
-        if ($pagination_page !== $pagination->currentPage()) {
-            return Response::redirect('read list', [
-                'page' => $pagination->currentPage(),
-            ]);
-        }
+
+        $pagination = new utils\Pagination($number_links, 30, $page);
 
         $links = $read_list->links(
             ['published_at', 'number_notes'],

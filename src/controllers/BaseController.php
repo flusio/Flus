@@ -91,4 +91,17 @@ class BaseController
             'error' => $error,
         ]);
     }
+
+    /**
+     * Handle the PaginationOutOfBoundsError to show a 404 page.
+     */
+    #[Controller\ErrorHandler(utils\PaginationOutOfBoundsError::class)]
+    public function showNotFoundOnPaginationOutOfBoundsError(
+        Request $request,
+        utils\PaginationOutOfBoundsError $error,
+    ): Response {
+        return Response::notFound('not_found.phtml', [
+            'error' => $error,
+        ]);
+    }
 }

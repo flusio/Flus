@@ -2,11 +2,11 @@
 
 namespace App\controllers;
 
-use Minz\Request;
-use Minz\Response;
 use App\auth;
 use App\models;
 use App\utils;
+use Minz\Request;
+use Minz\Response;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -15,36 +15,39 @@ use App\utils;
 class Bookmarks extends BaseController
 {
     /**
-     * Show the bookmarks page
+     * Show the bookmarks page.
      *
      * @request_param integer page
      *
-     * @response 302 /login?redirect_to=/bookmarks if not connected
      * @response 200
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws utils\PaginationOutOfBoundsError
+     *     If the requested page is out of the pagination bounds.
      */
     public function index(Request $request): Response
     {
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('bookmarks'));
-        $page = $request->parameters->getInteger('page', 1);
+        $user = auth\CurrentUser::require();
+
         $bookmarks = $user->bookmarks();
+        $page = $request->parameters->getInteger('page', 1);
 
         $number_links = models\Link::countByCollectionId($bookmarks->id);
         $pagination = new utils\Pagination($number_links, 29, $page);
-        if ($page !== $pagination->currentPage()) {
-            return Response::redirect('bookmarks', [
-                'page' => $pagination->currentPage(),
-            ]);
-        }
+
+        $links = $bookmarks->links(
+            ['published_at', 'number_notes'],
+            [
+                'offset' => $pagination->currentOffset(),
+                'limit' => $pagination->numberPerPage(),
+            ]
+        );
 
         return Response::ok('bookmarks/index.phtml', [
             'collection' => $bookmarks,
-            'links' => $bookmarks->links(
-                ['published_at', 'number_notes'],
-                [
-                    'offset' => $pagination->currentOffset(),
-                    'limit' => $pagination->numberPerPage(),
-                ]
-            ),
+            'links' => $links,
             'pagination' => $pagination,
         ]);
     }

@@ -2,10 +2,10 @@
 
 namespace App\controllers;
 
-use Minz\Request;
-use Minz\Response;
 use App\models;
 use App\utils;
+use Minz\Request;
+use Minz\Response;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -14,34 +14,27 @@ use App\utils;
 class Topics extends BaseController
 {
     /**
-     * Show the discovery page
+     * Show the discovery page.
      *
      * @request_param string id
      * @request_param integer page
      *
-     * @response 302 /topic/:id?page=:bounded_page if :page is invalid
-     * @response 404 if the topic is missing
      * @response 200
+     *     On success.
+     *
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the topic doesn't exist.
+     * @throws utils\PaginationOutOfBoundsError
+     *     If the requested page is out of the pagination bounds.
      */
     public function show(Request $request): Response
     {
-        $id = $request->parameters->getString('id', '');
-        $pagination_page = $request->parameters->getInteger('page', 1);
-
-        $topic = models\Topic::find($id);
-        if (!$topic) {
-            return Response::notFound('not_found.phtml');
-        }
+        $topic = models\Topic::requireFromRequest($request);
+        $page = $request->parameters->getInteger('page', 1);
 
         $number_collections = $topic->countPublicCollections();
 
-        $pagination = new utils\Pagination($number_collections, 30, $pagination_page);
-        if ($pagination_page !== $pagination->currentPage()) {
-            return Response::redirect('topic', [
-                'id' => $topic->id,
-                'page' => $pagination->currentPage(),
-            ]);
-        }
+        $pagination = new utils\Pagination($number_collections, 30, $page);
 
         $collections = models\Collection::listPublicByTopicIdWithNumberLinks(
             $topic->id,

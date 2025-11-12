@@ -3,8 +3,9 @@
 namespace App\controllers\api\v1;
 
 use App\auth;
-use App\models;
 use App\controllers\errors;
+use App\models;
+use App\utils;
 use Minz\Controller;
 use Minz\Form;
 use Minz\Request;
@@ -131,5 +132,18 @@ class BaseController
         }
 
         return Response::json(400, ['errors' => $structured_errors]);
+    }
+
+    /**
+     * Handle the PaginationOutOfBoundsError to show a 404 page.
+     */
+    #[Controller\ErrorHandler(utils\PaginationOutOfBoundsError::class)]
+    public function showNotFoundOnPaginationOutOfBoundsError(
+        Request $request,
+        utils\PaginationOutOfBoundsError $error,
+    ): Response {
+        return Response::json(404, [
+            'error' => 'The page does not exist.',
+        ]);
     }
 }

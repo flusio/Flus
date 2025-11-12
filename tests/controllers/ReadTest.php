@@ -53,23 +53,4 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fread');
     }
-
-    public function testIndexRedirectsIfPageOutOfBound(): void
-    {
-        $user = $this->login();
-        $read_list = $user->readList();
-        $link = LinkFactory::create([
-            'user_id' => $user->id,
-        ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $read_list->id,
-        ]);
-
-        $response = $this->appRun('GET', '/read', [
-            'page' => 2,
-        ]);
-
-        $this->assertResponseCode($response, 302, '/read?page=1');
-    }
 }

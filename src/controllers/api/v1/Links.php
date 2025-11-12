@@ -65,12 +65,6 @@ class Links extends BaseController
         ]);
         $pagination = new utils\Pagination($number_links, $pagination_per_page, $pagination_page);
 
-        if ($pagination_page !== $pagination->currentPage()) {
-            return Response::json(404, [
-                'error' => 'The page does not exist.',
-            ]);
-        }
-
         $links = $collection->links(
             ['published_at', 'number_notes'],
             [

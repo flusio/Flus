@@ -135,27 +135,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Flinks');
     }
 
-    public function testIndexRedirectsIfPageIsOutOfBound(): void
-    {
-        $user = $this->login();
-        /** @var string */
-        $title_1 = $this->fakeUnique('words', 3, true);
-        /** @var string */
-        $title_2 = $this->fakeUnique('words', 3, true);
-        $query = $title_1;
-        LinkFactory::create([
-            'title' => $title_1,
-        ]);
-
-        $response = $this->appRun('GET', '/links', [
-            'q' => $query,
-            'page' => 2,
-        ]);
-
-        $query_encoded = urlencode($query);
-        $this->assertResponseCode($response, 302, "/links?q={$query_encoded}&page=1");
-    }
-
     public function testShowRendersCorrectly(): void
     {
         /** @var string */

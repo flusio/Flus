@@ -108,6 +108,8 @@ class Collections extends BaseController
      *     If the collection doesn't exist.
      * @throws auth\AccessDeniedError
      *     If the user cannot view the collection.
+     * @throws utils\PaginationOutOfBoundsError
+     *     If the requested page is out of the pagination bounds.
      */
     public function show(Request $request): Response
     {
@@ -129,10 +131,6 @@ class Collections extends BaseController
         $number_per_page = $can_update ? 29 : 30; // the button to add a link counts for 1!
         $pagination_page = $request->parameters->getInteger('page', 1);
         $pagination = new utils\Pagination($number_links, $number_per_page, $pagination_page);
-
-        if ($pagination_page !== $pagination->currentPage()) {
-            return Response::notFound('not_found.phtml');
-        }
 
         $topics = $collection->topics();
         $topics = utils\Sorter::localeSort($topics, 'label');
