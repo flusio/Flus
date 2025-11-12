@@ -2,11 +2,12 @@
 
 namespace App\controllers;
 
-use Minz\Request;
-use Minz\Response;
 use App\auth;
+use App\forms;
 use App\models;
 use App\utils;
+use Minz\Request;
+use Minz\Response;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -19,56 +20,65 @@ class Onboarding extends BaseController
      *
      * @request_param integer step
      *
-     * @response 302 /login?redirect_to=/onboarding if not connected
-     * @response 404 if step is out of bound
      * @response 200
+     *     On success.
      *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws utils\PaginationOutOfBoundsError
+     *     If the requested step is out of the bounds.
      */
     public function show(Request $request): Response
     {
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('onboarding'));
+        $user = auth\CurrentUser::require();
 
         $step = $request->parameters->getInteger('step', 1);
         if ($step < 1 || $step > 6) {
-            return Response::notFound('not_found.phtml');
+            throw new utils\PaginationOutOfBoundsError(
+                "Requested step ({$step}) is out of bounds."
+            );
         }
 
-        return Response::ok("onboarding/step{$step}.phtml");
+        $locale_form = new forms\Locale(model: $user);
+
+        return Response::ok("onboarding/step{$step}.phtml", [
+            'locale_form' => $locale_form,
+        ]);
     }
 
     /**
      * Update the locale of the current user
      *
-     * @request_param string csrf
      * @request_param string locale
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=/onboarding
-     *     if the user is not connected
      * @response 302 /onboarding
-     *     if the CSRF or locale are invalid
+     * @flash error
+     *     If at least one of the parameters is invalid.
      * @response 302 /onboarding
-     *     on success
+     *     On success.
      *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function updateLocale(Request $request): Response
     {
-        $locale = $request->parameters->getString('locale', '');
-        $csrf = $request->parameters->getString('csrf', '');
+        $user = auth\CurrentUser::require();
 
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('onboarding'));
+        $form = new forms\Locale(model: $user);
+        $form->handleRequest($request);
 
-        $user->locale = trim($locale);
+        if (!$form->validate()) {
+            $error = implode(' ', $form->errors());
+            \Minz\Flash::set('error', $error);
 
-        if (\App\Csrf::validate($csrf) && $user->validate()) {
-            $user->save();
-            utils\Locale::setCurrentLocale($locale);
+            return Response::redirect('onboarding');
         }
+
+        $user = $form->model();
+        $user->save();
+
+        utils\Locale::setCurrentLocale($user->locale);
 
         return Response::redirect('onboarding');
     }

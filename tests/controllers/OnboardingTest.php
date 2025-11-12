@@ -2,12 +2,14 @@
 
 namespace App\controllers;
 
+use App\forms;
 use App\models;
 use tests\factories\UserFactory;
 
 class OnboardingTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\CsrfHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
@@ -62,7 +64,7 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/onboarding/locale', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Locale::class),
             'locale' => 'fr_FR',
         ]);
 
@@ -74,16 +76,15 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
     public function testUpdateLocaleRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create([
-            'csrf' => 'a token',
             'locale' => 'en_GB',
         ]);
 
         $response = $this->appRun('POST', '/onboarding/locale', [
-            'csrf' => 'a token',
+            'csrf_token' => $this->csrfToken(forms\Locale::class),
             'locale' => 'fr_FR',
         ]);
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fonboarding');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
         $user = $user->reload();
         $this->assertSame('en_GB', $user->locale);
     }
@@ -95,7 +96,7 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/onboarding/locale', [
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
             'locale' => 'fr_FR',
         ]);
 
@@ -111,7 +112,7 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/onboarding/locale', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Locale::class),
             'locale' => 'not a locale',
         ]);
 

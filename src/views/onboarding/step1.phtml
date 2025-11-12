@@ -17,8 +17,7 @@
         action="<?= url('onboarding update locale') ?>"
         data-controller="autosubmit"
     >
-        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-        <input type="hidden" name="redirect_to" value="<?= url('onboarding') ?>" />
+        <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
         <div class="form-group">
             <label for="locale">
@@ -35,13 +34,15 @@
                 <?php foreach ($available_locales as $locale_value => $locale_name): ?>
                     <option
                         value="<?= $locale_value ?>"
-                        <?= $locale_value === get_current_locale() ? 'selected' : '' ?>
+                        <?= $locale_value === $locale_form->locale ? 'selected' : '' ?>
                     >
                         <?= $locale_name ?>
                     </option>
                 <?php endforeach; ?>
             </select>
         </div>
+
+        <input type="hidden" name="csrf_token" value="<?= csrf_token($locale_form) ?>" />
     </form>
 
     <hr />
