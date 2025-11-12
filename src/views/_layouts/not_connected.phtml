@@ -105,12 +105,10 @@
                         action="<?= url('change locale') ?>"
                         data-controller="autosubmit"
                     >
-                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-                        <input type="hidden" name="redirect_to" value="<?= $canonical ?>" />
-
                         <div class="form-group">
                             <label for="locale" aria-label="<?= _('Choose your language') ?>">
                                 <?= icon('language') ?>
+
                                 <select
                                     id="locale"
                                     name="locale"
@@ -128,6 +126,8 @@
                                 </select>
                             </label>
                         </div>
+
+                        <input type="hidden" name="csrf_token" value="<?= csrf_token('Locale') ?>" />
                     </form>
                 </nav>
             </header>

@@ -366,7 +366,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Session::count());
 
         $response = $this->appRun('POST', '/logout', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Logout::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/');
@@ -381,7 +381,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Session::count());
 
         $response = $this->appRun('POST', '/logout', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Logout::class),
         ]);
 
         $this->assertInstanceOf(\Minz\Response::class, $response);
@@ -395,7 +395,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Session::count());
 
         $response = $this->appRun('POST', '/logout', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Logout::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
@@ -406,11 +406,13 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->login();
 
         $response = $this->appRun('POST', '/logout', [
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertSame('A security verification failed.', \Minz\Flash::get('error'));
+        $error = \Minz\Flash::get('error');
+        $this->assertIsString($error);
+        $this->assertSame('A security verification failed: you should retry to submit the form.', $error);
         $this->assertSame(1, models\Session::count());
     }
 
@@ -419,7 +421,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertArrayNotHasKey('locale', $_SESSION);
 
         $response = $this->appRun('POST', '/sessions/locale', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Locale::class),
             'locale' => 'fr_FR',
         ]);
 
@@ -427,21 +429,10 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('fr_FR', $_SESSION['locale']);
     }
 
-    public function testChangeLocaleRedirectsToRedirectTo(): void
-    {
-        $response = $this->appRun('POST', '/sessions/locale', [
-            'csrf' => \App\Csrf::generate(),
-            'locale' => 'fr_FR',
-            'redirect_to' => '/registration',
-        ]);
-
-        $this->assertResponseCode($response, 302, '/registration');
-    }
-
     public function testChangeLocaleWithWrongCsrfDoesntSetsSessionLocale(): void
     {
         $response = $this->appRun('POST', '/sessions/locale', [
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
             'locale' => 'fr_FR',
         ]);
 
@@ -452,7 +443,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
     public function testChangeLocaleWithUnsupportedLocaleDoesntSetsSessionLocale(): void
     {
         $response = $this->appRun('POST', '/sessions/locale', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Locale::class),
             'locale' => 'zu',
         ]);
 
