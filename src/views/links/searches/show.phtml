@@ -1,10 +1,4 @@
 <?php
-    if ($default_link) {
-        $from = url('show search link', ['url' => $default_link->url]);
-    } else {
-        $from = url('show search link');
-    }
-
     $this->layout('base.phtml', [
         'title' => _('New'),
         'canonical' => url_full('show search link'),
@@ -14,6 +8,9 @@
         ],
         'has_errors' => $error || $errors,
     ]);
+
+    $link = $form->existingLink();
+    $feeds = $form->existingFeeds();
 ?>
 
 <div class="section">
@@ -24,20 +21,25 @@
     <form
         method="post"
         action="<?= url('search link') ?>"
-        <?php if ($autosubmit): ?>
+        <?php if ($form->autosubmit): ?>
              data-controller="autosubmit"
              data-autosubmit-mode-value="timeout"
              data-autosubmit-timeout-value="0"
         <?php endif; ?>
     >
-        <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
+        <?= $this->include('alerts/_error.phtml', ['message' => $form->error('@base')]) ?>
 
-        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-
-        <div class="form-group <?= isset($errors['url']) ? 'form-group--invalid' : '' ?>">
+        <div class="form-group">
             <label for="url">
                 <?= _('What’s the address of the link or feed?') ?>
             </label>
+
+            <?php if ($form->isInvalid('url')): ?>
+                <p id="url-error" class="form-group__error">
+                    <?= _('Error:') ?>
+                    <?= $form->error('url') ?>
+                </p>
+            <?php endif; ?>
 
             <div class="form-group__stack">
                 <input
@@ -46,9 +48,12 @@
                     type="url"
                     placeholder="https://…"
                     required
-                    value="<?= $url ?>"
+                    value="<?= protect($form->url) ?>"
                     autocomplete="off"
-                    aria-describedby="url-desc"
+                    <?php if ($form->isInvalid('url')): ?>
+                        aria-errormessage="url-error"
+                        aria-invalid="true"
+                    <?php endif; ?>
                 />
 
                 <button
@@ -59,15 +64,6 @@
                     <?= _('Search') ?>
                 </button>
             </div>
-
-            <div id="url-desc">
-                <?php if (isset($errors['url'])): ?>
-                    <p class="form-group__error">
-                        <span class="sr-only"><?= _('Error') ?></span>
-                        <?= $errors['url'] ?>
-                    </p>
-                <?php endif; ?>
-            </div>
         </div>
 
         <div class="form__actions only-mobile">
@@ -75,31 +71,22 @@
                 <?= _('Search') ?>
             </button>
         </div>
+
+        <input type="hidden" name="csrf_token" value="<?= csrf_token($form) ?>" />
     </form>
 
-    <?php if ($existing_link || $default_link): ?>
+    <?php if ($link): ?>
         <div class="cards cards--centered">
-            <?php if ($existing_link): ?>
-                <?= $this->include('links/_link.phtml', [
-                    'link' => $existing_link,
-                    'from' => $from,
-                    'display_published_at' => false,
-                    'display_notes' => true,
-                    'display_edit' => true,
-                    'display_repair' => true,
-                    'display_delete' => true,
-                    'display_read_later' => 'auto',
-                    'display_mark_as_read' => 'auto',
-                ]); ?>
-            <?php elseif ($default_link && !($default_link->isFeedUrl() && $feeds)): ?>
-                <?= $this->include('links/_link.phtml', [
-                    'link' => $default_link,
-                    'from' => $from,
-                    'display_published_at' => false,
-                    'display_read_later' => 'auto',
-                    'display_mark_as_read' => 'auto',
-                ]); ?>
-            <?php endif; ?>
+            <?= $this->include('links/_link.phtml', [
+                'link' => $link,
+                'display_published_at' => false,
+                'display_notes' => true,
+                'display_edit' => true,
+                'display_repair' => true,
+                'display_delete' => true,
+                'display_read_later' => 'auto',
+                'display_mark_as_read' => 'auto',
+            ]); ?>
 
             <?php foreach ($feeds as $feed): ?>
                 <div class="card card--illustrated" style="background-image: url('<?= url_media('covers', $feed->image_filename, 'collection-card.svg') ?>');">
@@ -154,7 +141,7 @@
         </div>
     <?php endif; ?>
 
-    <?php if (!$existing_link && !$default_link && !$feeds): ?>
+    <?php if (!$link && !$feeds): ?>
         <img
             class="illustration illustration--centered"
             alt=""
