@@ -2,7 +2,7 @@
     $this->layout('base.phtml', [
         'title' => _('Group edition'),
         'canonical' => url_full('edit group', ['id' => $group->id]),
-        'has_errors' => $error || $errors,
+        'has_errors' => $form->isInvalid(),
         'modal_enabled' => true,
     ]);
 ?>
@@ -13,39 +13,37 @@
     </div>
 
     <form method="post" action="<?= url('update group', ['id' => $group->id]) ?>">
-        <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
+        <?= $this->include('alerts/_error.phtml', ['message' => $form->error('@base')]) ?>
 
-        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-        <input type="hidden" name="from" value="<?= $from ?>" />
-
-        <div class="form-group <?= isset($errors['name']) ? 'form-group--invalid' : '' ?>">
+        <div class="form-group">
             <label for="name">
                 <?= _('The name of your group') ?>
                 <span class="label__help">
-                    <?= _f('(max. %d characters)', $name_max_length) ?>
+                    <?= _f('(max. %d characters)', $form->group_name_max_length) ?>
                 </span>
             </label>
+
+            <?php if ($form->isInvalid('name')): ?>
+                <p id="name-error" class="form-group__error">
+                    <?= _('Error:') ?>
+                    <?= $form->error('name') ?>
+                </p>
+            <?php endif; ?>
 
             <input
                 id="name"
                 name="name"
                 type="text"
                 required
-                value="<?= $name ?>"
+                value="<?= protect($form->name) ?>"
                 autocomplete="off"
                 autofocus
-                maxlength="<?= $name_max_length ?>"
-                aria-describedby="name-desc"
-            />
-
-            <div id="name-desc">
-                <?php if (isset($errors['name'])): ?>
-                    <p class="form-group__error">
-                        <span class="sr-only"><?= _('Error') ?></span>
-                        <?= $errors['name'] ?>
-                    </p>
+                maxlength="<?= $form->group_name_max_length ?>"
+                <?php if ($form->isInvalid('name')): ?>
+                    aria-errormessage="name-error"
+                    aria-invalid="true"
                 <?php endif; ?>
-            </div>
+            />
         </div>
 
         <div class="form__actions">
@@ -53,6 +51,8 @@
                 <?= _('Save changes') ?>
             </button>
         </div>
+
+        <input type="hidden" name="csrf_token" value="<?= csrf_token($form) ?>" />
     </form>
 
     <form
@@ -61,12 +61,11 @@
         action="<?= url('delete group', ['id' => $group->id]) ?>"
         data-turbo-confirm="<?= _('Are you sure that you want to delete this group? The associated collections will NOT be deleted.') ?>"
     >
-        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-        <input type="hidden" name="from" value="<?= $from ?>" />
-
         <button type="submit" class="button--danger">
             <?= icon('trash') ?>
             <?= _('Delete the group') ?>
         </button>
+
+        <input type="hidden" name="csrf_token" value="<?= csrf_token('groups\\DeleteGroup') ?>" />
     </form>
 </div>

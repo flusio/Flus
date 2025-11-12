@@ -14,6 +14,7 @@ use Minz\Validable;
 class Group
 {
     use Database\Recordable;
+    use Database\Resource;
     use Validable;
 
     public const NAME_MAX_LENGTH = 100;
@@ -31,6 +32,9 @@ class Group
     #[Validable\Length(
         max: self::NAME_MAX_LENGTH,
         message: new Translatable('The name must be less than {max} characters.'),
+    )]
+    #[Validable\Unique(
+        message: new Translatable('You already have a group with this name.'),
     )]
     public string $name;
 

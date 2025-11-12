@@ -2,10 +2,12 @@
 
 namespace App\controllers;
 
+use App\auth;
+use App\forms;
+use App\models;
+use App\utils;
 use Minz\Request;
 use Minz\Response;
-use App\auth;
-use App\models;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -15,144 +17,107 @@ class Groups extends BaseController
 {
     /**
      * @request_param string id
-     * @request_param string from
      *
-     * @response 302 /login?redirect_to=:from
-     *     if not connected
-     * @response 404
-     *     if the group doesn't exist or is inaccessible
      * @response 200
-     *     on success
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the group doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot update the group.
      */
     public function edit(Request $request): Response
     {
-        $group_id = $request->parameters->getString('id', '');
-        $from = $request->parameters->getString('from', '');
+        $user = auth\CurrentUser::require();
+        $group = models\Group::requireFromRequest($request);
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
+        auth\Access::require($user, 'update', $group);
 
-        $group = models\Group::find($group_id);
+        $form = new forms\groups\Group(model: $group);
 
-        if ($group && auth\GroupsAccess::canUpdate($user, $group)) {
-            return Response::ok('groups/edit.phtml', [
-                'group' => $group,
-                'name' => $group->name,
-                'from' => $from,
-                'name_max_length' => models\Group::NAME_MAX_LENGTH,
-            ]);
-        } else {
-            return Response::notFound('not_found.phtml');
-        }
+        return Response::ok('groups/edit.phtml', [
+            'group' => $group,
+            'form' => $form,
+        ]);
     }
 
     /**
      * @request_param string id
      * @request_param string name
-     * @request_param string from
-     * @request_param string csrf
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=:from
-     *     if not connected
-     * @response 404
-     *     if the group doesn't exist or is inaccessible
      * @response 400
-     *     if the CSRF token is invalid, if the name is invalid or already used
+     *     If at least one of the parameters is invalid.
      * @response 302 :from
-     *     on success
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the group doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot update the group.
      */
     public function update(Request $request): Response
     {
-        $group_id = $request->parameters->getString('id', '');
-        $name = $request->parameters->getString('name', '');
-        $from = $request->parameters->getString('from', '');
-        $csrf = $request->parameters->getString('csrf', '');
+        $user = auth\CurrentUser::require();
+        $group = models\Group::requireFromRequest($request);
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
+        auth\Access::require($user, 'update', $group);
 
-        $group = models\Group::find($group_id);
+        $form = new forms\groups\Group(model: $group);
+        $form->handleRequest($request);
 
-        if (!$group || !auth\GroupsAccess::canUpdate($user, $group)) {
-            return Response::notFound('not_found.phtml');
-        }
-
-        if (!\App\Csrf::validate($csrf)) {
+        if (!$form->validate()) {
             return Response::badRequest('groups/edit.phtml', [
                 'group' => $group,
-                'name' => $name,
-                'from' => $from,
-                'name_max_length' => models\Group::NAME_MAX_LENGTH,
-                'error' => _('A security verification failed: you should retry to submit the form.'),
+                'form' => $form,
             ]);
         }
 
-        $group->name = trim($name);
-
-        if (!$group->validate()) {
-            return Response::badRequest('groups/edit.phtml', [
-                'group' => $group,
-                'name' => $name,
-                'from' => $from,
-                'name_max_length' => models\Group::NAME_MAX_LENGTH,
-                'errors' => $group->errors(),
-            ]);
-        }
-
-        $existing_group = models\Group::findBy([
-            'user_id' => $user->id,
-            'name' => $group->name,
-        ]);
-        if ($existing_group && $existing_group->id !== $group->id) {
-            return Response::badRequest('groups/edit.phtml', [
-                'group' => $group,
-                'name' => $name,
-                'from' => $from,
-                'name_max_length' => models\Group::NAME_MAX_LENGTH,
-                'errors' => [
-                    'name' => _('You already have a group with this name.'),
-                ],
-            ]);
-        }
-
+        $group = $form->model();
         $group->save();
 
-        return Response::found($from);
+        return Response::found(utils\RequestHelper::from($request));
     }
 
     /**
      * @request_param string id
-     * @request_param string from
-     * @request_param string csrf
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=:from
-     *     if not connected
-     * @response 404
-     *     if the group doesn't exist or is inaccessible
      * @response 302 :from
      * @flash error
-     *     if the CSRF token is invalid
+     *     If the CSRF token is invalid.
      * @response 302 :from
-     *     on success
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the group doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot delete the group.
      */
     public function delete(Request $request): Response
     {
-        $group_id = $request->parameters->getString('id', '');
-        $from = $request->parameters->getString('from', '');
-        $csrf = $request->parameters->getString('csrf', '');
+        $user = auth\CurrentUser::require();
+        $group = models\Group::requireFromRequest($request);
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
+        auth\Access::require($user, 'delete', $group);
 
-        $group = models\Group::find($group_id);
+        $from = utils\RequestHelper::from($request);
 
-        if (!$group || !auth\GroupsAccess::canDelete($user, $group)) {
-            return Response::notFound('not_found.phtml');
-        }
+        $form = new forms\groups\DeleteGroup();
+        $form->handleRequest($request);
 
-        if (!\App\Csrf::validate($csrf)) {
-            \Minz\Flash::set('error', _('A security verification failed.'));
+        if (!$form->validate()) {
+            \Minz\Flash::set('error', $form->error('@base'));
             return Response::found($from);
         }
 
-        models\Group::delete($group->id);
+        $group->remove();
 
         return Response::found($from);
     }

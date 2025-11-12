@@ -2,6 +2,7 @@
 
 namespace App\controllers;
 
+use App\forms;
 use App\models;
 use tests\factories\GroupFactory;
 use tests\factories\UserFactory;
@@ -9,6 +10,7 @@ use tests\factories\UserFactory;
 class GroupsTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\CsrfHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
@@ -23,11 +25,8 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'name' => $group_name,
         ]);
-        $from = \Minz\Url::for('collections');
 
-        $response = $this->appRun('GET', "/groups/{$group->id}/edit", [
-            'from' => $from,
-        ]);
+        $response = $this->appRun('GET', "/groups/{$group->id}/edit");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseTemplateName($response, 'groups/edit.phtml');
@@ -43,14 +42,10 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'name' => $group_name,
         ]);
-        $from = \Minz\Url::for('collections');
 
-        $response = $this->appRun('GET', "/groups/{$group->id}/edit", [
-            'from' => $from,
-        ]);
+        $response = $this->appRun('GET', "/groups/{$group->id}/edit");
 
-        $from_encoded = urlencode($from);
-        $this->assertResponseCode($response, 302, "/login?redirect_to={$from_encoded}");
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Fgroups%2F{$group->id}%2Fedit");
     }
 
     public function testEditFailsIfGroupIsInaccessible(): void
@@ -63,13 +58,10 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'name' => $group_name,
         ]);
-        $from = \Minz\Url::for('collections');
 
-        $response = $this->appRun('GET', "/groups/{$group->id}/edit", [
-            'from' => $from,
-        ]);
+        $response = $this->appRun('GET', "/groups/{$group->id}/edit");
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 403);
     }
 
     public function testEditFailsIfGroupDoesNotExist(): void
@@ -81,11 +73,8 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'name' => $group_name,
         ]);
-        $from = \Minz\Url::for('collections');
 
-        $response = $this->appRun('GET', '/groups/not-an-id/edit', [
-            'from' => $from,
-        ]);
+        $response = $this->appRun('GET', '/groups/not-an-id/edit');
 
         $this->assertResponseCode($response, 404);
     }
@@ -101,11 +90,9 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'name' => $old_group_name,
         ]);
-        $from = \Minz\Url::for('collections');
 
         $response = $this->appRun('POST', "/groups/{$group->id}/edit", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\groups\Group::class),
             'name' => $new_group_name,
         ]);
 
@@ -124,22 +111,18 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'name' => $old_group_name,
         ]);
-        $from = \Minz\Url::for('collections');
 
         $response = $this->appRun('POST', "/groups/{$group->id}/edit", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\groups\Group::class),
             'name' => $new_group_name,
         ]);
 
-        $this->assertResponseCode($response, 302, $from);
+        $this->assertResponseCode($response, 302, "/groups/{$group->id}/edit");
     }
 
     public function testUpdateRedirectsIfNotConnected(): void
     {
-        $user = UserFactory::create([
-            'csrf' => 'a token',
-        ]);
+        $user = UserFactory::create();
         /** @var string */
         $old_group_name = $this->fakeUnique('text', 50);
         /** @var string */
@@ -148,16 +131,13 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'name' => $old_group_name,
         ]);
-        $from = \Minz\Url::for('collections');
 
         $response = $this->appRun('POST', "/groups/{$group->id}/edit", [
-            'csrf' => 'a token',
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\groups\Group::class),
             'name' => $new_group_name,
         ]);
 
-        $from_encoded = urlencode($from);
-        $this->assertResponseCode($response, 302, "/login?redirect_to={$from_encoded}");
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Fgroups%2F{$group->id}%2Fedit");
         $group = $group->reload();
         $this->assertSame($old_group_name, $group->name);
     }
@@ -174,15 +154,13 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'name' => $old_group_name,
         ]);
-        $from = \Minz\Url::for('collections');
 
         $response = $this->appRun('POST', "/groups/{$group->id}/edit", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\groups\Group::class),
             'name' => $new_group_name,
         ]);
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 403);
         $group = $group->reload();
         $this->assertSame($old_group_name, $group->name);
     }
@@ -198,11 +176,9 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'name' => $old_group_name,
         ]);
-        $from = \Minz\Url::for('collections');
 
         $response = $this->appRun('POST', '/groups/not-an-id/edit', [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\groups\Group::class),
             'name' => $new_group_name,
         ]);
 
@@ -222,11 +198,9 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'name' => $old_group_name,
         ]);
-        $from = \Minz\Url::for('collections');
 
         $response = $this->appRun('POST', "/groups/{$group->id}/edit", [
-            'csrf' => 'not the token',
-            'from' => $from,
+            'csrf_token' => 'not the token',
             'name' => $new_group_name,
         ]);
 
@@ -250,11 +224,9 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'name' => $old_group_name,
         ]);
-        $from = \Minz\Url::for('collections');
 
         $response = $this->appRun('POST', "/groups/{$group->id}/edit", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\groups\Group::class),
             'name' => $new_group_name,
         ]);
 
@@ -274,11 +246,10 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'name' => $old_group_name,
         ]);
-        $from = \Minz\Url::for('collections');
 
         $response = $this->appRun('POST', "/groups/{$group->id}/edit", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\groups\Group::class),
+            'name' => '',
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -303,11 +274,9 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'name' => $new_group_name,
         ]);
-        $from = \Minz\Url::for('collections');
 
         $response = $this->appRun('POST', "/groups/{$group->id}/edit", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\groups\Group::class),
             'name' => $new_group_name,
         ]);
 
@@ -324,11 +293,9 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $group = GroupFactory::create([
             'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collections');
 
         $response = $this->appRun('POST', "/groups/{$group->id}/delete", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\groups\DeleteGroup::class),
         ]);
 
         $this->assertFalse(models\Group::exists($group->id));
@@ -340,33 +307,26 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $group = GroupFactory::create([
             'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collections');
 
         $response = $this->appRun('POST', "/groups/{$group->id}/delete", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\groups\DeleteGroup::class),
         ]);
 
-        $this->assertResponseCode($response, 302, $from);
+        $this->assertResponseCode($response, 302, '/');
     }
 
     public function testDeleteRedirectsIfNotConnected(): void
     {
-        $user = UserFactory::create([
-            'csrf' => 'a token',
-        ]);
+        $user = UserFactory::create();
         $group = GroupFactory::create([
             'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collections');
 
         $response = $this->appRun('POST', "/groups/{$group->id}/delete", [
-            'csrf' => 'a token',
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\groups\DeleteGroup::class),
         ]);
 
-        $from_encoded = urlencode($from);
-        $this->assertResponseCode($response, 302, "/login?redirect_to={$from_encoded}");
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
         $this->assertTrue(models\Group::exists($group->id));
     }
 
@@ -377,14 +337,12 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $group = GroupFactory::create([
             'user_id' => $other_user->id,
         ]);
-        $from = \Minz\Url::for('collections');
 
         $response = $this->appRun('POST', "/groups/{$group->id}/delete", [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\groups\DeleteGroup::class),
         ]);
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 403);
         $this->assertTrue(models\Group::exists($group->id));
     }
 
@@ -394,11 +352,9 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $group = GroupFactory::create([
             'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collections');
 
         $response = $this->appRun('POST', '/groups/not-an-id/delete', [
-            'csrf' => \App\Csrf::generate(),
-            'from' => $from,
+            'csrf_token' => $this->csrfToken(forms\groups\DeleteGroup::class),
         ]);
 
         $this->assertResponseCode($response, 404);
@@ -411,15 +367,15 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $group = GroupFactory::create([
             'user_id' => $user->id,
         ]);
-        $from = \Minz\Url::for('collections');
 
         $response = $this->appRun('POST', "/groups/{$group->id}/delete", [
-            'csrf' => 'not the token',
-            'from' => $from,
+            'csrf_token' => 'not the token',
         ]);
 
-        $this->assertResponseCode($response, 302, $from);
-        $this->assertSame('A security verification failed.', \Minz\Flash::get('error'));
+        $this->assertResponseCode($response, 302, '/');
+        $error = \Minz\Flash::get('error');
+        $this->assertTrue(is_string($error));
+        $this->assertStringContainsString('A security verification failed', $error);
         $this->assertTrue(models\Group::exists($group->id));
     }
 }
