@@ -5,7 +5,7 @@
         'back_options' => [
             'track' => false,
         ],
-        'has_errors' => $error || $errors,
+        'has_errors' => $form->isInvalid(),
     ]);
 ?>
 
@@ -20,65 +20,75 @@
 
     <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
-    <?php if ($mastodon_account): ?>
+    <?php if ($mastodon_account && $mastodon_account->isSetup()): ?>
         <form method="post" action="<?= url('update mastodon account') ?>">
-            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+            <?= $this->include('alerts/_error.phtml', ['message' => $form->error('@base')]) ?>
 
             <div class="form-group">
                 <label for="link-to-note">
                     <?= _('When to link to your notes?') ?>
                 </label>
 
+                <?php if ($form->isInvalid('link_to_comment')): ?>
+                    <p id="link-to-comment-error" class="form-group__error">
+                        <?= _('Error:') ?>
+                        <?= $form->error('link_to_comment') ?>
+                    </p>
+                <?php endif; ?>
+
                 <select
                     id="link-to-note"
                     name="link_to_comment"
-                    aria-describedby="link-to-note-desc"
+                    aria-describedby="link-to-comment-caption"
+                    <?php if ($form->isInvalid('link_to_comment')): ?>
+                        aria-errormessage="link-to-comment-error"
+                        aria-invalid="true"
+                    <?php endif; ?>
                  >
-                    <option <?= $link_to_comment === 'auto' ? 'selected' : '' ?> value="auto">
+                     <option <?= $form->link_to_comment === 'auto' ? 'selected' : '' ?> value="auto">
                         <?= _('Only when you post a note') ?>
                     </option>
 
-                    <option <?= $link_to_comment === 'always' ? 'selected' : '' ?> value="always">
+                    <option <?= $form->link_to_comment === 'always' ? 'selected' : '' ?> value="always">
                         <?= _('Always') ?>
                     </option>
 
-                    <option <?= $link_to_comment === 'never' ? 'selected' : '' ?> value="never">
+                    <option <?= $form->link_to_comment === 'never' ? 'selected' : '' ?> value="never">
                         <?= _('Never') ?>
                     </option>
                 </select>
 
-                <div id="link-to-note-desc">
-                    <p class="form-group__caption">
-                        <?= _f('Your Mastodon posts can include a link to your notes on %s.', get_app_configuration('brand')) ?>
-                    </p>
-                </div>
+                <p id="link-to-comment-caption" class="form-group__caption">
+                    <?= _f('Your Mastodon posts can include a link to your notes on %s.', get_app_configuration('brand')) ?>
+                </p>
             </div>
 
-            <div class="form-group <?= isset($errors['post_scriptum']) ? 'form-group--invalid' : '' ?>">
+            <div class="form-group">
                 <label for="post-scriptum">
                     <?= _('Always something to add to your posts?') ?>
                     <span class="label__help">
-                        <?= _f('(max. %d characters)', 100) ?>
+                        <?= _f('(max. %d characters)', $form->post_scriptum_max_length) ?>
                     </span>
                 </label>
+
+                <?php if ($form->isInvalid('post_scriptum')): ?>
+                    <p id="post-scriptum-error" class="form-group__error">
+                        <?= _('Error:') ?>
+                        <?= $form->error('post_scriptum') ?>
+                    </p>
+                <?php endif; ?>
 
                 <input
                     id="post-scriptum"
                     name="post_scriptum"
                     type="text"
-                    value="<?= $post_scriptum ?>"
-                    maxlength="100"
-                    aria-describedby="post-scriptum-desc"
-                />
-
-                <div id="post-scriptum-desc">
-                    <?php if (isset($errors['post_scriptum'])): ?>
-                        <p class="form-group__error">
-                            <span class="sr-only"><?= _('Error') ?></span>
-                            <?= $errors['post_scriptum'] ?>
-                        </p>
+                    value="<?= protect($form->post_scriptum) ?>"
+                    maxlength="<?= $form->post_scriptum_max_length ?>"
+                    <?php if ($form->isInvalid('post_scriptum')): ?>
+                        aria-errormessage="post-scriptum-error"
+                        aria-invalid="true"
                     <?php endif; ?>
-                </div>
+                />
             </div>
 
             <div class="form__actions">
@@ -86,6 +96,8 @@
                     <?= _('Save changes') ?>
                 </button>
             </div>
+
+            <input type="hidden" name="csrf_token" value="<?= csrf_token($form) ?>" />
         </form>
 
         <div class="paragraph--centered paragraph--secondary">
@@ -98,23 +110,30 @@
                 action="<?= url('disconnect mastodon') ?>"
                 data-turbo-confirm="<?= _('Are you sure that you want to disconnect your Mastodon account?') ?>"
             >
-                <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-
                 <small>
                     <button type="submit" class="button--ghost button--smaller">
                         <?= _('disconnect') ?>
                     </button>
                 </small>
+
+                <input type="hidden" name="csrf_token" value="<?= csrf_token('mastodon\\DeleteMastodonAccount') ?>" />
             </form>
         </div>
     <?php else: ?>
         <form method="post" action="<?= url('request mastodon access') ?>" data-turbo="false">
-            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+            <?= $this->include('alerts/_error.phtml', ['message' => $form->error('@base')]) ?>
 
-            <div class="form-group <?= isset($errors['host']) ? 'form-group--invalid' : '' ?>">
+            <div class="form-group">
                 <label for="host">
                     <?= _('What’s the address of your Mastodon server?') ?>
                 </label>
+
+                <?php if ($form->isInvalid('host')): ?>
+                    <p id="host-error" class="form-group__error">
+                        <?= _('Error:') ?>
+                        <?= $form->error('host') ?>
+                    </p>
+                <?php endif; ?>
 
                 <input
                     id="host"
@@ -122,22 +141,17 @@
                     type="url"
                     placeholder="https://…"
                     required
-                    value="<?= $host ?>"
-                    aria-describedby="host-desc"
+                    value="<?= protect($form->host) ?>"
+                    aria-describedby="host-caption"
+                    <?php if ($form->isInvalid('host')): ?>
+                        aria-errormessage="host-error"
+                        aria-invalid="true"
+                    <?php endif; ?>
                 />
 
-                <div id="host-desc">
-                    <?php if (isset($errors['host'])): ?>
-                        <p class="form-group__error">
-                            <span class="sr-only"><?= _('Error') ?></span>
-                            <?= $errors['host'] ?>
-                        </p>
-                    <?php endif; ?>
-
-                    <p class="form-group__caption">
-                        <?= _('Not using Mastodon yet? <a target="_blank" rel="noopener noreferrer" href="https://joinmastodon.org/servers">Let’s choose a server.</a>') ?>
-                    </p>
-                </div>
+                <p id="host-caption" class="form-group__caption">
+                    <?= _('Not using Mastodon yet? <a target="_blank" rel="noopener noreferrer" href="https://joinmastodon.org/servers">Let’s choose a server.</a>') ?>
+                </p>
             </div>
 
             <div class="form__actions">
@@ -145,6 +159,8 @@
                     <?= _('Connect to Mastodon') ?>
                 </button>
             </div>
+
+            <input type="hidden" name="csrf_token" value="<?= csrf_token($form) ?>" />
         </form>
     <?php endif; ?>
 </div>

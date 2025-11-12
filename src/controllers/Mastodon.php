@@ -3,6 +3,7 @@
 namespace App\controllers;
 
 use App\auth;
+use App\forms;
 use App\models;
 use App\services;
 use Minz\Request;
@@ -17,33 +18,29 @@ class Mastodon extends BaseController
     /**
      * Show the page to configure the Mastodon host/sharing.
      *
-     * @response 302 /login?redirect_to=/mastodon
-     *     If the user is not connected.
      * @response 200
      *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function show(Request $request): Response
     {
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('mastodon'));
+        $user = auth\CurrentUser::require();
 
-        $mastodon_account = models\MastodonAccount::findBy(['user_id' => $user->id]);
-        if ($mastodon_account && !$mastodon_account->access_token) {
-            $mastodon_account = null;
-        }
+        $mastodon_account = models\MastodonAccount::findByUser($user);
 
-        if ($mastodon_account) {
-            $link_to_comment = $mastodon_account->options['link_to_comment'];
-            $post_scriptum = $mastodon_account->options['post_scriptum'];
+        if ($mastodon_account && $mastodon_account->isSetup()) {
+            $form = new forms\mastodon\EditMastodonAccount(model: $mastodon_account);
         } else {
-            $link_to_comment = 'auto';
-            $post_scriptum = '';
+            $form = new forms\mastodon\RequestMastodonAccount(options: [
+                'user' => $user,
+            ]);
         }
 
         return Response::ok('mastodon/show.phtml', [
-            'host' => '',
             'mastodon_account' => $mastodon_account,
-            'link_to_comment' => $link_to_comment,
-            'post_scriptum' => $post_scriptum,
+            'form' => $form,
         ]);
     }
 
@@ -51,62 +48,46 @@ class Mastodon extends BaseController
      * Request the access to a Mastodon app.
      *
      * @request_param string host
-     * @request_param string csrf
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=/mastodon
-     *     If the user is not connected.
      * @response 302 /mastodon
      * @flash error
-     *    If the CSRF token is invalid or if an error occurs.
-     * @response 302 /mastodon
-     * @flash errors
-     *    If the host is invalid.
+     *     If at least one of the parameters is invalid or if an error occurs.
      * @response 302 :host
      *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function requestAccess(Request $request): Response
     {
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('mastodon'));
+        $user = auth\CurrentUser::require();
 
-        $host = $request->parameters->getString('host', '');
-        $csrf = $request->parameters->getString('csrf', '');
+        $form = new forms\mastodon\RequestMastodonAccount(options: [
+            'user' => $user,
+        ]);
+        $form->handleRequest($request);
 
-        if (!\App\Csrf::validate($csrf)) {
-            \Minz\Flash::set('error', _('A security verification failed.'));
-            return Response::redirect('mastodon');
-        }
+        if (!$form->validate()) {
+            $error = implode(' ', $form->errors());
+            \Minz\Flash::set('error', $error);
 
-        $host = \SpiderBits\Url::sanitize($host);
-
-        if (!\SpiderBits\Url::isValid($host)) {
-            \Minz\Flash::set('errors', [
-                'host' => _('The URL is invalid.'),
-            ]);
             return Response::redirect('mastodon');
         }
 
         try {
-            $mastodon_service = services\Mastodon::get($host);
-        } catch (services\MastodonError $e) {
-            \Minz\Log::error($e->getMessage());
+            $mastodon_service = $form->mastodonService();
 
-            \Minz\Flash::set('errors', [
-                'host' => _('The Mastodon host returned an error, please try later.'),
-            ]);
+            $mastodon_account = $form->mastodonAccount();
+            $mastodon_account->save();
+        } catch (services\MastodonError $error) {
+            \Minz\Log::error($error->getMessage());
+
+            \Minz\Flash::set('error', _('The Mastodon host returned an error, please try later.'));
             return Response::redirect('mastodon');
         }
 
-        $mastodon_account = models\MastodonAccount::findOrCreate(
-            $mastodon_service->server,
-            $user,
-        );
-
-        if ($mastodon_account->access_token) {
-            return Response::redirect('mastodon');
-        }
-
-        $auth_url = $mastodon_service->authorizationUrl();
-        return Response::found($auth_url);
+        return Response::found($mastodon_service->authorizationUrl());
     }
 
     /**
@@ -114,35 +95,30 @@ class Mastodon extends BaseController
      *
      * @request_param string code
      *
-     * @response 302 /login?redirect_to=/mastodon
-     *     If the user is not connected.
      * @response 302 /mastodon
-     *     If the code is not given, or if the user has no associated
-     *     MastodonAccount, or if the existing MastodonAccount is already
-     *     authorized.
+     *     If the user has no associated MastodonAccount, or if the existing
+     *     MastodonAccount is already authorized.
      * @response 200
      *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function authorization(Request $request): Response
     {
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('mastodon'));
+        $user = auth\CurrentUser::require();
+        $mastodon_account = models\MastodonAccount::findByUser($user);
 
-        $code = $request->parameters->getString('code', '');
-
-        if (!$code) {
+        if (!$mastodon_account || $mastodon_account->isSetup()) {
             return Response::redirect('mastodon');
         }
 
-        $mastodon_account = models\MastodonAccount::findBy([
-            'user_id' => $user->id,
+        $form = new forms\mastodon\AuthorizeMastodonAccount([
+            'code' => $request->parameters->getString('code', ''),
         ]);
 
-        if (!$mastodon_account || $mastodon_account->access_token) {
-            return Response::redirect('mastodon');
-        }
-
         return Response::ok('mastodon/authorization.phtml', [
-            'code' => $code,
+            'form' => $form,
         ]);
     }
 
@@ -150,13 +126,11 @@ class Mastodon extends BaseController
      * Get an access token for the user Mastodon account.
      *
      * @request_param string code
-     * @request_param string csrf
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=/mastodon
-     *     If the user is not connected.
      * @response 302 /mastodon
-     *     If the code is not given, or if the user has no associated
-     *     MastodonAccount.
+     *     If the user has no associated MastodonAccount, or if the existing
+     *     MastodonAccount is already authorized.
      * @response 400
      *    If the CSRF token is invalid or if an error occurs.
      * @response 302 /mastodon
@@ -164,59 +138,42 @@ class Mastodon extends BaseController
      */
     public function authorize(Request $request): Response
     {
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('mastodon'));
+        $user = auth\CurrentUser::require();
+        $mastodon_account = models\MastodonAccount::findByUser($user);
 
-        $code = $request->parameters->getString('code', '');
-        $csrf = $request->parameters->getString('csrf', '');
-
-        if (!$code) {
+        if (!$mastodon_account || $mastodon_account->isSetup()) {
             return Response::redirect('mastodon');
         }
 
-        $mastodon_account = models\MastodonAccount::findBy([
-            'user_id' => $user->id,
+        $form = new forms\mastodon\AuthorizeMastodonAccount(options: [
+            'mastodon_account' => $mastodon_account,
         ]);
+        $form->handleRequest($request);
 
-        if (!$mastodon_account || $mastodon_account->access_token) {
-            return Response::redirect('mastodon');
-        }
-
-        if (!\App\Csrf::validate($csrf)) {
+        if (!$form->validate()) {
             return Response::badRequest('mastodon/authorization.phtml', [
-                'code' => $code,
-                'error' => _('A security verification failed: you should retry to submit the form.'),
+                'form' => $form,
             ]);
         }
-
-        $mastodon_server = $mastodon_account->server();
-        $mastodon_service = new services\Mastodon($mastodon_server);
 
         try {
-            $access_token = $mastodon_service->accessToken($code);
-        } catch (services\MastodonError $e) {
-            \Minz\Log::error($e->getMessage());
+            $mastodon_account->access_token = $form->accessToken();
+            $mastodon_account->username = $form->username();
+
+            $mastodon_account->save();
+        } catch (services\MastodonError $error) {
+            \Minz\Log::error($error->getMessage());
+
+            $form->addError(
+                '@base',
+                'server_error',
+                _('The Mastodon host returned an error, please try later.'),
+            );
 
             return Response::badRequest('mastodon/authorization.phtml', [
-                'code' => $code,
-                'error' => _('The Mastodon host returned an error, please try later.'),
+                'form' => $form,
             ]);
         }
-
-        $mastodon_account->access_token = $access_token;
-
-        try {
-            $username = $mastodon_service->getUsername($mastodon_account);
-            $mastodon_account->username = $username;
-        } catch (services\MastodonError $e) {
-            \Minz\Log::error($e->getMessage());
-
-            return Response::badRequest('mastodon/authorization.phtml', [
-                'code' => $code,
-                'error' => _('The Mastodon host returned an error, please try later.'),
-            ]);
-        }
-
-        $mastodon_account->save();
 
         return Response::redirect('mastodon');
     }
@@ -224,93 +181,76 @@ class Mastodon extends BaseController
     /**
      * Update the options of the MastodonAccount of the current user.
      *
-     * @request_param string csrf
+     * @request_param string link_to_comment
+     * @request_param string post_scriptum
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=/mastodon
-     *     If the user is not connected.
-     * @response 302 /mastodon
-     *     If the user has no associated MastodonAccount.
      * @response 400
-     *    If the CSRF token is invalid or if the post_scriptum length is more
-     *    than 100 characters.
+     *     If at least one of the parameters is invalid.
      * @response 302 /mastodon
      *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the user did not setup a Mastodon account.
      */
     public function update(Request $request): Response
     {
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('mastodon'));
+        $user = auth\CurrentUser::require();
 
-        $mastodon_account = models\MastodonAccount::findBy(['user_id' => $user->id]);
+        $mastodon_account = models\MastodonAccount::findByUser($user);
 
-        if (!$mastodon_account || !$mastodon_account->access_token) {
-            return Response::redirect('mastodon');
+        if (!$mastodon_account || !$mastodon_account->isSetup()) {
+            throw new \Minz\Errors\MissingRecordError('User did not setup a Mastodon account.');
         }
 
-        $link_to_comment = $request->parameters->getString('link_to_comment', 'auto');
-        $post_scriptum = $request->parameters->getString('post_scriptum', '');
-        $csrf = $request->parameters->getString('csrf', '');
+        $form = new forms\mastodon\EditMastodonAccount(model: $mastodon_account);
+        $form->handleRequest($request);
 
-        if (
-            $link_to_comment !== 'always' &&
-            $link_to_comment !== 'never' &&
-            $link_to_comment !== 'auto'
-        ) {
-            $link_to_comment = 'auto';
-        }
-
-        if (!\App\Csrf::validate($csrf)) {
+        if (!$form->validate()) {
             return Response::badRequest('mastodon/show.phtml', [
-                'host' => '',
                 'mastodon_account' => $mastodon_account,
-                'link_to_comment' => $link_to_comment,
-                'post_scriptum' => $post_scriptum,
-                'error' => _('A security verification failed: you should retry to submit the form.'),
+                'form' => $form,
             ]);
         }
 
-        if (mb_strlen($post_scriptum) > 100) {
-            return Response::badRequest('mastodon/show.phtml', [
-                'host' => '',
-                'mastodon_account' => $mastodon_account,
-                'link_to_comment' => $link_to_comment,
-                'post_scriptum' => $post_scriptum,
-                'errors' => [
-                    'post_scriptum' => 'The label must be less than 100 characters.',
-                ],
-            ]);
-        }
-
-        $mastodon_account->options = [
-            'link_to_comment' => $link_to_comment,
-            'post_scriptum' => $post_scriptum,
-        ];
+        $mastodon_account = $form->model();
         $mastodon_account->save();
 
         return Response::redirect('mastodon');
     }
 
     /**
-     * Remove the MastodonAccount of the current user.
+     * Delete the MastodonAccount of the current user.
      *
-     * @request_param string csrf
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=/mastodon
-     *     If the user is not connected.
      * @response 302 /mastodon
-     *     If the user has no associated MastodonAccount or if the CSRF token
-     *     is invalid.
+     * @flash error
+     *     If the CSRF token is invalid.
      * @response 302 /mastodon
      *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the user does not have a Mastodon account.
      */
     public function disconnect(Request $request): Response
     {
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('mastodon'));
+        $user = auth\CurrentUser::require();
+        $mastodon_account = models\MastodonAccount::findByUser($user);
 
-        $csrf = $request->parameters->getString('csrf', '');
+        if (!$mastodon_account) {
+            throw new \Minz\Errors\MissingRecordError('User did not setup a Mastodon account.');
+        }
 
-        $mastodon_account = models\MastodonAccount::findBy(['user_id' => $user->id]);
+        $form = new forms\mastodon\DeleteMastodonAccount();
+        $form->handleRequest($request);
 
-        if (!$mastodon_account || !\App\Csrf::validate($csrf)) {
+        if (!$form->validate()) {
+            \Minz\Flash::set('error', $form->error('@base'));
             return Response::redirect('mastodon');
         }
 

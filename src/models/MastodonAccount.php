@@ -66,6 +66,11 @@ class MastodonAccount
         return $account;
     }
 
+    public static function findByUser(User $user): ?self
+    {
+        return self::findBy(['user_id' => $user->id]);
+    }
+
     /**
      * Return the user associated to the account.
      */
@@ -92,5 +97,10 @@ class MastodonAccount
         }
 
         return $server;
+    }
+
+    public function isSetup(): bool
+    {
+        return $this->access_token !== '';
     }
 }

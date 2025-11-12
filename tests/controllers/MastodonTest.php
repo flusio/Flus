@@ -2,6 +2,7 @@
 
 namespace App\controllers;
 
+use App\forms;
 use App\models;
 use App\services;
 use tests\factories\MastodonAccountFactory;
@@ -11,6 +12,7 @@ use tests\factories\UserFactory;
 class MastodonTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\CsrfHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
@@ -66,7 +68,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         $authorization_url = $authorization_endpoint . '?' . $authorization_params;
 
         $response = $this->appRun('POST', '/mastodon/request', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\mastodon\RequestMastodonAccount::class),
             'host' => $mastodon_host,
         ]);
 
@@ -101,7 +103,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/mastodon/request', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\mastodon\RequestMastodonAccount::class),
             'host' => $mastodon_host,
         ]);
 
@@ -117,11 +119,11 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         $mastodon_host = 'https://' . $mastodon_domain;
 
         $response = $this->appRun('POST', '/mastodon/request', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\mastodon\RequestMastodonAccount::class),
             'host' => $mastodon_host,
         ]);
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmastodon');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
         $this->assertSame(0, models\MastodonServer::count());
         $this->assertSame(0, models\MastodonAccount::count());
     }
@@ -132,14 +134,14 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         $mastodon_host = 'not a valid host';
 
         $response = $this->appRun('POST', '/mastodon/request', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\mastodon\RequestMastodonAccount::class),
             'host' => $mastodon_host,
         ]);
 
         $this->assertResponseCode($response, 302, '/mastodon');
-        $errors = \Minz\Flash::get('errors');
-        $this->assertIsArray($errors);
-        $this->assertSame('The URL is invalid.', $errors['host']);
+        $error = \Minz\Flash::get('error');
+        $this->assertIsString($error);
+        $this->assertSame('The URL is invalid.', $error);
         $this->assertSame(0, models\MastodonServer::count());
         $this->assertSame(0, models\MastodonAccount::count());
     }
@@ -162,14 +164,14 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         );
 
         $response = $this->appRun('POST', '/mastodon/request', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\mastodon\RequestMastodonAccount::class),
             'host' => $mastodon_host,
         ]);
 
         $this->assertResponseCode($response, 302, '/mastodon');
-        $errors = \Minz\Flash::get('errors');
-        $this->assertIsArray($errors);
-        $this->assertSame('The Mastodon host returned an error, please try later.', $errors['host']);
+        $error = \Minz\Flash::get('error');
+        $this->assertIsString($error);
+        $this->assertSame('The Mastodon host returned an error, please try later.', $error);
         $this->assertSame(0, models\MastodonServer::count());
         $this->assertSame(0, models\MastodonAccount::count());
     }
@@ -190,14 +192,14 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         );
 
         $response = $this->appRun('POST', '/mastodon/request', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\mastodon\RequestMastodonAccount::class),
             'host' => $mastodon_host,
         ]);
 
         $this->assertResponseCode($response, 302, '/mastodon');
-        $errors = \Minz\Flash::get('errors');
-        $this->assertIsArray($errors);
-        $this->assertSame('The Mastodon host returned an error, please try later.', $errors['host']);
+        $error = \Minz\Flash::get('error');
+        $this->assertIsString($error);
+        $this->assertSame('The Mastodon host returned an error, please try later.', $error);
         $this->assertSame(0, models\MastodonServer::count());
         $this->assertSame(0, models\MastodonAccount::count());
     }
@@ -210,12 +212,14 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         $mastodon_host = 'https://' . $mastodon_host;
 
         $response = $this->appRun('POST', '/mastodon/request', [
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
             'host' => $mastodon_host,
         ]);
 
         $this->assertResponseCode($response, 302, '/mastodon');
-        $this->assertSame('A security verification failed.', \Minz\Flash::get('error'));
+        $error = \Minz\Flash::get('error');
+        $this->assertIsString($error);
+        $this->assertSame('A security verification failed: you should retry to submit the form.', $error);
         $this->assertSame(0, models\MastodonServer::count());
         $this->assertSame(0, models\MastodonAccount::count());
     }
@@ -237,18 +241,6 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseTemplateName($response, 'mastodon/authorization.phtml');
         $this->assertResponseContains($response, 'Mastodon authorization');
         $this->assertResponseContains($response, $code);
-    }
-
-    public function testAuthorizationRedirectsIfCodeIsMissing(): void
-    {
-        $user = $this->login();
-        MastodonAccountFactory::create([
-            'user_id' => $user->id,
-        ]);
-
-        $response = $this->appRun('GET', '/mastodon/auth');
-
-        $this->assertResponseCode($response, 302, '/mastodon');
     }
 
     public function testAuthorizationRedirectsIfMastodonAccountDoesNotExist(): void
@@ -292,7 +284,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
             'code' => $code,
         ]);
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmastodon');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmastodon%2Fauth');
     }
 
     public function testAuthorizeRedirectsCorrectly(): void
@@ -337,7 +329,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         );
 
         $response = $this->appRun('POST', '/mastodon/auth', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\mastodon\AuthorizeMastodonAccount::class),
             'code' => $code,
         ]);
 
@@ -353,28 +345,11 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         $code = $this->fake('sha256');
 
         $response = $this->appRun('POST', '/mastodon/auth', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\mastodon\AuthorizeMastodonAccount::class),
             'code' => $code,
         ]);
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmastodon');
-    }
-
-    public function testAuthorizeRedirectsIfCodeIsMissing(): void
-    {
-        $user = $this->login();
-        $mastodon_account = MastodonAccountFactory::create([
-            'user_id' => $user->id,
-            'access_token' => '',
-        ]);
-
-        $response = $this->appRun('POST', '/mastodon/auth', [
-            'csrf' => \App\Csrf::generate(),
-        ]);
-
-        $this->assertResponseCode($response, 302, '/mastodon');
-        $mastodon_account = $mastodon_account->reload();
-        $this->assertSame($mastodon_account->access_token, '');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmastodon%2Fauth');
     }
 
     public function testAuthorizeRedirectsIfMastodonAccountDoesNotExist(): void
@@ -384,7 +359,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         $code = $this->fake('sha256');
 
         $response = $this->appRun('POST', '/mastodon/auth', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\mastodon\AuthorizeMastodonAccount::class),
             'code' => $code,
         ]);
 
@@ -404,13 +379,34 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/mastodon/auth', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\mastodon\AuthorizeMastodonAccount::class),
             'code' => $code,
         ]);
 
         $this->assertResponseCode($response, 302, '/mastodon');
         $mastodon_account = $mastodon_account->reload();
         $this->assertSame($mastodon_account->access_token, $initial_access_token);
+    }
+
+    public function testAuthorizeFailsIfCodeIsMissing(): void
+    {
+        $user = $this->login();
+        $mastodon_account = MastodonAccountFactory::create([
+            'user_id' => $user->id,
+            'access_token' => '',
+        ]);
+
+        $response = $this->appRun('POST', '/mastodon/auth', [
+            'csrf_token' => $this->csrfToken(forms\mastodon\AuthorizeMastodonAccount::class),
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains(
+            $response,
+            'The authorization code is missing.'
+        );
+        $mastodon_account = $mastodon_account->reload();
+        $this->assertSame($mastodon_account->access_token, '');
     }
 
     public function testAuthorizeFailsIfHostFails(): void
@@ -443,7 +439,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         );
 
         $response = $this->appRun('POST', '/mastodon/auth', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\mastodon\AuthorizeMastodonAccount::class),
             'code' => $code,
         ]);
 
@@ -484,7 +480,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         );
 
         $response = $this->appRun('POST', '/mastodon/auth', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\mastodon\AuthorizeMastodonAccount::class),
             'code' => $code,
         ]);
 
@@ -513,7 +509,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/mastodon/auth', [
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
             'code' => $code,
         ]);
 
@@ -542,7 +538,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/mastodon', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\mastodon\EditMastodonAccount::class),
             'link_to_comment' => $new_link_to_comment,
             'post_scriptum' => $new_post_scriptum,
         ]);
@@ -572,7 +568,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/mastodon', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\mastodon\EditMastodonAccount::class),
             'link_to_comment' => $new_link_to_comment,
             'post_scriptum' => $new_post_scriptum,
         ]);
@@ -602,12 +598,12 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/mastodon', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\mastodon\EditMastodonAccount::class),
             'link_to_comment' => $new_link_to_comment,
             'post_scriptum' => $new_post_scriptum,
         ]);
 
-        $this->assertResponseCode($response, 302, '/mastodon');
+        $this->assertResponseCode($response, 404);
         $mastodon_account = $mastodon_account->reload();
         $this->assertSame($mastodon_account->options['link_to_comment'], $old_link_to_comment);
         $this->assertSame($mastodon_account->options['post_scriptum'], $old_post_scriptum);
@@ -632,7 +628,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/mastodon', [
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
             'link_to_comment' => $new_link_to_comment,
             'post_scriptum' => $new_post_scriptum,
         ]);
@@ -663,13 +659,13 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/mastodon', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\mastodon\EditMastodonAccount::class),
             'link_to_comment' => $new_link_to_comment,
             'post_scriptum' => $new_post_scriptum,
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseContains($response, 'The label must be less than 100 characters.');
+        $this->assertResponseContains($response, 'The text must be less than 100 characters.');
         $mastodon_account = $mastodon_account->reload();
         $this->assertSame($mastodon_account->options['link_to_comment'], $old_link_to_comment);
         $this->assertSame($mastodon_account->options['post_scriptum'], $old_post_scriptum);
@@ -684,7 +680,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/mastodon/disconnect', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\mastodon\DeleteMastodonAccount::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/mastodon');
