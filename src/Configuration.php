@@ -39,4 +39,9 @@ class Configuration extends \Minz\Configuration
      * @var ConfigurationApplication
      */
     public static array $application;
+
+    public static function isDemoEnabled(): bool
+    {
+        return self::$application['demo'];
+    }
 }

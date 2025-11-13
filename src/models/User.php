@@ -719,6 +719,16 @@ class User
     }
 
     /**
+     * Return whether the user is the demo account.
+     *
+     * It can return true even if demo is not enabled.
+     */
+    public function isDemoAccount(): bool
+    {
+        return $this->email === 'demo@flus.io';
+    }
+
+    /**
      * Return a password hash. If password is empty, password_hash will be empty as well.
      */
     public static function passwordHash(string $password): string

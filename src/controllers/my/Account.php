@@ -2,13 +2,14 @@
 
 namespace App\controllers\my;
 
-use Minz\Request;
-use Minz\Response;
 use App\auth;
 use App\controllers\BaseController;
+use App\forms;
 use App\models;
 use App\services;
 use App\utils;
+use Minz\Request;
+use Minz\Response;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -19,14 +20,15 @@ class Account extends BaseController
     /**
      * Show the main account page.
      *
-     * @response 302 /login?redirect_to=/account
-     *    If the user is not connected
      * @response 200
-     *    On success
+     *    On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function show(): Response
     {
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('account'));
+        $user = auth\CurrentUser::require();
 
         $sub_enabled = \App\Configuration::$application['subscriptions_enabled'];
         if ($sub_enabled && $user->subscription_account_id && $user->isSubscriptionOverdue()) {
@@ -56,57 +58,47 @@ class Account extends BaseController
     /**
      * Show the delete form.
      *
-     * @response 302 /login?redirect_to=/my/account/deletion
-     *     If the user is not connected
      * @response 200
-     *     On success
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function deletion(): Response
     {
-        $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('account deletion'));
+        auth\CurrentUser::require();
 
-        return Response::ok('my/account/deletion.phtml');
+        return Response::ok('my/account/deletion.phtml', [
+            'form' => new forms\users\DeleteAccount(),
+        ]);
     }
 
     /**
      * Delete the current user.
      *
-     * @request_param string csrf
      * @request_param string password
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=/account/delete
-     *     If the user is not connected
      * @response 400
-     *     If CSRF token or password is wrong
-     * @response 400
-     *     If trying to delete the demo account if demo is enabled
+     *     If at least one of the parameters is invalid.
      * @response 302 /login
      *     On success
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function delete(Request $request): Response
     {
-        $current_user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('account deletion'));
-        $password = $request->parameters->getString('password', '');
-        $csrf = $request->parameters->getString('csrf', '');
+        $current_user = auth\CurrentUser::require();
 
-        if (!\App\Csrf::validate($csrf)) {
-            return Response::badRequest('my/account/deletion.phtml', [
-                'error' => _('A security verification failed: you should retry to submit the form.'),
-            ]);
-        }
+        $form = new forms\users\DeleteAccount(options: [
+            'user' => $current_user,
+        ]);
+        $form->handleRequest($request);
 
-        if (!$current_user->verifyPassword($password)) {
+        if (!$form->validate()) {
             return Response::badRequest('my/account/deletion.phtml', [
-                'errors' => [
-                    'password_hash' => _('The password is incorrect.'),
-                ],
-            ]);
-        }
-
-        $demo = \App\Configuration::$application['demo'];
-        if ($demo && $current_user->email === 'demo@flus.io') {
-            return Response::badRequest('my/account/deletion.phtml', [
-                'error' => _('Sorry but you cannot delete the demo account 😉'),
+                'form' => $form,
             ]);
         }
 

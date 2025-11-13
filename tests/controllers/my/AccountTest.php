@@ -3,12 +3,14 @@
 namespace App\controllers\my;
 
 use App\auth;
+use App\forms;
 use App\models;
 use App\utils;
 
 class AccountTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\CsrfHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
@@ -199,7 +201,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/account/deletion', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\DeleteAccount::class),
             'password' => $password,
         ]);
 
@@ -233,7 +235,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(file_exists($avatar_filepath));
 
         $response = $this->appRun('POST', '/my/account/deletion', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\DeleteAccount::class),
             'password' => $password,
         ]);
 
@@ -243,7 +245,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
     public function testDeleteRedirectsToLoginIfUserIsNotConnected(): void
     {
         $response = $this->appRun('POST', '/my/account/deletion', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\DeleteAccount::class),
             'password' => $this->fake('password'),
         ]);
 
@@ -261,7 +263,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Session::count());
 
         $response = $this->appRun('POST', '/my/account/deletion', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\DeleteAccount::class),
             'password' => $password,
         ]);
 
@@ -277,7 +279,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/account/deletion', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\DeleteAccount::class),
             'password' => 'not the password',
         ]);
 
@@ -295,7 +297,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/account/deletion', [
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
             'password' => $password,
         ]);
 
@@ -316,7 +318,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/account/deletion', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\DeleteAccount::class),
             'password' => $password,
         ]);
 

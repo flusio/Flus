@@ -5,7 +5,7 @@
         'back_options' => [
             'track' => false,
         ],
-        'has_errors' => $error || $errors,
+        'has_errors' => $form->isInvalid(),
     ]);
 ?>
 
@@ -25,14 +25,19 @@
     </div>
 
     <form method="post" action="<?= url('delete account') ?>">
-        <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
+        <?= $this->include('alerts/_error.phtml', ['message' => $form->error('@base')]) ?>
 
-        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-
-        <div class="form-group <?= isset($errors['password_hash']) ? 'form-group--invalid' : '' ?>">
+        <div class="form-group">
             <label for="password">
                 <?= _('Your password') ?>
             </label>
+
+            <?php if ($form->isInvalid('password')): ?>
+                <p id="password-error" class="form-group__error">
+                    <?= _('Error:') ?>
+                    <?= $form->error('password') ?>
+                </p>
+            <?php endif; ?>
 
             <div class="form-group__stack" data-controller="input-password">
                 <input
@@ -42,7 +47,11 @@
                     autofocus
                     required
                     data-input-password-target="input"
-                    aria-describedby="password-desc"
+                    aria-describedby="password-caption"
+                    <?php if ($form->isInvalid('password')): ?>
+                        aria-errormessage="password-error"
+                        aria-invalid="true"
+                    <?php endif; ?>
                 />
 
                 <button
@@ -57,18 +66,9 @@
                 </button>
             </div>
 
-            <div id="password-desc">
-                <?php if (isset($errors['password_hash'])): ?>
-                    <p class="form-group__error">
-                        <span class="sr-only"><?= _('Error') ?></span>
-                        <?= $errors['password_hash'] ?>
-                    </p>
-                <?php endif; ?>
-
-                <p class="form-group__caption">
-                    <?= _('You must type your password so we can confirm your identity.') ?>
-                </p>
-            </div>
+            <p id="password-caption" class="form-group__caption">
+                <?= _('You must type your password so we can confirm your identity.') ?>
+            </p>
         </div>
 
         <div class="form__actions">
@@ -76,5 +76,7 @@
                 <?= _('Delete your account') ?>
             </button>
         </div>
+
+        <input type="hidden" name="csrf_token" value="<?= csrf_token($form) ?>" />
     </form>
 </div>
