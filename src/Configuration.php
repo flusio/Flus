@@ -40,6 +40,11 @@ class Configuration extends \Minz\Configuration
      */
     public static array $application;
 
+    public static function areSubscriptionsEnabled(): bool
+    {
+        return self::$application['subscriptions_enabled'];
+    }
+
     public static function isDemoEnabled(): bool
     {
         return self::$application['demo'];

@@ -655,6 +655,14 @@ class User
     }
 
     /**
+     * Return wheter the user has a subscription account.
+     */
+    public function hasSubscriptionAccount(): bool
+    {
+        return $this->subscription_account_id !== null;
+    }
+
+    /**
      * Return wheter the user has a free subscription or not.
      */
     public function isSubscriptionExempted(): bool

@@ -33,17 +33,11 @@ class SubscriptionsSync extends \Minz\Job
 
     public function perform(): void
     {
-        $app_conf = \App\Configuration::$application;
-        if (!$app_conf['subscriptions_enabled']) {
+        if (!\App\Configuration::areSubscriptionsEnabled()) {
             return;
         }
 
-        /** @var string */
-        $host = $app_conf['subscriptions_host'];
-        /** @var string */
-        $private_key = $app_conf['subscriptions_private_key'];
-
-        $subscriptions_service = new services\Subscriptions($host, $private_key);
+        $subscriptions_service = new services\Subscriptions();
 
         // First, make sure all users have a subscription account. It might
         // happen if a previous request failed.

@@ -30,12 +30,9 @@ class Account extends BaseController
     {
         $user = auth\CurrentUser::require();
 
-        $sub_enabled = \App\Configuration::$application['subscriptions_enabled'];
+        $sub_enabled = \App\Configuration::areSubscriptionsEnabled();
         if ($sub_enabled && $user->subscription_account_id && $user->isSubscriptionOverdue()) {
-            $sub_host = \App\Configuration::$application['subscriptions_host'];
-            $sub_private_key = \App\Configuration::$application['subscriptions_private_key'];
-
-            $service = new services\Subscriptions($sub_host, $sub_private_key);
+            $service = new services\Subscriptions();
 
             $expired_at = $service->expiredAt($user->subscription_account_id);
 

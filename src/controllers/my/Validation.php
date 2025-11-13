@@ -81,14 +81,8 @@ class Validation extends BaseController
         $user->validation_token = null;
         $user->validated_at = \Minz\Time::now();
 
-        $sub_enabled = \App\Configuration::$application['subscriptions_enabled'];
-        if ($sub_enabled) {
-            $sub_host = \App\Configuration::$application['subscriptions_host'];
-            $sub_private_key = \App\Configuration::$application['subscriptions_private_key'];
-            $subscriptions_service = new services\Subscriptions(
-                $sub_host,
-                $sub_private_key,
-            );
+        if (\App\Configuration::areSubscriptionsEnabled()) {
+            $subscriptions_service = new services\Subscriptions();
             $account = $subscriptions_service->account($user->email);
             if ($account) {
                 $user->subscription_account_id = $account['id'];

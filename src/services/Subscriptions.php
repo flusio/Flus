@@ -2,6 +2,7 @@
 
 namespace App\services;
 
+use App\models;
 use App\utils;
 
 /**
@@ -19,10 +20,10 @@ class Subscriptions
 
     private \SpiderBits\Http $http;
 
-    public function __construct(string $host, string $private_key)
+    public function __construct()
     {
-        $this->host = $host;
-        $this->private_key = $private_key;
+        $this->host = \App\Configuration::$application['subscriptions_host'];
+        $this->private_key = \App\Configuration::$application['subscriptions_private_key'];
 
         $this->http = new \SpiderBits\Http();
         $this->http->user_agent = utils\UserAgent::get();
@@ -95,11 +96,11 @@ class Subscriptions
     /**
      * Get a login URL for the given account.
      */
-    public function loginUrl(string $account_id): ?string
+    public function loginUrl(models\User $user): ?string
     {
         try {
             $response = $this->http->get($this->host . '/api/account/login-url', [
-                'account_id' => $account_id,
+                'account_id' => $user->subscription_account_id,
                 'service' => 'Flus',
             ], [
                 'auth_basic' => ':' . $this->private_key,

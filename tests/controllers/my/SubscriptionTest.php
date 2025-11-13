@@ -2,11 +2,13 @@
 
 namespace App\controllers\my;
 
+use App\forms;
 use tests\factories\UserFactory;
 
 class SubscriptionTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\CsrfHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
@@ -53,7 +55,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/account/subscription', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\InitSubscription::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/my/account');
@@ -74,7 +76,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/account/subscription', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\InitSubscription::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/my/account');
@@ -90,17 +92,16 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
     {
         $expired_at = new \DateTimeImmutable('1970-01-01');
         $user = UserFactory::create([
-            'csrf' => 'a token',
             'subscription_account_id' => null,
             'subscription_expired_at' => $expired_at,
             'validated_at' => \Minz\Time::now(),
         ]);
 
         $response = $this->appRun('POST', '/my/account/subscription', [
-            'csrf' => 'a token',
+            'csrf_token' => $this->csrfToken(forms\users\InitSubscription::class),
         ]);
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Faccount');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Faccount%2Fsubscription');
         $user = $user->reload();
         $this->assertNull($user->subscription_account_id);
         $this->assertSame(
@@ -120,10 +121,14 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/account/subscription', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\InitSubscription::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/my/account');
+        $this->assertSame(
+            'You must verify your account first.',
+            \Minz\Flash::get('error')
+        );
         $user = $user->reload();
         $this->assertNull($user->subscription_account_id);
         $this->assertSame(
@@ -142,7 +147,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/account/subscription', [
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
         ]);
 
         $this->assertResponseCode($response, 302, '/my/account');
@@ -170,7 +175,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/account/subscription', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\InitSubscription::class),
         ]);
 
         \App\Configuration::$application['subscriptions_private_key'] = $old_private_key;
@@ -199,7 +204,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/account/subscription', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\InitSubscription::class),
         ]);
 
         $user = $user->reload();
@@ -246,7 +251,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/my/account/subscription');
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Faccount');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Faccount%2Fsubscription');
     }
 
     public function testRedirectFailsIfUserHasNoAccountId(): void

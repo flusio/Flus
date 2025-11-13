@@ -2,11 +2,12 @@
 
 namespace App\controllers\my;
 
-use Minz\Request;
-use Minz\Response;
 use App\auth;
 use App\controllers\BaseController;
+use App\forms;
 use App\services;
+use Minz\Request;
+use Minz\Response;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -14,60 +15,51 @@ use App\services;
  */
 class Subscription extends BaseController
 {
-    private bool $enabled;
-
-    private services\Subscriptions $service;
-
-    public function __construct()
-    {
-        $sub_enabled = \App\Configuration::$application['subscriptions_enabled'];
-        $this->enabled = $sub_enabled;
-        if ($this->enabled) {
-            $sub_host = \App\Configuration::$application['subscriptions_host'];
-            $sub_private_key = \App\Configuration::$application['subscriptions_private_key'];
-            $this->service = new services\Subscriptions($sub_host, $sub_private_key);
-        }
-    }
-
     /**
      * Create a subscription account for the current user.
      *
-     * @request_param string csrf
+     * @request_param string csrf_token
      *
      * @response 404
-     *     If subscriptions are not enabled (need a host and a key)
-     * @response 302 /login?redirect_to=/my/account
-     *     If the user is not connected
-     * @response 302
+     *     If subscriptions are not enabled.
+     * @response 302 /my/account
      * @flash error
-     *     If CSRF token is invalid or user is not validated yet or if an error
-     *     occurs during account creation
-     * @response 200
-     *     If the user aleady has an account, or on successful creation
+     *     If the CSRF token is invalid, the account is not validated, or if an
+     *     error occurs during account creation.
+     * @response 302 /my/account
+     *     If the user aleady has an account, or on successful creation.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function create(Request $request): Response
     {
-        if (!$this->enabled) {
+        if (!\App\Configuration::areSubscriptionsEnabled()) {
             return Response::notFound('not_found.phtml');
         }
 
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('account'));
+        $user = auth\CurrentUser::require();
 
-        if ($user->subscription_account_id) {
+        if ($user->hasSubscriptionAccount()) {
             return Response::redirect('account');
         }
 
         if (!$user->validated_at) {
+            \Minz\Flash::set('error', _('You must verify your account first.'));
             return Response::redirect('account');
         }
 
-        $csrf = $request->parameters->getString('csrf', '');
-        if (!\App\Csrf::validate($csrf)) {
-            \Minz\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
+        $form = new forms\users\InitSubscription();
+        $form->handleRequest($request);
+
+        if (!$form->validate()) {
+            \Minz\Flash::set('error', $form->error('@base'));
             return Response::redirect('account');
         }
 
-        $account = $this->service->account($user->email);
+        $subscription_service = new services\Subscriptions();
+
+        $account = $subscription_service->account($user->email);
         if (!$account) {
             \Minz\Log::error("Can’t get a subscription account for user {$user->id}.");
             \Minz\Flash::set(
@@ -80,43 +72,47 @@ class Subscription extends BaseController
         $user->subscription_account_id = $account['id'];
         $user->subscription_expired_at = $account['expired_at'];
         $user->save();
+
         return Response::redirect('account');
     }
 
     /**
-     * Redirect to the renew page (subscription account)
+     * Redirect to the renew page (subscription account).
      *
      * @response 404
-     *     If subscriptions are not enabled (need a host and a key)
-     * @response 302 /login?redirect_to=/my/account
-     *     If the user is not connected
+     *     If subscriptions are not enabled.
      * @response 400
-     *     If the user has no account_id
+     *     If the user has no account_id.
      * @response 500
-     *     If an error occurs when getting the redirection URL
+     *     If an error occurs when getting the redirection URL.
      * @response 302 subscriptions_host/account
-     *     On success
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function redirect(Request $request): Response
     {
-        if (!$this->enabled) {
+        if (!\App\Configuration::areSubscriptionsEnabled()) {
             return Response::notFound('not_found.phtml');
         }
 
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('account'));
+        $user = auth\CurrentUser::require();
 
-        if (!$user->subscription_account_id) {
+        if (!$user->hasSubscriptionAccount()) {
             return Response::badRequest('bad_request.phtml');
         }
 
-        $url = $this->service->loginUrl($user->subscription_account_id);
-        if ($url) {
-            return Response::found($url);
-        } else {
+        $subscription_service = new services\Subscriptions();
+        $url = $subscription_service->loginUrl($user);
+
+        if (!$url) {
             \Minz\Log::error("Can’t get the subscription login URL for user {$user->id}.");
             return Response::internalServerError('internal_server_error.phtml', [
                 'details' => _('An error occured while logging you, please contact the support.'),
             ]);
         }
+
+        return Response::found($url);
     }
 }
