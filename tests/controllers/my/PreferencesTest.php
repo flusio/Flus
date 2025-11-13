@@ -3,6 +3,7 @@
 namespace App\controllers\my;
 
 use App\auth;
+use App\forms;
 use App\models;
 use App\utils;
 use tests\factories\UserFactory;
@@ -10,6 +11,7 @@ use tests\factories\UserFactory;
 class PreferencesTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\CsrfHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
@@ -40,10 +42,9 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/preferences', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\Preferences::class),
             'locale' => 'fr_FR',
             'option_compact_mode' => true,
-            'from' => \Minz\Url::for('preferences'),
         ]);
 
         $this->assertResponseCode($response, 302, '/my/preferences');
@@ -60,10 +61,9 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(models\FeatureFlag::isEnabled('beta', $user->id));
 
         $response = $this->appRun('POST', '/my/preferences', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\Preferences::class),
             'beta_enabled' => true,
             'locale' => 'fr_FR',
-            'from' => \Minz\Url::for('preferences'),
         ]);
 
         $this->assertResponseCode($response, 302, '/my/preferences');
@@ -78,10 +78,9 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\FeatureFlag::isEnabled('beta', $user->id));
 
         $response = $this->appRun('POST', '/my/preferences', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\Preferences::class),
             'beta_enabled' => false,
             'locale' => 'fr_FR',
-            'from' => \Minz\Url::for('preferences'),
         ]);
 
         $this->assertResponseCode($response, 302, '/my/preferences');
@@ -95,9 +94,8 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/preferences', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\Preferences::class),
             'locale' => 'fr_FR',
-            'from' => \Minz\Url::for('preferences'),
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Fpreferences');
@@ -112,9 +110,8 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/preferences', [
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
             'locale' => 'fr_FR',
-            'from' => \Minz\Url::for('preferences'),
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -130,8 +127,8 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/preferences', [
-            'csrf' => \App\Csrf::generate(),
-            'from' => \Minz\Url::for('preferences'),
+            'csrf_token' => $this->csrfToken(forms\users\Preferences::class),
+            'locale' => '',
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -147,9 +144,8 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/preferences', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\Preferences::class),
             'locale' => 'not a locale',
-            'from' => \Minz\Url::for('preferences'),
         ]);
 
         $this->assertResponseCode($response, 400);

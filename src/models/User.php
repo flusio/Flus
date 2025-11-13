@@ -137,6 +137,21 @@ class User
         return $this->email === $support_email;
     }
 
+    public function enableBeta(): void
+    {
+        FeatureFlag::enable('beta', $this->id);
+    }
+
+    public function disableBeta(): void
+    {
+        FeatureFlag::disable('beta', $this->id);
+    }
+
+    public function isBetaEnabled(): bool
+    {
+        return FeatureFlag::isEnabled('beta', $this->id);
+    }
+
     public function isOwning(Link|Collection $object): bool
     {
         return $object->user_id === $this->id;
