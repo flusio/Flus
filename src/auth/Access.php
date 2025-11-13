@@ -37,6 +37,8 @@ class Access
             $access_class = NotesAccess::class;
         } elseif ($subject instanceof models\Importation) {
             $access_class = ImportationsAccess::class;
+        } elseif ($subject instanceof models\Session) {
+            $access_class = SessionsAccess::class;
         } else {
             throw new \InvalidArgumentException("{$subject_class} subject is not supported");
         }

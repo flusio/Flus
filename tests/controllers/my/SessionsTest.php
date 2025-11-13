@@ -3,6 +3,7 @@
 namespace App\controllers\my;
 
 use App\auth;
+use App\forms;
 use App\models;
 use tests\factories\SessionFactory;
 use tests\factories\UserFactory;
@@ -10,6 +11,7 @@ use tests\factories\UserFactory;
 class SessionsTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\CsrfHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \Minz\Tests\TimeHelper;
@@ -45,7 +47,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/my/sessions');
 
-        $this->assertResponseCode($response, 302, '/my/security/confirmation?from=%2Fmy%2Fsessions');
+        $this->assertResponseCode($response, 302, '/my/security/confirmation?redirect_to=%2Fmy%2Fsessions');
     }
 
     public function testIndexRedirectsIfUserIsNotConnected(): void
@@ -69,7 +71,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/my/sessions/{$session->id}/deletion", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\security\DeleteSession::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/my/sessions');
@@ -90,7 +92,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($session);
 
         $response = $this->appRun('POST', "/my/sessions/{$session->id}/deletion", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\security\DeleteSession::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/my/sessions');
@@ -116,7 +118,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/my/sessions/{$session->id}/deletion", [
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
         ]);
 
         $this->assertResponseCode($response, 302, '/my/sessions');
@@ -131,10 +133,10 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/my/sessions/{$session->id}/deletion", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\security\DeleteSession::class),
         ]);
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Fsessions');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
         $this->assertTrue(models\Session::exists($session->id));
     }
 
@@ -152,10 +154,10 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/my/sessions/{$session->id}/deletion", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\security\DeleteSession::class),
         ]);
 
-        $this->assertResponseCode($response, 302, '/my/security/confirmation?from=%2Fmy%2Fsessions');
+        $this->assertResponseCode($response, 302, '/my/security/confirmation?redirect_to=%2F');
         $this->assertTrue(models\Session::exists($session->id));
     }
 
@@ -173,7 +175,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/my/sessions/not-an-id/deletion", [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\security\DeleteSession::class),
         ]);
 
         $this->assertResponseCode($response, 404);

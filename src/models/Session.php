@@ -18,6 +18,7 @@ class Session
 {
     use dao\Session;
     use Database\Recordable;
+    use Database\Resource;
 
     public const SCOPES = ['browser', 'api'];
 
