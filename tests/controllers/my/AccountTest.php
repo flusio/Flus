@@ -324,7 +324,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 
         \App\Configuration::$application['demo'] = false;
         $this->assertResponseCode($response, 400);
-        $this->assertResponseContains($response, 'Sorry but you cannot delete the demo account 😉');
+        $this->assertResponseContains($response, 'Sorry but you cannot do that in the demo 😉');
         $this->assertTrue(models\User::exists($user->id));
     }
 }

@@ -3,7 +3,7 @@
         'title' => _('Login & security'),
         'canonical' => url_full('security'),
         'current_page' => 'security',
-        'has_errors' => $error || $errors,
+        'has_errors' => $form->isInvalid(),
     ]);
 ?>
 
@@ -17,41 +17,47 @@
     </p>
 
     <form method="post" action="<?= url('update security') ?>">
-        <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
+        <?= $this->include('alerts/_error.phtml', ['message' => $form->error('@base')]) ?>
 
-        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-
-        <div class="form-group <?= isset($errors['email']) ? 'form-group--invalid' : '' ?>">
+        <div class="form-group">
             <label for="email">
                 <?= _('Your email address') ?>
             </label>
+
+            <?php if ($form->isInvalid('email')): ?>
+                <p id="email-error" class="form-group__error">
+                    <?= _('Error:') ?>
+                    <?= $form->error('email') ?>
+                </p>
+            <?php endif; ?>
 
             <input
                 id="email"
                 name="email"
                 type="email"
-                value="<?= $email ?>"
+                value="<?= protect($form->email) ?>"
                 required
-                aria-describedby="email-desc"
-            />
-
-            <div id="email-desc">
-                <?php if (isset($errors['email'])): ?>
-                    <p class="form-group__error">
-                        <span class="sr-only"><?= _('Error') ?></span>
-                        <?= $errors['email'] ?>
-                    </p>
+                <?php if ($form->isInvalid('email')): ?>
+                    aria-errormessage="email-error"
+                    aria-invalid="true"
                 <?php endif; ?>
-            </div>
+            />
         </div>
 
-        <div class="form-group <?= isset($errors['password_hash']) ? 'form-group--invalid' : '' ?>">
+        <div class="form-group">
             <label for="new-password">
                 <?= _('New password') ?>
                 <span class="label__help">
                     <?= _('(optional)') ?>
                 </span>
             </label>
+
+            <?php if ($form->isInvalid('password_hash')): ?>
+                <p id="password-error" class="form-group__error">
+                    <?= _('Error:') ?>
+                    <?= $form->error('password_hash') ?>
+                </p>
+            <?php endif; ?>
 
             <div class="form-group__stack" data-controller="input-password">
                 <input
@@ -60,7 +66,11 @@
                     type="password"
                     data-input-password-target="input"
                     autocomplete="new-password"
-                    aria-describedby="new-password-desc"
+                    aria-describedby="new-password-caption"
+                    <?php if ($form->isInvalid('password_hash')): ?>
+                        aria-errormessage="password-error"
+                        aria-invalid="true"
+                    <?php endif; ?>
                 />
 
                 <button
@@ -75,18 +85,9 @@
                 </button>
             </div>
 
-            <div id="new-password-desc">
-                <?php if (isset($errors['password_hash'])): ?>
-                    <p class="form-group__error">
-                        <span class="sr-only"><?= _('Error') ?></span>
-                        <?= $errors['password_hash'] ?>
-                    </p>
-                <?php endif; ?>
-
-                <p class="form-group__caption">
-                    <?= _('Leave this field empty if you want to keep your current password.') ?>
-                </p>
-            </div>
+            <p id="new-password-caption" class="form-group__caption">
+                <?= _('Leave this field empty if you want to keep your current password.') ?>
+            </p>
         </div>
 
         <div class="form__actions">
@@ -94,5 +95,7 @@
                 <?= _('Save changes') ?>
             </button>
         </div>
+
+        <input type="hidden" name="csrf_token" value="<?= csrf_token($form) ?>" />
     </form>
 </div>

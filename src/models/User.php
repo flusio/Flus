@@ -56,6 +56,9 @@ class User
     #[Validable\Email(
         message: new Translatable('The address email is invalid.'),
     )]
+    #[Validable\Unique(
+        message: new Translatable('An account already exists with this email address.'),
+    )]
     public string $email;
 
     #[Database\Column]
@@ -623,13 +626,10 @@ class User
     }
 
     /**
-     * Set login credentials.
-     *
-     * The password is not changed if empty.
+     * Change the user password if $password is not empty.
      */
-    public function setLoginCredentials(string $email, ?string $password = null): void
+    public function changePassword(string $password): void
     {
-        $this->email = \Minz\Email::sanitize($email);
         if ($password) {
             $this->password_hash = self::passwordHash($password);
         }

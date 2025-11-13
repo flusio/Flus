@@ -2,11 +2,12 @@
 
 namespace App\controllers\my;
 
-use Minz\Request;
-use Minz\Response;
 use App\auth;
 use App\controllers\BaseController;
+use App\forms;
 use App\models;
+use Minz\Request;
+use Minz\Response;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -15,106 +16,63 @@ use App\models;
 class Security extends BaseController
 {
     /**
-     * @response 302 /login?redirect_to=/my/security
-     *    If the user is not connected.
-     * @response 302 /my/security/confirmation?from=/my/security
-     *    If the password is not confirmed.
      * @response 200
      *    On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws auth\PasswordNotConfirmedError
+     *     If the password is not confirmed.
      */
     public function show(): Response
     {
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('security'));
+        $user = auth\CurrentUser::require();
 
-        $session = auth\CurrentUser::session();
+        auth\CurrentUser::requireConfirmedPassword();
 
-        assert($session !== null);
-
-        if (!$session->isPasswordConfirmed()) {
-            return Response::redirect('password confirmation', [
-                'from' => \Minz\Url::for('security'),
-            ]);
-        }
+        $form = new forms\security\Credentials(model: $user);
 
         return Response::ok('my/security/show.phtml', [
-            'email' => $user->email,
+            'form' => $form,
         ]);
     }
 
     /**
      * Update email and password of the user.
      *
-     * @request_param string csrf
      * @request_param string email
      * @request_param string password
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=/my/security
-     *    If the user is not connected
-     * @response 302 /my/security/confirmation?from=/my/security
-     *    If the password is not confirmed.
      * @response 400
-     *    If the CSRF token or the email is invalid.
-     * @response 400
-     *     If trying to change the demo account credentials if demo is enabled
+     *     If at least one of the parameters is invalid.
      * @response 302 /my/security
-     *    On success
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws auth\PasswordNotConfirmedError
+     *     If the password is not confirmed.
      */
     public function update(Request $request): Response
     {
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('security'));
+        $user = auth\CurrentUser::require();
 
-        $session = auth\CurrentUser::session();
+        auth\CurrentUser::requireConfirmedPassword();
 
-        assert($session !== null);
+        $form = new forms\security\Credentials(model: $user);
+        $form->handleRequest($request);
 
-        if (!$session->isPasswordConfirmed()) {
-            return Response::redirect('password confirmation', [
-                'from' => \Minz\Url::for('security'),
-            ]);
-        }
-
-        $email = $request->parameters->getString('email', '');
-        $password = $request->parameters->getString('password', '');
-        $csrf = $request->parameters->getString('csrf', '');
-
-        if (!\App\Csrf::validate($csrf)) {
+        if (!$form->validate()) {
             return Response::badRequest('my/security/show.phtml', [
-                'email' => $email,
-                'error' => _('A security verification failed: you should retry to submit the form.'),
-            ]);
-        }
-
-        $demo = \App\Configuration::$application['demo'];
-        if ($demo && $user->email === 'demo@flus.io') {
-            return Response::badRequest('my/security/show.phtml', [
-                'email' => $email,
-                'error' => _('Sorry but you cannot change the login details for the demo account 😉'),
+                'form' => $form,
             ]);
         }
 
         $old_email = $user->email;
         $old_password_hash = $user->password_hash;
 
-        $user->setLoginCredentials($email, $password);
-
-        $existing_user = models\User::findBy(['email' => $user->email]);
-        $email_exists = $existing_user && $existing_user->id !== $user->id;
-        if ($email_exists) {
-            return Response::badRequest('my/security/show.phtml', [
-                'email' => $email,
-                'errors' => [
-                    'email' => _('An account already exists with this email address.'),
-                ],
-            ]);
-        }
-
-        if (!$user->validate()) {
-            return Response::badRequest('my/security/show.phtml', [
-                'email' => $email,
-                'errors' => $user->errors(),
-            ]);
-        }
-
+        $user = $form->model();
         $user->save();
 
         if ($user->email !== $old_email || $user->password_hash !== $old_password_hash) {
@@ -123,6 +81,8 @@ class Security extends BaseController
             if ($user->reset_token) {
                 models\Token::delete($user->reset_token);
             }
+            $session = auth\CurrentUser::session();
+            assert($session !== null);
             models\Session::deleteByUserId($user->id, $session->id);
         }
 
@@ -133,88 +93,64 @@ class Security extends BaseController
      * Show a form to confirm the password of the user. It is required to
      * perform some sensitive actions.
      *
-     * @request_param string from
+     * @request_param string redirect_to
      *
-     * @response 302 /login?redirect_to=:from
-     *    If the user is not connected
      * @response 200
-     *    On success
+     *    On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function confirmation(Request $request): Response
     {
-        $from = $request->parameters->getString('from', \Minz\Url::for('security'));
+        $user = auth\CurrentUser::require();
 
-        $router = \Minz\Engine::router();
-        if (!$router->isRedirectable($from)) {
-            $from = \Minz\Url::for('security');
-        }
-
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
-
-        $session = auth\CurrentUser::session();
-
-        assert($session !== null);
-
-        if ($session->isPasswordConfirmed()) {
-            return Response::found($from);
-        }
+        $form = new forms\security\ConfirmPassword([
+            'redirect_to' => $request->parameters->getString('redirect_to', ''),
+        ], options: [
+            'user' => $user,
+        ]);
 
         return Response::ok('my/security/confirmation.phtml', [
-            'from' => $from,
+            'form' => $form,
         ]);
     }
 
     /**
      * Confirm the password for the current session.
      *
-     * @request_param string csrf
      * @request_param string password
-     * @request_param string from
+     * @request_param string redirect_to
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=:from
-     *    If the user is not connected
      * @response 400
-     *    If the CSRF token is invalid or if the password is invalid
-     * @response 302 :from
-     *    On success
+     *     If at least one of the parameters is invalid.
+     * @response 302 :redirect_to
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function confirm(Request $request): Response
     {
-        $from = $request->parameters->getString('from', \Minz\Url::for('security'));
+        $user = auth\CurrentUser::require();
 
-        $router = \Minz\Engine::router();
-        if (!$router->isRedirectable($from)) {
-            $from = \Minz\Url::for('security');
-        }
+        $form = new forms\security\ConfirmPassword(options: [
+            'user' => $user,
+        ]);
+        $form->handleRequest($request);
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
-
-        $password = $request->parameters->getString('password', '');
-        $csrf = $request->parameters->getString('csrf', '');
-
-        if (!\App\Csrf::validate($csrf)) {
+        if (!$form->validate()) {
             return Response::badRequest('my/security/confirmation.phtml', [
-                'from' => $from,
-                'error' => _('A security verification failed: you should retry to submit the form.'),
-            ]);
-        }
-
-        if (!$user->verifyPassword($password)) {
-            return Response::badRequest('my/security/confirmation.phtml', [
-                'from' => $from,
-                'errors' => [
-                    'password_hash' => _('The password is incorrect.'),
-                ],
+                'form' => $form,
             ]);
         }
 
         $session = auth\CurrentUser::session();
-
         assert($session !== null);
 
-        $session->confirmed_password_at = \Minz\Time::now();
-        $session->save();
+        $session->confirmPassword();
 
-        return Response::found($from);
+        return Response::found($form->redirect_to);
     }
 }

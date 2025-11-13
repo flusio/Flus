@@ -4,7 +4,6 @@ namespace App\forms;
 
 use App\models;
 use Minz\Form;
-use Minz\Request;
 use Minz\Translatable;
 use Minz\Validable;
 
@@ -14,15 +13,14 @@ use Minz\Validable;
  */
 class Login extends BaseForm
 {
+    use Redirectable;
+
     #[Form\Field(transform: '\Minz\Email::sanitize')]
     #[Validable\Email(message: new Translatable('The address email is invalid.'))]
     public string $email = '';
 
     #[Form\Field]
     public string $password = '';
-
-    #[Form\Field]
-    public string $redirect_to = '';
 
     /**
      * @param array<string, mixed> $default_values
@@ -35,15 +33,6 @@ class Login extends BaseForm
         }
 
         parent::__construct($default_values);
-    }
-
-    #[Form\OnHandleRequest]
-    public function forceRedirectableRedirectTo(Request $request): void
-    {
-        $router = \Minz\Engine::router();
-        if (!$router->isRedirectable($this->redirect_to)) {
-            $this->redirect_to = \Minz\Url::for('home');
-        }
     }
 
     #[Validable\Check]

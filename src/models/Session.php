@@ -62,6 +62,15 @@ class Session
     }
 
     /**
+     * Confirm the password for the current session.
+     */
+    public function confirmPassword(): void
+    {
+        $this->confirmed_password_at = \Minz\Time::now();
+        $this->save();
+    }
+
+    /**
      * Return wheter the user confirmed its password within the last 15 minutes.
      */
     public function isPasswordConfirmed(): bool

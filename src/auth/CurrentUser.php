@@ -178,4 +178,25 @@ class CurrentUser
     {
         return self::$session;
     }
+
+    /**
+     * Verify that the user reconfirmed password during the last 15 minutes.
+     *
+     * @throws MissingCurrentUserError
+     *     If the user is not logged-in.
+     * @throws PasswordNotConfirmedError
+     *     If the password is not confirmed.
+     */
+    public static function requireConfirmedPassword(): void
+    {
+        $session = self::session();
+
+        if (!$session) {
+            throw new MissingCurrentUserError();
+        }
+
+        if (!$session->isPasswordConfirmed()) {
+            throw new PasswordNotConfirmedError();
+        }
+    }
 }

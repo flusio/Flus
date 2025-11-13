@@ -3,6 +3,7 @@
 namespace App\controllers\my;
 
 use App\auth;
+use App\forms;
 use App\models;
 use tests\factories\SessionFactory;
 use tests\factories\TokenFactory;
@@ -11,6 +12,7 @@ use tests\factories\UserFactory;
 class SecurityTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\CsrfHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \Minz\Tests\TimeHelper;
@@ -46,7 +48,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/my/security');
 
-        $this->assertResponseCode($response, 302, '/my/security/confirmation?from=%2Fmy%2Fsecurity');
+        $this->assertResponseCode($response, 302, '/my/security/confirmation?redirect_to=%2Fmy%2Fsecurity');
     }
 
     public function testShowRedirectsIfUserIsNotConnected(): void
@@ -72,7 +74,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         ], confirmed_password_at: \Minz\Time::now());
 
         $response = $this->appRun('POST', '/my/security', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\security\Credentials::class),
             'email' => $new_email,
             'password' => $new_password,
         ]);
@@ -97,7 +99,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         ], confirmed_password_at: \Minz\Time::now());
 
         $response = $this->appRun('POST', '/my/security', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\security\Credentials::class),
             'email' => $new_email,
             'password' => '',
         ]);
@@ -124,7 +126,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         ], confirmed_password_at: \Minz\Time::now());
 
         $response = $this->appRun('POST', '/my/security', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\security\Credentials::class),
             'email' => $new_email,
             'password' => $new_password,
         ]);
@@ -158,7 +160,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(2, models\Session::count());
 
         $response = $this->appRun('POST', '/my/security', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\security\Credentials::class),
             'email' => $new_email,
             'password' => $new_password,
         ]);
@@ -182,13 +184,12 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $new_password = $this->fake('password');
         $user = UserFactory::create([
-            'csrf' => 'a token',
             'email' => $old_email,
             'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
         ]);
 
         $response = $this->appRun('POST', '/my/security', [
-            'csrf' => 'a token',
+            'csrf_token' => $this->csrfToken(forms\security\Credentials::class),
             'email' => $new_email,
             'password' => $new_password,
         ]);
@@ -215,12 +216,12 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         ], confirmed_password_at: null);
 
         $response = $this->appRun('POST', '/my/security', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\security\Credentials::class),
             'email' => $new_email,
             'password' => $new_password,
         ]);
 
-        $this->assertResponseCode($response, 302, '/my/security/confirmation?from=%2Fmy%2Fsecurity');
+        $this->assertResponseCode($response, 302, '/my/security/confirmation?redirect_to=%2Fmy%2Fsecurity');
         $user = $user->reload();
         $this->assertSame($old_email, $user->email);
         $this->assertTrue($user->verifyPassword($old_password));
@@ -242,7 +243,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         ], confirmed_password_at: \Minz\Time::now());
 
         $response = $this->appRun('POST', '/my/security', [
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
             'email' => $new_email,
             'password' => $new_password,
         ]);
@@ -274,7 +275,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/security', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\security\Credentials::class),
             'email' => $new_email,
             'password' => $new_password,
         ]);
@@ -303,7 +304,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         ], confirmed_password_at: \Minz\Time::now());
 
         $response = $this->appRun('POST', '/my/security', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\security\Credentials::class),
             'email' => $new_email,
             'password' => $new_password,
         ]);
@@ -330,7 +331,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         ], confirmed_password_at: \Minz\Time::now());
 
         $response = $this->appRun('POST', '/my/security', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\security\Credentials::class),
             'email' => '',
             'password' => $new_password,
         ]);
@@ -360,17 +361,14 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         ], confirmed_password_at: \Minz\Time::now());
 
         $response = $this->appRun('POST', '/my/security', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\security\Credentials::class),
             'email' => $new_email,
             'password' => $new_password,
         ]);
 
         \App\Configuration::$application['demo'] = false;
         $this->assertResponseCode($response, 400, '/my/security');
-        $this->assertResponseContains(
-            $response,
-            'Sorry but you cannot change the login details for the demo account 😉'
-        );
+        $this->assertResponseContains($response, 'Sorry but you cannot do that in the demo 😉');
         $user = $user->reload();
         $this->assertSame($old_email, $user->email);
         $this->assertTrue($user->verifyPassword($old_password));
@@ -387,7 +385,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $this->login(confirmed_password_at: $confirmed_at);
 
         $response = $this->appRun('GET', '/my/security/confirmation', [
-            'from' => '/my/security'
+            'redirect_to' => '/my/security'
         ]);
 
         $this->assertResponseCode($response, 200);
@@ -398,27 +396,10 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
     public function testConfirmationRedirectsIfUserIsNotConnected(): void
     {
         $response = $this->appRun('GET', '/my/security/confirmation', [
-            'from' => '/my/security'
+            'redirect_to' => '/my/security'
         ]);
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Fsecurity');
-    }
-
-    public function testConfirmationRedirectsIfPasswordIsConfirmed(): void
-    {
-        /** @var \DateTimeImmutable */
-        $now = $this->fake('dateTime');
-        $this->freeze($now);
-        /** @var int */
-        $minutes = $this->fake('numberBetween', 0, 15);
-        $confirmed_at = \Minz\Time::ago($minutes, 'minutes');
-        $this->login(confirmed_password_at: $confirmed_at);
-
-        $response = $this->appRun('GET', '/my/security/confirmation', [
-            'from' => '/my/security'
-        ]);
-
-        $this->assertResponseCode($response, 302, '/my/security');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Fsecurity%2Fconfirmation');
     }
 
     public function testConfirmSetsConfirmedPasswordAtAndRedirects(): void
@@ -433,8 +414,8 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         ], confirmed_password_at: null);
 
         $response = $this->appRun('POST', '/my/security/confirmation', [
-            'from' => '/my/security',
-            'csrf' => \App\Csrf::generate(),
+            'redirect_to' => '/my/security',
+            'csrf_token' => $this->csrfToken(forms\security\ConfirmPassword::class),
             'password' => $password,
         ]);
 
@@ -450,17 +431,16 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $password = $this->fake('password');
         $user = UserFactory::create([
-            'csrf' => 'a token',
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
         ]);
 
         $response = $this->appRun('POST', '/my/security/confirmation', [
-            'from' => '/my/security',
-            'csrf' => 'a token',
+            'redirect_to' => '/my/security',
+            'csrf_token' => $this->csrfToken(forms\security\ConfirmPassword::class),
             'password' => $password,
         ]);
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Fsecurity');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Fsecurity%2Fconfirmation');
     }
 
     public function testConfirmFailsIfCsrfIsInvalid(): void
@@ -472,8 +452,8 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         ], confirmed_password_at: null);
 
         $response = $this->appRun('POST', '/my/security/confirmation', [
-            'from' => '/my/security',
-            'csrf' => 'not the token',
+            'redirect_to' => '/my/security',
+            'csrf_token' => 'not the token',
             'password' => $password,
         ]);
 
@@ -494,8 +474,8 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         ], confirmed_password_at: null);
 
         $response = $this->appRun('POST', '/my/security/confirmation', [
-            'from' => '/my/security',
-            'csrf' => \App\Csrf::generate(),
+            'redirect_to' => '/my/security',
+            'csrf_token' => $this->csrfToken(forms\security\ConfirmPassword::class),
             'password' => 'not the password',
         ]);
 

@@ -67,6 +67,19 @@ class BaseController
     }
 
     /**
+     * Handle the PasswordNotConfirmedError to redirect to the password confirmation page.
+     */
+    #[Controller\ErrorHandler(auth\PasswordNotConfirmedError::class)]
+    public function redirectOnPasswordNotConfirmedError(
+        Request $request,
+        auth\PasswordNotConfirmedError $error,
+    ): Response {
+        return Response::redirect('password confirmation', [
+            'redirect_to' => utils\RequestHelper::from($request),
+        ]);
+    }
+
+    /**
      * Handle the AccessDeniedError to show a 403 page.
      */
     #[Controller\ErrorHandler(auth\AccessDeniedError::class)]
