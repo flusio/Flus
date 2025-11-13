@@ -20,6 +20,8 @@ class User
     use Database\Recordable;
     use Validable;
 
+    public const USERNAME_MAX_LENGTH = 50;
+
     #[Database\Column]
     public string $id;
 
@@ -61,7 +63,7 @@ class User
         message: new Translatable('The username is required.'),
     )]
     #[Validable\Length(
-        max: 50,
+        max: self::USERNAME_MAX_LENGTH,
         message: new Translatable('The username must be less than {max} characters.'),
     )]
     #[Validable\Format(

@@ -3,12 +3,14 @@
 namespace App\controllers\my;
 
 use App\auth;
+use App\forms;
 use App\models;
 use tests\factories\UserFactory;
 
 class ProfileTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\CsrfHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
@@ -18,9 +20,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
     {
         $this->login();
 
-        $response = $this->appRun('GET', '/my/profile', [
-            'from' => \Minz\Url::for('edit profile'),
-        ]);
+        $response = $this->appRun('GET', '/my/profile');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseTemplateName($response, 'my/profile/edit.phtml');
@@ -28,9 +28,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
 
     public function testEditRedirectsToLoginIfUserNotConnected(): void
     {
-        $response = $this->appRun('GET', '/my/profile', [
-            'from' => \Minz\Url::for('edit profile'),
-        ]);
+        $response = $this->appRun('GET', '/my/profile');
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Fprofile');
     }
@@ -46,12 +44,11 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/profile', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\Profile::class),
             'username' => $new_username,
-            'from' => \Minz\Url::for('edit profile'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/my/profile');
+        $this->assertResponseCode($response, 302, "/p/{$user->id}");
         $user = $user->reload();
         $this->assertSame($new_username, $user->username);
     }
@@ -67,9 +64,8 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/profile', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\Profile::class),
             'username' => $new_username,
-            'from' => \Minz\Url::for('edit profile'),
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Fprofile');
@@ -88,9 +84,8 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/profile', [
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
             'username' => $new_username,
-            'from' => \Minz\Url::for('edit profile'),
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -110,9 +105,8 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/profile', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\Profile::class),
             'username' => $new_username,
-            'from' => \Minz\Url::for('edit profile'),
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -133,9 +127,8 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/profile', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\Profile::class),
             'username' => $new_username,
-            'from' => \Minz\Url::for('edit profile'),
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -153,8 +146,8 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/profile', [
-            'csrf' => \App\Csrf::generate(),
-            'from' => \Minz\Url::for('edit profile'),
+            'csrf_token' => $this->csrfToken(forms\users\Profile::class),
+            'username' => '',
         ]);
 
         $this->assertResponseCode($response, 400);

@@ -2,10 +2,11 @@
 
 namespace App\controllers\my;
 
-use Minz\Request;
-use Minz\Response;
 use App\auth;
 use App\controllers\BaseController;
+use App\forms;
+use Minz\Request;
+use Minz\Response;
 
 /**
  * Handle the requests related to the profile.
@@ -18,72 +19,58 @@ class Profile extends BaseController
     /**
      * Show the form to edit the current user’s profile.
      *
-     * @request_param string from (default is /my/profile)
-     *
-     * @response 302 /login?redirect_to=:from
-     *    If the user is not connected
      * @response 200
-     *    On success
+     *    On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function edit(Request $request): Response
     {
-        $from = $request->parameters->getString('from', \Minz\Url::for('edit profile'));
+        $user = auth\CurrentUser::require();
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
+        $form_profile = new forms\users\Profile(model: $user);
+        $form_avatar = new forms\users\EditAvatar();
 
         return Response::ok('my/profile/edit.phtml', [
-            'username' => $user->username,
-            'from' => $from,
+            'form_profile' => $form_profile,
+            'form_avatar' => $form_avatar,
         ]);
     }
 
     /**
-     * Update the current user profile info
+     * Update the current user profile info.
      *
-     * @request_param string csrf
      * @request_param string username
-     * @request_param string from
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=:from
-     *     If the user is not connected
      * @response 400
-     *     If the CSRF or username are invalid
-     * @response 302 :from
-     *     On success
+     *     If at least one of the parameters is invalid.
+     * @response 302 /profile/:id
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function update(Request $request): Response
     {
-        $username = $request->parameters->getString('username', '');
-        $csrf = $request->parameters->getString('csrf', '');
-        $from = $request->parameters->getString('from', '');
+        $current_user = auth\CurrentUser::require();
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
+        $form_avatar = new forms\users\EditAvatar();
 
-        if (!\App\Csrf::validate($csrf)) {
+        $form_profile = new forms\users\Profile(model: $current_user);
+        $form_profile->handleRequest($request);
+
+        if (!$form_profile->validate()) {
             return Response::badRequest('my/profile/edit.phtml', [
-                'username' => $username,
-                'from' => $from,
-                'error' => _('A security verification failed: you should retry to submit the form.'),
+                'form_profile' => $form_profile,
+                'form_avatar' => $form_avatar,
             ]);
         }
 
-        $old_username = $user->username;
-        $user->username = trim($username);
-
-        if (!$user->validate()) {
-            // by keeping the new values, an invalid username could be
-            // displayed in the header since the `$user` objects are the same
-            // (referenced by the CurrentUser::$instance)
-            $user->username = $old_username;
-            return Response::badRequest('my/profile/edit.phtml', [
-                'username' => $username,
-                'from' => $from,
-                'errors' => $user->errors(),
-            ]);
-        }
-
+        $user = $form_profile->model();
         $user->save();
 
-        return Response::found($from);
+        return Response::redirect('profile', ['id' => $user->id]);
     }
 }

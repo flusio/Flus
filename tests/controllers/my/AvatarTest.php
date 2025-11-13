@@ -3,6 +3,7 @@
 namespace App\controllers\my;
 
 use App\auth;
+use App\forms;
 use App\models;
 use App\utils;
 use tests\factories\UserFactory;
@@ -10,6 +11,7 @@ use tests\factories\UserFactory;
 class AvatarTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\CsrfHelper;
     use \Minz\Tests\FilesHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
@@ -24,17 +26,17 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
             'avatar_filename' => null,
         ]);
         $file = [
+            'name' => 'avatar.png',
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
         ];
 
         $response = $this->appRun('POST', '/my/profile/avatar', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\EditAvatar::class),
             'avatar' => $file,
-            'from' => \Minz\Url::for('edit profile'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/my/profile');
+        $this->assertResponseCode($response, 302, "/p/{$user->id}");
         $user = $user->reload();
         $this->assertSame($user->id . '.webp', $user->avatar_filename);
         $media_path = \App\Configuration::$application['media_path'];
@@ -63,17 +65,17 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
             'avatar_filename' => $previous_avatar_filename,
         ]);
         $file = [
+            'name' => 'avatar.png',
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
         ];
 
         $response = $this->appRun('POST', '/my/profile/avatar', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\EditAvatar::class),
             'avatar' => $file,
-            'from' => \Minz\Url::for('edit profile'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/my/profile');
+        $this->assertResponseCode($response, 302, "/p/{$user->id}");
         $user = $user->reload();
         $this->assertSame($user->id . '.webp', $user->avatar_filename);
         $subpath = utils\Belt::filenameToSubpath($user->avatar_filename);
@@ -88,20 +90,19 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = UserFactory::create([
             'avatar_filename' => null,
-            'csrf' => 'a token',
         ]);
         $file = [
+            'name' => 'avatar.png',
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
         ];
 
         $response = $this->appRun('POST', '/my/profile/avatar', [
-            'csrf' => 'a token',
+            'csrf_token' => $this->csrfToken(forms\users\EditAvatar::class),
             'avatar' => $file,
-            'from' => \Minz\Url::for('edit profile'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Fprofile');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
         $user = $user->reload();
         $this->assertNull($user->avatar_filename);
     }
@@ -114,18 +115,18 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
             'avatar_filename' => null,
         ]);
         $file = [
+            'name' => 'avatar.png',
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
         ];
 
         $response = $this->appRun('POST', '/my/profile/avatar', [
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
             'avatar' => $file,
-            'from' => \Minz\Url::for('edit profile'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/my/profile');
-        $this->assertSame('A security verification failed.', \Minz\Flash::get('error'));
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'A security verification failed');
         $user = $user->reload();
         $this->assertNull($user->avatar_filename);
     }
@@ -137,12 +138,11 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/profile/avatar', [
-            'csrf' => \App\Csrf::generate(),
-            'from' => \Minz\Url::for('edit profile'),
+            'csrf_token' => $this->csrfToken(forms\users\EditAvatar::class),
         ]);
 
-        $this->assertResponseCode($response, 302, '/my/profile');
-        $this->assertSame('The file is required.', \Minz\Flash::get('error'));
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The file is required.');
         $user = $user->reload();
         $this->assertNull($user->avatar_filename);
     }
@@ -155,18 +155,18 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
             'avatar_filename' => null,
         ]);
         $file = [
+            'name' => 'avatar.svg',
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
         ];
 
         $response = $this->appRun('POST', '/my/profile/avatar', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\EditAvatar::class),
             'avatar' => $file,
-            'from' => \Minz\Url::for('edit profile'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/my/profile');
-        $this->assertSame('The photo must be <abbr>PNG</abbr> or <abbr>JPG</abbr>.', \Minz\Flash::get('error'));
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The file type must be one of the following: PNG, JPG, JPEG, WEBP.');
         $user = $user->reload();
         $this->assertNull($user->avatar_filename);
     }
@@ -179,19 +179,19 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
             'avatar_filename' => null,
         ]);
         $file = [
+            'name' => 'avatar.png',
             'tmp_name' => $tmp_filepath,
             'error' => UPLOAD_ERR_OK,
             'is_uploaded_file' => false, // this is possible only during tests!
         ];
 
         $response = $this->appRun('POST', '/my/profile/avatar', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\EditAvatar::class),
             'avatar' => $file,
-            'from' => \Minz\Url::for('edit profile'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/my/profile');
-        $this->assertSame('This file cannot be uploaded (error -1).', \Minz\Flash::get('error'));
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'This file cannot be uploaded (error -1).');
         $user = $user->reload();
         $this->assertNull($user->avatar_filename);
     }
@@ -205,18 +205,18 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
             'avatar_filename' => null,
         ]);
         $file = [
+            'name' => 'avatar.png',
             'tmp_name' => $tmp_filepath,
             'error' => $error,
         ];
 
         $response = $this->appRun('POST', '/my/profile/avatar', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\EditAvatar::class),
             'avatar' => $file,
-            'from' => \Minz\Url::for('edit profile'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/my/profile');
-        $this->assertSame('This file is too large.', \Minz\Flash::get('error'));
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'This file is too large');
         $user = $user->reload();
         $this->assertNull($user->avatar_filename);
     }
@@ -230,18 +230,18 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
             'avatar_filename' => null,
         ]);
         $file = [
+            'name' => 'avatar.png',
             'tmp_name' => $tmp_filepath,
             'error' => $error,
         ];
 
         $response = $this->appRun('POST', '/my/profile/avatar', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\EditAvatar::class),
             'avatar' => $file,
-            'from' => \Minz\Url::for('edit profile'),
         ]);
 
-        $this->assertResponseCode($response, 302, '/my/profile');
-        $this->assertSame("This file cannot be uploaded (error {$error}).", \Minz\Flash::get('error'));
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, "This file cannot be uploaded (error {$error}).");
         $user = $user->reload();
         $this->assertNull($user->avatar_filename);
     }

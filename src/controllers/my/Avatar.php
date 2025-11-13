@@ -2,12 +2,13 @@
 
 namespace App\controllers\my;
 
-use Minz\Request;
-use Minz\Response;
 use App\auth;
 use App\controllers\BaseController;
+use App\forms;
 use App\models;
 use App\utils;
+use Minz\Request;
+use Minz\Response;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -18,47 +19,38 @@ class Avatar extends BaseController
     /**
      * Set the avatar of the current user
      *
-     * @request_param string csrf
-     * @request_param string from
      * @request_param file avatar
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=:from
-     *     If the user is not connected
-     * @response 302 :from
-     * @flash error
-     *     If the CSRF or avatar are invalid
-     * @response 302 :from
-     *     On success
+     * @response 400
+     *     If at least one of the parameters is invalid.
+     * @response 302 /profile/:id
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function update(Request $request): Response
     {
-        $avatar_file = $request->parameters->getFile('avatar');
-        $csrf = $request->parameters->getString('csrf', '');
-        $from = $request->parameters->getString('from', '');
+        $user = auth\CurrentUser::require();
 
-        $user = $this->requireCurrentUser(redirect_after_login: $from);
+        $form_profile = new forms\users\Profile(model: $user);
 
-        if (!\App\Csrf::validate($csrf)) {
-            \Minz\Flash::set('error', _('A security verification failed.'));
-            return Response::found($from);
+        $form_avatar = new forms\users\EditAvatar();
+        $form_avatar->handleRequest($request);
+
+        if (!$form_avatar->validate()) {
+            return Response::badRequest('my/profile/edit.phtml', [
+                'form_profile' => $form_profile,
+                'form_avatar' => $form_avatar,
+            ]);
         }
 
-        if (!$avatar_file) {
-            \Minz\Flash::set('error', _('The file is required.'));
-            return Response::found($from);
-        }
+        $avatar_file = $form_avatar->avatar;
 
-        if ($avatar_file->isTooLarge()) {
-            \Minz\Flash::set('error', _('This file is too large.'));
-            return Response::found($from);
-        } elseif ($avatar_file->error) {
-            $error = $avatar_file->error;
-            \Minz\Flash::set(
-                'error',
-                vsprintf(_('This file cannot be uploaded (error %d).'), [$error])
-            );
-            return Response::found($from);
-        }
+        // Cannot be null as $form->validate() is true, which means the
+        // $form->image attribute is set.
+        assert($avatar_file !== null);
 
         $media_path = \App\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($user->id);
@@ -68,21 +60,9 @@ class Avatar extends BaseController
             @mkdir($avatar_path, 0755, true);
         }
 
-        $image_data = $avatar_file->content();
+        $image_data = $avatar_file->content() ?: '';
 
-        $image = null;
-
-        if ($image_data !== false) {
-            try {
-                $image = models\Image::fromString($image_data);
-            } catch (\DomainException $e) {
-            }
-        }
-
-        if (!$image) {
-            \Minz\Flash::set('error', _('The photo must be <abbr>PNG</abbr> or <abbr>JPG</abbr>.'));
-            return Response::found($from);
-        }
+        $image = models\Image::fromString($image_data);
 
         $image->resize(150, 150);
 
@@ -97,6 +77,6 @@ class Avatar extends BaseController
         $user->avatar_filename = $image_filename;
         $user->save();
 
-        return Response::found($from);
+        return Response::redirect('profile', ['id' => $user->id]);
     }
 }

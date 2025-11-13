@@ -3,7 +3,7 @@
         'title' => _('Profile'),
         'canonical' => url_full('edit profile'),
         'current_page' => 'profile',
-        'has_errors' => $error || $errors,
+        'has_errors' => $form_profile->isInvalid() || $form_avatar->isInvalid(),
         'modal_enabled' => true,
     ]);
 ?>
@@ -13,8 +13,6 @@
         <h1><?= _('Profile') ?></h1>
     </div>
 
-    <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
-
     <form
         method="post"
         action="<?= url('update avatar') ?>"
@@ -22,17 +20,23 @@
         data-controller="autosubmit form-file"
         enctype="multipart/form-data"
     >
-        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-        <input type="hidden" name="from" value="<?= $from ?>" />
-
         <img class="avatar avatar--banner" src="<?= url_avatar($current_user->avatar_filename) ?>" alt="" />
+
+        <?= $this->include('alerts/_error.phtml', ['message' => $form_avatar->error('@base')]) ?>
+
+        <?php if ($form_avatar->isInvalid('avatar')): ?>
+            <p id="avatar-error" class="form-group__error text--center">
+                <?= _('Error:') ?>
+                <?= $form_avatar->error('avatar') ?>
+            </p>
+        <?php endif; ?>
 
         <input
             type="file"
             name="avatar"
             id="avatar"
             class="form-avatar__input"
-            accept="image/png, image/jpeg"
+            accept="<?= $form_avatar->imageAcceptedMimetypes() ?>"
             data-action="autosubmit#submit"
             data-form-file-target="file"
             hidden
@@ -62,38 +66,40 @@
                 <?= _('<abbr>PNG</abbr> or <abbr>JPG</abbr> images only, a 150x150 image is recommended.') ?>
             </p>
         </div>
+
+        <input type="hidden" name="csrf_token" value="<?= csrf_token($form_avatar) ?>" />
     </form>
 
     <form method="post" action="<?= url('update profile') ?>">
-        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-        <input type="hidden" name="from" value="<?= $from ?>" />
+        <?= $this->include('alerts/_error.phtml', ['message' => $form_profile->error('@base')]) ?>
 
-        <div class="form-group <?= isset($errors['username']) ? 'form-group--invalid' : '' ?>">
+        <div class="form-group">
             <label for="username">
                 <?= _('Your name') ?>
                 <span class="label__help">
-                    <?= _f('(public, max. %d characters)', 50) ?>
+                    <?= _f('(public, max. %d characters)', $form_profile->username_max_length) ?>
                 </span>
             </label>
+
+            <?php if ($form_profile->isInvalid('username')): ?>
+                <p id="username-error" class="form-group__error">
+                    <?= _('Error:') ?>
+                    <?= $form_profile->error('username') ?>
+                </p>
+            <?php endif; ?>
 
             <input
                 type="text"
                 name="username"
                 id="username"
-                value="<?= $username ?>"
-                maxlength="50"
+                value="<?= protect($form_profile->username) ?>"
+                maxlength="<?= $form_profile->username_max_length ?>"
                 required
-                aria-describedby="username-desc"
-            />
-
-            <div id="username-desc">
-                <?php if (isset($errors['username'])): ?>
-                    <p class="form-group__error">
-                        <span class="sr-only"><?= _('Error') ?></span>
-                        <?= $errors['username'] ?>
-                    </p>
+                <?php if ($form_profile->isInvalid('username')): ?>
+                    aria-errormessage="username-error"
+                    aria-invalid="true"
                 <?php endif; ?>
-            </div>
+            />
         </div>
 
         <div class="form__actions">
@@ -101,5 +107,7 @@
                 <?= _('Save changes') ?>
             </button>
         </div>
+
+        <input type="hidden" name="csrf_token" value="<?= csrf_token($form_profile) ?>" />
     </form>
 </div>
