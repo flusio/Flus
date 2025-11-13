@@ -61,8 +61,6 @@ class Router
         $router->addRoute('POST', '/my/profile/avatar', 'my/Avatar#update', 'update avatar');
 
         // "My" section
-        $router->addRoute('GET', '/my/info.json', 'my/Info#show', 'profile info');
-
         $router->addRoute('GET', '/my/security', 'my/Security#show', 'security');
         $router->addRoute('POST', '/my/security', 'my/Security#update', 'update security');
         $router->addRoute('GET', '/my/security/confirmation', 'my/Security#confirmation', 'password confirmation');
