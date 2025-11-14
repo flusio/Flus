@@ -27,7 +27,7 @@ class Read extends BaseController
      */
     public function create(Request $request): Response
     {
-        $user = $this->requireCurrentUser();
+        $user = auth\CurrentUser::require();
 
         $link_id = $request->parameters->getString('id', '');
         $link = models\Link::find($link_id);
@@ -62,7 +62,7 @@ class Read extends BaseController
      */
     public function delete(Request $request): Response
     {
-        $user = $this->requireCurrentUser();
+        $user = auth\CurrentUser::require();
 
         $link_id = $request->parameters->getString('id', '');
         $link = models\Link::find($link_id);

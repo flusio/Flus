@@ -27,7 +27,7 @@ class Follow extends BaseController
      */
     public function create(Request $request): Response
     {
-        $user = $this->requireCurrentUser();
+        $user = auth\CurrentUser::require();
 
         $collection_id = $request->parameters->getString('id', '');
         $collection = models\Collection::find($collection_id);
@@ -63,7 +63,7 @@ class Follow extends BaseController
      */
     public function delete(Request $request): Response
     {
-        $user = $this->requireCurrentUser();
+        $user = auth\CurrentUser::require();
 
         $collection_id = $request->parameters->getString('id', '');
         $collection = models\Collection::find($collection_id);

@@ -30,7 +30,7 @@ class Notes extends BaseController
      */
     public function update(Request $request): Response
     {
-        $user = $this->requireCurrentUser();
+        $user = auth\CurrentUser::require();
 
         $json_request = $this->toJsonRequest($request);
 
@@ -76,7 +76,7 @@ class Notes extends BaseController
      */
     public function delete(Request $request): Response
     {
-        $user = $this->requireCurrentUser();
+        $user = auth\CurrentUser::require();
 
         $note_id = $request->parameters->getString('id', '');
         $note = models\Note::find($note_id);

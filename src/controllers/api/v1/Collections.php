@@ -21,7 +21,7 @@ class Collections extends BaseController
      */
     public function index(): Response
     {
-        $user = $this->requireCurrentUser();
+        $user = auth\CurrentUser::require();
 
         return Response::json(200, array_map(function (models\Collection $collection) use ($user): array {
             return $collection->toJson(context_user: $user);
@@ -41,7 +41,7 @@ class Collections extends BaseController
      */
     public function create(Request $request): Response
     {
-        $user = $this->requireCurrentUser();
+        $user = auth\CurrentUser::require();
 
         $json_request = $this->toJsonRequest($request);
 
@@ -72,7 +72,7 @@ class Collections extends BaseController
      */
     public function show(Request $request): Response
     {
-        $user = $this->requireCurrentUser();
+        $user = auth\CurrentUser::require();
 
         $collection_id = $request->parameters->getString('id', '');
         $collection = models\Collection::find($collection_id);
@@ -110,7 +110,7 @@ class Collections extends BaseController
      */
     public function update(Request $request): Response
     {
-        $user = $this->requireCurrentUser();
+        $user = auth\CurrentUser::require();
 
         $json_request = $this->toJsonRequest($request);
 
@@ -155,7 +155,7 @@ class Collections extends BaseController
      */
     public function delete(Request $request): Response
     {
-        $user = $this->requireCurrentUser();
+        $user = auth\CurrentUser::require();
 
         $collection_id = $request->parameters->getString('id', '');
         $collection = models\Collection::find($collection_id);

@@ -28,7 +28,7 @@ class Notes extends BaseController
      */
     public function index(Request $request): Response
     {
-        $user = $this->requireCurrentUser();
+        $user = auth\CurrentUser::require();
 
         $link_id = $request->parameters->getString('link_id', '');
         $link = models\Link::find($link_id);
@@ -66,7 +66,7 @@ class Notes extends BaseController
      */
     public function create(Request $request): Response
     {
-        $user = $this->requireCurrentUser();
+        $user = auth\CurrentUser::require();
 
         $link_id = $request->parameters->getString('link_id', '');
         $link = models\Link::find($link_id);

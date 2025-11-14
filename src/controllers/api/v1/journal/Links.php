@@ -25,7 +25,7 @@ class Links extends BaseController
      */
     public function deleteAll(Request $request): Response
     {
-        $user = $this->requireCurrentUser();
+        $user = auth\CurrentUser::require();
 
         $json_request = $this->toJsonRequest($request);
 
@@ -51,7 +51,7 @@ class Links extends BaseController
      */
     public function delete(Request $request): Response
     {
-        $user = $this->requireCurrentUser();
+        $user = auth\CurrentUser::require();
 
         $link_id = $request->parameters->getString('id', '');
         $link = models\Link::find($link_id);

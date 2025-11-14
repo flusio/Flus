@@ -30,7 +30,7 @@ class Links extends BaseController
      */
     public function index(Request $request): Response
     {
-        $user = $this->requireCurrentUser();
+        $user = auth\CurrentUser::require();
 
         $collection_id = $request->parameters->getString('collection');
         $pagination_page = $request->parameters->getInteger('page', 1);
@@ -92,7 +92,7 @@ class Links extends BaseController
      */
     public function show(Request $request): Response
     {
-        $user = $this->requireCurrentUser();
+        $user = auth\CurrentUser::require();
 
         $link_id = $request->parameters->getString('id', '');
         $link = models\Link::find($link_id);
@@ -129,7 +129,7 @@ class Links extends BaseController
      */
     public function update(Request $request): Response
     {
-        $user = $this->requireCurrentUser();
+        $user = auth\CurrentUser::require();
 
         $json_request = $this->toJsonRequest($request);
 
@@ -174,7 +174,7 @@ class Links extends BaseController
      */
     public function delete(Request $request): Response
     {
-        $user = $this->requireCurrentUser();
+        $user = auth\CurrentUser::require();
 
         $link_id = $request->parameters->getString('id', '');
         $link = models\Link::find($link_id);

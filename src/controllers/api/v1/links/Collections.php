@@ -28,7 +28,7 @@ class Collections extends BaseController
      */
     public function create(Request $request): Response
     {
-        $user = $this->requireCurrentUser();
+        $user = auth\CurrentUser::require();
 
         $link_id = $request->parameters->getString('link_id', '');
         $collection_id = $request->parameters->getString('collection_id', '');
@@ -77,7 +77,7 @@ class Collections extends BaseController
      */
     public function delete(Request $request): Response
     {
-        $user = $this->requireCurrentUser();
+        $user = auth\CurrentUser::require();
 
         $link_id = $request->parameters->getString('link_id', '');
         $collection_id = $request->parameters->getString('collection_id', '');

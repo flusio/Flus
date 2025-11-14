@@ -3,7 +3,6 @@
 namespace App\controllers\api\v1;
 
 use App\auth;
-use App\controllers\errors;
 use App\models;
 use App\utils;
 use Minz\Controller;
@@ -33,18 +32,7 @@ class BaseController
         auth\CurrentUser::authenticate($token, scope: 'api');
     }
 
-    public function requireCurrentUser(): models\User
-    {
-        $current_user = auth\CurrentUser::get();
-
-        if (!$current_user) {
-            throw new errors\MissingCurrentUserError('');
-        }
-
-        return $current_user;
-    }
-
-    #[Controller\ErrorHandler(errors\MissingCurrentUserError::class)]
+    #[Controller\ErrorHandler(auth\MissingCurrentUserError::class)]
     public function failOnMissingCurrentUser(Request $request): Response
     {
         $response = Response::json(401, ['error' => 'The request is not authenticated.']);

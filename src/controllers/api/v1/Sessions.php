@@ -47,7 +47,7 @@ class Sessions extends BaseController
      */
     public function delete(Request $request): Response
     {
-        $this->requireCurrentUser();
+        auth\CurrentUser::require();
 
         auth\CurrentUser::deleteSession();
 

@@ -2,6 +2,7 @@
 
 namespace App\controllers\api\v1\journal;
 
+use App\auth;
 use App\controllers\api\v1\BaseController;
 use App\forms\api as forms;
 use Minz\Request;
@@ -23,7 +24,7 @@ class Read extends BaseController
      */
     public function create(Request $request): Response
     {
-        $user = $this->requireCurrentUser();
+        $user = auth\CurrentUser::require();
 
         $json_request = $this->toJsonRequest($request);
 

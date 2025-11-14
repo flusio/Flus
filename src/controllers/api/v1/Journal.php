@@ -21,7 +21,7 @@ class Journal extends BaseController
      */
     public function show(Request $request): Response
     {
-        $user = $this->requireCurrentUser();
+        $user = auth\CurrentUser::require();
 
         $news = $user->news();
         $links = $news->links(['published_at', 'number_notes']);
@@ -38,7 +38,7 @@ class Journal extends BaseController
      */
     public function create(Request $request): Response
     {
-        $user = $this->requireCurrentUser();
+        $user = auth\CurrentUser::require();
 
         $journal = new models\Journal($user);
         $count = $journal->fill(max: 50);

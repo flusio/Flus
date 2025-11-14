@@ -19,51 +19,16 @@ use Minz\Response;
 class BaseController
 {
     /**
-     * Return the logged-in user, or fail if there is none.
-     *
-     * @see \App\auth\CurrentUser::get
-     *
-     * @throws errors\MissingCurrentUserError
-     *     If the user is not logged in.
-     */
-    public function requireCurrentUser(string $redirect_after_login): models\User
-    {
-        $current_user = auth\CurrentUser::get();
-
-        if (!$current_user) {
-            throw new errors\MissingCurrentUserError($redirect_after_login);
-        }
-
-        return $current_user;
-    }
-
-    /**
      * Handle the MissingCurrentUserError to redirect to the login page.
-     *
-     * errors\MissingCurrentUserError is deprecated but is still handled by
-     * this method.
      */
-    #[Controller\ErrorHandler(errors\MissingCurrentUserError::class)]
     #[Controller\ErrorHandler(auth\MissingCurrentUserError::class)]
     public function redirectOnMissingCurrentUser(
         Request $request,
-        errors\MissingCurrentUserError|auth\MissingCurrentUserError $error,
+        auth\MissingCurrentUserError $error,
     ): Response {
-        $redirect_to = '';
-        if ($error instanceof errors\MissingCurrentUserError) {
-            $redirect_to = $error->redirect_after_login;
-        }
-
-        if ($redirect_to === '') {
-            $redirect_to = utils\RequestHelper::from($request);
-        }
-
-        $login_parameters = [];
-        if ($redirect_to) {
-            $login_parameters['redirect_to'] = $redirect_to;
-        }
-
-        return Response::redirect('login', $login_parameters);
+        return Response::redirect('login', [
+            'redirect_to' => utils\RequestHelper::from($request),
+        ]);
     }
 
     /**

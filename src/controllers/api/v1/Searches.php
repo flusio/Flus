@@ -2,6 +2,7 @@
 
 namespace App\controllers\api\v1;
 
+use App\auth;
 use App\forms\api as forms;
 use App\models;
 use Minz\Request;
@@ -24,7 +25,7 @@ class Searches extends BaseController
      */
     public function create(Request $request): Response
     {
-        $user = $this->requireCurrentUser();
+        $user = auth\CurrentUser::require();
 
         $json_request = $this->toJsonRequest($request);
 
