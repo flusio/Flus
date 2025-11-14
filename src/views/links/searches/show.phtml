@@ -6,7 +6,7 @@
         'back_options' => [
             'reset' => true,
         ],
-        'has_errors' => $error || $errors,
+        'has_errors' => $form->isInvalid(),
     ]);
 
     $link = $form->existingLink();

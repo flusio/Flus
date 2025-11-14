@@ -2,7 +2,7 @@
     $this->layout('base.phtml', [
         'title' => _('Edit a password'),
         'canonical' => url_full('edit password'),
-        'has_errors' => $error || $errors,
+        'has_errors' => $form->isInvalid(),
     ]);
 ?>
 

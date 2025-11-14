@@ -3,7 +3,7 @@
         'title' => _('Help & support'),
         'canonical' => url_full('support'),
         'current_page' => 'support',
-        'has_errors' => $error || $errors,
+        'has_errors' => $form->isInvalid(),
     ]);
 ?>
 

@@ -6,7 +6,7 @@
             'reset' => true,
             'track' => false,
         ],
-        'has_errors' => $error || $errors,
+        'has_errors' => $form->isInvalid(),
     ]);
 ?>
 
