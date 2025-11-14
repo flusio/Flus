@@ -105,7 +105,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/account/validation/new', [
-            'csrf_token' => $this->csrfToken(forms\AccountValidation::class),
+            'csrf_token' => $this->csrfToken(forms\users\AccountValidation::class),
             't' => $token->token,
         ]);
 
@@ -152,7 +152,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/account/validation/new', [
-            'csrf_token' => $this->csrfToken(forms\AccountValidation::class),
+            'csrf_token' => $this->csrfToken(forms\users\AccountValidation::class),
             't' => $token->token,
         ]);
 
@@ -178,7 +178,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/account/validation/new', [
-            'csrf_token' => $this->csrfToken(forms\AccountValidation::class),
+            'csrf_token' => $this->csrfToken(forms\users\AccountValidation::class),
             't' => $token->token,
         ]);
 
@@ -206,7 +206,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/account/validation/new', [
-            'csrf_token' => $this->csrfToken(forms\AccountValidation::class),
+            'csrf_token' => $this->csrfToken(forms\users\AccountValidation::class),
             't' => $token->token,
         ]);
 
@@ -226,7 +226,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/account/validation/new', [
-            'csrf_token' => $this->csrfToken(forms\AccountValidation::class),
+            'csrf_token' => $this->csrfToken(forms\users\AccountValidation::class),
             't' => $token->token,
         ]);
 
@@ -251,7 +251,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/account/validation/new', [
-            'csrf_token' => $this->csrfToken(forms\AccountValidation::class),
+            'csrf_token' => $this->csrfToken(forms\users\AccountValidation::class),
             't' => 'not a token',
         ]);
 
@@ -280,7 +280,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $this->assertEmailsCount(0);
 
         $response = $this->appRun('POST', '/my/account/validation/email', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\ResendValidationEmail::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/my/account/validation');
@@ -308,7 +308,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $number_tokens = models\Token::count();
 
         $response = $this->appRun('POST', '/my/account/validation/email', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\ResendValidationEmail::class),
         ]);
 
         $this->assertSame($number_tokens + 1, models\Token::count());
@@ -332,7 +332,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $number_tokens = models\Token::count();
 
         $response = $this->appRun('POST', '/my/account/validation/email', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\ResendValidationEmail::class),
         ]);
 
         $this->assertSame($number_tokens + 1, models\Token::count());
@@ -357,7 +357,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $number_tokens = models\Token::count();
 
         $response = $this->appRun('POST', '/my/account/validation/email', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\ResendValidationEmail::class),
         ]);
 
         $this->assertSame($number_tokens + 1, models\Token::count());
@@ -372,7 +372,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/account/validation/email', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\ResendValidationEmail::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/');
@@ -393,7 +393,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/my/account/validation/email', [
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
         ]);
 
         $this->assertResponseCode($response, 302, '/my/account/validation');
@@ -407,10 +407,10 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
     public function testResendEmailFailsIfUserNotConnected(): void
     {
         $response = $this->appRun('POST', '/my/account/validation/email', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\users\ResendValidationEmail::class),
         ]);
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Faccount%2Fvalidation');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
         $this->assertEmailsCount(0);
     }
 }

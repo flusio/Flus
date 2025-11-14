@@ -2,15 +2,15 @@
 
 namespace App\controllers\my;
 
-use Minz\Mailer;
-use Minz\Request;
-use Minz\Response;
 use App\auth;
 use App\controllers\BaseController;
 use App\forms;
 use App\mailers;
 use App\models;
 use App\services;
+use Minz\Mailer;
+use Minz\Request;
+use Minz\Response;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -43,7 +43,7 @@ class Validation extends BaseController
      */
     public function new(Request $request): Response
     {
-        $form = new forms\AccountValidation([
+        $form = new forms\users\AccountValidation([
             't' => $request->parameters->getString('t', ''),
         ]);
 
@@ -65,7 +65,7 @@ class Validation extends BaseController
      */
     public function create(Request $request): Response
     {
-        $form = new forms\AccountValidation();
+        $form = new forms\users\AccountValidation();
         $form->handleRequest($request);
 
         if (!$form->validate()) {
@@ -103,25 +103,28 @@ class Validation extends BaseController
      * A new token is generated if the current one expires soon (i.e. <= 30
      * minutes).
      *
-     * @request_param string csrf
+     * @request_param string csrf_token
      *
-     * @response 302 /login?redirect_to=/my/account/validation
-     *     If the user is not connected
      * @response 302 /my/account/validation
+     *     On success or if the user is already validated.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
      */
     public function resendEmail(Request $request): Response
     {
-        $csrf = $request->parameters->getString('csrf', '');
-
-        $user = $this->requireCurrentUser(redirect_after_login: \Minz\Url::for('account validation'));
+        $user = auth\CurrentUser::require();
 
         if ($user->validated_at) {
             // nothing to do, the user is already validated
             return Response::redirect('home');
         }
 
-        if (!\App\Csrf::validate($csrf)) {
-            \Minz\Flash::set('error', _('A security verification failed: you should retry to submit the form.'));
+        $form = new forms\users\ResendValidationEmail();
+        $form->handleRequest($request);
+
+        if (!$form->validate()) {
+            \Minz\Flash::set('error', $form->error('@base'));
             return Response::redirect('account validation');
         }
 

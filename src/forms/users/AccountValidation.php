@@ -1,7 +1,8 @@
 <?php
 
-namespace App\forms;
+namespace App\forms\users;
 
+use App\forms\BaseForm;
 use App\models;
 use Minz\Form;
 use Minz\Validable;

@@ -42,11 +42,11 @@
             <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
             <form class="form--centered" method="post" action="<?= url('resend validation email') ?>">
-                <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-
                 <button class="button--primary" type="submit">
                     <?= _('Didn’t receive the email? Resend it') ?>
                 </button>
+
+                <input type="hidden" name="csrf_token" value="<?= csrf_token('users\\ResendValidationEmail') ?>" />
             </form>
         <?php endif; ?>
 
