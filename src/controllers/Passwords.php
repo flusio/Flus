@@ -3,6 +3,7 @@
 namespace App\controllers;
 
 use App\auth;
+use App\forms;
 use App\mailers;
 use App\models;
 use Minz\Mailer;
@@ -19,18 +20,21 @@ class Passwords extends BaseController
      * Show the form to send email to reset the password.
      *
      * @response 302 /
-     *     If the user is connected or if the demo is enabled
+     *     If the user is connected or if the demo is enabled.
      * @response 200
+     *     On success.
      */
     public function forgot(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        if ($user || \App\Configuration::$application['demo']) {
+        if ($user || \App\Configuration::isDemoEnabled()) {
             return Response::redirect('home');
         }
 
+        $form = new forms\security\AskResetPassword();
+
         return Response::ok('passwords/forgot.phtml', [
-            'email' => '',
+            'form' => $form,
             'email_sent' => \Minz\Flash::pop('email_sent'),
         ]);
     }
@@ -38,57 +42,34 @@ class Passwords extends BaseController
     /**
      * Send a reset email.
      *
-     * @request_param string csrf
      * @request_param string email
+     * @request_param string csrf_token
      *
      * @response 302 /
-     *     If the user is connected or if the demo is enabled
+     *     If the user is connected or if the demo is enabled.
      * @response 400
-     *     If the csrf token or email is invalid
+     *     If at least one of the parameters is invalid.
      * @response 302 /password/forgot
-     *     On success
+     *     On success.
      */
     public function reset(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        if ($user || \App\Configuration::$application['demo']) {
+        if ($user || \App\Configuration::isDemoEnabled()) {
             return Response::redirect('home');
         }
 
-        $email = $request->parameters->getString('email', '');
-        $csrf = $request->parameters->getString('csrf', '');
+        $form = new forms\security\AskResetPassword();
+        $form->handleRequest($request);
 
-        $email = \Minz\Email::sanitize($email);
-        if (!\Minz\Email::validate($email)) {
+        if (!$form->validate()) {
             return Response::badRequest('passwords/forgot.phtml', [
-                'email' => $email,
+                'form' => $form,
                 'email_sent' => false,
-                'errors' => [
-                    'email' => _('The address email is invalid.'),
-                ],
             ]);
         }
 
-        $user = models\User::findBy([
-            'email' => $email,
-        ]);
-        if (!$user) {
-            return Response::badRequest('passwords/forgot.phtml', [
-                'email' => $email,
-                'email_sent' => false,
-                'errors' => [
-                    'email' => _('We can’t find any account with this email address.'),
-                ],
-            ]);
-        }
-
-        if (!\App\Csrf::validate($csrf)) {
-            return Response::badRequest('passwords/forgot.phtml', [
-                'email' => $email,
-                'email_sent' => false,
-                'error' => _('A security verification failed: you should retry to submit the form.'),
-            ]);
-        }
+        $user = $form->user();
 
         $reset_token = new models\Token(1, 'hour', 16);
         $reset_token->save();
@@ -109,100 +90,58 @@ class Passwords extends BaseController
      *
      * @request_param string t
      *
-     * @response 404
-     *     If the token doesn’t exist
-     * @response 400
-     *     If the token has expired or is invalid
      * @response 200
+     *     On success.
+     *
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the token doesn't exist.
      */
     public function edit(Request $request): Response
     {
-        $t = $request->parameters->getString('t', '');
-        $token = models\Token::find($t);
-        if (!$token) {
-            return Response::notFound('passwords/edit.phtml', [
-                'error' => _('The token doesn’t exist.'),
-            ]);
-        }
+        $token = models\Token::requireFromRequest($request, parameter: 't');
+        $user = models\User::requireBy(['reset_token' => $token->token]);
 
-        $user = models\User::findBy(['reset_token' => $token->token]);
-        if (!$user) {
-            return Response::notFound('passwords/edit.phtml', [
-                'error' => _('The token doesn’t exist.'),
-            ]);
-        }
-
-        if (!$token->isValid()) {
-            return Response::badRequest('passwords/edit.phtml', [
-                'error' => _('The token has expired, you should reset your password again.'),
-            ]);
-        }
+        $form = new forms\security\ResetPassword([
+            't' => $token->token,
+        ]);
 
         return Response::ok('passwords/edit.phtml', [
-            'token' => $token->token,
-            'email' => $user->email,
+            'user' => $user,
+            'form' => $form,
         ]);
     }
 
     /**
      * Update a password.
      *
-     * @request_param string csrf
      * @request_param string t
      * @request_param string password
+     * @request_param string csrf_token
      *
-     * @response 404
-     *     If the token doesn’t exist
      * @response 400
-     *     If the csrf token is invalid, if the token has expired or is
-     *     invalid, or if the password is invalid
+     *     If at least one of the parameters is invalid.
      * @response 302 /
-     *     On success
+     *     On success.
+     *
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the token doesn't exist.
      */
     public function update(Request $request): Response
     {
-        $t = $request->parameters->getString('t', '');
-        $password = $request->parameters->getString('password', '');
-        $csrf = $request->parameters->getString('csrf', '');
+        $token = models\Token::requireFromRequest($request, parameter: 't');
+        $user = models\User::requireBy(['reset_token' => $token->token]);
 
-        $token = models\Token::find($t);
-        if (!$token) {
-            return Response::notFound('passwords/edit.phtml', [
-                'error' => _('The token doesn’t exist.'),
-            ]);
-        }
+        $form = new forms\security\ResetPassword(model: $user);
+        $form->handleRequest($request);
 
-        $user = models\User::findBy(['reset_token' => $token->token]);
-        if (!$user) {
-            return Response::notFound('passwords/edit.phtml', [
-                'error' => _('The token doesn’t exist.'),
-            ]);
-        }
-
-        if (!$token->isValid()) {
+        if (!$form->validate()) {
             return Response::badRequest('passwords/edit.phtml', [
-                'error' => _('The token has expired, you should reset your password again.'),
+                'user' => $user,
+                'form' => $form,
             ]);
         }
 
-        if (!\App\Csrf::validate($csrf)) {
-            return Response::badRequest('passwords/edit.phtml', [
-                'token' => $token->token,
-                'email' => $user->email,
-                'error' => _('A security verification failed: you should retry to submit the form.'),
-            ]);
-        }
-
-        $user->password_hash = models\User::passwordHash($password);
-
-        if (!$user->validate()) {
-            return Response::badRequest('passwords/edit.phtml', [
-                'token' => $token->token,
-                'email' => $user->email,
-                'errors' => $user->errors(),
-            ]);
-        }
-
+        $user = $form->model();
         $user->save();
 
         // We make sure to clean token and sessions to prevent attacker to take

@@ -23,39 +23,40 @@
         method="post"
         action="<?= url('reset password') ?>"
         data-controller="csrf"
-        data-csrf-name-value="csrf"
-        data-csrf-token-value="<?= csrf_token() ?>"
+        data-csrf-name-value="csrf_token"
+        data-csrf-token-value="<?= csrf_token($form) ?>"
     >
-        <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
+        <?= $this->include('alerts/_error.phtml', ['message' => $form->error('@base')]) ?>
 
         <?php if ($email_sent): ?>
             <?= $this->include('alerts/_success.phtml', ['message' => _('We’ve sent you an email to reset your password.')]) ?>
         <?php endif; ?>
 
-        <div class="form-group <?= isset($errors['email']) ? 'form-group--invalid' : '' ?>">
+        <div class="form-group">
             <label for="email">
                 <?= _('Email address') ?>
             </label>
+
+            <?php if ($form->isInvalid('email')): ?>
+                <p id="email-error" class="form-group__error">
+                    <?= _('Error:') ?>
+                    <?= $form->error('email') ?>
+                </p>
+            <?php endif; ?>
 
             <input
                 id="email"
                 name="email"
                 type="email"
-                value="<?= $email ?>"
+                value="<?= protect($form->email) ?>"
                 required
                 autofocus
                 autocomplete="username"
-                aria-describedby="email-desc"
-            />
-
-            <div id="email-desc">
-                <?php if (isset($errors['email'])): ?>
-                    <p class="form-group__error">
-                        <span class="sr-only"><?= _('Error') ?></span>
-                        <?= $errors['email'] ?>
-                    </p>
+                <?php if ($form->isInvalid('email')): ?>
+                    aria-errormessage="email-error"
+                    aria-invalid="true"
                 <?php endif; ?>
-            </div>
+            />
         </div>
 
         <div class="form__actions">

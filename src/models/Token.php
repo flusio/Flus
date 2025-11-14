@@ -13,6 +13,7 @@ class Token
 {
     use dao\Token;
     use Database\Recordable;
+    use Database\Resource;
 
     #[Database\Column]
     public string $token;

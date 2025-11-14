@@ -11,64 +11,61 @@
         <h1><?= _('Edit a password') ?></h1>
     </div>
 
-    <?php if (isset($token)): ?>
-        <p class="section__intro">
-            <?= _f('You’re changing the password of %s.', $email) ?>
-        </p>
+    <p class="section__intro">
+        <?= _f('You’re changing the password of %s.', $user->email) ?>
+    </p>
 
-        <form method="post" action="<?= url('update password', ['t' => $token]) ?>">
-            <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
+    <form method="post" action="<?= url('update password', ['t' => $form->t]) ?>">
+        <?= $this->include('alerts/_error.phtml', ['message' => $form->error('@base')]) ?>
 
-            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+        <div class="form-group">
+            <label for="new-password">
+                <?= _('Your new password') ?>
+                <span class="label__help">
+                    <?= _('(recommended at least 8 characters)') ?>
+                </span>
+            </label>
 
-            <div class="form-group <?= isset($errors['password_hash']) ? 'form-group--invalid' : '' ?>">
-                <label for="new-password">
-                    <?= _('Your new password') ?>
-                    <span class="label__help">
-                        <?= _('(recommended at least 8 characters)') ?>
-                    </span>
-                </label>
+            <?php if ($form->isInvalid('password_hash')): ?>
+                <p id="password-error" class="form-group__error">
+                    <?= _('Error:') ?>
+                    <?= $form->error('password_hash') ?>
+                </p>
+            <?php endif; ?>
 
-                <div class="form-group__stack" data-controller="input-password">
-                    <input
-                        id="new-password"
-                        name="password"
-                        type="password"
-                        required
-                        data-input-password-target="input"
-                        autocomplete="new-password"
-                        aria-describedby="password-desc"
-                    />
-
-                    <button
-                        type="button"
-                        class="no-mobile js-only"
-                        data-action="input-password#toggle"
-                        data-input-password-target="button"
-                        aria-label="<?= _('Show password as plain text. Note: this will visually expose your password.') ?>"
-                    >
-                        <?= icon('eye') ?>
-                        <?= _('Show') ?>
-                    </button>
-                </div>
-
-                <div id="password-desc">
-                    <?php if (isset($errors['password_hash'])): ?>
-                        <p class="form-group__error">
-                            <span class="sr-only"><?= _('Error') ?></span>
-                            <?= $errors['password_hash'] ?>
-                        </p>
+            <div class="form-group__stack" data-controller="input-password">
+                <input
+                    id="new-password"
+                    name="password"
+                    type="password"
+                    required
+                    data-input-password-target="input"
+                    autocomplete="new-password"
+                    <?php if ($form->isInvalid('password_hash')): ?>
+                        aria-errormessage="password-error"
+                        aria-invalid="true"
                     <?php endif; ?>
-                </div>
-            </div>
+                />
 
-            <div class="form__actions">
-                <button type="submit" class="button--primary">
-                    <?= _('Change your password') ?>
+                <button
+                    type="button"
+                    class="no-mobile js-only"
+                    data-action="input-password#toggle"
+                    data-input-password-target="button"
+                    aria-label="<?= _('Show password as plain text. Note: this will visually expose your password.') ?>"
+                >
+                    <?= icon('eye') ?>
+                    <?= _('Show') ?>
                 </button>
             </div>
-        </form>
-    <?php else: ?>
-        <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
-    <?php endif; ?>
+        </div>
+
+        <div class="form__actions">
+            <button type="submit" class="button--primary">
+                <?= _('Change your password') ?>
+            </button>
+        </div>
+
+        <input type="hidden" name="csrf_token" value="<?= csrf_token($form) ?>" />
+    </form>
 </div>

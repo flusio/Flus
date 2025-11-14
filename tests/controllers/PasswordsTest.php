@@ -3,6 +3,7 @@
 namespace App\controllers;
 
 use App\auth;
+use App\forms;
 use App\models;
 use tests\factories\SessionFactory;
 use tests\factories\TokenFactory;
@@ -11,6 +12,7 @@ use tests\factories\UserFactory;
 class PasswordsTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\CsrfHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\MailerAsserts;
     use \Minz\Tests\ResponseAsserts;
@@ -58,7 +60,6 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
     public function testResetRedirectsCorrectly(): void
     {
         $this->freeze();
-        $csrf = \App\Csrf::generate();
         /** @var string */
         $email = $this->fake('email');
         $user = UserFactory::create([
@@ -67,7 +68,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/password/forgot', [
-            'csrf' => $csrf,
+            'csrf_token' => $this->csrfToken(forms\security\AskResetPassword::class),
             'email' => $email,
         ]);
 
@@ -77,7 +78,6 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
     public function testResetGeneratesAToken(): void
     {
         $this->freeze();
-        $csrf = \App\Csrf::generate();
         /** @var string */
         $email = $this->fake('email');
         $user = UserFactory::create([
@@ -86,7 +86,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/password/forgot', [
-            'csrf' => $csrf,
+            'csrf_token' => $this->csrfToken(forms\security\AskResetPassword::class),
             'email' => $email,
         ]);
 
@@ -103,7 +103,6 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
     public function testResetSendsAnEmail(): void
     {
         $this->freeze();
-        $csrf = \App\Csrf::generate();
         /** @var string */
         $email = $this->fake('email');
         $user = UserFactory::create([
@@ -112,7 +111,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/password/forgot', [
-            'csrf' => $csrf,
+            'csrf_token' => $this->csrfToken(forms\security\AskResetPassword::class),
             'email' => $email,
         ]);
 
@@ -129,7 +128,6 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
     public function testResetSetsFlashEmailSent(): void
     {
         $this->freeze();
-        $csrf = \App\Csrf::generate();
         /** @var string */
         $email = $this->fake('email');
         $user = UserFactory::create([
@@ -138,7 +136,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/password/forgot', [
-            'csrf' => $csrf,
+            'csrf_token' => $this->csrfToken(forms\security\AskResetPassword::class),
             'email' => $email,
         ]);
 
@@ -148,7 +146,6 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
     public function testResetRedirectsIfConnected(): void
     {
         $this->freeze();
-        $csrf = \App\Csrf::generate();
         /** @var string */
         $email = $this->fake('email');
         $user = $this->login([
@@ -157,7 +154,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/password/forgot', [
-            'csrf' => $csrf,
+            'csrf_token' => $this->csrfToken(forms\security\AskResetPassword::class),
             'email' => $email,
         ]);
 
@@ -170,7 +167,6 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
     {
         \App\Configuration::$application['demo'] = true;
         $this->freeze();
-        $csrf = \App\Csrf::generate();
         /** @var string */
         $email = $this->fake('email');
         $user = UserFactory::create([
@@ -179,7 +175,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/password/forgot', [
-            'csrf' => $csrf,
+            'csrf_token' => $this->csrfToken(forms\security\AskResetPassword::class),
             'email' => $email,
         ]);
 
@@ -192,7 +188,6 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
     public function testResetFailsIfEmailIsEmpty(): void
     {
         $this->freeze();
-        $csrf = \App\Csrf::generate();
         $email = '';
         $user = UserFactory::create([
             'email' => $email,
@@ -200,13 +195,13 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/password/forgot', [
-            'csrf' => $csrf,
+            'csrf_token' => $this->csrfToken(forms\security\AskResetPassword::class),
             'email' => $email,
         ]);
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseTemplateName($response, 'passwords/forgot.phtml');
-        $this->assertResponseContains($response, 'The address email is invalid');
+        $this->assertResponseContains($response, 'The address email is required.');
         $user = $user->reload();
         $this->assertNull($user->reset_token);
     }
@@ -214,7 +209,6 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
     public function testResetFailsIfEmailDoesNotMatchUserEmail(): void
     {
         $this->freeze();
-        $csrf = \App\Csrf::generate();
         /** @var string */
         $email = $this->fakeUnique('email');
         /** @var string */
@@ -225,7 +219,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/password/forgot', [
-            'csrf' => $csrf,
+            'csrf_token' => $this->csrfToken(forms\security\AskResetPassword::class),
             'email' => $email,
         ]);
 
@@ -239,7 +233,6 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
     public function testResetFailsIfCsrfIsInvalid(): void
     {
         $this->freeze();
-        $csrf = \App\Csrf::generate();
         /** @var string */
         $email = $this->fake('email');
         $user = UserFactory::create([
@@ -248,7 +241,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/password/forgot', [
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
             'email' => $email,
         ]);
 
@@ -294,8 +287,6 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/password/edit');
 
         $this->assertResponseCode($response, 404);
-        $this->assertResponseTemplateName($response, 'passwords/edit.phtml');
-        $this->assertResponseContains($response, 'The token doesn’t exist.');
     }
 
     public function testEditFailsIfTokenIsInvalid(): void
@@ -311,8 +302,6 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 404);
-        $this->assertResponseTemplateName($response, 'passwords/edit.phtml');
-        $this->assertResponseContains($response, 'The token doesn’t exist.');
     }
 
     public function testEditFailsIfTokenIsNotAttachedToUser(): void
@@ -334,64 +323,10 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 404);
-        $this->assertResponseTemplateName($response, 'passwords/edit.phtml');
-        $this->assertResponseContains($response, 'The token doesn’t exist.');
-    }
-
-    public function testEditFailsIfTokenHasExpired(): void
-    {
-        /** @var int */
-        $minutes = $this->fake('numberBetween', 0, 9000);
-        $expired_at = \Minz\Time::ago($minutes, 'minutes');
-        $token = TokenFactory::create([
-            'expired_at' => $expired_at,
-        ]);
-        /** @var string */
-        $email = $this->fake('email');
-        UserFactory::create([
-            'email' => $email,
-            'reset_token' => $token->token,
-        ]);
-
-        $response = $this->appRun('GET', '/password/edit', [
-            't' => $token->token,
-        ]);
-
-        $this->assertResponseCode($response, 400);
-        $this->assertResponseTemplateName($response, 'passwords/edit.phtml');
-        $this->assertResponseContains($response, 'The token has expired');
-    }
-
-    public function testEditFailsIfTokenIsInvalidated(): void
-    {
-        /** @var int */
-        $minutes = $this->fake('numberBetween', 1, 9000);
-        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
-        /** @var \DateTimeImmutable */
-        $invalidated_at = $this->fake('dateTime');
-        $token = TokenFactory::create([
-            'expired_at' => $expired_at,
-            'invalidated_at' => $invalidated_at,
-        ]);
-        /** @var string */
-        $email = $this->fake('email');
-        UserFactory::create([
-            'email' => $email,
-            'reset_token' => $token->token,
-        ]);
-
-        $response = $this->appRun('GET', '/password/edit', [
-            't' => $token->token,
-        ]);
-
-        $this->assertResponseCode($response, 400);
-        $this->assertResponseTemplateName($response, 'passwords/edit.phtml');
-        $this->assertResponseContains($response, 'The token has expired');
     }
 
     public function testUpdateChangesPasswordAndRedirectsCorrectly(): void
     {
-        $csrf = \App\Csrf::generate();
         /** @var int */
         $minutes = $this->fake('numberBetween', 1, 9000);
         $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
@@ -411,7 +346,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/password/edit', [
-            'csrf' => $csrf,
+            'csrf_token' => $this->csrfToken(forms\security\ResetPassword::class),
             't' => $token->token,
             'password' => $new_password,
         ]);
@@ -423,7 +358,6 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateDeletesResetToken(): void
     {
-        $csrf = \App\Csrf::generate();
         /** @var int */
         $minutes = $this->fake('numberBetween', 1, 9000);
         $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
@@ -443,7 +377,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/password/edit', [
-            'csrf' => $csrf,
+            'csrf_token' => $this->csrfToken(forms\security\ResetPassword::class),
             't' => $token->token,
             'password' => $new_password,
         ]);
@@ -456,7 +390,6 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateResetsExistingSessionsAndLogsIn(): void
     {
-        $csrf = \App\Csrf::generate();
         /** @var int */
         $minutes = $this->fake('numberBetween', 1, 9000);
         $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
@@ -483,7 +416,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Session::count());
 
         $response = $this->appRun('POST', '/password/edit', [
-            'csrf' => $csrf,
+            'csrf_token' => $this->csrfToken(forms\security\ResetPassword::class),
             't' => $token->token,
             'password' => $new_password,
         ]);
@@ -501,7 +434,6 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfTokenIsNotPassed(): void
     {
-        $csrf = \App\Csrf::generate();
         /** @var int */
         $minutes = $this->fake('numberBetween', 1, 9000);
         $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
@@ -521,20 +453,17 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/password/edit', [
-            'csrf' => $csrf,
+            'csrf_token' => $this->csrfToken(forms\security\ResetPassword::class),
             'password' => $new_password,
         ]);
 
         $this->assertResponseCode($response, 404);
-        $this->assertResponseTemplateName($response, 'passwords/edit.phtml');
-        $this->assertResponseContains($response, 'The token doesn’t exist.');
         $user = $user->reload();
         $this->assertTrue($user->verifyPassword($old_password));
     }
 
     public function testUpdateFailsIfTokenIsInvalid(): void
     {
-        $csrf = \App\Csrf::generate();
         /** @var int */
         $minutes = $this->fake('numberBetween', 1, 9000);
         $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
@@ -550,21 +479,18 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/password/edit', [
-            'csrf' => $csrf,
+            'csrf_token' => $this->csrfToken(forms\security\ResetPassword::class),
             't' => 'a fake token',
             'password' => $new_password,
         ]);
 
         $this->assertResponseCode($response, 404);
-        $this->assertResponseTemplateName($response, 'passwords/edit.phtml');
-        $this->assertResponseContains($response, 'The token doesn’t exist.');
         $user = $user->reload();
         $this->assertTrue($user->verifyPassword($old_password));
     }
 
     public function testUpdateFailsIfTokenIsNotAttachedToUser(): void
     {
-        $csrf = \App\Csrf::generate();
         /** @var int */
         $minutes = $this->fake('numberBetween', 1, 9000);
         $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
@@ -583,21 +509,18 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/password/edit', [
-            'csrf' => $csrf,
+            'csrf_token' => $this->csrfToken(forms\security\ResetPassword::class),
             't' => $token->token,
             'password' => $new_password,
         ]);
 
         $this->assertResponseCode($response, 404);
-        $this->assertResponseTemplateName($response, 'passwords/edit.phtml');
-        $this->assertResponseContains($response, 'The token doesn’t exist.');
         $user = $user->reload();
         $this->assertTrue($user->verifyPassword($old_password));
     }
 
     public function testUpdateFailsIfTokenHasExpired(): void
     {
-        $csrf = \App\Csrf::generate();
         /** @var int */
         $minutes = $this->fake('numberBetween', 0, 9000);
         $expired_at = \Minz\Time::ago($minutes, 'minutes');
@@ -617,7 +540,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/password/edit', [
-            'csrf' => $csrf,
+            'csrf_token' => $this->csrfToken(forms\security\ResetPassword::class),
             't' => $token->token,
             'password' => $new_password,
         ]);
@@ -631,7 +554,6 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfTokenIsInvalidated(): void
     {
-        $csrf = \App\Csrf::generate();
         /** @var int */
         $minutes = $this->fake('numberBetween', 1, 9000);
         $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
@@ -654,7 +576,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/password/edit', [
-            'csrf' => $csrf,
+            'csrf_token' => $this->csrfToken(forms\security\ResetPassword::class),
             't' => $token->token,
             'password' => $new_password,
         ]);
@@ -668,7 +590,6 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfPasswordIsEmpty(): void
     {
-        $csrf = \App\Csrf::generate();
         /** @var int */
         $minutes = $this->fake('numberBetween', 1, 9000);
         $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
@@ -687,7 +608,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/password/edit', [
-            'csrf' => $csrf,
+            'csrf_token' => $this->csrfToken(forms\security\ResetPassword::class),
             't' => $token->token,
             'password' => $new_password,
         ]);
@@ -701,7 +622,6 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfCsrfIsInvalid(): void
     {
-        $csrf = \App\Csrf::generate();
         /** @var int */
         $minutes = $this->fake('numberBetween', 1, 9000);
         $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
@@ -721,7 +641,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/password/edit', [
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
             't' => $token->token,
             'password' => $new_password,
         ]);
