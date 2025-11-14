@@ -3,6 +3,7 @@
 namespace App\forms\links;
 
 use App\forms\BaseForm;
+use App\forms\traits;
 use App\models;
 use Minz\Form;
 
@@ -14,7 +15,7 @@ use Minz\Form;
  */
 class NewLink extends BaseForm
 {
-    use CollectionsSelector;
+    use traits\CollectionsSelector;
 
     #[Form\Field(transform: '\SpiderBits\Url::sanitize')]
     public string $url = '';

@@ -33,4 +33,27 @@ class BaseForm extends Form
             return $this->_csrfSessionId();
         }
     }
+
+    /**
+     * Return an option value, making sure it is returned as an object of the
+     * expected class.
+     *
+     * @template TOption of object
+     *
+     * @param class-string<TOption> $expected_class
+     *
+     * @return TOption
+     */
+    public function optionAs(string $name, string $expected_class): mixed
+    {
+        $value = $this->options->get($name);
+
+        if (!($value instanceof $expected_class)) {
+            throw new \LogicException(
+                "Option {$name} must be passed as an {$expected_class} option of the form."
+            );
+        }
+
+        return $value;
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\forms\collections;
 
 use App\forms\BaseForm;
+use App\forms\traits;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -10,5 +11,5 @@ use App\forms\BaseForm;
  */
 class MarkCollectionAsNever extends BaseForm
 {
-    use CollectionLinks;
+    use traits\CollectionLinks;
 }

@@ -3,8 +3,7 @@
 namespace App\forms\users;
 
 use App\forms\BaseForm;
-use App\forms\DemoDisabler;
-use App\forms\PasswordChecker;
+use App\forms\traits;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -12,6 +11,6 @@ use App\forms\PasswordChecker;
  */
 class DeleteAccount extends BaseForm
 {
-    use PasswordChecker;
-    use DemoDisabler;
+    use traits\PasswordChecker;
+    use traits\DemoDisabler;
 }

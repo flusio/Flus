@@ -16,7 +16,7 @@ class Exportation extends BaseForm
 
     public function exportation(): models\Exportation
     {
-        $user = $this->user();
+        $user = $this->optionAs('user', models\User::class);
         $current_exportation = $this->currentExportation();
 
         if ($current_exportation && $current_exportation->isOngoing()) {
@@ -33,7 +33,7 @@ class Exportation extends BaseForm
     public function currentExportation(): ?models\Exportation
     {
         return $this->memoize('current_exportation', function (): ?models\Exportation {
-            $user = $this->user();
+            $user = $this->optionAs('user', models\User::class);
             return models\Exportation::findByUser($user);
         });
     }
@@ -50,16 +50,5 @@ class Exportation extends BaseForm
             );
             return;
         }
-    }
-
-    public function user(): models\User
-    {
-        $user = $this->options->get('user');
-
-        if (!($user instanceof models\User)) {
-            throw new \LogicException('User must be passed as an option of the form.');
-        }
-
-        return $user;
     }
 }

@@ -3,7 +3,7 @@
 namespace App\forms\links;
 
 use App\forms\BaseForm;
-use App\forms\ShareOnMastodon;
+use App\forms\traits;
 use App\models;
 use Minz\Form;
 
@@ -15,8 +15,8 @@ use Minz\Form;
  */
 class EditLinkCollections extends BaseForm
 {
-    use CollectionsSelector;
-    use ShareOnMastodon;
+    use traits\CollectionsSelector;
+    use traits\ShareOnMastodon;
 
     #[Form\Field]
     public bool $is_hidden = false;
@@ -33,7 +33,7 @@ class EditLinkCollections extends BaseForm
             return null;
         }
 
-        $user = $this->user();
+        $user = $this->optionAs('user', models\User::class);
         return new models\Note($user->id, $this->model()->id, $this->content);
     }
 }

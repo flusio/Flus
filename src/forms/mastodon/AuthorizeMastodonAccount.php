@@ -35,26 +35,15 @@ class AuthorizeMastodonAccount extends BaseForm
     public function username(): string
     {
         return $this->memoize('username', function (): string {
-            $mastodon_account = $this->mastodonAccount();
+            $mastodon_account = $this->optionAs('mastodon_account', models\MastodonAccount::class);
             $mastodon_service = $this->mastodonService();
             return $mastodon_service->getUsername($mastodon_account);
         });
     }
 
-    public function mastodonAccount(): models\MastodonAccount
-    {
-        $mastodon_account = $this->options->get('mastodon_account');
-
-        if (!($mastodon_account instanceof models\MastodonAccount)) {
-            throw new \LogicException('mastodon_account must be passed as an option of the form.');
-        }
-
-        return $mastodon_account;
-    }
-
     public function mastodonService(): services\Mastodon
     {
-        $mastodon_account = $this->mastodonAccount();
+        $mastodon_account = $this->optionAs('mastodon_account', models\MastodonAccount::class);
         $mastodon_server = $mastodon_account->server();
         return new services\Mastodon($mastodon_server);
     }

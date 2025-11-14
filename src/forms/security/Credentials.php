@@ -3,7 +3,7 @@
 namespace App\forms\security;
 
 use App\forms\BaseForm;
-use App\forms\DemoDisabler;
+use App\forms\traits;
 use App\models;
 use Minz\Form;
 use Minz\Translatable;
@@ -17,7 +17,7 @@ use Minz\Validable;
  */
 class Credentials extends BaseForm
 {
-    use DemoDisabler;
+    use traits\DemoDisabler;
 
     #[Form\Field(bind: 'setEmail')]
     public string $email = '';

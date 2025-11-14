@@ -3,8 +3,7 @@
 namespace App\forms\security;
 
 use App\forms\BaseForm;
-use App\forms\PasswordChecker;
-use App\forms\Redirectable;
+use App\forms\traits;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -12,6 +11,6 @@ use App\forms\Redirectable;
  */
 class ConfirmPassword extends BaseForm
 {
-    use PasswordChecker;
-    use Redirectable;
+    use traits\PasswordChecker;
+    use traits\Redirectable;
 }

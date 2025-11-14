@@ -32,7 +32,8 @@ class Search extends BaseForm
     public function link(): models\Link
     {
         return $this->memoize('link', function (): models\Link {
-            $user = $this->user();
+            $user = $this->optionAs('user', models\User::class);
+
             return $user->findOrBuildLink($this->url);
         });
     }
@@ -40,7 +41,7 @@ class Search extends BaseForm
     public function existingLink(): ?models\Link
     {
         return $this->memoize('existing_link', function (): ?models\Link {
-            $user = $this->user();
+            $user = $this->optionAs('user', models\User::class);
 
             return models\Link::findComputedBy([
                 'user_id' => $user->id,
@@ -91,16 +92,5 @@ class Search extends BaseForm
 
             return $feeds;
         });
-    }
-
-    public function user(): models\User
-    {
-        $user = $this->options->get('user');
-
-        if (!($user instanceof models\User)) {
-            throw new \LogicException('User must be passed as an option of the form.');
-        }
-
-        return $user;
     }
 }

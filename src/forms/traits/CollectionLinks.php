@@ -1,6 +1,6 @@
 <?php
 
-namespace App\forms\collections;
+namespace App\forms\traits;
 
 use App\auth;
 use App\models;
@@ -27,8 +27,8 @@ trait CollectionLinks
      */
     public function links(): array
     {
-        $user = $this->user();
-        $collection = $this->collection();
+        $user = $this->optionAs('user', models\User::class);
+        $collection = $this->optionAs('collection', models\Collection::class);
 
         $options = [];
         if ($this->date) {
@@ -56,28 +56,6 @@ trait CollectionLinks
         models\Link::bulkInsert($links_to_create);
 
         return $links;
-    }
-
-    public function user(): models\User
-    {
-        $user = $this->options->get('user');
-
-        if (!($user instanceof models\User)) {
-            throw new \LogicException('User must be passed as an option of the form.');
-        }
-
-        return $user;
-    }
-
-    public function collection(): models\Collection
-    {
-        $collection = $this->options->get('collection');
-
-        if (!($collection instanceof models\Collection)) {
-            throw new \LogicException('Collection must be passed as an option of the form.');
-        }
-
-        return $collection;
     }
 
     #[Form\OnHandleRequest]

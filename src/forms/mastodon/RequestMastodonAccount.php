@@ -35,7 +35,7 @@ class RequestMastodonAccount extends BaseForm
     public function mastodonAccount(): models\MastodonAccount
     {
         $mastodon_service = $this->mastodonService();
-        $user = $this->user();
+        $user = $this->optionAs('user', models\User::class);
 
         return models\MastodonAccount::findOrCreate(
             $mastodon_service->server,
@@ -43,21 +43,10 @@ class RequestMastodonAccount extends BaseForm
         );
     }
 
-    public function user(): models\User
-    {
-        $user = $this->options->get('user');
-
-        if (!($user instanceof models\User)) {
-            throw new \LogicException('User must be passed as an option of the form.');
-        }
-
-        return $user;
-    }
-
     #[Validable\Check]
     public function checkUserDoesNotHaveExistingAccount(): void
     {
-        $user = $this->user();
+        $user = $this->optionAs('user', models\User::class);
         $mastodon_account = models\MastodonAccount::findByUser($user);
 
         if ($mastodon_account && $mastodon_account->isSetup()) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\forms\links;
+namespace App\forms\traits;
 
 use App\auth;
 use App\models;
@@ -26,17 +26,6 @@ trait CollectionsSelector
 
     public int $collection_name_max_length = models\Collection::NAME_MAX_LENGTH;
 
-    public function user(): models\User
-    {
-        $user = $this->options->get('user');
-
-        if (!($user instanceof models\User)) {
-            throw new \LogicException('User must be passed as an option of the form.');
-        }
-
-        return $user;
-    }
-
     /**
      * Return the collections to display in the select field of the form.
      *
@@ -48,7 +37,7 @@ trait CollectionsSelector
     public function collectionsValues(): array
     {
         return $this->memoize('collections_values', function (): array {
-            $user = $this->user();
+            $user = $this->optionAs('user', models\User::class);
 
             $collection_values = [];
 
@@ -144,7 +133,7 @@ trait CollectionsSelector
      */
     public function newCollections(): array
     {
-        $user = $this->user();
+        $user = $this->optionAs('user', models\User::class);
 
         $collections = [];
         foreach ($this->new_collection_names as $name) {
@@ -164,7 +153,7 @@ trait CollectionsSelector
      */
     public function collectionsByOthers(): array
     {
-        $user = $this->user();
+        $user = $this->optionAs('user', models\User::class);
 
         $collections_by_others = models\Collection::listWritableContainingNotOwnedLinkWithUrl(
             $user->id,

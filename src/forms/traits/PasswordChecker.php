@@ -1,6 +1,6 @@
 <?php
 
-namespace App\forms;
+namespace App\forms\traits;
 
 use App\models;
 use Minz\Form;
@@ -19,7 +19,7 @@ trait PasswordChecker
     #[Validable\Check]
     public function checkPassword(): void
     {
-        $user = $this->user();
+        $user = $this->optionAs('user', models\User::class);
         if (!$user->verifyPassword($this->password)) {
             $this->addError(
                 'password',
@@ -27,16 +27,5 @@ trait PasswordChecker
                 _('The password is incorrect.'),
             );
         }
-    }
-
-    public function user(): models\User
-    {
-        $user = $this->options->get('user');
-
-        if (!($user instanceof models\User)) {
-            throw new \LogicException('User must be passed as an option of the form.');
-        }
-
-        return $user;
     }
 }

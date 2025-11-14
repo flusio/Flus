@@ -1,6 +1,6 @@
 <?php
 
-namespace App\forms;
+namespace App\forms\traits;
 
 use App\auth;
 use Minz\Validable;

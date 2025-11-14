@@ -13,7 +13,7 @@ use Minz\Validable;
  */
 class Login extends BaseForm
 {
-    use Redirectable;
+    use traits\Redirectable;
 
     #[Form\Field(transform: '\Minz\Email::sanitize')]
     #[Validable\Email(message: new Translatable('The address email is invalid.'))]

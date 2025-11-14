@@ -40,7 +40,7 @@ class OpmlImportation extends BaseForm
             return null;
         }
 
-        $user = $this->user();
+        $user = $this->optionAs('user', models\User::class);
 
         $importations_filepath = \App\Configuration::$data_path . '/importations';
         if (!file_exists($importations_filepath)) {
@@ -62,20 +62,9 @@ class OpmlImportation extends BaseForm
     public function currentImportation(): ?models\Importation
     {
         return $this->memoize('current_importation', function (): ?models\Importation {
-            $user = $this->user();
+            $user = $this->optionAs('user', models\User::class);
             return models\Importation::findOpmlByUser($user);
         });
-    }
-
-    public function user(): models\User
-    {
-        $user = $this->options->get('user');
-
-        if (!($user instanceof models\User)) {
-            throw new \LogicException('User must be passed as an option of the form.');
-        }
-
-        return $user;
     }
 
     public function acceptedMimetypes(): string

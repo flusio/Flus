@@ -52,17 +52,6 @@ class ShareCollection extends BaseForm
         return $this->type;
     }
 
-    public function collection(): models\Collection
-    {
-        $collection = $this->options->get('collection');
-
-        if (!($collection instanceof models\Collection)) {
-            throw new \LogicException('Collection must be passed as an option of the form.');
-        }
-
-        return $collection;
-    }
-
     #[Form\OnHandleRequest]
     public function extractUserIdFromProfileUrl(Request $request): void
     {
@@ -87,7 +76,7 @@ class ShareCollection extends BaseForm
     #[Validable\Check]
     public function checkUserIdIsValid(): void
     {
-        $collection = $this->collection();
+        $collection = $this->optionAs('collection', models\Collection::class);
         $support_user = models\User::supportUser();
 
         if (

@@ -27,7 +27,7 @@ class EditCollectionGroup extends BaseForm
     public function groups(): array
     {
         return $this->memoize('groups', function (): array {
-            $user = $this->user();
+            $user = $this->optionAs('user', models\User::class);
             $groups = models\Group::listBy([
                 'user_id' => $user->id,
             ]);
@@ -66,19 +66,8 @@ class EditCollectionGroup extends BaseForm
             return $group;
         }
 
-        $user = $this->user();
+        $user = $this->optionAs('user', models\User::class);
         return new models\Group($user->id, $this->name);
-    }
-
-    public function user(): models\User
-    {
-        $user = $this->options->get('user');
-
-        if (!($user instanceof models\User)) {
-            throw new \LogicException('User must be passed as an option of the form.');
-        }
-
-        return $user;
     }
 
     #[Validable\Check]
