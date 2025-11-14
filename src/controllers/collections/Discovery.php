@@ -2,9 +2,9 @@
 
 namespace App\controllers\collections;
 
+use App\controllers\BaseController;
 use Minz\Request;
 use Minz\Response;
-use App\controllers\BaseController;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>

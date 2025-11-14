@@ -2,12 +2,12 @@
 
 namespace App\controllers;
 
-use Minz\Mailer;
-use Minz\Request;
-use Minz\Response;
 use App\auth;
 use App\mailers;
 use App\models;
+use Minz\Mailer;
+use Minz\Request;
+use Minz\Response;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>

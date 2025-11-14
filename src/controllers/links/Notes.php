@@ -2,13 +2,13 @@
 
 namespace App\controllers\links;
 
-use Minz\Request;
-use Minz\Response;
 use App\auth;
 use App\controllers\BaseController;
 use App\forms;
 use App\jobs;
 use App\models;
+use Minz\Request;
+use Minz\Response;
 
 /**
  * Handle the requests related to the notes.

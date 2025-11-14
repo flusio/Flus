@@ -2,12 +2,12 @@
 
 namespace App\controllers;
 
-use Minz\Request;
-use Minz\Response;
 use App\auth;
 use App\forms;
 use App\models;
 use App\utils;
+use Minz\Request;
+use Minz\Response;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>

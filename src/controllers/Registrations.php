@@ -2,13 +2,13 @@
 
 namespace App\controllers;
 
-use Minz\Mailer;
-use Minz\Request;
-use Minz\Response;
 use App\auth;
 use App\mailers;
 use App\models;
 use App\services;
+use Minz\Mailer;
+use Minz\Request;
+use Minz\Response;
 
 /**
  * Handle the requests related to the registrations.

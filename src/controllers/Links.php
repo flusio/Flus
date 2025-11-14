@@ -2,14 +2,14 @@
 
 namespace App\controllers;
 
-use Minz\Request;
-use Minz\Response;
 use App\auth;
 use App\forms;
 use App\models;
 use App\search_engine;
 use App\services;
 use App\utils;
+use Minz\Request;
+use Minz\Response;
 
 /**
  * Handle the requests related to the links.

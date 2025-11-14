@@ -2,13 +2,13 @@
 
 namespace App\controllers\collections;
 
-use Minz\Request;
-use Minz\Response;
 use App\auth;
 use App\controllers\BaseController;
 use App\forms;
 use App\models;
 use App\utils;
+use Minz\Request;
+use Minz\Response;
 
 class Filters extends BaseController
 {

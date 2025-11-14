@@ -2,14 +2,14 @@
 
 namespace App\controllers\links;
 
-use Minz\Request;
-use Minz\Response;
 use App\auth;
 use App\controllers\BaseController;
 use App\forms;
 use App\models;
 use App\services;
 use App\utils;
+use Minz\Request;
+use Minz\Response;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
