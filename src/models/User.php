@@ -18,6 +18,7 @@ class User
 {
     use dao\User;
     use Database\Recordable;
+    use Database\Resource;
     use Validable;
 
     public const USERNAME_MAX_LENGTH = 50;

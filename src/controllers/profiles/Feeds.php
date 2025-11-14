@@ -24,18 +24,20 @@ class Feeds extends BaseController
      *     external websites (true) or not (false, default).
      *
      * @response 404
-     *    If the requested profile doesn’t exist or is associated to the
-     *    support user.
+     *    If the requested profile is associated to the support user.
      * @response 200
-     *    On success
+     *    On success.
+     *
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the user doesn't exist.
      */
     public function show(Request $request): Response
     {
-        $user_id = $request->parameters->getString('id', '');
         $direct = $request->parameters->getBoolean('direct');
 
-        $user = models\User::find($user_id);
-        if (!$user || $user->isSupportUser()) {
+        $user = models\User::requireFromRequest($request);
+
+        if ($user->isSupportUser()) {
             return Response::notFound('not_found.phtml');
         }
 

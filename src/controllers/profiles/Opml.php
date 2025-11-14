@@ -20,17 +20,18 @@ class Opml extends BaseController
      * @request_param string id
      *
      * @response 404
-     *    If the requested profile doesn’t exist or is associated to the
-     *    support user.
+     *    If the requested profile is associated to the support user.
      * @response 200
-     *    On success
+     *    On success.
+     *
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the user doesn't exist.
      */
     public function show(Request $request): Response
     {
-        $user_id = $request->parameters->getString('id', '');
-        $user = models\User::find($user_id);
+        $user = models\User::requireFromRequest($request);
 
-        if (!$user || $user->isSupportUser()) {
+        if ($user->isSupportUser()) {
             return Response::notFound('not_found.phtml');
         }
 
@@ -58,8 +59,7 @@ class Opml extends BaseController
     {
         $user_id = $request->parameters->getString('id');
         $url = \Minz\Url::for('profile opml', ['id' => $user_id]);
-        $response = new Response(301);
-        $response->setHeader('Location', $url);
-        return $response;
+
+        return Response::movedPermanently($url);
     }
 }
