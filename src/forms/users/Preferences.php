@@ -3,8 +3,8 @@
 namespace App\forms\users;
 
 use App\forms\BaseForm;
+use App\forms\traits;
 use App\models;
-use App\utils;
 use Minz\Form;
 
 /**
@@ -15,8 +15,7 @@ use Minz\Form;
  */
 class Preferences extends BaseForm
 {
-    #[Form\Field(transform: 'trim')]
-    public string $locale = '';
+    use traits\Locale;
 
     #[Form\Field]
     public bool $option_compact_mode = false;
@@ -37,13 +36,5 @@ class Preferences extends BaseForm
         }
 
         parent::__construct($default_values, $model);
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    public function localesValues(): array
-    {
-        return utils\Locale::availableLocales();
     }
 }

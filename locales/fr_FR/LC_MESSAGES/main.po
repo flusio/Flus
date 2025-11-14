@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2025-11-14 17:03+0100\n"
-"PO-Revision-Date: 2025-11-14 17:05+0100\n"
+"POT-Creation-Date: 2025-11-14 17:29+0100\n"
+"PO-Revision-Date: 2025-11-14 17:29+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -224,6 +224,14 @@ msgstr "L’une des collections associées n’existe pas."
 msgid "Sorry but you cannot do that in the demo 😉"
 msgstr "Désolé mais vous ne pouvez pas faire ça dans la démo 😉"
 
+#: forms/traits/Locale.php:19 models/User.php:91
+msgid "The locale is required."
+msgstr "La langue est obligatoire."
+
+#: forms/traits/Locale.php:22 models/User.php:94
+msgid "The locale is invalid."
+msgstr "La langue est invalide."
+
 #: forms/users/AccountValidation.php:29
 msgid ""
 "The token doesn’t exist. The validation link you clicked on should have "
@@ -235,14 +243,6 @@ msgstr ""
 #: forms/users/AccountValidation.php:38
 msgid "The token has expired or has been invalidated."
 msgstr "Le token a expiré ou a été invalidé."
-
-#: forms/users/Locale.php:21 models/User.php:91
-msgid "The locale is required."
-msgstr "La langue est obligatoire."
-
-#: forms/users/Locale.php:24 models/User.php:94
-msgid "The locale is invalid."
-msgstr "La langue est invalide."
 
 #: mailers/Support.php:32
 #, php-format
@@ -647,11 +647,11 @@ msgstr "S’inscrire"
 msgid "Login"
 msgstr "Se connecter"
 
-#: views/_layouts/not_connected.phtml:106 views/onboarding/step1.phtml:25
+#: views/_layouts/not_connected.phtml:108 views/onboarding/step1.phtml:25
 msgid "Choose your language"
 msgstr "Choisissez votre langue"
 
-#: views/_layouts/not_connected.phtml:160 views/pages/about.phtml:3
+#: views/_layouts/not_connected.phtml:162 views/pages/about.phtml:3
 #: views/pages/about.phtml:11 views/support/show.phtml:118
 #, php-format
 msgid "About %s"

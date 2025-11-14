@@ -114,7 +114,6 @@ class Application
             'errors' => $errors,
             'error' => $error,
             'status' => $status,
-            'available_locales' => utils\Locale::availableLocales(),
             'current_user' => $current_user,
             'beta_enabled' => $beta_enabled,
             'autoload_modal_url' => $autoload_modal_url,

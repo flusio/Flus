@@ -102,6 +102,8 @@
                         action="<?= url('change locale') ?>"
                         data-controller="autosubmit"
                     >
+                        <?php $locale_form = new \App\forms\users\Locale(); ?>
+
                         <div class="form-group">
                             <label for="locale" aria-label="<?= _('Choose your language') ?>">
                                 <?= icon('language') ?>
@@ -112,7 +114,7 @@
                                     data-action="autosubmit#submit"
                                     data-autosubmit-target="actionButton"
                                 >
-                                    <?php foreach ($available_locales as $locale_value => $locale_name): ?>
+                                    <?php foreach ($locale_form->localesValues() as $locale_value => $locale_name): ?>
                                         <option
                                             value="<?= $locale_value ?>"
                                             <?= $locale_value === get_current_locale() ? 'selected' : '' ?>
@@ -124,7 +126,7 @@
                             </label>
                         </div>
 
-                        <input type="hidden" name="csrf_token" value="<?= csrf_token('users\\Locale') ?>" />
+                        <input type="hidden" name="csrf_token" value="<?= csrf_token($locale_form) ?>" />
                     </form>
                 </nav>
             </header>

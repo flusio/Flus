@@ -31,7 +31,7 @@
                 data-action="autosubmit#submit"
                 data-autosubmit-target="actionButton"
             >
-                <?php foreach ($available_locales as $locale_value => $locale_name): ?>
+                <?php foreach ($locale_form->localesValues() as $locale_value => $locale_name): ?>
                     <option
                         value="<?= $locale_value ?>"
                         <?= $locale_value === $locale_form->locale ? 'selected' : '' ?>
