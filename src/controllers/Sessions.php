@@ -25,6 +25,7 @@ class Sessions extends BaseController
      * @response 302 :redirect_to
      *     If the user is already connected.
      * @response 200
+     *     On success.
      */
     public function new(Request $request): Response
     {

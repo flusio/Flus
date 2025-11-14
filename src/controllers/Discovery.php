@@ -17,6 +17,7 @@ class Discovery extends BaseController
      * Show the discovery page
      *
      * @response 200
+     *     On success.
      */
     public function show(Request $request): Response
     {

@@ -19,8 +19,10 @@ class Showcases extends BaseController
      *
      * @request_param string id
      *
-     * @response 404 If the id doesn’t exist
-     * @response 200 On success
+     * @response 404
+     *     If the id doesn’t exist.
+     * @response 200
+     *     On success.
      */
     public function show(Request $request): Response
     {

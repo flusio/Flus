@@ -11,13 +11,12 @@ use Minz\Response;
 class WellKnown extends BaseController
 {
     /**
-     * Redirect to the change password page
+     * Redirect to the change password page.
      *
      * @see https://w3c.github.io/webappsec-change-password-url/
      *
      * @response 302 /my/security
-     *
-     * @return \Minz\Response
+     *     On success.
      */
     public function changePassword(): Response
     {

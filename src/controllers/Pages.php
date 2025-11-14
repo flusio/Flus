@@ -17,10 +17,10 @@ class Pages extends BaseController
     /**
      * Show the home page.
      *
-     * @response 302 /news if connected
-     * @response 302 /login else
-     *
-     * @return \Minz\Response
+     * @response 302 /login
+     *     If the user is not connected.
+     * @response 302 /news
+     *     If the user is connected.
      */
     public function home(): Response
     {
@@ -35,11 +35,9 @@ class Pages extends BaseController
      * Show the terms of service.
      *
      * @response 404
-     *     if the policies/legals.html file doesn’t exist
+     *     If the policies/legals.html file doesn’t exist.
      * @response 200
-     *     on success
-     *
-     * @return \Minz\Response
+     *     On success.
      */
     public function terms(): Response
     {
@@ -59,6 +57,7 @@ class Pages extends BaseController
      * Show the addons page.
      *
      * @response 200
+     *     On success.
      */
     public function addons(Request $request): Response
     {
@@ -69,6 +68,7 @@ class Pages extends BaseController
      * Show the about page.
      *
      * @response 200
+     *     On success.
      */
     public function about(): Response
     {
@@ -81,6 +81,7 @@ class Pages extends BaseController
      * Show the robots page.
      *
      * @response 200
+     *     On success.
      */
     public function robots(): Response
     {
@@ -93,6 +94,7 @@ class Pages extends BaseController
      * Show the webmanifest page.
      *
      * @response 200
+     *     On success.
      */
     public function webmanifest(): Response
     {
