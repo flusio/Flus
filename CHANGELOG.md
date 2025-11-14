@@ -1,5 +1,12 @@
 # Changelog of Flus
 
+## unreleased
+
+### Migration notes
+
+Pocket is now definitely down, and Pocket import has been removed (except the file import with the CLI).
+You can safely remove the `APP_POCKET_CONSUMER_KEY` environment key from your `.env` file.
+
 ## 2025-10-23 - v2.0.6
 
 ### Bug fixes

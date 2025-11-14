@@ -22,7 +22,6 @@ namespace App;
  *     'job_feeds_sync_count': int,
  *     'job_links_sync_count': int,
  *     'server_ips': non-empty-string[],
- *     'pocket_consumer_key': string,
  *     'cli_locale': string,
  *     'plausible_url': string,
  *     'bileto_url': string,

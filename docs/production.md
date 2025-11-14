@@ -231,13 +231,6 @@ listing them:
 flus# sudo -u www-data php cli topics
 ```
 
-## Optional: Configure Pocket
-
-Flus allows users to import their data from Pocket. First, you have to
-[create a Pocket app](https://getpocket.com/developer/apps/new). It will give
-you a "consumer key". Set this key in the `APP_POCKET_CONSUMER_KEY` variable of
-your `.env` file. That’s all!
-
 ## Optional: Configure Browscap
 
 We use Browscap to identify the users’ sessions via their user agent. Flus

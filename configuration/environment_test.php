@@ -50,7 +50,6 @@ return [
         'job_feeds_sync_count' => 1,
         'job_links_sync_count' => 1,
         'server_ips' => [],
-        'pocket_consumer_key' => 'some token',
         'cli_locale' => 'en_GB',
         'plausible_url' => '',
         'bileto_url' => '',

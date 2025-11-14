@@ -14,7 +14,7 @@ class Importation
     use Database\Recordable;
     use Database\Resource;
 
-    public const VALID_TYPES = ['pocket', 'opml'];
+    public const VALID_TYPES = ['opml'];
     public const VALID_STATUSES = ['ongoing', 'finished', 'error'];
 
     #[Database\Column]
@@ -98,42 +98,6 @@ class Importation
     public function isInError(): bool
     {
         return $this->status === 'error';
-    }
-
-    /**
-     * @return array{
-     *     'import_bookmarks': bool,
-     *     'import_favorites': bool,
-     * }
-     */
-    public function pocketOptions(): array
-    {
-        if ($this->type !== 'pocket') {
-            throw new \Exception('This is not a Pocket importation.');
-        }
-
-        $clean_options = [
-            'import_bookmarks' => true,
-            'import_favorites' => true,
-        ];
-
-        if (is_bool($this->options['import_bookmarks'])) {
-            $clean_options['import_bookmarks'] = $this->options['import_bookmarks'];
-        }
-
-        if (is_bool($this->options['import_favorites'])) {
-            $clean_options['import_favorites'] = $this->options['import_favorites'];
-        }
-
-        return $clean_options;
-    }
-
-    public static function findPocketByUser(User $user): ?self
-    {
-        return self::findBy([
-            'type' => 'pocket',
-            'user_id' => $user->id,
-        ]);
     }
 
     public static function findOpmlByUser(User $user): ?self

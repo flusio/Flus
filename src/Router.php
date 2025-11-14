@@ -101,12 +101,6 @@ class Router
         // Importations
         $router->addRoute('POST', '/importations/:id/delete', 'Importations#delete', 'delete importation');
 
-        $router->addRoute('GET', '/pocket', 'importations/Pocket#show', 'pocket');
-        $router->addRoute('POST', '/pocket', 'importations/Pocket#import', 'import pocket');
-        $router->addRoute('POST', '/pocket/request', 'importations/Pocket#requestAccess', 'request pocket access');
-        $router->addRoute('GET', '/pocket/auth', 'importations/Pocket#authorization', 'pocket auth');
-        $router->addRoute('POST', '/pocket/auth', 'importations/Pocket#authorize', 'authorize pocket');
-
         $router->addRoute('GET', '/opml', 'importations/Opml#show', 'opml');
         $router->addRoute('POST', '/opml', 'importations/Opml#import', 'import opml');
 

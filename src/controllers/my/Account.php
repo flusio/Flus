@@ -44,11 +44,8 @@ class Account extends BaseController
             }
         }
 
-        $pocket_enabled = \App\Configuration::$application['pocket_consumer_key'] !== '';
-
         return Response::ok('my/account/show.phtml', [
             'subscriptions_enabled' => $sub_enabled,
-            'pocket_enabled' => $pocket_enabled,
         ]);
     }
 

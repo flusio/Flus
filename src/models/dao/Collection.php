@@ -18,7 +18,6 @@ trait Collection
     use collections\DiscoveryQueries;
     use collections\FetcherQueries;
     use collections\OpmlImportatorQueries;
-    use collections\PocketQueries;
     use collections\SearchQueries;
     use collections\StatisticsQueries;
     use Database\Lockable;

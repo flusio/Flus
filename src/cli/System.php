@@ -28,7 +28,6 @@ class System
         $demo_enabled = \App\Configuration::$application['demo'];
         $registrations_enabled = \App\Configuration::$application['registrations_opened'];
         $subscriptions_enabled = \App\Configuration::$application['subscriptions_enabled'];
-        $pocket_enabled = \App\Configuration::$application['pocket_consumer_key'] !== '';
         $job_feeds_sync_count = \App\Configuration::$application['job_feeds_sync_count'];
         $job_links_sync_count = \App\Configuration::$application['job_links_sync_count'];
         $server_ips = \App\Configuration::$application['server_ips'];
@@ -43,7 +42,6 @@ class System
         $info .= "Demo " . ($demo_enabled ? 'enabled' : 'disabled') . "\n";
         $info .= "Registrations " . ($registrations_enabled ? 'enabled' : 'disabled') . "\n";
         $info .= "Subscriptions " . ($subscriptions_enabled ? 'enabled' : 'disabled') . "\n";
-        $info .= "Pocket " . ($pocket_enabled ? 'enabled' : 'disabled') . "\n";
         $info .= "\n";
 
         $info .= "{$job_feeds_sync_count} job(s) to synchronize feeds\n";

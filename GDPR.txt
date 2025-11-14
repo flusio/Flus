@@ -17,9 +17,6 @@ lawfulness: legitimate interest
 purpose: Personalize the users' profiles
 lawfulness: consent
 
-purpose: Import data from Pocket
-lawfulness: consent
-
 data: email
 required: yes
 visibility: private
@@ -85,13 +82,3 @@ visibility: public
 description:
     Avatars are images used to distinguish users visually and express their
     identity.
-
-data: Pocket email
-required: no
-visibility: private
-description:
-    The email used on https://getpocket.com, in order to connect to the service
-    and import data from it.
-mitigation:
-    Flus can access this data only if the user explicitely allows it on
-    Pocket. The feature can be disabled by the hosting provider.
