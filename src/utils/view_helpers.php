@@ -17,22 +17,13 @@ use App\models;
  * A string can be passed. A \App\forms\{$form} form will be instantiated then.
  * The instantiated form must be an instance of \App\forms\BaseForm.
  *
- * Passing null is deprecated as it is the temporary way to get a token while
- * all the forms aren't migrated to the Minz forms.
- *
  * @throws \InvalidArgumentException
  *     Raised if the form instantiated from the string isn't a \App\forms\BaseForm.
  *
- * @param \App\forms\BaseForm|string|null $form
+ * @param \App\forms\BaseForm|string $form
  */
-function csrf_token(mixed $form = null): string
+function csrf_token(mixed $form): string
 {
-    if ($form === null) {
-        // This is the old deprecated way to generate csrf token.
-        // This shouldn't be used anymore.
-        return \App\Csrf::generate();
-    }
-
     if (is_string($form)) {
         $form_class = "\\App\\forms\\{$form}";
         $form = new $form_class();

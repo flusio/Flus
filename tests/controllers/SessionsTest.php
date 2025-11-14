@@ -260,7 +260,6 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
         ]);
 
-        \App\Csrf::generate();
         $response = $this->appRun('POST', '/login', [
             'csrf_token' => 'not the token',
             'email' => $email,

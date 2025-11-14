@@ -99,9 +99,6 @@ class User
     public ?string $avatar_filename;
 
     #[Database\Column]
-    public string $csrf;
-
-    #[Database\Column]
     public ?string $autoload_modal;
 
     #[Database\Column]
@@ -119,7 +116,6 @@ class User
         $this->email = '';
         $this->password_hash = '';
         $this->locale = utils\Locale::currentLocale();
-        $this->csrf = \Minz\Random::hex(64);
         $this->autoload_modal = '';
         $this->option_compact_mode = false;
     }

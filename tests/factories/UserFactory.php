@@ -54,10 +54,6 @@ class UserFactory extends Database\Factory
             // Force the value to facilitate the tests (i.e. we would have to
             // localize the tests as well, which would be painful)
             'locale' => 'en_GB',
-
-            'csrf' => function (): string {
-                return \Minz\Random::hex(64);
-            },
         ];
     }
 }

@@ -317,8 +317,6 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfCsrfIsWrong(): void
     {
-        \App\Csrf::generate();
-
         $response = $this->appRun('POST', '/registration', [
             'csrf_token' => 'not the token',
             'username' => $this->fake('name'),
