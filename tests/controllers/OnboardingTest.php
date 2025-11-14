@@ -64,7 +64,7 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/onboarding/locale', [
-            'csrf_token' => $this->csrfToken(forms\Locale::class),
+            'csrf_token' => $this->csrfToken(forms\users\Locale::class),
             'locale' => 'fr_FR',
         ]);
 
@@ -80,7 +80,7 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/onboarding/locale', [
-            'csrf_token' => $this->csrfToken(forms\Locale::class),
+            'csrf_token' => $this->csrfToken(forms\users\Locale::class),
             'locale' => 'fr_FR',
         ]);
 
@@ -112,7 +112,7 @@ class OnboardingTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/onboarding/locale', [
-            'csrf_token' => $this->csrfToken(forms\Locale::class),
+            'csrf_token' => $this->csrfToken(forms\users\Locale::class),
             'locale' => 'not a locale',
         ]);
 

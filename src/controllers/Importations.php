@@ -42,7 +42,7 @@ class Importations extends BaseController
 
         auth\Access::require($user, 'delete', $importation);
 
-        $form = new forms\DeleteImportation();
+        $form = new forms\importations\DeleteImportation();
         $form->handleRequest($request);
 
         if (!$form->validate()) {

@@ -39,7 +39,7 @@ class Onboarding extends BaseController
             );
         }
 
-        $locale_form = new forms\Locale(model: $user);
+        $locale_form = new forms\users\Locale(model: $user);
 
         return Response::ok("onboarding/step{$step}.phtml", [
             'locale_form' => $locale_form,
@@ -65,7 +65,7 @@ class Onboarding extends BaseController
     {
         $user = auth\CurrentUser::require();
 
-        $form = new forms\Locale(model: $user);
+        $form = new forms\users\Locale(model: $user);
         $form->handleRequest($request);
 
         if (!$form->validate()) {

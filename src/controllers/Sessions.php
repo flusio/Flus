@@ -106,7 +106,7 @@ class Sessions extends BaseController
     {
         $from = utils\RequestHelper::from($request);
 
-        $form = new forms\Locale();
+        $form = new forms\users\Locale();
         $form->handleRequest($request);
 
         if (!$form->validate()) {

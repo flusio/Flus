@@ -51,7 +51,7 @@
                 </button>
             </div>
 
-            <input type="hidden" name="csrf_token" value="<?= csrf_token('DeleteImportation') ?>" />
+            <input type="hidden" name="csrf_token" value="<?= csrf_token('importations\DeleteImportation') ?>" />
             <input type="hidden" name="redirect_to" value="<?= url('feeds') ?>" />
         </form>
     <?php elseif ($importation && $importation->isInError()): ?>
@@ -64,7 +64,7 @@
                 </button>
             </div>
 
-            <input type="hidden" name="csrf_token" value="<?= csrf_token('DeleteImportation') ?>" />
+            <input type="hidden" name="csrf_token" value="<?= csrf_token('importations\DeleteImportation') ?>" />
             <input type="hidden" name="redirect_to" value="<?= url('feeds') ?>" />
         </form>
     <?php else: ?>

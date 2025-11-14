@@ -420,7 +420,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertArrayNotHasKey('locale', $_SESSION);
 
         $response = $this->appRun('POST', '/sessions/locale', [
-            'csrf_token' => $this->csrfToken(forms\Locale::class),
+            'csrf_token' => $this->csrfToken(forms\users\Locale::class),
             'locale' => 'fr_FR',
         ]);
 
@@ -442,7 +442,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
     public function testChangeLocaleWithUnsupportedLocaleDoesntSetsSessionLocale(): void
     {
         $response = $this->appRun('POST', '/sessions/locale', [
-            'csrf_token' => $this->csrfToken(forms\Locale::class),
+            'csrf_token' => $this->csrfToken(forms\users\Locale::class),
             'locale' => 'zu',
         ]);
 

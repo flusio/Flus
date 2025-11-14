@@ -24,7 +24,7 @@ class ImportationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/importations/{$importation->id}/delete", [
-            'csrf_token' => $this->csrfToken(forms\DeleteImportation::class),
+            'csrf_token' => $this->csrfToken(forms\importations\DeleteImportation::class),
             'redirect_to' => '/links',
         ]);
 
@@ -40,7 +40,7 @@ class ImportationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/importations/{$importation->id}/delete", [
-            'csrf_token' => $this->csrfToken(forms\DeleteImportation::class),
+            'csrf_token' => $this->csrfToken(forms\importations\DeleteImportation::class),
             'redirect_to' => \Minz\Url::for('links'),
         ]);
 
@@ -57,7 +57,7 @@ class ImportationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/importations/{$importation->id}/delete", [
-            'csrf_token' => $this->csrfToken(forms\DeleteImportation::class),
+            'csrf_token' => $this->csrfToken(forms\importations\DeleteImportation::class),
             'redirect_to' => \Minz\Url::for('links'),
         ]);
 
