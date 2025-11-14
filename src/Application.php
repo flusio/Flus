@@ -52,6 +52,8 @@ class Application
      */
     public function run(\Minz\Request $request): mixed
     {
+        utils\RequestHelper::setPreviousUrl($request);
+
         $session_token = $request->cookies->getString('session_token');
         if ($session_token) {
             auth\CurrentUser::authenticate($session_token, scope: 'browser');

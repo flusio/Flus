@@ -48,6 +48,19 @@ class RequestHelperTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($referer, $from);
     }
 
+    public function testFromWithNoRefererButPreviousUrlInSession(): void
+    {
+        $self_uri = '/news';
+        $previous_url = '/bookmarks';
+        $_SESSION['_previous_url'] = $previous_url;
+        $request = new Request('POST', $self_uri);
+
+        $from = RequestHelper::from($request);
+
+        unset($_SESSION['_previous_url']);
+        $this->assertSame($previous_url, $from);
+    }
+
     public function testFromWithNoReferer(): void
     {
         $self_uri = '/news';
@@ -69,5 +82,38 @@ class RequestHelperTest extends \PHPUnit\Framework\TestCase
         $from = RequestHelper::from($request);
 
         $this->assertSame('/', $from);
+    }
+
+    public function testSetPreviousUrlWithStandardGetRequest(): void
+    {
+        $self_uri = '/news';
+        $request = new Request('GET', $self_uri);
+
+        RequestHelper::setPreviousUrl($request);
+
+        $this->assertSame($self_uri, $_SESSION['_previous_url'] ?? '');
+        unset($_SESSION['_previous_url']);
+    }
+
+    public function testSetPreviousUrlWithRequestedModal(): void
+    {
+        $self_uri = '/news';
+        $request = new Request('GET', $self_uri, headers: [
+            'Turbo-Frame' => 'modal-content',
+        ]);
+
+        RequestHelper::setPreviousUrl($request);
+
+        $this->assertArrayNotHasKey('_previous_url', $_SESSION);
+    }
+
+    public function testSetPreviousUrlWithPostRequest(): void
+    {
+        $self_uri = '/news';
+        $request = new Request('POST', $self_uri);
+
+        RequestHelper::setPreviousUrl($request);
+
+        $this->assertArrayNotHasKey('_previous_url', $_SESSION);
     }
 }
