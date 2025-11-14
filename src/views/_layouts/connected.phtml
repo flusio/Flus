@@ -30,9 +30,6 @@
         <?php if (get_app_configuration('plausible_url')): ?>
             <script defer data-domain="<?= get_current_host() ?>" src="<?= get_app_configuration('plausible_url') ?>/js/script.js"></script>
         <?php endif; ?>
-
-        <meta name="csrf-param" content="csrf" />
-        <meta name="csrf-token" content="<?= csrf_token() ?>" />
     </head>
 
     <body>
