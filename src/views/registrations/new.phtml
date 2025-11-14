@@ -7,7 +7,7 @@
             'reset' => true,
             'track' => false,
         ],
-        'has_errors' => $error || $errors,
+        'has_errors' => $form->isInvalid(),
     ]);
 ?>
 
@@ -16,75 +16,84 @@
         <h1><?= _('Registration') ?></h1>
     </div>
 
-    <?php if ($subscriptions_enabled): ?>
+    <?php if (get_app_configuration('subscriptions_enabled')): ?>
         <p class="section__intro">
-            <?= _f('First month is free. <a href="%s">Learn more about pricing.</a>', $subscriptions_host . '/tarifs') ?>
+            <?= _f('First month is free. <a href="%s">Learn more about pricing.</a>', get_app_configuration('subscriptions_host') . '/tarifs') ?>
         </p>
     <?php endif; ?>
 
-    <form method="post" action="<?= url('create user') ?>" data-controller="csrf-loader">
-        <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
+    <form
+        method="post"
+        action="<?= url('create user') ?>"
+        data-controller="csrf"
+        data-csrf-name-value="csrf_token"
+        data-csrf-token-value="<?= csrf_token($form) ?>"
+    >
+        <?= $this->include('alerts/_error.phtml', ['message' => $form->error('@base')]) ?>
 
-        <div class="form-group <?= isset($errors['username']) ? 'form-group--invalid' : '' ?>">
+        <div class="form-group">
             <label for="username">
                 <?= _('How should we name you?') ?>
                 <span class="label__help">
-                    <?= _f('(public, max. %d characters)', 50) ?>
+                    <?= _f('(public, max. %d characters)', $form->username_max_length) ?>
                 </span>
             </label>
+
+            <?php if ($form->isInvalid('username')): ?>
+                <p id="username-error" class="form-group__error">
+                    <?= _('Error:') ?>
+                    <?= $form->error('username') ?>
+                </p>
+            <?php endif; ?>
 
             <input
                 id="username"
                 name="username"
                 type="text"
-                value="<?= $username ?>"
+                value="<?= protect($form->username) ?>"
+                maxlength="<?= $form->username_max_length ?>"
                 required
-                maxlength="50"
                 autofocus
                 autocomplete="nickname"
-                aria-describedby="username-desc"
-            />
-
-            <div id="username-desc">
-                <?php if (isset($errors['username'])): ?>
-                    <p class="form-group__error">
-                        <span class="sr-only"><?= _('Error') ?></span>
-                        <?= $errors['username'] ?>
-                    </p>
+                <?php if ($form->isInvalid('username')): ?>
+                    aria-errormessage="username-error"
+                    aria-invalid="true"
                 <?php endif; ?>
-            </div>
+            />
         </div>
 
-        <div class="form-group <?= isset($errors['email']) ? 'form-group--invalid' : '' ?>">
+        <div class="form-group">
             <label for="email">
                 <?= _('Your email address') ?>
             </label>
+
+            <?php if ($form->isInvalid('email')): ?>
+                <p id="email-error" class="form-group__error">
+                    <?= _('Error:') ?>
+                    <?= $form->error('email') ?>
+                </p>
+            <?php endif; ?>
 
             <input
                 id="email"
                 name="email"
                 type="email"
-                value="<?= $email ?>"
+                value="<?= protect($form->email) ?>"
                 required
                 autocomplete="email"
-                aria-describedby="email-desc"
+                aria-describedby="email-caption"
+                <?php if ($form->isInvalid('email')): ?>
+                    aria-errormessage="email-error"
+                    aria-invalid="true"
+                <?php endif; ?>
             />
 
-            <div id="email-desc">
-                <?php if (isset($errors['email'])): ?>
-                    <p class="form-group__error">
-                        <span class="sr-only"><?= _('Error') ?></span>
-                        <?= $errors['email'] ?>
-                    </p>
-                <?php endif; ?>
-
-                <p class="form-group__caption">
-                    <?= _('We only send emails necessary for the operation of the service, or in the event of a problem with your account.') ?>
-                </p>
-            </div>
+            <p id="email-caption" class="form-group__caption">
+                <?= _('We only send emails necessary for the operation of the service, or in the event of a problem with your account.') ?>
+            </p>
         </div>
 
-        <div class="form-group <?= isset($errors['password_hash']) ? 'form-group--invalid' : '' ?>">
+        <div class="form-group">
             <label for="new-password">
                 <?= _('And a password') ?>
                 <span class="label__help">
@@ -92,16 +101,26 @@
                 </span>
             </label>
 
+            <?php if ($form->isInvalid('password_hash')): ?>
+                <p id="password-error" class="form-group__error">
+                    <?= _('Error:') ?>
+                    <?= $form->error('password_hash') ?>
+                </p>
+            <?php endif; ?>
+
             <div class="form-group__stack" data-controller="input-password">
                 <input
                     id="new-password"
                     name="password"
                     type="password"
-                    value="<?= $password ?>"
+                    value=""
                     required
                     data-input-password-target="input"
                     autocomplete="new-password"
-                    aria-describedby="password-desc"
+                    <?php if ($form->isInvalid('password_hash')): ?>
+                        aria-errormessage="password-error"
+                        aria-invalid="true"
+                    <?php endif; ?>
                 />
 
                 <button
@@ -114,15 +133,6 @@
                     <?= icon('eye') ?>
                     <?= _('Show') ?>
                 </button>
-            </div>
-
-            <div id="password-desc">
-                <?php if (isset($errors['password_hash'])): ?>
-                    <p class="form-group__error">
-                        <span class="sr-only"><?= _('Error') ?></span>
-                        <?= $errors['password_hash'] ?>
-                    </p>
-                <?php endif; ?>
             </div>
         </div>
 
@@ -138,27 +148,29 @@
             </label>
         </div>
 
-        <?php if ($has_terms): ?>
-            <div class="form-group form-group--terms <?= isset($errors['accept_terms']) ? 'form-group--invalid' : '' ?>">
-                <div id="accept-terms-desc">
-                    <?php if (isset($errors['accept_terms'])): ?>
-                        <p class="form-group__error">
-                            <span class="sr-only"><?= _('Error') ?></span>
-                            <?= $errors['accept_terms'] ?>
-                        </p>
-                    <?php endif; ?>
-
-                    <p class="form-group__caption">
-                        <?= _f('Before going any further, please read <a href="%s" target="_blank">the general terms and conditions of service and use</a> to make sure they are suitable for you.', url('terms')) ?>
+        <?php if ($form->hasTerms()): ?>
+            <div class="form-group form-group--terms">
+                <?php if ($form->isInvalid('accept_terms')): ?>
+                    <p id="accept-terms-error" class="form-group__error">
+                        <?= _('Error:') ?>
+                        <?= $form->error('accept_terms') ?>
                     </p>
-                </div>
+                <?php endif; ?>
+
+                <p id="accept-terms-caption" class="form-group__caption">
+                    <?= _f('Before going any further, please read <a href="%s" target="_blank">the general terms and conditions of service and use</a> to make sure they are suitable for you.', url('terms')) ?>
+                </p>
 
                 <input
                     type="checkbox"
                     id="accept-terms"
                     name="accept_terms"
                     required
-                    aria-describedby="accept-terms-desc"
+                    aria-describedby="accept-terms-caption"
+                    <?php if ($form->isInvalid('accept_terms')): ?>
+                        aria-errormessage="accept-terms-error"
+                        aria-invalid="true"
+                    <?php endif; ?>
                 />
 
                 <label class="label--checkbox" for="accept-terms">

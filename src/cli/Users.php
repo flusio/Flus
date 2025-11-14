@@ -74,12 +74,19 @@ class Users
         $email = $request->parameters->getString('email', '');
         $password = $request->parameters->getString('password', '');
 
-        try {
-            $user = services\UserCreator::create($username, $email, $password);
-        } catch (services\UserCreatorError $e) {
-            $errors = implode(' ', $e->errors());
+        $user = new models\User();
+        $user->setUsername($username);
+        $user->setEmail($email);
+        $user->setPassword($password);
+
+        if (!$user->validate()) {
+            $errors = implode(' ', $user->errors());
             return Response::text(400, "User creation failed: {$errors}");
         }
+
+        $user->save();
+
+        services\UserService::initializeData($user);
 
         // Immediately validate the user since we created it manually
         $user->validated_at = \Minz\Time::now();

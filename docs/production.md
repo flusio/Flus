@@ -367,7 +367,7 @@ locale of a user created via the CLI or seeds for instance.
 If you need to configure a demo server (this is probably NOT the case), you can
 simply set the `APP_DEMO` variable to `true` in the `.env` file. It will add a
 banner at the top of the screen to warn users that data are reset every night.
-It will also consider the account with the `demo@flus.io` email as the demo
+It will also consider the account with the `demo@flus.fr` email as the demo
 account. The reset is done through a scheduled job managed by Flus.
 
 ## Optional: Enable subscriptions

@@ -68,10 +68,10 @@ class Cleaner extends \Minz\Job
             // reinitialize the support user
             models\User::supportUser();
 
-            // Initialize a default (validated) user
-            $user = services\UserCreator::create('Alix', 'demo@flus.io', 'demo');
-            $user->validated_at = \Minz\Time::now();
+            // Initialize a default user
+            $user = models\User::demoUser();
             $user->save();
+            services\UserService::initializeData($user);
         }
     }
 }

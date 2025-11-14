@@ -14,7 +14,7 @@ use Minz\Form;
  */
 class Profile extends BaseForm
 {
-    #[Form\Field(transform: 'trim')]
+    #[Form\Field(bind: 'setUsername')]
     public string $username = '';
 
     public int $username_max_length = models\User::USERNAME_MAX_LENGTH;

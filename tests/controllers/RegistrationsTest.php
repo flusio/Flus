@@ -3,12 +3,14 @@
 namespace App\controllers;
 
 use App\auth;
+use App\forms;
 use App\models;
 use tests\factories\UserFactory;
 
 class RegistrationsTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\CsrfHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\MailerAsserts;
     use \Minz\Tests\ResponseAsserts;
@@ -47,7 +49,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\User::count());
 
         $response = $this->appRun('POST', '/registration', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Registration::class),
             'username' => $this->fake('name'),
             'email' => $this->fake('email'),
             'password' => $this->fake('password'),
@@ -64,7 +66,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Token::count());
 
         $response = $this->appRun('POST', '/registration', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Registration::class),
             'username' => $this->fake('name'),
             'email' => $this->fake('email'),
             'password' => $this->fake('password'),
@@ -91,7 +93,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertEmailsCount(0);
 
         $response = $this->appRun('POST', '/registration', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Registration::class),
             'username' => $this->fake('name'),
             'email' => $email,
             'password' => $this->fake('password'),
@@ -118,7 +120,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Session::count());
 
         $response = $this->appRun('POST', '/registration', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Registration::class),
             'username' => $this->fake('name'),
             'email' => $email,
             'password' => $this->fake('password'),
@@ -133,7 +135,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
     public function testCreateReturnsACookie(): void
     {
         $response = $this->appRun('POST', '/registration', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Registration::class),
             'username' => $this->fake('name'),
             'email' => $this->fake('email'),
             'password' => $this->fake('password'),
@@ -154,7 +156,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         file_put_contents($terms_path, $this->fake('sentence'));
 
         $response = $this->appRun('POST', '/registration', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Registration::class),
             'username' => $this->fake('name'),
             'email' => $this->fake('email'),
             'password' => $this->fake('password'),
@@ -188,7 +190,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $email = $this->fake('email');
 
         $response = $this->appRun('POST', '/registration', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Registration::class),
             'username' => $this->fake('name'),
             'email' => $email,
             'password' => $this->fake('password'),
@@ -226,7 +228,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $email = $this->fake('email');
 
         $response = $this->appRun('POST', '/registration', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Registration::class),
             'username' => $this->fake('name'),
             'email' => $email,
             'password' => $this->fake('password'),
@@ -250,7 +252,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\User::count());
 
         $response = $this->appRun('POST', '/registration', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Registration::class),
             'username' => $this->fake('name'),
             'email' => $this->fake('email'),
             'password' => $this->fake('password'),
@@ -265,7 +267,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Collection::count());
 
         $response = $this->appRun('POST', '/registration', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Registration::class),
             'username' => $this->fake('name'),
             'email' => $this->fake('email'),
             'password' => $this->fake('password'),
@@ -302,7 +304,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         \App\Configuration::$application['registrations_opened'] = false;
 
         $response = $this->appRun('POST', '/registration', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Registration::class),
             'username' => $this->fake('name'),
             'email' => $this->fake('email'),
             'password' => $this->fake('password'),
@@ -318,7 +320,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         \App\Csrf::generate();
 
         $response = $this->appRun('POST', '/registration', [
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
             'username' => $this->fake('name'),
             'email' => $this->fake('email'),
             'password' => $this->fake('password'),
@@ -332,7 +334,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfUsernameIsMissing(): void
     {
         $response = $this->appRun('POST', '/registration', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Registration::class),
             'email' => $this->fake('email'),
             'password' => $this->fake('password'),
         ]);
@@ -345,7 +347,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfUsernameIsTooLong(): void
     {
         $response = $this->appRun('POST', '/registration', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Registration::class),
             'username' => $this->fake('sentence', 50, false),
             'email' => $this->fake('email'),
             'password' => $this->fake('password'),
@@ -361,7 +363,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $username = $this->fake('name');
         $response = $this->appRun('POST', '/registration', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Registration::class),
             'username' => $username . '@',
             'email' => $this->fake('email'),
             'password' => $this->fake('password'),
@@ -375,7 +377,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfEmailIsMissing(): void
     {
         $response = $this->appRun('POST', '/registration', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Registration::class),
             'username' => $this->fake('name'),
         ]);
 
@@ -387,7 +389,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfEmailIsInvalid(): void
     {
         $response = $this->appRun('POST', '/registration', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Registration::class),
             'username' => $this->fake('name'),
             'email' => $this->fake('word'),
             'password' => $this->fake('password'),
@@ -408,7 +410,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/registration', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Registration::class),
             'username' => $this->fake('name'),
             'email' => $email,
             'password' => $this->fake('password'),
@@ -422,7 +424,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfPasswordIsMissing(): void
     {
         $response = $this->appRun('POST', '/registration', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Registration::class),
             'username' => $this->fake('name'),
             'email' => $this->fake('email'),
         ]);
@@ -439,7 +441,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         file_put_contents($terms_path, $this->fake('sentence'));
 
         $response = $this->appRun('POST', '/registration', [
-            'csrf' => \App\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Registration::class),
             'username' => $this->fake('name'),
             'email' => $this->fake('email'),
             'password' => $this->fake('password'),

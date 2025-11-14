@@ -348,7 +348,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
     {
         \App\Configuration::$application['demo'] = true;
 
-        $old_email = 'demo@flus.io';
+        $old_email = models\User::DEMO_EMAIL;
         /** @var string */
         $new_email = $this->fake('email');
         /** @var string */

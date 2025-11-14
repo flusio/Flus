@@ -40,6 +40,11 @@ class Configuration extends \Minz\Configuration
      */
     public static array $application;
 
+    public static function areRegistrationsOpened(): bool
+    {
+        return self::$application['registrations_opened'];
+    }
+
     public static function areSubscriptionsEnabled(): bool
     {
         return self::$application['subscriptions_enabled'];

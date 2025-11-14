@@ -19,7 +19,7 @@ class Credentials extends BaseForm
 {
     use DemoDisabler;
 
-    #[Form\Field(transform: '\Minz\Email::sanitize')]
+    #[Form\Field(bind: 'setEmail')]
     public string $email = '';
 
     #[Form\Field(bind: 'changePassword')]

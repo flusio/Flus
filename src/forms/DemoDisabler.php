@@ -15,7 +15,7 @@ trait DemoDisabler
     public function checkNotDemoAccount(): void
     {
         $user = auth\CurrentUser::get();
-        if (\App\Configuration::isDemoEnabled() && $user && $user->isDemoAccount()) {
+        if (\App\Configuration::isDemoEnabled() && $user && $user->isDemoUser()) {
             $this->addError(
                 '@base',
                 'demo_account',

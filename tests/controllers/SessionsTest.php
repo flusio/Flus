@@ -55,7 +55,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
 
         \App\Configuration::$application['demo'] = false;
         $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, 'demo@flus.io');
+        $this->assertResponseContains($response, models\User::DEMO_EMAIL);
     }
 
     public function testCreateLogsTheUserInAndRedirectToHome(): void

@@ -3,6 +3,7 @@
 namespace App\controllers;
 
 use App\auth;
+use App\forms;
 use App\mailers;
 use App\models;
 use App\services;
@@ -21,11 +22,12 @@ class Registrations extends BaseController
     /**
      * Show the registration form.
      *
-     * @response 302 / if connected
-     * @response 302 /login if registrations are closed
+     * @response 302 /
+     *     If the user is connected.
+     * @response 302 /login
+     *     If the registrations are closed.
      * @response 200
-     *
-     * @return \Minz\Response
+     *     On sucess.
      */
     public function new(): Response
     {
@@ -33,42 +35,35 @@ class Registrations extends BaseController
             return Response::redirect('home');
         }
 
-        $app_conf = \App\Configuration::$application;
-        if (!$app_conf['registrations_opened']) {
+        if (!\App\Configuration::areRegistrationsOpened()) {
             return Response::redirect('login');
         }
 
-        $app_path = \App\Configuration::$app_path;
-        $terms_path = $app_path . '/policies/terms.html';
-        $has_terms = file_exists($terms_path);
+        $form = new forms\Registration();
 
         return Response::ok('registrations/new.phtml', [
-            'has_terms' => $has_terms,
-            'username' => '',
-            'email' => '',
-            'password' => '',
-            'subscriptions_enabled' => $app_conf['subscriptions_enabled'],
-            'subscriptions_host' => $app_conf['subscriptions_host'],
+            'form' => $form,
         ]);
     }
 
     /**
      * Create a user.
      *
-     * @request_param string csrf
      * @request_param string email
      * @request_param string username
      * @request_param string password
      * @request_param bool accept_terms
      * @request_param bool accept_contact
+     * @request_param string csrf_token
      *
-     * @response 302 / if already connected
-     * @response 302 /login if registrations are closed
-     * @response 400 if CSRF token is wrong
-     * @response 400 if email, username or password is missing/invalid
-     * @response 400 if the service has terms of service and accept_terms is false
-     * @response 400 if email already exists
+     * @response 302 /
+     *     If the user is connected.
+     * @response 302 /login
+     *     If the registrations are closed.
+     * @response 400
+     *     If at least one of the parameters is invalid.
      * @response 302 /onboarding
+     *     On sucess.
      */
     public function create(Request $request): Response
     {
@@ -76,63 +71,24 @@ class Registrations extends BaseController
             return Response::redirect('home');
         }
 
-        $app_conf = \App\Configuration::$application;
-        if (!$app_conf['registrations_opened']) {
+        if (!\App\Configuration::areRegistrationsOpened()) {
             return Response::redirect('login');
         }
 
-        $app_path = \App\Configuration::$app_path;
-        $terms_path = $app_path . '/policies/terms.html';
-        $has_terms = file_exists($terms_path);
+        $user = new models\User();
+        $form = new forms\Registration(model: $user);
+        $form->handleRequest($request);
 
-        $username = $request->parameters->getString('username', '');
-        $email = $request->parameters->getString('email', '');
-        $password = $request->parameters->getString('password', '');
-        $accept_terms = $request->parameters->getBoolean('accept_terms');
-        $accept_contact = $request->parameters->getBoolean('accept_contact');
-        $csrf = $request->parameters->getString('csrf', '');
-
-        if (!\App\Csrf::validate($csrf)) {
+        if (!$form->validate()) {
             return Response::badRequest('registrations/new.phtml', [
-                'has_terms' => $has_terms,
-                'username' => $username,
-                'email' => $email,
-                'password' => $password,
-                'subscriptions_enabled' => $app_conf['subscriptions_enabled'],
-                'subscriptions_host' => $app_conf['subscriptions_host'],
-                'error' => _('A security verification failed: you should retry to submit the form.'),
+                'form' => $form,
             ]);
         }
 
-        if ($has_terms && !$accept_terms) {
-            return Response::badRequest('registrations/new.phtml', [
-                'has_terms' => $has_terms,
-                'username' => $username,
-                'email' => $email,
-                'password' => $password,
-                'subscriptions_enabled' => $app_conf['subscriptions_enabled'],
-                'subscriptions_host' => $app_conf['subscriptions_host'],
-                'errors' => [
-                    'accept_terms' => _('You must accept the terms of service.'),
-                ],
-            ]);
-        }
+        $user = $form->model();
+        $user->save();
 
-        try {
-            $user = services\UserCreator::create($username, $email, $password);
-        } catch (services\UserCreatorError $e) {
-            return Response::badRequest('registrations/new.phtml', [
-                'has_terms' => $has_terms,
-                'username' => $username,
-                'email' => $email,
-                'password' => $password,
-                'subscriptions_enabled' => $app_conf['subscriptions_enabled'],
-                'subscriptions_host' => $app_conf['subscriptions_host'],
-                'errors' => $e->errors(),
-            ]);
-        }
-
-        $user->accept_contact = $accept_contact;
+        services\UserService::initializeData($user);
 
         // Initialize the validation token
         $validation_token = new models\Token(1, 'day', 16);

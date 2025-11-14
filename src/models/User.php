@@ -23,6 +23,10 @@ class User
 
     public const USERNAME_MAX_LENGTH = 50;
 
+    public const DEMO_EMAIL = 'demo@flus.fr';
+    public const DEMO_USERNAME = 'Alix Hambourg';
+    public const DEMO_PASSWORD = 'demo';
+
     #[Database\Column]
     public string $id;
 
@@ -106,18 +110,51 @@ class User
     #[Database\Column]
     public bool $accept_contact;
 
-    public function __construct(string $username, string $email, string $password)
+    public function __construct()
     {
         $this->id = \Minz\Random::timebased();
         $this->subscription_expired_at = \Minz\Time::fromNow(1, 'month');
         $this->last_activity_at = \Minz\Time::now();
-        $this->username = trim($username);
-        $this->email = \Minz\Email::sanitize($email);
-        $this->password_hash = self::passwordHash($password);
-        $this->locale = utils\Locale::DEFAULT_LOCALE;
+        $this->username = '';
+        $this->email = '';
+        $this->password_hash = '';
+        $this->locale = utils\Locale::currentLocale();
         $this->csrf = \Minz\Random::hex(64);
         $this->autoload_modal = '';
         $this->option_compact_mode = false;
+    }
+
+    public function setUsername(string $username): void
+    {
+        $this->username = trim($username);
+    }
+
+    public function setEmail(string $email): void
+    {
+        $this->email = \Minz\Email::sanitize($email);
+    }
+
+    public static function demoUser(): self
+    {
+        return self::findOrCreateBy([
+            'email' => self::DEMO_EMAIL,
+        ], [
+            'id' => \Minz\Random::timebased(),
+            'username' => self::DEMO_USERNAME,
+            'password_hash' => self::passwordHash(self::DEMO_PASSWORD),
+            'locale' => utils\Locale::currentLocale(),
+            'validated_at' => \Minz\Time::now(),
+        ]);
+    }
+
+    /**
+     * Return whether the user is the demo account.
+     *
+     * It can return true even if demo is not enabled.
+     */
+    public function isDemoUser(): bool
+    {
+        return $this->email === self::DEMO_EMAIL;
     }
 
     public static function supportUser(): self
@@ -627,12 +664,20 @@ class User
     }
 
     /**
+     * Set the user password.
+     */
+    public function setPassword(string $password): void
+    {
+        $this->password_hash = self::passwordHash($password);
+    }
+
+    /**
      * Change the user password if $password is not empty.
      */
     public function changePassword(string $password): void
     {
         if ($password) {
-            $this->password_hash = self::passwordHash($password);
+            $this->setPassword($password);
         }
     }
 
@@ -742,16 +787,6 @@ class User
         return MastodonAccount::existsBy([
             'user_id' => $this->id,
         ]);
-    }
-
-    /**
-     * Return whether the user is the demo account.
-     *
-     * It can return true even if demo is not enabled.
-     */
-    public function isDemoAccount(): bool
-    {
-        return $this->email === 'demo@flus.io';
     }
 
     /**

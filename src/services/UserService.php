@@ -6,37 +6,16 @@ use App\models;
 use App\utils;
 
 /**
- * This service helps to create users with default data.
- *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class UserCreator
+class UserService
 {
     /**
-     * Create a user with default data.
-     *
-     * @throws UserCreatorError
-     *     If username, email or password is invalid, or if a user already
-     *     exists with this email.
+     * Initialize a user with default data.
      */
-    public static function create(string $username, string $email, string $password): models\User
+    public static function initializeData(models\User $user): void
     {
-        $user = new models\User($username, $email, $password);
-        $user->locale = utils\Locale::currentLocale();
-
-        if (!$user->validate()) {
-            throw new UserCreatorError($user->errors());
-        }
-
-        if (models\User::findBy(['email' => $user->email])) {
-            throw new UserCreatorError([
-                'email' => _('An account already exists with this email address.'),
-            ]);
-        }
-
-        $user->save();
-
         // Init default collections
         $bookmarks = $user->bookmarks();
         $user->news();
@@ -74,7 +53,5 @@ class UserCreator
                 // (the user actually exists and is functional)
             }
         }
-
-        return $user;
     }
 }

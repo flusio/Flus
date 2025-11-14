@@ -27,9 +27,9 @@ class Login extends BaseForm
      */
     public function __construct(array $default_values = [])
     {
-        if (\App\Configuration::$application['demo']) {
-            $default_values['email'] = 'demo@flus.io';
-            $default_values['password'] = 'demo';
+        if (\App\Configuration::isDemoEnabled()) {
+            $default_values['email'] = models\User::DEMO_EMAIL;
+            $default_values['password'] = models\User::DEMO_PASSWORD;
         }
 
         parent::__construct($default_values);

@@ -635,8 +635,8 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $demo_user = models\User::take(1);
         $this->assertNotNull($demo_user);
         $this->assertNotSame($user->id, $demo_user->id);
-        $this->assertSame('demo@flus.io', $demo_user->email);
-        $this->assertTrue($demo_user->verifyPassword('demo'));
+        $this->assertSame(models\User::DEMO_EMAIL, $demo_user->email);
+        $this->assertTrue($demo_user->verifyPassword(models\User::DEMO_PASSWORD));
         $this->assertFalse(models\Collection::exists($collection->id));
         $bookmarks = models\Collection::findBy([
             'user_id' => $demo_user->id,

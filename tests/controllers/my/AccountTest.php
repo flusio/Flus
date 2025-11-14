@@ -313,7 +313,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $password = $this->fake('password');
         $user = $this->login([
-            'email' => 'demo@flus.io',
+            'email' => models\User::DEMO_EMAIL,
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
         ]);
 

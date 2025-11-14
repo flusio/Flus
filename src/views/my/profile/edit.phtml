@@ -95,6 +95,7 @@
                 value="<?= protect($form_profile->username) ?>"
                 maxlength="<?= $form_profile->username_max_length ?>"
                 required
+                autocomplete="nickname"
                 <?php if ($form_profile->isInvalid('username')): ?>
                     aria-errormessage="username-error"
                     aria-invalid="true"
