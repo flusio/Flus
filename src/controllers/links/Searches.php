@@ -78,12 +78,14 @@ class Searches extends BaseController
         $link = $form->link();
         if (!$link->isPersisted()) {
             $link_fetcher_service->fetch($link);
+            $link->save();
         }
 
         $feeds = $form->feeds();
         foreach ($feeds as $feed) {
             if (!$feed->isPersisted()) {
                 $feed_fetcher_service->fetch($feed);
+                $feed->save();
             }
         }
 

@@ -4,6 +4,7 @@ namespace App\forms\api;
 
 use App\models;
 use App\services;
+use App\utils;
 use Minz\Form;
 use Minz\Validable;
 
@@ -13,17 +14,14 @@ use Minz\Validable;
  */
 class Search extends Form
 {
+    use utils\Memoizer;
+
     #[Form\Field(transform: '\SpiderBits\Url::sanitize')]
     #[Validable\Presence(message: 'The link is required.')]
     #[Validable\Url(message: 'The link is invalid.')]
     public string $url = '';
 
     private models\User $user;
-
-    private ?models\Link $cached_link = null;
-
-    /** @var ?models\Collection[] */
-    private ?array $cached_feeds = null;
 
     public function __construct(models\User $user)
     {
@@ -34,25 +32,17 @@ class Search extends Form
 
     public function link(): models\Link
     {
-        if ($this->cached_link !== null) {
-            return $this->cached_link;
-        }
+        return $this->memoize('link', function (): models\Link {
+            $link = $this->user->findOrBuildLink($this->url);
 
-        $link = models\Link::findBy([
-            'user_id' => $this->user->id,
-            'url_hash' => models\Link::hashUrl($this->url),
-        ]);
+            if (!$link->isPersisted()) {
+                $link_fetcher_service = new services\LinkFetcher();
+                $link_fetcher_service->fetch($link);
+                $link->save();
+            }
 
-        if (!$link) {
-            $link = new models\Link($this->url, $this->user->id);
-
-            $link_fetcher_service = new services\LinkFetcher();
-            $link_fetcher_service->fetch($link);
-        }
-
-        $this->cached_link = $link;
-
-        return $link;
+            return $link;
+        });
     }
 
     /**
@@ -60,33 +50,25 @@ class Search extends Form
      */
     public function feeds(): array
     {
-        if ($this->cached_feeds !== null) {
-            return $this->cached_feeds;
-        }
+        return $this->memoize('feeds', function (): array {
+            $link = $this->link();
+            $feeds = [];
 
-        $link = $this->link();
-        $feeds = [];
+            $support_user = models\User::supportUser();
+            $feed_fetcher_service = new services\FeedFetcher();
 
-        $support_user = models\User::supportUser();
-        $feed_fetcher_service = new services\FeedFetcher();
+            foreach ($link->url_feeds as $feed_url) {
+                $feed = models\Collection::findOrBuildFeed($feed_url);
 
-        foreach ($link->url_feeds as $feed_url) {
-            $feed = models\Collection::findBy([
-                'type' => 'feed',
-                'feed_url' => $feed_url,
-                'user_id' => $support_user->id,
-            ]);
+                if (!$feed->isPersisted()) {
+                    $feed_fetcher_service->fetch($feed);
+                    $feed->save();
+                }
 
-            if (!$feed) {
-                $feed = models\Collection::initFeed($support_user->id, $feed_url);
-                $feed_fetcher_service->fetch($feed);
+                $feeds[] = $feed;
             }
 
-            $feeds[] = $feed;
-        }
-
-        $this->cached_feeds = $feeds;
-
-        return $feeds;
+            return $feeds;
+        });
     }
 }

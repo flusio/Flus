@@ -53,6 +53,7 @@ class NewFeed extends BaseForm
             'ignore_rate_limit' => true,
         ]);
         $link_fetcher_service->fetch($link);
+        $link->save();
 
         $this->autodiscovering_link = $link;
     }

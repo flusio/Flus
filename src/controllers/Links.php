@@ -213,6 +213,7 @@ class Links extends BaseController
                 'ignore_rate_limit' => true,
             ]);
             $link_fetcher_service->fetch($link);
+            $link->save();
         }
 
         $link_collections = $form->selectedCollections();

@@ -99,6 +99,7 @@ class Repairing extends BaseController
             'force_sync' => $form->force_sync,
         ]);
         $link_fetcher_service->fetch($link);
+        $link->save();
 
         // Add the old link to the never list. It avoids to a link coming from
         // the news to reappear.
