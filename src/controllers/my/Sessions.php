@@ -33,7 +33,6 @@ class Sessions extends BaseController
         auth\CurrentUser::requireConfirmedPassword();
 
         $session = auth\CurrentUser::session();
-        assert($session !== null);
 
         $sessions = models\Session::listBy([
             'user_id' => $user->id,
@@ -86,7 +85,6 @@ class Sessions extends BaseController
         $response = Response::redirect('sessions');
 
         $current_session = auth\CurrentUser::session();
-        assert($current_session !== null);
 
         if ($session->id === $current_session->id) {
             auth\CurrentUser::deleteSession();

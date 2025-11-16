@@ -156,7 +156,6 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
 
-        $this->assertNotNull($current_session);
         $this->assertSame(2, models\Session::count());
 
         $response = $this->appRun('POST', '/my/security', [
@@ -421,7 +420,6 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/my/security');
         $session = auth\CurrentUser::session();
-        $this->assertNotNull($session);
         $now = \Minz\Time::now();
         $this->assertEquals($now, $session->confirmed_password_at);
     }
@@ -461,7 +459,6 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'A security verification failed');
         $this->assertResponseTemplateName($response, 'my/security/confirmation.phtml');
         $session = auth\CurrentUser::session();
-        $this->assertNotNull($session);
         $this->assertNull($session->confirmed_password_at);
     }
 
@@ -483,7 +480,6 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'The password is incorrect.');
         $this->assertResponseTemplateName($response, 'my/security/confirmation.phtml');
         $session = auth\CurrentUser::session();
-        $this->assertNotNull($session);
         $this->assertNull($session->confirmed_password_at);
     }
 }

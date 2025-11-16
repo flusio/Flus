@@ -89,8 +89,6 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login(confirmed_password_at: $confirmed_at);
         $session = auth\CurrentUser::session();
 
-        $this->assertNotNull($session);
-
         $response = $this->appRun('POST', "/my/sessions/{$session->id}/deletion", [
             'csrf_token' => $this->csrfToken(forms\security\DeleteSession::class),
         ]);

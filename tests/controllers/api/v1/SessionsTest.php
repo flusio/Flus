@@ -34,7 +34,6 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $current_user = auth\CurrentUser::get();
         $session = auth\CurrentUser::session();
         $this->assertNotNull($current_user);
-        $this->assertNotNull($session);
         $this->assertSame($user->id, $current_user->id);
         $this->assertSame($app_name, $session->name);
         $this->assertApiResponse($response, [
@@ -63,9 +62,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $current_user = auth\CurrentUser::get();
-        $session = auth\CurrentUser::session();
         $this->assertNull($current_user);
-        $this->assertNull($session);
         $this->assertApiError(
             $response,
             'app_name',
@@ -94,9 +91,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $current_user = auth\CurrentUser::get();
-        $session = auth\CurrentUser::session();
         $this->assertNull($current_user);
-        $this->assertNull($session);
         $this->assertApiError(
             $response,
             '@base',
@@ -125,9 +120,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $current_user = auth\CurrentUser::get();
-        $session = auth\CurrentUser::session();
         $this->assertNull($current_user);
-        $this->assertNull($session);
         $this->assertApiError(
             $response,
             '@base',
@@ -139,8 +132,6 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $session = auth\CurrentUser::session();
-
-        $this->assertNotNull($session);
 
         $response = $this->apiRun('DELETE', '/api/v1/session');
 

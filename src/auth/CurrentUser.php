@@ -147,6 +147,14 @@ class CurrentUser
     }
 
     /**
+     * Return whether the user is logged-in or not.
+     */
+    public static function isLoggedIn(): bool
+    {
+        return self::$instance !== null && self::$session !== null;
+    }
+
+    /**
      * Return the logged-in user if any.
      */
     public static function get(): ?models\User
@@ -172,10 +180,17 @@ class CurrentUser
     }
 
     /**
-     * Return the current session if any.
+     * Return the current session.
+     *
+     * @throws MissingCurrentUserError
+     *     If the user is not logged-in.
      */
-    public static function session(): ?models\Session
+    public static function session(): models\Session
     {
+        if (!self::$session) {
+            throw new MissingCurrentUserError('Session does not exist.');
+        }
+
         return self::$session;
     }
 
@@ -190,11 +205,6 @@ class CurrentUser
     public static function requireConfirmedPassword(): void
     {
         $session = self::session();
-
-        if (!$session) {
-            throw new MissingCurrentUserError();
-        }
-
         if (!$session->isPasswordConfirmed()) {
             throw new PasswordNotConfirmedError();
         }

@@ -82,7 +82,6 @@ class Security extends BaseController
                 models\Token::delete($user->reset_token);
             }
             $session = auth\CurrentUser::session();
-            assert($session !== null);
             models\Session::deleteByUserId($user->id, $session->id);
         }
 
@@ -147,8 +146,6 @@ class Security extends BaseController
         }
 
         $session = auth\CurrentUser::session();
-        assert($session !== null);
-
         $session->confirmPassword();
 
         return Response::found($form->redirect_to);

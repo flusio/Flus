@@ -78,7 +78,6 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($current_user);
         $this->assertSame($user->id, $current_user->id);
         $current_session = CurrentUser::session();
-        $this->assertNotNull($current_session);
         $this->assertSame($session->id, $current_session->id);
     }
 
@@ -98,8 +97,6 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
 
         $current_user = CurrentUser::get();
         $this->assertNull($current_user);
-        $current_session = CurrentUser::session();
-        $this->assertNull($current_session);
     }
 
     public function testAuthenticateDoesNotLogInIfTokenIsInvalidated(): void
@@ -119,8 +116,6 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
 
         $current_user = CurrentUser::get();
         $this->assertNull($current_user);
-        $current_session = CurrentUser::session();
-        $this->assertNull($current_session);
     }
 
     public function testAuthenticateDoesNotLogInIfScopeDoesNotMatch(): void
@@ -139,8 +134,6 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
 
         $current_user = CurrentUser::get();
         $this->assertNull($current_user);
-        $current_session = CurrentUser::session();
-        $this->assertNull($current_session);
     }
 
     public function testAuthenticateFailsWithSupportUser(): void
