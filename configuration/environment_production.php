@@ -66,6 +66,7 @@ return [
         'plausible_url' => $dotenv->pop('APP_PLAUSIBLE_URL', ''),
         'bileto_url' => $dotenv->pop('APP_BILETO_URL', ''),
         'bileto_api_token' => $dotenv->pop('APP_BILETO_API_TOKEN', ''),
+        'password_hash_cost' => 12,
     ],
 
     'database' => [

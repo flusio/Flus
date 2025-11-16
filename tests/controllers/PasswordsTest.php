@@ -342,7 +342,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create([
             'email' => $email,
             'reset_token' => $token->token,
-            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($old_password),
         ]);
 
         $response = $this->appRun('POST', '/password/edit', [
@@ -373,7 +373,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create([
             'email' => $email,
             'reset_token' => $token->token,
-            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($old_password),
         ]);
 
         $response = $this->appRun('POST', '/password/edit', [
@@ -405,7 +405,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create([
             'email' => $email,
             'reset_token' => $token->token,
-            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($old_password),
         ]);
         $session = SessionFactory::create([
             'user_id' => $user->id,
@@ -449,7 +449,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create([
             'email' => $email,
             'reset_token' => $token->token,
-            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($old_password),
         ]);
 
         $response = $this->appRun('POST', '/password/edit', [
@@ -475,7 +475,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         $new_password = $this->fakeUnique('password');
         $user = UserFactory::create([
             'email' => $email,
-            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($old_password),
         ]);
 
         $response = $this->appRun('POST', '/password/edit', [
@@ -505,7 +505,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         $new_password = $this->fakeUnique('password');
         $user = UserFactory::create([
             'email' => $email,
-            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($old_password),
         ]);
 
         $response = $this->appRun('POST', '/password/edit', [
@@ -536,7 +536,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create([
             'email' => $email,
             'reset_token' => $token->token,
-            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($old_password),
         ]);
 
         $response = $this->appRun('POST', '/password/edit', [
@@ -572,7 +572,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create([
             'email' => $email,
             'reset_token' => $token->token,
-            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($old_password),
         ]);
 
         $response = $this->appRun('POST', '/password/edit', [
@@ -604,7 +604,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create([
             'email' => $email,
             'reset_token' => $token->token,
-            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($old_password),
         ]);
 
         $response = $this->appRun('POST', '/password/edit', [
@@ -637,7 +637,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create([
             'email' => $email,
             'reset_token' => $token->token,
-            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($old_password),
         ]);
 
         $response = $this->appRun('POST', '/password/edit', [

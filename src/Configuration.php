@@ -26,6 +26,7 @@ namespace App;
  *     'plausible_url': string,
  *     'bileto_url': string,
  *     'bileto_api_token': string,
+ *     'password_hash_cost': int,
  *     'mock_host'?: string,
  * }
  *

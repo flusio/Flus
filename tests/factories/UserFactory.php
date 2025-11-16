@@ -48,7 +48,7 @@ class UserFactory extends Database\Factory
             },
 
             'password_hash' => function () use ($faker): string {
-                return password_hash($faker->password, PASSWORD_BCRYPT);
+                return models\User::passwordHash($faker->password);
             },
 
             // Force the value to facilitate the tests (i.e. we would have to

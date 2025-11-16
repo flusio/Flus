@@ -66,7 +66,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $password = $this->fake('password');
         $user = UserFactory::create([
             'email' => $email,
-            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($password),
         ]);
 
         $current_user = auth\CurrentUser::get();
@@ -92,7 +92,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $password = $this->fake('password');
         $user = UserFactory::create([
             'email' => $email,
-            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($password),
         ]);
 
         $response = $this->appRun('POST', '/login', [
@@ -121,7 +121,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $password = $this->fake('password');
         $user = UserFactory::create([
             'email' => $email,
-            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($password),
         ]);
 
         $this->assertSame(0, models\Session::count());
@@ -165,7 +165,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $password = $this->fake('password');
         $user = $this->login([
             'email' => $email,
-            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($password),
         ]);
 
         $number_tokens = models\Session::count();
@@ -188,7 +188,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $password = $this->fake('password');
         $user = UserFactory::create([
             'email' => $email,
-            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($password),
         ]);
 
         $response = $this->appRun('POST', '/login', [
@@ -209,7 +209,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $password = $this->fake('password');
         $user = UserFactory::create([
             'email' => $email,
-            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($password),
         ]);
         $redirect_to = 'https://example.com/about';
 
@@ -231,7 +231,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $password = $this->fake('password');
         $user = UserFactory::create([
             'email' => strtolower($email),
-            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($password),
         ]);
 
         $current_user = auth\CurrentUser::get();
@@ -257,7 +257,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $password = $this->fake('password');
         $user = UserFactory::create([
             'email' => $email,
-            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($password),
         ]);
 
         $response = $this->appRun('POST', '/login', [
@@ -279,7 +279,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $password = $this->fake('password');
         $user = UserFactory::create([
             'email' => $email,
-            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($password),
         ]);
 
         $response = $this->appRun('POST', '/login', [
@@ -300,7 +300,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $password = $this->fake('password');
         $user = UserFactory::create([
             'email' => $email,
-            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($password),
         ]);
 
         $response = $this->appRun('POST', '/login', [
@@ -322,7 +322,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $password = $this->fake('password');
         $user = UserFactory::create([
             'email' => $email,
-            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($password),
         ]);
 
         $response = $this->appRun('POST', '/login', [
@@ -344,7 +344,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $password = $this->fake('password');
         $user = UserFactory::create([
             'email' => $email,
-            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($password),
         ]);
 
         $response = $this->appRun('POST', '/login', [

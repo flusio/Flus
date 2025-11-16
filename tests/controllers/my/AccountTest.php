@@ -197,7 +197,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $password = $this->fake('password');
         $user = $this->login([
-            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($password),
         ]);
 
         $response = $this->appRun('POST', '/my/account/deletion', [
@@ -228,7 +228,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $password = $this->fake('password');
         $user = $this->login([
-            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($password),
             'avatar_filename' => $avatar_filename,
         ]);
 
@@ -257,7 +257,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $password = $this->fake('password');
         $user = $this->login([
-            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($password),
         ]);
 
         $this->assertSame(1, models\Session::count());
@@ -275,7 +275,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $password = $this->fake('password');
         $user = $this->login([
-            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($password),
         ]);
 
         $response = $this->appRun('POST', '/my/account/deletion', [
@@ -293,7 +293,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $password = $this->fake('password');
         $user = $this->login([
-            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($password),
         ]);
 
         $response = $this->appRun('POST', '/my/account/deletion', [
@@ -314,7 +314,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         $password = $this->fake('password');
         $user = $this->login([
             'email' => models\User::DEMO_EMAIL,
-            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($password),
         ]);
 
         $response = $this->appRun('POST', '/my/account/deletion', [

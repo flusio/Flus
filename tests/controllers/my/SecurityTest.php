@@ -70,7 +70,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $new_password = $this->fake('password');
         $user = $this->login([
             'email' => $old_email,
-            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($old_password),
         ], confirmed_password_at: \Minz\Time::now());
 
         $response = $this->appRun('POST', '/my/security', [
@@ -95,7 +95,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $old_password = $this->fake('password');
         $user = $this->login([
             'email' => $old_email,
-            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($old_password),
         ], confirmed_password_at: \Minz\Time::now());
 
         $response = $this->appRun('POST', '/my/security', [
@@ -121,7 +121,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $token = TokenFactory::create();
         $user = $this->login([
             'email' => $old_email,
-            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($old_password),
             'reset_token' => $token->token,
         ], confirmed_password_at: \Minz\Time::now());
 
@@ -149,7 +149,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $new_password = $this->fakeUnique('password');
         $user = $this->login([
             'email' => $old_email,
-            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($old_password),
         ], confirmed_password_at: \Minz\Time::now());
         $current_session = auth\CurrentUser::session();
         $session = SessionFactory::create([
@@ -184,7 +184,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $new_password = $this->fake('password');
         $user = UserFactory::create([
             'email' => $old_email,
-            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($old_password),
         ]);
 
         $response = $this->appRun('POST', '/my/security', [
@@ -211,7 +211,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $new_password = $this->fake('password');
         $user = $this->login([
             'email' => $old_email,
-            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($old_password),
         ], confirmed_password_at: null);
 
         $response = $this->appRun('POST', '/my/security', [
@@ -238,7 +238,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $new_password = $this->fake('password');
         $user = $this->login([
             'email' => $old_email,
-            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($old_password),
         ], confirmed_password_at: \Minz\Time::now());
 
         $response = $this->appRun('POST', '/my/security', [
@@ -267,7 +267,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $new_password = $this->fake('password');
         $user = $this->login([
             'email' => $old_email,
-            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($old_password),
         ], confirmed_password_at: \Minz\Time::now());
         UserFactory::create([
             'email' => $new_email,
@@ -299,7 +299,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $new_password = $this->fake('password');
         $user = $this->login([
             'email' => $old_email,
-            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($old_password),
         ], confirmed_password_at: \Minz\Time::now());
 
         $response = $this->appRun('POST', '/my/security', [
@@ -326,7 +326,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $new_password = $this->fake('password');
         $user = $this->login([
             'email' => $old_email,
-            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($old_password),
         ], confirmed_password_at: \Minz\Time::now());
 
         $response = $this->appRun('POST', '/my/security', [
@@ -356,7 +356,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         $new_password = $this->fake('password');
         $user = $this->login([
             'email' => $old_email,
-            'password_hash' => password_hash($old_password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($old_password),
         ], confirmed_password_at: \Minz\Time::now());
 
         $response = $this->appRun('POST', '/my/security', [
@@ -409,7 +409,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $password = $this->fake('password');
         $user = $this->login([
-            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($password),
         ], confirmed_password_at: null);
 
         $response = $this->appRun('POST', '/my/security/confirmation', [
@@ -429,7 +429,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $password = $this->fake('password');
         $user = UserFactory::create([
-            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($password),
         ]);
 
         $response = $this->appRun('POST', '/my/security/confirmation', [
@@ -446,7 +446,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $password = $this->fake('password');
         $user = $this->login([
-            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($password),
         ], confirmed_password_at: null);
 
         $response = $this->appRun('POST', '/my/security/confirmation', [
@@ -467,7 +467,7 @@ class SecurityTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $password = $this->fake('password');
         $user = $this->login([
-            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+            'password_hash' => models\User::passwordHash($password),
         ], confirmed_password_at: null);
 
         $response = $this->appRun('POST', '/my/security/confirmation', [

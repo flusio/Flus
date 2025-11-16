@@ -798,6 +798,12 @@ class User
      */
     public static function passwordHash(string $password): string
     {
-        return $password ? password_hash($password, PASSWORD_BCRYPT) : '';
+        if ($password) {
+            return password_hash($password, PASSWORD_BCRYPT, [
+                'cost' => \App\Configuration::$application['password_hash_cost'],
+            ]);
+        } else {
+            return '';
+        }
     }
 }

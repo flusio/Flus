@@ -54,6 +54,8 @@ return [
         'plausible_url' => '',
         'bileto_url' => '',
         'bileto_api_token' => '',
+        // The lowest possible value for bcrypt algorithm.
+        'password_hash_cost' => 4,
         'mock_host' => $dotenv->pop('MOCK_HOST', ''),
     ],
 
