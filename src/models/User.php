@@ -693,7 +693,15 @@ class User
      */
     public function mustValidateEmail(): bool
     {
-        return !$this->validated_at && $this->created_at < \Minz\Time::ago(1, 'day');
+        return !$this->isValidated() && $this->created_at < \Minz\Time::ago(1, 'day');
+    }
+
+    /**
+     * Return whether the account is validated or not.
+     */
+    public function isValidated(): bool
+    {
+        return $this->validated_at !== null;
     }
 
     /**

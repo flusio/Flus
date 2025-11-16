@@ -83,13 +83,7 @@ class Validation extends BaseController
 
         if (\App\Configuration::areSubscriptionsEnabled()) {
             $subscriptions_service = new services\Subscriptions();
-            $account = $subscriptions_service->account($user->email);
-            if ($account) {
-                $user->subscription_account_id = $account['id'];
-                $user->subscription_expired_at = $account['expired_at'];
-            } else {
-                \Minz\Log::error("Can’t get a subscription account for user {$user->id}."); // @codeCoverageIgnore
-            }
+            $subscriptions_service->initAccount($user);
         }
 
         $user->save();
@@ -115,7 +109,7 @@ class Validation extends BaseController
     {
         $user = auth\CurrentUser::require();
 
-        if ($user->validated_at) {
+        if ($user->isValidated()) {
             // nothing to do, the user is already validated
             return Response::redirect('home');
         }

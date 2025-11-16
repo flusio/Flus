@@ -43,39 +43,16 @@ class SubscriptionsSync extends \Minz\Job
         // happen if a previous request failed.
         $users = models\User::listBy(['subscription_account_id' => null]);
         foreach ($users as $user) {
-            if (!$user->validated_at) {
+            if (!$user->isValidated()) {
                 continue;
             }
 
-            $account = $subscriptions_service->account($user->email);
-            if ($account) {
-                $user->subscription_account_id = $account['id'];
-                $user->subscription_expired_at = $account['expired_at'];
-                $user->save();
-            }
+            $subscriptions_service->initAccount($user);
+            $user->save();
         }
 
         // Then, synchronize expiration dates.
         $users = models\User::listAll();
-        $account_ids_to_users = array_column($users, null, 'subscription_account_id');
-        $account_ids = array_keys($account_ids_to_users);
-
-        $result = $subscriptions_service->sync($account_ids);
-        if ($result === null) {
-            return;
-        }
-
-        foreach ($result as $account_id => $expired_at) {
-            if (!isset($account_ids_to_users[$account_id])) {
-                \Minz\Log::error("Subscription account {$account_id} does not exist.");
-                continue;
-            }
-
-            $user = $account_ids_to_users[$account_id];
-            if ($user->subscription_expired_at != $expired_at) {
-                $user->subscription_expired_at = $expired_at;
-                $user->save();
-            }
-        }
+        $subscriptions_service->sync($users);
     }
 }

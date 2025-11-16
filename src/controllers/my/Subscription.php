@@ -44,7 +44,7 @@ class Subscription extends BaseController
             return Response::redirect('account');
         }
 
-        if (!$user->validated_at) {
+        if (!$user->isValidated()) {
             \Minz\Flash::set('error', _('You must verify your account first.'));
             return Response::redirect('account');
         }
@@ -58,10 +58,9 @@ class Subscription extends BaseController
         }
 
         $subscription_service = new services\Subscriptions();
+        $result = $subscription_service->initAccount($user);
 
-        $account = $subscription_service->account($user->email);
-        if (!$account) {
-            \Minz\Log::error("Can’t get a subscription account for user {$user->id}.");
+        if (!$result) {
             \Minz\Flash::set(
                 'error',
                 _('An error occured when getting you a subscription account, please contact the support.')
@@ -69,8 +68,6 @@ class Subscription extends BaseController
             return Response::redirect('account');
         }
 
-        $user->subscription_account_id = $account['id'];
-        $user->subscription_expired_at = $account['expired_at'];
         $user->save();
 
         return Response::redirect('account');

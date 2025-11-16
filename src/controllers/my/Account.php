@@ -31,17 +31,10 @@ class Account extends BaseController
         $user = auth\CurrentUser::require();
 
         $sub_enabled = \App\Configuration::areSubscriptionsEnabled();
-        if ($sub_enabled && $user->subscription_account_id && $user->isSubscriptionOverdue()) {
+        if ($sub_enabled && $user->hasSubscriptionAccount() && $user->isSubscriptionOverdue()) {
             $service = new services\Subscriptions();
-
-            $expired_at = $service->expiredAt($user->subscription_account_id);
-
-            if ($expired_at) {
-                $user->subscription_expired_at = $expired_at;
-                $user->save();
-            } else {
-                \Minz\Log::error("Can’t get the expired_at for user {$user->id}.");
-            }
+            $service->refreshExpiredAt($user);
+            $user->save();
         }
 
         return Response::ok('my/account/show.phtml', [

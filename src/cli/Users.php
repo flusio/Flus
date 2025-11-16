@@ -45,7 +45,7 @@ class Users
         foreach ($users as $user) {
             $created_at = $user->created_at->format('Y-m-d');
             $validated_label = '';
-            if (!$user->validated_at) {
+            if (!$user->isValidated()) {
                 $validated_label = ' (not validated)';
             }
             $output[] = "{$user->id} {$created_at} {$user->email}{$validated_label}";
@@ -146,7 +146,7 @@ class Users
             return Response::text(404, "User {$user_id} doesn’t exist.");
         }
 
-        if ($user->validated_at) {
+        if ($user->isValidated()) {
             return Response::text(400, "User {$user_id} has already been validated.");
         }
 
@@ -162,14 +162,7 @@ class Users
 
         if (\App\Configuration::areSubscriptionsEnabled()) {
             $subscriptions_service = new services\Subscriptions();
-
-            $account = $subscriptions_service->account($user->email);
-            if ($account) {
-                $user->subscription_account_id = $account['id'];
-                $user->subscription_expired_at = $account['expired_at'];
-            } else {
-                \Minz\Log::error("Can’t get a subscription account for user {$user->id}."); // @codeCoverageIgnore
-            }
+            $subscriptions_service->initAccount($user);
         }
 
         $user->save();

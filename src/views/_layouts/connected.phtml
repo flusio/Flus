@@ -59,7 +59,7 @@
                 </div>
             <?php endif; ?>
 
-            <?php if (!$current_user->validated_at && $current_page !== 'account validation'): ?>
+            <?php if (!$current_user->isValidated() && $current_page !== 'account validation'): ?>
                 <div class="layout__banner">
                     <a class="banner__container banner__container--anchor" href="<?= url('account validation') ?>">
                         <?= _('You must validate your account&nbsp;→') ?>

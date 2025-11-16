@@ -31,126 +31,55 @@ class Subscriptions
     }
 
     /**
-     * Get account information for the given email. Please always make sure the
-     * email has been validated first!
+     * Initialize the user's subscription account and returns true on success.
      *
-     * @return ?array{
-     *     'id': string,
-     *     'expired_at': \DateTimeImmutable
-     * }
+     * It does nothing if the email hasn't been validated first.
      */
-    public function account(string $email): ?array
+    public function initAccount(models\User $user): bool
     {
+        if ($user->hasSubscriptionAccount()) {
+            return true;
+        }
+
+        if (!$user->isValidated()) {
+            \Minz\Log::error("Error while requesting subscription account for user {$user->id}: email not validated");
+            return false;
+        }
+
         try {
             $response = $this->http->get($this->host . '/api/account', [
-                'email' => $email,
+                'email' => $user->email,
             ], [
                 'auth_basic' => ':' . $this->private_key,
             ]);
         } catch (\SpiderBits\HttpError $e) {
-            \Minz\Log::error("Error while requesting a subscription account: {$e->getMessage()}");
-            return null;
+            \Minz\Log::error("Error while requesting subscription account for user {$user->id}: {$e->getMessage()}");
+            return false;
         }
 
-        if ($response->success) {
-            /** @var ?mixed[] */
-            $data = json_decode($response->data, true);
+        if (!$response->success) {
+            \Minz\Log::error("Error while requesting subscription account for user {$user->id}: request failed");
+            return false;
+        }
 
-            $clean_data = [];
+        /** @var ?mixed[] */
+        $data = json_decode($response->data, true);
 
-            if (!$data) {
-                \Minz\Log::error('Error while requesting a subscription account: invalid response');
-                return null;
-            }
+        $clean_data = [];
 
-            if (isset($data['id']) && is_string($data['id'])) {
-                $clean_data['id'] = $data['id'];
-            } else {
-                \Minz\Log::error('Error while requesting a subscription account: invalid id');
-                return null;
-            }
+        if (!$data) {
+            \Minz\Log::error("Error while requesting subscription account for user {$user->id}: invalid response");
+            return false;
+        }
 
-            if (isset($data['expired_at']) && is_string($data['expired_at'])) {
-                $expired_at = \DateTimeImmutable::createFromFormat(
-                    \Minz\Database\Column::DATETIME_FORMAT,
-                    $data['expired_at']
-                );
-
-                if ($expired_at === false) {
-                    $expired_at = \Minz\Time::now();
-                }
-
-                $clean_data['expired_at'] = $expired_at;
-            } else {
-                \Minz\Log::error('Error while requesting a subscription account: invalid expired_at');
-                return null;
-            }
-
-            return $clean_data;
+        if (isset($data['id']) && is_string($data['id'])) {
+            $clean_data['id'] = $data['id'];
         } else {
-            \Minz\Log::error('Error while requesting a subscription account: request failed');
-            return null;
-        }
-    }
-
-    /**
-     * Get a login URL for the given account.
-     */
-    public function loginUrl(models\User $user): ?string
-    {
-        try {
-            $response = $this->http->get($this->host . '/api/account/login-url', [
-                'account_id' => $user->subscription_account_id,
-                'service' => 'Flus',
-            ], [
-                'auth_basic' => ':' . $this->private_key,
-            ]);
-        } catch (\SpiderBits\HttpError $e) {
-            \Minz\Log::error("Error while requesting a subscription login URL: {$e->getMessage()}");
-            return null;
+            \Minz\Log::error("Error while requesting subscription account for user {$user->id}: invalid id");
+            return false;
         }
 
-        if ($response->success) {
-            /** @var ?mixed[] */
-            $data = json_decode($response->data, true);
-
-            if (!$data || !isset($data['url']) || !is_string($data['url'])) {
-                \Minz\Log::error('Error while requesting a subscription login URL: invalid url');
-                return null;
-            }
-
-            return $data['url'];
-        } else {
-            \Minz\Log::error('Error while requesting a subscription login URL: request failed');
-            return null;
-        }
-    }
-
-    /**
-     * Get the expired_at value for the given account.
-     */
-    public function expiredAt(string $account_id): ?\DateTimeImmutable
-    {
-        try {
-            $response = $this->http->get($this->host . '/api/account/expired-at', [
-                'account_id' => $account_id,
-            ], [
-                'auth_basic' => ':' . $this->private_key,
-            ]);
-        } catch (\SpiderBits\HttpError $e) {
-            \Minz\Log::error("Error while requesting a subscription expiration date: {$e->getMessage()}");
-            return null;
-        }
-
-        if ($response->success) {
-            /** @var ?mixed[] */
-            $data = json_decode($response->data, true);
-
-            if (!$data || !isset($data['expired_at']) || !is_string($data['expired_at'])) {
-                \Minz\Log::error('Error while requesting a subscription expiration date: invalid expired_at');
-                return null;
-            }
-
+        if (isset($data['expired_at']) && is_string($data['expired_at'])) {
             $expired_at = \DateTimeImmutable::createFromFormat(
                 \Minz\Database\Column::DATETIME_FORMAT,
                 $data['expired_at']
@@ -160,22 +89,116 @@ class Subscriptions
                 $expired_at = \Minz\Time::now();
             }
 
-            return $expired_at;
+            $clean_data['expired_at'] = $expired_at;
         } else {
-            \Minz\Log::error('Error while requesting a subscription expiration date: request failed');
+            \Minz\Log::error("Error while requesting subscription account for user {$user->id}: invalid expired_at");
+            return false;
+        }
+
+        $user->subscription_account_id = $clean_data['id'];
+        $user->subscription_expired_at = $clean_data['expired_at'];
+
+        return true;
+    }
+
+    /**
+     * Get a login URL for the given account.
+     */
+    public function loginUrl(models\User $user): ?string
+    {
+        if (!$user->hasSubscriptionAccount()) {
+            \Minz\Log::error("Error while requesting a subscription login URL for user {$user->id}: no account");
+            return null;
+        }
+
+        try {
+            $response = $this->http->get($this->host . '/api/account/login-url', [
+                'account_id' => $user->subscription_account_id,
+                'service' => 'Flus',
+            ], [
+                'auth_basic' => ':' . $this->private_key,
+            ]);
+        } catch (\SpiderBits\HttpError $e) {
+            \Minz\Log::error(
+                "Error while requesting a subscription login URL for user {$user->id}: {$e->getMessage()}"
+            );
+            return null;
+        }
+
+        if ($response->success) {
+            /** @var ?mixed[] */
+            $data = json_decode($response->data, true);
+
+            if (!$data || !isset($data['url']) || !is_string($data['url'])) {
+                \Minz\Log::error("Error while requesting a subscription login URL for user {$user->id}: invalid url");
+                return null;
+            }
+
+            return $data['url'];
+        } else {
+            \Minz\Log::error("Error while requesting a subscription login URL for user {$user->id}: request failed");
             return null;
         }
     }
 
     /**
-     * Get the expired_at value for the given accounts.
-     *
-     * @param string[] $account_ids
-     *
-     * @return ?\DateTimeImmutable[]
+     * Refresh the expired_at value for the given account and return true on success.
      */
-    public function sync(array $account_ids): ?array
+    public function refreshExpiredAt(models\User $user): bool
     {
+        if (!$user->hasSubscriptionAccount()) {
+            \Minz\Log::error("Error while requesting subscription expiration for user {$user->id}: no account");
+            return false;
+        }
+
+        try {
+            $response = $this->http->get($this->host . '/api/account/expired-at', [
+                'account_id' => $user->subscription_account_id,
+            ], [
+                'auth_basic' => ':' . $this->private_key,
+            ]);
+        } catch (\SpiderBits\HttpError $e) {
+            \Minz\Log::error("Error while requesting subscription expiration for user {$user->id}: {$e->getMessage()}");
+            return false;
+        }
+
+        if (!$response->success) {
+            \Minz\Log::error("Error while requesting subscription expiration for user {$user->id}: request failed");
+            return false;
+        }
+
+        /** @var ?mixed[] */
+        $data = json_decode($response->data, true);
+
+        if (!$data || !isset($data['expired_at']) || !is_string($data['expired_at'])) {
+            \Minz\Log::error("Error while requesting subscription expiration for user {$user->id}: invalid expired_at");
+            return false;
+        }
+
+        $expired_at = \DateTimeImmutable::createFromFormat(
+            \Minz\Database\Column::DATETIME_FORMAT,
+            $data['expired_at']
+        );
+
+        if ($expired_at === false) {
+            $expired_at = \Minz\Time::now();
+        }
+
+        $user->subscription_expired_at = $expired_at;
+
+        return true;
+    }
+
+    /**
+     * Refresh the expired_at value for the given users.
+     *
+     * @param models\User[] $users
+     */
+    public function sync(array $users): void
+    {
+        $account_ids_to_users = array_column($users, null, 'subscription_account_id');
+        $account_ids = array_keys($account_ids_to_users);
+
         try {
             $response = $this->http->post($this->host . '/api/accounts/sync', [
                 'account_ids' => json_encode($account_ids),
@@ -184,26 +207,24 @@ class Subscriptions
             ]);
         } catch (\SpiderBits\HttpError $e) {
             \Minz\Log::error("Error while syncing subscriptions: {$e->getMessage()}");
-            return null;
+            return;
         }
 
         if (!$response->success) {
             \Minz\Log::error("Error while syncing subscriptions: code {$response->status}");
-            return null;
+            return;
         }
 
         /** @var ?mixed[] */
         $data = json_decode($response->data, true);
         if (!is_array($data)) {
             \Minz\Log::error("Error while syncing subscriptions: can’t decode data");
-            return null;
+            return;
         }
-
-        $result = [];
 
         foreach ($data as $account_id => $expired_at) {
             if (!is_string($expired_at)) {
-                \Minz\Log::error('Error while syncing subscriptions: invalid expired_at');
+                \Minz\Log::error("Error while syncing subscriptions: invalid expired_at for {$account_id}");
                 continue;
             }
 
@@ -217,9 +238,16 @@ class Subscriptions
                 continue;
             }
 
-            $result[$account_id] = $expired_at;
-        }
+            if (!isset($account_ids_to_users[$account_id])) {
+                \Minz\Log::error("Error while syncing subscriptions: {$account_id} does not exist in DB.");
+                continue;
+            }
 
-        return $result;
+            $user = $account_ids_to_users[$account_id];
+            if ($user->subscription_expired_at != $expired_at) {
+                $user->subscription_expired_at = $expired_at;
+                $user->save();
+            }
+        }
     }
 }

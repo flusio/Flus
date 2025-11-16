@@ -29,11 +29,11 @@
     <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
 
     <nav class="groupnav">
-        <?php if (!$current_user->validated_at || $subscriptions_enabled): ?>
+        <?php if (!$current_user->isValidated() || $subscriptions_enabled): ?>
             <h2 class="groupnav__title"><?= _('Account') ?></h2>
 
             <ul class="groupnav__container">
-                <?php if (!$current_user->validated_at): ?>
+                <?php if (!$current_user->isValidated()): ?>
                     <li class="groupnav__item groupnav__item--featured groupnav__item--validate">
                         <a class="groupnav__anchor" href="<?= url('account validation') ?>">
                             <?= _('Validate your account') ?>
