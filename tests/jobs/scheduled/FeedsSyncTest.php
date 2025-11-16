@@ -179,6 +179,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
             'user_id' => $user->id,
         ]);
+        $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $hash = \SpiderBits\Cache::hash($feed_url);
         $raw_response = <<<XML
         HTTP/2 200 OK
@@ -237,6 +238,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
             'user_id' => $user->id,
         ]);
+        $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $hash = \SpiderBits\Cache::hash($feed_url);
         $raw_response = <<<XML
         HTTP/2 200 OK
@@ -386,6 +388,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'feed_entry_id' => null,
             'created_at' => \Minz\Time::now(),
         ]);
+        $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $hash = \SpiderBits\Cache::hash($feed_url);
         $raw_response = <<<XML
         HTTP/2 200 OK
@@ -489,6 +492,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
             'user_id' => $user->id,
         ]);
+        $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $hash = \SpiderBits\Cache::hash($feed_url);
         $raw_response = <<<XML
         HTTP/2 200 OK
@@ -546,6 +550,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
             'user_id' => $user->id,
         ]);
+        $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $hash = \SpiderBits\Cache::hash($feed_url);
         $raw_response = <<<XML
         HTTP/2 200 OK
@@ -595,6 +600,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $link_url = 'invalid://example.com';
+        $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $hash = \SpiderBits\Cache::hash($feed_url);
         $raw_response = <<<XML
         HTTP/2 200 OK
@@ -659,6 +665,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
             'link_id' => $link->id,
         ]);
+        $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $hash = \SpiderBits\Cache::hash($feed_url);
         $raw_response = <<<XML
         HTTP/2 200 OK
@@ -712,6 +719,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
         ]);
+        $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $hash = \SpiderBits\Cache::hash($feed_url);
         $raw_response = <<<XML
         HTTP/2 200 OK
@@ -779,6 +787,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
         ]);
+        $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $hash = \SpiderBits\Cache::hash($feed_url);
         $raw_response = <<<XML
         HTTP/2 200 OK
@@ -833,6 +842,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
         ]);
+        $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $hash = \SpiderBits\Cache::hash($feed_url);
         $raw_response = <<<XML
         HTTP/2 200 OK
@@ -893,6 +903,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
         ]);
+        $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $hash = \SpiderBits\Cache::hash($feed_url);
         $raw_response = <<<XML
         HTTP/2 200 OK
@@ -963,6 +974,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
             'user_id' => $user->id,
         ]);
+        $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $hash = \SpiderBits\Cache::hash($feed_url);
         $raw_response = <<<XML
         HTTP/2 200 OK
@@ -1027,6 +1039,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
             'user_id' => $user->id,
         ]);
+        $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $hash = \SpiderBits\Cache::hash($feed_url);
         $raw_response = <<<XML
         HTTP/2 200 OK
@@ -1080,6 +1093,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
             'user_id' => $user->id,
         ]);
+        $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $hash = \SpiderBits\Cache::hash($feed_url);
         $raw_response = <<<XML
         HTTP/2 200 OK
@@ -1189,6 +1203,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
             'user_id' => $user->id,
         ]);
+        $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $hash = \SpiderBits\Cache::hash($feed_url);
         $raw_response = <<<XML
         HTTP/2 200 OK
@@ -1230,6 +1245,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
             'user_id' => $user->id,
         ]);
+        $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $hash = \SpiderBits\Cache::hash($feed_url);
         $raw_response = <<<XML
         HTTP/2 200 OK
@@ -1360,6 +1376,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
             'user_id' => $user->id,
         ]);
+        $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $hash = \SpiderBits\Cache::hash($feed_url);
         $raw_response = <<<XML
         HTTP/2 200 OK
@@ -1404,7 +1421,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             <rss version="2.0">
                 <channel>
                     <title>My feed with an àccent</title>
-                    <link>https://example.com</link>
+                    <link>https://flus.fr/carnet</link>
                 </channel>
             </rss>
             XML;
@@ -1425,6 +1442,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
             'user_id' => $user->id,
         ]);
+        $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $hash = \SpiderBits\Cache::hash($feed_url);
         $raw_response = <<<XML
         HTTP/2 200 OK

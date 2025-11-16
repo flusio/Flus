@@ -75,6 +75,17 @@ class AccountTest extends \PHPUnit\Framework\TestCase
             'subscription_expired_at' => $expired_at,
             'validated_at' => \Minz\Time::now(),
         ]);
+        $subscriptions_host = \App\Configuration::$application['subscriptions_host'];
+        $subscription_api_url = "{$subscriptions_host}/api/account/expired-at?account_id={$account_id}";
+        $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
+            HTTP/2 200
+            Content-type: application/json
+
+            {
+                "expired_at": "{$expired_at->format(\Minz\Database\Column::DATETIME_FORMAT)}"
+            }
+            TEXT
+        );
 
         $response = $this->appRun('GET', '/my/account');
 

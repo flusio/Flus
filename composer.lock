@@ -58,16 +58,16 @@
         },
         {
             "name": "flus/minz",
-            "version": "2.2.1",
+            "version": "2.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/flusio/Minz.git",
-                "reference": "cd0c2f6c1c0b4bfaab1f62e7c8a05e1a012b5515"
+                "reference": "9eef26f1d545479c05ca838a41406e95a99b4d52"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/flusio/Minz/zipball/cd0c2f6c1c0b4bfaab1f62e7c8a05e1a012b5515",
-                "reference": "cd0c2f6c1c0b4bfaab1f62e7c8a05e1a012b5515",
+                "url": "https://api.github.com/repos/flusio/Minz/zipball/9eef26f1d545479c05ca838a41406e95a99b4d52",
+                "reference": "9eef26f1d545479c05ca838a41406e95a99b4d52",
                 "shasum": ""
             },
             "require": {
@@ -98,9 +98,9 @@
             "homepage": "https://github.com/flusio/Minz",
             "support": {
                 "issues": "https://github.com/flusio/Minz/issues",
-                "source": "https://github.com/flusio/Minz/tree/2.2.1"
+                "source": "https://github.com/flusio/Minz/tree/2.3.0"
             },
-            "time": "2025-11-14T16:48:36+00:00"
+            "time": "2025-11-25T17:03:44+00:00"
         },
         {
             "name": "phpmailer/phpmailer",
@@ -2592,5 +2592,5 @@
         "ext-pdo_pgsql": "*"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }

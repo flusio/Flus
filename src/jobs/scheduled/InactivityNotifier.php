@@ -51,8 +51,10 @@ class InactivityNotifier extends \Minz\Job
                 $user->save();
             }
 
-            $sleep_seconds = random_int(2, 5);
-            sleep($sleep_seconds);
+            if (!\App\Configuration::isEnvironment('test')) {
+                $sleep_seconds = random_int(2, 5);
+                sleep($sleep_seconds);
+            }
         }
     }
 }

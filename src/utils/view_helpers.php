@@ -109,7 +109,7 @@ function format_publication_frequency(int $frequency_per_year): string
 
 function is_environment(string $environment): bool
 {
-    return \App\Configuration::$environment === $environment;
+    return \App\Configuration::isEnvironment($environment);
 }
 
 function get_app_configuration(string $key): mixed

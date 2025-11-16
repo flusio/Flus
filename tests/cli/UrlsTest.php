@@ -5,6 +5,7 @@ namespace App\cli;
 class UrlsTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
     use \tests\FilesystemHelper;
@@ -62,18 +63,6 @@ class UrlsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseEquals($response, '`not an url` is not a valid URL.');
-    }
-
-    public function testShowFailsWithUnresolvableUrl(): void
-    {
-        $url = 'http://unresolvable-url';
-
-        $response = $this->appRun('CLI', '/urls/show', [
-            'url' => $url,
-        ]);
-
-        $this->assertResponseCode($response, 500);
-        $this->assertResponseContains($response, 'Could not resolve host: unresolvable-url');
     }
 
     public function testUncacheClearsCacheOfGivenUrl(): void

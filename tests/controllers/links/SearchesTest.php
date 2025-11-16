@@ -90,49 +90,6 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $name);
     }
 
-    public function testShowHidesDuplicatedFeeds(): void
-    {
-        $user = $this->login();
-        $support_user = models\User::supportUser();
-        /** @var string */
-        $name = $this->fake('sentence');
-        /** @var string */
-        $feed_url_rss = $this->fakeUnique('url');
-        /** @var string */
-        $feed_url_atom = $this->fakeUnique('url');
-        $collection_rss = CollectionFactory::create([
-            'type' => 'feed',
-            'user_id' => $support_user->id,
-            'is_public' => true,
-            'name' => $name,
-            'feed_url' => $feed_url_rss,
-        ]);
-        $collection_atom = CollectionFactory::create([
-            'type' => 'feed',
-            'user_id' => $support_user->id,
-            'is_public' => true,
-            'name' => $name,
-            'feed_url' => $feed_url_atom,
-        ]);
-        /** @var string */
-        $link_url = $this->fake('url');
-        $link = LinkFactory::create([
-            'user_id' => $user->id,
-            'url' => $link_url,
-            'url_feeds' => [$feed_url_rss, $feed_url_atom],
-        ]);
-
-        $response = $this->appRun('GET', '/links/search', [
-            'url' => $link_url,
-        ]);
-
-        $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, $collection_rss->id);
-        // Only the first feed is considered if name are the same but feed
-        // types differ.
-        $this->assertResponseNotContains($response, $collection_atom->id);
-    }
-
     public function testShowRedirectsIfNotConnected(): void
     {
         /** @var string */

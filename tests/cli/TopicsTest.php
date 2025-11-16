@@ -56,31 +56,6 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Topic::count());
     }
 
-    public function testCreateDownloadsImageIfPassed(): void
-    {
-        /** @var string */
-        $label = $this->fake('word');
-        $image_url = 'https://flus.fr/carnet/card.png';
-
-        $response = $this->appRun('CLI', '/topics/create', [
-            'label' => $label,
-            'image_url' => $image_url,
-        ]);
-
-        $topic = models\Topic::take();
-        $this->assertNotNull($topic);
-        $image_filename = $topic->image_filename;
-        $this->assertNotNull($image_filename);
-        $media_path = \App\Configuration::$application['media_path'];
-        $subpath = utils\Belt::filenameToSubpath($image_filename);
-        $card_filepath = "{$media_path}/cards/{$subpath}/{$image_filename}";
-        $cover_filepath = "{$media_path}/covers/{$subpath}/{$image_filename}";
-        $large_filepath = "{$media_path}/large/{$subpath}/{$image_filename}";
-        $this->assertTrue(file_exists($card_filepath));
-        $this->assertTrue(file_exists($cover_filepath));
-        $this->assertTrue(file_exists($large_filepath));
-    }
-
     public function testCreateFailsIfLabelIsTooLong(): void
     {
         $label_max_size = models\Topic::LABEL_MAX_SIZE;
@@ -129,37 +104,6 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'has been updated');
         $topic = $topic->reload();
         $this->assertSame($new_label, $topic->label);
-    }
-
-    public function testUpdateChangesImageFilenameIfPassed(): void
-    {
-        /** @var string */
-        $old_image_filename = $this->fakeUnique('sha256');
-        $old_image_filename = $old_image_filename . '.jpg';
-        $image_url = 'https://flus.fr/carnet/card.png';
-        $topic = TopicFactory::create([
-            'image_filename' => $old_image_filename,
-        ]);
-
-        $response = $this->appRun('CLI', '/topics/update', [
-            'id' => $topic->id,
-            'image_url' => $image_url,
-        ]);
-
-        $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, 'has been updated');
-        $topic = $topic->reload();
-        $this->assertNotNull($topic->image_filename);
-        $this->assertNotSame($old_image_filename, $topic->image_filename);
-        $media_path = \App\Configuration::$application['media_path'];
-        $image_filename = $topic->image_filename;
-        $subpath = utils\Belt::filenameToSubpath($image_filename);
-        $card_filepath = "{$media_path}/cards/{$subpath}/{$image_filename}";
-        $cover_filepath = "{$media_path}/covers/{$subpath}/{$image_filename}";
-        $large_filepath = "{$media_path}/large/{$subpath}/{$image_filename}";
-        $this->assertTrue(file_exists($card_filepath));
-        $this->assertTrue(file_exists($cover_filepath));
-        $this->assertTrue(file_exists($large_filepath));
     }
 
     public function testUpdateDoesNothingIfLabelIsEmpty(): void

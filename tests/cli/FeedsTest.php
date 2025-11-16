@@ -215,6 +215,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $expected_name = $this->fake('sentence');
         /** @var string */
         $expected_title = $this->fake('sentence');
+        $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $hash = \SpiderBits\Cache::hash($feed_url);
         $raw_response = <<<XML
         HTTP/2 200 OK

@@ -40,6 +40,11 @@ class Configuration extends \Minz\Configuration
      */
     public static array $application;
 
+    public static function isEnvironment(string $environment): bool
+    {
+        return self::$environment === $environment;
+    }
+
     public static function areRegistrationsOpened(): bool
     {
         return self::$application['registrations_opened'];
