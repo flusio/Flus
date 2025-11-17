@@ -68,7 +68,9 @@
                     id="current-password"
                     name="password"
                     type="password"
-                    value=""
+                    <?php if (get_app_configuration('demo')): ?>
+                        value="<?= protect($form->password) ?>"
+                    <?php endif; ?>
                     required
                     data-input-password-target="input"
                     autocomplete="current-password"
