@@ -1,11 +1,25 @@
 # Changelog of Flus
 
-## unreleased
+## 2025-11-25 - v2.1.0
 
 ### Migration notes
 
 Pocket is now definitely down, and Pocket import has been removed (except the file import with the CLI).
 You can safely remove the `APP_POCKET_CONSUMER_KEY` environment key from your `.env` file.
+
+### Features
+
+- Remove Web Pocket import ([1e5d3834](https://github.com/flusio/Flus/commit/1e5d3834))
+
+### Bug fixes
+
+- Make sure that links and feeds are saved in database ([18b70a95](https://github.com/flusio/Flus/commit/18b70a95))
+
+### Maintenance
+
+- Refactor the backend controllers ([1f392899](https://github.com/flusio/Flus/commit/1f392899), [8deac9c8](https://github.com/flusio/Flus/commit/8deac9c8), [f6b1331c](https://github.com/flusio/Flus/commit/f6b1331c), [64d8ee8a](https://github.com/flusio/Flus/commit/64d8ee8a), [5a0a9798](https://github.com/flusio/Flus/commit/5a0a9798), [0c584663](https://github.com/flusio/Flus/commit/0c584663), [328dbca7](https://github.com/flusio/Flus/commit/328dbca7), [ecc40310](https://github.com/flusio/Flus/commit/ecc40310), [ba3de401](https://github.com/flusio/Flus/commit/ba3de401), [164830b0](https://github.com/flusio/Flus/commit/164830b0), [4a8e4570](https://github.com/flusio/Flus/commit/4a8e4570), [37fa0ada](https://github.com/flusio/Flus/commit/37fa0ada), [5fb17289](https://github.com/flusio/Flus/commit/5fb17289), [ea322dff](https://github.com/flusio/Flus/commit/ea322dff), [7338eb4d](https://github.com/flusio/Flus/commit/7338eb4d), [00fb404b](https://github.com/flusio/Flus/commit/00fb404b), [c8c29c1e](https://github.com/flusio/Flus/commit/c8c29c1e), [af4400db](https://github.com/flusio/Flus/commit/af4400db), [04583f08](https://github.com/flusio/Flus/commit/04583f08), [0f759bf4](https://github.com/flusio/Flus/commit/0f759bf4), [29a68f32](https://github.com/flusio/Flus/commit/29a68f32), [6cae69a6](https://github.com/flusio/Flus/commit/6cae69a6), [38409c05](https://github.com/flusio/Flus/commit/38409c05), [51a4c2ba](https://github.com/flusio/Flus/commit/51a4c2ba), [ed5dab95](https://github.com/flusio/Flus/commit/ed5dab95), [6e004811](https://github.com/flusio/Flus/commit/6e004811), [c49d3d7e](https://github.com/flusio/Flus/commit/c49d3d7e), [f630283c](https://github.com/flusio/Flus/commit/f630283c), [ed70e62a](https://github.com/flusio/Flus/commit/ed70e62a), [6ae498d9](https://github.com/flusio/Flus/commit/6ae498d9), [3727c392](https://github.com/flusio/Flus/commit/3727c392), [131c4b6c](https://github.com/flusio/Flus/commit/131c4b6c), [8fe7043b](https://github.com/flusio/Flus/commit/8fe7043b), [44bad00b](https://github.com/flusio/Flus/commit/44bad00b), [b7516723](https://github.com/flusio/Flus/commit/b7516723), [ef649a9e](https://github.com/flusio/Flus/commit/ef649a9e), [ab12d4b1](https://github.com/flusio/Flus/commit/ab12d4b1), [abb4c845](https://github.com/flusio/Flus/commit/abb4c845), [43ed1f3d](https://github.com/flusio/Flus/commit/43ed1f3d), [4d7bdda4](https://github.com/flusio/Flus/commit/4d7bdda4), [e841bf81](https://github.com/flusio/Flus/commit/e841bf81), [019eb292](https://github.com/flusio/Flus/commit/019eb292), [c999ab3e](https://github.com/flusio/Flus/commit/c999ab3e), [4b1f7542](https://github.com/flusio/Flus/commit/4b1f7542), [b45bb9c4](https://github.com/flusio/Flus/commit/b45bb9c4), [1bb3a59b](https://github.com/flusio/Flus/commit/1bb3a59b), [939a811e](https://github.com/flusio/Flus/commit/939a811e), [58a714e3](https://github.com/flusio/Flus/commit/58a714e3), [a8093de0](https://github.com/flusio/Flus/commit/a8093de0), [754dd991](https://github.com/flusio/Flus/commit/754dd991), [d5affbb4](https://github.com/flusio/Flus/commit/d5affbb4), [de8d6e67](https://github.com/flusio/Flus/commit/de8d6e67), [f871b51c](https://github.com/flusio/Flus/commit/f871b51c), [515ad6fc](https://github.com/flusio/Flus/commit/515ad6fc), [7599c264](https://github.com/flusio/Flus/commit/7599c264), [abc6c7c6](https://github.com/flusio/Flus/commit/abc6c7c6), [0fc7f819](https://github.com/flusio/Flus/commit/0fc7f819))
+- Update dependencies ([1c3a3a11](https://github.com/flusio/Flus/commit/1c3a3a11), [7fa84515](https://github.com/flusio/Flus/commit/7fa84515), [e631c70f](https://github.com/flusio/Flus/commit/e631c70f), [9b5fff85](https://github.com/flusio/Flus/commit/9b5fff85))
+- Increase performance during tests ([c6a6e0e5](https://github.com/flusio/Flus/commit/c6a6e0e5), [5c59a6bb](https://github.com/flusio/Flus/commit/5c59a6bb))
 
 ## 2025-10-23 - v2.0.6
 
