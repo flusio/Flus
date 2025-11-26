@@ -321,7 +321,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'New link');
-        $this->assertResponseTemplateName($response, 'links/new.phtml');
+        $this->assertResponseTemplateName($response, 'links/new.html.twig');
     }
 
     public function testNewPrefillsUrl(): void
@@ -790,7 +790,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', "/links/{$link->id}/edit");
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'links/edit.phtml');
+        $this->assertResponseTemplateName($response, 'links/edit.html.twig');
     }
 
     public function testEditFailsIfNotConnected(): void
@@ -878,7 +878,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseTemplateName($response, 'links/edit.phtml');
+        $this->assertResponseTemplateName($response, 'links/edit.html.twig');
         $this->assertResponseContains($response, 'A security verification failed');
         $link = $link->reload();
         $this->assertSame($old_title, $link->title);
@@ -902,7 +902,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseTemplateName($response, 'links/edit.phtml');
+        $this->assertResponseTemplateName($response, 'links/edit.html.twig');
         $this->assertResponseContains($response, 'The title is required.');
         $link = $link->reload();
         $this->assertSame($old_title, $link->title);

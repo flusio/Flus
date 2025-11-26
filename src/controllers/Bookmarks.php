@@ -45,7 +45,7 @@ class Bookmarks extends BaseController
             ]
         );
 
-        return Response::ok('bookmarks/index.phtml', [
+        return Response::ok('bookmarks/index.html.twig', [
             'collection' => $bookmarks,
             'links' => $links,
             'pagination' => $pagination,

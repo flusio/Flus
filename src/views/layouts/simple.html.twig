@@ -1,0 +1,14 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block layout_body %}
+    <section class="layout__content layout__content--simple">
+        <div class="wrapper wrapper--small wrapper--center">
+            {{ include('layouts/_back.html.twig') }}
+
+            <div class="layout__body layout__body--larger flow flow--larger">
+                {% block body %}
+                {% endblock %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

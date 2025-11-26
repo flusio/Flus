@@ -92,7 +92,7 @@ class Exportations extends BaseController
             !$exportation->isFinished() ||
             !file_exists($exportation->filepath)
         ) {
-            return Response::notFound('not_found.phtml');
+            return Response::notFound('errors/not_found.html.twig');
         }
 
         $filename_date = $exportation->created_at->format('Y-m-d');

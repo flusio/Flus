@@ -5,14 +5,18 @@
 .reading-nav__container {
     display: flex;
     margin: 0;
-    margin-bottom: var(--space-large);
     padding-left: 0;
 
     align-items: stretch;
 
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
 
     list-style: none;
+}
+
+.reading-nav + * {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
 }
 
 .reading-nav__item {
@@ -48,9 +52,9 @@
 }
 
 .reading-nav__item:first-child .reading-nav__anchor {
-    border-radius: var(--border-radius) 0 0 var(--border-radius);
+    border-radius: var(--border-radius) 0 0 0;
 }
 
 .reading-nav__item:last-child .reading-nav__anchor {
-    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    border-radius: 0 var(--border-radius) 0 0;
 }

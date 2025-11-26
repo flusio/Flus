@@ -1,0 +1,87 @@
+{% extends 'layouts/modal.html.twig' %}
+
+{% block title %}{{ t('Link edition') }}{% endblock %}
+
+{% block body %}
+    <div class="wrapper wrapper--small wrapper--center flow flow--large">
+        <p class="text--center text--bold">
+            {{ link.title }}
+        </p>
+
+        <form
+            data-turbo-preserve-scroll
+            method="post"
+            action="{{ url('update link', { id: link.id }) }}"
+            class="flow"
+        >
+            {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+            <div class="form-group">
+                <label for="title">
+                    {{ t('The title of your link') }}
+                </label>
+
+                {% if form.isInvalid('title') %}
+                    <p id="title-error" class="form-group__error">
+                        {{ t('Error:') }}
+                        {{ form.error('title') }}
+                    </p>
+                {% endif %}
+
+                <input
+                    id="title"
+                    name="title"
+                    type="text"
+                    value="{{ form.title }}"
+                    required
+                    autocomplete="off"
+                    autofocus
+                    aria-describedby="title-desc"
+                    {% if form.isInvalid('title') %}
+                        aria-errormessage="title-error"
+                        aria-invalid="true"
+                    {% endif %}
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="reading-time">
+                    {{ t('It takes') }}
+
+                    <input
+                        id="reading-time"
+                        name="reading_time"
+                        type="number"
+                        min="0"
+                        class="input--size2"
+                        value="{{ form.reading_time }}"
+                        required
+                        autocomplete="off"
+                        aria-describedby="reading-time-desc"
+                        {% if form.isInvalid('reading_time') %}
+                            aria-errormessage="reading-time-error"
+                            aria-invalid="true"
+                        {% endif %}
+                    >
+
+                    {{ t('minutes to consult.') }}
+                </label>
+
+                {% if form.isInvalid('reading_time') %}
+                    <p id="reading-time-error" class="form-group__error">
+                        {{ t('Error:') }}
+                        {{ form.error('reading_time') }}
+                    </p>
+                {% endif %}
+            </div>
+
+            <div class="text--center">
+                <button type="submit" class="button--primary button--big">
+                    {{ t('Save changes') }}
+                </button>
+            </div>
+
+            <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}" />
+        </form>
+    </div>
+{% endblock %}

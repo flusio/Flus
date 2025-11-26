@@ -36,7 +36,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'New collection');
-        $this->assertResponseTemplateName($response, 'collections/new.phtml');
+        $this->assertResponseTemplateName($response, 'collections/new.html.twig');
     }
 
     public function testNewRedirectsIfNotConnected(): void
@@ -458,7 +458,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', "/collections/{$collection->id}/edit");
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'collections/edit.phtml');
+        $this->assertResponseTemplateName($response, 'collections/edit.html.twig');
     }
 
     public function testEditRendersCorrectlyIfCollectionIsSharedWithWriteAccess(): void
@@ -478,7 +478,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', "/collections/{$collection->id}/edit");
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'collections/edit.phtml');
+        $this->assertResponseTemplateName($response, 'collections/edit.html.twig');
     }
 
     public function testEditRedirectsIfNotConnected(): void

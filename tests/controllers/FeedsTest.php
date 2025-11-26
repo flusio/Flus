@@ -113,7 +113,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/feeds/new');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'feeds/new.phtml');
+        $this->assertResponseTemplateName($response, 'feeds/new.html.twig');
         $this->assertResponseContains($response, 'New feed');
     }
 

@@ -21,11 +21,11 @@ try {
 
     $response = $application->run($request);
 } catch (\Minz\Errors\RequestError $e) {
-    $response = \Minz\Response::notFound('not_found.phtml', [
+    $response = \Minz\Response::notFound('errors/not_found.html.twig', [
         'error' => $e,
     ]);
 } catch (\Exception $e) {
-    $response = \Minz\Response::internalServerError('internal_server_error.phtml', [
+    $response = \Minz\Response::internalServerError('errors/internal_server_error.html.twig', [
         'error' => $e,
     ]);
 }

@@ -38,7 +38,7 @@ class Images extends BaseController
 
         $form = new forms\collections\EditCollectionImage();
 
-        return Response::ok('collections/images/edit.phtml', [
+        return Response::ok('collections/images/edit.html.twig', [
             'collection' => $collection,
             'form' => $form,
         ]);
@@ -73,7 +73,7 @@ class Images extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('collections/images/edit.phtml', [
+            return Response::badRequest('collections/images/edit.html.twig', [
                 'collection' => $collection,
                 'form' => $form,
             ]);

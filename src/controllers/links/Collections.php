@@ -65,7 +65,7 @@ class Collections extends BaseController
             'user' => $user,
         ]);
 
-        return Response::ok('links/collections/index.phtml', [
+        return Response::ok('links/collections/index.html.twig', [
             'link' => $link,
             'form' => $form,
         ]);
@@ -115,7 +115,7 @@ class Collections extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('links/collections/index.phtml', [
+            return Response::badRequest('links/collections/index.html.twig', [
                 'link' => $link,
                 'form' => $form,
             ]);

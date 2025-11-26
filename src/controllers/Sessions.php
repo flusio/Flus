@@ -44,7 +44,7 @@ class Sessions extends BaseController
             'redirect_to' => $redirect_to,
         ]);
 
-        return Response::ok('sessions/new.phtml', [
+        return Response::ok('sessions/new.html.twig', [
             'form' => $form,
         ]);
     }
@@ -68,7 +68,7 @@ class Sessions extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('sessions/new.phtml', [
+            return Response::badRequest('sessions/new.html.twig', [
                 'form' => $form,
             ]);
         }

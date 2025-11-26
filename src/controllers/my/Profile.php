@@ -32,7 +32,7 @@ class Profile extends BaseController
         $form_profile = new forms\users\Profile(model: $user);
         $form_avatar = new forms\users\EditAvatar();
 
-        return Response::ok('my/profile/edit.phtml', [
+        return Response::ok('my/profile/edit.html.twig', [
             'form_profile' => $form_profile,
             'form_avatar' => $form_avatar,
         ]);
@@ -62,7 +62,7 @@ class Profile extends BaseController
         $form_profile->handleRequest($request);
 
         if (!$form_profile->validate()) {
-            return Response::badRequest('my/profile/edit.phtml', [
+            return Response::badRequest('my/profile/edit.html.twig', [
                 'form_profile' => $form_profile,
                 'form_avatar' => $form_avatar,
             ]);

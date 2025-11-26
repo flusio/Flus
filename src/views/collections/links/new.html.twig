@@ -1,0 +1,69 @@
+{% extends 'layouts/modal.html.twig' %}
+
+{% block title %}{{ t('New link') }}{% endblock %}
+
+{% block body %}
+    <div class="wrapper wrapper--small wrapper--center">
+        <form
+            method="post"
+            action="{{ url('create collection link', { id: collection.id }) }}"
+            class="flow"
+        >
+            {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+            <div class="form-group">
+                <label for="url">
+                    {{ t('What’s the address of the link?') }}
+                </label>
+
+                {% if form.isInvalid('url') %}
+                    <p id="url-error" class="form-group__error">
+                        {{ t('Error:') }}
+                        {{ form.error('url') }}
+                    </p>
+                {% endif %}
+
+                <input
+                    id="url"
+                    name="url"
+                    type="url"
+                    placeholder="https://…"
+                    required
+                    value="{{ form.url }}"
+                    autocomplete="off"
+                    autofocus
+                    aria-describedby="url-caption"
+                    {% if form.isInvalid('url') %}
+                        aria-errormessage="url-error"
+                        aria-invalid="true"
+                    {% endif %}
+                >
+
+                <p id="url-caption" class="form-group__caption">
+                    {{ t('It can be copy-paste from the <abbr>URL</abbr> bar, at the top of your browser.') | raw }}
+                </p>
+            </div>
+
+            <div class="form-group">
+                <input
+                    type="checkbox"
+                    id="is-hidden"
+                    name="is_hidden"
+                    {{ form.is_hidden ? 'checked' : '' }}
+                >
+
+                <label class="label--checkbox" for="is-hidden">
+                    {{ t('Hide this link in public collections') }}
+                </label>
+            </div>
+
+            <div class="text--center">
+                <button type="submit" class="button--primary button--big">
+                    {{ t('Add the link') }}
+                </button>
+            </div>
+
+            <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}">
+        </form>
+    </div>
+{% endblock %}

@@ -65,7 +65,7 @@ class Feeds extends BaseController
 
         $form = new forms\collections\NewFeed();
 
-        return Response::ok('feeds/new.phtml', [
+        return Response::ok('feeds/new.html.twig', [
             'form' => $form,
         ]);
     }
@@ -93,7 +93,7 @@ class Feeds extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('feeds/new.phtml', [
+            return Response::badRequest('feeds/new.html.twig', [
                 'form' => $form,
             ]);
         }

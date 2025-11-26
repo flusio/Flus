@@ -40,7 +40,7 @@ class Notes extends BaseController
 
         $form = new forms\notes\EditNote(model: $note);
 
-        return Response::ok('notes/edit.phtml', [
+        return Response::ok('notes/edit.html.twig', [
             'note' => $note,
             'form' => $form,
         ]);
@@ -77,7 +77,7 @@ class Notes extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('notes/edit.phtml', [
+            return Response::badRequest('notes/edit.html.twig', [
                 'note' => $note,
                 'form' => $form,
             ]);

@@ -49,7 +49,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $collection_name);
-        $this->assertResponseTemplateName($response, 'links/collections/index.phtml');
+        $this->assertResponseTemplateName($response, 'links/collections/index.html.twig');
     }
 
     public function testIndexRendersCorrectlyWhenMarkAsReadIsSet(): void
@@ -104,7 +104,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', "/links/{$link_not_owned->id}/collections");
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'links/collections/index.phtml');
+        $this->assertResponseTemplateName($response, 'links/collections/index.html.twig');
         $this->assertResponseContains($response, $link_owned->id);
         $this->assertResponseNotContains($response, $link_not_owned->id);
     }
@@ -126,7 +126,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', "/links/{$link_2->id}/collections");
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'links/collections/index.phtml');
+        $this->assertResponseTemplateName($response, 'links/collections/index.html.twig');
         $this->assertResponseContains($response, $link_2->id);
         $this->assertResponseNotContains($response, $link_1->id);
     }

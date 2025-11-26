@@ -1,0 +1,70 @@
+{% extends 'layouts/simple.html.twig' %}
+
+{% set title = t('Change your password') %}
+{% block title %}{{ title }}{% endblock %}
+{% block canonical %}{{ url_full('edit password') }}{% endblock %}
+
+{% block body %}
+    <h1 class="text--center">{{ title }}</h1>
+
+    <p class="text--center">
+        {{ t('You’re changing the password of the account <strong>%s</strong>.', [user.email | escape]) | raw }}
+    </p>
+
+    <form
+        method="post"
+        action="{{ url('update password', { t: form.t }) }}"
+        class="wrapper wrapper--smaller wrapper--center flow"
+    >
+        {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+        <div class="form-group">
+            <label for="new-password">
+                {{ t('Your new password') }}
+                <span class="label__help">
+                    {{ t('(recommended at least 8 characters)') }}
+                </span>
+            </label>
+
+            {% if form.isInvalid('password_hash') %}
+                <p id="password-error" class="form-group__error">
+                    {{ t('Error:') }}
+                    {{ form.error('password_hash') }}
+                </p>
+            {% endif %}
+
+            <div class="cols cols--always cols--gap-smaller" data-controller="input-password">
+                <input
+                    id="new-password"
+                    class="col--extend"
+                    name="password"
+                    type="password"
+                    required
+                    data-input-password-target="input"
+                    autocomplete="new-password"
+                    {% if form.isInvalid('password_hash') %}
+                        aria-errormessage="password-error"
+                        aria-invalid="true"
+                    {% endif %}
+                >
+
+                <button
+                    type="button"
+                    class="no-mobile js-only"
+                    data-action="input-password#toggle"
+                    data-input-password-target="button"
+                    aria-label="{{ t('Show password as plain text. Note: this will visually expose your password.') }}"
+                >
+                    {{ icon('eye') }}
+                    {{ t('Show') }}
+                </button>
+            </div>
+        </div>
+
+        <button type="submit" class="button--primary button--big button--block">
+            {{ t('Confirm') }}
+        </button>
+
+        <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}" />
+    </form>
+{% endblock %}

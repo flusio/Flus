@@ -23,7 +23,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/my/profile');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'my/profile/edit.phtml');
+        $this->assertResponseTemplateName($response, 'my/profile/edit.html.twig');
     }
 
     public function testEditRedirectsToLoginIfUserNotConnected(): void

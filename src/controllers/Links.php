@@ -161,7 +161,7 @@ class Links extends BaseController
             'user' => $user,
         ]);
 
-        return Response::ok('links/new.phtml', [
+        return Response::ok('links/new.html.twig', [
             'form' => $form,
         ]);
     }
@@ -198,7 +198,7 @@ class Links extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('links/new.phtml', [
+            return Response::badRequest('links/new.html.twig', [
                 'form' => $form,
             ]);
         }
@@ -255,7 +255,7 @@ class Links extends BaseController
 
         $form = new forms\links\EditLink(model: $link);
 
-        return Response::ok('links/edit.phtml', [
+        return Response::ok('links/edit.html.twig', [
             'link' => $link,
             'form' => $form,
         ]);
@@ -292,7 +292,7 @@ class Links extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('links/edit.phtml', [
+            return Response::badRequest('links/edit.html.twig', [
                 'link' => $link,
                 'form' => $form,
             ]);

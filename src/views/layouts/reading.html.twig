@@ -1,0 +1,53 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block layout_body %}
+    <section class="layout__content layout__content--reading">
+        <div class="cols cols--gap">
+            <nav class="reading-nav flow flow--small">
+                <ul class="reading-nav__container flow flow--smaller">
+                    <li class="reading-nav__item">
+                        <a
+                            class="reading-nav__anchor reading-nav__anchor--bold"
+                            href="{{ url('news') }}"
+                            {{ current_page == 'news' ? 'aria-current="page"' : '' }}
+                        >
+                            {{ icon('reading') }}
+                            {{ t('News') }}
+                        </a>
+                    </li>
+
+                    <li class="reading-nav__item">
+                        <a
+                            class="reading-nav__anchor reading-nav__anchor--bold"
+                            href="{{ url('bookmarks') }}"
+                            {{ current_page == 'bookmarks' ? 'aria-current="page"' : '' }}
+                        >
+                            {{ icon('bookmark') }}
+                            {{ t('Bookmarks') }}
+                        </a>
+                    </li>
+
+                    <li class="reading-nav__item">
+                        <a
+                            class="reading-nav__anchor reading-nav__anchor--bold"
+                            href="{{ url('read list') }}"
+                            {{ current_page == 'read' ? 'aria-current="page"' : '' }}
+                        >
+                            {{ icon('check') }}
+                            {{ t('Links read') }}
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="col--extend">
+                {{ include('layouts/_back.html.twig', { reset: true }) }}
+
+                <div class="layout__body flow flow--large">
+                    {% block body %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
