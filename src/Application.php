@@ -124,6 +124,19 @@ class Application
             'modal_requested' => $request->headers->getString('Turbo-Frame') === 'modal-content',
         ]);
 
+        \Minz\Template\Twig::addGlobals([
+            'app' => [
+                'user' => $current_user,
+                'locale' => $locale,
+            ],
+        ]);
+
+        \Minz\Template\Twig::addAttributeExtension(twig\ConfigurationExtension::class);
+        \Minz\Template\Twig::addAttributeExtension(twig\FormsExtension::class);
+        \Minz\Template\Twig::addAttributeExtension(twig\IconExtension::class);
+        \Minz\Template\Twig::addAttributeExtension(twig\LocaleExtension::class);
+        \Minz\Template\Twig::addAttributeExtension(twig\UrlExtension::class);
+
         $response = \Minz\Engine::run($request);
 
         if ($response instanceof \Minz\Response) {

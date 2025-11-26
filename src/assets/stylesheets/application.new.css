@@ -1,0 +1,46 @@
+@import "@flus/design/src/stylesheets/application.css";
+
+.wrapper--smaller {
+    --wrapper-max-width: 550px;
+}
+
+.button--block {
+    display: block;
+    width: 100%;
+}
+
+.layout {
+    display: flex;
+    min-height: 100vh;
+
+    align-items: stretch;
+    justify-content: stretch;
+}
+
+.login {
+    flex: 1;
+}
+
+.login__center {
+    display: flex;
+
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+}
+
+.login__illustration {
+    flex: 1;
+
+}
+
+.illustration {
+    margin-right: auto;
+    margin-top: -50px;
+    margin-left: auto;
+}
+
+.login__logo {
+    display: block;
+    max-width: 150px;
+}
