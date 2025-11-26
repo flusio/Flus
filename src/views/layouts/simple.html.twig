@@ -1,0 +1,15 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block layout_body %}
+    <section class="layout__content layout__content--simple">
+        <div class="wrapper wrapper--small wrapper--center">
+            {% block back %}
+            {% endblock %}
+
+            <div class="layout__body layout__body--larger">
+                {% block body %}
+                {% endblock %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

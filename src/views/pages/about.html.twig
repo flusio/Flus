@@ -1,0 +1,107 @@
+{% extends 'layouts/simple.html.twig' %}
+
+{% block title %}{{ t('About %s', [app.brand]) }}{% endblock %}
+{% block canonical %}{{ url_full('about') }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'about' }) }}
+{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: t('About %s', [app.brand]) }) }}
+{% endblock %}
+
+{% block body %}
+    <h1 class="text--center">{{ t('About %s', [app.brand]) }}</h1>
+
+    <div class="text--center flow">
+        <img
+            class="illustration illustration--centered"
+            alt="{{ t('The logo of %s', [app.brand]) }}"
+            src="{{ url_static('static/icons/icon.svg') }}"
+            width="125"
+            height="125"
+        />
+
+        <p>
+            {{ t('Collect, organise, annotate and share links<br><strong>from around the Web.</strong>') | raw }}
+        </p>
+
+        {% if app.brand != 'Flus' %}
+            <p>
+                <strong>{{ t('%s is an instance of Flus.', [app.brand]) }}</strong>
+            </p>
+        {% endif %}
+    </div>
+
+    <div class="cols cols--gap-small">
+        <div class="col--size4 card card--gable">
+            <div class="card__body flow">
+                <h2 class="text--normal">{{ t('Version') }}</h2>
+
+                <p>
+                    {{ app.version }}
+                </p>
+            </div>
+        </div>
+
+        <div class="col--size4 card card--topaz">
+            <div class="card__body flow">
+                <h2 class="text--normal">{{ t('License') }}</h2>
+
+                <p>
+                    <a href="https://github.com/flusio/Flus/blob/main/LICENSE.txt"><abbr>AGPL</abbr> 3</a>
+                </p>
+            </div>
+        </div>
+
+        <div class="col--size4 card card--caribbean">
+            <div class="card__body flow">
+                <h2 class="text--normal">{{ t('Author') }}</h2>
+
+                <p>
+                    <a href="https://marienfressinaud.fr">Marien Fressinaud</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <ul class="list--nostyle cols cols--gap-small cols--center">
+        <li class="col--extend">
+            <a class="button button--big button--block" href="https://flus.fr">
+                {{ t('Website (French)') }}
+            </a>
+        </li>
+
+        <li class="col--extend">
+            <a class="button button--big button--block" href="https://github.com/flusio/Flus">
+                {{ t('Source code') }}
+            </a>
+        </li>
+
+        <li class="col--extend">
+            <a class="button button--big button--block" href="{{ url('addons') }}">
+                {{ t('Addons') }}
+            </a>
+        </li>
+    </ul>
+
+    <div class="text-container">
+        <h2 class="text--center">{{ t('Credits') }}</h2>
+
+        <ul class="flow flow--small">
+            <li>{{ t('the user experience and interface have been designed with the help of <a href="https://www.maiwann.net/">Maiwann</a> and <a href="https://fr.linkedin.com/in/elina-bufferne">Elina Bufferne</a>;') | raw }}</li>
+            <li>{{ t('the logo has been made by <a href="https://www.clara-chambon.fr/">Clara Chambon</a>;') | raw }}</li>
+            <li>{{ t('the font <a href="https://www.theleagueofmoveabletype.com/raleway">Raleway</a>, by Matt McInerney, Pablo Impallari, Rodrigo Fuenzalida;') | raw }}</li>
+            <li>{{ t('the icons are from <a href="https://clarity.design/">the Clarity project</a>;') | raw }}</li>
+            <li>{{ t('the illustrations are from <a href="https://undraw.co">the unDraw project</a>, by <a href="https://twitter.com/ninaLimpi">Katerina Limpitsouni</a>;') | raw }}</li>
+            <li>{{ t('default cards illustrations are from <a href="https://pattern.monster/">Pattern Monster</a>.') | raw }}</li>
+        </ul>
+
+        <p>
+            <strong>
+                {{ t('And a huge thanks to the people who subscribe to the official service, talk about Flus around them, share their opinion and ideas, or report bugs!') }}
+            </strong>
+        </p>
+    </div>
+{% endblock %}

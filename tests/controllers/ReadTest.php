@@ -33,7 +33,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/read');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'read/index.phtml');
+        $this->assertResponseTemplateName($response, 'read/index.html.twig');
         $this->assertResponseContains($response, $link_title);
     }
 

@@ -37,7 +37,7 @@ class Groups extends BaseController
 
         $form = new forms\groups\Group(model: $group);
 
-        return Response::ok('groups/edit.phtml', [
+        return Response::ok('groups/edit.html.twig', [
             'group' => $group,
             'form' => $form,
         ]);
@@ -71,7 +71,7 @@ class Groups extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('groups/edit.phtml', [
+            return Response::badRequest('groups/edit.html.twig', [
                 'group' => $group,
                 'form' => $form,
             ]);

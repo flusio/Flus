@@ -1,0 +1,19 @@
+{% extends 'mailers/base.html.twig' %}
+
+{% block logo %}
+    {{ include('mailers/_logo.html.twig', { cid: logo_cid }) }}
+{% endblock %}
+
+{% block body %}
+    <p>
+        {{ t('Hello %s,', [username]) }}
+    </p>
+
+    <p>
+        {{ t('Thank you for your inscription on %s. To finish, you’ll have to confirm your email address. You just have to click on the following link, and you should be all good then:', [app.brand]) }}<br />
+
+        <a href="{{ url_full('new account validation', { t: token }) }}">
+            {{ url_full('new account validation', { t: token }) }}
+        </a>
+    </p>
+{% endblock %}

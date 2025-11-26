@@ -45,13 +45,18 @@ class Application
         $bin = $request->parameters->getString('bin', 'php cli');
         $bin = $bin === 'cli' ? 'php cli' : $bin;
 
-        $current_command = $request->path();
-        $current_command = trim(str_replace('/', ' ', $current_command));
+        $command = $request->path();
+        $command = trim(str_replace('/', ' ', $command));
 
-        \Minz\Template\Simple::addGlobals([
-            'bin' => $bin,
-            'current_command' => $current_command,
+        \Minz\Template\Twig::addGlobals([
+            'app' => [
+                'brand' => \App\Configuration::$application['brand'],
+                'version' => \App\Configuration::$application['version'],
+                'bin' => $bin,
+                'command' => $command,
+            ],
         ]);
+
 
         return \Minz\Engine::run($request);
     }

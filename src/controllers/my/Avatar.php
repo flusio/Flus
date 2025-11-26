@@ -40,7 +40,7 @@ class Avatar extends BaseController
         $form_avatar->handleRequest($request);
 
         if (!$form_avatar->validate()) {
-            return Response::badRequest('my/profile/edit.phtml', [
+            return Response::badRequest('my/profile/edit.html.twig', [
                 'form_profile' => $form_profile,
                 'form_avatar' => $form_avatar,
             ]);

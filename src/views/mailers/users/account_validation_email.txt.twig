@@ -1,0 +1,9 @@
+{% extends 'mailers/base.txt.twig' %}
+
+{% block body %}
+{{ t('Hello %s,', [username]) }}
+
+{{ t('Thank you for your inscription on %s. To finish, you’ll have to confirm your email address. You just have to click on the following link, and you should be all good then:', [app.brand]) }}
+
+{{ url_full('new account validation', { t: token }) }}
+{% endblock %}

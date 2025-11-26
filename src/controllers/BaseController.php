@@ -19,6 +19,17 @@ use Minz\Response;
 class BaseController
 {
     /**
+     * Add the response code to the global context of the template.
+     */
+    #[Controller\AfterAction]
+    public function addResponseCodeToTemplateContext(Request $request, Response $response): void
+    {
+        \Minz\Template\Twig::addGlobals([
+            'response_code' => $response->code(),
+        ]);
+    }
+
+    /**
      * Handle the MissingCurrentUserError to redirect to the login page.
      */
     #[Controller\ErrorHandler(auth\MissingCurrentUserError::class)]
@@ -52,7 +63,7 @@ class BaseController
         Request $request,
         auth\AccessDeniedError $error,
     ): Response {
-        return Response::forbidden('forbidden.phtml', [
+        return Response::forbidden('forbidden.html.twig', [
             'error' => $error,
         ]);
     }
@@ -65,7 +76,7 @@ class BaseController
         Request $request,
         \Minz\Errors\MissingRecordError $error,
     ): Response {
-        return Response::notFound('not_found.phtml', [
+        return Response::notFound('errors/not_found.html.twig', [
             'error' => $error,
         ]);
     }
@@ -78,7 +89,7 @@ class BaseController
         Request $request,
         utils\PaginationOutOfBoundsError $error,
     ): Response {
-        return Response::notFound('not_found.phtml', [
+        return Response::notFound('errors/not_found.html.twig', [
             'error' => $error,
         ]);
     }

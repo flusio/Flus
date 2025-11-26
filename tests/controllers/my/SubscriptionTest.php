@@ -262,7 +262,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/my/account/subscription');
 
-        $this->assertResponseCode($response, 400);
+        $this->assertResponseCode($response, 500);
     }
 
     public function testRedirectFailsIfUserHasInvalidAccountId(): void
@@ -274,7 +274,6 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/my/account/subscription');
 
         $this->assertResponseCode($response, 500);
-        $this->assertResponseContains($response, 'please contact the support');
     }
 
     public function testRedirectFailsIfSubscriptionsAreDisabled(): void

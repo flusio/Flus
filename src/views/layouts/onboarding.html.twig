@@ -1,0 +1,23 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block layout_header %}
+    <header class="panel text--center">
+        <a class="header__logo" href="{{ url('onboarding') }}">
+            <img alt="Flus" src="{{ url_static('static/logo.svg') }}">
+        </a>
+    </header>
+{% endblock %}
+
+{% block layout_body %}
+    <section class="layout__content layout__content--onboarding">
+        <div class="wrapper wrapper--small wrapper--center">
+            {% block navigation %}
+            {% endblock %}
+
+            <div class="layout__body layout__body--larger">
+                {% block body %}
+                {% endblock %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

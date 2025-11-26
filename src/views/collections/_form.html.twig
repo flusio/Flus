@@ -1,0 +1,125 @@
+<form
+    method="post"
+    action="{{ action }}"
+    data-controller="autosave"
+    data-action="turbo:submit-start@document->autosave#clear"
+    class="flow"
+>
+    {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+    <div class="form-group">
+        <label for="name">
+            {{ t('What do you want to name this collection?') }}
+            <span class="label__help">
+                {{ t('(max. %d characters)', [form.collection_name_max_length]) }}
+            </span>
+        </label>
+
+        {% if form.isInvalid('name') %}
+            <p id="name-error" class="form-group__error">
+                {{ t('Error:') }}
+                {{ form.error('name') }}
+            </p>
+        {% endif %}
+
+        <input
+            id="name"
+            name="name"
+            type="text"
+            required
+            value="{{ form.name }}"
+            autofocus
+            maxlength="{{ form.collection_name_max_length }}"
+            data-action="keyup->autosave#save"
+            {% if form.isInvalid('name') %}
+                aria-errormessage="name-error"
+                aria-invalid="true"
+            {% endif %}
+        />
+    </div>
+
+    <div class="form-group">
+        <label for="description">
+            {{ t('What’s the purpose of this collection?') }}
+            <span class="label__help">
+                {{ t('(optional)') }}
+            </span>
+        </label>
+
+        {% if form.isInvalid('description') %}
+            <p id="description-error" class="form-group__error">
+                {{ t('Error:') }}
+                {{ form.error('description') }}
+            </p>
+        {% endif %}
+
+        <textarea
+            id="description"
+            name="description"
+            data-controller="text-editor"
+            data-action="text-editor#refresh keyup->autosave#save"
+            aria-describedby="description-caption"
+            {% if form.isInvalid('description') %}
+                aria-errormessage="description-error"
+                aria-invalid="true"
+            {% endif %}
+        >{{ form.description }}</textarea>
+
+        <p id="description-caption" class="form-group__caption">
+            {{ t('You can format the description in Markdown.') }}
+        </p>
+    </div>
+
+    {% set topics = form.topicsValues %}
+    {% if topics %}
+        <fieldset aria-describedby="topics-desc">
+            <legend>{{ t('What topics will be covered?') }}</legend>
+
+            {% if form.isInvalid('topic_ids') %}
+                <p id="topic-ids-error" class="form-group__error">
+                    {{ t('Error:') }}
+                    {{ form.error('topic_ids') }}
+                </p>
+            {% endif %}
+
+            <div class="stack stack--gap-smaller stack--center">
+                {% for topic in topics %}
+                    <div class="topic">
+                        <input
+                            type="checkbox"
+                            id="topic-{{ topic.id }}"
+                            name="topic_ids[]"
+                            value="{{ topic.id }}"
+                            {{ form.isTopicSelected(topic) ? 'checked' : '' }}
+                        />
+
+                        <label for="topic-{{ topic.id }}">
+                            {{ topic.label }}
+                        </label>
+                    </div>
+                {% endfor %}
+            </div>
+        </fieldset>
+    {% endif %}
+
+    <div class="form-group">
+        <input
+            type="checkbox"
+            id="is_public"
+            name="is_public"
+            {{ form.is_public ? 'checked' : '' }}
+        />
+
+        <label class="label--checkbox" for="is_public">
+            {{ t('Show the collection publicly') }}
+        </label>
+    </div>
+
+    <div class="text--center">
+        <button type="submit" class="button--primary button--big">
+            {{ submit_label }}
+        </button>
+    </div>
+
+    <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}" />
+</form>

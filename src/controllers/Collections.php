@@ -45,7 +45,7 @@ class Collections extends BaseController
 
         $form = new forms\collections\Collection();
 
-        return Response::ok('collections/new.phtml', [
+        return Response::ok('collections/new.html.twig', [
             'form' => $form,
         ]);
     }
@@ -77,7 +77,7 @@ class Collections extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('collections/new.phtml', [
+            return Response::badRequest('collections/new.html.twig', [
                 'form' => $form,
             ]);
         }
@@ -135,34 +135,19 @@ class Collections extends BaseController
         $topics = $collection->topics();
         $topics = utils\Sorter::localeSort($topics, 'label');
 
-        if ($can_update) {
-            return Response::ok('collections/show.phtml', [
-                'collection' => $collection,
-                'topics' => $topics,
-                'links' => $collection->links(
-                    ['published_at', 'number_notes'],
-                    [
-                        'offset' => $pagination->currentOffset(),
-                        'limit' => $pagination->numberPerPage(),
-                    ]
-                ),
-                'pagination' => $pagination,
-            ]);
-        } else {
-            return Response::ok('collections/show_public.phtml', [
-                'collection' => $collection,
-                'topics' => $topics,
-                'links' => $collection->links(
-                    ['published_at', 'number_notes'],
-                    [
-                        'hidden' => $access_is_shared,
-                        'offset' => $pagination->currentOffset(),
-                        'limit' => $pagination->numberPerPage(),
-                    ]
-                ),
-                'pagination' => $pagination,
-            ]);
-        }
+        return Response::ok('collections/show.html.twig', [
+            'collection' => $collection,
+            'topics' => $topics,
+            'links' => $collection->links(
+                ['published_at', 'number_notes'],
+                [
+                    'hidden' => $can_update || $access_is_shared,
+                    'offset' => $pagination->currentOffset(),
+                    'limit' => $pagination->numberPerPage(),
+                ]
+            ),
+            'pagination' => $pagination,
+        ]);
     }
 
     /**
@@ -191,7 +176,7 @@ class Collections extends BaseController
             'topic_ids' => array_column($collection->topics(), 'id'),
         ], model: $collection);
 
-        return Response::ok('collections/edit.phtml', [
+        return Response::ok('collections/edit.html.twig', [
             'collection' => $collection,
             'form' => $form,
         ]);
@@ -231,7 +216,7 @@ class Collections extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('collections/edit.phtml', [
+            return Response::badRequest('collections/edit.html.twig', [
                 'collection' => $collection,
                 'form' => $form,
             ]);

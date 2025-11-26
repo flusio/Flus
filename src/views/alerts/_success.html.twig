@@ -1,0 +1,9 @@
+{% if message %}
+    <div class="alert alert--success" role="alert" data-turbo-temporary>
+        <div class="alert__title">{{ t('Success') }}</div>
+
+        <p class="alert__message">
+            {{ message }}
+        </p>
+    </div>
+{% endif %}

@@ -1,0 +1,56 @@
+{% extends 'layouts/application.html.twig' %}
+
+{% block title %}{{ t('Account & data') | raw }}{% endblock %}
+{% block canonical %}{{ url_full('account') }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'account' }) }}
+{% endblock %}
+
+{% block navigation %}
+    {{ include('layouts/_account_navigation.html.twig', { page: 'account' }) }}
+{% endblock %}
+
+{% block body %}
+    <h1 class="text--center">{{ t('Account & data') }}</h1>
+
+    <div class="text--center flow flow--large">
+        <p>
+            {{ t('You are registered since %s.', [d(app.user.created_at, 'dd MMMM Y')]) }}
+        </p>
+
+        {% if not app.user.isValidated %}
+            <div>
+                <a class="button button--primary button--big" href="{{ url('account validation') }}">
+                    {{ t('Validate your account') }}
+                </a>
+            </div>
+        {% elseif subscriptions_enabled %}
+            <p>
+                {% if app.user.isSubscriptionExempted %}
+                    {{ t('You have a <strong>free subscription</strong>! 😊') | raw }}
+                {% elseif app.user.isSubscriptionOverdue %}
+                    {{ t('<strong>Your subscription expired on %s.</strong>', [d(app.user.subscription_expired_at, 'dd MMMM Y')]) | raw }}
+                {% else %}
+                    {{ t('Your subscription will expire on <strong>%s.</strong>', [d(app.user.subscription_expired_at, 'dd MMMM Y')]) | raw }}
+                {% endif %}
+            </p>
+
+            {% if app.user.hasSubscriptionAccount %}
+                <a class="button button--big {{ app.user.isSubscriptionOverdue ? 'button--primary' : '' }}" href="{{ url('subscription') }}">
+                    {{ icon('credit-card') }}
+                    {{ t('Manage your subscription') }}
+                </a>
+            {% else %}
+                <form method="post" action="{{ url('create subscription account') }}">
+                    <button class="button--primary button--big" type="submit">
+                        {{ icon('credit-card') }}
+                        {{ t('Create your payment account') }}
+                    </button>
+
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token('users\\InitSubscription') }}" />
+                </form>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock %}

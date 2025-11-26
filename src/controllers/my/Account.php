@@ -37,7 +37,7 @@ class Account extends BaseController
             $user->save();
         }
 
-        return Response::ok('my/account/show.phtml', [
+        return Response::ok('my/account/show.html.twig', [
             'subscriptions_enabled' => $sub_enabled,
         ]);
     }
@@ -55,7 +55,7 @@ class Account extends BaseController
     {
         auth\CurrentUser::require();
 
-        return Response::ok('my/account/deletion.phtml', [
+        return Response::ok('my/account/deletion.html.twig', [
             'form' => new forms\users\DeleteAccount(),
         ]);
     }
@@ -84,7 +84,7 @@ class Account extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('my/account/deletion.phtml', [
+            return Response::badRequest('my/account/deletion.html.twig', [
                 'form' => $form,
             ]);
         }

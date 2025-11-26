@@ -1,0 +1,99 @@
+.layout--disconnected .layout__header {
+    padding: var(--space-small) var(--space-smaller);
+}
+
+@media (min-width: 800px) {
+    .layout--disconnected .layout__header {
+        padding: var(--space-medium);
+    }
+}
+
+.layout--connected .layout__header {
+    --layout-header-background: var(--color-caribbean);
+    --outline-color: currentcolor;
+
+    position: fixed;
+    z-index: 100;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    width: 100%;
+    height: var(--layout-header-height);
+    padding-right: var(--space-small);
+    padding-left: var(--space-small);
+
+    background-color: var(--layout-header-background);
+    box-shadow: 0 0 5px var(--color-grey-4);
+}
+
+@media (min-width: 800px) {
+    .layout--connected .layout__header {
+        position: static;
+
+        height: auto;
+
+        background-color: var(--layout-header-background);
+        box-shadow: none;
+    }
+}
+
+.layout--blocked .layout__header {
+    padding-top: var(--space-smaller);
+    padding-bottom: var(--space-smaller);
+}
+
+.layout--connected .layout__header .header__link {
+    --outline-offset: -2px;
+
+    display: inline-block;
+    width: 3rem;
+    padding: var(--space-small);
+
+    color: var(--color-gable);
+    text-align: center;
+    text-decoration: none;
+
+    border-top: var(--space-smaller) solid transparent;
+    border-bottom: var(--space-smaller) solid transparent;
+    border-radius: 0;
+}
+
+@media (min-width: 800px) {
+    .layout--connected .layout__header .header__link {
+        width: auto;
+    }
+}
+
+.layout--connected .layout__header .header__link--active {
+    font-weight: bold;
+
+    border-bottom-color: var(--color-background);
+}
+
+.header__logo {
+    display: inline-block;
+    width: 150px;
+    padding-right: var(--space-smaller);
+    padding-left: var(--space-smaller);
+
+    border-radius: var(--border-radius);
+}
+
+.header__button {
+    --button-border-color: currentcolor;
+}
+
+.header__button[aria-current="page"] {
+    --button-background-color: var(--color-topaz);
+}
+
+@media (max-width: 799px) {
+    .header__avatar-container {
+        order: -1;
+    }
+}
+
+.header__avatar {
+    cursor: pointer;
+}

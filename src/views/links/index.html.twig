@@ -1,0 +1,102 @@
+{% extends 'layouts/application.html.twig' %}
+
+{% block title %}{{ t('My links') }}{% endblock %}
+{% block canonical %}{{ url_full('links') }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'links', tab: 'links' }) }}
+{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: t('My links'), reset: true }) }}
+{% endblock %}
+
+{% block search %}
+    {{ include('layouts/_search.html.twig') }}
+{% endblock %}
+
+{% block body %}
+    <h1 class="text--center">{{ t('My links') }}</h1>
+
+    <p class="text--center">
+        {{ t('Organize your links in your thematic collections.') }}
+    </p>
+
+    <div class="grid">
+        <button
+            class="button--card"
+            data-controller="modal-opener"
+            data-action="modal-opener#fetch"
+            data-modal-opener-href-value="{{ url('new collection') }}"
+            aria-haspopup="dialog"
+            aria-controls="modal"
+        >
+            {{ icon('plus-circle') }}
+            {{ t('Create a collection') }}
+        </button>
+
+        {% set collections = groups_to_collections[null] ?? [] %}
+        {% for collection in collections %}
+            {{ include('collections/_collection.html.twig', {
+                collection: collection,
+                display_by: false,
+                display_number_links: true,
+                display_visibility: collection.is_public,
+            }) }}
+        {% endfor %}
+
+        {{ include('grids/_placeholder.html.twig', { count: collections | length + 1 }) }}
+    </div>
+
+    {% for group in groups %}
+        {% set collections = groups_to_collections[group.id] ?? [] %}
+        {% if collections %}
+            {{ include('groups/_group.html.twig', {
+                group: group,
+                collections: collections,
+                display_by: false,
+                display_number_links: true,
+                display_visibility: true,
+            }) }}
+        {% endif %}
+    {% endfor %}
+
+    {% if shared_collections %}
+        <section class="group flow flow--large">
+            <header class="group__header">
+                <div class="group__icon">
+                    {{ icon('share') }}
+                </div>
+
+                <h2 class="group__title">
+                    {{ t('Shared with me') }}
+                </h2>
+
+                <div class="group__separator"></div>
+            </header>
+
+            <div class="group__body">
+                <div class="grid">
+                    {% for collection in shared_collections %}
+                        {{ include('collections/_collection.html.twig', {
+                            collection: collection,
+                            display_by: true,
+                            display_number_links: true,
+                            display_visibility: collection.is_public,
+                        }) }}
+                    {% endfor %}
+
+                    {{ include('grids/_placeholder.html.twig', { count: shared_collections | length }) }}
+                </div>
+            </div>
+        </section>
+    {% endif %}
+
+    <div class="text--center">
+        <img
+            alt=""
+            src="{{ url_static('static/illustrations/inspiration.svg') }}"
+            height="250"
+        >
+    </div>
+{% endblock %}

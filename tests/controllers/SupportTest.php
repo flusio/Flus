@@ -25,7 +25,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'you can contact me via this form');
-        $this->assertResponseTemplateName($response, 'support/show.phtml');
+        $this->assertResponseTemplateName($response, 'support/show.html.twig');
     }
 
     public function testShowRendersSuccessParagraphIfMessageSent(): void
@@ -165,7 +165,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'A security verification failed');
-        $this->assertResponseTemplateName($response, 'support/show.phtml');
+        $this->assertResponseTemplateName($response, 'support/show.html.twig');
         $this->assertNull(\Minz\Flash::get('message_sent'));
         $this->assertEmailsCount(0);
     }
@@ -190,7 +190,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The subject is required.');
-        $this->assertResponseTemplateName($response, 'support/show.phtml');
+        $this->assertResponseTemplateName($response, 'support/show.html.twig');
         $this->assertNull(\Minz\Flash::get('message_sent'));
         $this->assertEmailsCount(0);
     }
@@ -215,7 +215,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The message is required.');
-        $this->assertResponseTemplateName($response, 'support/show.phtml');
+        $this->assertResponseTemplateName($response, 'support/show.html.twig');
         $this->assertNull(\Minz\Flash::get('message_sent'));
         $this->assertEmailsCount(0);
     }

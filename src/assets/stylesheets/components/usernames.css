@@ -1,0 +1,14 @@
+.username {
+    display: inline-block;
+
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.username .avatar {
+    margin-right: var(--space-smaller);
+}
+
+.username .avatar--mini {
+    margin-top: -3px;
+}

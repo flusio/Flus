@@ -1,0 +1,15 @@
+<ul class="list--collections-others list list--no-style">
+    {% for collection in collections %}
+        {% set other_link = collection.linkNotOwnedByUrl(app.user.id, link.url_hash) %}
+        {% set owner = other_link.owner %}
+        <li class="list__item" data-link-id="{{ other_link.id }}">
+            <img class="avatar" src="{{ url_avatar(owner.avatar_filename) }}" alt="">
+
+            {% if collection.user_id == app.user.id %}
+                {{ t('<strong>%s</strong> added this link to <strong>%s</strong>.', [owner.username | escape, collection.name | escape]) | raw }}
+            {% else %}
+                {{ t('<strong>%s</strong> added this link to <strong>%s</strong> (shared by %s).', [owner.username | escape, collection.name | escape, collection.owner.username | escape]) | raw }}
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>

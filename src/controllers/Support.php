@@ -31,7 +31,7 @@ class Support extends BaseController
 
         $form = new forms\Support();
 
-        return Response::ok('support/show.phtml', [
+        return Response::ok('support/show.html.twig', [
             'form' => $form,
             'message_sent' => \Minz\Flash::pop('message_sent'),
         ]);
@@ -63,7 +63,7 @@ class Support extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('support/show.phtml', [
+            return Response::badRequest('support/show.html.twig', [
                 'form' => $form,
                 'message_sent' => false,
             ]);
@@ -101,7 +101,7 @@ class Support extends BaseController
                 _('The message could not be sent due to a server-side problem.'),
             );
 
-            return Response::internalServerError('support/show.phtml', [
+            return Response::internalServerError('support/show.html.twig', [
                 'form' => $form,
                 'message_sent' => false,
             ]);

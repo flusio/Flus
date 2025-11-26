@@ -62,7 +62,7 @@ class MastodonThreads extends BaseController
             'max_chars' => $mastodon_server->statuses_max_characters,
         ]);
 
-        return Response::ok('links/mastodon_threads/new.phtml', [
+        return Response::ok('links/mastodon_threads/new.html.twig', [
             'link' => $link,
             'form' => $form,
         ]);
@@ -108,7 +108,7 @@ class MastodonThreads extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('links/mastodon_threads/new.phtml', [
+            return Response::badRequest('links/mastodon_threads/new.html.twig', [
                 'link' => $link,
                 'form' => $form,
             ]);
@@ -165,7 +165,7 @@ class MastodonThreads extends BaseController
 
         auth\Access::require($user, 'shareOnMastodon', $link);
 
-        return Response::ok('links/mastodon_threads/created.phtml', [
+        return Response::ok('links/mastodon_threads/created.html.twig', [
             'link' => $link,
         ]);
     }

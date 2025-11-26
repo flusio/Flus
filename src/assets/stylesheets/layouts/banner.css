@@ -1,0 +1,15 @@
+.layout__banner {
+    padding: var(--space-small);
+
+    color: var(--color-pampas);
+    font-weight: bold;
+    text-align: center;
+
+    background-color: var(--color-gable);
+}
+
+.layout__banner--alert {
+    color: var(--color-white);
+
+    background-color: var(--color-danger-solid);
+}

@@ -38,7 +38,7 @@ class Sessions extends BaseController
             'user_id' => $user->id,
         ], 'created_at DESC');
 
-        return Response::ok('my/sessions/index.phtml', [
+        return Response::ok('my/sessions/index.html.twig', [
             'current_session' => $session,
             'sessions' => $sessions,
         ]);

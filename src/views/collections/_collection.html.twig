@@ -1,0 +1,62 @@
+{% set display_by = display_by ?? true %}
+{% set display_visibility = display_visibility ?? true %}
+{% set display_number_links = display_number_links ?? true %}
+
+<div
+    class="collection"
+    style="background-image: url('{{ url_media('covers', collection.image_filename, 'collection-card.png') }}');"
+    data-color-scheme="dark"
+>
+    <a class="collection__body flow" href="{{ url('collection', { id: collection.id }) }}">
+        <div class="collection__title">
+            {{ collection.name }}
+        </div>
+
+        <div class="flow flow--small">
+            <p class="text--oneline">
+                {% set by = '' %}
+                {% if display_by %}
+                    {% if collection.type == 'feed' %}
+                        {% set by = t('Feed %s', [collection.feedWebsiteHost | escape]) %}
+                    {% else %}
+                        {% set by = t('By %s', [collection.owner.username | escape]) %}
+                    {% endif %}
+
+                    {% set by = '<span class="text--ellipsis">' ~ by ~ '</span>' %}
+                {% endif %}
+
+                {% set number_links = '' %}
+                {% if display_number_links %}
+                    {% if collection.number_links == 0 %}
+                        {% set number_links = t('no links') %}
+                    {% else %}
+                        {% set number_links = t('%d link', '%d links', collection.number_links, [collection.number_links | format_number]) %}
+                    {% endif %}
+
+                    {% set number_links = '<span class="text--extend">' ~ number_links ~ '</span>' %}
+                {% endif %}
+
+                {{ by | raw }}
+                {% if by and number_links %}
+                    &nbsp;·&nbsp;
+                {% endif %}
+                {{ number_links | raw }}
+
+                {% if display_visibility %}
+                    <span class="badge badge--accent badge--border">
+                        {% if collection.is_public %}
+                            {{ t('public') }}
+                        {% else %}
+                            {{ t('private') }}
+                        {% endif %}
+                    </span>
+                {% endif %}
+            </p>
+
+            <p title="{{ t('Publication frequency') }}">
+                {{ icon('line-chart') }}
+                {{ collection.publication_frequency_per_year | format_publication_frequency }}
+            </p>
+        </div>
+    </a>
+</div>

@@ -61,7 +61,7 @@ class Notes extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('links/show.phtml', [
+            return Response::badRequest('links/show.html.twig', [
                 'link' => $link,
                 'form' => $form,
             ]);

@@ -1,0 +1,52 @@
+{% extends 'layouts/modal.html.twig' %}
+
+{% block title %}{{ t('New feed') }}{% endblock %}
+
+{% block body %}
+    <div class="wrapper wrapper--small wrapper--center flow flow--large">
+        <form method="post" action="{{ url('create feed') }}" class="flow">
+            {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+            <div class="form-group">
+                <label for="url">
+                    {{ t('What’s the address of the website or feed to follow?') }}
+                </label>
+
+                {% if form.isInvalid('url') %}
+                    <p id="url-error" class="form-group__error">
+                        {{ t('Error:') }}
+                        {{ form.error('url') }}
+                    </p>
+                {% endif %}
+
+                <input
+                    id="url"
+                    name="url"
+                    type="url"
+                    placeholder="https://…"
+                    required
+                    value="{{ form.url }}"
+                    autocomplete="off"
+                    autofocus
+                    aria-describedby="url-caption"
+                    {% if form.isInvalid('url') %}
+                        aria-errormessage="url-error"
+                        aria-invalid="true"
+                    {% endif %}
+                >
+
+                <p id="url-caption" class="form-group__caption">
+                    {{ t('It can be copy-paste from the <abbr>URL</abbr> bar, at the top of your browser.') | raw }}
+                </p>
+            </div>
+
+            <div class="text--center">
+                <button type="submit" class="button--primary button--big">
+                    {{ t('Add the feed') }}
+                </button>
+            </div>
+
+            <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}">
+        </form>
+    </div>
+{% endblock %}

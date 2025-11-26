@@ -30,7 +30,7 @@ class NotesTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', "/notes/{$note->id}/edit");
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'notes/edit.phtml');
+        $this->assertResponseTemplateName($response, 'notes/edit.html.twig');
         $this->assertResponseContains($response, $content);
     }
 

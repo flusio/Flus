@@ -1,0 +1,56 @@
+{% extends 'layouts/modal.html.twig' %}
+
+{% block title %}{{ t('Note edition') }}{% endblock %}
+
+{% block body %}
+    <div class="wrapper wrapper--small wrapper--center">
+        <form
+            data-turbo-preserve-scroll
+            method="post"
+            action="{{ url('update note', { id: note.id }) }}"
+            data-controller="autosave"
+            data-action="turbo:submit-start@document->autosave#clear"
+            class="flow"
+        >
+            {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+            <div class="form-group">
+                <label for="content">
+                    {{ t('Your note') }}
+                </label>
+
+                {% if form.isInvalid('content') %}
+                    <p id="content-error" class="form-group__error">
+                        {{ t('Error:') }}
+                        {{ form.error('content') }}
+                    </p>
+                {% endif %}
+
+                <textarea
+                    id="content"
+                    name="content"
+                    required
+                    data-controller="text-editor"
+                    data-action="text-editor#refresh keyup->autosave#save"
+                    aria-describedby="content-caption"
+                    {% if form.isInvalid('content') %}
+                        aria-errormessage="content-error"
+                        aria-invalid="true"
+                    {% endif %}
+                >{{ form.content }}</textarea>
+
+                <p id="content-caption" class="form-group__caption">
+                    {{ t('You can format the content in Markdown and use #tags.') }}
+                </p>
+            </div>
+
+            <div class="text--center">
+                <button type="submit" class="button--primary button--big">
+                    {{ t('Save changes') }}
+                </button>
+            </div>
+
+            <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}">
+        </form>
+    </div>
+{% endblock %}

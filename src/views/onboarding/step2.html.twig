@@ -1,0 +1,33 @@
+{% extends 'layouts/onboarding.html.twig' %}
+
+{% block title %}{{ t('Read at your own pace') }}{% endblock %}
+{% block canonical %}{{ url_full('onboarding', { step: current_step }) }}{% endblock %}
+
+{% block navigation %}
+    {{ include('onboarding/_navigation.html.twig') }}
+{% endblock %}
+
+{% block body %}
+    <h1 class="text--center">{{ t('Read at your own pace') }}</h1>
+
+    <p class="text--center">
+        {{ icon('reading') }}
+        {{ t('The <strong>Reading</strong> tab helps you organise your reading list.') | raw }}
+    </p>
+
+    <div class="flow">
+        <p>
+            {{ t('“News” gives you suggestions of what to read from the websites that you follow.') }}
+        </p>
+
+        <p>
+            {{ t('Short on time? “Bookmark” links to read later and find them in one click.') }}
+        </p>
+
+        <p>
+            {{ t('Finally, keep track of the links you have already read in the “Links read” section.') }}
+        </p>
+    </div>
+
+    {{ include('onboarding/_continue.html.twig') }}
+{% endblock %}

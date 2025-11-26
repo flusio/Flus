@@ -1,0 +1,176 @@
+{% extends 'layouts/application.html.twig' %}
+
+{% block title %}{{ t('Configure sharing to Mastodon') }}{% endblock %}
+{% block canonical %}{{ url_full('mastodon') }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'mastodon' }) }}
+{% endblock %}
+
+{% block navigation %}
+    {{ include('layouts/_account_navigation.html.twig', { page: 'mastodon' }) }}
+{% endblock %}
+
+{% block body %}
+    <div class="wrapper wrapper--small wrapper--center flow flow--large">
+        <h1 class="text--center">{{ t('Configure sharing to Mastodon') }}</h1>
+
+        <p class="text--center">
+            {{ t('%s lets you edit a thread of posts to share your links and notes on Mastodon.', [app.brand]) }}
+        </p>
+
+        {% if mastodon_account and mastodon_account.isSetup %}
+            <form method="post" action="{{ url('update mastodon account') }}" class="flow">
+                {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+                <div class="form-group">
+                    <input
+                        type="checkbox"
+                        id="prefill-with-notes"
+                        name="prefill_with_notes"
+                        {{ form.prefill_with_notes ? 'checked' : '' }}
+                    >
+
+                    <label class="label--checkbox" for="prefill-with-notes">
+                        {{ t('Pre-fill the thread with the contents of your notes') }}
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <input
+                        type="checkbox"
+                        id="link-to-notes"
+                        name="link_to_notes"
+                        {{ form.link_to_notes ? 'checked' : '' }}
+                    >
+
+                    <label class="label--checkbox" for="link-to-notes">
+                        {{ t('Add a link to your notes in the first post of the thread') }}
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label for="post-scriptum">
+                        {{ t('Something to add to the first post of the thread? (postscript)') }}
+                        <span class="label__help">
+                            {{ t('(max. %d characters)', [form.post_scriptum_max_length]) }}
+                        </span>
+                    </label>
+
+                    {% if form.isInvalid('post_scriptum') %}
+                        <p id="post-scriptum-error" class="form-group__error">
+                            {{ t('Error:') }}
+                            {{ form.error('post_scriptum') }}
+                        </p>
+                    {% endif %}
+
+                    <input
+                        id="post-scriptum"
+                        name="post_scriptum"
+                        type="text"
+                        value="{{ form.post_scriptum }}"
+                        maxlength="{{ form.post_scriptum_max_length }}"
+                        placeholder="{{ t('#monitoring') }}"
+                        {% if form.isInvalid('post_scriptum') %}
+                            aria-errormessage="post-scriptum-error"
+                            aria-invalid="true"
+                        {% endif %}
+                    >
+                </div>
+
+                <div class="form-group">
+                    <input
+                        type="checkbox"
+                        id="post-scriptum-on-all-posts"
+                        name="post_scriptum_in_all_posts"
+                        {{ form.post_scriptum_in_all_posts ? 'checked' : '' }}
+                    >
+
+                    <label class="label--checkbox" for="post-scriptum-on-all-posts">
+                        {{ t('Add the postscript in all the posts of the thread') }}
+                    </label>
+                </div>
+
+                <div class="text--center">
+                    <button type="submit" class="button--primary button--big">
+                        {{ t('Save changes') }}
+                    </button>
+                </div>
+
+                <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}">
+            </form>
+
+            <hr>
+
+            <div class="panel panel--rounded cols cols--center cols--gap-small text--small">
+                <p class="col--extend">
+                    {{ t('Connected with account <em>%s</em>', [mastodon_account.username | escape]) | raw }}
+                </p>
+
+                <form
+                    method="post"
+                    action="{{ url('disconnect mastodon') }}"
+                    data-turbo-confirm="{{ t('Are you sure that you want to disconnect your Mastodon account?') }}"
+                >
+                    <button type="submit" class="button--smaller">
+                        {{ t('disconnect') }}
+                    </button>
+
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token('mastodon\\DeleteMastodonAccount') }}">
+                </form>
+            </div>
+        {% else %}
+            <form
+                method="post"
+                action="{{ url('request mastodon access') }}"
+                data-turbo="false"
+                class="wrapper wrapper--small wrapper--center flow"
+            >
+                {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+                <div class="form-group">
+                    <label for="host">
+                        {{ t('What’s the address of your Mastodon server?') }}
+                    </label>
+
+                    {% if form.isInvalid('host') %}
+                        <p id="host-error" class="form-group__error">
+                            {{ t('Error:') }}
+                            {{ form.error('host') }}
+                        </p>
+                    {% endif %}
+
+                    <input
+                        id="host"
+                        name="host"
+                        type="url"
+                        placeholder="https://…"
+                        required
+                        value="{{ form.host }}"
+                        aria-describedby="host-caption"
+                        {% if form.isInvalid('host') %}
+                            aria-errormessage="host-error"
+                            aria-invalid="true"
+                        {% endif %}
+                    >
+
+                    <p id="host-caption" class="form-group__caption">
+                        {{ t('Not using Mastodon yet?') }}
+
+                        <a target="_blank" rel="noopener noreferrer" href="https://joinmastodon.org/servers">
+                            {{ t('Let’s choose a server.') }}
+                        </a>
+                    </p>
+                </div>
+
+                <div class="text--center">
+                    <button type="submit" class="button--primary button--big">
+                        {{ t('Connect to Mastodon') }}
+                    </button>
+                </div>
+
+                <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}">
+            </form>
+        {% endif %}
+    </div>
+{% endblock %}

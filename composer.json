@@ -9,10 +9,7 @@
         "psr-4": {
             "App\\": "src/",
             "SpiderBits\\": "lib/SpiderBits/src/"
-        },
-        "files": [
-            "src/utils/view_helpers.php"
-        ]
+        }
     },
     "autoload-dev": {
         "psr-4": {

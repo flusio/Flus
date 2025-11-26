@@ -55,7 +55,7 @@ class PagesTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/addons');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'pages/addons.phtml');
+        $this->assertResponseTemplateName($response, 'pages/addons.html.twig');
         $this->assertResponseContains($response, ' Keep Flus at hand in your browser');
     }
 
@@ -64,7 +64,7 @@ class PagesTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/about');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'pages/about.phtml');
+        $this->assertResponseTemplateName($response, 'pages/about.html.twig');
         $this->assertResponseContains($response, 'About Flus');
     }
 

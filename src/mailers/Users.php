@@ -45,8 +45,8 @@ class Users extends Mailer
         $brand = \App\Configuration::$application['brand'];
         $email->setSubject(sprintf(_('[%s] Confirm your account'), $brand));
         $email->setBody(
-            'mailers/users/account_validation_email.phtml',
-            'mailers/users/account_validation_email.txt',
+            'mailers/users/account_validation_email.html.twig',
+            'mailers/users/account_validation_email.txt.twig',
             [
                 'logo_cid' => $this->logo_cid,
                 'username' => $user->username,
@@ -83,8 +83,8 @@ class Users extends Mailer
         $brand = \App\Configuration::$application['brand'];
         $email->setSubject(sprintf(_('[%s] Reset your password'), $brand));
         $email->setBody(
-            'mailers/users/reset_password_email.phtml',
-            'mailers/users/reset_password_email.txt',
+            'mailers/users/reset_password_email.html.twig',
+            'mailers/users/reset_password_email.txt.twig',
             [
                 'logo_cid' => $this->logo_cid,
                 'username' => $user->username,
@@ -127,8 +127,8 @@ class Users extends Mailer
         $brand = \App\Configuration::$application['brand'];
         $email->setSubject(sprintf(_('[%s] Your account will be deleted soon due to inactivity'), $brand));
         $email->setBody(
-            'mailers/users/inactivity_email.phtml',
-            'mailers/users/inactivity_email.txt',
+            'mailers/users/inactivity_email.html.twig',
+            'mailers/users/inactivity_email.txt.twig',
             [
                 'logo_cid' => $this->logo_cid,
                 'username' => $user->username,

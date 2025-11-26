@@ -33,7 +33,7 @@ class Opml extends BaseController
             'user' => $user,
         ]);
 
-        return Response::ok('importations/opml/show.phtml', [
+        return Response::ok('importations/opml/show.html.twig', [
             'form' => $form,
         ]);
     }
@@ -62,7 +62,7 @@ class Opml extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('importations/opml/show.phtml', [
+            return Response::badRequest('importations/opml/show.html.twig', [
                 'form' => $form,
             ]);
         }
@@ -76,7 +76,7 @@ class Opml extends BaseController
                 _('This file cannot be uploaded.'),
             );
 
-            return Response::internalServerError('importations/opml/show.phtml', [
+            return Response::internalServerError('importations/opml/show.html.twig', [
                 'form' => $form,
             ]);
         }

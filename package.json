@@ -6,7 +6,6 @@
   "scripts": {
     "watch": "esbuild --bundle --loader:.woff=file --loader:.woff2=file --loader:.svg=file --sourcemap --outdir=public/dev_assets --watch=forever src/assets/*/application.*",
     "build": "esbuild --bundle --loader:.woff=file --loader:.woff2=file --loader:.svg=file --sourcemap --outdir=public/assets --minify src/assets/*/application.*",
-    "build:icons": "svg-sprite --symbol --symbol-dest=. --symbol-sprite=icons.svg --dest=public/static src/assets/icons/*",
     "lint-js": "eslint -c .eslint.config.js src/assets/javascripts/",
     "lint-js-fix": "eslint -c .eslint.config.js --fix src/assets/javascripts/",
     "lint-css": "stylelint src/assets/stylesheets/**/*.css",
@@ -23,6 +22,7 @@
     "svg-sprite": "^2.0.0"
   },
   "dependencies": {
+    "@flus/design": "^1.0.0",
     "@hotwired/stimulus": "^3.1.0",
     "@hotwired/turbo": "^8",
     "stringz": "^2.1.0",

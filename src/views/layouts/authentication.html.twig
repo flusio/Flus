@@ -1,0 +1,25 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block layout_body %}
+    {% block back %}
+    {% endblock %}
+
+    <section class="layout__content layout__content--authentication">
+        <div class="authentication__leftside">
+            <div class="flow flow--larger text--center">
+                <img alt="" src="{{ url_static('static/illustrations/connected-world.svg') }}" width="500">
+
+                <p>
+                    {{ t('Collect, organise, annotate and share links<br><strong>from around the Web.</strong>') | raw }}
+                </p>
+            </div>
+        </div>
+
+        <div class="authentication__rightside panel panel--grey panel--large panel--rounded">
+            <div>
+                {% block body %}
+                {% endblock %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

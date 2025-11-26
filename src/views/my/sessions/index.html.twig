@@ -1,0 +1,62 @@
+{% extends 'layouts/application.html.twig' %}
+
+{% block title %}{{ t('Sessions management') }}{% endblock %}
+{% block canonical %}{{ url_full('sessions') }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'sessions' }) }}
+{% endblock %}
+
+{% block navigation %}
+    {{ include('layouts/_account_navigation.html.twig', { page: 'sessions' }) }}
+{% endblock %}
+
+{% block body %}
+    <h1 class="text--center">{{ t('Sessions management') }}</h1>
+
+    <p class="text--center">
+        {{ t('List and manage your login sessions.') }}
+    </p>
+
+    <ul class="list--nostyle list--border list--padded">
+        {% for session in sessions %}
+            <li class="flow flow--smaller">
+                <div class="cols cols--gap-smaller">
+                    <div class="col--extend stack stack--gap-small">
+                        <strong>{{ session.name }}</strong>
+
+                        {% if session.id == current_session.id %}
+                            <span class="badge badge--accent">
+                                {{ t('current session') }}
+                            </span>
+                        {% elseif not session.isValid %}
+                            <span class="badge">
+                                {{ t('expired') }}
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    {% if session.id != current_session.id %}
+                        <form method="post" action="{{ url('delete session', { id: session.id }) }}">
+                            <small>
+                                <button class="button--smaller" type="submit">
+                                    {{ t('disconnect') }}
+                                </button>
+                            </small>
+
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token('security\\DeleteSession') }}" />
+                        </form>
+                    {% endif %}
+                </div>
+
+                <p>
+                    <small class="col--extend text--secondary">
+                        {{ session.ip }}
+                        ⋅
+                        {{ t('connected on %s', [d(session.created_at, 'd MMM YYYY')]) }}
+                    </small>
+                </p>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

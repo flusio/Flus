@@ -1,0 +1,65 @@
+{% extends 'layouts/modal.html.twig' %}
+
+{% block title %}{{ t('Collection illustration') }}{% endblock %}
+
+{% block body %}
+    <div class="wrapper wrapper--small wrapper--center flow flow--large">
+        <div class="text--center flow flow--small">
+            <p class="text--bold">{{ collection.name }}</p>
+
+            <p>
+                {{ t('Illustrations help to distinguish your collection among the others.') }}
+            </p>
+        </div>
+
+        <form
+            method="post"
+            action="{{ url('update image collection', { id: collection.id }) }}"
+            data-controller="autosubmit form-file"
+            enctype="multipart/form-data"
+            class="flow text--center"
+        >
+            {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+            {% if form.isInvalid('image') %}
+                <p id="image-error" class="form-group__error text--center">
+                    {{ t('Error:') }}
+                    {{ form.error('image') }}
+                </p>
+            {% endif %}
+
+            <input
+                type="file"
+                name="image"
+                id="image"
+                accept="{{ form.imageAcceptedMimetypes }}"
+                data-action="autosubmit#submit"
+                data-form-file-target="file"
+                hidden
+            >
+
+            <div class="form__actions">
+                <button
+                    type="button"
+                    class="button--primary button--big"
+                    data-action="form-file#openFile"
+                    data-autosubmit-target="actionButton"
+                    aria-describedby="file-caption"
+                    {% if form.isInvalid('image') %}
+                        aria-errormessage="image-error"
+                        aria-invalid="true"
+                    {% endif %}
+                >
+                    {{ t('Upload an image') }}
+                </button>
+            </div>
+
+            <p id="file-caption" class="form-group__caption text--centered">
+                {{ t('<abbr>PNG</abbr>, <abbr>JPG</abbr> and <abbr>WEBP</abbr> images only.') | raw }}<br />
+                {{ t('The minimum recommended dimensions are 1100x400px.') }}
+            </p>
+
+            <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}" />
+        </form>
+    </div>
+{% endblock %}

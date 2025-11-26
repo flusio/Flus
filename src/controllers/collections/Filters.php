@@ -35,7 +35,7 @@ class Filters extends BaseController
         $followed_collection = $user->followedCollection($collection->id);
         $form = new forms\collections\EditTimeFilter(model: $followed_collection);
 
-        return Response::ok('collections/filters/edit.phtml', [
+        return Response::ok('collections/filters/edit.html.twig', [
             'collection' => $collection,
             'form' => $form,
         ]);
@@ -71,7 +71,7 @@ class Filters extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('collections/filters/edit.phtml', [
+            return Response::badRequest('collections/filters/edit.html.twig', [
                 'collection' => $collection,
                 'form' => $form,
             ]);

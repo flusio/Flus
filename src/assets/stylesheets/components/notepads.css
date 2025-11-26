@@ -1,0 +1,47 @@
+.notepad {
+    padding: var(--space-small);
+
+    background-color: var(--color-base);
+    border-radius: var(--border-radius);
+}
+
+.notepad__date {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+}
+
+.notepad__date:hover {
+    text-decoration: underline dotted;
+}
+
+.notepad__container {
+    --notepad-container-border: var(--color-grey-line);
+
+    margin-right: calc(-1 * var(--space-smaller));
+    margin-left: calc(-1 * var(--space-smaller));
+    padding: var(--space-smaller);
+
+    border: 1px solid transparent;
+    border-radius: var(--border-radius);
+
+    transition: border-color 0.2s ease-in-out;
+}
+
+.notepad__container:has(.popup__opener:focus-visible),
+.notepad__container:has(.popup__opener[aria-expanded="true"]) {
+    border-color: var(--notepad-container-border);
+}
+
+.notepad__note {
+    overflow-x: hidden;
+
+    overflow-wrap: break-word;
+}
+
+.notepad__note > *:first-child {
+    margin-top: var(--space-smaller);
+}
+
+.notepad__note > *:last-child {
+    margin-bottom: var(--space-smaller);
+}

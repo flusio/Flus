@@ -30,7 +30,7 @@ class Exportations extends BaseController
             'user' => $user,
         ]);
 
-        return Response::ok('exportations/show.phtml', [
+        return Response::ok('exportations/show.html.twig', [
             'form' => $form,
         ]);
     }
@@ -57,7 +57,7 @@ class Exportations extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('exportations/show.phtml', [
+            return Response::badRequest('exportations/show.html.twig', [
                 'form' => $form,
             ]);
         }
@@ -92,7 +92,7 @@ class Exportations extends BaseController
             !$exportation->isFinished() ||
             !file_exists($exportation->filepath)
         ) {
-            return Response::notFound('not_found.phtml');
+            return Response::notFound('errors/not_found.html.twig');
         }
 
         $filename_date = $exportation->created_at->format('Y-m-d');

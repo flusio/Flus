@@ -28,7 +28,7 @@ class ProfilesTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', "/p/{$user->id}");
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'profiles/show.phtml');
+        $this->assertResponseTemplateName($response, 'profiles/show.html.twig');
         $this->assertResponseContains($response, $username);
     }
 
@@ -39,7 +39,7 @@ class ProfilesTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', "/p/{$user->id}");
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'profiles/show.phtml');
+        $this->assertResponseTemplateName($response, 'profiles/show.html.twig');
         $this->assertResponseContains($response, 'Edit');
     }
 

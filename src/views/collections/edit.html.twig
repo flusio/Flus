@@ -1,0 +1,11 @@
+{% extends 'layouts/modal.html.twig' %}
+
+{% block title %}{{ t('Collection edition') }}{% endblock %}
+
+{% block body %}
+    {{ include('collections/_form.html.twig', {
+        form: form,
+        action: url('update collection', { id: collection.id }),
+        submit_label: t('Save changes'),
+    }) }}
+{% endblock %}

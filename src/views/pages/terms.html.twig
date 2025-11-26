@@ -1,0 +1,28 @@
+{% extends 'layouts/simple.html.twig' %}
+
+{% set title = t('Terms of service') %}
+{% block title %}{{ t('Terms of service') }}{% endblock %}
+{% block canonical %}{{ url_full('terms') }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'terms' }) }}
+{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: t('Terms of service') }) }}
+{% endblock %}
+
+{% block body %}
+    <h1 class="text--center">{{ t('Terms of service') }}</h1>
+
+    <div class="text-container">
+        {{ terms | raw }}
+    </div>
+
+    <p class="text--center">
+        <a class="button button--primary button--block button--big button--animated" href="{{ url('registration') }}">
+            {{ icon('arrow-left') }}
+            {{ t('Back to the registration') }}
+        </a>
+    </p>
+{% endblock %}

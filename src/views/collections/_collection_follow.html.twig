@@ -1,0 +1,52 @@
+<div
+    class="collection"
+    style="background-image: url('{{ url_media('covers', collection.image_filename, 'collection-card.png') }}');"
+    data-color-scheme="dark"
+>
+    <a class="collection__body collection__body--large flow" href="{{ url('collection', { id: collection.id }) }}">
+        <div class="collection__title">
+            {{ collection.name }}
+        </div>
+
+        <div class="flow flow--small">
+            <p class="text--oneline">
+                {% set source = t('Feed %s', [collection.feedWebsiteHost]) %}
+
+                {% if collection.number_links == 0 %}
+                    {% set number_links = t('no links') %}
+                {% else %}
+                    {% set number_links = t('%d link', '%d links', collection.number_links, [collection.number_links | format_number]) %}
+                {% endif %}
+
+                <span class="text--ellipsis">{{ source }}</span>&nbsp;·&nbsp;{{ number_links }}
+            </p>
+
+            <p title="{{ t('Publication frequency') }}">
+                {{ icon('line-chart') }}
+                {{ collection.publication_frequency_per_year | format_publication_frequency }}
+            </p>
+        </div>
+    </a>
+
+    <div class="collection__footer">
+        {% if app.user.isFollowing(collection.id) %}
+            <form data-turbo-preserve-scroll method="post" action="{{ url('unfollow collection', { id: collection.id }) }}">
+                <button class="button--big">
+                    {{ icon('feed-stop') }}
+                    {{ t('Unfollow') }}
+                </button>
+
+                <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\UnfollowCollection') }}" />
+            </form>
+        {% else %}
+            <form data-turbo-preserve-scroll method="post" action="{{ url('follow collection', { id: collection.id }) }}">
+                <button class="button--big">
+                    {{ icon('feed') }}
+                    {{ t('Follow') }}
+                </button>
+
+                <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\FollowCollection') }}" />
+            </form>
+        {% endif %}
+    </div>
+</div>

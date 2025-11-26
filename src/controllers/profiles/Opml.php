@@ -32,7 +32,7 @@ class Opml extends BaseController
         $user = models\User::requireFromRequest($request);
 
         if ($user->isSupportUser()) {
-            return Response::notFound('not_found.phtml');
+            return Response::notFound('errors/not_found.html.twig');
         }
 
         utils\Locale::setCurrentLocale($user->locale);

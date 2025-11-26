@@ -1,0 +1,106 @@
+{% extends 'layouts/modal.html.twig' %}
+
+{% block title %}{{ t('Collection group') }}{% endblock %}
+
+{% block body %}
+    <div class="wrapper wrapper--small wrapper--center flow flow--large">
+        <div class="text--center flow flow--small">
+            <p class="text--bold">{{ collection.name }}</p>
+
+            <p>
+                {{ t('Groups help you to organize your collections. They are only visible to you on the main collections page.') }}
+            </p>
+        </div>
+
+        <form method="post" action="{{ url('update group collection', { id: collection.id }) }}" class="flow">
+            {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+            <div data-controller="group-selector">
+                <div class="form-group" data-group-selector-target="groupInput" hidden>
+                    <label for="name">
+                        {{ t('How to name the group?') }}
+                        <span class="label__help">
+                            {{ t('(max. %d characters)', [form.group_name_max_length]) }}
+                        </span>
+                    </label>
+
+                    {% if form.isInvalid('name') %}
+                        <p id="name-error" class="form-group__error">
+                            {{ t('Error:') }}
+                            {{ form.error('name') }}
+                        </p>
+                    {% endif %}
+
+                    <input
+                        id="name"
+                        name=""
+                        type="text"
+                        value="{{ form.name }}"
+                        list="group-names"
+                        autocomplete="off"
+                        autofocus
+                        maxlength="{{ form.group_name_max_length }}"
+                        data-group-selector-target="input"
+                        aria-describedby="name-desc"
+                        {% if form.isInvalid('name') %}
+                            aria-errormessage="name-error"
+                            aria-invalid="true"
+                        {% endif %}
+                    />
+
+                    <datalist id="group-names">
+                        {% for group in form.groups %}
+                            <option value="{{ group.name }}">
+                        {% endfor %}
+                    </datalist>
+                </div>
+
+                <div class="form-group" data-group-selector-target="groupSelect">
+                    <label for="name">
+                        {{ t('Select a group') }}
+                    </label>
+
+                    {% if form.isInvalid('name') %}
+                        <p id="name-error" class="form-group__error">
+                            {{ t('Error:') }}
+                            {{ form.error('name') }}
+                        </p>
+                    {% endif %}
+
+                    <div class="cols cols--always cols--gap-smaller">
+                        <select
+                            id="name"
+                            name="name"
+                            data-group-selector-target="select"
+                            aria-describedby="name-desc"
+                            class="col--extend"
+                         >
+                             <option {{ form.name == '' ? 'selected' : '' }} value="">
+                                 {{ t('No groups') }}
+                             </option>
+
+                             {% for group in form.groups %}
+                                 <option {{ form.isGroupSelected(group) ? 'selected' : '' }} value="{{ group.name }}">
+                                     {{ group.name }}
+                                 </option>
+                            {% endfor %}
+                        </select>
+
+                        <button type="button" data-action="group-selector#showInput">
+                            {{ icon('plus') }}
+                            {{ t('New') }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text--center">
+                <button type="submit" class="button--primary button--big">
+                    {{ t('Save changes') }}
+                </button>
+            </div>
+
+            <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}">
+        </form>
+    </div>
+{% endblock %}

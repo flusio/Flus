@@ -37,7 +37,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/exportations');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'exportations/show.phtml');
+        $this->assertResponseTemplateName($response, 'exportations/show.html.twig');
         $this->assertResponseContains($response, 'Generate a new data archive');
     }
 
@@ -52,7 +52,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/exportations');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'exportations/show.phtml');
+        $this->assertResponseTemplateName($response, 'exportations/show.html.twig');
         $this->assertResponseContains($response, 'We’re creating your archive');
     }
 
@@ -67,7 +67,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/exportations');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'exportations/show.phtml');
+        $this->assertResponseTemplateName($response, 'exportations/show.html.twig');
         $this->assertResponseContains($response, 'Downloading your data');
     }
 
@@ -85,7 +85,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/exportations');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'exportations/show.phtml');
+        $this->assertResponseTemplateName($response, 'exportations/show.html.twig');
         $this->assertResponseContains($response, $error);
     }
 

@@ -1,0 +1,149 @@
+<div class="collections-selector flow" data-controller="collections-selector">
+    <div class="form-group" data-collections-selector-target="selectGroup">
+        <div class="cols cols--always cols--center cols--gap-smaller">
+            <label for="collections-selector-select" class="col--extend">
+                {{ t('Select a collection') }}
+            </label>
+
+            <div>
+                <button type="button" class="button--icon-mobile" data-action="collections-selector#showInput">
+                    {{ icon('pencil') }}
+                    <span class="no-mobile">
+                        {{ t('New') }}
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        {% if form.isInvalid('collection_ids') %}
+            <p id="collection-ids-error" class="form-group__error">
+                {{ t('Error:') }}
+                {{ form.error('collection_ids') }}
+            </p>
+        {% endif %}
+
+        {% if form.isInvalid('new_collection_names') %}
+            <p class="form-group__error">
+                {{ t('Error:') }}
+                {{ form.error('new_collection_names') }}
+            </p>
+        {% endif %}
+
+        <select
+            id="collections-selector-select"
+            data-collections-selector-target="select"
+            data-action="collections-selector#attach"
+            {% if form.isInvalid('collection_ids') %}
+                aria-errormessage="collection-ids-error"
+                aria-invalid="true"
+            {% endif %}
+        ></select>
+    </div>
+
+    <div class="form-group" data-collections-selector-target="inputGroup" hidden>
+        <div class="cols cols--always cols--center cols--gap-smaller">
+            <label for="new-name" class="col--extend">
+                {{ t('What do you want to name the collection?') }}
+                <span class="label__help">
+                    {{ t('(max. %d characters)', [form.collection_name_max_length]) }}
+                </span>
+            </label>
+
+            <div>
+                <button type="button" class="button--smaller" data-action="collections-selector#showSelect">
+                    {{ t('Cancel') }}
+                </button>
+            </div>
+        </div>
+
+        <div class="cols cols--always cols--gap-smaller">
+            <input
+                id="new-name"
+                class="col--extend"
+                name=""
+                type="text"
+                maxlength="{{ form.collection_name_max_length }}"
+                data-collections-selector-target="input"
+            />
+
+            <button type="button" data-action="collections-selector#attach">
+                {{ t('Confirm') }}
+            </button>
+        </div>
+    </div>
+
+    <ul class="list--nostyle grid" data-collections-selector-target="collectionCards"></ul>
+
+    <template data-collections-selector-target="collectionTemplate">
+        <li
+            class="collection"
+            style="background-image: url('{{ url_media('covers', '', 'collection-card.png') }}');"
+            data-color-scheme="dark"
+        >
+            <div class="collection__body">
+                <div class="collection__title" data-target="name">
+                </div>
+
+                <p class="text--oneline">
+                    <span class="text--ellipsis text--extend" data-target="by"></span>
+
+                    <span class="badge badge--accent badge--border" data-target="isPublic">{{ t('public') }}</span>
+                    <span class="badge badge--accent badge--border" data-target="isNew">{{ t('new') }}</span>
+                </p>
+            </div>
+
+            <div class="collection__footer">
+                <button
+                    type="button"
+                    class="button--big"
+                    data-action="collections-selector#detach"
+                    data-target="unselect"
+                >
+                    {{ icon('times') }}
+                    {{ t('Unselect') }}
+                </button>
+            </div>
+        </li>
+    </template>
+
+    <div hidden>
+        <select
+            id="collection-ids"
+            name="collection_ids[]"
+            multiple
+            tabindex="-1"
+            data-collections-selector-target="dataCollections"
+        >
+            {% for group_name, collections in form.collectionsValues %}
+                {% if group_name != '' %}
+                    <optgroup label="{{ group_name }}">
+                {% endif %}
+
+                {% for collection in collections %}
+                    <option
+                        value="{{ collection.id }}"
+                        {{ form.isCollectionSelected(collection) ? 'selected' : '' }}
+                        {{ collection.is_public ? 'data-public' : '' }}
+                        data-illustration="{{ url_media('covers', collection.image_filename, 'collection-card.png') }}"
+                    >
+                        {{ collection.name }}
+                    </option>
+                {% endfor %}
+
+                {% if group_name != '' %}
+                    </optgroup>
+                {% endif %}
+            {% endfor %}
+        </select>
+
+        <div data-collections-selector-target="dataNewCollections">
+            {% for name in form.new_collection_names %}
+                <input
+                    type="hidden"
+                    name="new_collection_names[]"
+                    value="{{ name }}"
+                >
+            {% endfor %}
+        </div>
+    </div>
+</div>

@@ -1,0 +1,30 @@
+{% extends 'layouts/onboarding.html.twig' %}
+
+{% block title %}{{ t('Follow content from Internet') }}{% endblock %}
+{% block canonical %}{{ url_full('onboarding', { step: 4 }) }}{% endblock %}
+
+{% block navigation %}
+    {{ include('onboarding/_navigation.html.twig') }}
+{% endblock %}
+
+{% block body %}
+    <h1 class="text--center">{{ t('Follow content from Internet') }}</h1>
+
+    <p class="text--center">
+        {{ icon('feed') }}
+        {{ t('The <strong>Feeds</strong> list the websites and collections that you follow.') | raw }}
+    </p>
+
+    <div class="flow">
+        <p>
+            {{ t('A lot of websites can be followed in %s <strong>as long as they offer a Web feed</strong>: most news sites, blogs, podcasts… Even YouTube channels!', [app.brand]) | raw
+        }}
+        </p>
+
+        <p>
+            {{ t('This is perfect if you want to be notified when new content is published without wasting time checking each website individually.') }}
+        </p>
+    </div>
+
+    {{ include('onboarding/_continue.html.twig') }}
+{% endblock %}

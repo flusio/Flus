@@ -1,0 +1,66 @@
+{% extends 'layouts/modal.html.twig' %}
+
+{% block title %}{{ t('Group edition') }}{% endblock %}
+
+{% block body %}
+    <div class="wrapper wrapper--small wrapper--center flow flow--large">
+        <form method="post" action="{{ url('update group', { id: group.id }) }}" class="flow">
+            {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+            <div class="form-group">
+                <label for="name">
+                    {{ t('The name of your group') }}
+                    <span class="label__help">
+                        {{ t('(max. %d characters)', [form.group_name_max_length]) }}
+                    </span>
+                </label>
+
+                {% if form.isInvalid('name') %}
+                    <p id="name-error" class"form-group__error">
+                        {{ t('Error:') }}
+                        {{ form.error('name') }}
+                    </p>
+                {% endif %}
+
+                <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    required
+                    value="{{ form.name }}"
+                    autocomplete="off"
+                    autofocus
+                    maxlength="{{ form.group_name_max_length }}"
+                    {% if form.isInvalid('name') %}
+                        aria-errormessage="name-error"
+                        aria-invalid="true"
+                    {% endif %}
+                >
+            </div>
+
+            <div class="text--center">
+                <button type="submit" class="button--primary button--big">
+                    {{ t('Save changes') }}
+                </button>
+            </div>
+
+            <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}" />
+        </form>
+
+        <hr>
+
+        <form
+            method="post"
+            action="{{ url('delete group', { id: group.id }) }}"
+            class="text--center"
+            data-turbo-confirm="{{ t('Are you sure that you want to delete this group? The associated collections will NOT be deleted.') }}"
+        >
+            <button type="submit" class="button--danger button--big">
+                {{ icon('trash') }}
+                {{ t('Delete the group') }}
+            </button>
+
+            <input type="hidden" name="csrf_token" value="{{ csrf_token('groups\\DeleteGroup') }}" />
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,25 @@
+.share {
+    display: flex;
+    padding: var(--space-medium);
+
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-small);
+
+    background-color: var(--color-background);
+    border-radius: var(--border-radius);
+}
+
+@media (min-width: 800px) {
+    .share {
+        flex-direction: row;
+    }
+}
+
+.share__text {
+    flex: 1;
+
+    font-family: monospace;
+    text-align: center;
+    word-break: break-all;
+}
