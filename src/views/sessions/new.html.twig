@@ -1,0 +1,118 @@
+{% extends 'base.html.twig' %}
+
+{% set url_canonical = url_full('login') %}
+
+{% block title %}{{ t('Log in') }}{% endblock %}
+
+{% block body %}
+    <div class="wrapper wrapper--small wrapper--center panel panel--base panel--rounded flow flow--large">
+        <div class="section__title">
+            <h1>{{ t('Log in') }}</h1>
+        </div>
+
+        <form
+            method="post"
+            action="{{ url('create session') }}"
+            class="flow"
+        >
+            {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+            <div class="flow flow--smaller">
+                <label for="email">
+                    {{ t('Email address') }}
+                </label>
+
+                {% if form.isInvalid('email') %}
+                    <p id="email-error" class="form-group__error">
+                        {{ t('Error:') }}
+                        {{ form.error('email') }}
+                    </p>
+                {% endif %}
+
+                <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value="{{ form.email }}"
+                    required
+                    autofocus
+                    autocomplete="username"
+                    {% if form.isInvalid('email') %}
+                        aria-errormessage="email-error"
+                        aria-invalid="true"
+                    {% endif %}
+                />
+            </div>
+
+            <div class="flow flow--smaller">
+                <label for="current-password">
+                    {{ t('Password') }}
+                </label>
+
+                {% if form.isInvalid('password') %}
+                    <p id="password-error" class="form-group__error">
+                        {{ t('Error:') }}
+                        {{ form.error('password') }}
+                    </p>
+                {% endif %}
+
+                <div class="cols cols--always cols--gap-smaller" data-controller="input-password">
+                    <input
+                        id="current-password"
+                        class="col--extend"
+                        name="password"
+                        type="password"
+                        {% if app_configuration('demo') %}
+                            value="{{ form.password }}"
+                        {% endif %}
+                        required
+                        data-input-password-target="input"
+                        autocomplete="current-password"
+                        {% if form.isInvalid('password') %}
+                            aria-errormessage="password-error"
+                            aria-invalid="true"
+                        {% endif %}
+                    />
+
+                    <button
+                        type="button"
+                        class="no-mobile js-only"
+                        data-action="input-password#toggle"
+                        data-input-password-target="button"
+                        aria-label="{{ t('Show password as plain text. Note: this will visually expose your password.') }}"
+                    >
+                        {{ icon('eye') }}
+                        {{ t('Show') }}
+                    </button>
+                </div>
+            </div>
+
+            <div class="text--center">
+                <button type="submit" class="button--primary button--big">
+                    {{ t('Login') }}
+                </button>
+            </div>
+
+            <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}" />
+            <input type="hidden" name="redirect_to" value="{{ form.redirect_to }}" />
+        </form>
+
+        <div class="flow text--center">
+            {% if not app_configuration('demo') %}
+                <p>
+                    <a href="{{ url('forgot password') }}">
+                        {{ t('Forgot password?') }}
+                    </a>
+                </p>
+            {% endif %}
+
+            {% if app_configuration('registrations_opened') %}
+                <p>
+                    <a href="{{ url('registration') }}">
+                        {{ t('No account yet?') }}
+                    </a>
+                </p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
