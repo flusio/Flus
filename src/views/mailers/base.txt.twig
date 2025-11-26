@@ -1,0 +1,8 @@
+{% block body %}
+{% endblock %}
+
+{{ t('Best regards,') }}
+{{ t('The %s robot', [app.brand]) }}
+
+-- 
+{{ t('This email has been sent by %s (%s)', [app.brand, url_full('home')]) }}

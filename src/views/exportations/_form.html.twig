@@ -1,0 +1,9 @@
+<form method="post" action="{{ url('create exportation') }}">
+    <div class="text--center">
+        <button type="submit" class="button--primary button--big">
+            {{ t('Generate a new data archive') }}
+        </button>
+    </div>
+
+    <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}">
+</form>

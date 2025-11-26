@@ -1,0 +1,107 @@
+{% extends 'layouts/modal.html.twig' %}
+
+{% block title %}{{ t('Repairing a link') }}{% endblock %}
+
+{% block body %}
+    <div class="wrapper wrapper--small wrapper--center flow flow--large">
+        <p class="text--center">
+            {{ t('You can change the <abbr>URL</abbr> of a link if it’s broken, or if you made a mistake in it.') | raw }}
+        </p>
+
+        <form
+            data-turbo-preserve-scroll
+            method="post"
+            action="{{ url('repair link', { id: link.id }) }}"
+            class="flow"
+        >
+            {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+            <div
+                class="form-group"
+                data-controller="link-suggestion"
+                data-link-suggestion-url-value="{{ form.urlCleared }}"
+            >
+                <label for="url">
+                    {{ t('What’s the address of the link?') }}
+                </label>
+
+                {% if form.isInvalid('url') %}
+                    <p id="url-error" class="form-group__error">
+                        {{ t('Error:') }}
+                        {{ form.error('url') }}
+                    </p>
+                {% endif %}
+
+                <input
+                    id="url"
+                    name="url"
+                    type="url"
+                    placeholder="https://…"
+                    required
+                    value="{{ form.url }}"
+                    autocomplete="off"
+                    autofocus
+                    data-link-suggestion-target="input"
+                    {% if form.hasDetectedTrackers %}
+                        aria-describedby="trackers-detected-caption"
+                    {% endif %}
+                    {% if form.isInvalid('url') %}
+                        aria-errormessage="url-error"
+                        aria-invalid="true"
+                    {% endif %}
+                >
+
+                {% if form.hasDetectedTrackers %}
+                    <p
+                        id="trackers-detected-caption"
+                        class="form-group__error"
+                        data-link-suggestion-target="message"
+                    >
+                        {% if form.urlCleared %}
+                            {{ t('%s has detected trackers in this <abbr>URL</abbr>. Suggestion:', [app.brand]) | raw }}
+                            {{ form.urlCleared }}
+
+                            <button type="button" class="button--small" data-action="link-suggestion#change">{{ t('Ok') }}</button>
+                        {% else %}
+                            {{ t('%s has detected that this <abbr>URL</abbr> tracks users. It is suggested to delete the link.', [app.brand]) | raw }}
+                        {% endif %}
+                    </p>
+                {% endif %}
+            </div>
+
+            <div class="form-group" data-controller="caption-switcher">
+                <input
+                    type="checkbox"
+                    id="force-sync"
+                    name="force_sync"
+                    {{ form.force_sync ? 'checked' : '' }}
+                    aria-describedby="force-sync-caption"
+                    data-action="caption-switcher#switch"
+                    data-caption-switcher-target="switch"
+                >
+
+                <label class="label--checkbox" for="force-sync">
+                    {{ t('Force the synchronization') }}
+                </label>
+
+                <p class="form-group__caption" id="force-sync-caption" aria-live="polite">
+                    <span data-caption-switcher-target="caption" data-caption-value="on">
+                        {{ t('The title, reading time and illustration will be re-synchronized even if you’ve changed them.') }}
+                    </span>
+
+                    <span data-caption-switcher-target="caption" data-caption-unchecked>
+                        {{ t('The title, reading time and illustration will be synchronize only if you’ve never changed them.') }}
+                    </span>
+                </p>
+            </div>
+
+            <div class="text--center">
+                <button type="submit" class="button--primary button--big">
+                    {{ t('Repair the link') }}
+                </button>
+            </div>
+
+            <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}">
+        </form>
+    </div>
+{% endblock %}

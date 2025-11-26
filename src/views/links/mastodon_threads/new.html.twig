@@ -1,0 +1,117 @@
+{% extends 'layouts/modal.html.twig' %}
+
+{% block title %}{{ t('Share a link on Mastodon') }}{% endblock %}
+
+{% block body %}
+    <form
+        data-turbo-preserve-scroll
+        method="post"
+        action="{{ url('create link mastodon thread', { id: link.id }) }}"
+        data-controller="items"
+        data-items-index-value="{{ form.contents | length }}"
+    >
+        {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+        {% if form.isInvalid('contents') %}
+            <p id="contents-error" class="form-group__error">
+                {{ t('Error:') }}
+                {{ form.error('contents') }}
+            </p>
+        {% endif %}
+
+        <div class="thread flow">
+            <div class="flow" data-items-target="container">
+                {% for content in form.contents %}
+                    <div
+                        class="thread__post form-group"
+                        data-items-target="item"
+                        data-controller="characters-counter"
+                        data-characters-counter-max-value="{{ form.maxCharacters }}"
+                    >
+                        <textarea
+                            id="contents-{{ loop.index }}"
+                            name="contents[]"
+                            data-characters-counter-target="source"
+                            data-action="characters-counter#updateCounter"
+                            aria-label="{{ t('Post #__number__') }}"
+                        >{{ content }}</textarea>
+
+                        <div class="cols cols--always cols--gap-small cols--center">
+                            <div class="col--extend">
+                                <p class="thread__post-counter" aria-live="polite" data-characters-counter-target="counter">
+                                </p>
+                            </div>
+
+                            {% if loop.index > 1 %}
+                                <div>
+                                    <button
+                                        type="button"
+                                        class="button--icon button--ghost"
+                                        data-action="items#removeItem"
+                                    >
+                                        {{ icon('times') }}
+                                        <span class="sr-only">
+                                            {{ t('Remove from thread') }}
+                                        </span>
+                                    </button>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="thread__new-button form-group">
+                <button type="button" data-action="items#addItem">
+                    {{ icon('plus-circle') }}
+                    {{ t('Add a post to thread') }}
+                </button>
+            </div>
+        </div>
+
+        <template data-items-target="prototype">
+            <div
+                class="thread__post form-group"
+                data-items-target="item"
+                data-controller="characters-counter"
+                data-characters-counter-max-value="{{ form.maxCharacters }}"
+            >
+                <textarea
+                    id="contents-__index__"
+                    name="contents[]"
+                    data-characters-counter-target="source"
+                    data-action="characters-counter#updateCounter"
+                    aria-label="{{ t('Post #__number__') }}"
+                >{{ form.defaultContent }}</textarea>
+
+                <div class="cols cols--always cols--gap-small cols--center">
+                    <div class="col--extend">
+                        <p class="thread__post-counter" aria-live="polite" data-characters-counter-target="counter">
+                        </p>
+                    </div>
+
+                    <div>
+                        <button
+                            type="button"
+                            class="button--icon button--ghost"
+                            data-action="items#removeItem"
+                        >
+                            {{ icon('times') }}
+                            <span class="sr-only">
+                                {{ t('Remove from thread') }}
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <div class="text--center">
+            <button type="submit" class="button--primary button--big">
+                {{ t('Publish on Mastodon') }}
+            </button>
+        </div>
+
+        <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}" />
+    </form>
+{% endblock %}

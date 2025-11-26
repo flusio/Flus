@@ -71,7 +71,7 @@ endif
 
 .PHONY: icons
 icons: ## Build the icons asset
-	$(NPM) run build:icons
+	cp node_modules/@flus/design/dist/icons.svg public/static/icons.svg
 
 .PHONY: test
 test: FILE ?= ./tests

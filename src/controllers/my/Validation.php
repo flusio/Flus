@@ -30,7 +30,10 @@ class Validation extends BaseController
     {
         auth\CurrentUser::require();
 
-        return Response::ok('my/validation/show.phtml');
+        return Response::ok('my/validation/show.html.twig', [
+            'status' => \Minz\Flash::pop('status'),
+            'error' => \Minz\Flash::pop('error'),
+        ]);
     }
 
     /**
@@ -47,7 +50,7 @@ class Validation extends BaseController
             't' => $request->parameters->getString('t', ''),
         ]);
 
-        return Response::ok('my/validation/new.phtml', [
+        return Response::ok('my/validation/new.html.twig', [
             'form' => $form,
         ]);
     }
@@ -69,7 +72,7 @@ class Validation extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('my/validation/new.phtml', [
+            return Response::badRequest('my/validation/new.html.twig', [
                 'form' => $form,
             ]);
         }

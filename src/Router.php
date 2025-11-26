@@ -205,10 +205,10 @@ class Router
 
         $router->addRoute('GET', '/feeds.xsl', 'Feeds#xsl', 'feeds xsl');
 
-        // Discovery
-        $router->addRoute('GET', '/discovery', 'Discovery#show', 'discovery');
-
-        $router->addRoute('GET', '/topics/:id', 'Topics#show', 'topic');
+        // Explore
+        $router->addRoute('GET', '/explore', 'Explore#show', 'explore');
+        $router->addRoute('GET', '/discovery', 'Explore#discovery', 'discovery');
+        $router->addRoute('GET', '/topics/:id', 'Explore#topic', 'topic');
 
         // API v1
         $router->addRoute('POST', '/api/v1/sessions', 'api/v1/Sessions#create');

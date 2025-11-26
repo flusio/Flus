@@ -1,0 +1,63 @@
+{% extends 'layouts/application.html.twig' %}
+
+{% block title %}{{ t('Account validation') | raw }}{% endblock %}
+{% block canonical %}{{ url_full('account validation') }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'account validation', display_validation_banner: false }) }}
+{% endblock %}
+
+{% block navigation %}
+    {{ include('layouts/_account_navigation.html.twig', { page: 'account validation' }) }}
+{% endblock %}
+
+{% block body %}
+    <div class="wrapper wrapper--small wrapper--center flow flow--large text--center">
+        <h1>{{ t('Account validation') }}</h1>
+
+        {% if app.user.isValidated %}
+            <p class="text--bolder">
+                {{ t('Your account is now validated 🎉') }}
+            </p>
+
+            <p>
+                <a class="button button--primary button--big button--animated" href="{{ url('home') }}">
+                    {{ icon('arrow-left') }}
+                    {{ t('Go to the home page') }}
+                </a>
+            </p>
+        {% else %}
+            <p class="wrapper wrapper--text wrapper--center">
+                {{ t('You must validate your account so we can contact you in case of a change in our end-user license agreement or a problem concerning your account. <strong>You should have received an email containing a link intended to this purpose.</strong>') | raw }}
+            </p>
+
+            {% if status == 'validation_email_sent' %}
+                <div class="flow">
+                    {{ include('alerts/_success.html.twig', {
+                        message: t('We’ve just sent you an email at %s', [app.user.email]),
+                    }) }}
+
+                    <p class="text--secondary">
+                        {{ t('Still nothing? Did you check your spam?') }}
+                    </p>
+                </div>
+            {% else %}
+                <form class="form--centered" method="post" action="{{ url('resend validation email') }}">
+                    {{ include('alerts/_error.html.twig', { message: error }) }}
+
+                    <button class="button--primary button--big" type="submit">
+                        {{ t('Didn’t receive the email? Resend it') }}
+                    </button>
+
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token('users\\ResendValidationEmail') }}">
+                </form>
+            {% endif %}
+
+            <img
+                alt=""
+                src="{{ url_static('static/illustrations/contact.svg') }}"
+                height="250"
+            >
+        {% endif %}
+    </div>
+{% endblock %}

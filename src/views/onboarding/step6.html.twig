@@ -1,0 +1,71 @@
+{% extends 'layouts/onboarding.html.twig' %}
+
+{% block title %}{{ t('Start exploring 🚀') }}{% endblock %}
+{% block canonical %}{{ url_full('onboarding', { step: 6 }) }}{% endblock %}
+
+{% block navigation %}
+    {{ include('onboarding/_navigation.html.twig') }}
+{% endblock %}
+
+{% block body %}
+    <h1 class="text--center">{{ t('Start exploring 🚀') }}</h1>
+
+    <div class="flow">
+        <p>
+            {{ t('This is the end of the onboarding. You should now have the keys to use %s in an efficient way.', [app.brand]) }}
+        </p>
+
+        <p>
+            {{ t('However, you still have things to discover, so stay curious!') }}
+        </p>
+    </div>
+
+    <p class="text--center">
+        <a class="button button--primary button--big button--block button--animated" href="{{ url('news') }}">
+            {{ t('Use %s', [app.brand]) }}
+            {{ icon('arrow-right') }}
+        </a>
+    </p>
+
+    <div class="panel panel--gable panel--rounded panel--large flow flow--large">
+        <div class="flow">
+            <h2 class="text--center">{{ t('Extra tips') }}</h2>
+
+            <p class="text--center">
+                {{ t('The browser extension is the ideal companion for your monitoring:') }}
+            </p>
+
+            <div class="wrapper wrapper--smaller wrapper--center flow">
+                <a class="button button--big button--block" href="https://addons.mozilla.org/fr/firefox/addon/flus/" target="_blank" rel="noopener noreferrer">
+                    <img alt="" src="{{ url_static('static/icon-firefox.svg') }}" width="50" height="50" />
+                    {{ t('Download for Firefox') }}
+                </a>
+
+                <a class="button button--big button--block" href="https://chrome.google.com/webstore/detail/flus/gikjpohbbimicecbndkefebbpjobokjd" target="_blank" rel="noopener noreferrer">
+                    <img alt="" src="{{ url_static('static/icon-chrome.svg') }}" width="50" height="50" />
+                    {{ t('Download for Chrome') }}
+                </a>
+            </div>
+        </div>
+
+        <div class="flow">
+            <p class="text--center">
+                {{ t('Using a <abbr>RSS</abbr> aggregator?') | raw }}
+            </p>
+
+            <div class="wrapper wrapper--smaller wrapper--center flow">
+                <a class="button button--big button--block" href="{{ url('opml') }}">
+                    {{ t('Import your feeds (<abbr>OPML</abbr>)') | raw }}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <p class="text--center">
+        <img
+            alt=""
+            src="{{ url_static('static/illustrations/completing.svg') }}"
+            height="250"
+        />
+    </p>
+{% endblock %}

@@ -59,7 +59,7 @@ class Links extends BaseController
                 ]
             );
 
-            return Response::ok('links/search.phtml', [
+            return Response::ok('links/search.html.twig', [
                 'links' => $links,
                 'query' => $query,
                 'pagination' => $pagination,
@@ -80,7 +80,7 @@ class Links extends BaseController
             ]);
             $shared_collections = utils\Sorter::localeSort($shared_collections, 'name');
 
-            return Response::ok('links/index.phtml', [
+            return Response::ok('links/index.html.twig', [
                 'bookmarks' => $bookmarks,
                 'read_list' => $read_list,
                 'groups' => $groups,
@@ -122,7 +122,7 @@ class Links extends BaseController
             $form = new forms\notes\NewNote();
         }
 
-        return Response::ok('links/show.phtml', [
+        return Response::ok('links/show.html.twig', [
             'link' => $link,
             'form' => $form,
         ]);
@@ -161,7 +161,7 @@ class Links extends BaseController
             'user' => $user,
         ]);
 
-        return Response::ok('links/new.phtml', [
+        return Response::ok('links/new.html.twig', [
             'form' => $form,
         ]);
     }
@@ -198,7 +198,7 @@ class Links extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('links/new.phtml', [
+            return Response::badRequest('links/new.html.twig', [
                 'form' => $form,
             ]);
         }
@@ -255,7 +255,7 @@ class Links extends BaseController
 
         $form = new forms\links\EditLink(model: $link);
 
-        return Response::ok('links/edit.phtml', [
+        return Response::ok('links/edit.html.twig', [
             'link' => $link,
             'form' => $form,
         ]);
@@ -292,7 +292,7 @@ class Links extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('links/edit.phtml', [
+            return Response::badRequest('links/edit.html.twig', [
                 'link' => $link,
                 'form' => $form,
             ]);

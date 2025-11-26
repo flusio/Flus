@@ -1,0 +1,137 @@
+{% extends 'layouts/application.html.twig' %}
+
+{% block title %}{{ user.username }}{% endblock %}
+{% block canonical %}{{ url_full('profile', { id: user.id }) }}{% endblock %}
+
+{% block alternates %}
+    <link rel="alternate" type="application/atom+xml" title="{{ t('Syndication feed of %s', [user.username]) }}" href="{{ url_full('profile feed', { id: user.id }) }}">
+    <link rel="alternate" type="text/x-opml" title="{{ t('Collections OPML of %s', [user.username]) }}" href="{{ url_full('profile opml', { id: user.id }) }}">
+{% endblock %}
+
+{% block opengraph %}
+    {{ include('layouts/_opengraph.html.twig', {
+        title: t('%s on %s', [user.username, app.brand]),
+        description: t('Discover %s’s collections on %s.', [user.username, app.brand]),
+        locale: user.locale,
+        url: url_full('profile', { id: user.id }),
+        image: url_media_full('avatars', user.avatar_filename),
+    }) }}
+{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: is_current_user_profile ? 'profile' : '' }) }}
+{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: user.username }) }}
+{% endblock %}
+
+{% block body %}
+    <div class="cols cols--gap">
+        <div class="col--size3 text--center">
+            <img
+                class="avatar avatar--max"
+                alt=""
+                src="{{ url_avatar(user.avatar_filename) }}"
+            >
+        </div>
+
+        <div class="col--extend flow">
+            <h1>{{ user.username }}</h1>
+
+            {% if is_current_user_profile %}
+                <div class="stack stack--gap-small">
+                    <button
+                        data-controller="modal-opener"
+                        data-action="modal-opener#fetch"
+                        data-modal-opener-href-value="{{ url('edit profile') }}"
+                        aria-haspopup="dialog"
+                        aria-controls="modal"
+                    >
+                        {{ icon('pencil') }}
+                        {{ t('Edit') }}
+                    </button>
+                </div>
+
+                <p>
+                    {{ t('This is your public profile!') }}
+                </p>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if links %}
+        <div class="flow flow--smaller">
+            <h2 class="text--normal">
+                {{ t('Last shared links') }}
+            </h2>
+
+            <div class="grid">
+                {% for link in links %}
+                    {{ include('links/_link.html.twig', {
+                        link: link,
+                        display_notes: true,
+                        display_edit: is_current_user_profile,
+                        display_repair: is_current_user_profile,
+                        display_delete: is_current_user_profile,
+                        display_read_later: app.user ? 'auto' : false,
+                        display_mark_as_read: app.user ? 'auto' : false,
+                    }) }}
+                {% endfor %}
+            </div>
+        </div>
+    {% elseif is_current_user_profile %}
+        <div class="panel panel--grey panel--rounded panel--larger flow text--center">
+            <p class="text--bolder">
+                {{ t('You didn’t share any links yet.') }}
+            </p>
+
+            <a class="button button--big" href="{{ url('links') }}">
+                {{ t('Create a public collection') }}
+            </a>
+        </div>
+    {% else %}
+        <p class="panel panel--grey panel--rounded panel--larger text--bolder text--center">
+            {{ t('This user didn’t share any links yet.') }}
+        </p>
+    {% endif %}
+
+    {% if collections %}
+        <div class="flow flow--smaller">
+            <h2 class="text--normal">
+                {{ t('Published collections') }}
+            </h2>
+
+            <div class="grid">
+                {% for collection in collections %}
+                    {{ include('collections/_collection.html.twig', {
+                        collection: collection,
+                        display_by: false,
+                        display_number_links: true,
+                        display_visibility: false,
+                    }) }}
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    {% if shared_collections %}
+        <div class="flow flow--smaller">
+            <h2 class="text--normal">
+                {{ t('Collections shared with you') }}
+            </h2>
+
+            <div class="grid">
+                {% for collection in shared_collections %}
+                    {{ include('collections/_collection.html.twig', {
+                        collection: collection,
+                        display_by: false,
+                        display_number_links: true,
+                        display_visibility: false,
+                    }) }}
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+

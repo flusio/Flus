@@ -1,0 +1,15 @@
+.layout__content--error {
+    display: flex;
+    padding-top: var(--space-large);
+
+    flex: 1;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+}
+
+@media (min-width: 800px) {
+    .layout__content--error {
+        padding-top: var(--space-larger);
+    }
+}

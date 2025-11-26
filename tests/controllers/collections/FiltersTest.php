@@ -37,7 +37,7 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', "/collections/{$collection->id}/filter");
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'collections/filters/edit.phtml');
+        $this->assertResponseTemplateName($response, 'collections/filters/edit.html.twig');
         $this->assertResponseContains($response, $collection_name);
     }
 

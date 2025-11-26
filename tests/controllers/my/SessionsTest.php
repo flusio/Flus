@@ -32,7 +32,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'List and manage your login sessions.');
-        $this->assertResponseTemplateName($response, 'my/sessions/index.phtml');
+        $this->assertResponseTemplateName($response, 'my/sessions/index.html.twig');
     }
 
     public function testIndexRedirectsIfPasswordIsNotConfirmed(): void

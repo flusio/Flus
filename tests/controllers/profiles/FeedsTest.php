@@ -40,7 +40,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', "/p/{$user->id}/feed.atom.xml");
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'profiles/feeds/show.atom.xml.php');
+        $this->assertResponseTemplateName($response, 'profiles/feeds/show.atom.xml.twig');
         $this->assertResponseHeaders($response, [
             'Content-Type' => 'application/xml',
             'X-Content-Type-Options' => 'nosniff',

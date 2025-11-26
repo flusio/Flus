@@ -32,7 +32,7 @@ class Security extends BaseController
 
         $form = new forms\security\Credentials(model: $user);
 
-        return Response::ok('my/security/show.phtml', [
+        return Response::ok('my/security/show.html.twig', [
             'form' => $form,
         ]);
     }
@@ -64,7 +64,7 @@ class Security extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('my/security/show.phtml', [
+            return Response::badRequest('my/security/show.html.twig', [
                 'form' => $form,
             ]);
         }
@@ -110,7 +110,7 @@ class Security extends BaseController
             'user' => $user,
         ]);
 
-        return Response::ok('my/security/confirmation.phtml', [
+        return Response::ok('my/security/confirmation.html.twig', [
             'form' => $form,
         ]);
     }
@@ -140,7 +140,7 @@ class Security extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('my/security/confirmation.phtml', [
+            return Response::badRequest('my/security/confirmation.html.twig', [
                 'form' => $form,
             ]);
         }

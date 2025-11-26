@@ -1,0 +1,11 @@
+{% extends 'mailers/base.txt.twig' %}
+
+{% block body %}
+{{ t('Hello %s,', [username]) }}
+
+{{ t('You receive this email because you haven’t been active on %s for several months. To avoid storing outdated data, your account will be deleted after one month. If you don’t want to keep it, you don’t have to do anything. However, if you wish to keep your account, you should login to %s by clicking on the following link:', [app.brand, app.brand]) }}
+
+{{ url_full('login') }}
+
+{{ t('Note that you will not receive any further notification that your account will be deleted.') }}
+{% endblock %}

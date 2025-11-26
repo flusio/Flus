@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+    <head>
+        <title>{{ user.username }}</title>
+        <dateCreated>{{ date().format('D, d M Y H:i:s') }}</dateCreated>
+    </head>
+
+    <body>
+        {% for collection in collections %}
+            {{ include('collections/_collection.opml.xml.twig') }}
+        {% endfor %}
+    </body>
+</opml>

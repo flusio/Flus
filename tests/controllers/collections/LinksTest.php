@@ -30,7 +30,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', "/collections/{$collection->id}/links/new");
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'collections/links/new.phtml');
+        $this->assertResponseTemplateName($response, 'collections/links/new.html.twig');
         $this->assertResponseContains($response, 'New link');
     }
 
@@ -51,7 +51,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', "/collections/{$collection->id}/links/new");
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'collections/links/new.phtml');
+        $this->assertResponseTemplateName($response, 'collections/links/new.html.twig');
         $this->assertResponseContains($response, 'New link');
     }
 

@@ -1,39 +1,23 @@
-.text--bold {
-    font-weight: 600;
+.text--oneline {
+    display: flex;
+
+    align-items: baseline;
+
+    white-space: nowrap;
 }
 
-.text--bolder {
-    font-weight: 700;
+.text--extend {
+    flex: 1;
 }
 
-.text--center {
-    text-align: center;
+.text--ellipsis {
+    overflow: hidden;
+
+    display: inline-block;
+
+    text-overflow: ellipsis;
 }
 
-.text--right {
-    text-align: right;
-}
-
-.text--left {
-    text-align: left;
-}
-
-.text--smaller {
-    font-size: var(--size-smaller);
-}
-
-.text--small {
-    font-size: var(--size-small);
-}
-
-.text--normal {
-    font-size: var(--size-normal);
-}
-
-.text--big {
-    font-size: var(--size-large);
-}
-
-.text--accent {
-    color: var(--color-accent-text);
+.text--break {
+    overflow-wrap: break-word;
 }

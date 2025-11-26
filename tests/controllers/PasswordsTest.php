@@ -25,7 +25,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/password/forgot');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'passwords/forgot.phtml');
+        $this->assertResponseTemplateName($response, 'passwords/forgot.html.twig');
         $this->assertResponseContains($response, 'Reset your password');
     }
 
@@ -200,7 +200,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseTemplateName($response, 'passwords/forgot.phtml');
+        $this->assertResponseTemplateName($response, 'passwords/forgot.html.twig');
         $this->assertResponseContains($response, 'The address email is required.');
         $user = $user->reload();
         $this->assertNull($user->reset_token);
@@ -224,7 +224,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseTemplateName($response, 'passwords/forgot.phtml');
+        $this->assertResponseTemplateName($response, 'passwords/forgot.html.twig');
         $this->assertResponseContains($response, 'We can’t find any account with this email address');
         $user = $user->reload();
         $this->assertNull($user->reset_token);
@@ -246,7 +246,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseTemplateName($response, 'passwords/forgot.phtml');
+        $this->assertResponseTemplateName($response, 'passwords/forgot.html.twig');
         $this->assertResponseContains($response, 'A security verification failed');
         $user = $user->reload();
         $this->assertNull($user->reset_token);
@@ -272,8 +272,11 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'passwords/edit.phtml');
-        $this->assertResponseContains($response, "You’re changing the password of {$email}");
+        $this->assertResponseTemplateName($response, 'passwords/edit.html.twig');
+        $this->assertResponseContains(
+            $response,
+            "You’re changing the password of the account <strong>{$email}</strong>"
+        );
     }
 
     public function testEditFailsIfTokenIsNotPassed(): void
@@ -546,7 +549,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseTemplateName($response, 'passwords/edit.phtml');
+        $this->assertResponseTemplateName($response, 'passwords/edit.html.twig');
         $this->assertResponseContains($response, 'The token has expired');
         $user = $user->reload();
         $this->assertTrue($user->verifyPassword($old_password));
@@ -582,7 +585,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseTemplateName($response, 'passwords/edit.phtml');
+        $this->assertResponseTemplateName($response, 'passwords/edit.html.twig');
         $this->assertResponseContains($response, 'The token has expired');
         $user = $user->reload();
         $this->assertTrue($user->verifyPassword($old_password));
@@ -614,7 +617,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseTemplateName($response, 'passwords/edit.phtml');
+        $this->assertResponseTemplateName($response, 'passwords/edit.html.twig');
         $this->assertResponseContains($response, 'The password is required');
         $user = $user->reload();
         $this->assertTrue($user->verifyPassword($old_password));
@@ -647,7 +650,7 @@ class PasswordsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseTemplateName($response, 'passwords/edit.phtml');
+        $this->assertResponseTemplateName($response, 'passwords/edit.html.twig');
         $this->assertResponseContains($response, 'A security verification failed');
         $user = $user->reload();
         $this->assertTrue($user->verifyPassword($old_password));

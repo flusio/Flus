@@ -1,0 +1,18 @@
+<nav
+    class="layout__back"
+    data-controller="back-button"
+    data-action="popstate@window->back-button#handlePopstate"
+    data-back-button-title-value="{{ title }}"
+    data-back-button-reset-value="{{ reset is defined and reset ? 'true' : 'false' }}"
+    data-back-button-track-value="{{ track is not defined or track ? 'true' : 'false' }}"
+>
+    <a
+        href="#"
+        class="button button--ghost button--big button--animated"
+        data-back-button-target="button"
+        data-action="back-button#handleClick"
+    >
+        {{ icon('arrow-left') }}
+        {{ t('Back') }}
+    </a>
+</nav>

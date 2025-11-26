@@ -1,0 +1,50 @@
+@media (min-width: 800px) {
+    .sidenav {
+        width: 11rem;
+    }
+}
+
+@media (min-width: 1200px) {
+    .sidenav {
+        width: 16rem;
+    }
+}
+
+.sidenav__anchor {
+    display: block;
+    width: 100%;
+    padding: var(--space-small);
+
+    color: var(--color-text);
+    line-height: 1.5;
+    text-decoration: none;
+
+    border-radius: var(--border-radius);
+
+    transition: background-color 0.2s ease-in-out;
+}
+
+.sidenav__anchor--bold {
+    font-weight: 600;
+}
+
+.sidenav__anchor:hover,
+.sidenav__anchor:focus {
+    background-color: rgb(0 0 0 / 5%);
+}
+
+.sidenav__anchor[aria-current="page"] {
+    color: var(--color-gable);
+    font-weight: 700;
+
+    background-color: var(--color-accent-bg-active);
+}
+
+.sidenav__anchor .icon {
+    margin-right: var(--space-smaller);
+}
+
+.sidenav__title {
+    font-size: var(--font-size-normal);
+    font-weight: 600;
+}

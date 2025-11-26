@@ -42,7 +42,7 @@ class Links extends BaseController
 
         $form = new forms\collections\AddLinkToCollection();
 
-        return Response::ok('collections/links/new.phtml', [
+        return Response::ok('collections/links/new.html.twig', [
             'collection' => $collection,
             'form' => $form,
         ]);
@@ -87,7 +87,7 @@ class Links extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('collections/links/new.phtml', [
+            return Response::badRequest('collections/links/new.html.twig', [
                 'collection' => $collection,
                 'form' => $form,
             ]);

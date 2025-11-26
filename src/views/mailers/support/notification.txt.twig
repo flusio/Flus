@@ -1,0 +1,7 @@
+{% extends 'mailers/base.txt.twig' %}
+
+{% block body %}
+{{ t('Hello %s,', [username]) }}
+
+{{ t('Your message named “%s” has been sent. Someone will reply to you as soon as possible!', [subject]) }}
+{% endblock %}

@@ -51,7 +51,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/links');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'links/index.phtml');
+        $this->assertResponseTemplateName($response, 'links/index.html.twig');
         $this->assertResponseContains($response, $group_name);
         $this->assertResponseContains($response, $collection_name_1);
         $this->assertResponseContains($response, $collection_name_2);
@@ -77,7 +77,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'links/search.phtml');
+        $this->assertResponseTemplateName($response, 'links/search.html.twig');
         $this->assertResponseContains($response, $title_1);
         $this->assertResponseNotContains($response, $title_2);
     }
@@ -150,7 +150,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $title);
-        $this->assertResponseTemplateName($response, 'links/show.phtml');
+        $this->assertResponseTemplateName($response, 'links/show.html.twig');
     }
 
     public function testShowDisplaysNotes(): void
@@ -185,7 +185,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $title);
-        $this->assertResponseTemplateName($response, 'links/show.phtml');
+        $this->assertResponseTemplateName($response, 'links/show.html.twig');
     }
 
     public function testShowRendersCorrectlyIfNotHiddenAndDoesNotOwnTheLink(): void
@@ -205,7 +205,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $title);
-        $this->assertResponseTemplateName($response, 'links/show.phtml');
+        $this->assertResponseTemplateName($response, 'links/show.html.twig');
     }
 
     public function testShowRendersCorrectlyIfHiddenAndNotOwnedButInOwnedCollection(): void
@@ -233,7 +233,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $title);
-        $this->assertResponseTemplateName($response, 'links/show.phtml');
+        $this->assertResponseTemplateName($response, 'links/show.html.twig');
     }
 
     public function testShowRendersCorrectlyIfHiddenButInSharedCollection(): void
@@ -265,7 +265,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $title);
-        $this->assertResponseTemplateName($response, 'links/show.phtml');
+        $this->assertResponseTemplateName($response, 'links/show.html.twig');
     }
 
     public function testShowRedirectsIfHiddenAndNotConnected(): void
@@ -321,7 +321,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'New link');
-        $this->assertResponseTemplateName($response, 'links/new.phtml');
+        $this->assertResponseTemplateName($response, 'links/new.html.twig');
     }
 
     public function testNewPrefillsUrl(): void
@@ -790,7 +790,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', "/links/{$link->id}/edit");
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'links/edit.phtml');
+        $this->assertResponseTemplateName($response, 'links/edit.html.twig');
     }
 
     public function testEditFailsIfNotConnected(): void
@@ -878,7 +878,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseTemplateName($response, 'links/edit.phtml');
+        $this->assertResponseTemplateName($response, 'links/edit.html.twig');
         $this->assertResponseContains($response, 'A security verification failed');
         $link = $link->reload();
         $this->assertSame($old_title, $link->title);
@@ -902,7 +902,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseTemplateName($response, 'links/edit.phtml');
+        $this->assertResponseTemplateName($response, 'links/edit.html.twig');
         $this->assertResponseContains($response, 'The title is required.');
         $link = $link->reload();
         $this->assertSame($old_title, $link->title);

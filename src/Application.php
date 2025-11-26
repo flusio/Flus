@@ -34,15 +34,24 @@ class Application
         $router = Router::load();
         \Minz\Engine::init($router, [
             'start_session' => true,
-            'not_found_template' => 'not_found.phtml',
-            'internal_server_error_template' => 'internal_server_error.phtml',
+            'not_found_template' => 'errors/not_found.html.twig',
+            'internal_server_error_template' => 'errors/internal_server_error.html.twig',
             'controller_namespace' => '\\App\\controllers',
         ]);
 
         // Automatically declare content types for these views files extensions
-        \Minz\Output\Template::$extensions_to_content_types['.atom.xml.php'] = 'application/xml';
-        \Minz\Output\Template::$extensions_to_content_types['.opml.xml.php'] = 'text/x-opml';
-        \Minz\Output\Template::$extensions_to_content_types['.xsl.php'] = 'application/xslt+xml';
+        \Minz\Output\Template::$extensions_to_content_types['.atom.xml.twig'] = 'application/xml';
+        \Minz\Output\Template::$extensions_to_content_types['.opml.xml.twig'] = 'text/x-opml';
+        \Minz\Output\Template::$extensions_to_content_types['.xsl.twig'] = 'application/xslt+xml';
+
+        // Register Twig extensions
+        \Minz\Template\Twig::addAttributeExtension(twig\AuthExtension::class);
+        \Minz\Template\Twig::addAttributeExtension(twig\ConfigurationExtension::class);
+        \Minz\Template\Twig::addAttributeExtension(twig\FormsExtension::class);
+        \Minz\Template\Twig::addAttributeExtension(twig\FormattersExtension::class);
+        \Minz\Template\Twig::addAttributeExtension(twig\IconExtension::class);
+        \Minz\Template\Twig::addAttributeExtension(twig\LocaleExtension::class);
+        \Minz\Template\Twig::addAttributeExtension(twig\UrlExtension::class);
     }
 
     /**
@@ -60,9 +69,7 @@ class Application
         }
 
         $current_user = auth\CurrentUser::get();
-        $beta_enabled = false;
         $locale = utils\Locale::DEFAULT_LOCALE;
-        $autoload_modal_url = null;
 
         // Setup current localization
         if ($current_user) {
@@ -93,35 +100,17 @@ class Application
             if ($changed) {
                 $current_user->save();
             }
-
-            $beta_enabled = models\FeatureFlag::isEnabled('beta', $current_user->id);
-
-            if ($current_user->autoload_modal === 'showcase navigation') {
-                $autoload_modal_url = \Minz\Url::for('showcase', ['id' => 'navigation']);
-            } elseif ($current_user->autoload_modal === 'showcase link') {
-                $autoload_modal_url = \Minz\Url::for('showcase', ['id' => 'link']);
-            } elseif ($current_user->autoload_modal === 'showcase contact') {
-                $autoload_modal_url = \Minz\Url::for('showcase', ['id' => 'contact']);
-            } elseif ($current_user->autoload_modal === 'showcase reading') {
-                $autoload_modal_url = \Minz\Url::for('showcase', ['id' => 'reading']);
-            }
         }
 
-        $errors = \Minz\Flash::pop('errors', []);
-        $error = \Minz\Flash::pop('error');
-        $status = \Minz\Flash::pop('status');
-
-        $app_conf = \App\Configuration::$application;
-        \Minz\Template\Simple::addGlobals([
-            'errors' => $errors,
-            'error' => $error,
-            'status' => $status,
-            'current_user' => $current_user,
-            'beta_enabled' => $beta_enabled,
-            'autoload_modal_url' => $autoload_modal_url,
-            'now' => \Minz\Time::now(),
-            'javascript_configuration' => json_encode(include('utils/javascript_configuration.php')),
-            'modal_requested' => $request->headers->getString('Turbo-Frame') === 'modal-content',
+        \Minz\Template\Twig::addGlobals([
+            'app' => [
+                'brand' => \App\Configuration::$application['brand'],
+                'version' => \App\Configuration::$application['version'],
+                'user' => $current_user,
+                'locale' => utils\Locale::currentLocale(),
+                'user_agent' => utils\UserAgent::get(),
+                'demo' => \App\Configuration::$application['demo'],
+            ],
         ]);
 
         $response = \Minz\Engine::run($request);
@@ -133,21 +122,11 @@ class Application
             $response->setHeader('X-Frame-Options', 'deny');
             $response->addContentSecurityPolicy('style-src', "'self' 'unsafe-inline'");
 
-            if ($app_conf['plausible_url']) {
-                $plausible_url = $app_conf['plausible_url'];
+            $plausible_url = \App\Configuration::$application['plausible_url'] ?? '';
+            if ($plausible_url) {
                 $response->addContentSecurityPolicy('connect-src', "'self' {$plausible_url}");
                 $response->addContentSecurityPolicy('script-src', "'self' {$plausible_url}");
             }
-        }
-
-        if (
-            $current_user &&
-            $current_user->autoload_modal !== '' &&
-            $response instanceof \Minz\Response &&
-            $response->code() === 200
-        ) {
-            $current_user->autoload_modal = '';
-            $current_user->save();
         }
 
         return $response;

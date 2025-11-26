@@ -31,8 +31,8 @@ class Support extends Mailer
         $brand = \App\Configuration::$application['brand'];
         $email->setSubject(sprintf(_('[%s] Contact: %s'), $brand, $subject));
         $email->setBody(
-            'mailers/support/message.phtml',
-            'mailers/support/message.txt',
+            'mailers/support/message.html.twig',
+            'mailers/support/message.txt.twig',
             [
                 'message' => $message,
             ]
@@ -67,8 +67,8 @@ class Support extends Mailer
         $brand = \App\Configuration::$application['brand'];
         $email->setSubject(sprintf(_('[%s] Your message has been sent'), $brand));
         $email->setBody(
-            'mailers/support/notification.phtml',
-            'mailers/support/notification.txt',
+            'mailers/support/notification.html.twig',
+            'mailers/support/notification.txt.twig',
             [
                 'logo_cid' => $logo_cid,
                 'username' => $user->username,

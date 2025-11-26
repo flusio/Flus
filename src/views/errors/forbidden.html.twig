@@ -1,0 +1,29 @@
+{% extends 'layouts/error.html.twig' %}
+
+{% block title %}{{ t('Access forbidden') }}{% endblock %}
+
+{% block error %}
+    {{ include('errors/_error.html.twig') }}
+{% endblock %}
+
+{% block body %}
+    <h1>{{ t('Access forbidden') }}</h1>
+
+    <p>
+        {{ t('You don’t have the permission to access this page.') }}
+    </p>
+
+    <a class="button button--primary button--big button--animated" href="{{ url('home') }}">
+        {{ icon('arrow-left') }}
+        {{ t('Back to the home page') }}
+    </a>
+{% endblock %}
+
+{% block illustration %}
+    <img
+        class="illustration illustration--centered"
+        alt=""
+        src="{{ url_static('static/illustrations/secure-server.svg') }}"
+        height="250"
+    >
+{% endblock %}

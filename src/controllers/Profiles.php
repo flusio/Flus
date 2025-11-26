@@ -32,7 +32,7 @@ class Profiles extends BaseController
         $user = models\User::requireFromRequest($request);
 
         if ($user->isSupportUser()) {
-            return Response::notFound('not_found.phtml');
+            return Response::notFound('errors/not_found.html.twig');
         }
 
         $current_user = auth\CurrentUser::get();
@@ -55,7 +55,7 @@ class Profiles extends BaseController
             $shared_collections = utils\Sorter::localeSort($shared_collections, 'name');
         }
 
-        return Response::ok('profiles/show.phtml', [
+        return Response::ok('profiles/show.html.twig', [
             'user' => $user,
             'links' => $links,
             'collections' => $collections,

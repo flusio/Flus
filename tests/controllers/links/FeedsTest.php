@@ -28,7 +28,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', "/links/{$link->id}/feed.atom.xml");
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'links/feeds/show.atom.xml.php');
+        $this->assertResponseTemplateName($response, 'links/feeds/show.atom.xml.twig');
         $this->assertResponseContains($response, '<strong>foo bar</strong>');
         $this->assertResponseHeaders($response, [
             'Content-Type' => 'application/xml',

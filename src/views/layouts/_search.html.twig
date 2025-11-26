@@ -1,0 +1,18 @@
+<form class="layout__search" method="get" action="">
+    <input
+        id="query"
+        name="q"
+        type="text"
+        aria-label="{{ t('Search links by words or URL') }}"
+        placeholder="{{ t('Search links by words or URL') }}"
+        required
+        value="{{ query }}"
+    >
+
+    <button type="submit" class="button--ghost">
+        {{ icon('search') }}
+        <span class="sr-only">
+            {{ t('Search') }}
+        </span>
+    </button>
+</form>

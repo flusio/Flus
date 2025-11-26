@@ -35,7 +35,7 @@ class Subscription extends BaseController
     public function create(Request $request): Response
     {
         if (!\App\Configuration::areSubscriptionsEnabled()) {
-            return Response::notFound('not_found.phtml');
+            return Response::notFound('errors/not_found.html.twig');
         }
 
         $user = auth\CurrentUser::require();
@@ -78,10 +78,9 @@ class Subscription extends BaseController
      *
      * @response 404
      *     If subscriptions are not enabled.
-     * @response 400
-     *     If the user has no account_id.
      * @response 500
-     *     If an error occurs when getting the redirection URL.
+     *     If the user has no account_id, or if an error occurs when getting
+     *     the redirection URL.
      * @response 302 subscriptions_host/account
      *     On success.
      *
@@ -91,13 +90,14 @@ class Subscription extends BaseController
     public function redirect(Request $request): Response
     {
         if (!\App\Configuration::areSubscriptionsEnabled()) {
-            return Response::notFound('not_found.phtml');
+            return Response::notFound('errors/not_found.html.twig');
         }
 
         $user = auth\CurrentUser::require();
 
         if (!$user->hasSubscriptionAccount()) {
-            return Response::badRequest('bad_request.phtml');
+            \Minz\Log::error("User {$user->id} does not have a subscription account.");
+            return Response::internalServerError('errors/internal_server_error.html.twig');
         }
 
         $subscription_service = new services\Subscriptions();
@@ -105,9 +105,7 @@ class Subscription extends BaseController
 
         if (!$url) {
             \Minz\Log::error("Can’t get the subscription login URL for user {$user->id}.");
-            return Response::internalServerError('internal_server_error.phtml', [
-                'details' => _('An error occured while logging you, please contact the support.'),
-            ]);
+            return Response::internalServerError('errors/internal_server_error.html.twig');
         }
 
         return Response::found($url);

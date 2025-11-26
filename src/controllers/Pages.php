@@ -45,10 +45,10 @@ class Pages extends BaseController
         $terms_path = $app_path . '/policies/terms.html';
         $terms = @file_get_contents($terms_path);
         if (!$terms) {
-            return Response::notFound('not_found.phtml');
+            return Response::notFound('errors/not_found.html.twig');
         }
 
-        return Response::ok('pages/terms.phtml', [
+        return Response::ok('pages/terms.html.twig', [
             'terms' => $terms,
         ]);
     }
@@ -61,7 +61,7 @@ class Pages extends BaseController
      */
     public function addons(Request $request): Response
     {
-        return Response::ok('pages/addons.phtml');
+        return Response::ok('pages/addons.html.twig');
     }
 
     /**
@@ -72,9 +72,7 @@ class Pages extends BaseController
      */
     public function about(): Response
     {
-        return Response::ok('pages/about.phtml', [
-            'version' => \App\Configuration::$application['version'],
-        ]);
+        return Response::ok('pages/about.html.twig');
     }
 
     /**

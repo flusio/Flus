@@ -1,0 +1,23 @@
+@media (max-width: 799px) {
+    .popup__container {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+
+        border-right: none;
+        border-bottom: none;
+        border-left: none;
+        border-radius: 0;
+
+        transform: none;
+    }
+
+    .layout--connected .popup__container {
+        bottom: var(--layout-header-height);
+    }
+
+    .popup__container::before {
+        display: none;
+    }
+}

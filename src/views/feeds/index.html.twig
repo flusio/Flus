@@ -1,0 +1,62 @@
+{% extends 'layouts/application.html.twig' %}
+
+{% block title %}{{ t('Feeds') }}{% endblock %}
+{% block canonical %}{{ url_full('feeds') }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'feeds', tab: 'feeds' }) }}
+{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: t('Feeds'), reset: true }) }}
+{% endblock %}
+
+{% block body %}
+    <h1 class="text--center">{{ t('Feeds') }}</h1>
+
+    <p class="text--center">
+        {{ t('All the feeds that you follow are listed here.') }}
+    </p>
+
+    <section class="group">
+        <div class="grid">
+            <button
+                class="button--card"
+                data-controller="modal-opener"
+                data-action="modal-opener#fetch"
+                data-modal-opener-href-value="{{ url('new feed') }}"
+                aria-haspopup="dialog"
+                aria-controls="modal"
+            >
+                {{ icon('plus-circle') }}
+                {{ t('Add a feed') }}
+            </button>
+
+            {% set collections = groups_to_collections[null] ?? [] %}
+
+            {% for collection in collections %}
+                {{ include('collections/_collection.html.twig', {
+                    collection: collection,
+                    display_by: true,
+                    display_number_links: true,
+                    display_visibility: false,
+                }) }}
+            {% endfor %}
+
+            {{ include('grids/_placeholder.html.twig', { count: collections | length + 1 }) }}
+        </div>
+    </section>
+
+    {% for group in groups %}
+        {% set collections = groups_to_collections[group.id] ?? [] %}
+        {% if collections %}
+            {{ include('groups/_group.html.twig', {
+                group: group,
+                collections: collections,
+                display_by: true,
+                display_number_links: true,
+                display_visibility: false,
+            }) }}
+        {% endif %}
+    {% endfor %}
+{% endblock %}

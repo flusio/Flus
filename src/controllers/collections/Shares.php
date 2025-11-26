@@ -32,7 +32,7 @@ class Shares extends BaseController
 
         auth\Access::require($user, 'update', $collection);
 
-        return Response::ok('collections/shares/index.phtml', [
+        return Response::ok('collections/shares/index.html.twig', [
             'collection' => $collection,
             'form' => new forms\collections\ShareCollection(options: [
                 'collection' => $collection,
@@ -72,7 +72,7 @@ class Shares extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('collections/shares/index.phtml', [
+            return Response::badRequest('collections/shares/index.html.twig', [
                 'collection' => $collection,
                 'form' => $form,
             ]);
@@ -80,7 +80,7 @@ class Shares extends BaseController
 
         $collection->shareWith($form->user(), $form->type());
 
-        return Response::ok('collections/shares/index.phtml', [
+        return Response::ok('collections/shares/index.html.twig', [
             'collection' => $collection,
             'form' => new forms\collections\ShareCollection(options: [
                 'collection' => $collection,
@@ -117,7 +117,7 @@ class Shares extends BaseController
 
         if (!$form->validate()) {
             \Minz\Flash::set('error', $form->error('@base'));
-            return Response::badRequest('collections/shares/index.phtml', [
+            return Response::badRequest('collections/shares/index.html.twig', [
                 'collection' => $collection,
                 'form' => new forms\collections\ShareCollection(options: [
                     'collection' => $collection,
@@ -127,7 +127,7 @@ class Shares extends BaseController
 
         $collection->unshareWith($form->user());
 
-        return Response::ok('collections/shares/index.phtml', [
+        return Response::ok('collections/shares/index.html.twig', [
             'collection' => $collection,
             'form' => new forms\collections\ShareCollection(options: [
                 'collection' => $collection,

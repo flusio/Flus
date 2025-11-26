@@ -1,0 +1,171 @@
+{% extends 'layouts/modal.html.twig' %}
+
+{% block title %}{{ t('Sharing access to “%s”', [collection.name]) }}{% endblock %}
+
+{% block body %}
+    <div class="flow flow--larger">
+        <p class="text--center">
+            {% if collection.is_public %}
+                {{ t('This collection is public, anyone can access it.') }}
+            {% else %}
+                {{ t('This collection is private, you can share access to other users.') }}
+            {% endif %}
+        </p>
+
+        <form method="post" action="{{ url('share collection', { id: collection.id }) }}" class="flow">
+            {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+            <div class="form-group">
+                <label for="user-id">
+                    {{ t('Share access with') }}
+                </label>
+
+                {% if form.isInvalid('user_id') %}
+                    <p id="user-id-error" class="form-group__error">
+                        {{ t('Error:') }}
+                        {{ form.error('user_id') }}
+                    </p>
+                {% endif %}
+
+                <div class="cols cols--always cols--gap-smaller">
+                    <input
+                        id="user-id"
+                        name="user_id"
+                        type="text"
+                        required
+                        value="{{ form.user_id }}"
+                        aria-describedby="user-id-caption"
+                        placeholder="{{ url_full('profile', { id: app.user.id }) }}"
+                        {% if form.isInvalid('user_id') %}
+                            aria-errormessage="user-id-error"
+                            aria-invalid="true"
+                        {% endif %}
+                    >
+
+                    <button type="submit" class="button--primary">
+                        {{ t('Share') }}
+                    </button>
+                </div>
+
+                <p id="user-id-caption" class="form-group__caption">
+                    {{ t('Copy and paste the <abbr>URL</abbr> of a user’s profile.') | raw }}
+                </p>
+            </div>
+
+            <div class="form-group" data-controller="caption-switcher">
+                {% if form.isInvalid('type') %}
+                    <p id="type-error" class="form-group__error">
+                        {{ t('Error:') }}
+                        {{ form.error('type') }}
+                    </p>
+                {% endif %}
+
+                <div class="cols cols--gap">
+                    <input
+                        type="radio"
+                        id="type-read"
+                        name="type"
+                        value="read"
+                        {{ form.type == 'read' ? 'checked' : '' }}
+                        aria-describedby="type-caption"
+                        data-action="caption-switcher#switch"
+                        data-caption-switcher-target="switch"
+                        {% if form.isInvalid('type') %}
+                            aria-errormessage="type-error"
+                            aria-invalid="true"
+                        {% endif %}
+                    >
+
+                    <label class="label--radio" for="type-read">
+                        {{ t('Read access') }}
+                    </label>
+
+                    <input
+                        type="radio"
+                        id="type-write"
+                        name="type"
+                        value="write"
+                        {{ form.type == 'write' ? 'checked' : '' }}
+                        aria-describedby="type-caption"
+                        data-action="caption-switcher#switch"
+                        data-caption-switcher-target="switch"
+                        {% if form.isInvalid('type') %}
+                            aria-errormessage="type-error"
+                            aria-invalid="true"
+                        {% endif %}
+                    >
+
+                    <label class="label--radio" for="type-write">
+                        {{ t('Read and write access') }}
+                    </label>
+                </div>
+
+                <p id="type-caption" class="form-group__caption" aria-live="polite">
+                    <span data-caption-switcher-target="caption" data-caption-value="read">
+                        {{ t('Sharing read access with other users gives them access to the whole collection, <strong>including their hidden links,</strong> but they can’t modify it.') | raw }}
+                    </span>
+
+                    <span data-caption-switcher-target="caption" data-caption-value="write">
+                        {{ t('Sharing read and write access with other users gives them access to the whole collection, <strong>including their hidden links,</strong> and they can modify information or add links.') | raw }}
+                    </span>
+                </p>
+            </div>
+
+            <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}">
+        </form>
+
+        {% set collection_shares = collection.shares %}
+        {% if collection_shares %}
+            <div class="flow">
+                <h2>{{ t('Shared with:') }}</h2>
+
+                <ul class="list list--nostyle">
+                    {% for collection_share in collection_shares %}
+                        {% set user = collection_share.user %}
+                        <li class="list__item cols cols--always cols--center cols--gap">
+                            <span class="col--extend">
+                                <a class="username" href="{{ url('profile', { id: user.id }) }}">
+                                    <img class="avatar avatar--mini" src="{{ url_avatar(user.avatar_filename) }}" alt="">
+                                    {{ user.username }}
+                                </a>
+                            </span>
+
+                            <span class="line__item text--secondary">
+                                {% if collection_share.type == 'read' %}
+                                    {{ t('read only') }}
+                                {% else %}
+                                    {{ t('read / write') }}
+                                {% endif %}
+                            </span>
+
+                            <form class="line__item" method="post" action="{{ url('unshare collection', { id: collection.id }) }}">
+                                <button type="submit" class="button--small button--icon-mobile">
+                                    {{ icon('times') }}
+
+                                    <span class="no-mobile">
+                                        {{ t('Revoke') }}
+                                    </span>
+                                </button>
+
+                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\UnshareCollection') }}">
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <div class="share" data-controller="copy-to-clipboard">
+            <span class="share__text" data-copy-to-clipboard-target="copyable">{{ url_full('collection', { id: collection.id }) }}</span>
+
+            <button
+                data-action="copy-to-clipboard#copy"
+                data-copy-to-clipboard-target="feedback"
+            >
+                {{ icon('copy-to-clipboard') }}
+                {{ t('Copy') }}
+            </button>
+        </div>
+    </div>
+{% endblock %}

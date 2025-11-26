@@ -1,0 +1,29 @@
+{% extends 'layouts/error.html.twig' %}
+
+{% block title %}{{ t('Page not found') }}{% endblock %}
+
+{% block error %}
+    {{ include('errors/_error.html.twig') }}
+{% endblock %}
+
+{% block body %}
+    <h1>{{ t('Page not found') }}</h1>
+
+    <p>
+        {{ t('You may have followed an invalid link, or the page may have been deleted. In any case, this error is not your fault, and you just need to go back.') }}
+    </p>
+
+    <a class="button button--primary button--big button--animated" href="{{ url('home') }}">
+        {{ icon('arrow-left') }}
+        {{ t('Back to the home page') }}
+    </a>
+{% endblock %}
+
+{% block illustration %}
+    <img
+        class="illustration illustration--centered"
+        alt=""
+        src="{{ url_static('static/illustrations/taken.svg') }}"
+        height="250"
+    >
+{% endblock %}

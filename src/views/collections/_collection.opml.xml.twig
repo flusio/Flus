@@ -1,0 +1,23 @@
+{% set display_time_filter = collection.time_filter and collection.time_filter != 'normal' %}
+
+{% if collection.isFeed %}
+    <outline
+        type="rss"
+        text="{{ collection.name }}"
+        xmlUrl="{{ collection.feed_url }}"
+        htmlUrl="{{ collection.feed_site_url }}"
+        {% if display_time_filter %}
+            category="/Flus/filters/{{ collection.time_filter }}"
+        {% endif %}
+    />
+{% else %}
+    <outline
+        type="rss"
+        text="{{ collection.name }}"
+        xmlUrl="{{ url_full('collection feed', { id: collection.id, direct: 'true' }) }}"
+        htmlUrl="{{ url_full('collection', { id: collection.id }) }}"
+        {% if display_time_filter %}
+            category="/Flus/filters/{{ collection.time_filter }}"
+        {% endif %}
+    />
+{% endif %}

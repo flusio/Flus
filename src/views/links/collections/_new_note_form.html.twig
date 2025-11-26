@@ -1,0 +1,31 @@
+<div class="form-group">
+    <label for="content">
+        {{ t('What do you retain from this content?') }}
+        <span class="label__help">
+            {{ t('(optional)') }}
+        </span>
+    </label>
+
+    {% if form.isInvalid('content') %}
+        <p id="content-error" class="form-group__error">
+            {{ t('Error:') }}
+            {{ form.error('content') }}
+        </p>
+    {% endif %}
+
+    <textarea
+        id="content"
+        name="content"
+        data-controller="text-editor"
+        data-action="text-editor#refresh keyup->autosave#save"
+        aria-describedby="content-caption"
+        {% if form.isInvalid('content') %}
+            aria-errormessage="content-error"
+            aria-invalid="true"
+        {% endif %}
+    >{{ form.content }}</textarea>
+
+    <p class="form-group__caption" id="content-caption">
+        {{ t('You can format the content in Markdown and use #tags.') }}
+    </p>
+</div>

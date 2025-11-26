@@ -33,7 +33,7 @@ class Passwords extends BaseController
 
         $form = new forms\security\AskResetPassword();
 
-        return Response::ok('passwords/forgot.phtml', [
+        return Response::ok('passwords/forgot.html.twig', [
             'form' => $form,
             'email_sent' => \Minz\Flash::pop('email_sent'),
         ]);
@@ -63,7 +63,7 @@ class Passwords extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('passwords/forgot.phtml', [
+            return Response::badRequest('passwords/forgot.html.twig', [
                 'form' => $form,
                 'email_sent' => false,
             ]);
@@ -105,7 +105,7 @@ class Passwords extends BaseController
             't' => $token->token,
         ]);
 
-        return Response::ok('passwords/edit.phtml', [
+        return Response::ok('passwords/edit.html.twig', [
             'user' => $user,
             'form' => $form,
         ]);
@@ -135,7 +135,7 @@ class Passwords extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('passwords/edit.phtml', [
+            return Response::badRequest('passwords/edit.html.twig', [
                 'user' => $user,
                 'form' => $form,
             ]);

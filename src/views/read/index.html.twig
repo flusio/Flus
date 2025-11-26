@@ -1,0 +1,57 @@
+{% extends 'layouts/application.html.twig' %}
+
+{% block title %}{{ collection.name }}{% endblock %}
+{# TODO current_url_params (see collections/show) #}
+{% block canonical %}{{ url_full('read list') }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'read', tab: 'reading' }) }}
+{% endblock %}
+
+{% block navigation %}
+    {{ include('layouts/_reading_navigation.html.twig', { page: 'read' }) }}
+{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: collection.name, reset: true }) }}
+{% endblock %}
+
+{% block body %}
+    <h1 class="text--center">{{ collection.name }}</h1>
+
+    <p class="text--center">
+        {{ t('Find here all the links you’ve marked as read.') }}
+    </p>
+
+    {% if pagination.numberElements > 0 %}
+        <p class="text--center text--secondary">
+            {% set count_links = pagination.numberElements %}
+            {{ t('%d link', '%d links', count_links, [count_links | format_number]) }}
+        </p>
+    {% endif %}
+
+    <div class="grid">
+        {% for link in links %}
+            {{ include('links/_link.html.twig', {
+                link: link,
+                display_source: link.source_type != 'bookmarks',
+                display_notes: true,
+                display_edit: true,
+                display_repair: true,
+                display_delete: true,
+                display_read_later: 'auto',
+                display_mark_as_unread: true,
+            }) }}
+        {% endfor %}
+    </div>
+
+    {{ include('layouts/_pagination.html.twig', { url: url('read list') }) }}
+
+    <div class="text--center">
+        <img
+            alt=""
+            src="{{ url_static('static/illustrations/collecting.svg') }}"
+            height="250"
+        >
+    </div>
+{% endblock %}

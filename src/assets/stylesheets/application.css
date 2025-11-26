@@ -1,104 +1,39 @@
-@import "./variables/colors.tokens.css";
-@import "./variables/colors.dark.css";
-@import "./variables/colors.light.css";
-@import "./variables/sizes.css";
-@import './utils/accessibility.css';
-@import './utils/cols.css';
-@import './utils/flow.css';
-@import './utils/variables.css';
-@import './utils/fonts.css';
-@import './utils/animations.css';
-@import './utils/text.css';
-@import './utils/wrapper.css';
-@import './components/alerts.css';
-@import './components/avatars.css';
-@import './components/anchors.css';
-@import './components/buttons.css';
-@import './components/cards.css';
-@import './components/forms.css';
-@import './components/groupnavs.css';
-@import './components/header.css';
-@import './components/icons.css';
-@import './components/illustrations.css';
-@import './components/stickers.css';
-@import './components/layout.css';
-@import './components/lines.css';
-@import './components/lists.css';
-@import './components/modal.css';
-@import './components/paragraphs.css';
-@import './components/pagination.css';
-@import './components/panels.css';
-@import './components/popup.css';
-@import './components/sections.css';
-@import './components/tags.css';
-@import './components/threads.css';
-@import './components/titles.css';
-@import './custom/collections.css';
-@import './custom/collections-selector.css';
-@import './custom/feeds.css';
-@import './custom/form-avatar.css';
-@import './custom/groups.css';
-@import './custom/links.css';
-@import './custom/news.css';
-@import './custom/notepad.css';
-@import './custom/profiles.css';
-@import './custom/reading-nav.css';
-@import './custom/share.css';
-@import './custom/topics-selector.css';
+@import url('@flus/design/src/stylesheets/application.css');
+@import url('./utils/text.css');
+@import url('./components/anchors.css');
+@import url('./components/avatars.css');
+@import url('./components/buttons.css');
+@import url('./components/collections.css');
+@import url('./components/groups.css');
+@import url('./components/images.css');
+@import url('./components/links.css');
+@import url('./components/notepads.css');
+@import url('./components/shares.css');
+@import url('./components/threads.css');
+@import url('./components/topics.css');
+@import url('./components/usernames.css');
+@import url('./layouts/authentication.css');
+@import url('./layouts/back.css');
+@import url('./layouts/banner.css');
+@import url('./layouts/base.css');
+@import url('./layouts/error.css');
+@import url('./layouts/header.css');
+@import url('./layouts/modal.css');
+@import url('./layouts/pagination.css');
+@import url('./layouts/popup.css');
+@import url('./layouts/search.css');
+@import url('./layouts/sidenav.css');
 
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
-}
-
-html {
-    font-size: 10px;
-}
-
-body {
-    margin: 0;
-    padding: 0;
-
-    font-family: var(--font-family-text);
-    font-size: var(--size-base);
-    line-height: 1.4;
-
+:root {
     background-color: var(--color-background);
 }
 
-.js-only {
-    display: none;
+.badge--warning {
+    --badge-color: var(--color-warning-text);
+    --badge-background-color: var(--color-warning-bg);
 }
 
-@media (max-width: 799px) {
-    .no-mobile {
-        display: none;
-    }
-}
-
-@media (min-width: 800px) {
-    .only-mobile {
-        display: none;
-    }
-}
-
-hr {
-    width: 100%;
-    height: 2px;
-    margin: var(--space-larger) auto;
-
-    background-color: var(--color-grey-solid);
-    border: none;
-    border-radius: 2em;
-}
-
-.turbo-progress-bar {
-    position: fixed;
-    top: 0;
-
-    height: 0.5rem;
-
-    background: linear-gradient(to right, var(--color-caribbean), var(--color-accent-text));
-    border-radius: 0 var(--border-radius-small) var(--border-radius-small) 0;
+.badge--base {
+    --badge-color: var(--color-text);
+    --badge-background-color: var(--color-background);
 }

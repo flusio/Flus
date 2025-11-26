@@ -1,0 +1,23 @@
+.topic input[type="checkbox"] + label {
+    padding: var(--space-small) var(--space-medium);
+
+    background-color: var(--color-base);
+    border: 1px solid var(--color-grey-border);
+    border-radius: var(--border-radius);
+
+    transition:
+        background-color 0.2s ease-in-out,
+        border-color 0.2s ease-in-out;
+}
+
+.topic input[type="checkbox"]:checked + label {
+    color: var(--color-gable);
+
+    background-color: var(--color-accent-solid);
+    border-color: transparent;
+}
+
+.topic input[type="checkbox"]:checked + label::before {
+    --checkbox-background-color: transparent;
+    --checkbox-border-color: transparent;
+}

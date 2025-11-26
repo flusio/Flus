@@ -1,0 +1,48 @@
+{% extends 'layouts/application.html.twig' %}
+
+{% if pagination.isCurrentFirstPage %}
+    {% set current_url_params = { q: query } %}
+{% else %}
+    {% set current_url_params = { q: query, page: pagination.currentPage } %}
+{% endif %}
+
+{% block title %}{{ t('Results of the search') }}{% endblock %}
+{% block canonical %}{{ url_full('links', current_url_params) }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'links', tab: 'links' }) }}
+{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: t('Results of the search') }) }}
+{% endblock %}
+
+{% block search %}
+    {{ include('layouts/_search.html.twig') }}
+{% endblock %}
+
+{% block body %}
+    <h1 class="text--center">{{ t('Results of the search') }}</h1>
+
+    <p class="text--center">
+        {{ t('%d result (“%s”)', '%d results (“%s”)', pagination.numberElements, [pagination.numberElements | format_number, query]) }}
+    </p>
+
+    <div class="grid">
+        {% for link in links %}
+            {{ include('links/_link.html.twig', {
+                link: link,
+                display_source: true,
+                display_notes: true,
+                display_hidden: link.is_hidden,
+                display_edit: true,
+                display_repair: true,
+                display_delete: true,
+                display_read_later: 'auto',
+                display_mark_as_read: 'auto',
+            }) }}
+        {% endfor %}
+    </div>
+
+    {{ include('layouts/_pagination.html.twig', { url: url('links', { q: query }) }) }}
+{% endblock %}

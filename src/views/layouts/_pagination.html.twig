@@ -1,0 +1,49 @@
+{% if pagination.mustPaginate %}
+    {% set url = url ~ '?' in url ? '&amp;' : '?' %}
+
+    <nav class="pagination">
+        <ul class="pagination__container">
+            {% if not pagination.isCurrentFirstPage %}
+                <li class="pagination__item pagination__item--prev">
+                    <a aria-label="{{ t('Previous page') }}" class="pagination__link button--animated" href="{{ url ~ 'page=' ~ pagination.previousPageNumber }}">
+                        {{ icon('arrow-left') }}
+
+                        <span class="no-mobile">
+                            {{ t('Previous') }}
+                        </span>
+                    </a>
+                </li>
+            {% endif %}
+
+            {% for page in pagination.pages %}
+                {% if page.type == 'number' %}
+                    <li class="pagination__item pagination__item--number {{ pagination.isPageCurrent(page.number) ? 'pagination__item--current' : '' }}">
+                        <a
+                            class="pagination__link"
+                            href="{{ url ~ 'page=' ~ page.number }}"
+                            {{ pagination.isPageCurrent(page.number) ? 'aria-current="page"' : '' }}
+                        >
+                            {{ page.number }}
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="pagination__item pagination__item--ellipsis">
+                        …
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if not pagination.isCurrentLastPage %}
+                <li class="pagination__item pagination__item--next">
+                    <a aria-label="{{ t('Next page') }}" class="pagination__link button--animated" href="{{ url ~ 'page=' ~ pagination.nextPageNumber }}">
+                        <span class="no-mobile">
+                            {{ t('Next') }}
+                        </span>
+
+                        {{ icon('arrow-right') }}
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+{% endif %}

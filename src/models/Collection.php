@@ -207,6 +207,16 @@ class Collection
         return $feed;
     }
 
+    public function isFeed(): bool
+    {
+        return $this->type === 'feed';
+    }
+
+    public function isCollection(): bool
+    {
+        return $this->type === 'collection';
+    }
+
     /**
      * Return the name of the collection.
      *
@@ -238,6 +248,24 @@ class Collection
         }
 
         return $user;
+    }
+
+    /**
+     * Return the list of users with write access.
+     *
+     * @return User[]
+     */
+    public function publishers(): array
+    {
+        $owner = $this->owner();
+        $shares = $this->shares(['access_type' => 'write']);
+
+        $publishers = array_map(function (CollectionShare $share): User {
+            return $share->user();
+        }, $shares);
+        array_unshift($publishers, $owner);
+
+        return $publishers;
     }
 
     /**
@@ -408,17 +436,26 @@ class Collection
     }
 
     /**
-     * Return the feed site URL to be displayed
+     * Return the feed's site URL if any, or feed URL.
      */
-    public function feedWebsite(): string
+    public function feedWebsiteUrl(): string
     {
         if ($this->feed_site_url) {
-            return utils\Belt::host($this->feed_site_url);
+            return $this->feed_site_url;
         } elseif ($this->feed_url) {
-            return utils\Belt::host($this->feed_url);
+            return $this->feed_url;
         } else {
-            return '';
+            throw new \LogicException('Cannot call this method on non-feed collection');
         }
+    }
+
+    /**
+     * Return the feed site URL to be displayed
+     */
+    public function feedWebsiteHost(): string
+    {
+        $url = $this->feedWebsiteUrl();
+        return utils\Belt::host($url);
     }
 
     /**
