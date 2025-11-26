@@ -1,0 +1,23 @@
+.layout__content--authentication {
+    display: flex;
+
+    align-items: stretch;
+    justify-content: stretch;
+    gap: var(--space-medium);
+}
+
+@media (max-width: 799px) {
+    .layout__content--authentication {
+        flex-direction: column-reverse;
+    }
+}
+
+.authentication__leftside,
+.authentication__rightside {
+    display: flex;
+
+    flex: 1;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+}

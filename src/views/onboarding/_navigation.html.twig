@@ -1,0 +1,12 @@
+<p class="panel cols cols--always cols--center cols--gap-small">
+    <span class="col--extend">
+        {{ t('Step %d on %d', [current_step, 6]) }}
+        {% if current_step == 6 %}
+            ({{ t('finished') }})
+        {% endif %}
+    </span>
+
+    {% if current_step < 6 %}
+        <a class="button" href="{{ url('onboarding', { step: current_step + 1 }) }}">{{ t('Next') }}</a>
+    {% endif %}
+</p>

@@ -1,0 +1,11 @@
+{% extends 'layouts/modal.html.twig' %}
+
+{% block title %}{{ t('New collection') }}{% endblock %}
+
+{% block body %}
+    {{ include('collections/_form.html.twig', {
+        form: form,
+        action: url('create collection'),
+        submit_label: t('Create the collection'),
+    }) }}
+{% endblock %}

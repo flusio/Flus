@@ -38,7 +38,7 @@ class Groups extends BaseController
         $can_update_group = auth\Access::can($user, 'updateGroup', $collection);
         $is_following = $user->isFollowing($collection->id);
         if (!$can_update_group && !$is_following) {
-            return Response::notFound('not_found.phtml');
+            return Response::notFound('errors/not_found.html.twig');
         }
 
         $group = $collection->groupForUser($user->id);
@@ -85,7 +85,7 @@ class Groups extends BaseController
         $can_update_group = auth\Access::can($user, 'updateGroup', $collection);
         $is_following = $user->isFollowing($collection->id);
         if (!$can_update_group && !$is_following) {
-            return Response::notFound('not_found.phtml');
+            return Response::notFound('errors/not_found.html.twig');
         }
 
         $form = new forms\collections\EditCollectionGroup(options: [

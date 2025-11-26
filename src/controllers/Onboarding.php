@@ -41,8 +41,9 @@ class Onboarding extends BaseController
 
         $locale_form = new forms\users\Locale(model: $user);
 
-        return Response::ok("onboarding/step{$step}.phtml", [
+        return Response::ok("onboarding/step{$step}.html.twig", [
             'locale_form' => $locale_form,
+            'current_step' => $step,
         ]);
     }
 

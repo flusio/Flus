@@ -45,7 +45,7 @@ class Collections extends BaseController
 
         $form = new forms\collections\Collection();
 
-        return Response::ok('collections/new.phtml', [
+        return Response::ok('collections/new.html.twig', [
             'form' => $form,
         ]);
     }
@@ -77,7 +77,7 @@ class Collections extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('collections/new.phtml', [
+            return Response::badRequest('collections/new.html.twig', [
                 'form' => $form,
             ]);
         }
@@ -191,7 +191,7 @@ class Collections extends BaseController
             'topic_ids' => array_column($collection->topics(), 'id'),
         ], model: $collection);
 
-        return Response::ok('collections/edit.phtml', [
+        return Response::ok('collections/edit.html.twig', [
             'collection' => $collection,
             'form' => $form,
         ]);
@@ -231,7 +231,7 @@ class Collections extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('collections/edit.phtml', [
+            return Response::badRequest('collections/edit.html.twig', [
                 'collection' => $collection,
                 'form' => $form,
             ]);

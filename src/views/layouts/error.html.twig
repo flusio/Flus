@@ -1,0 +1,18 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block layout_header %}
+{% endblock %}
+
+{% block layout_body %}
+    <section class="layout__content layout__content--error">
+        <div class="flow flow--larger">
+            <div class="wrapper wrapper--small wrapper--center">
+                {% block body %}
+                {% endblock %}
+            </div>
+
+            {% block error %}
+            {% endblock %}
+        </div>
+    </section>
+{% endblock %}

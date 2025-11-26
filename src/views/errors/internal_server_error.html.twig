@@ -1,0 +1,30 @@
+{% extends 'layouts/error.html.twig' %}
+
+{% set title = t('Something bad happened') %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block error %}
+    {{ include('errors/_error.html.twig') }}
+{% endblock %}
+
+{% block body %}
+    <div class="panel panel--grey panel--rounded panel--larger">
+        <div class="wrapper wrapper--smaller wrapper--center flow flow--larger text--center">
+            <h1>
+                {{ t('An error occurred during the processing of your request.') }}
+            </h1>
+
+            <a class="button button--primary button--big button--block button--animated" href="{{ url('home') }}">
+                {{ icon('arrow-left') }}
+                {{ t('Back to the home page') }}
+            </a>
+
+            <img
+                class="illustration illustration--centered"
+                alt=""
+                src="{{ url_static('static/illustrations/server-down.svg') }}"
+                height="250"
+            />
+        </div>
+    </div>
+{% endblock %}

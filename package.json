@@ -23,6 +23,7 @@
     "svg-sprite": "^2.0.0"
   },
   "dependencies": {
+    "@flus/design": "^1.0.0",
     "@hotwired/stimulus": "^3.1.0",
     "@hotwired/turbo": "^8",
     "stringz": "^2.1.0",

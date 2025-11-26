@@ -34,8 +34,8 @@ class Application
         $router = Router::load();
         \Minz\Engine::init($router, [
             'start_session' => true,
-            'not_found_template' => 'not_found.phtml',
-            'internal_server_error_template' => 'internal_server_error.phtml',
+            'not_found_template' => 'errors/not_found.html.twig',
+            'internal_server_error_template' => 'errors/internal_server_error.html.twig',
             'controller_namespace' => '\\App\\controllers',
         ]);
 
@@ -43,6 +43,13 @@ class Application
         \Minz\Output\Template::$extensions_to_content_types['.atom.xml.php'] = 'application/xml';
         \Minz\Output\Template::$extensions_to_content_types['.opml.xml.php'] = 'text/x-opml';
         \Minz\Output\Template::$extensions_to_content_types['.xsl.php'] = 'application/xslt+xml';
+
+        // Register Twig extensions
+        \Minz\Template\Twig::addAttributeExtension(twig\ConfigurationExtension::class);
+        \Minz\Template\Twig::addAttributeExtension(twig\FormsExtension::class);
+        \Minz\Template\Twig::addAttributeExtension(twig\IconExtension::class);
+        \Minz\Template\Twig::addAttributeExtension(twig\LocaleExtension::class);
+        \Minz\Template\Twig::addAttributeExtension(twig\UrlExtension::class);
     }
 
     /**
@@ -122,6 +129,15 @@ class Application
             'now' => \Minz\Time::now(),
             'javascript_configuration' => json_encode(include('utils/javascript_configuration.php')),
             'modal_requested' => $request->headers->getString('Turbo-Frame') === 'modal-content',
+        ]);
+
+        \Minz\Template\Twig::addGlobals([
+            'app' => [
+                'brand' => \App\Configuration::$application['brand'],
+                'version' => \App\Configuration::$application['version'],
+                'user' => $current_user,
+                'locale' => $locale,
+            ],
         ]);
 
         $response = \Minz\Engine::run($request);

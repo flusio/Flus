@@ -36,7 +36,7 @@ class Showcases extends BaseController
         } elseif ($id === 'reading') {
             return Response::ok('showcases/show_reading.phtml');
         } else {
-            return Response::notFound('not_found.phtml');
+            return Response::notFound('errors/not_found.html.twig');
         }
     }
 }
