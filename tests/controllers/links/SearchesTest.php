@@ -16,8 +16,8 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
     use \tests\FilesystemHelper;
+    use \tests\HttpHelper;
     use \tests\LoginHelper;
-    use \tests\MockHttpHelper;
 
     public function testShowRendersCorrectly(): void
     {

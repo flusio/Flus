@@ -14,8 +14,8 @@ class SupportTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\MailerAsserts;
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
+    use \tests\HttpHelper;
     use \tests\LoginHelper;
-    use \tests\MockHttpHelper;
 
     public function testShowRendersCorrectly(): void
     {

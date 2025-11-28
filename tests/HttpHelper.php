@@ -2,12 +2,22 @@
 
 namespace tests;
 
+use App\http;
+
 /**
  * @author Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-trait MockHttpHelper
+trait HttpHelper
 {
+    private static http\Cache $http_cache;
+
+    #[\PHPUnit\Framework\Attributes\BeforeClass]
+    public static function loadCache(): void
+    {
+        self::$http_cache = new http\Cache();
+    }
+
     /**
      * Clear mocks after each test if it has been enabled.
      */
@@ -22,6 +32,21 @@ trait MockHttpHelper
 
             \SpiderBits\Http::$mock_host = '';
         }
+    }
+
+    #[\PHPUnit\Framework\Attributes\After]
+    public function clearHttpCache(): void
+    {
+        self::$http_cache->clear();
+    }
+
+    /**
+     * Cache the given "raw" HTTP response in the HTTP cache.
+     */
+    public function cacheHttpResponse(string $url, string $raw_response): void
+    {
+        $http_response = \SpiderBits\Response::fromText($raw_response);
+        self::$http_cache->saveResponse($url, $http_response);
     }
 
     /**

@@ -18,6 +18,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\TimeHelper;
     use \tests\FakerHelper;
+    use \tests\HttpHelper;
 
     public function testQueue(): void
     {
@@ -37,36 +38,32 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('+1 day', $cleaner_job->frequency);
     }
 
-    public function testPerformDeletesFilesOutsideValidityInterval(): void
+    public function testPerformDeletesHttpCacheOutsideValidityInterval(): void
     {
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $filepath = $cache_path . '/foo';
-        $validity_interval = 7 * 24 * 60 * 60;
-        $modification_time = time() - $validity_interval;
-        touch($filepath, $modification_time);
+        $cache_item = self::$http_cache->getItem('foo');
+        $cache_item->expiresAt(\Minz\Time::ago(1, 'day'));
+        self::$http_cache->save($cache_item);
         $cleaner_job = new Cleaner();
 
-        $this->assertTrue(file_exists($filepath));
+        $this->assertTrue(self::$http_cache->hasItem('foo'));
 
         $cleaner_job->perform();
 
-        $this->assertFalse(file_exists($filepath));
+        $this->assertFalse(self::$http_cache->hasItem('foo'));
     }
 
     public function testPerformKeepsFilesWithinValidityInterval(): void
     {
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $filepath = $cache_path . '/foo';
-        $validity_interval = 7 * 24 * 60 * 60;
-        $modification_time = time() - $validity_interval + 1;
-        touch($filepath, $modification_time);
+        $cache_item = self::$http_cache->getItem('foo');
+        $cache_item->expiresAt(\Minz\Time::fromNow(1, 'day'));
+        self::$http_cache->save($cache_item);
         $cleaner_job = new Cleaner();
 
-        $this->assertTrue(file_exists($filepath));
+        $this->assertTrue(self::$http_cache->hasItem('foo'));
 
         $cleaner_job->perform();
 
-        $this->assertTrue(file_exists($filepath));
+        $this->assertTrue(self::$http_cache->hasItem('foo'));
     }
 
     public function testPerformDeletesOldFetchLogs(): void

@@ -8,7 +8,7 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\InitializerHelper;
     use \tests\FakerHelper;
-    use \tests\MockHttpHelper;
+    use \tests\HttpHelper;
 
     #[\PHPUnit\Framework\Attributes\Before]
     public function initializeSubscriptionConfiguration(): void

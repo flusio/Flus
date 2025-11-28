@@ -11,7 +11,7 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\InitializerHelper;
     use \tests\FakerHelper;
     use \tests\FilesystemHelper;
-    use \tests\MockHttpHelper;
+    use \tests\HttpHelper;
 
     public function testFetchSavesNewLinkInfo(): void
     {
@@ -42,10 +42,7 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
 
         $link_fetcher_service->fetch($link);
 
-        $hash = \SpiderBits\Cache::hash($url);
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache_filepath = $cache_path . '/' . $hash;
-        $this->assertTrue(file_exists($cache_filepath));
+        $this->assertTrue(self::$http_cache->hasItem($url));
     }
 
     public function testFetchUsesCache(): void
@@ -58,20 +55,16 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         ]);
         /** @var string */
         $expected_title = $this->fake('sentence');
-        $hash = \SpiderBits\Cache::hash($url);
-        $raw_response = <<<TEXT
-        HTTP/2 200 OK
-        Content-Type: text/html
+        $this->cacheHttpResponse($url, <<<TEXT
+            HTTP/2 200 OK
+            Content-Type: text/html
 
-        <html>
-            <head>
-                <title>{$expected_title}</title>
-            </head>
-        </html>
-        TEXT;
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $cache->save($hash, $raw_response);
+            <html>
+                <head>
+                    <title>{$expected_title}</title>
+                </head>
+            </html>
+            TEXT);
 
         $link_fetcher_service->fetch($link);
 
@@ -88,13 +81,10 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
             'title' => $url,
         ]);
-        $hash = \SpiderBits\Cache::hash($url);
         $fixtures_path = \App\Configuration::$app_path . '/tests/fixtures';
         $raw_response = @file_get_contents($fixtures_path . '/responses/test_iso_8859_1');
         assert($raw_response !== false);
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $cache->save($hash, $raw_response);
+        $this->cacheHttpResponse($url, $raw_response);
 
         $link_fetcher_service->fetch($link);
 
@@ -111,13 +101,10 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
             'title' => $url,
         ]);
-        $hash = \SpiderBits\Cache::hash($url);
         $fixtures_path = \App\Configuration::$app_path . '/tests/fixtures';
         $raw_response = file_get_contents($fixtures_path . '/responses/test_bad_encoding');
         assert($raw_response !== false);
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $cache->save($hash, $raw_response);
+        $this->cacheHttpResponse($url, $raw_response);
 
         $link_fetcher_service->fetch($link);
 
@@ -254,30 +241,6 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(file_exists($card_filepath));
         $this->assertTrue(file_exists($cover_filepath));
         $this->assertTrue(file_exists($large_filepath));
-    }
-
-    public function testFetchDoesNotSaveResponseInCacheIfResponseIsInError(): void
-    {
-        $link_fetcher_service = new LinkFetcher();
-        $url = 'https://flus.fr/does_not_exist.html';
-        $this->mockHttpWithResponse($url, <<<TEXT
-            HTTP/2 404
-            content-type: text/plain
-
-            Page not found
-            TEXT
-        );
-        $link = LinkFactory::create([
-            'url' => $url,
-            'title' => $url,
-        ]);
-
-        $link_fetcher_service->fetch($link);
-
-        $hash = \SpiderBits\Cache::hash($url);
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache_filepath = $cache_path . '/' . $hash;
-        $this->assertFalse(file_exists($cache_filepath));
     }
 
     public function testFetchDoesNotChangeTitleIfAlreadySet(): void

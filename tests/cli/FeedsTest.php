@@ -2,6 +2,7 @@
 
 namespace App\cli;
 
+use App\http;
 use App\models;
 use tests\factories\CollectionFactory;
 
@@ -12,7 +13,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
     use \tests\FilesystemHelper;
-    use \tests\MockHttpHelper;
+    use \tests\HttpHelper;
 
     #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function loadApplication(): void
@@ -198,10 +199,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'id' => $collection->id,
         ]);
 
-        $hash = \SpiderBits\Cache::hash($feed_url);
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache_filepath = $cache_path . '/' . $hash;
-        $this->assertTrue(file_exists($cache_filepath));
+        $this->assertTrue(self::$http_cache->hasItem($feed_url));
     }
 
     public function testSyncUsesCache(): void
@@ -216,32 +214,28 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $expected_title = $this->fake('sentence');
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
-        $hash = \SpiderBits\Cache::hash($feed_url);
-        $raw_response = <<<XML
-        HTTP/2 200 OK
-        Content-Type: application/xml
+        $this->cacheHttpResponse($feed_url, <<<TEXT
+            HTTP/2 200 OK
+            Content-Type: application/xml
 
-        <?xml version='1.0' encoding='UTF-8'?>
-        <feed xmlns="http://www.w3.org/2005/Atom">
-        <title>{$expected_name}</title>
-            <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
-            <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
-            <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
-            <updated>2021-03-30T11:26:00+02:00</updated>
-            <entry>
-                <title>{$expected_title}</title>
-                <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
-                <author><name>Marien</name></author>
-                <link href="https://flus.fr/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html" />
-                <published>2021-03-30T11:26:00+02:00</published>
+            <?xml version='1.0' encoding='UTF-8'?>
+            <feed xmlns="http://www.w3.org/2005/Atom">
+                <title>{$expected_name}</title>
+                <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
+                <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
+                <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
                 <updated>2021-03-30T11:26:00+02:00</updated>
-                <content type="html"></content>
-            </entry>
-        </feed>
-        XML;
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $cache->save($hash, $raw_response);
+                <entry>
+                    <title>{$expected_title}</title>
+                    <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
+                    <author><name>Marien</name></author>
+                    <link href="https://flus.fr/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html" />
+                    <published>2021-03-30T11:26:00+02:00</published>
+                    <updated>2021-03-30T11:26:00+02:00</updated>
+                    <content type="html"></content>
+                </entry>
+            </feed>
+            TEXT);
 
         $response = $this->appRun('CLI', '/feeds/sync', [
             'id' => $collection->id,
@@ -265,32 +259,28 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $not_expected_name = $this->fake('sentence');
         /** @var string */
         $not_expected_title = $this->fake('sentence');
-        $hash = \SpiderBits\Cache::hash($feed_url);
-        $raw_response = <<<XML
-        HTTP/2 200 OK
-        Content-Type: application/xml
+        $this->cacheHttpResponse($feed_url, <<<TEXT
+            HTTP/2 200 OK
+            Content-Type: application/xml
 
-        <?xml version='1.0' encoding='UTF-8'?>
-        <feed xmlns="http://www.w3.org/2005/Atom">
-        <title>{$not_expected_name}</title>
-            <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
-            <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
-            <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
-            <updated>2021-03-30T11:26:00+02:00</updated>
-            <entry>
-                <title>{$not_expected_title}</title>
-                <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
-                <author><name>Marien</name></author>
-                <link href="https://flus.fr/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html" />
-                <published>2021-03-30T11:26:00+02:00</published>
+            <?xml version='1.0' encoding='UTF-8'?>
+            <feed xmlns="http://www.w3.org/2005/Atom">
+            <title>{$not_expected_name}</title>
+                <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
+                <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
+                <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
                 <updated>2021-03-30T11:26:00+02:00</updated>
-                <content type="html"></content>
-            </entry>
-        </feed>
-        XML;
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $cache->save($hash, $raw_response);
+                <entry>
+                    <title>{$not_expected_title}</title>
+                    <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
+                    <author><name>Marien</name></author>
+                    <link href="https://flus.fr/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html" />
+                    <published>2021-03-30T11:26:00+02:00</published>
+                    <updated>2021-03-30T11:26:00+02:00</updated>
+                    <content type="html"></content>
+                </entry>
+            </feed>
+            TEXT);
 
         $response = $this->appRun('CLI', '/feeds/sync', [
             'id' => $collection->id,

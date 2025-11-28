@@ -25,6 +25,9 @@ class Image
         $this->fetcher = new http\Fetcher(
             http_timeout: 10,
             http_max_size: 5 * 1024 * 1024,
+            default_cache_duration: 1 * 60 * 60 * 24 * 7,
+            min_cache_duration: 1 * 60 * 60 * 24 * 7,
+            max_cache_duration: 1 * 60 * 60 * 24 * 30,
             ignore_rate_limit: true,
         );
 
@@ -46,7 +49,7 @@ class Image
             throw new \DomainException('URL cannot be empty');
         }
 
-        $url_hash = \SpiderBits\Cache::hash($image_url);
+        $url_hash = hash('sha256', $image_url);
         $subpath = utils\Belt::filenameToSubpath($url_hash);
         $path_card = "{$this->path_cards}/{$subpath}";
         $path_cover = "{$this->path_covers}/{$subpath}";

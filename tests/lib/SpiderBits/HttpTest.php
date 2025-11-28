@@ -5,7 +5,7 @@ namespace SpiderBits;
 class HttpTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
-    use \tests\MockHttpHelper;
+    use \tests\HttpHelper;
 
     public function testGetWithParameters(): void
     {

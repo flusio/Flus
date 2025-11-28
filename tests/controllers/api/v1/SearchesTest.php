@@ -11,7 +11,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\InitializerHelper;
     use \tests\ApiHelper;
-    use \tests\MockHttpHelper;
+    use \tests\HttpHelper;
 
     public function testCreateCreatesLinkAndFeedsAndReturnsThem(): void
     {

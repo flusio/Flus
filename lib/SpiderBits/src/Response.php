@@ -63,6 +63,12 @@ class Response
 
     /**
      * Return a header value
+     *
+     * @template T of ?string
+     *
+     * @param T $default
+     *
+     * @return string|T
      */
     public function header(string $name, ?string $default = null): ?string
     {

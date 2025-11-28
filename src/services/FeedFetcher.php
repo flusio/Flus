@@ -28,7 +28,9 @@ class FeedFetcher
     {
         $this->fetcher = new http\Fetcher(
             http_timeout: $options['http_timeout'] ?? 20,
-            cache_duration: 1 * 60 * 60,
+            default_cache_duration: 1 * 60 * 60,
+            min_cache_duration: 1 * 60 * 60,
+            max_cache_duration: 1 * 60 * 60 * 24,
             ignore_cache: $options['ignore_cache'] ?? false,
             ignore_rate_limit: $options['ignore_rate_limit'] ?? false,
             headers: [

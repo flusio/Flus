@@ -10,7 +10,7 @@ class InactivityNotifierTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\MailerAsserts;
     use \Minz\Tests\TimeHelper;
     use \tests\FakerHelper;
-    use \tests\MockHttpHelper;
+    use \tests\HttpHelper;
 
     #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function initEngine(): void

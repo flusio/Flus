@@ -2,6 +2,8 @@
 
 namespace App\cli;
 
+use App\http;
+
 class UrlsTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
@@ -9,7 +11,7 @@ class UrlsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
     use \tests\FilesystemHelper;
-    use \tests\MockHttpHelper;
+    use \tests\HttpHelper;
 
     #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function loadApplication(): void
@@ -67,28 +69,24 @@ class UrlsTest extends \PHPUnit\Framework\TestCase
 
     public function testUncacheClearsCacheOfGivenUrl(): void
     {
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
         /** @var string */
         $url = $this->fake('url');
-        $url_hash = \SpiderBits\Cache::hash($url);
-        $raw_response = <<<TEXT
+        $this->cacheHttpResponse($url, <<<TEXT
             HTTP/2 200
             Content-type: text/plain
 
             Hello World!
-            TEXT;
-        $cache->save($url_hash, $raw_response);
+            TEXT);
 
-        $this->assertTrue(file_exists("{$cache_path}/{$url_hash}"));
+        $this->assertTrue(self::$http_cache->hasItem($url));
 
         $response = $this->appRun('CLI', '/urls/uncache', [
             'url' => $url,
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertFalse(file_exists("{$cache_path}/{$url_hash}"));
-        $this->assertResponseEquals($response, "Cache for {$url} ({$url_hash}) has been cleared.");
+        $this->assertFalse(self::$http_cache->hasItem($url));
+        $this->assertResponseEquals($response, "Cache for {$url} has been cleared.");
     }
 
     public function testUncacheFailsWithInvalidUrl(): void
@@ -105,21 +103,18 @@ class UrlsTest extends \PHPUnit\Framework\TestCase
 
     public function testUncacheFailsIfCachePathCannotBeWritten(): void
     {
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
         /** @var string */
         $url = $this->fake('url');
-        $url_hash = \SpiderBits\Cache::hash($url);
-        $raw_response = <<<TEXT
+        $this->cacheHttpResponse($url, <<<TEXT
             HTTP/2 200
             Content-type: text/plain
 
             Hello World!
-            TEXT;
-        $cache->save($url_hash, $raw_response);
+            TEXT);
+        $cache_path = dirname(self::$http_cache->keyToFullpath($url));
         chmod($cache_path, 0500);
 
-        $this->assertTrue(file_exists("{$cache_path}/{$url_hash}"));
+        $this->assertTrue(self::$http_cache->hasItem($url));
 
         $response = $this->appRun('CLI', '/urls/uncache', [
             'url' => $url,
@@ -127,7 +122,7 @@ class UrlsTest extends \PHPUnit\Framework\TestCase
 
         chmod($cache_path, 0775);
         $this->assertResponseCode($response, 500);
-        $this->assertTrue(file_exists("{$cache_path}/{$url_hash}"));
-        $this->assertResponseEquals($response, "Cache for {$url} ({$url_hash}) cannot be cleared.");
+        $this->assertTrue(self::$http_cache->hasItem($url));
+        $this->assertResponseEquals($response, "Cache for {$url} cannot be cleared.");
     }
 }

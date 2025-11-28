@@ -14,7 +14,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\TimeHelper;
     use \tests\FakerHelper;
     use \tests\FilesystemHelper;
-    use \tests\MockHttpHelper;
+    use \tests\HttpHelper;
 
     public function testQueue(): void
     {
@@ -125,10 +125,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
 
         $links_fetcher_job->perform();
 
-        $hash = \SpiderBits\Cache::hash($url);
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache_filepath = $cache_path . '/' . $hash;
-        $this->assertTrue(file_exists($cache_filepath));
+        $this->assertTrue(self::$http_cache->hasItem($url));
     }
 
     public function testPerformUsesCache(): void
@@ -144,20 +141,16 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $links_fetcher_job = new LinksSync();
         /** @var string */
         $expected_title = $this->fake('sentence');
-        $hash = \SpiderBits\Cache::hash($url);
-        $raw_response = <<<TEXT
-        HTTP/2 200 OK
-        Content-Type: text/html
+        $this->cacheHttpResponse($url, <<<TEXT
+            HTTP/2 200 OK
+            Content-Type: text/html
 
-        <html>
-            <head>
-                <title>{$expected_title}</title>
-            </head>
-        </html>
-        TEXT;
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $cache->save($hash, $raw_response);
+            <html>
+                <head>
+                    <title>{$expected_title}</title>
+                </head>
+            </html>
+            TEXT);
 
         $links_fetcher_job->perform();
 

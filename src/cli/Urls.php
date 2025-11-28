@@ -62,21 +62,19 @@ class Urls
     public function uncache(Request $request): Response
     {
         $url = $request->parameters->getString('url', '');
+
         $url_is_valid = filter_var($url, FILTER_VALIDATE_URL) !== false;
         if (!$url_is_valid) {
             return Response::text(400, "`{$url}` is not a valid URL.");
         }
 
-        $url_hash = \SpiderBits\Cache::hash($url);
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-
-        $result = $cache->remove($url_hash);
+        $cache = new http\Cache();
+        $result = $cache->deleteItem($url);
 
         if ($result) {
-            return Response::text(200, "Cache for {$url} ({$url_hash}) has been cleared.");
+            return Response::text(200, "Cache for {$url} has been cleared.");
         } else {
-            return Response::text(500, "Cache for {$url} ({$url_hash}) cannot be cleared.");
+            return Response::text(500, "Cache for {$url} cannot be cleared.");
         }
     }
 }

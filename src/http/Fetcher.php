@@ -18,12 +18,14 @@ class Fetcher
 {
     private \SpiderBits\Http $http;
 
-    private \SpiderBits\Cache $cache;
+    private Cache $cache;
 
     public function __construct(
         private int $http_timeout = 10,
         private int $http_max_size = 20 * 1024 * 1024,
-        private int $cache_duration = 1 * 60 * 60 * 24,
+        private int $default_cache_duration = 1 * 60 * 60,
+        private int $min_cache_duration = 1 * 60 * 15,
+        private int $max_cache_duration = 1 * 60 * 60 * 24 * 7,
         private bool $ignore_cache = false,
         private bool $ignore_rate_limit = false,
         /** @var array<string, string> */
@@ -33,8 +35,11 @@ class Fetcher
         $this->http = new \SpiderBits\Http();
         $this->http->timeout = $this->http_timeout;
 
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $this->cache = new \SpiderBits\Cache($cache_path);
+        $this->cache = new Cache(
+            $this->default_cache_duration,
+            $this->min_cache_duration,
+            $this->max_cache_duration,
+        );
     }
 
     /**
@@ -76,9 +81,7 @@ class Fetcher
             throw new UnexpectedHttpError($url, $e);
         }
 
-        if ($response->success) {
-            $this->cacheResponse($url, $response);
-        }
+        $this->cacheResponse($url, $response);
 
         return $response;
     }
@@ -92,14 +95,7 @@ class Fetcher
             return null;
         }
 
-        $url_hash = \SpiderBits\Cache::hash($url);
-        $cache_response = $this->cache->get($url_hash, $this->cache_duration);
-
-        if (!$cache_response) {
-            return null;
-        }
-
-        return \SpiderBits\Response::fromText($cache_response);
+        return $this->cache->getResponse($url);
     }
 
     /**
@@ -111,8 +107,7 @@ class Fetcher
             return;
         }
 
-        $url_hash = \SpiderBits\Cache::hash($url);
-        $this->cache->save($url_hash, (string)$response);
+        $this->cache->saveResponse($url, $response);
     }
 
     /**

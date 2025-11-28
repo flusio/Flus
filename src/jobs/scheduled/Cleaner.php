@@ -35,9 +35,8 @@ class Cleaner extends \Minz\Job
 
     public function perform(): void
     {
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $cache->clean();
+        $http_cache = new http\Cache();
+        $http_cache->clearExpiredItems();
 
         $support_user = models\User::supportUser();
 

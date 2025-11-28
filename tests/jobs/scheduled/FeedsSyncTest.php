@@ -17,7 +17,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\TimeHelper;
     use \tests\FakerHelper;
     use \tests\FilesystemHelper;
-    use \tests\MockHttpHelper;
+    use \tests\HttpHelper;
 
     public function testQueue(): void
     {
@@ -151,10 +151,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         $feeds_sync_job->perform();
 
-        $hash = \SpiderBits\Cache::hash($feed_url);
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache_filepath = $cache_path . '/' . $hash;
-        $this->assertTrue(file_exists($cache_filepath));
+        $this->assertTrue(self::$http_cache->hasItem($feed_url));
     }
 
     public function testPerformUsesCache(): void
@@ -180,32 +177,28 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
-        $hash = \SpiderBits\Cache::hash($feed_url);
-        $raw_response = <<<XML
-        HTTP/2 200 OK
-        Content-Type: application/xml
+        $this->cacheHttpResponse($feed_url, <<<TEXT
+            HTTP/2 200 OK
+            Content-Type: application/xml
 
-        <?xml version='1.0' encoding='UTF-8'?>
-        <feed xmlns="http://www.w3.org/2005/Atom">
-            <title>{$expected_name}</title>
-            <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
-            <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
-            <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
-            <updated>2021-03-30T11:26:00+02:00</updated>
-            <entry>
-                <title>{$expected_title}</title>
-                <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
-                <author><name>Marien</name></author>
-                <link href="https://flus.fr/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html" />
-                <published>2021-03-30T11:26:00+02:00</published>
+            <?xml version='1.0' encoding='UTF-8'?>
+            <feed xmlns="http://www.w3.org/2005/Atom">
+                <title>{$expected_name}</title>
+                <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
+                <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
+                <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
                 <updated>2021-03-30T11:26:00+02:00</updated>
-                <content type="html"></content>
-            </entry>
-        </feed>
-        XML;
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $cache->save($hash, $raw_response);
+                <entry>
+                    <title>{$expected_title}</title>
+                    <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
+                    <author><name>Marien</name></author>
+                    <link href="https://flus.fr/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html" />
+                    <published>2021-03-30T11:26:00+02:00</published>
+                    <updated>2021-03-30T11:26:00+02:00</updated>
+                    <content type="html"></content>
+                </entry>
+            </feed>
+            TEXT);
         $feeds_sync_job = new FeedsSync();
 
         $feeds_sync_job->perform();
@@ -239,32 +232,28 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
-        $hash = \SpiderBits\Cache::hash($feed_url);
-        $raw_response = <<<XML
-        HTTP/2 200 OK
-        Content-Type: application/xml
+        $this->cacheHttpResponse($feed_url, <<<TEXT
+            HTTP/2 200 OK
+            Content-Type: application/xml
 
-        <?xml version='1.0' encoding='UTF-8'?>
-        <feed xmlns="http://www.w3.org/2005/Atom">
-            <title>Carnet de Flus</title>
-            <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
-            <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
-            <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
-            <updated>2021-03-30T11:26:00+02:00</updated>
-            <entry>
-                <title>Les nouveautés de mars 2021</title>
-                <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
-                <author><name>Marien</name></author>
-                <link href="https://flus.fr/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html" />
-                <published>2021-03-30T11:26:00+02:00</published>
+            <?xml version='1.0' encoding='UTF-8'?>
+            <feed xmlns="http://www.w3.org/2005/Atom">
+                <title>Carnet de Flus</title>
+                <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
+                <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
+                <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
                 <updated>2021-03-30T11:26:00+02:00</updated>
-                <content type="html"></content>
-            </entry>
-        </feed>
-        XML;
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $cache->save($hash, $raw_response);
+                <entry>
+                    <title>Les nouveautés de mars 2021</title>
+                    <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
+                    <author><name>Marien</name></author>
+                    <link href="https://flus.fr/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html" />
+                    <published>2021-03-30T11:26:00+02:00</published>
+                    <updated>2021-03-30T11:26:00+02:00</updated>
+                    <content type="html"></content>
+                </entry>
+            </feed>
+            TEXT);
         $feeds_sync_job = new FeedsSync();
 
         $feeds_sync_job->perform();
@@ -327,32 +316,28 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
             'user_id' => $user->id,
         ]);
-        $hash = \SpiderBits\Cache::hash($feed_url);
-        $raw_response = <<<XML
-        HTTP/2 200 OK
-        Content-Type: application/xml
+        $this->cacheHttpResponse($feed_url, <<<TEXT
+            HTTP/2 200 OK
+            Content-Type: application/xml
 
-        <?xml version='1.0' encoding='UTF-8'?>
-        <feed xmlns="http://www.w3.org/2005/Atom">
-            <title>carnet de flus</title>
-            <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
-            <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
-            <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
-            <updated>2021-03-30T11:26:00+02:00</updated>
-            <entry>
-                <title>Les nouveautés de mars 2021</title>
-                <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
-                <author><name>Marien</name></author>
-                <link href="https://flus.fr/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html" />
-                <published>2021-03-30T11:26:00+02:00</published>
+            <?xml version='1.0' encoding='UTF-8'?>
+            <feed xmlns="http://www.w3.org/2005/Atom">
+                <title>carnet de flus</title>
+                <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
+                <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
+                <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
                 <updated>2021-03-30T11:26:00+02:00</updated>
-                <content type="html"></content>
-            </entry>
-        </feed>
-        XML;
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $cache->save($hash, $raw_response);
+                <entry>
+                    <title>Les nouveautés de mars 2021</title>
+                    <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
+                    <author><name>Marien</name></author>
+                    <link href="https://flus.fr/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html" />
+                    <published>2021-03-30T11:26:00+02:00</published>
+                    <updated>2021-03-30T11:26:00+02:00</updated>
+                    <content type="html"></content>
+                </entry>
+            </feed>
+            TEXT);
         $feeds_sync_job = new FeedsSync();
 
         $feeds_sync_job->perform();
@@ -389,32 +374,28 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'created_at' => \Minz\Time::now(),
         ]);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
-        $hash = \SpiderBits\Cache::hash($feed_url);
-        $raw_response = <<<XML
-        HTTP/2 200 OK
-        Content-Type: application/xml
+        $this->cacheHttpResponse($feed_url, <<<TEXT
+            HTTP/2 200 OK
+            Content-Type: application/xml
 
-        <?xml version='1.0' encoding='UTF-8'?>
-        <feed xmlns="http://www.w3.org/2005/Atom">
-            <title>carnet de flus</title>
-            <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
-            <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
-            <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
-            <updated>2021-03-30T11:26:00+02:00</updated>
-            <entry>
-                <title>Les nouveautés de mars 2021</title>
-                <id>{$link_entry_id}</id>
-                <author><name>Marien</name></author>
-                <link href="{$link_url}" rel="alternate" type="text/html" />
-                <published>{$link_published}</published>
+            <?xml version='1.0' encoding='UTF-8'?>
+            <feed xmlns="http://www.w3.org/2005/Atom">
+                <title>carnet de flus</title>
+                <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
+                <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
+                <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
                 <updated>2021-03-30T11:26:00+02:00</updated>
-                <content type="html"></content>
-            </entry>
-        </feed>
-        XML;
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $cache->save($hash, $raw_response);
+                <entry>
+                    <title>Les nouveautés de mars 2021</title>
+                    <id>{$link_entry_id}</id>
+                    <author><name>Marien</name></author>
+                    <link href="{$link_url}" rel="alternate" type="text/html" />
+                    <published>{$link_published}</published>
+                    <updated>2021-03-30T11:26:00+02:00</updated>
+                    <content type="html"></content>
+                </entry>
+            </feed>
+            TEXT);
         $feeds_sync_job = new FeedsSync();
 
         $this->assertSame(1, models\Link::count());
@@ -493,31 +474,27 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
-        $hash = \SpiderBits\Cache::hash($feed_url);
-        $raw_response = <<<XML
-        HTTP/2 200 OK
-        Content-Type: application/xml
+        $this->cacheHttpResponse($feed_url, <<<TEXT
+            HTTP/2 200 OK
+            Content-Type: application/xml
 
-        <?xml version='1.0' encoding='UTF-8'?>
-        <feed xmlns="http://www.w3.org/2005/Atom">
-            <title>carnet de flus</title>
-            <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
-            <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
-            <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
-            <updated>2021-03-30T11:26:00+02:00</updated>
-            <entry>
-                <title>Les nouveautés de mars 2021</title>
-                <id>{$link_url}</id>
-                <author><name>Marien</name></author>
-                <published>2021-03-30T11:26:00+02:00</published>
+            <?xml version='1.0' encoding='UTF-8'?>
+            <feed xmlns="http://www.w3.org/2005/Atom">
+                <title>carnet de flus</title>
+                <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
+                <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
+                <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
                 <updated>2021-03-30T11:26:00+02:00</updated>
-                <content type="html"></content>
-            </entry>
-        </feed>
-        XML;
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $cache->save($hash, $raw_response);
+                <entry>
+                    <title>Les nouveautés de mars 2021</title>
+                    <id>{$link_url}</id>
+                    <author><name>Marien</name></author>
+                    <published>2021-03-30T11:26:00+02:00</published>
+                    <updated>2021-03-30T11:26:00+02:00</updated>
+                    <content type="html"></content>
+                </entry>
+            </feed>
+            TEXT);
         $feeds_sync_job = new FeedsSync();
 
         $feeds_sync_job->perform();
@@ -551,31 +528,27 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
-        $hash = \SpiderBits\Cache::hash($feed_url);
-        $raw_response = <<<XML
-        HTTP/2 200 OK
-        Content-Type: application/xml
+        $this->cacheHttpResponse($feed_url, <<<TEXT
+            HTTP/2 200 OK
+            Content-Type: application/xml
 
-        <?xml version='1.0' encoding='UTF-8'?>
-        <feed xmlns="http://www.w3.org/2005/Atom">
-            <title>carnet de flus</title>
-            <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
-            <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
-            <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
-            <updated>2021-03-30T11:26:00+02:00</updated>
-            <entry>
-                <title>Les nouveautés de mars 2021</title>
-                <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
-                <author><name>Marien</name></author>
-                <published>2021-03-30T11:26:00+02:00</published>
+            <?xml version='1.0' encoding='UTF-8'?>
+            <feed xmlns="http://www.w3.org/2005/Atom">
+                <title>carnet de flus</title>
+                <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
+                <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
+                <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
                 <updated>2021-03-30T11:26:00+02:00</updated>
-                <content type="html"></content>
-            </entry>
-        </feed>
-        XML;
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $cache->save($hash, $raw_response);
+                <entry>
+                    <title>Les nouveautés de mars 2021</title>
+                    <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
+                    <author><name>Marien</name></author>
+                    <published>2021-03-30T11:26:00+02:00</published>
+                    <updated>2021-03-30T11:26:00+02:00</updated>
+                    <content type="html"></content>
+                </entry>
+            </feed>
+            TEXT);
         $feeds_sync_job = new FeedsSync();
 
         $feeds_sync_job->perform();
@@ -601,32 +574,28 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         ]);
         $link_url = 'invalid://example.com';
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
-        $hash = \SpiderBits\Cache::hash($feed_url);
-        $raw_response = <<<XML
-        HTTP/2 200 OK
-        Content-Type: application/xml
+        $this->cacheHttpResponse($feed_url, <<<TEXT
+            HTTP/2 200 OK
+            Content-Type: application/xml
 
-        <?xml version='1.0' encoding='UTF-8'?>
-        <feed xmlns="http://www.w3.org/2005/Atom">
-            <title>carnet de flus</title>
-            <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
-            <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
-            <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
-            <updated>2021-03-30T11:26:00+02:00</updated>
-            <entry>
-                <title>Les nouveautés de mars 2021</title>
-                <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
-                <author><name>Marien</name></author>
-                <link href="{$link_url}" rel="alternate" type="text/html" />
-                <published>2021-03-30T11:26:00+02:00</published>
+            <?xml version='1.0' encoding='UTF-8'?>
+            <feed xmlns="http://www.w3.org/2005/Atom">
+                <title>carnet de flus</title>
+                <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
+                <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
+                <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
                 <updated>2021-03-30T11:26:00+02:00</updated>
-                <content type="html"></content>
-            </entry>
-        </feed>
-        XML;
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $cache->save($hash, $raw_response);
+                <entry>
+                    <title>Les nouveautés de mars 2021</title>
+                    <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
+                    <author><name>Marien</name></author>
+                    <link href="{$link_url}" rel="alternate" type="text/html" />
+                    <published>2021-03-30T11:26:00+02:00</published>
+                    <updated>2021-03-30T11:26:00+02:00</updated>
+                    <content type="html"></content>
+                </entry>
+            </feed>
+            TEXT);
         $feeds_sync_job = new FeedsSync();
 
         $feeds_sync_job->perform();
@@ -666,32 +635,28 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'link_id' => $link->id,
         ]);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
-        $hash = \SpiderBits\Cache::hash($feed_url);
-        $raw_response = <<<XML
-        HTTP/2 200 OK
-        Content-Type: application/xml
+        $this->cacheHttpResponse($feed_url, <<<TEXT
+            HTTP/2 200 OK
+            Content-Type: application/xml
 
-        <?xml version='1.0' encoding='UTF-8'?>
-        <feed xmlns="http://www.w3.org/2005/Atom">
-            <title>carnet de flus</title>
-            <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
-            <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
-            <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
-            <updated>2021-03-30T11:26:00+02:00</updated>
-            <entry>
-                <title>Les nouveautés de mars 2021</title>
-                <id>{$link_entry_id}</id>
-                <author><name>Marien</name></author>
-                <link href="{$link_url}" rel="alternate" type="text/html" />
-                <published>{$link_published}</published>
+            <?xml version='1.0' encoding='UTF-8'?>
+            <feed xmlns="http://www.w3.org/2005/Atom">
+                <title>carnet de flus</title>
+                <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
+                <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
+                <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
                 <updated>2021-03-30T11:26:00+02:00</updated>
-                <content type="html"></content>
-            </entry>
-        </feed>
-        XML;
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $cache->save($hash, $raw_response);
+                <entry>
+                    <title>Les nouveautés de mars 2021</title>
+                    <id>{$link_entry_id}</id>
+                    <author><name>Marien</name></author>
+                    <link href="{$link_url}" rel="alternate" type="text/html" />
+                    <published>{$link_published}</published>
+                    <updated>2021-03-30T11:26:00+02:00</updated>
+                    <content type="html"></content>
+                </entry>
+            </feed>
+            TEXT);
         $feeds_sync_job = new FeedsSync();
 
         $feeds_sync_job->perform();
@@ -720,41 +685,37 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
-        $hash = \SpiderBits\Cache::hash($feed_url);
-        $raw_response = <<<XML
-        HTTP/2 200 OK
-        Content-Type: application/xml
+        $this->cacheHttpResponse($feed_url, <<<TEXT
+            HTTP/2 200 OK
+            Content-Type: application/xml
 
-        <?xml version='1.0' encoding='UTF-8'?>
-        <feed xmlns="http://www.w3.org/2005/Atom">
-            <title>carnet de flus</title>
-            <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
-            <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
-            <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
-            <updated>2021-03-30T11:26:00+02:00</updated>
-            <entry>
-                <title>Les nouveautés de mars 2021</title>
-                <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
-                <author><name>Marien</name></author>
-                <link href="https://flus.fr/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html"/>
-                <published>{$published_at_1->format(DATE_ATOM)}</published>
+            <?xml version='1.0' encoding='UTF-8'?>
+            <feed xmlns="http://www.w3.org/2005/Atom">
+                <title>carnet de flus</title>
+                <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
+                <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
+                <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
                 <updated>2021-03-30T11:26:00+02:00</updated>
-                <content type="html"></content>
-            </entry>
-            <entry>
-                <title>Bilan 2021</title>
-                <id>urn:uuid:d4281ca0-f103-529b-9a47-adee05477c31</id>
-                <author><name>Marien</name></author>
-                <link href="https://flus.fr/carnet/bilan-2021.html" rel="alternate" type="text/html" />
-                <published>{$published_at_2->format(DATE_ATOM)}</published>
-                <updated>2022-01-05T17:30:00+01:00</updated>
-                <content type="html"></content>
-            </entry>
-        </feed>
-        XML;
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $cache->save($hash, $raw_response);
+                <entry>
+                    <title>Les nouveautés de mars 2021</title>
+                    <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
+                    <author><name>Marien</name></author>
+                    <link href="https://flus.fr/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html"/>
+                    <published>{$published_at_1->format(DATE_ATOM)}</published>
+                    <updated>2021-03-30T11:26:00+02:00</updated>
+                    <content type="html"></content>
+                </entry>
+                <entry>
+                    <title>Bilan 2021</title>
+                    <id>urn:uuid:d4281ca0-f103-529b-9a47-adee05477c31</id>
+                    <author><name>Marien</name></author>
+                    <link href="https://flus.fr/carnet/bilan-2021.html" rel="alternate" type="text/html" />
+                    <published>{$published_at_2->format(DATE_ATOM)}</published>
+                    <updated>2022-01-05T17:30:00+01:00</updated>
+                    <content type="html"></content>
+                </entry>
+            </feed>
+            TEXT);
         $feeds_sync_job = new FeedsSync();
 
         $feeds_sync_job->perform();
@@ -788,32 +749,28 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
-        $hash = \SpiderBits\Cache::hash($feed_url);
-        $raw_response = <<<XML
-        HTTP/2 200 OK
-        Content-Type: application/xml
+        $this->cacheHttpResponse($feed_url, <<<TEXT
+            HTTP/2 200 OK
+            Content-Type: application/xml
 
-        <?xml version='1.0' encoding='UTF-8'?>
-        <feed xmlns="http://www.w3.org/2005/Atom">
-            <title>carnet de flus</title>
-            <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
-            <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
-            <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
-            <updated>2021-03-30T11:26:00+02:00</updated>
-            <entry>
-                <title>Les nouveautés de mars 2021</title>
-                <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
-                <author><name>Marien</name></author>
-                <link href="https://flus.fr/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html"/>
-                <published>{$published_at->format(DATE_ATOM)}</published>
+            <?xml version='1.0' encoding='UTF-8'?>
+            <feed xmlns="http://www.w3.org/2005/Atom">
+                <title>carnet de flus</title>
+                <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
+                <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
+                <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
                 <updated>2021-03-30T11:26:00+02:00</updated>
-                <content type="html"></content>
-            </entry>
-        </feed>
-        XML;
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $cache->save($hash, $raw_response);
+                <entry>
+                    <title>Les nouveautés de mars 2021</title>
+                    <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
+                    <author><name>Marien</name></author>
+                    <link href="https://flus.fr/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html"/>
+                    <published>{$published_at->format(DATE_ATOM)}</published>
+                    <updated>2021-03-30T11:26:00+02:00</updated>
+                    <content type="html"></content>
+                </entry>
+            </feed>
+            TEXT);
         $feeds_sync_job = new FeedsSync();
 
         $feeds_sync_job->perform();
@@ -843,32 +800,28 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
-        $hash = \SpiderBits\Cache::hash($feed_url);
-        $raw_response = <<<XML
-        HTTP/2 200 OK
-        Content-Type: application/xml
+        $this->cacheHttpResponse($feed_url, <<<TEXT
+            HTTP/2 200 OK
+            Content-Type: application/xml
 
-        <?xml version='1.0' encoding='UTF-8'?>
-        <feed xmlns="http://www.w3.org/2005/Atom">
-            <title>carnet de flus</title>
-            <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
-            <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
-            <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
-            <updated>2021-03-30T11:26:00+02:00</updated>
-            <entry>
-                <title>Les nouveautés de mars 2021</title>
-                <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
-                <author><name>Marien</name></author>
-                <link href="https://flus.fr/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html"/>
-                <published>{$published_at->format(DATE_ATOM)}</published>
+            <?xml version='1.0' encoding='UTF-8'?>
+            <feed xmlns="http://www.w3.org/2005/Atom">
+                <title>carnet de flus</title>
+                <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
+                <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
+                <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
                 <updated>2021-03-30T11:26:00+02:00</updated>
-                <content type="html"></content>
-            </entry>
-        </feed>
-        XML;
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $cache->save($hash, $raw_response);
+                <entry>
+                    <title>Les nouveautés de mars 2021</title>
+                    <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
+                    <author><name>Marien</name></author>
+                    <link href="https://flus.fr/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html"/>
+                    <published>{$published_at->format(DATE_ATOM)}</published>
+                    <updated>2021-03-30T11:26:00+02:00</updated>
+                    <content type="html"></content>
+                </entry>
+            </feed>
+            TEXT);
         $feeds_sync_job = new FeedsSync();
 
         $feeds_sync_job->perform();
@@ -904,41 +857,37 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
-        $hash = \SpiderBits\Cache::hash($feed_url);
-        $raw_response = <<<XML
-        HTTP/2 200 OK
-        Content-Type: application/xml
+        $this->cacheHttpResponse($feed_url, <<<TEXT
+            HTTP/2 200 OK
+            Content-Type: application/xml
 
-        <?xml version='1.0' encoding='UTF-8'?>
-        <feed xmlns="http://www.w3.org/2005/Atom">
-            <title>carnet de flus</title>
-            <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
-            <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
-            <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
-            <updated>2021-03-30T11:26:00+02:00</updated>
-            <entry>
-                <title>Les nouveautés de mars 2021</title>
-                <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
-                <author><name>Marien</name></author>
-                <link href="https://flus.fr/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html"/>
-                <published>{$published_at_old->format(DATE_ATOM)}</published>
+            <?xml version='1.0' encoding='UTF-8'?>
+            <feed xmlns="http://www.w3.org/2005/Atom">
+                <title>carnet de flus</title>
+                <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
+                <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
+                <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
                 <updated>2021-03-30T11:26:00+02:00</updated>
-                <content type="html"></content>
-            </entry>
-            <entry>
-                <title>Bilan 2021</title>
-                <id>urn:uuid:d4281ca0-f103-529b-9a47-adee05477c31</id>
-                <author><name>Marien</name></author>
-                <link href="https://flus.fr/carnet/bilan-2021.html" rel="alternate" type="text/html" />
-                <published>{$published_at_older->format(DATE_ATOM)}</published>
-                <updated>2022-01-05T17:30:00+01:00</updated>
-                <content type="html"></content>
-            </entry>
-        </feed>
-        XML;
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $cache->save($hash, $raw_response);
+                <entry>
+                    <title>Les nouveautés de mars 2021</title>
+                    <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
+                    <author><name>Marien</name></author>
+                    <link href="https://flus.fr/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html"/>
+                    <published>{$published_at_old->format(DATE_ATOM)}</published>
+                    <updated>2021-03-30T11:26:00+02:00</updated>
+                    <content type="html"></content>
+                </entry>
+                <entry>
+                    <title>Bilan 2021</title>
+                    <id>urn:uuid:d4281ca0-f103-529b-9a47-adee05477c31</id>
+                    <author><name>Marien</name></author>
+                    <link href="https://flus.fr/carnet/bilan-2021.html" rel="alternate" type="text/html" />
+                    <published>{$published_at_older->format(DATE_ATOM)}</published>
+                    <updated>2022-01-05T17:30:00+01:00</updated>
+                    <content type="html"></content>
+                </entry>
+            </feed>
+            TEXT);
         $feeds_sync_job = new FeedsSync();
 
         $feeds_sync_job->perform();
@@ -975,31 +924,27 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
-        $hash = \SpiderBits\Cache::hash($feed_url);
-        $raw_response = <<<XML
-        HTTP/2 200 OK
-        Content-Type: application/xml
+        $this->cacheHttpResponse($feed_url, <<<TEXT
+            HTTP/2 200 OK
+            Content-Type: application/xml
 
-        <?xml version='1.0' encoding='UTF-8'?>
-        <feed xmlns="http://www.w3.org/2005/Atom">
-            <title>carnet de flus</title>
-            <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
-            <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
-            <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
-            <updated>2021-03-30T11:26:00+02:00</updated>
-            <entry>
-                <title>Les nouveautés de mars 2021</title>
-                <link href="https://flus.fr/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html" />
-                <author><name>Marien</name></author>
-                <published>2021-03-30T11:26:00+02:00</published>
+            <?xml version='1.0' encoding='UTF-8'?>
+            <feed xmlns="http://www.w3.org/2005/Atom">
+                <title>carnet de flus</title>
+                <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
+                <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
+                <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
                 <updated>2021-03-30T11:26:00+02:00</updated>
-                <content type="html"></content>
-            </entry>
-        </feed>
-        XML;
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $cache->save($hash, $raw_response);
+                <entry>
+                    <title>Les nouveautés de mars 2021</title>
+                    <link href="https://flus.fr/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html" />
+                    <author><name>Marien</name></author>
+                    <published>2021-03-30T11:26:00+02:00</published>
+                    <updated>2021-03-30T11:26:00+02:00</updated>
+                    <content type="html"></content>
+                </entry>
+            </feed>
+            TEXT);
         $feeds_sync_job = new FeedsSync();
 
         $feeds_sync_job->perform();
@@ -1040,32 +985,28 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
-        $hash = \SpiderBits\Cache::hash($feed_url);
-        $raw_response = <<<XML
-        HTTP/2 200 OK
-        Content-Type: application/xml
+        $this->cacheHttpResponse($feed_url, <<<TEXT
+            HTTP/2 200 OK
+            Content-Type: application/xml
 
-        <?xml version='1.0' encoding='UTF-8'?>
-        <feed xmlns="http://www.w3.org/2005/Atom">
-            <title>carnet de flus</title>
-            <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
-            <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
-            <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
-            <updated>2021-03-30T11:26:00+02:00</updated>
-            <entry>
-                <title>Les nouveautés de mars 2021</title>
-                <link href="{$new_url}" rel="alternate" type="text/html" />
-                <id>{$entry_id}</id>
-                <author><name>Marien</name></author>
-                <published>2021-03-30T11:26:00+02:00</published>
+            <?xml version='1.0' encoding='UTF-8'?>
+            <feed xmlns="http://www.w3.org/2005/Atom">
+                <title>carnet de flus</title>
+                <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
+                <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
+                <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
                 <updated>2021-03-30T11:26:00+02:00</updated>
-                <content type="html"></content>
-            </entry>
-        </feed>
-        XML;
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $cache->save($hash, $raw_response);
+                <entry>
+                    <title>Les nouveautés de mars 2021</title>
+                    <link href="{$new_url}" rel="alternate" type="text/html" />
+                    <id>{$entry_id}</id>
+                    <author><name>Marien</name></author>
+                    <published>2021-03-30T11:26:00+02:00</published>
+                    <updated>2021-03-30T11:26:00+02:00</updated>
+                    <content type="html"></content>
+                </entry>
+            </feed>
+            TEXT);
         $feeds_sync_job = new FeedsSync();
 
         $feeds_sync_job->perform();
@@ -1094,33 +1035,29 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
-        $hash = \SpiderBits\Cache::hash($feed_url);
-        $raw_response = <<<XML
-        HTTP/2 200 OK
-        Content-Type: application/xml
+        $this->cacheHttpResponse($feed_url, <<<TEXT
+            HTTP/2 200 OK
+            Content-Type: application/xml
 
-        <?xml version='1.0' encoding='UTF-8'?>
-        <feed xmlns="http://www.w3.org/2005/Atom">
-            <title>carnet de flus</title>
-            <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
-            <link href="/carnet/" rel="alternate" type="text/html" />
-            <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
-            <updated>2021-03-30T11:26:00+02:00</updated>
-            <entry>
-                <title>Les nouveautés de mars 2021</title>
-                <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
-                <link href="/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html" />
-                <author><name>Marien</name></author>
-                <published>2021-03-30T11:26:00+02:00</published>
+            <?xml version='1.0' encoding='UTF-8'?>
+            <feed xmlns="http://www.w3.org/2005/Atom">
+                <title>carnet de flus</title>
+                <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
+                <link href="/carnet/" rel="alternate" type="text/html" />
+                <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
                 <updated>2021-03-30T11:26:00+02:00</updated>
-                <content type="html"></content>
-            </entry>
-        </feed>
+                <entry>
+                    <title>Les nouveautés de mars 2021</title>
+                    <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
+                    <link href="/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html" />
+                    <author><name>Marien</name></author>
+                    <published>2021-03-30T11:26:00+02:00</published>
+                    <updated>2021-03-30T11:26:00+02:00</updated>
+                    <content type="html"></content>
+                </entry>
+            </feed>
 
-        XML;
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $cache->save($hash, $raw_response);
+            TEXT);
         $feeds_sync_job = new FeedsSync();
 
         $feeds_sync_job->perform();
@@ -1146,32 +1083,28 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
             'user_id' => $user->id,
         ]);
-        $hash = \SpiderBits\Cache::hash($feed_url);
-        $raw_response = <<<XML
-        HTTP/2 200 OK
-        Content-Type: application/xml
+        $this->cacheHttpResponse($feed_url, <<<TEXT
+            HTTP/2 200 OK
+            Content-Type: application/xml
 
-        <?xml version='1.0' encoding='UTF-8'?>
-        <feed xmlns="http://www.w3.org/2005/Atom">
-            <title>carnet de flus</title>
-            <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
-            <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
-            <updated>2021-03-30T11:26:00+02:00</updated>
-            <entry>
-                <title>Les nouveautés de mars 2021</title>
-                <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
-                <link href="https://flus.fr/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html" />
-                <author><name>Marien</name></author>
-                <published>2021-03-30T11:26:00+02:00</published>
+            <?xml version='1.0' encoding='UTF-8'?>
+            <feed xmlns="http://www.w3.org/2005/Atom">
+                <title>carnet de flus</title>
+                <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
+                <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
                 <updated>2021-03-30T11:26:00+02:00</updated>
-                <content type="html"></content>
-            </entry>
-        </feed>
+                <entry>
+                    <title>Les nouveautés de mars 2021</title>
+                    <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
+                    <link href="https://flus.fr/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html" />
+                    <author><name>Marien</name></author>
+                    <published>2021-03-30T11:26:00+02:00</published>
+                    <updated>2021-03-30T11:26:00+02:00</updated>
+                    <content type="html"></content>
+                </entry>
+            </feed>
 
-        XML;
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $cache->save($hash, $raw_response);
+            TEXT);
         $feeds_sync_job = new FeedsSync();
 
         $feeds_sync_job->perform();
@@ -1204,24 +1137,20 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
-        $hash = \SpiderBits\Cache::hash($feed_url);
-        $raw_response = <<<XML
-        HTTP/2 200 OK
-        Content-Type: application/xml
+        $this->cacheHttpResponse($feed_url, <<<TEXT
+            HTTP/2 200 OK
+            Content-Type: application/xml
 
-        <?xml version='1.0' encoding='UTF-8'?>
-        <feed xmlns="http://www.w3.org/2005/Atom">
-            <title>{$title}</title>
-            <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
-            <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
-            <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
-            <updated>2021-03-30T11:26:00+02:00</updated>
-        </feed>
+            <?xml version='1.0' encoding='UTF-8'?>
+            <feed xmlns="http://www.w3.org/2005/Atom">
+                <title>{$title}</title>
+                <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
+                <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
+                <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
+                <updated>2021-03-30T11:26:00+02:00</updated>
+            </feed>
 
-        XML;
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $cache->save($hash, $raw_response);
+            TEXT);
         $feeds_sync_job = new FeedsSync();
 
         $feeds_sync_job->perform();
@@ -1246,41 +1175,37 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
-        $hash = \SpiderBits\Cache::hash($feed_url);
-        $raw_response = <<<XML
-        HTTP/2 200 OK
-        Content-Type: application/xml
+        $this->cacheHttpResponse($feed_url, <<<TEXT
+            HTTP/2 200 OK
+            Content-Type: application/xml
 
-        <?xml version='1.0' encoding='UTF-8'?>
-        <feed xmlns="http://www.w3.org/2005/Atom">
-            <title>Carnet de Flus</title>
-            <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
-            <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
-            <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
-            <updated>2021-03-30T11:26:00+02:00</updated>
-            <entry>
-                <title>Les nouveautés de mars 2021</title>
-                <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
-                <author><name>Marien</name></author>
-                <link href="https://flus.fr/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html" />
-                <link href="https://flus.fr/carnet/nouveautes-mars-2021.html#comments" rel="replies" type="text/html" />
-                <published>2021-03-30T11:26:00+02:00</published>
+            <?xml version='1.0' encoding='UTF-8'?>
+            <feed xmlns="http://www.w3.org/2005/Atom">
+                <title>Carnet de Flus</title>
+                <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
+                <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
+                <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
                 <updated>2021-03-30T11:26:00+02:00</updated>
-                <content type="html"></content>
-            </entry>
-        </feed>
+                <entry>
+                    <title>Les nouveautés de mars 2021</title>
+                    <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
+                    <author><name>Marien</name></author>
+                    <link href="https://flus.fr/carnet/nouveautes-2021.html" rel="alternate" type="text/html" />
+                    <link href="https://flus.fr/carnet/nouveautes-2021.html#comments" rel="replies" type="text/html" />
+                    <published>2021-03-30T11:26:00+02:00</published>
+                    <updated>2021-03-30T11:26:00+02:00</updated>
+                    <content type="html"></content>
+                </entry>
+            </feed>
 
-        XML;
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $cache->save($hash, $raw_response);
+            TEXT);
         $feeds_sync_job = new FeedsSync();
 
         $feeds_sync_job->perform();
 
         $collection = $collection->reload();
         $link = $collection->links()[0];
-        $this->assertSame('https://flus.fr/carnet/nouveautes-mars-2021.html#comments', $link->url_replies);
+        $this->assertSame('https://flus.fr/carnet/nouveautes-2021.html#comments', $link->url_replies);
     }
 
     public function testPerformDoesNotFetchFeedIfLockedDuringLastHour(): void
@@ -1312,32 +1237,28 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
             'user_id' => $user->id,
         ]);
-        $hash = \SpiderBits\Cache::hash($feed_url);
-        $raw_response = <<<XML
-        HTTP/2 200 OK
-        Content-Type: application/xml
+        $this->cacheHttpResponse($feed_url, <<<TEXT
+            HTTP/2 200 OK
+            Content-Type: application/xml
 
-        <?xml version='1.0' encoding='UTF-8'?>
-        <feed xmlns="http://www.w3.org/2005/Atom">
-            <title>{$name}</title>
-            <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
-            <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
-            <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
-            <updated>2021-03-30T11:26:00+02:00</updated>
-            <entry>
-                <title>{$title}</title>
-                <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
-                <author><name>Marien</name></author>
-                <link href="https://flus.fr/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html" />
-                <published>2021-03-30T11:26:00+02:00</published>
+            <?xml version='1.0' encoding='UTF-8'?>
+            <feed xmlns="http://www.w3.org/2005/Atom">
+                <title>{$name}</title>
+                <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
+                <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
+                <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
                 <updated>2021-03-30T11:26:00+02:00</updated>
-                <content type="html"></content>
-            </entry>
-        </feed>
-        XML;
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $cache->save($hash, $raw_response);
+                <entry>
+                    <title>{$title}</title>
+                    <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
+                    <author><name>Marien</name></author>
+                    <link href="https://flus.fr/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html" />
+                    <published>2021-03-30T11:26:00+02:00</published>
+                    <updated>2021-03-30T11:26:00+02:00</updated>
+                    <content type="html"></content>
+                </entry>
+            </feed>
+            TEXT);
         $feeds_sync_job = new FeedsSync();
 
         $feeds_sync_job->perform();
@@ -1377,32 +1298,28 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
-        $hash = \SpiderBits\Cache::hash($feed_url);
-        $raw_response = <<<XML
-        HTTP/2 200 OK
-        Content-Type: application/xml
+        $this->cacheHttpResponse($feed_url, <<<TEXT
+            HTTP/2 200 OK
+            Content-Type: application/xml
 
-        <?xml version='1.0' encoding='UTF-8'?>
-        <feed xmlns="http://www.w3.org/2005/Atom">
-            <title>{$expected_name}</title>
-            <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
-            <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
-            <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
-            <updated>2021-03-30T11:26:00+02:00</updated>
-            <entry>
-                <title>{$expected_title}</title>
-                <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
-                <author><name>Marien</name></author>
-                <link href="https://flus.fr/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html" />
-                <published>2021-03-30T11:26:00+02:00</published>
+            <?xml version='1.0' encoding='UTF-8'?>
+            <feed xmlns="http://www.w3.org/2005/Atom">
+                <title>{$expected_name}</title>
+                <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
+                <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
+                <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
                 <updated>2021-03-30T11:26:00+02:00</updated>
-                <content type="html"></content>
-            </entry>
-        </feed>
-        XML;
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $cache->save($hash, $raw_response);
+                <entry>
+                    <title>{$expected_title}</title>
+                    <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
+                    <author><name>Marien</name></author>
+                    <link href="https://flus.fr/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html" />
+                    <published>2021-03-30T11:26:00+02:00</published>
+                    <updated>2021-03-30T11:26:00+02:00</updated>
+                    <content type="html"></content>
+                </entry>
+            </feed>
+            TEXT);
         $feeds_sync_job = new FeedsSync();
 
         $feeds_sync_job->perform();
@@ -1443,16 +1360,12 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
-        $hash = \SpiderBits\Cache::hash($feed_url);
-        $raw_response = <<<XML
-        HTTP/2 200 OK
-        Content-Type: application/xml
+        $this->cacheHttpResponse($feed_url, <<<TEXT
+            HTTP/2 200 OK
+            Content-Type: application/xml
 
-        {$xml_feed}
-        XML;
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $cache->save($hash, $raw_response);
+            {$xml_feed}
+            TEXT);
         $feeds_sync_job = new FeedsSync();
 
         $feeds_sync_job->perform();
@@ -1481,12 +1394,8 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         $feeds_sync_job->perform();
 
-        $hash = \SpiderBits\Cache::hash($feed_url);
-        $cache_path = \App\Configuration::$application['cache_path'];
-        $cache = new \SpiderBits\Cache($cache_path);
-        $response_text = $cache->get($hash);
-        $this->assertIsString($response_text);
-        $response = \SpiderBits\Response::fromText($response_text);
+        $response = self::$http_cache->getResponse($feed_url);
+        $this->assertNotNull($response);
         $data = json_decode($response->data, true);
         $this->assertIsArray($data);
         $this->assertArrayHasKey('headers', $data);
