@@ -330,11 +330,11 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($to_be_fetched);
     }
 
-    public function testShouldBeFetchedAgainReturnsTrueIfInErrorAndCanRetry(): void
+    public function testShouldBeFetchedAgainReturnsTrueIfServerIsInErrorAndCanRetry(): void
     {
         $link = new models\Link('https://example.com', 'foo', true);
         $link->to_be_fetched = true;
-        $link->fetched_code = 404;
+        $link->fetched_code = 500;
         /** @var int */
         $fetched_count = $this->fake('numberBetween', 1, 5);
         $link->fetched_count = $fetched_count;
