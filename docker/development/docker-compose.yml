@@ -8,6 +8,7 @@ services:
         restart: unless-stopped
         volumes:
             - ../..:/var/www/html:z
+            - ./php-custom.ini:/usr/local/etc/php/conf.d/custom.ini:z
             - composer:/tmp
         environment:
             - SEED
@@ -29,6 +30,7 @@ services:
         command: php cli jobs watch
         volumes:
             - ../..:/var/www/html:z
+            - ./php-custom.ini:/usr/local/etc/php/conf.d/custom.ini:z
             - composer:/tmp
         depends_on:
             database:

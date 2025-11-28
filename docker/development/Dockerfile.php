@@ -27,4 +27,3 @@ RUN echo 'en_GB.UTF-8 UTF-8' >> /etc/locale.gen && \
 COPY --from=composer/composer /usr/bin/composer /usr/bin/composer
 
 COPY lite_php_browscap.ini $PHP_INI_DIR/browscap.ini
-COPY php-ext-browscap.ini $PHP_INI_DIR/conf.d/php-ext-browscap.ini

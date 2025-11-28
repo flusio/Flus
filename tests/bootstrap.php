@@ -6,6 +6,8 @@ assert($app_path !== false);
 
 include $app_path . '/vendor/autoload.php';
 
+date_default_timezone_set('UTC');
+
 \App\Configuration::load('test', $app_path);
 
 \Minz\Engine::startSession();
