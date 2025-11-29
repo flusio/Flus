@@ -430,17 +430,14 @@ class LinkTest extends \PHPUnit\Framework\TestCase
     {
         $link1 = LinkFactory::create([
             'id' => '42',
-            'to_be_fetched' => true,
             'fetched_at' => null,
         ]);
         $link2 = LinkFactory::create([
             'id' => '43',
-            'to_be_fetched' => true,
             'fetched_at' => null,
         ]);
         $link3 = LinkFactory::create([
             'id' => '44',
-            'to_be_fetched' => true,
             'fetched_at' => null,
         ]);
 

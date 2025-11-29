@@ -74,7 +74,6 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
-            'to_be_fetched' => true,
             'fetched_at' => null,
         ]);
         $links_fetcher_job = new LinksSync();
@@ -95,7 +94,6 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
-            'to_be_fetched' => true,
             'fetched_at' => null,
         ]);
         $links_fetcher_job = new LinksSync();
@@ -118,7 +116,6 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
-            'to_be_fetched' => true,
             'fetched_at' => null,
         ]);
         $links_fetcher_job = new LinksSync();
@@ -128,6 +125,31 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(self::$http_cache->hasItem($url));
     }
 
+    public function testPerformFetchesLinksAgainIfFetchedRetryAtIsBeforeNow(): void
+    {
+        $this->freeze();
+        $url = 'https://flus.fr/carnet/';
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
+        $fetched_count = 1;
+        $fetched_at = \Minz\Time::ago(1, 'hour');
+        $link = LinkFactory::create([
+            'url' => $url,
+            'title' => $url,
+            'fetched_at' => $fetched_at,
+            'fetched_count' => $fetched_count,
+            'fetched_retry_at' => \Minz\Time::ago(1, 'hour'),
+        ]);
+        $links_fetcher_job = new LinksSync();
+
+        $links_fetcher_job->perform();
+
+        $link = $link->reload();
+        $this->assertSame(200, $link->fetched_code);
+        $this->assertSame('Carnet de Flus', $link->title);
+        $this->assertEquals(\Minz\Time::now()->getTimestamp(), $link->fetched_at?->getTimestamp());
+        $this->assertSame($fetched_count + 1, $link->fetched_count);
+    }
+
     public function testPerformUsesCache(): void
     {
         $url = 'https://flus.fr/carnet/';
@@ -135,7 +157,6 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
-            'to_be_fetched' => true,
             'fetched_at' => null,
         ]);
         $links_fetcher_job = new LinksSync();
@@ -179,7 +200,6 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
-            'to_be_fetched' => true,
             'fetched_at' => null,
         ]);
         $links_fetcher_job = new LinksSync();
@@ -192,27 +212,19 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($link->fetched_at);
     }
 
-    public function testPerformDoesNotFetchLinksIfFetchedAtIsWithinIntervalToWait(): void
+    public function testPerformDoesNotFetchLinksIfFetchedRetryAtIsAfterNow(): void
     {
+        $this->freeze();
         $url = 'https://flus.fr/carnet/';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
-        /** @var \DateTimeImmutable */
-        $now = $this->fake('dateTime');
-        $this->freeze($now);
-        /** @var int */
-        $fetched_count = $this->fake('numberBetween', 1, 25);
-        /** @var int */
-        $seconds = $this->fake('numberBetween', 0, 4 * 60);
-        $interval_to_wait = 5 + pow($fetched_count, 4);
-        /** @var int */
-        $seconds = $this->fake('numberBetween', 0, $interval_to_wait);
-        $fetched_at = \Minz\Time::ago($seconds, 'seconds');
+        $fetched_count = 1;
+        $fetched_at = \Minz\Time::ago(1, 'hour');
         $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
-            'to_be_fetched' => true,
             'fetched_at' => $fetched_at,
             'fetched_count' => $fetched_count,
+            'fetched_retry_at' => \Minz\Time::fromNow(1, 'hour'),
         ]);
         $links_fetcher_job = new LinksSync();
 
@@ -220,7 +232,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
 
         $link = $link->reload();
         $this->assertSame($url, $link->title);
-        $this->assertEquals($fetched_at, $link->fetched_at);
+        $this->assertEquals($fetched_at->getTimestamp(), $link->fetched_at?->getTimestamp());
         $this->assertSame($fetched_count, $link->fetched_count);
     }
 
@@ -237,7 +249,6 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
-            'to_be_fetched' => true,
             'fetched_at' => null,
         ]);
         $lock = LockFactory::create([
@@ -269,7 +280,6 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'url' => $url,
             'title' => $url,
-            'to_be_fetched' => true,
             'fetched_at' => null,
         ]);
         $lock = LockFactory::create([

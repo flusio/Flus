@@ -17,6 +17,7 @@ class Link
     use dao\Link;
     use Database\Recordable;
     use Database\Resource;
+    use Fetchable;
     use Validable;
 
     #[Database\Column]
@@ -59,21 +60,6 @@ class Link
 
     #[Database\Column]
     public ?string $image_filename = null;
-
-    #[Database\Column]
-    public bool $to_be_fetched = true;
-
-    #[Database\Column]
-    public ?\DateTimeImmutable $fetched_at = null;
-
-    #[Database\Column]
-    public int $fetched_code = 0;
-
-    #[Database\Column]
-    public ?string $fetched_error = null;
-
-    #[Database\Column]
-    public int $fetched_count = 0;
 
     #[Database\Column]
     public string $user_id;
@@ -169,6 +155,7 @@ class Link
         $link_copied->fetched_at = $link->fetched_at;
         $link_copied->fetched_code = $link->fetched_code;
         $link_copied->fetched_count = $link->fetched_count;
+        $link_copied->fetched_retry_at = $link->fetched_retry_at;
         $link_copied->source_type = '';
 
         return $link_copied;

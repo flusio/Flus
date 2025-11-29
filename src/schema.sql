@@ -164,6 +164,7 @@ CREATE TABLE links (
     fetched_code INTEGER NOT NULL DEFAULT 0,
     fetched_error TEXT,
     fetched_count INTEGER NOT NULL DEFAULT 0,
+    fetched_retry_at TIMESTAMPTZ DEFAULT NULL,
 
     feed_entry_id TEXT,
 
@@ -181,6 +182,7 @@ CREATE INDEX idx_links_user_id_url_hash ON links USING btree(user_id, url_hash);
 CREATE INDEX idx_links_url_hash ON links USING hash(url_hash);
 CREATE INDEX idx_links_url ON links USING gin (url gin_trgm_ops);
 CREATE INDEX idx_links_to_be_fetched ON links(to_be_fetched) WHERE to_be_fetched = true;
+CREATE INDEX idx_links_fetched_retry_at ON links(fetched_retry_at) WHERE fetched_retry_at IS NOT NULL;
 CREATE INDEX idx_links_image_filename ON links(image_filename) WHERE image_filename IS NOT NULL;
 CREATE INDEX idx_links_search ON links USING GIN (search_index);
 CREATE INDEX idx_links_tags ON links USING GIN (tags);

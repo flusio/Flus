@@ -15,9 +15,6 @@ use App\utils;
  */
 class LinkFetcher
 {
-    public const ERROR_RATE_LIMIT = -1;
-    public const ERROR_UNKNOWN = 0;
-
     private http\Fetcher $fetcher;
 
     private bool $force_sync;
@@ -46,28 +43,38 @@ class LinkFetcher
      */
     public function fetch(models\Link $link): void
     {
-        $info = $this->fetchUrl($link->url);
+        try {
+            $info = $this->fetchUrl($link->url, $link->fetched_count);
+        } catch (http\RateLimitError $e) {
+            // In case of a rate limit error, try to fetch it again in the next
+            // few minutes. Don't call $link->fetch() as we didn't even try to
+            // get a result.
+            $link->fetched_error = 'Reached rate limit';
+            $link->fetched_retry_at = \Minz\Time::fromNow(rand(1, 5), 'minutes');
+            $link->save();
 
-        if ($info['status'] === self::ERROR_RATE_LIMIT) {
-            // In case of a rate limit error, skip the link so it can be
-            // fetched later.
+            return;
+        } catch (http\UnexpectedHttpError $e) {
+            $link->fetch(
+                code: 0,
+                error: "Unexpected HTTP error: {$e->getMessage()}",
+                retry_after: \Minz\Time::fromNow(rand(15, 60), 'minutes'),
+            );
+            $link->save();
+
             return;
         }
 
-        $link->fetched_at = \Minz\Time::now();
-        $link->fetched_code = $info['status'];
-        $link->fetched_error = null;
-        $link->fetched_count = $link->fetched_count + 1;
-        if (isset($info['error'])) {
-            $link->fetched_error = $info['error'];
-        }
-
-        $link->to_be_fetched = self::shouldBeFetchedAgain($link);
+        $link->fetch(
+            code: $info['status'],
+            error: $info['error'],
+            retry_after: $info['retry_after'],
+        );
 
         // we set the title only if it wasn't changed yet
         $title_never_changed = $link->title === $link->url;
         if (
-            isset($info['title']) &&
+            $info['title'] !== null &&
             ($this->force_sync || $title_never_changed)
         ) {
             $link->title = $info['title'];
@@ -75,7 +82,7 @@ class LinkFetcher
 
         $reading_never_changed = $link->reading_time <= 0;
         if (
-            isset($info['reading_time']) &&
+            $info['reading_time'] !== null &&
             ($this->force_sync || $reading_never_changed)
         ) {
             $link->reading_time = $info['reading_time'];
@@ -83,7 +90,7 @@ class LinkFetcher
 
         $illustration_never_set = empty($link->image_filename);
         if (
-            !empty($info['url_illustration']) &&
+            $info['url_illustration'] !== null &&
             ($this->force_sync || $illustration_never_set)
         ) {
             $image_service = new Image();
@@ -91,7 +98,7 @@ class LinkFetcher
             $link->image_filename = $image_filename;
         }
 
-        if (!empty($info['url_feeds'])) {
+        if ($info['url_feeds']) {
             $link->url_feeds = $info['url_feeds'];
         } elseif ($this->isYoutube($link->url)) {
             $link->url_feeds = $this->urlToYoutubeFeeds($link->url);
@@ -103,39 +110,38 @@ class LinkFetcher
     /**
      * Fetch URL content and return information about the page
      *
-     * @throws \DomainException if $url is empty
+     * @throws \DomainException
+     *     Raised if the $url is empty.
+     * @throws http\RateLimitError
+     *     Raised if the URL can't be fetched because of rate limiting.
+     * @throws http\UnexpectedHttpError
+     *     Raised if fetching the URL failed for an unknown reason.
      *
      * @return array{
      *     'status': int,
-     *     'error'?: string,
-     *     'title'?: string,
-     *     'reading_time'?: int,
-     *     'url_illustration'?: string,
-     *     'url_feeds'?: string[],
+     *     'retry_after': \DateTimeImmutable,
+     *     'error': ?string,
+     *     'title': ?string,
+     *     'reading_time': ?int,
+     *     'url_illustration': ?string,
+     *     'url_feeds': string[],
      * }
      */
-    public function fetchUrl(string $url): array
+    public function fetchUrl(string $url, int $fetched_count): array
     {
         if (empty($url)) {
             throw new \DomainException('URL cannot be empty');
         }
 
-        try {
-            $response = $this->fetcher->get($url, type: 'link');
-        } catch (http\RateLimitError $e) {
-            return [
-                'status' => self::ERROR_RATE_LIMIT,
-                'error' => 'Reached rate limit',
-            ];
-        } catch (http\UnexpectedHttpError $e) {
-            return [
-                'status' => self::ERROR_UNKNOWN,
-                'error' => $e->getMessage(),
-            ];
-        }
+        $response = $this->fetcher->get($url, type: 'link');
 
         $info = [
             'status' => $response->status,
+            'retry_after' => $response->getRetryAfter(),
+            'error' => null,
+            'title' => null,
+            'reading_time' => null,
+            'url_illustration' => null,
             'url_feeds' => [],
         ];
 
@@ -207,40 +213,6 @@ class LinkFetcher
         }
 
         return $info;
-    }
-
-    public static function shouldBeFetchedAgain(models\Link $link): bool
-    {
-        if (!$link->to_be_fetched) {
-            return false;
-        }
-
-        $never_fetched = $link->fetched_at === null;
-
-        if ($never_fetched) {
-            return true;
-        }
-
-        $retry_codes = [
-            408, // Request Time-out
-            425, // Too Early
-            429, // Too Many Requests
-            500, // Internal Server Error
-            503, // Service Unavailable
-            504, // Gateway Time-out
-            509, // Bandwidth Limit Exceeded (non-standard - Apache)
-            520, // Unknown Error (non-standard - Cloudflare)
-            521, // Web Server Is Down (non-standard - Cloudflare)
-            522, // Connection Timed Out (non-standard - Cloudflare)
-            523, // Origin Is Unreachable (non-standard - Cloudflare)
-            524, // A Timeout Occurred (non-standard - Cloudflare)
-        ];
-
-        $server_in_error = in_array($link->fetched_code, $retry_codes);
-        $reached_max_retries = $link->fetched_count > 5;
-        $should_retry = $server_in_error && !$reached_max_retries;
-
-        return $should_retry;
     }
 
     /**
