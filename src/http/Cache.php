@@ -85,9 +85,15 @@ class Cache extends AppCache\FileCache
             throw new CacheError("Response to {$url} cannot be compressed.");
         }
 
+        $expires_at = $response->getRetryAfter(
+            $this->default_duration,
+            $this->min_duration,
+            $this->max_duration,
+        );
+
         $cache_item = $this->getItem($url);
         $cache_item->set($response_compressed);
-        $cache_item->expiresAt($response->getRetryAfter());
+        $cache_item->expiresAt($expires_at);
         $result = $this->save($cache_item);
 
         if ($result === false) {
