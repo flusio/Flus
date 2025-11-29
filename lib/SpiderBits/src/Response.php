@@ -230,4 +230,112 @@ class Response
         $charset = trim($charset, '"');
         return $charset;
     }
+
+    /**
+     * Returns the date after which the response is considered as stale.
+     *
+     * The expiration duration is calculated based on HTTP headers of the
+     * response.
+     *
+     * @see https://httpwg.org/specs/rfc9111.html
+     */
+    public function getRetryAfter(
+        int $default_duration = 1 * 60 * 60,
+        int $min_duration = 1 * 60 * 15,
+        int $max_duration = 1 * 60 * 60 * 24 * 7,
+    ): \DateTimeImmutable {
+        $age = $this->header('Age', '0');
+        $expires = $this->header('Expires', '');
+        $retry_after = $this->header('Retry-After', '0');
+
+        $cache_control_directives = $this->getCacheControlDirectives();
+
+        $duration = $default_duration;
+
+        if (isset($cache_control_directives['max-age'])) {
+            $max_age = (int) $cache_control_directives['max-age'];
+            $age = (int) $age;
+            $duration = $max_age - $age;
+        } elseif ($expires) {
+            $expired_at = self::parseHttpDate($expires);
+
+            if ($expired_at === null) {
+                $expired_at = \Minz\Time::now();
+            }
+
+            $expires_timestamp = $expired_at->getTimestamp();
+            $now_timestamp = \Minz\Time::now()->getTimestamp();
+
+            $duration = $expires_timestamp - $now_timestamp;
+        } elseif ($this->status === 429) {
+            $retry_at = self::parseHttpDate($retry_after);
+
+            if ($retry_at === null) {
+                $duration = (int) $retry_after;
+            } else {
+                $retry_at_timestamp = $retry_at->getTimestamp();
+                $now_timestamp = \Minz\Time::now()->getTimestamp();
+
+                $duration = $retry_at_timestamp - $now_timestamp;
+            }
+        }
+
+        $duration = max($min_duration, $duration);
+        $duration = min($max_duration, $duration);
+        return \Minz\Time::fromNow($duration, 'seconds');
+    }
+
+    /**
+     * Parses the "Cache-Control" HTTP header and returns an array with the
+     * different cache directives.
+     *
+     * @return array<string, string|true>
+     */
+    public function getCacheControlDirectives(): array
+    {
+        $directives = [];
+
+        $cache_control = $this->header('Cache-Control', '');
+        $cache_control_parts = explode(',', $cache_control);
+
+        foreach ($cache_control_parts as $part) {
+            $part = trim($part);
+
+            if (str_contains($part, '=')) {
+                list($directive, $value) = explode('=', $part, 2);
+            } else {
+                $directive = $part;
+                $value = true;
+            }
+
+            $directive = strtolower($directive);
+
+            $directives[$directive] = $value;
+        }
+
+        return $directives;
+    }
+
+    /**
+     * Parses an HTTP date header.
+     */
+    public static function parseHttpDate(string $expires): ?\DateTimeImmutable
+    {
+        $formats = [
+            \DateTimeInterface::RFC7231,
+            \DateTimeInterface::RFC850,
+            // Ignore the ANSI C's asctime() format as obsolete and more
+            // difficult to parse.
+        ];
+
+        foreach ($formats as $format) {
+            $expired_at = \DateTimeImmutable::createFromFormat($format, $expires);
+
+            if ($expired_at) {
+                return $expired_at;
+            }
+        }
+
+        return null;
+    }
 }

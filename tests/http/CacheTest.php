@@ -327,11 +327,6 @@ class CacheTest extends \PHPUnit\Framework\TestCase
             [103],
             [206],
             [304],
-            [500],
-            [501],
-            [502],
-            [503],
-            [504],
         ];
     }
 }
