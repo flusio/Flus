@@ -1,5 +1,18 @@
 # Changelog of Flus
 
+## 2025-11-29 - v2.1.1
+
+### Maintenance
+
+- Refactor the HTTP cache system ([360582b1](https://github.com/flusio/Flus/commit/360582b1), [cd62fbfa](https://github.com/flusio/Flus/commit/cd62fbfa), [dfed8528](https://github.com/flusio/Flus/commit/dfed8528))
+- Refetch links in error only on specific HTTP codes ([409ab50a](https://github.com/flusio/Flus/commit/409ab50a), [5fc6f75a](https://github.com/flusio/Flus/commit/5fc6f75a))
+- Refetch links by considering Response lifetime ([4c83827b](https://github.com/flusio/Flus/commit/4c83827b))
+
+### Developers
+
+- Provide a generic Cache system ([9b766fa7](https://github.com/flusio/Flus/commit/9b766fa7))
+- Set the default timezone to Europe/Paris in development ([f7c0a1e8](https://github.com/flusio/Flus/commit/f7c0a1e8))
+
 ## 2025-11-25 - v2.1.0
 
 ### Migration notes
