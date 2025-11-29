@@ -221,7 +221,22 @@ class LinkFetcher
             return true;
         }
 
-        $server_in_error = $link->fetched_code >= 500;
+        $retry_codes = [
+            408, // Request Time-out
+            425, // Too Early
+            429, // Too Many Requests
+            500, // Internal Server Error
+            503, // Service Unavailable
+            504, // Gateway Time-out
+            509, // Bandwidth Limit Exceeded (non-standard - Apache)
+            520, // Unknown Error (non-standard - Cloudflare)
+            521, // Web Server Is Down (non-standard - Cloudflare)
+            522, // Connection Timed Out (non-standard - Cloudflare)
+            523, // Origin Is Unreachable (non-standard - Cloudflare)
+            524, // A Timeout Occurred (non-standard - Cloudflare)
+        ];
+
+        $server_in_error = in_array($link->fetched_code, $retry_codes);
         $reached_max_retries = $link->fetched_count > 5;
         $should_retry = $server_in_error && !$reached_max_retries;
 
