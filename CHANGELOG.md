@@ -1,5 +1,11 @@
 # Changelog of Flus
 
+## 2025-11-30 - v2.1.2
+
+### Maintenance
+
+- Add missing links indexes on fetched columns ([52741d13](https://github.com/flusio/Flus/commit/52741d13))
+
 ## 2025-11-29 - v2.1.1
 
 ### Maintenance
