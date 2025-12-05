@@ -33,9 +33,6 @@ class Group
         max: self::NAME_MAX_LENGTH,
         message: new Translatable('The name must be less than {max} characters.'),
     )]
-    #[Validable\Unique(
-        message: new Translatable('You already have a group with this name.'),
-    )]
     public string $name;
 
     #[Database\Column]
@@ -46,5 +43,22 @@ class Group
         $this->id = \Minz\Random::timebased();
         $this->name = trim($name);
         $this->user_id = $user_id;
+    }
+
+    #[Validable\Check]
+    public function checkNameIsUnique(): void
+    {
+        $existing_group = self::findBy([
+            'name' => $this->name,
+            'user_id' => $this->user_id,
+        ]);
+
+        if ($existing_group && $existing_group->id !== $this->id) {
+            $this->addError(
+                'name',
+                'unique',
+                _('You already have a group with this name.'),
+            );
+        }
     }
 }
