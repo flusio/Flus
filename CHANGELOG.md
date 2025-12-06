@@ -1,5 +1,15 @@
 # Changelog of Flus
 
+## 2025-12-06 - v2.1.3
+
+### Bug fixes
+
+- Fix check of the group name uniqueness ([7b75a95f](https://github.com/flusio/Flus/commit/7b75a95f))
+
+### CLI
+
+- Provide a basic command to import a wallabag export ([90d57f8d](https://github.com/flusio/Flus/commit/90d57f8d))
+
 ## 2025-11-30 - v2.1.2
 
 ### Maintenance
