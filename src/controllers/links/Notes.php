@@ -77,7 +77,9 @@ class Notes extends BaseController
 
         if ($form->shouldShareOnMastodon()) {
             $share_on_mastodon_job = new jobs\ShareOnMastodon();
-            $share_on_mastodon_job->performAsap($user->id, $link->id, $note->id);
+            $mastodon_status = $user->mastodonAccount()->buildMastodonStatus($link, $note);
+            $mastodon_status->save();
+            $share_on_mastodon_job->performAsap($mastodon_status->id);
         }
 
         return Response::redirect('link', ['id' => $link->id]);

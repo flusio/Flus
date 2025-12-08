@@ -204,95 +204,33 @@ class Mastodon
     /**
      * Post a status to the given account.
      */
-    public function postStatus(
-        models\MastodonAccount $account,
-        models\Link $link,
-        ?models\Note $note
-    ): bool {
-        $status = self::formatStatus($link, $note, $account->options);
-
-        if ($note) {
-            $idempotency_key = $note->tagUri();
-        } else {
-            $idempotency_key = $link->tagUri();
-        }
+    public function postStatus(models\MastodonStatus $status): bool
+    {
+        $account = $status->account();
 
         $endpoint = $this->server->host . '/api/v1/statuses';
         $response = $this->http->post($endpoint, [
             'visibility' => 'public',
-            'status' => $status,
+            'status' => $status->content,
         ], [
             'headers' => [
                 'Authorization' => "Bearer {$account->access_token}",
-                'Idempotency-Key' => $idempotency_key,
+                'Idempotency-Key' => $status->id,
             ]
         ]);
 
-        return $response->success;
-    }
+        $success = $response->success;
 
-    /**
-     * @param Options $options
-     */
-    public static function formatStatus(
-        models\Link $link,
-        ?models\Note $note,
-        array $options,
-    ): string {
-        $max_chars = 500;
-        $count_chars = 0;
+        if ($success) {
+            $json = json_decode($response->data, associative: true);
 
-        $status = self::truncateString($link->title, 250);
-        $count_chars += mb_strlen($status);
-
-        $status .= "\n\n" . $link->url;
-        // Mastodon always considers 23 characters for a URL (also, don’t
-        // forget the new line chars).
-        $count_chars += 2 + 23;
-
-        if (
-            $options['link_to_comment'] === 'always' ||
-            ($options['link_to_comment'] === 'auto' && $note)
-        ) {
-            $url_to_link = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
-            $status .= "\n" . $url_to_link;
-
-            if (\App\Configuration::$url_options['host'] === 'localhost') {
-                // Mastodon doesn't count localhost links as URLs
-                $count_chars += 1 + mb_strlen($url_to_link);
-            } else {
-                $count_chars += 1 + 23;
+            if (is_array($json) && is_string($json['id'] ?? '')) {
+                $status->status_id = $json['id'] ?? '';
             }
+            $status->posted_at = \Minz\Time::now();
+            $status->save();
         }
 
-        $post_scriptum = '';
-        if ($options['post_scriptum']) {
-            $post_scriptum = "\n\n" . $options['post_scriptum'];
-            $count_chars += 2 + mb_strlen($options['post_scriptum']);
-        }
-
-        if ($note) {
-            $content = self::truncateString($note->content, $max_chars - $count_chars - 2);
-            $status = $status . "\n\n" . $content;
-        }
-
-        $status .= $post_scriptum;
-
-        return $status;
-    }
-
-    /**
-     * Truncate a string to a maximum of characters.
-     * "…" is appended at the end of the string.
-     */
-    private static function truncateString(string $string, int $max_chars): string
-    {
-        $string_size = mb_strlen($string);
-
-        if ($string_size < $max_chars) {
-            return $string;
-        }
-
-        return trim(mb_substr($string, 0, $max_chars - 1)) . '…';
+        return $success;
     }
 }

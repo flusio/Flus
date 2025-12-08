@@ -268,3 +268,23 @@ CREATE TABLE mastodon_accounts (
     mastodon_server_id INT NOT NULL REFERENCES mastodon_servers ON DELETE CASCADE ON UPDATE CASCADE,
     user_id TEXT NOT NULL REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+CREATE TABLE mastodon_statuses (
+    id TEXT PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL,
+
+    content TEXT NOT NULL,
+    status_id TEXT NOT NULL,
+    posted_at TIMESTAMPTZ,
+
+    mastodon_account_id INT REFERENCES mastodon_accounts ON DELETE CASCADE ON UPDATE CASCADE,
+    reply_to_id TEXT REFERENCES mastodon_statuses ON DELETE CASCADE ON UPDATE CASCADE,
+    link_id TEXT REFERENCES links ON DELETE CASCADE ON UPDATE CASCADE,
+    note_id TEXT REFERENCES notes ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE INDEX idx_mastodon_statuses_posted_at ON mastodon_statuses(posted_at) WHERE posted_at IS NULL;
+CREATE INDEX idx_mastodon_statuses_mastodon_account_id ON mastodon_statuses(mastodon_account_id);
+CREATE INDEX idx_mastodon_statuses_reply_to_id ON mastodon_statuses(reply_to_id);
+CREATE INDEX idx_mastodon_statuses_link_id ON mastodon_statuses(link_id);
+CREATE INDEX idx_mastodon_statuses_note_id ON mastodon_statuses(note_id);

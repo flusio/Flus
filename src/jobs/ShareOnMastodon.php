@@ -13,37 +13,14 @@ use App\services;
  */
 class ShareOnMastodon extends \Minz\Job
 {
-    public function perform(string $user_id, string $link_id, ?string $note_id): void
+    public function perform(string $mastodon_status_id): void
     {
-        $mastodon_account = models\MastodonAccount::findBy([
-            'user_id' => $user_id,
-        ]);
+        $mastodon_status = models\MastodonStatus::require($mastodon_status_id);
 
-        if (!$mastodon_account) {
-            \Minz\Log::error("[ShareOnMastodon] User {$user_id} does not have a Mastodon account");
-            return;
-        }
-
-        $link = models\Link::find($link_id);
-
-        if (!$link) {
-            \Minz\Log::error("[ShareOnMastodon] Link {$link_id} does not exist (shared by user {$user_id})");
-            return;
-        }
-
-        $note = null;
-
-        if ($note_id) {
-            $note = models\Note::find($note_id);
-
-            if (!$note) {
-                \Minz\Log::error("[ShareOnMastodon] Note {$note_id} does not exist (shared by user {$user_id})");
-                return;
-            }
-        }
-
+        $mastodon_account = $mastodon_status->account();
         $mastodon_server = $mastodon_account->server();
         $mastodon_service = new services\Mastodon($mastodon_server);
-        $mastodon_service->postStatus($mastodon_account, $link, $note);
+
+        $mastodon_service->postStatus($mastodon_status);
     }
 }

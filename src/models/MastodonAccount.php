@@ -103,4 +103,12 @@ class MastodonAccount
     {
         return $this->access_token !== '';
     }
+
+    /**
+     * Return a MastodonStatus initialized for this account.
+     */
+    public function buildMastodonStatus(Link $link, ?Note $note): MastodonStatus
+    {
+        return new MastodonStatus($this, $link, $note);
+    }
 }

@@ -1,15 +1,14 @@
 <?php
 
-namespace App\services;
+namespace App\models;
 
-use App\models;
 use tests\factories\LinkFactory;
+use tests\factories\MastodonAccountFactory;
 use tests\factories\NoteFactory;
 
-class MastodonTest extends \PHPUnit\Framework\TestCase
+class MastodonStatusTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\InitializerHelper;
-    use \tests\FakerHelper;
 
     #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function initEngine(): void
@@ -18,7 +17,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         \Minz\Engine::init($router);
     }
 
-    public function testFormatStatus(): void
+    public function testDefaultContent(): void
     {
         $link = LinkFactory::create([
             'title' => 'My title',
@@ -31,8 +30,12 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
             'link_to_comment' => 'auto',
             'post_scriptum' => '#flus',
         ];
+        $account = MastodonAccountFactory::create([
+            'options' => $options,
+        ]);
+        $status = new MastodonStatus($account, $link, $note);
         $notes_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
-        $expected_status = <<<"TEXT"
+        $expected_content = <<<"TEXT"
             My title
 
             https://flus.fr
@@ -43,12 +46,10 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
             #flus
             TEXT;
 
-        $status = Mastodon::formatStatus($link, $note, $options);
-
-        $this->assertSame($expected_status, $status);
+        $this->assertSame($expected_content, $status->content);
     }
 
-    public function testFormatStatusWithNeverLinkToNotes(): void
+    public function testDefaultContentWithNeverLinkToNotes(): void
     {
         $link = LinkFactory::create([
             'title' => 'My title',
@@ -61,8 +62,12 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
             'link_to_comment' => 'never',
             'post_scriptum' => '#flus',
         ];
+        $account = MastodonAccountFactory::create([
+            'options' => $options,
+        ]);
+        $status = new MastodonStatus($account, $link, $note);
         $notes_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
-        $expected_status = <<<"TEXT"
+        $expected_content = <<<"TEXT"
             My title
 
             https://flus.fr
@@ -72,12 +77,10 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
             #flus
             TEXT;
 
-        $status = Mastodon::formatStatus($link, $note, $options);
-
-        $this->assertSame($expected_status, $status);
+        $this->assertSame($expected_content, $status->content);
     }
 
-    public function testFormatStatusWithNoNote(): void
+    public function testDefaultContentWithNoNote(): void
     {
         $link = LinkFactory::create([
             'title' => 'My title',
@@ -88,8 +91,12 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
             'link_to_comment' => 'auto',
             'post_scriptum' => '#flus',
         ];
+        $account = MastodonAccountFactory::create([
+            'options' => $options,
+        ]);
+        $status = new MastodonStatus($account, $link, $note);
         $notes_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
-        $expected_status = <<<"TEXT"
+        $expected_content = <<<"TEXT"
             My title
 
             https://flus.fr
@@ -97,12 +104,10 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
             #flus
             TEXT;
 
-        $status = Mastodon::formatStatus($link, $note, $options);
-
-        $this->assertSame($expected_status, $status);
+        $this->assertSame($expected_content, $status->content);
     }
 
-    public function testFormatStatusWithNoNoteAndAlwaysLinkToNote(): void
+    public function testDefaultContentWithNoNoteAndAlwaysLinkToNote(): void
     {
         $link = LinkFactory::create([
             'title' => 'My title',
@@ -113,8 +118,12 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
             'link_to_comment' => 'always',
             'post_scriptum' => '#flus',
         ];
+        $account = MastodonAccountFactory::create([
+            'options' => $options,
+        ]);
+        $status = new MastodonStatus($account, $link, $note);
         $notes_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
-        $expected_status = <<<"TEXT"
+        $expected_content = <<<"TEXT"
             My title
 
             https://flus.fr
@@ -123,12 +132,10 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
             #flus
             TEXT;
 
-        $status = Mastodon::formatStatus($link, $note, $options);
-
-        $this->assertSame($expected_status, $status);
+        $this->assertSame($expected_content, $status->content);
     }
 
-    public function testFormatStatusWithNoPostScriptum(): void
+    public function testDefaultContentWithNoPostScriptum(): void
     {
         $link = LinkFactory::create([
             'title' => 'My title',
@@ -141,8 +148,12 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
             'link_to_comment' => 'auto',
             'post_scriptum' => '',
         ];
+        $account = MastodonAccountFactory::create([
+            'options' => $options,
+        ]);
+        $status = new MastodonStatus($account, $link, $note);
         $notes_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
-        $expected_status = <<<"TEXT"
+        $expected_content = <<<"TEXT"
             My title
 
             https://flus.fr
@@ -151,12 +162,10 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
             This is great content!
             TEXT;
 
-        $status = Mastodon::formatStatus($link, $note, $options);
-
-        $this->assertSame($expected_status, $status);
+        $this->assertSame($expected_content, $status->content);
     }
 
-    public function testFormatStatusWithALongTitle(): void
+    public function testDefaultContentWithALongTitle(): void
     {
         $link = LinkFactory::create([
             'title' => str_repeat('a', 260),
@@ -169,9 +178,13 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
             'link_to_comment' => 'auto',
             'post_scriptum' => '#flus',
         ];
+        $account = MastodonAccountFactory::create([
+            'options' => $options,
+        ]);
+        $status = new MastodonStatus($account, $link, $note);
         $notes_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
         $expected_title = str_repeat('a', 249) . '…';
-        $expected_status = <<<"TEXT"
+        $expected_content = <<<"TEXT"
             {$expected_title}
 
             https://flus.fr
@@ -182,12 +195,10 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
             #flus
             TEXT;
 
-        $status = Mastodon::formatStatus($link, $note, $options);
-
-        $this->assertSame($expected_status, $status);
+        $this->assertSame($expected_content, $status->content);
     }
 
-    public function testFormatStatusWithALongNote(): void
+    public function testDefaultContentWithALongNote(): void
     {
         $link = LinkFactory::create([
             'title' => 'My title',
@@ -200,9 +211,13 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
             'link_to_comment' => 'auto',
             'post_scriptum' => '#flus',
         ];
+        $account = MastodonAccountFactory::create([
+            'options' => $options,
+        ]);
+        $status = new MastodonStatus($account, $link, $note);
         $notes_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
         $expected_note = str_repeat('a', 433) . '…';
-        $expected_status = <<<"TEXT"
+        $expected_content = <<<"TEXT"
             My title
 
             https://flus.fr
@@ -213,8 +228,6 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
             #flus
             TEXT;
 
-        $status = Mastodon::formatStatus($link, $note, $options);
-
-        $this->assertSame($expected_status, $status);
+        $this->assertSame($expected_content, $status->content);
     }
 }

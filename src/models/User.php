@@ -19,6 +19,7 @@ class User
     use dao\User;
     use Database\Recordable;
     use Database\Resource;
+    use utils\Memoizer;
     use Validable;
 
     public const USERNAME_MAX_LENGTH = 50;
@@ -791,6 +792,19 @@ class User
         return MastodonAccount::existsBy([
             'user_id' => $this->id,
         ]);
+    }
+
+    /**
+     * Return the Mastodon account of the user.
+     *
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the user has no account.
+     */
+    public function mastodonAccount(): MastodonAccount
+    {
+        return $this->memoize('mastodon_account', function (): MastodonAccount {
+            return MastodonAccount::requireBy(['user_id' => $this->id]);
+        });
     }
 
     /**
