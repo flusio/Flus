@@ -208,11 +208,19 @@ class Mastodon
     {
         $account = $status->account();
 
-        $endpoint = $this->server->host . '/api/v1/statuses';
-        $response = $this->http->post($endpoint, [
+        $parameters = [
             'visibility' => 'public',
             'status' => $status->content,
-        ], [
+        ];
+
+        $reply_to = $status->replyTo();
+        if ($reply_to) {
+            $parameters['in_reply_to_id'] = $reply_to->status_id;
+        }
+
+        $host = $this->server->host;
+        $endpoint = $host . '/api/v1/statuses';
+        $response = $this->http->post($endpoint, $parameters, [
             'headers' => [
                 'Authorization' => "Bearer {$account->access_token}",
                 'Idempotency-Key' => $status->id,
@@ -229,6 +237,11 @@ class Mastodon
             }
             $status->posted_at = \Minz\Time::now();
             $status->save();
+        } else {
+            $data = $response->utf8Data();
+            throw new MastodonError(
+                "Mastodon host {$host} returned error: {$data}"
+            );
         }
 
         return $success;

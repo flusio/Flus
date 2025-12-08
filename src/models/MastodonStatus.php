@@ -48,6 +48,7 @@ class MastodonStatus
         $this->setAccount($account);
         $this->setLink($link);
         $this->setNote($note);
+        $this->setReplyTo($this->lastLinkPostedStatus());
 
         $this->content = $this->buildDefaultContent();
     }
@@ -62,7 +63,7 @@ class MastodonStatus
     public function setAccount(MastodonAccount $account): void
     {
         $this->mastodon_account_id = $account->id;
-        $this->memoizer_cache['mastodon_account'] = $account;
+        $this->memoizeValue('mastodon_account', $account);
     }
 
     public function link(): Link
@@ -75,7 +76,7 @@ class MastodonStatus
     public function setLink(Link $link): void
     {
         $this->link_id = $link->id;
-        $this->memoizer_cache['link'] = $link;
+        $this->memoizeValue('link', $link);
     }
 
     public function note(): ?Note
@@ -92,7 +93,29 @@ class MastodonStatus
     public function setNote(?Note $note): void
     {
         $this->note_id = $note?->id;
-        $this->memoizer_cache['note'] = $note;
+        $this->memoizeValue('note', $note);
+    }
+
+    public function replyTo(): ?MastodonStatus
+    {
+        return $this->memoize('reply_to', function (): ?MastodonStatus {
+            if (!$this->reply_to_id) {
+                return null;
+            }
+
+            return self::require($this->reply_to_id);
+        });
+    }
+
+    public function setReplyTo(?MastodonStatus $status): void
+    {
+        $this->reply_to_id = $status?->id;
+        $this->memoizeValue('reply_to', $status);
+    }
+
+    public function isReply(): bool
+    {
+        return $this->reply_to_id !== null;
     }
 
     /**
@@ -106,27 +129,30 @@ class MastodonStatus
 
         $max_chars = 500;
         $count_chars = 0;
+        $content = '';
 
-        $content = self::truncateString($link->title, 250);
-        $count_chars += mb_strlen($content);
+        if (!$this->isReply()) {
+            $content = self::truncateString($link->title, 250);
+            $count_chars += mb_strlen($content);
 
-        $content .= "\n\n" . $link->url;
-        // Mastodon always considers 23 characters for a URL (also, don’t
-        // forget the new line chars).
-        $count_chars += 2 + 23;
+            $content .= "\n\n" . $link->url;
+            // Mastodon always considers 23 characters for a URL (also, don’t
+            // forget the new line chars).
+            $count_chars += 2 + 23;
 
-        if (
-            $options['link_to_comment'] === 'always' ||
-            ($options['link_to_comment'] === 'auto' && $note)
-        ) {
-            $url_to_link = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
-            $content .= "\n" . $url_to_link;
+            if (
+                $options['link_to_comment'] === 'always' ||
+                ($options['link_to_comment'] === 'auto' && $note)
+            ) {
+                $url_to_link = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
+                $content .= "\n" . $url_to_link;
 
-            if (\App\Configuration::$url_options['host'] === 'localhost') {
-                // Mastodon doesn't count localhost links as URLs
-                $count_chars += 1 + mb_strlen($url_to_link);
-            } else {
-                $count_chars += 1 + 23;
+                if (\App\Configuration::$url_options['host'] === 'localhost') {
+                    // Mastodon doesn't count localhost links as URLs
+                    $count_chars += 1 + mb_strlen($url_to_link);
+                } else {
+                    $count_chars += 1 + 23;
+                }
             }
         }
 
@@ -159,5 +185,36 @@ class MastodonStatus
         }
 
         return trim(mb_substr($string, 0, $max_chars - 1)) . '…';
+    }
+
+    /**
+     * Return the last posted status corresponding to the current status' link.
+     * This allows to fetch the reply status id.
+     */
+    public function lastLinkPostedStatus(): ?MastodonStatus
+    {
+        $sql = <<<SQL
+            SELECT * FROM mastodon_statuses ms
+
+            WHERE ms.link_id = :link_id
+            AND ms.posted_at IS NOT NULL
+            AND ms.status_id != ''
+
+            ORDER BY ms.posted_at DESC
+            LIMIT 1
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute([
+            ':link_id' => $this->link_id,
+        ]);
+
+        $result = $statement->fetch();
+        if (is_array($result)) {
+            return self::fromDatabaseRow($result);
+        } else {
+            return null;
+        }
     }
 }
