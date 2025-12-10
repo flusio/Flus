@@ -29,18 +29,3 @@
         <?= _('You can format the content in Markdown and use #tags.') ?>
     </p>
 </div>
-
-<?php if ($form->isMastodonEnabled()): ?>
-    <div class="form-group">
-        <input
-            type="checkbox"
-            id="share-on-mastodon"
-            name="share_on_mastodon"
-            <?= $form->share_on_mastodon ? 'checked' : '' ?>
-        />
-
-        <label class="label--checkbox" for="share-on-mastodon">
-            <?= _('Share on Mastodon') ?>
-        </label>
-    </div>
-<?php endif; ?>

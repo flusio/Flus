@@ -3,7 +3,6 @@
 namespace App\forms\notes;
 
 use App\forms\BaseForm;
-use App\forms\traits;
 use App\models;
 use Minz\Form;
 use Minz\Request;
@@ -16,8 +15,6 @@ use Minz\Request;
  */
 class NewNote extends BaseForm
 {
-    use traits\ShareOnMastodon;
-
     #[Form\Field(transform: 'trim')]
     public string $content = '';
 }

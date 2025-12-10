@@ -16,7 +16,6 @@ use Minz\Form;
 class EditLinkCollections extends BaseForm
 {
     use traits\CollectionsSelector;
-    use traits\ShareOnMastodon;
 
     #[Form\Field]
     public bool $is_hidden = false;

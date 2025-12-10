@@ -119,9 +119,7 @@ class Links extends BaseController
 
         $form = null;
         if ($user && auth\Access::can($user, 'update', $link)) {
-            $form = new forms\notes\NewNote(options: [
-                'enable_mastodon' => $user->isMastodonEnabled(),
-            ]);
+            $form = new forms\notes\NewNote();
         }
 
         return Response::ok('links/show.phtml', [

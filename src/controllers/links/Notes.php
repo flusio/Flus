@@ -5,7 +5,6 @@ namespace App\controllers\links;
 use App\auth;
 use App\controllers\BaseController;
 use App\forms;
-use App\jobs;
 use App\models;
 use Minz\Request;
 use Minz\Response;
@@ -57,9 +56,7 @@ class Notes extends BaseController
         auth\Access::require($user, 'update', $link);
 
         $note = $link->initNote();
-        $form = new forms\notes\NewNote(model: $note, options: [
-            'enable_mastodon' => $user->isMastodonEnabled(),
-        ]);
+        $form = new forms\notes\NewNote(model: $note);
 
         $form->handleRequest($request);
 
@@ -74,13 +71,6 @@ class Notes extends BaseController
         $note->save();
 
         $link->refreshTags();
-
-        if ($form->shouldShareOnMastodon()) {
-            $share_on_mastodon_job = new jobs\ShareOnMastodon();
-            $mastodon_status = $user->mastodonAccount()->buildMastodonStatus($link, $note);
-            $mastodon_status->save();
-            $share_on_mastodon_job->performAsap($mastodon_status->id);
-        }
 
         return Response::redirect('link', ['id' => $link->id]);
     }

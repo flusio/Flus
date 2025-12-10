@@ -5,7 +5,6 @@ namespace App\controllers\links;
 use App\auth;
 use App\controllers\BaseController;
 use App\forms;
-use App\jobs;
 use App\models;
 use App\utils;
 use Minz\Request;
@@ -64,7 +63,6 @@ class Collections extends BaseController
             'mark_as_read' => $mark_as_read,
         ], $link, [
             'user' => $user,
-            'enable_mastodon' => $user->isMastodonEnabled(),
         ]);
 
         return Response::ok('links/collections/index.phtml', [
@@ -113,7 +111,6 @@ class Collections extends BaseController
 
         $form = new forms\links\EditLinkCollections(model: $link, options: [
             'user' => $user,
-            'enable_mastodon' => $user->isMastodonEnabled(),
         ]);
         $form->handleRequest($request);
 
@@ -144,13 +141,6 @@ class Collections extends BaseController
 
         if ($form->mark_as_read) {
             $user->markAsRead($link);
-        }
-
-        if ($form->shouldShareOnMastodon()) {
-            $share_on_mastodon_job = new jobs\ShareOnMastodon();
-            $mastodon_status = $user->mastodonAccount()->buildMastodonStatus($link, $note);
-            $mastodon_status->save();
-            $share_on_mastodon_job->performAsap($mastodon_status->id);
         }
 
         return Response::found($from);
