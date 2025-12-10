@@ -162,6 +162,21 @@
                     <?= _('Store the link') ?>
                 </button>
             </div>
+
+            <?php if (can($current_user, 'shareOnMastodon', $link)): ?>
+                <div>
+                    <button
+                        data-controller="modal-opener"
+                        data-action="modal-opener#fetch"
+                        data-modal-opener-href-value="<?= url('new link mastodon statuses', ['id' => $link->id]) ?>"
+                        aria-haspopup="dialog"
+                        aria-controls="modal"
+                    >
+                        <?= icon('share') ?>
+                        <?= _('Share on Mastodon') ?>
+                    </button>
+                </div>
+            <?php endif; ?>
         <?php endif; ?>
     </section>
 

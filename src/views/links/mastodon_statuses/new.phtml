@@ -1,0 +1,47 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('Share a link on Mastodon'),
+        'canonical' => url_full('new link mastodon statuses', ['id' => $link->id]),
+        'has_errors' => $form->isInvalid(),
+        'modal_enabled' => true,
+    ]);
+?>
+
+<div class="section">
+    <div class="section__title">
+        <h1 id="modal-title"><?= _('Share a link on Mastodon') ?></h1>
+    </div>
+
+    <form data-turbo-preserve-scroll method="post" action="<?= url('create link mastodon statuses', ['id' => $link->id]) ?>">
+        <?= $this->include('alerts/_error.phtml', ['message' => $form->error('@base')]) ?>
+
+        <?php if ($form->isInvalid('contents')): ?>
+            <p id="contents-error" class="form-group__error">
+                <?= _('Error:') ?>
+                <?= $form->error('contents') ?>
+            </p>
+        <?php endif; ?>
+
+        <?php foreach ($form->contents as $index => $content): ?>
+            <?php $toot_number = $index + 1; ?>
+            <div class="form-group">
+                <label for="contents-<?= $toot_number ?>">
+                    <?= _f('Message number %d', $toot_number) ?>
+                </label>
+
+                <textarea
+                    id="contents-<?= $toot_number ?>"
+                    name="contents[]"
+                ><?= protect($content) ?></textarea>
+            </div>
+        <?php endforeach; ?>
+
+        <div class="form__actions">
+            <button type="submit" class="button--primary">
+                <?= _('Share on Mastodon') ?>
+            </button>
+        </div>
+
+        <input type="hidden" name="csrf_token" value="<?= csrf_token($form) ?>" />
+    </form>
+</div>

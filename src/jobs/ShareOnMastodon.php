@@ -13,14 +13,20 @@ use App\services;
  */
 class ShareOnMastodon extends \Minz\Job
 {
-    public function perform(string $mastodon_status_id): void
+    public function perform(string $link_id): void
     {
-        $mastodon_status = models\MastodonStatus::require($mastodon_status_id);
+        $link = models\Link::require($link_id);
 
-        $mastodon_account = $mastodon_status->account();
-        $mastodon_server = $mastodon_account->server();
-        $mastodon_service = new services\Mastodon($mastodon_server);
+        // TODO write this method
+        $mastodon_statuses = models\MastodonStatus::listNotPostedByLink($link);
+        // TODO order by thread
 
-        $mastodon_service->postStatus($mastodon_status);
+        foreach ($mastodon_statuses as $mastodon_status) {
+            $mastodon_account = $mastodon_status->account();
+            $mastodon_server = $mastodon_account->server();
+            $mastodon_service = new services\Mastodon($mastodon_server);
+
+            $mastodon_service->postStatus($mastodon_status);
+        }
     }
 }

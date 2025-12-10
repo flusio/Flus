@@ -163,6 +163,8 @@ class Router
         $router->addRoute('POST', '/links/:id/read/later', 'links/Read#later', 'read link later');
         $router->addRoute('POST', '/links/:id/read/never', 'links/Read#never', 'mark link to never read');
         $router->addRoute('POST', '/links/:id/read/delete', 'links/Read#delete', 'mark link as unread');
+        $router->addRoute('GET', '/links/:id/mastodon', 'links/MastodonStatuses#new', 'new link mastodon statuses');
+        $router->addRoute('POST', '/links/:id/mastodon', 'links/MastodonStatuses#create', 'create link mastodon statuses');
 
         // Link collections
         $router->addRoute('GET', '/links/:id/collections', 'links/Collections#index', 'link collections');

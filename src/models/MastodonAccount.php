@@ -107,8 +107,8 @@ class MastodonAccount
     /**
      * Return a MastodonStatus initialized for this account.
      */
-    public function buildMastodonStatus(Link $link, ?Note $note): MastodonStatus
+    public function buildMastodonStatus(Link $link, string $content = ''): MastodonStatus
     {
-        return new MastodonStatus($this, $link, $note);
+        return new MastodonStatus($this, $link, $content);
     }
 }
