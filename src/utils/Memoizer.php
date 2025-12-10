@@ -16,16 +16,16 @@ namespace App\utils;
  *     {
  *         use utils\Memoizer;
  *
- *         public function timeConsumingMethod(): array
+ *         public function listUsers(): array
  *         {
- *             return $this->memoize('my_cache_key', function (): array {
+ *             return $this->memoize('users', function (): array {
  *                 return models\User::listAll();
  *             });
  *         }
  *     }
  *
- * In this example, `MyClass::timeConsumingMethod` can be called several time,
- * but users will be fetched from the database only the first time.
+ * In this example, `listUsers()` can be called several time, but users will be
+ * fetched from the database only the first time.
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
@@ -46,11 +46,19 @@ trait Memoizer
      */
     protected function memoize(string $key, callable $callback): mixed
     {
-        if (!array_key_exists($key, $this->memoizer_cache)) {
-            $this->memoizer_cache[$key] = $callback();
+        if (!$this->isMemoized($key)) {
+            $this->memoizeValue($key, $callback());
         }
 
         return $this->memoizer_cache[$key];
+    }
+
+    /**
+     * Store a value in the cache.
+     */
+    protected function memoizeValue(string $key, mixed $value): void
+    {
+        $this->memoizer_cache[$key] = $value;
     }
 
     /**
@@ -58,8 +66,16 @@ trait Memoizer
      */
     protected function unmemoize(string $key): void
     {
-        if (array_key_exists($key, $this->memoizer_cache)) {
+        if ($this->isMemoized($key)) {
             unset($this->memoizer_cache[$key]);
         }
+    }
+
+    /**
+     * Return true if the key exists in the cache, false otherwise.
+     */
+    protected function isMemoized(string $key): bool
+    {
+        return array_key_exists($key, $this->memoizer_cache);
     }
 }
