@@ -4,6 +4,7 @@ namespace App\models;
 
 use tests\factories\LinkFactory;
 use tests\factories\MastodonAccountFactory;
+use tests\factories\MastodonServerFactory;
 use tests\factories\NoteFactory;
 
 class MastodonStatusTest extends \PHPUnit\Framework\TestCase
@@ -217,6 +218,43 @@ class MastodonStatusTest extends \PHPUnit\Framework\TestCase
         $status = new MastodonStatus($account, $link, $note);
         $notes_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
         $expected_note = str_repeat('a', 433) . '…';
+        $expected_content = <<<"TEXT"
+            My title
+
+            https://flus.fr
+            {$notes_url}
+
+            {$expected_note}
+
+            #flus
+            TEXT;
+
+        $this->assertSame($expected_content, $status->content);
+    }
+
+    public function testDefaultContentWithShorterServerStatusesMaxChars(): void
+    {
+        $link = LinkFactory::create([
+            'title' => 'My title',
+            'url' => 'https://flus.fr',
+        ]);
+        $note = NoteFactory::create([
+            'content' => str_repeat('a', 500),
+        ]);
+        $options = [
+            'link_to_comment' => 'auto',
+            'post_scriptum' => '#flus',
+        ];
+        $server = MastodonServerFactory::create([
+            'statuses_max_characters' => 250,
+        ]);
+        $account = MastodonAccountFactory::create([
+            'mastodon_server_id' => $server->id,
+            'options' => $options,
+        ]);
+        $status = new MastodonStatus($account, $link, $note);
+        $notes_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
+        $expected_note = str_repeat('a', 183) . '…';
         $expected_content = <<<"TEXT"
             My title
 

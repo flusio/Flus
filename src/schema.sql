@@ -254,7 +254,9 @@ CREATE TABLE mastodon_servers (
 
     host TEXT NOT NULL,
     client_id TEXT NOT NULL,
-    client_secret TEXT NOT NULL
+    client_secret TEXT NOT NULL,
+
+    statuses_max_characters INT NOT NULL DEFAULT 500
 );
 
 CREATE TABLE mastodon_accounts (

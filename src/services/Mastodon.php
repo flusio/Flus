@@ -246,4 +246,46 @@ class Mastodon
 
         return $success;
     }
+
+    /**
+     * Return the max number of characters for the statuses of this server.
+     */
+    public function getServerMaxCharacters(): int
+    {
+        $host = $this->server->host;
+        $endpoint = $host . '/api/v2/instance';
+        $response = $this->http->get($endpoint);
+
+        if (!$response->success) {
+            $data = $response->utf8Data();
+            throw new MastodonError("Mastodon host {$host} returned error: {$data}");
+        }
+
+        $json = json_decode($response->data, associative: true);
+
+        if (!is_array($json)) {
+            $data = $response->utf8Data();
+            throw new MastodonError("Mastodon host {$host} returned invalid JSON: {$data}");
+        }
+
+        $configuration = $json['configuration'] ?? [];
+
+        if (!is_array($configuration)) {
+            $configuration = [];
+        }
+
+        $statuses_configuration = $configuration['statuses'] ?? [];
+
+        if (!is_array($statuses_configuration)) {
+            $statuses_configuration = [];
+        }
+
+        $max_characters = $statuses_configuration['max_characters'] ?? 500;
+
+        if (!is_int($max_characters)) {
+            $max_characters = 500;
+        }
+
+        return $max_characters;
+    }
 }

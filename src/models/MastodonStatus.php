@@ -125,9 +125,11 @@ class MastodonStatus
     {
         $link = $this->link();
         $note = $this->note();
-        $options = $this->account()->options;
+        $account = $this->account();
+        $server = $account->server();
+        $options = $account->options;
 
-        $max_chars = 500;
+        $max_chars = $server->statuses_max_characters;
         $count_chars = 0;
         $content = '';
 

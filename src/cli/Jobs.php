@@ -25,6 +25,7 @@ class Jobs extends \Minz\Job\Controller
         \App\jobs\scheduled\CollectionsPublicationFrequencySync::install();
         \App\jobs\scheduled\InactivityNotifier::install();
         \App\jobs\scheduled\Cleaner::install();
+        \App\jobs\scheduled\MastodonServersSync::install();
         if ($subscriptions_enabled) {
             \App\jobs\scheduled\SubscriptionsSync::install();
         }

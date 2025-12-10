@@ -28,6 +28,9 @@ class MastodonServer
     #[Database\Column]
     public string $client_secret;
 
+    #[Database\Column]
+    public int $statuses_max_characters = 500;
+
     public function __construct(string $host, string $client_id, string $client_secret)
     {
         $this->host = $host;
