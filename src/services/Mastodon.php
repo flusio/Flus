@@ -203,9 +203,15 @@ class Mastodon
 
     /**
      * Post a status to the given account.
+     *
+     * It returns true if the status has already been posted.
      */
     public function postStatus(models\MastodonStatus $status): bool
     {
+        if ($status->isPosted()) {
+            return true;
+        }
+
         $account = $status->account();
 
         $parameters = [
@@ -245,6 +251,29 @@ class Mastodon
         }
 
         return $success;
+    }
+
+    /**
+     * Post a thread of statuses where the given status is the first of the thread.
+     *
+     * @throws MastodonError
+     *     If the given status is a reply to another status.
+     */
+    public function postThread(models\MastodonStatus $first_status): bool
+    {
+        if ($first_status->isReply()) {
+            throw new MastodonError("Mastodon status {$first_status->id} is not the first status of its thread.");
+        }
+
+        $result = $this->postStatus($first_status);
+        $next_status = $first_status->reply();
+
+        while ($next_status !== null) {
+            $result = $result && $this->postStatus($next_status);
+            $next_status = $next_status->reply();
+        }
+
+        return $result;
     }
 
     /**

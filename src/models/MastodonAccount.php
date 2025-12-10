@@ -6,8 +6,10 @@ use Minz\Database;
 
 /**
  * @phpstan-type Options array{
- *     'link_to_comment': 'always'|'never'|'auto',
+ *     'prefill_with_notes': bool,
+ *     'link_to_notes': bool,
  *     'post_scriptum': string,
+ *     'post_scriptum_in_all_posts': bool,
  * }
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -46,8 +48,10 @@ class MastodonAccount
         $this->user_id = $user->id;
         $this->username = '';
         $this->options = [
-            'link_to_comment' => 'auto',
+            'prefill_with_notes' => true,
+            'link_to_notes' => true,
             'post_scriptum' => '',
+            'post_scriptum_in_all_posts' => false,
         ];
     }
 
@@ -107,8 +111,8 @@ class MastodonAccount
     /**
      * Return a MastodonStatus initialized for this account.
      */
-    public function buildMastodonStatus(Link $link, ?Note $note): MastodonStatus
+    public function buildMastodonStatus(Link $link, string $content = ''): MastodonStatus
     {
-        return new MastodonStatus($this, $link, $note);
+        return new MastodonStatus($this, $link, $content);
     }
 }

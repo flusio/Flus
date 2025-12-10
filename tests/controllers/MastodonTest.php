@@ -522,8 +522,6 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
     public function testUpdateChangesOptionsAndRedirectsCorrectly(): void
     {
         $user = $this->login();
-        $old_link_to_comment = 'auto';
-        $new_link_to_comment = 'never';
         /** @var string */
         $old_post_scriptum = $this->fake('sentence');
         /** @var string */
@@ -532,28 +530,26 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'access_token' => 'a token',
             'options' => [
-                'link_to_comment' => $old_link_to_comment,
+                'prefill_with_notes' => true,
+                'link_to_notes' => true,
                 'post_scriptum' => $old_post_scriptum,
+                'post_scriptum_in_all_posts' => false,
             ],
         ]);
 
         $response = $this->appRun('POST', '/mastodon', [
             'csrf_token' => $this->csrfToken(forms\mastodon\EditMastodonAccount::class),
-            'link_to_comment' => $new_link_to_comment,
             'post_scriptum' => $new_post_scriptum,
         ]);
 
         $this->assertResponseCode($response, 302, '/mastodon');
         $mastodon_account = $mastodon_account->reload();
-        $this->assertSame($mastodon_account->options['link_to_comment'], $new_link_to_comment);
         $this->assertSame($mastodon_account->options['post_scriptum'], $new_post_scriptum);
     }
 
     public function testUpdateRedirectsIfUserIsNotConnected(): void
     {
         $user = UserFactory::create();
-        $old_link_to_comment = 'auto';
-        $new_link_to_comment = 'never';
         /** @var string */
         $old_post_scriptum = $this->fake('sentence');
         /** @var string */
@@ -562,28 +558,26 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'access_token' => 'a token',
             'options' => [
-                'link_to_comment' => $old_link_to_comment,
+                'prefill_with_notes' => true,
+                'link_to_notes' => true,
                 'post_scriptum' => $old_post_scriptum,
+                'post_scriptum_in_all_posts' => false,
             ],
         ]);
 
         $response = $this->appRun('POST', '/mastodon', [
             'csrf_token' => $this->csrfToken(forms\mastodon\EditMastodonAccount::class),
-            'link_to_comment' => $new_link_to_comment,
             'post_scriptum' => $new_post_scriptum,
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmastodon');
         $mastodon_account = $mastodon_account->reload();
-        $this->assertSame($mastodon_account->options['link_to_comment'], $old_link_to_comment);
         $this->assertSame($mastodon_account->options['post_scriptum'], $old_post_scriptum);
     }
 
     public function testUpdateRedirectsIfAccessTokenIsNotSet(): void
     {
         $user = $this->login();
-        $old_link_to_comment = 'auto';
-        $new_link_to_comment = 'never';
         /** @var string */
         $old_post_scriptum = $this->fake('sentence');
         /** @var string */
@@ -592,28 +586,26 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'access_token' => '',
             'options' => [
-                'link_to_comment' => $old_link_to_comment,
+                'prefill_with_notes' => true,
+                'link_to_notes' => true,
                 'post_scriptum' => $old_post_scriptum,
+                'post_scriptum_in_all_posts' => false,
             ],
         ]);
 
         $response = $this->appRun('POST', '/mastodon', [
             'csrf_token' => $this->csrfToken(forms\mastodon\EditMastodonAccount::class),
-            'link_to_comment' => $new_link_to_comment,
             'post_scriptum' => $new_post_scriptum,
         ]);
 
         $this->assertResponseCode($response, 404);
         $mastodon_account = $mastodon_account->reload();
-        $this->assertSame($mastodon_account->options['link_to_comment'], $old_link_to_comment);
         $this->assertSame($mastodon_account->options['post_scriptum'], $old_post_scriptum);
     }
 
     public function testUpdateFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
-        $old_link_to_comment = 'auto';
-        $new_link_to_comment = 'never';
         /** @var string */
         $old_post_scriptum = $this->fake('sentence');
         /** @var string */
@@ -622,29 +614,27 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'access_token' => 'a token',
             'options' => [
-                'link_to_comment' => $old_link_to_comment,
+                'prefill_with_notes' => true,
+                'link_to_notes' => true,
                 'post_scriptum' => $old_post_scriptum,
+                'post_scriptum_in_all_posts' => false,
             ],
         ]);
 
         $response = $this->appRun('POST', '/mastodon', [
             'csrf_token' => 'not the token',
-            'link_to_comment' => $new_link_to_comment,
             'post_scriptum' => $new_post_scriptum,
         ]);
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'A security verification failed');
         $mastodon_account = $mastodon_account->reload();
-        $this->assertSame($mastodon_account->options['link_to_comment'], $old_link_to_comment);
         $this->assertSame($mastodon_account->options['post_scriptum'], $old_post_scriptum);
     }
 
     public function testUpdateFailsIfPostScriptumIsLongerThan100Chars(): void
     {
         $user = $this->login();
-        $old_link_to_comment = 'auto';
-        $new_link_to_comment = 'never';
         /** @var string */
         $old_post_scriptum = $this->fake('sentence');
         /** @var string */
@@ -653,21 +643,21 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'access_token' => 'a token',
             'options' => [
-                'link_to_comment' => $old_link_to_comment,
+                'prefill_with_notes' => true,
+                'link_to_notes' => true,
                 'post_scriptum' => $old_post_scriptum,
+                'post_scriptum_in_all_posts' => false,
             ],
         ]);
 
         $response = $this->appRun('POST', '/mastodon', [
             'csrf_token' => $this->csrfToken(forms\mastodon\EditMastodonAccount::class),
-            'link_to_comment' => $new_link_to_comment,
             'post_scriptum' => $new_post_scriptum,
         ]);
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The text must be less than 100 characters.');
         $mastodon_account = $mastodon_account->reload();
-        $this->assertSame($mastodon_account->options['link_to_comment'], $old_link_to_comment);
         $this->assertSame($mastodon_account->options['post_scriptum'], $old_post_scriptum);
     }
 

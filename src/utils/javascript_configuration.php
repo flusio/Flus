@@ -1,12 +1,14 @@
 <?php
 
 $translations = [
+    '{{count}} characters out of a maximum of {{max}}',
     'Back',
     'Copied',
     'Hide',
     'Open the list',
     ' (public)',
     'Show',
+    'The post is too long.',
 ];
 
 $l10n = [];
@@ -19,6 +21,7 @@ return [
     'icons' => [
         'back' => icon('arrow-left'),
         'check' => icon('check'),
+        'error' => icon('error'),
         'eye' => icon('eye'),
         'eye-hide' => icon('eye-hide'),
         'times' => icon('times'),

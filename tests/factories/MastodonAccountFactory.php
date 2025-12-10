@@ -40,8 +40,10 @@ class MastodonAccountFactory extends Database\Factory
             'access_token' => '',
 
             'options' => [
-                'link_to_comment' => 'auto',
+                'prefill_with_notes' => true,
+                'link_to_notes' => true,
                 'post_scriptum' => '',
+                'post_scriptum_in_all_posts' => false,
             ],
         ];
     }

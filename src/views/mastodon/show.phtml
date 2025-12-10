@@ -15,7 +15,7 @@
     </div>
 
     <p class="section__intro">
-        <?= _f('%s lets you share your links and notes on Mastodon.', get_app_configuration('brand')) ?>
+        <?= _f('%s lets you edit a thread of posts to share your links and notes on Mastodon.', get_app_configuration('brand')) ?>
     </p>
 
     <?= $this->include('alerts/_error.phtml', ['message' => $error]) ?>
@@ -25,47 +25,34 @@
             <?= $this->include('alerts/_error.phtml', ['message' => $form->error('@base')]) ?>
 
             <div class="form-group">
-                <label for="link-to-note">
-                    <?= _('When to link to your notes?') ?>
+                <input
+                    type="checkbox"
+                    id="prefill-with-notes"
+                    name="prefill_with_notes"
+                    <?= $form->prefill_with_notes ? 'checked' : '' ?>
+                />
+
+                <label class="label--checkbox" for="prefill-with-notes">
+                    <?= _('Pre-fill the thread with the contents of your notes') ?>
                 </label>
+            </div>
 
-                <?php if ($form->isInvalid('link_to_comment')): ?>
-                    <p id="link-to-comment-error" class="form-group__error">
-                        <?= _('Error:') ?>
-                        <?= $form->error('link_to_comment') ?>
-                    </p>
-                <?php endif; ?>
+            <div class="form-group">
+                <input
+                    type="checkbox"
+                    id="link-to-notes"
+                    name="link_to_notes"
+                    <?= $form->link_to_notes ? 'checked' : '' ?>
+                />
 
-                <select
-                    id="link-to-note"
-                    name="link_to_comment"
-                    aria-describedby="link-to-comment-caption"
-                    <?php if ($form->isInvalid('link_to_comment')): ?>
-                        aria-errormessage="link-to-comment-error"
-                        aria-invalid="true"
-                    <?php endif; ?>
-                 >
-                     <option <?= $form->link_to_comment === 'auto' ? 'selected' : '' ?> value="auto">
-                        <?= _('Only when you post a note') ?>
-                    </option>
-
-                    <option <?= $form->link_to_comment === 'always' ? 'selected' : '' ?> value="always">
-                        <?= _('Always') ?>
-                    </option>
-
-                    <option <?= $form->link_to_comment === 'never' ? 'selected' : '' ?> value="never">
-                        <?= _('Never') ?>
-                    </option>
-                </select>
-
-                <p id="link-to-comment-caption" class="form-group__caption">
-                    <?= _f('Your Mastodon posts can include a link to your notes on %s.', get_app_configuration('brand')) ?>
-                </p>
+                <label class="label--checkbox" for="link-to-notes">
+                    <?= _('Add a link to your notes in the first post of the thread') ?>
+                </label>
             </div>
 
             <div class="form-group">
                 <label for="post-scriptum">
-                    <?= _('Always something to add to your posts?') ?>
+                    <?= _('Something to add to the first post of the thread? (postscript)') ?>
                     <span class="label__help">
                         <?= _f('(max. %d characters)', $form->post_scriptum_max_length) ?>
                     </span>
@@ -84,11 +71,25 @@
                     type="text"
                     value="<?= protect($form->post_scriptum) ?>"
                     maxlength="<?= $form->post_scriptum_max_length ?>"
+                    placeholder="<?= _('#monitoring') ?>"
                     <?php if ($form->isInvalid('post_scriptum')): ?>
                         aria-errormessage="post-scriptum-error"
                         aria-invalid="true"
                     <?php endif; ?>
                 />
+            </div>
+
+            <div class="form-group">
+                <input
+                    type="checkbox"
+                    id="post-scriptum-on-all-posts"
+                    name="post_scriptum_in_all_posts"
+                    <?= $form->post_scriptum_in_all_posts ? 'checked' : '' ?>
+                />
+
+                <label class="label--checkbox" for="post-scriptum-on-all-posts">
+                    <?= _('Add the postscript in all the posts of the thread') ?>
+                </label>
             </div>
 
             <div class="form__actions">
@@ -100,21 +101,21 @@
             <input type="hidden" name="csrf_token" value="<?= csrf_token($form) ?>" />
         </form>
 
-        <div class="paragraph--centered paragraph--secondary">
-            <small>
-                <?= _f('connected with account <em>%s</em>', protect($mastodon_account->username)) ?>
-            </small>
+        <hr>
+
+        <div class="panel cols cols--center cols--gap-small text--small">
+            <p class="col--extend">
+                <?= _f('Connected with account <em>%s</em>', protect($mastodon_account->username)) ?>
+            </p>
 
             <form
                 method="post"
                 action="<?= url('disconnect mastodon') ?>"
                 data-turbo-confirm="<?= _('Are you sure that you want to disconnect your Mastodon account?') ?>"
             >
-                <small>
-                    <button type="submit" class="button--ghost button--smaller">
-                        <?= _('disconnect') ?>
-                    </button>
-                </small>
+                <button type="submit" class="button--smaller">
+                    <?= _('disconnect') ?>
+                </button>
 
                 <input type="hidden" name="csrf_token" value="<?= csrf_token('mastodon\\DeleteMastodonAccount') ?>" />
             </form>

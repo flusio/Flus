@@ -44,7 +44,7 @@ h1 a:focus {
     line-height: 1.5;
     text-decoration: none;
 
-    border: 0.1em solid currentcolor;
+    border: 1px solid currentcolor;
     border-radius: var(--border-radius);
 }
 

@@ -18,180 +18,108 @@ class MastodonStatusTest extends \PHPUnit\Framework\TestCase
         \Minz\Engine::init($router);
     }
 
-    public function testDefaultContent(): void
+    public function testBuildDefaultContent(): void
     {
         $link = LinkFactory::create([
             'title' => 'My title',
             'url' => 'https://flus.fr',
-        ]);
-        $note = NoteFactory::create([
-            'content' => 'This is great content!',
+            'is_hidden' => false,
         ]);
         $options = [
-            'link_to_comment' => 'auto',
-            'post_scriptum' => '#flus',
-        ];
-        $account = MastodonAccountFactory::create([
-            'options' => $options,
-        ]);
-        $status = new MastodonStatus($account, $link, $note);
-        $notes_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
-        $expected_content = <<<"TEXT"
-            My title
-
-            https://flus.fr
-            {$notes_url}
-
-            This is great content!
-
-            #flus
-            TEXT;
-
-        $this->assertSame($expected_content, $status->content);
-    }
-
-    public function testDefaultContentWithNeverLinkToNotes(): void
-    {
-        $link = LinkFactory::create([
-            'title' => 'My title',
-            'url' => 'https://flus.fr',
-        ]);
-        $note = NoteFactory::create([
-            'content' => 'This is great content!',
-        ]);
-        $options = [
-            'link_to_comment' => 'never',
-            'post_scriptum' => '#flus',
-        ];
-        $account = MastodonAccountFactory::create([
-            'options' => $options,
-        ]);
-        $status = new MastodonStatus($account, $link, $note);
-        $notes_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
-        $expected_content = <<<"TEXT"
-            My title
-
-            https://flus.fr
-
-            This is great content!
-
-            #flus
-            TEXT;
-
-        $this->assertSame($expected_content, $status->content);
-    }
-
-    public function testDefaultContentWithNoNote(): void
-    {
-        $link = LinkFactory::create([
-            'title' => 'My title',
-            'url' => 'https://flus.fr',
-        ]);
-        $note = null;
-        $options = [
-            'link_to_comment' => 'auto',
-            'post_scriptum' => '#flus',
-        ];
-        $account = MastodonAccountFactory::create([
-            'options' => $options,
-        ]);
-        $status = new MastodonStatus($account, $link, $note);
-        $notes_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
-        $expected_content = <<<"TEXT"
-            My title
-
-            https://flus.fr
-
-            #flus
-            TEXT;
-
-        $this->assertSame($expected_content, $status->content);
-    }
-
-    public function testDefaultContentWithNoNoteAndAlwaysLinkToNote(): void
-    {
-        $link = LinkFactory::create([
-            'title' => 'My title',
-            'url' => 'https://flus.fr',
-        ]);
-        $note = null;
-        $options = [
-            'link_to_comment' => 'always',
-            'post_scriptum' => '#flus',
-        ];
-        $account = MastodonAccountFactory::create([
-            'options' => $options,
-        ]);
-        $status = new MastodonStatus($account, $link, $note);
-        $notes_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
-        $expected_content = <<<"TEXT"
-            My title
-
-            https://flus.fr
-            {$notes_url}
-
-            #flus
-            TEXT;
-
-        $this->assertSame($expected_content, $status->content);
-    }
-
-    public function testDefaultContentWithNoPostScriptum(): void
-    {
-        $link = LinkFactory::create([
-            'title' => 'My title',
-            'url' => 'https://flus.fr',
-        ]);
-        $note = NoteFactory::create([
-            'content' => 'This is great content!',
-        ]);
-        $options = [
-            'link_to_comment' => 'auto',
+            'prefill_with_notes' => false,
+            'link_to_notes' => false,
             'post_scriptum' => '',
+            'post_scriptum_in_all_posts' => false,
         ];
         $account = MastodonAccountFactory::create([
             'options' => $options,
         ]);
-        $status = new MastodonStatus($account, $link, $note);
+        $status = new MastodonStatus($account, $link);
+        $expected_content = <<<"TEXT"
+            My title
+
+            https://flus.fr
+            TEXT;
+
+        $this->assertSame($expected_content, $status->content);
+    }
+
+    public function testBuildDefaultContentWithLinkToNotes(): void
+    {
+        $link = LinkFactory::create([
+            'title' => 'My title',
+            'url' => 'https://flus.fr',
+            'is_hidden' => false,
+        ]);
+        $options = [
+            'prefill_with_notes' => false,
+            'link_to_notes' => true,
+            'post_scriptum' => '',
+            'post_scriptum_in_all_posts' => false,
+        ];
+        $account = MastodonAccountFactory::create([
+            'options' => $options,
+        ]);
+        $status = new MastodonStatus($account, $link);
         $notes_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
         $expected_content = <<<"TEXT"
             My title
 
             https://flus.fr
             {$notes_url}
-
-            This is great content!
             TEXT;
 
         $this->assertSame($expected_content, $status->content);
     }
 
-    public function testDefaultContentWithALongTitle(): void
+    public function testBuildDefaultContentWithLinkToNotesButHiddenLink(): void
     {
         $link = LinkFactory::create([
-            'title' => str_repeat('a', 260),
+            'title' => 'My title',
             'url' => 'https://flus.fr',
-        ]);
-        $note = NoteFactory::create([
-            'content' => 'This is great content!',
+            'is_hidden' => true,
         ]);
         $options = [
-            'link_to_comment' => 'auto',
-            'post_scriptum' => '#flus',
+            'prefill_with_notes' => false,
+            'link_to_notes' => true,
+            'post_scriptum' => '',
+            'post_scriptum_in_all_posts' => false,
         ];
         $account = MastodonAccountFactory::create([
             'options' => $options,
         ]);
-        $status = new MastodonStatus($account, $link, $note);
-        $notes_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
-        $expected_title = str_repeat('a', 249) . '…';
+        $status = new MastodonStatus($account, $link);
         $expected_content = <<<"TEXT"
-            {$expected_title}
+            My title
 
             https://flus.fr
-            {$notes_url}
+            TEXT;
 
-            This is great content!
+        $this->assertSame($expected_content, $status->content);
+    }
+
+    public function testBuildDefaultContentWithPostScriptum(): void
+    {
+        $link = LinkFactory::create([
+            'title' => 'My title',
+            'url' => 'https://flus.fr',
+            'is_hidden' => false,
+        ]);
+        $options = [
+            'prefill_with_notes' => false,
+            'link_to_notes' => false,
+            'post_scriptum' => '#flus',
+            'post_scriptum_in_all_posts' => false,
+        ];
+        $account = MastodonAccountFactory::create([
+            'options' => $options,
+        ]);
+        $status = new MastodonStatus($account, $link);
+        $link_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
+        $expected_content = <<<"TEXT"
+            My title
+
+            https://flus.fr
 
             #flus
             TEXT;
@@ -199,69 +127,51 @@ class MastodonStatusTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected_content, $status->content);
     }
 
-    public function testDefaultContentWithALongNote(): void
+    public function testBuildContent(): void
     {
         $link = LinkFactory::create([
             'title' => 'My title',
             'url' => 'https://flus.fr',
-        ]);
-        $note = NoteFactory::create([
-            'content' => str_repeat('a', 500),
+            'is_hidden' => false,
         ]);
         $options = [
-            'link_to_comment' => 'auto',
-            'post_scriptum' => '#flus',
+            'prefill_with_notes' => false,
+            'link_to_notes' => false,
+            'post_scriptum' => '',
+            'post_scriptum_in_all_posts' => false,
         ];
         $account = MastodonAccountFactory::create([
             'options' => $options,
         ]);
-        $status = new MastodonStatus($account, $link, $note);
-        $notes_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
-        $expected_note = str_repeat('a', 433) . '…';
+        $content = 'This is very interesting!';
+        $status = new MastodonStatus($account, $link, $content);
         $expected_content = <<<"TEXT"
-            My title
-
-            https://flus.fr
-            {$notes_url}
-
-            {$expected_note}
-
-            #flus
+            {$content}
             TEXT;
 
         $this->assertSame($expected_content, $status->content);
     }
 
-    public function testDefaultContentWithShorterServerStatusesMaxChars(): void
+    public function testBuildContentWithPostScriptum(): void
     {
         $link = LinkFactory::create([
             'title' => 'My title',
             'url' => 'https://flus.fr',
-        ]);
-        $note = NoteFactory::create([
-            'content' => str_repeat('a', 500),
+            'is_hidden' => false,
         ]);
         $options = [
-            'link_to_comment' => 'auto',
+            'prefill_with_notes' => false,
+            'link_to_notes' => false,
             'post_scriptum' => '#flus',
+            'post_scriptum_in_all_posts' => true,
         ];
-        $server = MastodonServerFactory::create([
-            'statuses_max_characters' => 250,
-        ]);
         $account = MastodonAccountFactory::create([
-            'mastodon_server_id' => $server->id,
             'options' => $options,
         ]);
-        $status = new MastodonStatus($account, $link, $note);
-        $notes_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
-        $expected_note = str_repeat('a', 183) . '…';
+        $content = 'This is very interesting!';
+        $status = new MastodonStatus($account, $link, $content);
         $expected_content = <<<"TEXT"
-            My title
-
-            https://flus.fr
-            {$notes_url}
-
-            {$expected_note}
+            {$content}
 
             #flus
             TEXT;

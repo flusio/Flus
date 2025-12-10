@@ -44,6 +44,8 @@
     }
 
     $option_compact_mode = $current_user && $current_user->option_compact_mode;
+
+    $display_share_on_mastodon = can($current_user, 'shareOnMastodon', $link);
 ?>
 
 <div class="link <?= $option_compact_mode ? 'link--compact' : '' ?>">
@@ -268,6 +270,21 @@
                         <?= _('Copy the external link') ?>
                     </button>
                 </div>
+
+                <?php if ($display_share_on_mastodon): ?>
+                    <button
+                        class="popup__item popup__item--button"
+                        data-controller="modal-opener"
+                        data-action="modal-opener#fetch"
+                        data-modal-opener-href-value="<?= url('new link mastodon thread', ['id' => $link->id]) ?>"
+                        aria-haspopup="dialog"
+                        aria-controls="modal"
+                        role="menuitem"
+                    >
+                        <?= icon('mastodon') ?>
+                        <?= _('Share on Mastodon') ?>
+                    </button>
+                <?php endif; ?>
 
                 <?php if ($display_edit || $display_repair): ?>
                     <div class="popup__separator"></div>

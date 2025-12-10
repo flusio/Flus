@@ -789,9 +789,11 @@ class User
      */
     public function isMastodonEnabled(): bool
     {
-        return MastodonAccount::existsBy([
-            'user_id' => $this->id,
-        ]);
+        return $this->memoize('is_mastodon_enabled', function (): bool {
+            return MastodonAccount::existsBy([
+                'user_id' => $this->id,
+            ]);
+        });
     }
 
     /**

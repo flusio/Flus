@@ -24,6 +24,8 @@
   },
   "dependencies": {
     "@hotwired/stimulus": "^3.1.0",
-    "@hotwired/turbo": "^8"
+    "@hotwired/turbo": "^8",
+    "stringz": "^2.1.0",
+    "twitter-text": "^3.1.0"
   }
 }

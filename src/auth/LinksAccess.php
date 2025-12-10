@@ -36,4 +36,9 @@ class LinksAccess
     {
         return $user && $user->id === $link->user_id;
     }
+
+    public static function canShareOnMastodon(?models\User $user, models\Link $link): bool
+    {
+        return $user && $user->isMastodonEnabled() && self::canView($user, $link);
+    }
 }

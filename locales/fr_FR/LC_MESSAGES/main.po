@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2025-12-06 11:28+0100\n"
-"PO-Revision-Date: 2025-12-06 11:28+0100\n"
+"POT-Creation-Date: 2025-12-22 15:27+0100\n"
+"PO-Revision-Date: 2025-12-22 15:27+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -18,6 +18,14 @@ msgstr ""
 #: assets/javascripts/controllers/back_button_controller.js:47
 msgid "Back"
 msgstr "Retour"
+
+#: assets/javascripts/controllers/characters_counter_controller.js:52
+msgid "{{count}} characters out of a maximum of {{max}}"
+msgstr "{{count}} caractères sur un maximum de {{max}}"
+
+#: assets/javascripts/controllers/characters_counter_controller.js:62
+msgid "The post is too long."
+msgstr "Le message est trop long."
 
 #: assets/javascripts/controllers/collections_selector_controller.js:57
 msgid "Open the list"
@@ -191,14 +199,6 @@ msgstr "Vous avez déjà une importation OPML en cours."
 msgid "The authorization code is missing."
 msgstr "Le code d’autorisation est manquant."
 
-#: forms/mastodon/EditMastodonAccount.php:22
-msgid "The value is required."
-msgstr "La valeur est obligatoire."
-
-#: forms/mastodon/EditMastodonAccount.php:26
-msgid "The value is invalid."
-msgstr "La valeur est invalide."
-
 #: forms/mastodon/RequestMastodonAccount.php:24
 msgid "The URL is invalid."
 msgstr "L’URL est invalide."
@@ -207,11 +207,11 @@ msgstr "L’URL est invalide."
 msgid "You already have configured a Mastodon account."
 msgstr "Vous avez déjà configuré un compte Mastodon."
 
-#: forms/security/AskResetPassword.php:22 models/User.php:59
+#: forms/security/AskResetPassword.php:22 models/User.php:60
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: forms/security/AskResetPassword.php:25 models/User.php:62
+#: forms/security/AskResetPassword.php:25 models/User.php:63
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
@@ -232,11 +232,11 @@ msgstr "L’une des collections associées n’existe pas."
 msgid "Sorry but you cannot do that in the demo 😉"
 msgstr "Désolé mais vous ne pouvez pas faire ça dans la démo 😉"
 
-#: forms/traits/Locale.php:19 models/User.php:91
+#: forms/traits/Locale.php:19 models/User.php:92
 msgid "The locale is required."
 msgstr "La langue est obligatoire."
 
-#: forms/traits/Locale.php:22 models/User.php:94
+#: forms/traits/Locale.php:22 models/User.php:95
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
@@ -333,23 +333,23 @@ msgstr "Le nom est obligatoire."
 msgid "The label must be less than {max} characters."
 msgstr "Le nom doit faire moins de {max} caractères."
 
-#: models/User.php:65
+#: models/User.php:66
 msgid "An account already exists with this email address."
 msgstr "Un compte existe déjà avec cette adresse courriel."
 
-#: models/User.php:71
+#: models/User.php:72
 msgid "The username is required."
 msgstr "Le nom d’utilisateur·ice est obligatoire."
 
-#: models/User.php:75
+#: models/User.php:76
 msgid "The username must be less than {max} characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de {max} caractères."
 
-#: models/User.php:79
+#: models/User.php:80
 msgid "The username cannot contain the character ‘@’."
 msgstr "Le nom d’utilisateur·ice ne doit pas contenir le caractère ‘@’."
 
-#: models/User.php:85
+#: models/User.php:86
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
@@ -792,7 +792,7 @@ msgstr "Comment voulez-vous nommer cette collection ?"
 
 #: views/collections/_form.phtml:13 views/collections/_selector.phtml:86
 #: views/collections/groups/edit.phtml:33 views/groups/edit.phtml:22
-#: views/mastodon/show.phtml:70
+#: views/mastodon/show.phtml:57
 #, php-format
 msgid "(max. %d characters)"
 msgstr "(max. %d caractères)"
@@ -807,10 +807,10 @@ msgstr "(max. %d caractères)"
 #: views/collections/shares/index.phtml:66 views/feeds/new.phtml:26
 #: views/groups/edit.phtml:28 views/importations/opml/show.phtml:81
 #: views/links/collections/_new_note_form.phtml:11 views/links/edit.phtml:29
-#: views/links/edit.phtml:75 views/links/new.phtml:26
-#: views/links/repairing/new.phtml:33 views/links/searches/show.phtml:39
-#: views/links/show.phtml:282 views/mastodon/show.phtml:34
-#: views/mastodon/show.phtml:76 views/mastodon/show.phtml:133
+#: views/links/edit.phtml:75 views/links/mastodon_threads/new.phtml:26
+#: views/links/new.phtml:26 views/links/repairing/new.phtml:33
+#: views/links/searches/show.phtml:39 views/links/show.phtml:299
+#: views/mastodon/show.phtml:63 views/mastodon/show.phtml:134
 #: views/my/account/deletion.phtml:37 views/my/preferences/edit.phtml:26
 #: views/my/profile/edit.phtml:29 views/my/profile/edit.phtml:86
 #: views/my/security/confirmation.phtml:32 views/my/security/show.phtml:29
@@ -879,7 +879,7 @@ msgstr "Modification d'une collection"
 
 #: views/collections/edit.phtml:19 views/collections/filters/edit.phtml:104
 #: views/collections/groups/edit.phtml:108 views/groups/edit.phtml:51
-#: views/links/edit.phtml:83 views/mastodon/show.phtml:96
+#: views/links/edit.phtml:83 views/mastodon/show.phtml:97
 #: views/my/preferences/edit.phtml:101 views/my/profile/edit.phtml:108
 #: views/my/security/show.phtml:95 views/notes/edit.phtml:56
 msgid "Save changes"
@@ -1104,8 +1104,8 @@ msgid "Published by %s"
 msgstr "Publiée par %s"
 
 #: views/collections/show.phtml:79 views/collections/show_public.phtml:122
-#: views/links/_link.phtml:235 views/links/_link.phtml:239
-#: views/links/show.phtml:210 views/links/show.phtml:214
+#: views/links/_link.phtml:237 views/links/_link.phtml:241
+#: views/links/show.phtml:227 views/links/show.phtml:231
 #: views/news/index.phtml:47 views/news/index.phtml:132
 #: views/news/index.phtml:214
 msgid "Actions"
@@ -1116,8 +1116,8 @@ msgid "Adjust for the news"
 msgstr "Régler pour le journal"
 
 #: views/collections/show.phtml:127 views/groups/_group.phtml:19
-#: views/groups/_group.phtml:33 views/links/_link.phtml:287
-#: views/links/show.phtml:230 views/profiles/show.phtml:55
+#: views/groups/_group.phtml:33 views/links/_link.phtml:304
+#: views/links/show.phtml:247 views/profiles/show.phtml:55
 msgid "Edit"
 msgstr "Modifier"
 
@@ -1147,8 +1147,8 @@ msgstr ""
 "Êtes-vous sur·e de vouloir supprimer cette collection ? Vous pourriez perdre "
 "les liens qui lui sont attachés."
 
-#: views/collections/show.phtml:194 views/links/_link.phtml:321
-#: views/links/show.phtml:244
+#: views/collections/show.phtml:194 views/links/_link.phtml:338
+#: views/links/show.phtml:261
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -1343,30 +1343,30 @@ msgstr "Quelque chose s’est mal passé"
 msgid "An error occurred during the processing of your request."
 msgstr "Une erreur est survenue pendant le traitement de votre requête."
 
-#: views/links/_link.phtml:63
+#: views/links/_link.phtml:65
 msgid "This link seems to be inaccessible, you should repair it."
 msgstr "Ce lien semble inaccessible, vous devriez le réparer."
 
-#: views/links/_link.phtml:64 views/links/_link.phtml:82
+#: views/links/_link.phtml:66 views/links/_link.phtml:84
 msgid "inaccessible"
 msgstr "inaccessible"
 
-#: views/links/_link.phtml:73
+#: views/links/_link.phtml:75
 msgid "Trackers have been detected in this link, you should repair it."
 msgstr "Des pisteurs ont été détectés dans ce lien, vous devriez le réparer."
 
-#: views/links/_link.phtml:74 views/links/_link.phtml:92
+#: views/links/_link.phtml:76 views/links/_link.phtml:94
 msgid "trackers"
 msgstr "pisteurs"
 
-#: views/links/_link.phtml:81
+#: views/links/_link.phtml:83
 msgid ""
 "This link seems to be inaccessible, you may have difficulties to access it."
 msgstr ""
 "Ce lien semble inaccessible, vous pourriez rencontrer des difficultés pour y "
 "accéder."
 
-#: views/links/_link.phtml:91
+#: views/links/_link.phtml:93
 msgid ""
 "Trackers have been detected in this link, your privacy might not be "
 "respected if you click on it."
@@ -1374,19 +1374,19 @@ msgstr ""
 "Des pisteurs ont été détectés dans ce lien, votre vie privée pourrait ne pas "
 "être respectée si vous cliquez dessus."
 
-#: views/links/_link.phtml:139 views/links/show.phtml:94
+#: views/links/_link.phtml:141 views/links/show.phtml:94
 msgid "ongoing synchronisation…"
 msgstr "synchronisation en cours…"
 
-#: views/links/_link.phtml:146
+#: views/links/_link.phtml:148
 msgid "You read this link."
 msgstr "Vous avez lu ce lien."
 
-#: views/links/_link.phtml:150
+#: views/links/_link.phtml:152
 msgid "This link is in your bookmarks."
 msgstr "Ce lien est dans vos signets."
 
-#: views/links/_link.phtml:157
+#: views/links/_link.phtml:159
 #, php-format
 msgid ""
 "via your <strong><a class=\"anchor--hidden\" href=\"%s\">bookmarks</a></"
@@ -1394,7 +1394,7 @@ msgid ""
 msgstr ""
 "via vos <strong><a class=\"anchor--hidden\" href=\"%s\">signets</a></strong>"
 
-#: views/links/_link.phtml:162
+#: views/links/_link.phtml:164
 #, php-format
 msgid ""
 "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong> by <a "
@@ -1403,75 +1403,76 @@ msgstr ""
 "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong> de <a "
 "class=\"anchor--hidden\" href=\"%s\">%s</a>"
 
-#: views/links/_link.phtml:170 views/links/_link.phtml:177
+#: views/links/_link.phtml:172 views/links/_link.phtml:179
 #, php-format
 msgid "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong>"
 msgstr "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong>"
 
-#: views/links/_link.phtml:200
+#: views/links/_link.phtml:202
 #, php-format
 msgid "Notepad (%s)"
 msgstr "Bloc-note (%s)"
 
-#: views/links/_link.phtml:202 views/links/show.phtml:174
+#: views/links/_link.phtml:204 views/links/show.phtml:191
 msgid "Notepad"
 msgstr "Bloc-note"
 
-#: views/links/_link.phtml:208
+#: views/links/_link.phtml:210
 msgid "hidden"
 msgstr "masqué"
 
-#: views/links/_link.phtml:222
+#: views/links/_link.phtml:224
 msgid "Comments"
 msgstr "Commentaires"
 
-#: views/links/_link.phtml:249
+#: views/links/_link.phtml:251
 msgid "Remove from the news"
 msgstr "Retirer du journal"
 
-#: views/links/_link.phtml:268
+#: views/links/_link.phtml:270
 msgid "Copy the external link"
 msgstr "Copier le lien externe"
 
-#: views/links/_link.phtml:302
+#: views/links/_link.phtml:285 views/links/mastodon_threads/new.phtml:116
+#: views/links/show.phtml:117 views/links/show.phtml:121
+msgid "Share on Mastodon"
+msgstr "Partager vers Mastodon"
+
+#: views/links/_link.phtml:319
 msgid "Repair"
 msgstr "Réparer"
 
-#: views/links/_link.phtml:313
+#: views/links/_link.phtml:330
 msgid "Are you sure that you want to delete this link?"
 msgstr "Êtes-vous sur·e de vouloir supprimer ce lien ?"
 
-#: views/links/_link.phtml:333 views/links/_link.phtml:336
-#: views/links/show.phtml:129 views/links/show.phtml:132
+#: views/links/_link.phtml:350 views/links/_link.phtml:353
+#: views/links/show.phtml:146 views/links/show.phtml:149
 msgid "Mark as read"
 msgstr "Marquer comme lu"
 
-#: views/links/_link.phtml:346 views/links/_link.phtml:349
+#: views/links/_link.phtml:363 views/links/_link.phtml:366
 msgid "Remove from read list"
 msgstr "Retirer des liens lus"
 
-#: views/links/_link.phtml:359 views/links/_link.phtml:362
-#: views/links/show.phtml:142 views/links/show.phtml:145
+#: views/links/_link.phtml:376 views/links/_link.phtml:379
+#: views/links/show.phtml:159 views/links/show.phtml:162
 msgid "Read later"
 msgstr "Lire plus tard"
 
-#: views/links/_link.phtml:377 views/links/_link.phtml:381
-#: views/links/collections/index.phtml:104 views/links/show.phtml:162
+#: views/links/_link.phtml:394 views/links/_link.phtml:398
+#: views/links/collections/index.phtml:104 views/links/show.phtml:179
 msgid "Store the link"
 msgstr "Ranger le lien"
 
-#: views/links/collections/_new_note_form.phtml:3 views/links/show.phtml:277
+#: views/links/collections/_new_note_form.phtml:3 views/links/show.phtml:294
 msgid "What do you retain from this content?"
 msgstr "Que retenez-vous de ce contenu ?"
 
-#: views/links/collections/_new_note_form.phtml:29 views/links/show.phtml:301
+#: views/links/collections/_new_note_form.phtml:29 views/links/show.phtml:318
 #: views/notes/edit.phtml:50
 msgid "You can format the content in Markdown and use #tags."
 msgstr "Vous pouvez formater le contenu en Markdown et utiliser des #tags."
-
-#: views/links/collections/_new_note_form.phtml:43 views/links/show.phtml:315
-msgid "Share on Mastodon"
-msgstr "Partager vers Mastodon"
 
 #: views/links/collections/index.phtml:3 views/links/collections/index.phtml:12
 msgid "Storing a link"
@@ -1512,6 +1513,30 @@ msgstr "Organisez vos liens dans vos collections thématiques."
 #: views/links/index.phtml:38
 msgid "Create a collection"
 msgstr "Créer une collection"
+
+#: views/links/mastodon_threads/created.phtml:3
+#: views/links/mastodon_threads/created.phtml:13
+msgid "Your posts are going to be published on Mastodon!"
+msgstr "Vos messages vont être publiés sur Mastodon !"
+
+#: views/links/mastodon_threads/new.phtml:3
+#: views/links/mastodon_threads/new.phtml:12
+msgid "Share a link on Mastodon"
+msgstr "Partager un lien vers Mastodon"
+
+#: views/links/mastodon_threads/new.phtml:45
+#: views/links/mastodon_threads/new.phtml:91
+msgid "Post #__number__"
+msgstr "Message n°__number__"
+
+#: views/links/mastodon_threads/new.phtml:61
+#: views/links/mastodon_threads/new.phtml:106
+msgid "Remove from thread"
+msgstr "Retirer du fil"
+
+#: views/links/mastodon_threads/new.phtml:74
+msgid "Add a post to thread"
+msgstr "Ajouter un message au fil"
 
 #: views/links/new.phtml:82
 msgid "Mark to read later?"
@@ -1606,35 +1631,35 @@ msgstr "Flux de syndication de notes sur %s"
 msgid "Added by <a href=\"%s\">%s</a>"
 msgstr "Ajouté par <a href=\"%s\">%s</a>"
 
-#: views/links/show.phtml:116
+#: views/links/show.phtml:133
 msgid "read"
 msgstr "lire"
 
-#: views/links/show.phtml:118
+#: views/links/show.phtml:135
 msgid "(open a new window)"
 msgstr "(ouvre une nouvelle fenêtre)"
 
-#: views/links/show.phtml:179
+#: views/links/show.phtml:196
 msgid "This link being hidden, the notes are private."
 msgstr "Ce lien étant masqué, les notes sont privées."
 
-#: views/links/show.phtml:239
+#: views/links/show.phtml:256
 msgid "Are you sure that you want to delete this note?"
 msgstr "Êtes-vous sur·e de vouloir supprimer cette note ?"
 
-#: views/links/show.phtml:260
+#: views/links/show.phtml:277
 msgid "No notes have yet been taken."
 msgstr "Aucune note n’a encore été prise."
 
-#: views/links/show.phtml:322
+#: views/links/show.phtml:324
 msgid "Add a note"
 msgstr "Ajouter une note"
 
-#: views/links/show.phtml:334
+#: views/links/show.phtml:336
 msgid "See notes from:"
 msgstr "Voir les notes de :"
 
-#: views/links/show.phtml:346
+#: views/links/show.phtml:348
 msgid "(yourself)"
 msgstr "(vous-même)"
 
@@ -1714,58 +1739,56 @@ msgid "Please wait while we’re verifying access to Mastodon…"
 msgstr "Merci de patienter pendant que nous vérifions l’accès à Mastodon…"
 
 #: views/mastodon/show.phtml:3 views/mastodon/show.phtml:14
-#: views/my/account/show.phtml:68
+#: views/my/account/show.phtml:67
 msgid "Configure sharing to Mastodon"
 msgstr "Configurer le partage vers Mastodon"
 
 #: views/mastodon/show.phtml:18
 #, php-format
-msgid "%s lets you share your links and notes on Mastodon."
-msgstr "%s vous permet de partager vos liens et notes sur Mastodon."
+msgid ""
+"%s lets you edit a thread of posts to share your links and notes on Mastodon."
+msgstr ""
+"%s vous permet d’éditer un fil de messages pour partager vos liens et notes "
+"sur Mastodon."
 
-#: views/mastodon/show.phtml:29
-msgid "When to link to your notes?"
-msgstr "Quand ajouter un lien vers vos notes ?"
+#: views/mastodon/show.phtml:36
+msgid "Pre-fill the thread with the contents of your notes"
+msgstr "Pré-remplir le fil avec le contenu de vos notes"
 
 #: views/mastodon/show.phtml:49
-msgid "Only when you post a note"
-msgstr "Seulement quand vous postez une note"
+msgid "Add a link to your notes in the first post of the thread"
+msgstr "Ajouter un lien vers vos notes dans le premier message du fil"
 
-#: views/mastodon/show.phtml:53
-msgid "Always"
-msgstr "Toujours"
+#: views/mastodon/show.phtml:55
+msgid "Something to add to the first post of the thread? (postscript)"
+msgstr "Quelque chose à ajouter au premier message du fil ? (post-scriptum)"
 
-#: views/mastodon/show.phtml:57
-msgid "Never"
-msgstr "Jamais"
+#: views/mastodon/show.phtml:74
+msgid "#monitoring"
+msgstr "#veille"
 
-#: views/mastodon/show.phtml:62
+#: views/mastodon/show.phtml:91
+msgid "Add the postscript in all the posts of the thread"
+msgstr "Ajouter le post-scriptum à tous les messages du fil"
+
+#: views/mastodon/show.phtml:108
 #, php-format
-msgid "Your Mastodon posts can include a link to your notes on %s."
-msgstr "Votre publication Mastodon peut inclure un lien vers vos notes sur %s."
+msgid "Connected with account <em>%s</em>"
+msgstr "Connecté‧e avec le compte <em>%s</em>"
 
-#: views/mastodon/show.phtml:68
-msgid "Always something to add to your posts?"
-msgstr "Quelque chose à toujours ajouter à vos publications ?"
-
-#: views/mastodon/show.phtml:105
-#, php-format
-msgid "connected with account <em>%s</em>"
-msgstr "connecté‧e avec le compte <em>%s</em>"
-
-#: views/mastodon/show.phtml:111
+#: views/mastodon/show.phtml:114
 msgid "Are you sure that you want to disconnect your Mastodon account?"
 msgstr "Êtes-vous sur·e de vouloir déconnecter votre compte Mastodon ?"
 
-#: views/mastodon/show.phtml:115 views/my/sessions/index.phtml:52
+#: views/mastodon/show.phtml:117 views/my/sessions/index.phtml:52
 msgid "disconnect"
 msgstr "déconnecter"
 
-#: views/mastodon/show.phtml:128
+#: views/mastodon/show.phtml:129
 msgid "What’s the address of your Mastodon server?"
 msgstr "Quelle est l’adresse de votre serveur Mastodon ?"
 
-#: views/mastodon/show.phtml:153
+#: views/mastodon/show.phtml:154
 msgid ""
 "Not using Mastodon yet? <a target=\"_blank\" rel=\"noopener noreferrer\" "
 "href=\"https://joinmastodon.org/servers\">Let’s choose a server.</a>"
@@ -1774,7 +1797,7 @@ msgstr ""
 "noreferrer\" href=\"https://joinmastodon.org/servers\">Choisissez un serveur."
 "</a>"
 
-#: views/mastodon/show.phtml:159
+#: views/mastodon/show.phtml:160
 msgid "Connect to Mastodon"
 msgstr "Se connecter à Mastodon"
 
@@ -1854,35 +1877,35 @@ msgstr "Gérer votre abonnement"
 msgid "Create your payment account"
 msgstr "Créer votre compte de paiement"
 
-#: views/my/account/show.phtml:63
+#: views/my/account/show.phtml:62
 msgid "Sharing"
 msgstr "Partage"
 
-#: views/my/account/show.phtml:74
+#: views/my/account/show.phtml:72
 msgid "Data"
 msgstr "Données"
 
-#: views/my/account/show.phtml:80
+#: views/my/account/show.phtml:78
 msgid "Import your data from an <abbr>OPML</abbr> file"
 msgstr "Importer vos données depuis un fichier <abbr>OPML</abbr>"
 
-#: views/my/account/show.phtml:87
+#: views/my/account/show.phtml:85
 msgid "Download your data"
 msgstr "Télécharger vos données"
 
-#: views/my/account/show.phtml:92
+#: views/my/account/show.phtml:90
 msgid "Security"
 msgstr "Sécurité"
 
-#: views/my/account/show.phtml:97
+#: views/my/account/show.phtml:95
 msgid "Manage your credentials"
 msgstr "Gérer vos identifiants"
 
-#: views/my/account/show.phtml:103
+#: views/my/account/show.phtml:101
 msgid "Manage your sessions"
 msgstr "Gérer vos sessions"
 
-#: views/my/account/show.phtml:109
+#: views/my/account/show.phtml:107
 msgid "Delete your account?"
 msgstr "Supprimer votre compte&nbsp;?"
 

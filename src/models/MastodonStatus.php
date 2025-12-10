@@ -39,18 +39,17 @@ class MastodonStatus
     #[Database\Column]
     public string $link_id;
 
-    #[Database\Column]
-    public ?string $note_id = null;
-
-    public function __construct(MastodonAccount $account, Link $link, ?Note $note)
+    public function __construct(MastodonAccount $account, Link $link, string $content = '')
     {
         $this->id = \Minz\Random::timebased();
         $this->setAccount($account);
         $this->setLink($link);
-        $this->setNote($note);
-        $this->setReplyTo($this->lastLinkPostedStatus());
 
-        $this->content = $this->buildDefaultContent();
+        if ($content) {
+            $this->content = $this->buildContent($content);
+        } else {
+            $this->content = $this->buildDefaultContent();
+        }
     }
 
     public function account(): MastodonAccount
@@ -79,23 +78,6 @@ class MastodonStatus
         $this->memoizeValue('link', $link);
     }
 
-    public function note(): ?Note
-    {
-        return $this->memoize('note', function (): ?Note {
-            if (!$this->note_id) {
-                return null;
-            }
-
-            return Note::require($this->note_id);
-        });
-    }
-
-    public function setNote(?Note $note): void
-    {
-        $this->note_id = $note?->id;
-        $this->memoizeValue('note', $note);
-    }
-
     public function replyTo(): ?MastodonStatus
     {
         return $this->memoize('reply_to', function (): ?MastodonStatus {
@@ -118,105 +100,56 @@ class MastodonStatus
         return $this->reply_to_id !== null;
     }
 
+    public function reply(): ?MastodonStatus
+    {
+        return $this->memoize('reply', function (): ?MastodonStatus {
+            return self::findBy([
+                'reply_to_id' => $this->id,
+            ]);
+        });
+    }
+
+    public function isPosted(): bool
+    {
+        return $this->posted_at !== null;
+    }
+
     /**
-     * Return the default content value, built from link and note information.
+     * Return the default content value, built from link information.
      */
     private function buildDefaultContent(): string
     {
         $link = $this->link();
-        $note = $this->note();
         $account = $this->account();
-        $server = $account->server();
         $options = $account->options;
 
-        $max_chars = $server->statuses_max_characters;
-        $count_chars = 0;
-        $content = '';
+        $content = $link->title;
+        $content .= "\n\n" . $link->url;
 
-        if (!$this->isReply()) {
-            $content = self::truncateString($link->title, 250);
-            $count_chars += mb_strlen($content);
-
-            $content .= "\n\n" . $link->url;
-            // Mastodon always considers 23 characters for a URL (also, don’t
-            // forget the new line chars).
-            $count_chars += 2 + 23;
-
-            if (
-                $options['link_to_comment'] === 'always' ||
-                ($options['link_to_comment'] === 'auto' && $note)
-            ) {
-                $url_to_link = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
-                $content .= "\n" . $url_to_link;
-
-                if (\App\Configuration::$url_options['host'] === 'localhost') {
-                    // Mastodon doesn't count localhost links as URLs
-                    $count_chars += 1 + mb_strlen($url_to_link);
-                } else {
-                    $count_chars += 1 + 23;
-                }
+        if (!$link->is_hidden) {
+            $url_to_notes = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
+            if ($options['link_to_notes']) {
+                $content .= "\n" . $url_to_notes;
             }
         }
 
-        $post_scriptum = '';
         if ($options['post_scriptum']) {
-            $post_scriptum = "\n\n" . $options['post_scriptum'];
-            $count_chars += 2 + mb_strlen($options['post_scriptum']);
+            $content .= "\n\n" . $options['post_scriptum'];
         }
-
-        if ($note) {
-            $note_content = self::truncateString($note->content, $max_chars - $count_chars - 2);
-            $content = $content . "\n\n" . $note_content;
-        }
-
-        $content .= $post_scriptum;
 
         return $content;
     }
 
-    /**
-     * Truncate a string to a maximum of characters by appending "…" at the end
-     * of the string.
-     */
-    private static function truncateString(string $string, int $max_chars): string
+    public function buildContent(string $base_content): string
     {
-        $string_size = mb_strlen($string);
+        $account = $this->account();
+        $options = $account->options;
 
-        if ($string_size < $max_chars) {
-            return $string;
+        $content = $base_content;
+        if ($options['post_scriptum'] && $options['post_scriptum_in_all_posts']) {
+            $content .= "\n\n" . $options['post_scriptum'];
         }
 
-        return trim(mb_substr($string, 0, $max_chars - 1)) . '…';
-    }
-
-    /**
-     * Return the last posted status corresponding to the current status' link.
-     * This allows to fetch the reply status id.
-     */
-    public function lastLinkPostedStatus(): ?MastodonStatus
-    {
-        $sql = <<<SQL
-            SELECT * FROM mastodon_statuses ms
-
-            WHERE ms.link_id = :link_id
-            AND ms.posted_at IS NOT NULL
-            AND ms.status_id != ''
-
-            ORDER BY ms.posted_at DESC
-            LIMIT 1
-        SQL;
-
-        $database = Database::get();
-        $statement = $database->prepare($sql);
-        $statement->execute([
-            ':link_id' => $this->link_id,
-        ]);
-
-        $result = $statement->fetch();
-        if (is_array($result)) {
-            return self::fromDatabaseRow($result);
-        } else {
-            return null;
-        }
+        return $content;
     }
 }

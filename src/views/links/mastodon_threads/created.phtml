@@ -1,0 +1,16 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => _('Your posts are going to be published on Mastodon!'),
+        'canonical' => url_full('link mastodon thread created', ['id' => $link->id]),
+        'modal_enabled' => true,
+    ]);
+?>
+
+<div class="section">
+    <div class="section__title">
+        <p id="modal-title" class="text--big text--bolder text--accent">
+            <?= icon('success') ?>
+            <?= _('Your posts are going to be published on Mastodon!') ?>
+        </p>
+    </div>
+</div>
