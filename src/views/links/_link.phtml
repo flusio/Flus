@@ -29,6 +29,8 @@
     $in_error = $link->inError();
     $trackers_detected = $link->trackersDetected();
 
+    $number_collections = $current_user ? $link->numberCollectionsForUser($current_user) : 0;
+
     $in_bookmarks = $link->isInBookmarksOf($current_user);
     if ($display_read_later === 'auto' && $in_bookmarks) {
         $display_read_later = false;
@@ -385,7 +387,7 @@
             <?php endif; ?>
 
             <button
-                class="button--icon button--ghost button--smaller"
+                class="link__collections-button button--icon button--ghost button--smaller"
                 data-controller="modal-opener"
                 data-action="modal-opener#fetch"
                 data-modal-opener-href-value="<?= url('link collections', ['id' => $link->id, 'mark_as_read' => $storing_must_mark_as_read]) ?>"
@@ -397,6 +399,15 @@
                 <span class="sr-only">
                     <?= _('Store the link') ?>
                 </span>
+
+                <?php if ($number_collections > 0): ?>
+                    <span
+                        class="link__number-collections"
+                        aria-label="<?= _nf('In %d collection', 'In %d collections', $number_collections, $number_collections) ?>"
+                    >
+                        <?= $number_collections ?>
+                    </span>
+                <?php endif; ?>
             </button>
         </div>
     </div>

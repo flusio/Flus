@@ -429,6 +429,31 @@ trait Link
         return intval($statement->fetchColumn());
     }
 
+    public function numberCollectionsForUser(\App\models\User $user): int
+    {
+        $sql = <<<SQL
+            SELECT COUNT(c.*)
+            FROM collections c, links_to_collections lc, links l
+
+            WHERE l.url_hash = :link_url_hash
+            AND l.user_id = :user_id
+
+            AND lc.link_id = l.id
+            AND lc.collection_id = c.id
+
+            AND c.type = 'collection'
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute([
+            ':link_url_hash' => $this->url_hash,
+            ':user_id' => $user->id,
+        ]);
+
+        return intval($statement->fetchColumn());
+    }
+
     /**
      * Return whether or not the given link URL is in the collection.
      */

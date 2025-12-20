@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2025-12-22 15:27+0100\n"
-"PO-Revision-Date: 2025-12-22 15:27+0100\n"
+"POT-Creation-Date: 2025-12-22 15:40+0100\n"
+"PO-Revision-Date: 2025-12-22 15:40+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -809,7 +809,7 @@ msgstr "(max. %d caractères)"
 #: views/links/collections/_new_note_form.phtml:11 views/links/edit.phtml:29
 #: views/links/edit.phtml:75 views/links/mastodon_threads/new.phtml:26
 #: views/links/new.phtml:26 views/links/repairing/new.phtml:33
-#: views/links/searches/show.phtml:39 views/links/show.phtml:299
+#: views/links/searches/show.phtml:39 views/links/show.phtml:311
 #: views/mastodon/show.phtml:63 views/mastodon/show.phtml:134
 #: views/my/account/deletion.phtml:37 views/my/preferences/edit.phtml:26
 #: views/my/profile/edit.phtml:29 views/my/profile/edit.phtml:86
@@ -1104,8 +1104,8 @@ msgid "Published by %s"
 msgstr "Publiée par %s"
 
 #: views/collections/show.phtml:79 views/collections/show_public.phtml:122
-#: views/links/_link.phtml:237 views/links/_link.phtml:241
-#: views/links/show.phtml:227 views/links/show.phtml:231
+#: views/links/_link.phtml:239 views/links/_link.phtml:243
+#: views/links/show.phtml:239 views/links/show.phtml:243
 #: views/news/index.phtml:47 views/news/index.phtml:132
 #: views/news/index.phtml:214
 msgid "Actions"
@@ -1116,8 +1116,8 @@ msgid "Adjust for the news"
 msgstr "Régler pour le journal"
 
 #: views/collections/show.phtml:127 views/groups/_group.phtml:19
-#: views/groups/_group.phtml:33 views/links/_link.phtml:304
-#: views/links/show.phtml:247 views/profiles/show.phtml:55
+#: views/groups/_group.phtml:33 views/links/_link.phtml:306
+#: views/links/show.phtml:259 views/profiles/show.phtml:55
 msgid "Edit"
 msgstr "Modifier"
 
@@ -1147,8 +1147,8 @@ msgstr ""
 "Êtes-vous sur·e de vouloir supprimer cette collection ? Vous pourriez perdre "
 "les liens qui lui sont attachés."
 
-#: views/collections/show.phtml:194 views/links/_link.phtml:338
-#: views/links/show.phtml:261
+#: views/collections/show.phtml:194 views/links/_link.phtml:340
+#: views/links/show.phtml:273
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -1343,30 +1343,30 @@ msgstr "Quelque chose s’est mal passé"
 msgid "An error occurred during the processing of your request."
 msgstr "Une erreur est survenue pendant le traitement de votre requête."
 
-#: views/links/_link.phtml:65
+#: views/links/_link.phtml:67
 msgid "This link seems to be inaccessible, you should repair it."
 msgstr "Ce lien semble inaccessible, vous devriez le réparer."
 
-#: views/links/_link.phtml:66 views/links/_link.phtml:84
+#: views/links/_link.phtml:68 views/links/_link.phtml:86
 msgid "inaccessible"
 msgstr "inaccessible"
 
-#: views/links/_link.phtml:75
+#: views/links/_link.phtml:77
 msgid "Trackers have been detected in this link, you should repair it."
 msgstr "Des pisteurs ont été détectés dans ce lien, vous devriez le réparer."
 
-#: views/links/_link.phtml:76 views/links/_link.phtml:94
+#: views/links/_link.phtml:78 views/links/_link.phtml:96
 msgid "trackers"
 msgstr "pisteurs"
 
-#: views/links/_link.phtml:83
+#: views/links/_link.phtml:85
 msgid ""
 "This link seems to be inaccessible, you may have difficulties to access it."
 msgstr ""
 "Ce lien semble inaccessible, vous pourriez rencontrer des difficultés pour y "
 "accéder."
 
-#: views/links/_link.phtml:93
+#: views/links/_link.phtml:95
 msgid ""
 "Trackers have been detected in this link, your privacy might not be "
 "respected if you click on it."
@@ -1374,19 +1374,19 @@ msgstr ""
 "Des pisteurs ont été détectés dans ce lien, votre vie privée pourrait ne pas "
 "être respectée si vous cliquez dessus."
 
-#: views/links/_link.phtml:141 views/links/show.phtml:94
+#: views/links/_link.phtml:143 views/links/show.phtml:94
 msgid "ongoing synchronisation…"
 msgstr "synchronisation en cours…"
 
-#: views/links/_link.phtml:148
+#: views/links/_link.phtml:150
 msgid "You read this link."
 msgstr "Vous avez lu ce lien."
 
-#: views/links/_link.phtml:152
+#: views/links/_link.phtml:154
 msgid "This link is in your bookmarks."
 msgstr "Ce lien est dans vos signets."
 
-#: views/links/_link.phtml:159
+#: views/links/_link.phtml:161
 #, php-format
 msgid ""
 "via your <strong><a class=\"anchor--hidden\" href=\"%s\">bookmarks</a></"
@@ -1394,7 +1394,7 @@ msgid ""
 msgstr ""
 "via vos <strong><a class=\"anchor--hidden\" href=\"%s\">signets</a></strong>"
 
-#: views/links/_link.phtml:164
+#: views/links/_link.phtml:166
 #, php-format
 msgid ""
 "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong> by <a "
@@ -1403,73 +1403,80 @@ msgstr ""
 "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong> de <a "
 "class=\"anchor--hidden\" href=\"%s\">%s</a>"
 
-#: views/links/_link.phtml:172 views/links/_link.phtml:179
+#: views/links/_link.phtml:174 views/links/_link.phtml:181
 #, php-format
 msgid "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong>"
 msgstr "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong>"
 
-#: views/links/_link.phtml:202
+#: views/links/_link.phtml:204
 #, php-format
 msgid "Notepad (%s)"
 msgstr "Bloc-note (%s)"
 
-#: views/links/_link.phtml:204 views/links/show.phtml:191
+#: views/links/_link.phtml:206 views/links/show.phtml:203
 msgid "Notepad"
 msgstr "Bloc-note"
 
-#: views/links/_link.phtml:210
+#: views/links/_link.phtml:212
 msgid "hidden"
 msgstr "masqué"
 
-#: views/links/_link.phtml:224
+#: views/links/_link.phtml:226
 msgid "Comments"
 msgstr "Commentaires"
 
-#: views/links/_link.phtml:251
+#: views/links/_link.phtml:253
 msgid "Remove from the news"
 msgstr "Retirer du journal"
 
-#: views/links/_link.phtml:270
+#: views/links/_link.phtml:272
 msgid "Copy the external link"
 msgstr "Copier le lien externe"
 
-#: views/links/_link.phtml:285 views/links/mastodon_threads/new.phtml:116
+#: views/links/_link.phtml:287 views/links/mastodon_threads/new.phtml:116
 #: views/links/show.phtml:117 views/links/show.phtml:121
 msgid "Share on Mastodon"
 msgstr "Partager vers Mastodon"
 
-#: views/links/_link.phtml:319
+#: views/links/_link.phtml:321
 msgid "Repair"
 msgstr "Réparer"
 
-#: views/links/_link.phtml:330
+#: views/links/_link.phtml:332
 msgid "Are you sure that you want to delete this link?"
 msgstr "Êtes-vous sur·e de vouloir supprimer ce lien ?"
 
-#: views/links/_link.phtml:350 views/links/_link.phtml:353
+#: views/links/_link.phtml:352 views/links/_link.phtml:355
 #: views/links/show.phtml:146 views/links/show.phtml:149
 msgid "Mark as read"
 msgstr "Marquer comme lu"
 
-#: views/links/_link.phtml:363 views/links/_link.phtml:366
+#: views/links/_link.phtml:365 views/links/_link.phtml:368
 msgid "Remove from read list"
 msgstr "Retirer des liens lus"
 
-#: views/links/_link.phtml:376 views/links/_link.phtml:379
+#: views/links/_link.phtml:378 views/links/_link.phtml:381
 #: views/links/show.phtml:159 views/links/show.phtml:162
 msgid "Read later"
 msgstr "Lire plus tard"
 
-#: views/links/_link.phtml:394 views/links/_link.phtml:398
-#: views/links/collections/index.phtml:104 views/links/show.phtml:179
+#: views/links/_link.phtml:396 views/links/_link.phtml:400
+#: views/links/collections/index.phtml:104 views/links/show.phtml:182
 msgid "Store the link"
 msgstr "Ranger le lien"
 
-#: views/links/collections/_new_note_form.phtml:3 views/links/show.phtml:294
+#: views/links/_link.phtml:406 views/links/show.phtml:187
+#, php-format
+msgid "In %d collection"
+msgid_plural "In %d collections"
+msgstr[0] "Dans %d collection"
+msgstr[1] "Dans %d collections"
+
+#: views/links/collections/_new_note_form.phtml:3 views/links/show.phtml:306
 msgid "What do you retain from this content?"
 msgstr "Que retenez-vous de ce contenu ?"
 
-#: views/links/collections/_new_note_form.phtml:29 views/links/show.phtml:318
+#: views/links/collections/_new_note_form.phtml:29 views/links/show.phtml:330
 #: views/notes/edit.phtml:50
 msgid "You can format the content in Markdown and use #tags."
 msgstr "Vous pouvez formater le contenu en Markdown et utiliser des #tags."
@@ -1639,27 +1646,27 @@ msgstr "lire"
 msgid "(open a new window)"
 msgstr "(ouvre une nouvelle fenêtre)"
 
-#: views/links/show.phtml:196
+#: views/links/show.phtml:208
 msgid "This link being hidden, the notes are private."
 msgstr "Ce lien étant masqué, les notes sont privées."
 
-#: views/links/show.phtml:256
+#: views/links/show.phtml:268
 msgid "Are you sure that you want to delete this note?"
 msgstr "Êtes-vous sur·e de vouloir supprimer cette note ?"
 
-#: views/links/show.phtml:277
+#: views/links/show.phtml:289
 msgid "No notes have yet been taken."
 msgstr "Aucune note n’a encore été prise."
 
-#: views/links/show.phtml:324
+#: views/links/show.phtml:336
 msgid "Add a note"
 msgstr "Ajouter une note"
 
-#: views/links/show.phtml:336
+#: views/links/show.phtml:348
 msgid "See notes from:"
 msgstr "Voir les notes de :"
 
-#: views/links/show.phtml:348
+#: views/links/show.phtml:360
 msgid "(yourself)"
 msgstr "(vous-même)"
 

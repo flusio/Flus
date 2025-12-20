@@ -248,3 +248,23 @@
 .link__actions-group > * + * {
     margin-left: var(--space-small);
 }
+
+.link__collections-button {
+    position: relative;
+}
+
+.link__number-collections {
+    position: absolute;
+    right: 0.2em;
+    bottom: 0.2em;
+
+    display: inline-block;
+    padding: 0.1em 0.3em;
+
+    font-size: var(--size-smaller);
+    line-height: 1;
+    text-align: center;
+
+    background-color: var(--color-accent-bg);
+    border-radius: 50%;
+}

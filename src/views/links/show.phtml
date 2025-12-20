@@ -168,7 +168,10 @@
                     <?php endif; ?>
                 </div>
 
+                <?php $number_collections = $current_user ? $link->numberCollectionsForUser($current_user) : 0; ?>
+
                 <button
+                    class="link__collections-button"
                     data-controller="modal-opener"
                     data-action="modal-opener#fetch"
                     data-modal-opener-href-value="<?= url('link collections', ['id' => $link->id]) ?>"
@@ -177,6 +180,15 @@
                 >
                     <?= icon('collection') ?>
                     <?= _('Store the link') ?>
+
+                    <?php if ($number_collections > 0): ?>
+                        <span
+                            class="link__number-collections"
+                            aria-label="<?= _nf('In %d collection', 'In %d collections', $number_collections, $number_collections) ?>"
+                        >
+                            <?= $number_collections ?>
+                        </span>
+                    <?php endif; ?>
                 </button>
             </div>
         <?php endif; ?>
