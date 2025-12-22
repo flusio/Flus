@@ -89,7 +89,7 @@
                     data-characters-counter-target="source"
                     data-action="characters-counter#updateCounter"
                     aria-label="<?= _('Post #__number__') ?>"
-                ><?= $form->defaultContent() ?></textarea>
+                ><?= protect($form->defaultContent()) ?></textarea>
 
                 <div class="cols cols--always cols--gap-small cols--center">
                     <p class="thread__post-counter col--extend" aria-live="polite" data-characters-counter-target="counter">
