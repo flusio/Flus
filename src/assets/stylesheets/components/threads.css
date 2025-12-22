@@ -58,6 +58,7 @@
     padding: var(--space-smaller);
 
     color: var(--color-grey-text);
+    font-size: var(--size-smaller);
 }
 
 .thread__post-counter.counter--over {

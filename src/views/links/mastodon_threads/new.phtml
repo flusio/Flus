@@ -46,8 +46,10 @@
                         ><?= protect($content) ?></textarea>
 
                         <div class="cols cols--always cols--gap-small cols--center">
-                            <p class="thread__post-counter col--extend" aria-live="polite" data-characters-counter-target="counter">
-                            </p>
+                            <div class="col--extend">
+                                <p class="thread__post-counter" aria-live="polite" data-characters-counter-target="counter">
+                                </p>
+                            </div>
 
                             <?php if ($index > 0): ?>
                                 <div>
@@ -92,8 +94,10 @@
                 ><?= protect($form->defaultContent()) ?></textarea>
 
                 <div class="cols cols--always cols--gap-small cols--center">
-                    <p class="thread__post-counter col--extend" aria-live="polite" data-characters-counter-target="counter">
-                    </p>
+                    <div class="col--extend">
+                        <p class="thread__post-counter" aria-live="polite" data-characters-counter-target="counter">
+                        </p>
+                    </div>
 
                     <div>
                         <button
