@@ -59,17 +59,15 @@
             </ul>
         <?php endif; ?>
 
-        <?php if ($beta_enabled): ?>
-            <h2 class="groupnav__title"><?= _('Sharing') ?></h2>
+        <h2 class="groupnav__title"><?= _('Sharing') ?></h2>
 
-            <ul class="groupnav__container">
-                <li class="groupnav__item groupnav__item--mastodon">
-                    <a class="groupnav__anchor" href="<?= url('mastodon') ?>">
-                        <?= _('Configure sharing to Mastodon') ?>
-                    </a>
-                </li>
-            </ul>
-        <?php endif; ?>
+        <ul class="groupnav__container">
+            <li class="groupnav__item groupnav__item--mastodon">
+                <a class="groupnav__anchor" href="<?= url('mastodon') ?>">
+                    <?= _('Configure sharing to Mastodon') ?>
+                </a>
+            </li>
+        </ul>
 
         <h2 class="groupnav__title"><?= _('Data') ?></h2>
 
