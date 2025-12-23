@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2025-12-22 15:40+0100\n"
-"PO-Revision-Date: 2025-12-22 15:40+0100\n"
+"POT-Creation-Date: 2025-12-23 12:04+0100\n"
+"PO-Revision-Date: 2025-12-23 12:04+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -1433,8 +1433,8 @@ msgstr "Retirer du journal"
 msgid "Copy the external link"
 msgstr "Copier le lien externe"
 
-#: views/links/_link.phtml:287 views/links/mastodon_threads/new.phtml:116
-#: views/links/show.phtml:117 views/links/show.phtml:121
+#: views/links/_link.phtml:287 views/links/show.phtml:117
+#: views/links/show.phtml:121
 msgid "Share on Mastodon"
 msgstr "Partager vers Mastodon"
 
@@ -1532,18 +1532,22 @@ msgid "Share a link on Mastodon"
 msgstr "Partager un lien vers Mastodon"
 
 #: views/links/mastodon_threads/new.phtml:45
-#: views/links/mastodon_threads/new.phtml:91
+#: views/links/mastodon_threads/new.phtml:93
 msgid "Post #__number__"
 msgstr "Message n°__number__"
 
-#: views/links/mastodon_threads/new.phtml:61
-#: views/links/mastodon_threads/new.phtml:106
+#: views/links/mastodon_threads/new.phtml:63
+#: views/links/mastodon_threads/new.phtml:110
 msgid "Remove from thread"
 msgstr "Retirer du fil"
 
-#: views/links/mastodon_threads/new.phtml:74
+#: views/links/mastodon_threads/new.phtml:76
 msgid "Add a post to thread"
 msgstr "Ajouter un message au fil"
+
+#: views/links/mastodon_threads/new.phtml:120
+msgid "Publish on Mastodon"
+msgstr "Publier sur Mastodon"
 
 #: views/links/new.phtml:82
 msgid "Mark to read later?"
