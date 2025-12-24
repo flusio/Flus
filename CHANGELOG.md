@@ -1,5 +1,21 @@
 # Changelog of Flus
 
+## 2025-12-24 - v2.2.0
+
+### Features
+
+- Redesign and enable Mastodon sharing for everyone ([cd1b3060](https://github.com/flusio/Flus/commit/cd1b3060), [8b7a8c15](https://github.com/flusio/Flus/commit/8b7a8c15), [b4a6799b](https://github.com/flusio/Flus/commit/b4a6799b), [da5ed490](https://github.com/flusio/Flus/commit/da5ed490), [cc2bb106](https://github.com/flusio/Flus/commit/cc2bb106), [5e080a09](https://github.com/flusio/Flus/commit/5e080a09), [a528c653](https://github.com/flusio/Flus/commit/a528c653), [17a95e45](https://github.com/flusio/Flus/commit/17a95e45))
+- Handle custom Mastodon servers' status max characters ([d4d2964a](https://github.com/flusio/Flus/commit/d4d2964a))
+- Display the number of link's collections ([5edfdafe](https://github.com/flusio/Flus/commit/5edfdafe))
+
+### Maintenance
+
+- Update the dependencies ([35df1720](https://github.com/flusio/Flus/commit/35df1720))
+
+### Developers
+
+- Improve the Memoizer trait ([5b2e7a11](https://github.com/flusio/Flus/commit/5b2e7a11))
+
 ## 2025-12-06 - v2.1.3
 
 ### Bug fixes
