@@ -18,8 +18,8 @@ class OpmlImportation extends BaseForm
     use utils\Memoizer;
 
     public const OPML_TYPES = [
-        'opml' => ['text/x-opml', 'text/x-opml+xml'],
-        'xml' => ['application/xml', 'text/xml'],
+        'opml' => ['text/x-opml', 'text/x-opml+xml', 'application/xml', 'text/xml'],
+        'xml' => ['text/x-opml', 'text/x-opml+xml', 'application/xml', 'text/xml'],
     ];
 
     #[Form\Field]
@@ -70,9 +70,13 @@ class OpmlImportation extends BaseForm
     public function acceptedMimetypes(): string
     {
         $accept = [];
-        foreach (self::OPML_TYPES as $mimetypes) {
+        foreach (self::OPML_TYPES as $extension => $mimetypes) {
+            $accept[] = ".{$extension}";
             $accept = array_merge($accept, $mimetypes);
         }
+
+        $accept = array_unique($accept);
+
         return implode(', ', $accept);
     }
 

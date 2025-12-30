@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2025-12-23 12:04+0100\n"
-"PO-Revision-Date: 2025-12-23 12:04+0100\n"
+"POT-Creation-Date: 2025-12-30 14:56+0100\n"
+"PO-Revision-Date: 2025-12-30 14:57+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -191,7 +191,7 @@ msgstr ""
 msgid "The collection is already shared with this user."
 msgstr "Cette collection est déjà partagée avec cet‧te utilisateur‧ice."
 
-#: forms/importations/OpmlImportation.php:87
+#: forms/importations/OpmlImportation.php:91
 msgid "You already have an ongoing OPML importation."
 msgstr "Vous avez déjà une importation OPML en cours."
 
