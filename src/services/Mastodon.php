@@ -286,8 +286,13 @@ class Mastodon
         $response = $this->http->get($endpoint);
 
         if (!$response->success) {
-            $data = $response->utf8Data();
-            throw new MastodonError("Mastodon host {$host} returned error: {$data}");
+            $endpoint = $host . '/api/v1/instance';
+            $response = $this->http->get($endpoint);
+
+            if (!$response->success) {
+                $data = $response->utf8Data();
+                throw new MastodonError("Mastodon host {$host} returned error: {$data}");
+            }
         }
 
         $json = json_decode($response->data, associative: true);
