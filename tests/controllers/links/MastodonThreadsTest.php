@@ -94,10 +94,11 @@ class MastodonThreadsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(2, models\Link::count());
 
-        $new_link = models\Link::take(1);
+        $new_link = models\Link::findBy([
+            'user_id' => $user->id,
+        ]);
         $this->assertNotNull($new_link);
         $this->assertSame($link->url, $new_link->url);
-        $this->assertSame($user->id, $new_link->user_id);
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $new_link->id);
     }
@@ -214,12 +215,13 @@ class MastodonThreadsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\MastodonStatus::count());
         $this->assertSame(1, jobs\ShareOnMastodon::count());
 
-        $new_link = models\Link::take(1);
+        $new_link = models\Link::findBy([
+            'user_id' => $user->id,
+        ]);
         $status = models\MastodonStatus::take(0);
         $this->assertNotNull($new_link);
         $this->assertNotNull($status);
         $this->assertSame($link->url, $new_link->url);
-        $this->assertSame($user->id, $new_link->user_id);
         $this->assertSame($new_link->id, $status->link_id);
         $this->assertResponseCode($response, 302, "/links/{$new_link->id}/shares/mastodon/created");
     }
