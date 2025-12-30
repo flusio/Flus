@@ -1,5 +1,16 @@
 # Changelog of Flus
 
+## 2025-12-30 - v2.2.1
+
+### Bug fixes
+
+- Allow to import `.opml` files ([4f07eb12](https://github.com/flusio/Flus/commit/4f07eb12))
+- Fallback to Mastodon API v1 when getting server information ([dbbfc32a](https://github.com/flusio/Flus/commit/dbbfc32a))
+
+### Maintenance
+
+- Strengthen MastodonThreadsTest to not fail randomly ([55c3cc91](https://github.com/flusio/Flus/commit/55c3cc91))
+
 ## 2025-12-24 - v2.2.0
 
 ### Features
