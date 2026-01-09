@@ -17,6 +17,7 @@
             action="{{ url('update image collection', { id: collection.id }) }}"
             data-controller="autosubmit form-file"
             enctype="multipart/form-data"
+            class="flow text--center"
         >
             {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
 
@@ -40,7 +41,7 @@
             <div class="form__actions">
                 <button
                     type="button"
-                    class="button--primary"
+                    class="button--primary button--big"
                     data-action="form-file#openFile"
                     data-autosubmit-target="actionButton"
                     aria-describedby="file-caption"

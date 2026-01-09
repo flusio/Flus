@@ -6,6 +6,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="canonical" href="{% block canonical %}{% endblock %}">
 
+        {% block alternates %}
+        {% endblock %}
+
+        {% block opengraph %}
+        {% endblock %}
+
         <meta name="application-name" content="{{ app.brand }}">
         <meta name="theme-color" content="#00d7ad">
         <link rel="manifest" href="{{ url('webmanifest') }}">
@@ -32,7 +38,6 @@
     <body>
         <div class="layout {{ app.user ? 'layout--connected' : 'layout--disconnected' }}" id="layout">
             {% block layout_header %}
-                {{ include('layouts/_header.html.twig') }}
             {% endblock %}
 
             <main id="main-content" class="layout__main" tabindex="-1">

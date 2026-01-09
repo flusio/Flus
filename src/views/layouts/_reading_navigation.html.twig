@@ -1,0 +1,36 @@
+<nav class="reading-nav flow flow--small">
+    <ul class="reading-nav__container flow flow--smaller">
+        <li class="reading-nav__item">
+            <a
+                class="reading-nav__anchor reading-nav__anchor--bold"
+                href="{{ url('news') }}"
+                {{ page == 'news' ? 'aria-current="page"' : '' }}
+            >
+                {{ icon('reading') }}
+                {{ t('News') }}
+            </a>
+        </li>
+
+        <li class="reading-nav__item">
+            <a
+                class="reading-nav__anchor reading-nav__anchor--bold"
+                href="{{ url('bookmarks') }}"
+                {{ page == 'bookmarks' ? 'aria-current="page"' : '' }}
+            >
+                {{ icon('bookmark') }}
+                {{ t('Bookmarks') }}
+            </a>
+        </li>
+
+        <li class="reading-nav__item">
+            <a
+                class="reading-nav__anchor reading-nav__anchor--bold"
+                href="{{ url('read list') }}"
+                {{ page == 'read' ? 'aria-current="page"' : '' }}
+            >
+                {{ icon('check') }}
+                {{ t('Links read') }}
+            </a>
+        </li>
+    </ul>
+</nav>

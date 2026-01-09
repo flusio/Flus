@@ -1,0 +1,41 @@
+<section class="group flow flow--large">
+    <header class="group__header">
+        <h2 class="group__title">
+            {{ group.name }}
+        </h2>
+
+        <div class="group__separator"></div>
+
+        <button
+            class="button--icon-mobile"
+            type="button"
+            data-controller="modal-opener"
+            data-action="modal-opener#fetch"
+            data-modal-opener-href-value="{{ url('edit group', { id: group.id }) }}"
+            aria-haspopup="dialog"
+            aria-controls="modal"
+        >
+            {{ icon('pencil') }}
+            <span class="sr-mobile">
+                {{ t('Edit') }}
+            </span>
+        </button>
+    </header>
+
+    {% if collections %}
+        <div class="group__body">
+            <div class="grid">
+                {% for collection in collections %}
+                    {{ include('collections/_collection.html.twig', {
+                        collection: collection,
+                        display_by: display_by,
+                        display_number_links: display_number_links,
+                        display_visibility: display_visibility and collection.is_public,
+                    }) }}
+                {% endfor %}
+
+                {{ include('grids/_placeholder.html.twig', { count: collections | length }) }}
+            </div>
+        </div>
+    {% endif %}
+</section>

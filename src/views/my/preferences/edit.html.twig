@@ -1,8 +1,15 @@
 {% extends 'layouts/simple.html.twig' %}
 
-{% set title = t('Preferences') %}
-{% block title %}{{ title }}{% endblock %}
+{% block title %}{{ t('Preferences') }}{% endblock %}
 {% block canonical %}{{ url_full('preferences') }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'preferences' }) }}
+{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: t('Preferences') }) }}
+{% endblock %}
 
 {% block body %}
     <h1 class="text--center">{{ t('Preferences') }}</h1>

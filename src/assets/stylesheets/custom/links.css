@@ -54,8 +54,8 @@
     border: none;
 }
 
-.link__meta-warning:hover,
-.link__meta-warning:focus {
+button.link__meta-warning:hover,
+button.link__meta-warning:focus {
     background-color: var(--color-warning-bg-hover);
 }
 

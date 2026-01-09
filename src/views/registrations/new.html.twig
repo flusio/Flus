@@ -1,12 +1,19 @@
 {% extends 'layouts/authentication.html.twig' %}
 
-{% set title = t('Registration') %}
-{% block title %}{{ title }}{% endblock %}
+{% block title %}{{ t('Registration') }}{% endblock %}
 {% block canonical %}{{ url_full('registration') }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'registration' }) }}
+{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: t('Registration'), reset: true, track: false }) }}
+{% endblock %}
 
 {% block body %}
     <div class="wrapper wrapper--smaller wrapper--center flow flow--large">
-        <h1 class="text--center">{{ title }}</h1>
+        <h1 class="text--center">{{ t('Registration') }}</h1>
 
         {% if app_configuration('subscriptions_enabled') %}
             <p class="text--center text--bold">

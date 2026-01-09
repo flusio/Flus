@@ -44,7 +44,7 @@ class Feeds extends BaseController
         $collections = utils\Sorter::localeSort($collections, 'name');
         $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
 
-        return Response::ok('feeds/index.phtml', [
+        return Response::ok('feeds/index.html.twig', [
             'groups' => $groups,
             'groups_to_collections' => $groups_to_collections,
         ]);

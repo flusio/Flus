@@ -1,11 +1,18 @@
 {% extends 'layouts/simple.html.twig' %}
 
-{% set title = t('New link') %}
-{% block title %}{{ title }}{% endblock %}
+{% block title %}{{ t('New link') }}{% endblock %}
 {% block canonical %}{{ url_full('new link') }}{% endblock %}
 
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'new link' }) }}
+{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: t('New link') }) }}
+{% endblock %}
+
 {% block body %}
-    <h1 class="text--center">{{ title }}</h1>
+    <h1 class="text--center">{{ t('New link') }}</h1>
 
     <form method="post" action="{{ url('create link') }}" class="flow">
         {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}

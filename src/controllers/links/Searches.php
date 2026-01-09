@@ -38,7 +38,7 @@ class Searches extends BaseController
         ]);
         $form->handleRequest($request);
 
-        return Response::ok('links/searches/show.phtml', [
+        return Response::ok('links/searches/show.html.twig', [
             'form' => $form,
         ]);
     }
@@ -67,7 +67,7 @@ class Searches extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('links/searches/show.phtml', [
+            return Response::badRequest('links/searches/show.html.twig', [
                 'form' => $form,
             ]);
         }

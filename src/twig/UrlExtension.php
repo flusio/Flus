@@ -48,6 +48,15 @@ class UrlExtension
         }
     }
 
+    /**
+     * @param 'cards'|'large'|'avatars' $type
+     */
+    #[AsTwigFunction('url_media_full')]
+    public static function urlMediaFull(string $type, ?string $filename, string $default = 'default-card.png'): string
+    {
+        return \Minz\Url::baseUrl() . self::urlMedia($type, $filename, $default);
+    }
+
     #[AsTwigFunction('url_avatar')]
     public static function urlAvatar(?string $filename): string
     {

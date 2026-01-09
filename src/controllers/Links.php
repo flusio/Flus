@@ -80,7 +80,7 @@ class Links extends BaseController
             ]);
             $shared_collections = utils\Sorter::localeSort($shared_collections, 'name');
 
-            return Response::ok('links/index.phtml', [
+            return Response::ok('links/index.html.twig', [
                 'bookmarks' => $bookmarks,
                 'read_list' => $read_list,
                 'groups' => $groups,

@@ -4,7 +4,7 @@
 
 {% block body %}
     <div class="wrapper wrapper--small wrapper--center flow flow--large">
-        <form method="post" action="{{ url('update group', { id: group.id }) }}">
+        <form method="post" action="{{ url('update group', { id: group.id }) }}" class="flow">
             {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
 
             <div class="form-group">
@@ -39,7 +39,7 @@
             </div>
 
             <div class="text--center">
-                <button type="submit" class="button--primary">
+                <button type="submit" class="button--primary button--big">
                     {{ t('Save changes') }}
                 </button>
             </div>
@@ -47,13 +47,15 @@
             <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}" />
         </form>
 
+        <hr>
+
         <form
-            class="form--danger"
             method="post"
             action="{{ url('delete group', { id: group.id }) }}"
+            class="text--center"
             data-turbo-confirm="{{ t('Are you sure that you want to delete this group? The associated collections will NOT be deleted.') }}"
         >
-            <button type="submit" class="button--danger">
+            <button type="submit" class="button--danger button--big">
                 {{ icon('trash') }}
                 {{ t('Delete the group') }}
             </button>

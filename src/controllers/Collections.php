@@ -135,34 +135,19 @@ class Collections extends BaseController
         $topics = $collection->topics();
         $topics = utils\Sorter::localeSort($topics, 'label');
 
-        if ($can_update) {
-            return Response::ok('collections/show.phtml', [
-                'collection' => $collection,
-                'topics' => $topics,
-                'links' => $collection->links(
-                    ['published_at', 'number_notes'],
-                    [
-                        'offset' => $pagination->currentOffset(),
-                        'limit' => $pagination->numberPerPage(),
-                    ]
-                ),
-                'pagination' => $pagination,
-            ]);
-        } else {
-            return Response::ok('collections/show_public.phtml', [
-                'collection' => $collection,
-                'topics' => $topics,
-                'links' => $collection->links(
-                    ['published_at', 'number_notes'],
-                    [
-                        'hidden' => $access_is_shared,
-                        'offset' => $pagination->currentOffset(),
-                        'limit' => $pagination->numberPerPage(),
-                    ]
-                ),
-                'pagination' => $pagination,
-            ]);
-        }
+        return Response::ok('collections/show.html.twig', [
+            'collection' => $collection,
+            'topics' => $topics,
+            'links' => $collection->links(
+                ['published_at', 'number_notes'],
+                [
+                    'hidden' => $can_update || $access_is_shared,
+                    'offset' => $pagination->currentOffset(),
+                    'limit' => $pagination->numberPerPage(),
+                ]
+            ),
+            'pagination' => $pagination,
+        ]);
     }
 
     /**

@@ -1,7 +1,8 @@
 {% extends 'layouts/base.html.twig' %}
 
 {% block layout_body %}
-    {{ include('layouts/_back.html.twig', { reset: true, track: false }) }}
+    {% block back %}
+    {% endblock %}
 
     <section class="layout__content layout__content--authentication">
         <div class="authentication__leftside">

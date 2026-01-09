@@ -8,12 +8,11 @@
             {{ collection.name }}
         </p>
 
-        <form method="post" action="{{ url('update collection filter', { id: collection.id }) }}">
+        <form method="post" action="{{ url('update collection filter', { id: collection.id }) }}" class="flow">
             {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
 
-            <fieldset>
-                <legend>{{ t('How to filter the links from this feed in the news?')
-                    }}</legend>
+            <fieldset class="flow">
+                <legend>{{ t('How to filter the links from this feed in the news?') }}</legend>
 
                 {% if form.isInvalid('time_filter') %}
                     <p id="time-filter-error" class="form-group__error">
@@ -93,7 +92,7 @@
             </fieldset>
 
             <div class="text--center">
-                <button type="submit" class="button--primary">
+                <button type="submit" class="button--primary button--big">
                     {{ t('Save changes') }}
                 </button>
             </div>

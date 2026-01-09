@@ -4,7 +4,6 @@ namespace App\twig;
 
 use App\utils;
 use Twig\Attribute\AsTwigFilter;
-use Twig\Attribute\AsTwigFunction;
 
 class FormattersExtension
 {
@@ -42,6 +41,58 @@ class FormattersExtension
                 self::formatNumber($reading_time),
             ]);
         }
+    }
+
+    /**
+     * Format a publication frequency.
+     *
+     * It displays the frequency in priority by day, then week, month or year,
+     * depending on the first frequency that is greater or equal to 1.
+     */
+    #[AsTwigFilter('format_publication_frequency')]
+    public static function format_publication_frequency(int $frequency_per_year): string
+    {
+        $frequency_per_day = (int) floor($frequency_per_year / 365);
+        $frequency_per_week = (int) floor($frequency_per_year / 52);
+        $frequency_per_month = (int) floor($frequency_per_year / 12);
+
+        if ($frequency_per_day > 0) {
+            return \Minz\Template\TwigExtension::translate(
+                '%d link per day',
+                '%d links per day',
+                $frequency_per_day,
+                [$frequency_per_day]
+            );
+        }
+
+        if ($frequency_per_week > 0) {
+            return \Minz\Template\TwigExtension::translate(
+                '%d link per week',
+                '%d links per week',
+                $frequency_per_week,
+                [$frequency_per_week],
+            );
+        }
+
+        if ($frequency_per_month > 0) {
+            return \Minz\Template\TwigExtension::translate(
+                '%d link per month',
+                '%d links per month',
+                $frequency_per_month,
+                [$frequency_per_month],
+            );
+        }
+
+        if ($frequency_per_year > 0) {
+            return \Minz\Template\TwigExtension::translate(
+                '%d link per year',
+                '%d links per year',
+                $frequency_per_year,
+                [$frequency_per_year],
+            );
+        }
+
+        return \Minz\Template\TwigExtension::translate('Inactive');
     }
 
     /**

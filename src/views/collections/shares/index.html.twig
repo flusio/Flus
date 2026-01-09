@@ -1,9 +1,9 @@
 {% extends 'layouts/modal.html.twig' %}
 
-{% block title %}{{ t('Share “%s”', [collection.name]) }}{% endblock %}
+{% block title %}{{ t('Sharing access to “%s”', [collection.name]) }}{% endblock %}
 
 {% block body %}
-    <div class="flow flow--large">
+    <div class="flow flow--larger">
         <p class="text--center">
             {% if collection.is_public %}
                 {{ t('This collection is public, anyone can access it.') }}
@@ -12,7 +12,7 @@
             {% endif %}
         </p>
 
-        <form method="post" action="{{ url('share collection', { id: collection.id }) }}">
+        <form method="post" action="{{ url('share collection', { id: collection.id }) }}" class="flow">
             {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
 
             <div class="form-group">
@@ -27,7 +27,7 @@
                     </p>
                 {% endif %}
 
-                <div class="form-group__stack">
+                <div class="cols cols--always cols--gap-smaller">
                     <input
                         id="user-id"
                         name="user_id"
@@ -60,7 +60,7 @@
                     </p>
                 {% endif %}
 
-                <div>
+                <div class="cols cols--gap">
                     <input
                         type="radio"
                         id="type-read"
@@ -116,44 +116,44 @@
 
         {% set collection_shares = collection.shares %}
         {% if collection_shares %}
-            <h2>{{ t('Shared with:') }}</h2>
+            <div class="flow">
+                <h2>{{ t('Shared with:') }}</h2>
 
-            <ul class="list list--no-style">
-                {% for collection_share in collection_shares %}
-                    {% set user = collection_share.user %}
-                    <li class="list__item line">
-                        <span class="line__item">
-                            <img class="avatar" src="{{ url_avatar(user.avatar_filename) }}" alt="">
-                        </span>
+                <ul class="list list--nostyle">
+                    {% for collection_share in collection_shares %}
+                        {% set user = collection_share.user %}
+                        <li class="list__item cols cols--always cols--center cols--gap">
+                            <span class="col--extend">
+                                <a class="username" href="{{ url('profile', { id: user.id }) }}">
+                                    <img class="avatar avatar--mini" src="{{ url_avatar(user.avatar_filename) }}" alt="">
+                                    {{ user.username }}
+                                </a>
+                            </span>
 
-                        <span class="line__item line__item--extend">
-                            <a class="anchor--hidden" href="{{ url('profile', { id: user.id }) }}">
-                                {{ user.username }}
-                            </a>
-                        </span>
+                            <span class="line__item text--secondary">
+                                {% if collection_share.type == 'read' %}
+                                    {{ t('read only') }}
+                                {% else %}
+                                    {{ t('read / write') }}
+                                {% endif %}
+                            </span>
 
-                        <span class="line__item text--secondary">
-                            {% if collection_share.type == 'read' %}
-                                {{ t('read only') }}
-                            {% else %}
-                                {{ t('read / write') }}
-                            {% endif %}
-                        </span>
+                            <form class="line__item" method="post" action="{{ url('unshare collection', { id: collection.id }) }}">
+                                <button type="submit" class="button--small button--icon-mobile">
+                                    {{ icon('times') }}
 
-                        <form class="line__item" method="post" action="{{ url('unshare collection', { id: collection.id }) }}">
-                            <button type="submit" class="button--ghost button--small">
-                                {{ icon('times') }}
-                                <span class="no-mobile">
-                                    {{ t('Revoke') }}
-                                </span>
-                            </button>
+                                    <span class="no-mobile">
+                                        {{ t('Revoke') }}
+                                    </span>
+                                </button>
 
-                            <input type="hidden" name="user_id" value="{{ user.id }}">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\UnshareCollection') }}">
-                        </form>
-                    </li>
-                {% endfor %}
-            </ul>
+                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\UnshareCollection') }}">
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
         {% endif %}
 
         <div class="share" data-controller="copy-to-clipboard">

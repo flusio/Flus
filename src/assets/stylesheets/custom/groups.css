@@ -74,11 +74,3 @@
     border: none;
     border-radius: 2em;
 }
-
-.group-selector__group-input {
-    display: none;
-}
-
-.group-selector__group-select select {
-    flex-grow: 1;
-}

@@ -72,25 +72,30 @@
         </div>
     </div>
 
-    <ul class="cards" data-collections-selector-target="collectionCards"></ul>
+    <ul class="list--nostyle grid" data-collections-selector-target="collectionCards"></ul>
 
     <template data-collections-selector-target="collectionTemplate">
-        <li class="card card--illustrated" style="background-image: url('{{ url_media('covers', '', 'collection-card.png') }}');">
-            <div class="card__body">
-                <div class="card__title card__title-ellipsis" data-target="name">
+        <li
+            class="collection"
+            style="background-image: url('{{ url_media('covers', '', 'collection-card.png') }}');"
+            data-color-scheme="dark"
+        >
+            <div class="collection__body">
+                <div class="collection__title" data-target="name">
                 </div>
 
-                <p class="card__text card__text--oneline">
-                    <span class="card__ellipsis card__text--extend" data-target="by"></span>
+                <p class="text--oneline">
+                    <span class="text--ellipsis text--extend" data-target="by"></span>
 
-                    <span class="sticker" data-target="isPublic">{{ t('public') }}</span>
-                    <span class="sticker" data-target="isNew">{{ t('new') }}</span>
+                    <span class="badge badge--accent badge--border" data-target="isPublic">{{ t('public') }}</span>
+                    <span class="badge badge--accent badge--border" data-target="isNew">{{ t('new') }}</span>
                 </p>
             </div>
 
-            <div class="card__footer card__footer--centered">
+            <div class="collection__footer">
                 <button
                     type="button"
+                    class="button--big"
                     data-action="collections-selector#detach"
                     data-target="unselect"
                 >

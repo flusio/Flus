@@ -1,9 +1,20 @@
 {% extends 'layouts/reading.html.twig' %}
 
-{% set title = collection.name %}
-{% set current_page = 'bookmarks' %}
-{% block title %}{{ title }}{% endblock %}
+{% block title %}{{ collection.name }}{% endblock %}
+{# TODO current_url_params (see collections/show) #}
 {% block canonical %}{{ url_full('bookmarks') }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'bookmarks', tab: 'reading' }) }}
+{% endblock %}
+
+{% block navigation %}
+    {{ include('layouts/_reading_navigation.html.twig', { page: 'bookmarks' }) }}
+{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: collection.name, reset: true }) }}
+{% endblock %}
 
 {% block body %}
     <h1 class="text--center">{{ collection.name }}</h1>

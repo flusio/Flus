@@ -1,12 +1,19 @@
 {% extends 'layouts/authentication.html.twig' %}
 
-{% set title = t('Log in') %}
-{% block title %}{{ title }}{% endblock %}
+{% block title %}{{ t('Log in') }}{% endblock %}
 {% block canonical %}{{ url_full('login') }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'login' }) }}
+{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: t('Log in'), reset: true, track: false }) }}
+{% endblock %}
 
 {% block body %}
     <div class="wrapper wrapper--smaller wrapper--center flow flow--large">
-        <h1 class="text--center">{{ title }}</h1>
+        <h1 class="text--center">{{ t('Log in') }}</h1>
 
         <form
             method="post"

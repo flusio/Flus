@@ -1,9 +1,19 @@
 {% extends 'layouts/reading.html.twig' %}
 
-{% set title = t('News') %}
-{% set current_page = 'news' %}
-{% block title %}{{ title }}{% endblock %}
+{% block title %}{{ t('News') }}{% endblock %}
 {% block canonical %}{{ url_full('news') }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'news', tab: 'reading' }) }}
+{% endblock %}
+
+{% block navigation %}
+    {{ include('layouts/_reading_navigation.html.twig', { page: 'news' }) }}
+{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: t('News'), reset: true }) }}
+{% endblock %}
 
 {% block body %}
     <h1 class="text--center">{{ t('News') }}</h1>
@@ -19,7 +29,7 @@
         <div class="flow flow--large" data-controller="zindex-inverser">
             {% for date_group in links_timeline.datesGroups %}
                 <section class="group flow flow--large">
-                    <header class="group__header cols cols--always cols--gap cols--center" data-zindex-inverser-target="item">
+                    <header class="group__header" data-zindex-inverser-target="item">
                         <h2 class="group__title">
                             {{ d(date_group.date, 'dd MMMM') }}
 

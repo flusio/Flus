@@ -1,11 +1,18 @@
 {% extends 'layouts/simple.html.twig' %}
 
-{% set title = t('Add-ons') %}
-{% block title %}{{ title }}{% endblock %}
+{% block title %}{{ t('Add-ons') }}{% endblock %}
 {% block canonical %}{{ url_full('addons') }}{% endblock %}
 
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'addons' }) }}
+{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: t('Add-ons') }) }}
+{% endblock %}
+
 {% block body %}
-    <h1 class="text--center">{{ title }}</h1>
+    <h1 class="text--center">{{ t('Add-ons') }}</h1>
 
     <div class="flow text--center">
         <h2>

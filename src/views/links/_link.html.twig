@@ -3,10 +3,6 @@
     {% set display_published_at = false %}
 {% endif %}
 {% set display_notes = display_notes ?? false %}
-{% set display_external_comments = display_external_comments ?? false %}
-{% if display_external_comments and not link.url_replies %}
-    {% set display_external_comments = false %}
-{% endif %}
 {% set display_hidden = display_hidden ?? false %}
 {% set display_edit = display_edit ?? false %}
 {% set display_repair = display_repair ?? false %}
@@ -120,7 +116,7 @@
             tabindex="-1"
             href="{{ link.url }}"
         >
-            <img class="link__image" alt="{{ link.title }}" src="{{ url_media('cards', link.image_filename) }}" loading="lazy" />
+            <img class="link__image" alt="{{ link.title }}" src="{{ url_media('covers', link.image_filename) }}" loading="lazy" />
         </a>
 
         <div class="link__content">
@@ -207,19 +203,6 @@
                             {{ t('hidden') }}
                         </span>
                     {% endif %}
-                </p>
-            {% endif %}
-
-            {% if display_external_comments %}
-                <p class="link__text">
-                    <a
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href="{{ link.url_replies }}"
-                    >
-                        {{ icon('comment') }}
-                        {{ t('Comments') }}
-                    </a>
                 </p>
             {% endif %}
         </div>

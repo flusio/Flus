@@ -1,5 +1,5 @@
 {% if app.user %}
-    {{ include('layouts/_header-connected.html.twig', { current_page: 'reading', current_tab: 'reading' }) }}
+    {{ include('layouts/_header-connected.html.twig') }}
 {% else %}
     {{ include('layouts/_header-disconnected.html.twig') }}
 {% endif %}

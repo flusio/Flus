@@ -1,10 +1,12 @@
+{% set tab = tab ?? '' %}
+
 <header class="layout__header cols cols--always cols--gap cols--center">
-    <div class="col--extend">
+    <div class="col--extend"></div>
 
     <div class="text--center">
         <a
-            class="header__link {{ current_tab == 'reading' ? 'header__link--active' : '' }}"
-            {{ current_page == 'reading' ? 'aria-current="page"' : '' }}
+            class="header__link {{ tab == 'reading' ? 'header__link--active' : '' }}"
+            {{ page == 'reading' ? 'aria-current="page"' : '' }}
             href="{{ url('news') }}"
         >
             {{ icon('reading') }}
@@ -15,8 +17,8 @@
         </a>
 
         <a
-            class="header__link {{ current_tab == 'links' ? 'header__link--active' : '' }}"
-            {{ current_page == 'links' ? 'aria-current="page"' : '' }}
+            class="header__link {{ tab == 'links' ? 'header__link--active' : '' }}"
+            {{ page == 'links' ? 'aria-current="page"' : '' }}
             href="{{ url('links') }}"
         >
             {{ icon('link') }}
@@ -26,8 +28,8 @@
         </a>
 
         <a
-            class="header__link {{ current_tab == 'feeds' ? 'header__link--active' : '' }}"
-            {{ current_page == 'feeds' ? 'aria-current="page"' : '' }}
+            class="header__link {{ tab == 'feeds' ? 'header__link--active' : '' }}"
+            {{ page == 'feeds' ? 'aria-current="page"' : '' }}
             href="{{ url('feeds') }}"
         >
             {{ icon('feed') }}
@@ -37,5 +39,93 @@
         </a>
     </div>
 
-    <div class="col--extend">
+    <div class="col--extend no-mobile"></div>
+
+    <div>
+        <a
+            class="header__button button button--primary button--icon-mobile"
+            {{ page == 'search link' ? 'aria-current="page"' : '' }}
+            href="{{ url('show search link') }}"
+        >
+            {{ icon('plus') }}
+            <span class="no-mobile">
+                {{ t('New') }}
+            </span>
+        </a>
+    </div>
+
+    <details
+        class="header__avatar-container popup"
+        data-controller="popup"
+        data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
+    >
+        <summary class="popup__opener" title="{{ t('Menu of %s', [app.user.username]) }}">
+            <img class="header__avatar avatar" src="{{ url_avatar(app.user.avatar_filename) }}" alt="">
+            <span class="sr-only">
+                {{ t('Menu of %s', [app.user.username]) }}
+            </span>
+        </summary>
+
+        <nav class="popup__container popup__container--large popup__container--right">
+            <div class="popup__title">{{ app.user.username }}</div>
+
+            <a
+                class="popup__item"
+                {{ page == 'profile' ? 'aria-current="page"' : '' }}
+                href="{{ url('profile', { id: app.user.id }) }}"
+            >
+                {{ icon('avatar') }}
+                {{ t('Profile') }}
+            </a>
+
+            <a
+                class="popup__item"
+                {{ page == 'preferences' ? 'aria-current="page"' : '' }}
+                href="{{ url('preferences') }}"
+            >
+                {{ icon('color-palette') }}
+                {{ t('Preferences') }}
+            </a>
+
+            <a
+                class="popup__item"
+                {{ page == 'account' ? 'aria-current="page"' : '' }}
+                href="{{ url('account') }}"
+            >
+                {{ icon('cog') }}
+                {{ t('Account & data') }}
+            </a>
+
+            <div class="popup__separator"></div>
+
+            <a
+                class="popup__item"
+                {{ page == 'addons' ? 'aria-current="page"' : '' }}
+                href="{{ url('addons') }}"
+            >
+                {{ icon('plugin') }}
+                {{ t('Add-ons') }}
+            </a>
+
+            <a
+                class="popup__item"
+                {{ page == 'support' ? 'aria-current="page"' : '' }}
+                href="{{ url('support') }}"
+            >
+                {{ icon('help') }}
+                {{ t('Help & support') }}
+            </a>
+
+            <div class="popup__separator"></div>
+
+            <form method="post" action="{{ url('logout') }}">
+                <button type="submit" class="popup__item">
+                    {{ icon('logout') }}
+                    {{ t('Log out') }}
+                </button>
+
+                <input type="hidden" name="csrf_token" value="{{ csrf_token('Logout') }}" />
+            </form>
+        </nav>
+    </details>
 </header>

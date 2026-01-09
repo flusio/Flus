@@ -12,11 +12,11 @@
             </p>
         </div>
 
-        <form method="post" action="{{ url('update group collection', { id: collection.id }) }}">
+        <form method="post" action="{{ url('update group collection', { id: collection.id }) }}" class="flow">
             {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
 
-            <div class="form-group group-selector" data-controller="group-selector">
-                <div class="group-selector__group-input" data-group-selector-target="groupInput">
+            <div data-controller="group-selector">
+                <div class="form-group" data-group-selector-target="groupInput" hidden>
                     <label for="name">
                         {{ t('How to name the group?') }}
                         <span class="label__help">
@@ -55,7 +55,7 @@
                     </datalist>
                 </div>
 
-                <div class="group-selector__group-select" data-group-selector-target="groupSelect">
+                <div class="form-group" data-group-selector-target="groupSelect">
                     <label for="name">
                         {{ t('Select a group') }}
                     </label>
@@ -67,12 +67,13 @@
                         </p>
                     {% endif %}
 
-                    <div class="form-group__stack">
+                    <div class="cols cols--always cols--gap-smaller">
                         <select
                             id="name"
                             name="name"
                             data-group-selector-target="select"
                             aria-describedby="name-desc"
+                            class="col--extend"
                          >
                              <option {{ form.name == '' ? 'selected' : '' }} value="">
                                  {{ t('No groups') }}
@@ -94,7 +95,7 @@
             </div>
 
             <div class="text--center">
-                <button type="submit" class="button--primary">
+                <button type="submit" class="button--primary button--big">
                     {{ t('Save changes') }}
                 </button>
             </div>
