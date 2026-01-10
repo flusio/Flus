@@ -59,7 +59,7 @@ class Links extends BaseController
                 ]
             );
 
-            return Response::ok('links/search.phtml', [
+            return Response::ok('links/search.html.twig', [
                 'links' => $links,
                 'query' => $query,
                 'pagination' => $pagination,

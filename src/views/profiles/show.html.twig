@@ -83,9 +83,15 @@
                     </div>
                 </div>
             {% elseif is_current_user_profile %}
-                <p class="panel panel--grey panel--rounded panel--larger text--bolder text--center">
-                    {{ t('You didn’t share any links yet. Start by <a href="%s">creating a public collection</a>.', [url('links')]) }}
-                </p>
+                <div class="panel panel--grey panel--rounded panel--larger flow text--center">
+                    <p class="text--bolder">
+                        {{ t('You didn’t share any links yet.') }}
+                    </p>
+
+                    <a class="button button--big" href="{{ url('links') }}">
+                        {{ t('Create a public collection') }}
+                    </a>
+                </div>
             {% else %}
                 <p class="panel panel--grey panel--rounded panel--larger text--bolder text--center">
                     {{ t('This user didn’t share any links yet.') }}

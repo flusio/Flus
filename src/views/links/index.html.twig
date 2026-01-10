@@ -9,8 +9,10 @@
 
 {% block layout_body %}
     <section class="layout__content">
-        <div class="wrapper wrapper--large wrapper--center">
-            {{ include('layouts/_back.html.twig', { title: t('New'), reset: true }) }}
+        <div class="wrapper wrapper--large wrapper--center flow">
+            {{ include('layouts/_back.html.twig', { title: t('My links'), reset: true }) }}
+
+            {{ include('layouts/_search.html.twig') }}
         </div>
 
         <div class="layout__body layout__body--large flow flow--large">
