@@ -108,7 +108,7 @@
                         </div>
 
                         {% if is_following or can_update or can_delete %}
-                            <div class="cols cols--always cols--gap-small">
+                            <div class="stack">
                                 {% if can_update %}
                                     <button
                                         data-controller="modal-opener"
@@ -257,11 +257,11 @@
                         {% else %}
                             <p>
                                 {{ t('Published by') }}
-                                {% for user in collection.publishers -%}
+                                {%- for user in collection.publishers -%}
                                     {% if not loop.first %}, {% endif %}
                                     <a class="username" href="{{ url('profile', { id: user.id }) }}">
                                         <img class="avatar avatar--mini" alt="" src="{{ url_avatar(user.avatar_filename) }}">
-                                        {{ user.username -}}
+                                        {{- user.username -}}
                                     </a>
                                 {%- endfor -%}
                             </p>

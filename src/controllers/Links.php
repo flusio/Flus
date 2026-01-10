@@ -122,7 +122,7 @@ class Links extends BaseController
             $form = new forms\notes\NewNote();
         }
 
-        return Response::ok('links/show.phtml', [
+        return Response::ok('links/show.html.twig', [
             'link' => $link,
             'form' => $form,
         ]);

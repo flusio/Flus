@@ -597,7 +597,12 @@ class User
      */
     public function suggestedLinksFor(Link $link): array
     {
-        return Link::listSuggestedFor($this, $link);
+        $suggested_links = Link::listSuggestedFor($this, $link);
+        $owned_link = $this->correspondingOwnedLink($link);
+        if ($owned_link && $link->user_id !== $this->id) {
+            array_unshift($suggested_links, $owned_link);
+        }
+        return $suggested_links;
     }
 
     /**

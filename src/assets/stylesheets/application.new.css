@@ -7,6 +7,7 @@
 @import './layouts/reading.css';
 @import './custom/collections.css';
 @import './custom/links.css';
+@import './custom/notepad.css';
 @import './custom/share.css';
 
 [data-color-scheme="light"] {
@@ -71,6 +72,8 @@
     --color-orange-dark10: #ff801f;
     --color-orange-dark11: #ffa057;
     --color-orange-dark12: #ffe0c2;
+
+    scroll-behavior: auto;
 }
 
 html {
@@ -323,7 +326,7 @@ legend {
 }
 
 .text--break {
-    word-break: break-all;
+    overflow-wrap: break-word;
 }
 
 .illustration {
@@ -344,12 +347,22 @@ legend {
     width: 1.3rem;
 }
 
+.avatar--max {
+    width: auto;
+}
+
 .username {
+    display: inline-block;
+
     font-weight: 600;
     text-decoration: none;
 }
 
 .username .avatar {
+    margin-right: var(--space-smaller);
+}
+
+.username .avatar--mini {
     margin-top: -3px;
 }
 
@@ -373,6 +386,7 @@ legend {
     background-repeat: no-repeat;
     background-position: center;
     background-size: 50%;
+    border-radius: var(--border-radius);
 
     transition: opacity 0.4s ease-in-out;
 }
@@ -380,4 +394,29 @@ legend {
 .button--edit-image:hover::after,
 .button--edit-image:focus::after {
     opacity: 1;
+}
+
+.tag {
+    overflow: hidden;
+
+    padding: 0 var(--space-smaller);
+
+    color: var(--color-gable);
+    font-size: var(--size-small);
+    text-decoration: none;
+    text-overflow: ellipsis;
+
+    background-color: var(--color-accent-solid);
+    border-radius: var(--border-radius);
+}
+
+.stack {
+    display: flex;
+
+    flex-wrap: wrap;
+    gap: var(--space-smaller);
+}
+
+h1 a {
+    display: inline-block;
 }

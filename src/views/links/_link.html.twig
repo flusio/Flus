@@ -178,7 +178,7 @@
             {% endif %}
 
             {% if link.tags %}
-                <div class="link__tags">
+                <div class="stack">
                     {% for tag in link.tags %}
                         <a class="tag" href="{{ url('links', { q: "#{tag}" }) }}">
                             #{{ tag }}

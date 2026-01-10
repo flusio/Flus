@@ -7,11 +7,11 @@
         <form
             method="post"
             action="{{ url('update avatar') }}"
-            class="form-avatar"
+            class="flow text--center"
             data-controller="autosubmit form-file"
             enctype="multipart/form-data"
         >
-            <img class="avatar avatar--banner" src="{{ url_avatar(app.user.avatar_filename) }}" alt="">
+            <img class="avatar avatar--max" src="{{ url_avatar(app.user.avatar_filename) }}" alt="">
 
             {{ include('alerts/_error.html.twig', { message: form_avatar.error('@base') }) }}
 
@@ -36,7 +36,6 @@
             <div class="text--center">
                 <button
                     type="button"
-                    class="button--small"
                     data-action="form-file#openFile"
                     data-autosubmit-target="actionButton"
                     aria-describedby="avatar-caption"
@@ -52,7 +51,7 @@
             <input type="hidden" name="csrf_token" value="{{ csrf_token(form_avatar) }}">
         </form>
 
-        <form method="post" action="{{ url('update profile') }}">
+        <form method="post" action="{{ url('update profile') }}" class="flow">
             {{ include('alerts/_error.html.twig', { message: form_profile.error('@base') }) }}
 
             <div class="form-group">
@@ -86,7 +85,7 @@
             </div>
 
             <div class="text--center">
-                <button type="submit" class="button--primary">
+                <button type="submit" class="button--primary button--big">
                     {{ t('Save changes') }}
                 </button>
             </div>

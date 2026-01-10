@@ -55,7 +55,7 @@ class Profiles extends BaseController
             $shared_collections = utils\Sorter::localeSort($shared_collections, 'name');
         }
 
-        return Response::ok('profiles/show.phtml', [
+        return Response::ok('profiles/show.html.twig', [
             'user' => $user,
             'links' => $links,
             'collections' => $collections,
