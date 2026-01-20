@@ -1,16 +1,77 @@
+@media (max-width: 799px) {
+    .sidenav__container {
+        position: fixed;
+        inset: 0 0 var(--layout-header-height) 0;
+
+        z-index: 50;
+
+        visibility: hidden;
+
+        transition: visibility 0s linear 0.2s;
+    }
+
+    .sidenav__container::before {
+        content: " ";
+
+        position: absolute;
+        inset: 0;
+
+        z-index: -1;
+
+        opacity: 0;
+        background-color: var(--color-box-shadow);
+
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    .sidenav__container .sidenav__menu {
+        overflow: hidden;
+
+        width: 0;
+        max-width: 90%;
+        height: 100%;
+        padding: var(--space-small);
+
+        white-space: nowrap;
+
+        background-color: var(--color-background);
+        box-shadow: 0 0 10px rgb(0 0 0 / 50%);
+
+        transition: width 0.2s ease-in-out;
+    }
+
+    .sidenav__button[aria-expanded="true"] + .sidenav__container {
+        visibility: visible;
+
+        transition: visibility 0s linear 0s;
+    }
+
+    .sidenav__button[aria-expanded="true"] + .sidenav__container::before {
+        opacity: 1;
+    }
+
+    .sidenav__button[aria-expanded="true"] + .sidenav__container .sidenav__menu {
+        width: 17rem;
+    }
+}
+
 @media (min-width: 800px) {
-    .sidenav {
+    .sidenav__button {
+        display: none;
+    }
+
+    .sidenav__menu {
         width: 11rem;
     }
 }
 
 @media (min-width: 1200px) {
-    .sidenav {
+    .sidenav__menu {
         width: 16rem;
     }
 }
 
-.sidenav__anchor {
+.sidenav__menu-item {
     display: block;
     width: 100%;
     padding: var(--space-small);
@@ -24,27 +85,27 @@
     transition: background-color 0.2s ease-in-out;
 }
 
-.sidenav__anchor--bold {
+.sidenav__menu-item--bold {
     font-weight: 600;
 }
 
-.sidenav__anchor:hover,
-.sidenav__anchor:focus {
+.sidenav__menu-item:hover,
+.sidenav__menu-item:focus {
     background-color: rgb(0 0 0 / 5%);
 }
 
-.sidenav__anchor[aria-current="page"] {
+.sidenav__menu-item[aria-current="page"] {
     color: var(--color-gable);
     font-weight: 700;
 
     background-color: var(--color-accent-bg-active);
 }
 
-.sidenav__anchor .icon {
+.sidenav__menu-item .icon {
     margin-right: var(--space-smaller);
 }
 
-.sidenav__title {
+.sidenav__menu-title {
     font-size: var(--font-size-normal);
     font-weight: 600;
 }

@@ -12,6 +12,7 @@
 @import url('./components/threads.css');
 @import url('./components/topics.css');
 @import url('./components/usernames.css');
+@import url('./layouts/application.css');
 @import url('./layouts/authentication.css');
 @import url('./layouts/back.css');
 @import url('./layouts/banner.css');

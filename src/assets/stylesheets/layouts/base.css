@@ -46,11 +46,18 @@
     max-width: 1200px;
     margin-right: auto;
     margin-left: auto;
-    padding: var(--layout-body-flow) var(--space-medium);
+    padding: var(--layout-body-flow) var(--space-smaller);
 
     background-color: var(--color-base);
     box-shadow: 0 0 2px var(--color-box-shadow);
     border-radius: var(--border-radius);
+}
+
+@media (min-width: 800px) {
+    .layout__body {
+        padding-right: var(--space-medium);
+        padding-left: var(--space-medium);
+    }
 }
 
 .layout__body--large {

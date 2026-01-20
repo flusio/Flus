@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-01-19 18:08+0100\n"
-"PO-Revision-Date: 2026-01-19 18:08+0100\n"
+"POT-Creation-Date: 2026-01-21 09:58+0100\n"
+"PO-Revision-Date: 2026-01-21 09:58+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 3.8\n"
 "X-Poedit-Basepath: ../../../src\n"
-"X-Poedit-KeywordsList: _f;_n:1,2;_nf:1,2;Translatable;t:1,2;t:1\n"
+"X-Poedit-KeywordsList: t:1,2;t;Translatable\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: assets/javascripts/controllers/back_button_controller.js:47
@@ -410,22 +410,6 @@ msgstr "%s sur %s"
 msgid "This email has been sent by %s (%s)"
 msgstr "Ce courriel a été envoyé par %s (%s)"
 
-#: views/pages/webmanifest.json.php:4
-msgid "Collect, organise, annotate and share links from around the Web."
-msgstr ""
-"Collectez, organisez, annotez et partagez les liens provenant de l'ensemble "
-"du Web."
-
-#: views/pages/webmanifest.json.php:25
-#, php-format
-msgid "Bookmarks screen of %s on desktop"
-msgstr "L’écran des signets de %s sur ordinateur"
-
-#: views/pages/webmanifest.json.php:32
-#, php-format
-msgid "Bookmarks screen of %s on mobile"
-msgstr "L’écran des signets de %s sur mobile"
-
 #: views/alerts/_error.html.twig:3
 msgid "Error"
 msgstr "Erreur"
@@ -537,11 +521,11 @@ msgstr "(max. %d caractères)"
 #: views/links/mastodon_threads/new.html.twig:17 views/links/new.html.twig:27
 #: views/links/repairing/new.html.twig:30
 #: views/links/searches/show.html.twig:40 views/links/show.html.twig:225
-#: views/mastodon/show.html.twig:62 views/mastodon/show.html.twig:138
+#: views/mastodon/show.html.twig:62 views/mastodon/show.html.twig:139
 #: views/my/account/deletion.html.twig:38
 #: views/my/preferences/edit.html.twig:28 views/my/profile/edit.html.twig:20
 #: views/my/profile/edit.html.twig:67
-#: views/my/security/confirmation.html.twig:29
+#: views/my/security/confirmation.html.twig:40
 #: views/my/security/show.html.twig:31 views/my/security/show.html.twig:59
 #: views/notes/edit.html.twig:24 views/passwords/edit.html.twig:31
 #: views/passwords/forgot.html.twig:43 views/registrations/new.html.twig:44
@@ -822,7 +806,7 @@ msgstr "lecture / écriture"
 msgid "Revoke"
 msgstr "Révoquer"
 
-#: views/collections/shares/index.html.twig:168
+#: views/collections/shares/index.html.twig:167
 msgid "Copy"
 msgstr "Copier"
 
@@ -846,7 +830,7 @@ msgid "Change the illustration"
 msgstr "Changer l’illustration"
 
 #: views/collections/show.html.twig:120 views/groups/_group.html.twig:20
-#: views/links/_link.html.twig:286 views/notes/_notepad.html.twig:48
+#: views/links/_link.html.twig:283 views/notes/_notepad.html.twig:48
 #: views/profiles/show.html.twig:52
 msgid "Edit"
 msgstr "Modifier"
@@ -892,7 +876,7 @@ msgstr ""
 "Êtes-vous sur·e de vouloir supprimer cette collection ? Vous pourriez perdre "
 "les liens qui lui sont attachés."
 
-#: views/collections/show.html.twig:224 views/links/_link.html.twig:320
+#: views/collections/show.html.twig:224 views/links/_link.html.twig:315
 #: views/notes/_notepad.html.twig:61
 msgid "Delete"
 msgstr "Supprimer"
@@ -959,7 +943,7 @@ msgid "Explore %s"
 msgstr "Explorer %s"
 
 #: views/explore/show.html.twig:6
-#: views/layouts/_reading_navigation.html.twig:36
+#: views/layouts/_reading_navigation.html.twig:37
 msgid "Explore"
 msgstr "Explorer"
 
@@ -1118,50 +1102,50 @@ msgstr "Ok !"
 msgid "Import a file"
 msgstr "Importer un fichier"
 
-#: views/layouts/_account_navigation.html.twig:4
+#: views/layouts/_account_navigation.html.twig:5
 msgid "Account"
 msgstr "Compte"
 
-#: views/layouts/_account_navigation.html.twig:12
+#: views/layouts/_account_navigation.html.twig:13
 msgid "Overview"
 msgstr "Aperçu"
 
-#: views/layouts/_account_navigation.html.twig:22
+#: views/layouts/_account_navigation.html.twig:23
 #: views/my/validation/new.html.twig:3 views/my/validation/new.html.twig:12
 #: views/my/validation/show.html.twig:3 views/my/validation/show.html.twig:16
 msgid "Account validation"
 msgstr "Validation du compte"
 
-#: views/layouts/_account_navigation.html.twig:33
+#: views/layouts/_account_navigation.html.twig:34
 msgid "Mastodon"
 msgstr "Mastodon"
 
-#: views/layouts/_account_navigation.html.twig:39
+#: views/layouts/_account_navigation.html.twig:40
 msgid "Data"
 msgstr "Données"
 
-#: views/layouts/_account_navigation.html.twig:48
+#: views/layouts/_account_navigation.html.twig:49
 msgid "OPML import"
 msgstr "Importation OPML"
 
-#: views/layouts/_account_navigation.html.twig:58
+#: views/layouts/_account_navigation.html.twig:59
 msgid "Data export"
 msgstr "Exportation des données"
 
-#: views/layouts/_account_navigation.html.twig:63
+#: views/layouts/_account_navigation.html.twig:64
 msgid "Security"
 msgstr "Sécurité"
 
-#: views/layouts/_account_navigation.html.twig:71
+#: views/layouts/_account_navigation.html.twig:72
 #: views/my/security/show.html.twig:3 views/my/security/show.html.twig:15
 msgid "Credentials"
 msgstr "Identifiants"
 
-#: views/layouts/_account_navigation.html.twig:80
+#: views/layouts/_account_navigation.html.twig:81
 msgid "Sessions"
 msgstr "Sessions"
 
-#: views/layouts/_account_navigation.html.twig:89
+#: views/layouts/_account_navigation.html.twig:90
 #: views/my/account/deletion.html.twig:3 views/my/account/deletion.html.twig:16
 msgid "Account deletion"
 msgstr "Suppression du compte"
@@ -1241,13 +1225,17 @@ msgstr "Langue"
 msgid "About"
 msgstr "À propos"
 
-#: views/layouts/_modal_dialog.html.twig:22
+#: views/layouts/_modal_dialog.html.twig:22 views/layouts/sidenav.html.twig:24
 msgid "Close"
 msgstr "Fermer"
 
 #: views/layouts/_modal_dialog.html.twig:23
 msgid "Close this window"
 msgstr "Fermer cette fenêtre"
+
+#: views/layouts/_modal_dialog.html.twig:33
+msgid "Loading…"
+msgstr "Chargement…"
 
 #: views/layouts/_pagination.html.twig:8
 msgid "Previous page"
@@ -1286,9 +1274,13 @@ msgstr ""
 "Collectez, organisez, annotez et partagez les liens<br><strong>provenant de "
 "l'ensemble du Web.</strong>"
 
-#: views/layouts/base.html.twig:45
+#: views/layouts/base.html.twig:44
 msgid "Skip to main content"
 msgstr "Accéder au contenu principal"
+
+#: views/layouts/sidenav.html.twig:10
+msgid "Navigation"
+msgstr "Navigation"
 
 #: views/links/_link.html.twig:61
 msgid "This link seems to be inaccessible, you should repair it."
@@ -1365,42 +1357,42 @@ msgstr "masqué"
 msgid "Remove from the news"
 msgstr "Retirer du journal"
 
-#: views/links/_link.html.twig:252
+#: views/links/_link.html.twig:251
 msgid "Copy the external link"
 msgstr "Copier le lien externe"
 
-#: views/links/_link.html.twig:267 views/links/show.html.twig:122
+#: views/links/_link.html.twig:265 views/links/show.html.twig:122
 msgid "Share on Mastodon"
 msgstr "Partager vers Mastodon"
 
-#: views/links/_link.html.twig:301
+#: views/links/_link.html.twig:297
 msgid "Repair"
 msgstr "Réparer"
 
-#: views/links/_link.html.twig:312
+#: views/links/_link.html.twig:308
 msgid "Are you sure that you want to delete this link?"
 msgstr "Êtes-vous sur·e de vouloir supprimer ce lien ?"
 
-#: views/links/_link.html.twig:332 views/links/_link.html.twig:335
+#: views/links/_link.html.twig:327 views/links/_link.html.twig:330
 #: views/links/show.html.twig:79
 msgid "Mark as read"
 msgstr "Marquer comme lu"
 
-#: views/links/_link.html.twig:345 views/links/_link.html.twig:348
+#: views/links/_link.html.twig:340 views/links/_link.html.twig:343
 msgid "Remove from read list"
 msgstr "Retirer des liens lus"
 
-#: views/links/_link.html.twig:358 views/links/_link.html.twig:361
+#: views/links/_link.html.twig:353 views/links/_link.html.twig:356
 #: views/links/show.html.twig:90
 msgid "Read later"
 msgstr "Lire plus tard"
 
-#: views/links/_link.html.twig:376 views/links/_link.html.twig:380
+#: views/links/_link.html.twig:371 views/links/_link.html.twig:375
 #: views/links/collections/index.html.twig:71
 msgid "Store the link"
 msgstr "Ranger le lien"
 
-#: views/links/_link.html.twig:386
+#: views/links/_link.html.twig:381
 #, php-format
 msgid "In %d collection"
 msgid_plural "In %d collections"
@@ -1774,23 +1766,23 @@ msgstr "Connecté‧e avec le compte <em>%s</em>"
 msgid "Are you sure that you want to disconnect your Mastodon account?"
 msgstr "Êtes-vous sur·e de vouloir déconnecter votre compte Mastodon ?"
 
-#: views/mastodon/show.html.twig:116 views/my/sessions/index.html.twig:43
+#: views/mastodon/show.html.twig:117 views/my/sessions/index.html.twig:43
 msgid "disconnect"
 msgstr "déconnecter"
 
-#: views/mastodon/show.html.twig:133
+#: views/mastodon/show.html.twig:134
 msgid "What’s the address of your Mastodon server?"
 msgstr "Quelle est l’adresse de votre serveur Mastodon ?"
 
-#: views/mastodon/show.html.twig:158
+#: views/mastodon/show.html.twig:159
 msgid "Not using Mastodon yet?"
 msgstr "Vous n’utilisez pas encore Mastodon ?"
 
-#: views/mastodon/show.html.twig:161
+#: views/mastodon/show.html.twig:162
 msgid "Let’s choose a server."
 msgstr "Choisissez un serveur."
 
-#: views/mastodon/show.html.twig:168
+#: views/mastodon/show.html.twig:169
 msgid "Connect to Mastodon"
 msgstr "Se connecter à Mastodon"
 
@@ -1811,8 +1803,8 @@ msgstr ""
 msgid "Your password"
 msgstr "Votre mot de passe"
 
-#: views/my/account/deletion.html.twig:64
-#: views/my/security/confirmation.html.twig:54
+#: views/my/account/deletion.html.twig:63
+#: views/my/security/confirmation.html.twig:65
 #: views/my/security/show.html.twig:84 views/passwords/edit.html.twig:56
 #: views/registrations/new.html.twig:132 views/sessions/new.html.twig:95
 msgid ""
@@ -1821,13 +1813,13 @@ msgstr ""
 "Afficher le mot de passe sous forme de texte. Attention, cela exposera votre "
 "mot de passe visuellement."
 
-#: views/my/account/deletion.html.twig:72
+#: views/my/account/deletion.html.twig:71
 msgid "You must type your password so we can confirm your identity."
 msgstr ""
 "Vous devez saisir votre mot de passe afin que nous puissions confirmer votre "
 "identité."
 
-#: views/my/account/deletion.html.twig:78
+#: views/my/account/deletion.html.twig:77
 msgid "Delete your account"
 msgstr "Supprimer votre compte"
 
@@ -1918,11 +1910,11 @@ msgid "(public, max. %d characters)"
 msgstr "(public, max. %d caractères)"
 
 #: views/my/security/confirmation.html.twig:3
-#: views/my/security/confirmation.html.twig:12
+#: views/my/security/confirmation.html.twig:24
 msgid "Password confirmation"
 msgstr "Confirmation du mot de passe"
 
-#: views/my/security/confirmation.html.twig:16
+#: views/my/security/confirmation.html.twig:27
 msgid ""
 "We need you to confirm your password before giving you access to sensitive "
 "actions."
@@ -1930,11 +1922,11 @@ msgstr ""
 "Vous devez confirmer votre mot de passe avant de pouvoir effectuer des "
 "actions sensibles."
 
-#: views/my/security/confirmation.html.twig:24
+#: views/my/security/confirmation.html.twig:35
 msgid "Your current password"
 msgstr "Votre mot de passe actuel"
 
-#: views/my/security/confirmation.html.twig:64
+#: views/my/security/confirmation.html.twig:75
 msgid "Confirm your password"
 msgstr "Confirmer votre mot de passe"
 
@@ -2459,6 +2451,22 @@ msgstr "Conditions générales d’utilisation"
 #: views/pages/terms.html.twig:25
 msgid "Back to the registration"
 msgstr "Retour à l’inscription"
+
+#: views/pages/webmanifest.json.twig:4
+msgid "Collect, organise, annotate and share links from around the Web."
+msgstr ""
+"Collectez, organisez, annotez et partagez les liens provenant de l'ensemble "
+"du Web."
+
+#: views/pages/webmanifest.json.twig:25
+#, php-format
+msgid "Bookmarks screen of %s on desktop"
+msgstr "L’écran des signets de %s sur ordinateur"
+
+#: views/pages/webmanifest.json.twig:32
+#, php-format
+msgid "Bookmarks screen of %s on mobile"
+msgstr "L’écran des signets de %s sur mobile"
 
 #: views/passwords/edit.html.twig:3
 msgid "Change your password"

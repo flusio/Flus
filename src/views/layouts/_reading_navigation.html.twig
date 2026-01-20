@@ -1,39 +1,39 @@
-<nav class="sidenav flow flow--small">
-    <div class="sidenav__container flow flow--smaller">
-        <a
-            class="sidenav__anchor sidenav__anchor--bold"
-            href="{{ url('news') }}"
-            {{ page == 'news' ? 'aria-current="page"' : '' }}
-        >
-            {{ icon('reading') }}
-            {{ t('News') }}
-        </a>
+{% extends 'layouts/sidenav.html.twig' %}
 
-        <a
-            class="sidenav__anchor sidenav__anchor--bold"
-            href="{{ url('bookmarks') }}"
-            {{ page == 'bookmarks' ? 'aria-current="page"' : '' }}
-        >
-            {{ icon('bookmark') }}
-            {{ t('Bookmarks') }}
-        </a>
+{% block body %}
+    <a
+        class="sidenav__menu-item sidenav__menu-item--bold"
+        href="{{ url('news') }}"
+        {{ page == 'news' ? 'aria-current="page"' : '' }}
+    >
+        {{ icon('reading') }}
+        {{ t('News') }}
+    </a>
 
-        <a
-            class="sidenav__anchor sidenav__anchor--bold"
-            href="{{ url('read list') }}"
-            {{ page == 'read' ? 'aria-current="page"' : '' }}
-        >
-            {{ icon('check') }}
-            {{ t('Links read') }}
-        </a>
+    <a
+        class="sidenav__menu-item sidenav__menu-item--bold"
+        href="{{ url('bookmarks') }}"
+        {{ page == 'bookmarks' ? 'aria-current="page"' : '' }}
+    >
+        {{ icon('bookmark') }}
+        {{ t('Bookmarks') }}
+    </a>
 
-        <a
-            class="sidenav__anchor sidenav__anchor--bold"
-            href="{{ url('explore') }}"
-            {{ page == 'explore' ? 'aria-current="page"' : '' }}
-        >
-            {{ icon('compass') }}
-            {{ t('Explore') }}
-        </a>
-    </ul>
-</nav>
+    <a
+        class="sidenav__menu-item sidenav__menu-item--bold"
+        href="{{ url('read list') }}"
+        {{ page == 'read' ? 'aria-current="page"' : '' }}
+    >
+        {{ icon('check') }}
+        {{ t('Links read') }}
+    </a>
+
+    <a
+        class="sidenav__menu-item sidenav__menu-item--bold"
+        href="{{ url('explore') }}"
+        {{ page == 'explore' ? 'aria-current="page"' : '' }}
+    >
+        {{ icon('compass') }}
+        {{ t('Explore') }}
+    </a>
+{% endblock %}

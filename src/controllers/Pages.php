@@ -96,7 +96,7 @@ class Pages extends BaseController
      */
     public function webmanifest(): Response
     {
-        $response = Response::ok('pages/webmanifest.json.php');
+        $response = Response::ok('pages/webmanifest.json.twig');
         $response->setHeader('Content-Type', 'application/manifest+json');
         return $response;
     }

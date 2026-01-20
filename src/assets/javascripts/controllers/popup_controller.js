@@ -1,7 +1,3 @@
-// This file is part of Flus.
-// Copyright 2022-2025 Probesys (Bileto)
-// SPDX-License-Identifier: AGPL-3.0-or-later
-
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {

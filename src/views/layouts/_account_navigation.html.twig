@@ -1,93 +1,93 @@
-<nav class="sidenav flow flow--small">
-    <div class="sidenav__container flow flow--small">
-        <div class="flow flow--smaller">
-            <h2 class="sidenav__title">{{ t('Account') }}</h2>
+{% extends 'layouts/sidenav.html.twig' %}
 
+{% block body %}
+    <div class="flow flow--smaller">
+        <h2 class="sidenav__menu-title">{{ t('Account') }}</h2>
+
+        <a
+            class="sidenav__menu-item"
+            href="{{ url('account') }}"
+            {{ page == 'account' ? 'aria-current="page"' : '' }}
+        >
+            {{ icon('cog') }}
+            {{ t('Overview') }}
+        </a>
+
+        {% if not app.user.isValidated %}
             <a
-                class="sidenav__anchor"
-                href="{{ url('account') }}"
-                {{ page == 'account' ? 'aria-current="page"' : '' }}
+                class="sidenav__menu-item"
+                href="{{ url('account validation') }}"
+                {{ page == 'account validation' ? 'aria-current="page"' : '' }}
             >
-                {{ icon('cog') }}
-                {{ t('Overview') }}
+                {{ icon('check') }}
+                {{ t('Account validation') }}
             </a>
+        {% endif %}
 
-            {% if not app.user.isValidated %}
-                <a
-                    class="sidenav__anchor"
-                    href="{{ url('account validation') }}"
-                    {{ page == 'account validation' ? 'aria-current="page"' : '' }}
-                >
-                    {{ icon('check') }}
-                    {{ t('Account validation') }}
-                </a>
-            {% endif %}
-
-            {% if not app.user.isBlocked %}
-                <a
-                    class="sidenav__anchor"
-                    href="{{ url('mastodon') }}"
-                    {{ page == 'mastodon' ? 'aria-current="page"' : '' }}
-                >
-                    {{ icon('mastodon') }}
-                    {{ t('Mastodon') }}
-                </a>
-            {% endif %}
-        </div>
-
-        <div class="flow flow--smaller">
-            <h2 class="sidenav__title">{{ t('Data') }}</h2>
-
-            {% if not app.user.isBlocked %}
-                <a
-                    class="sidenav__anchor"
-                    href="{{ url('opml') }}"
-                    {{ page == 'opml' ? 'aria-current="page"' : '' }}
-                >
-                    {{ icon('upload') }}
-                    {{ t('OPML import') }}
-                </a>
-            {% endif %}
-
+        {% if not app.user.isBlocked %}
             <a
-                class="sidenav__anchor"
-                href="{{ url('exportation') }}"
-                {{ page == 'exportation' ? 'aria-current="page"' : '' }}
+                class="sidenav__menu-item"
+                href="{{ url('mastodon') }}"
+                {{ page == 'mastodon' ? 'aria-current="page"' : '' }}
             >
-                {{ icon('backup') }}
-                {{ t('Data export') }}
+                {{ icon('mastodon') }}
+                {{ t('Mastodon') }}
             </a>
-        </div>
+        {% endif %}
+    </div>
 
-        <div class="flow flow--smaller">
-            <h2 class="sidenav__title">{{ t('Security') }}</h2>
+    <div class="flow flow--smaller">
+        <h2 class="sidenav__menu-title">{{ t('Data') }}</h2>
 
+        {% if not app.user.isBlocked %}
             <a
-                class="sidenav__anchor"
-                href="{{ url('security') }}"
-                {{ page == 'security' ? 'aria-current="page"' : '' }}
+                class="sidenav__menu-item"
+                href="{{ url('opml') }}"
+                {{ page == 'opml' ? 'aria-current="page"' : '' }}
             >
-                {{ icon('key') }}
-                {{ t('Credentials') }}
+                {{ icon('upload') }}
+                {{ t('OPML import') }}
             </a>
+        {% endif %}
 
-            <a
-                class="sidenav__anchor"
-                href="{{ url('sessions') }}"
-                {{ page == 'sessions' ? 'aria-current="page"' : '' }}
-            >
-                {{ icon('connect') }}
-                {{ t('Sessions') }}
-            </a>
+        <a
+            class="sidenav__menu-item"
+            href="{{ url('exportation') }}"
+            {{ page == 'exportation' ? 'aria-current="page"' : '' }}
+        >
+            {{ icon('backup') }}
+            {{ t('Data export') }}
+        </a>
+    </div>
 
-            <a
-                class="sidenav__anchor"
-                href="{{ url('account deletion') }}"
-                {{ page == 'account deletion' ? 'aria-current="page"' : '' }}
-            >
-                {{ icon('trash') }}
-                {{ t('Account deletion') }}
-            </a>
-        </div>
-    </ul>
-</nav>
+    <div class="flow flow--smaller">
+        <h2 class="sidenav__menu-title">{{ t('Security') }}</h2>
+
+        <a
+            class="sidenav__menu-item"
+            href="{{ url('security') }}"
+            {{ page == 'security' ? 'aria-current="page"' : '' }}
+        >
+            {{ icon('key') }}
+            {{ t('Credentials') }}
+        </a>
+
+        <a
+            class="sidenav__menu-item"
+            href="{{ url('sessions') }}"
+            {{ page == 'sessions' ? 'aria-current="page"' : '' }}
+        >
+            {{ icon('connect') }}
+            {{ t('Sessions') }}
+        </a>
+
+        <a
+            class="sidenav__menu-item"
+            href="{{ url('account deletion') }}"
+            {{ page == 'account deletion' ? 'aria-current="page"' : '' }}
+        >
+            {{ icon('trash') }}
+            {{ t('Account deletion') }}
+        </a>
+    </div>
+{% endblock %}
