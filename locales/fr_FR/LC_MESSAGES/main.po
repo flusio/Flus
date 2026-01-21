@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-01-21 09:58+0100\n"
-"PO-Revision-Date: 2026-01-21 09:58+0100\n"
+"POT-Creation-Date: 2026-01-21 10:01+0100\n"
+"PO-Revision-Date: 2026-01-21 10:01+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 3.8\n"
 "X-Poedit-Basepath: ../../../src\n"
-"X-Poedit-KeywordsList: t:1,2;t;Translatable\n"
+"X-Poedit-KeywordsList: t:1,1t;t:1,2t;t:1,2,4t;Translatable\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: assets/javascripts/controllers/back_button_controller.js:47
@@ -480,18 +480,6 @@ msgstr "Ne plus suivre"
 msgid "Follow"
 msgstr "Suivre"
 
-#: views/collections/_collections_by_others.html.twig:9
-#, php-format
-msgid "<strong>%s</strong> added this link to <strong>%s</strong>."
-msgstr "<strong>%s</strong> a ajouté ce lien à <strong>%s</strong>."
-
-#: views/collections/_collections_by_others.html.twig:11
-#, php-format
-msgid ""
-"<strong>%s</strong> added this link to <strong>%s</strong> (shared by %s)."
-msgstr ""
-"<strong>%s</strong> a ajouté ce lien à <strong>%s</strong> (partagée par %s)."
-
 #: views/collections/_form.html.twig:12
 msgid "What do you want to name this collection?"
 msgstr "Comment voulez-vous nommer cette collection ?"
@@ -602,12 +590,6 @@ msgstr "Modification d'une collection"
 #: views/my/security/show.html.twig:98 views/notes/edit.html.twig:49
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
-
-#: views/collections/feeds/show.atom.xml.twig:58
-#: views/profiles/feeds/show.atom.xml.twig:50
-#, php-format
-msgid "— “<a href=\"%s\">%s</a>” was published on %s"
-msgstr "— « <a href=\"%s\">%s</a> » a été publié sur %s"
 
 #: views/collections/filters/edit.html.twig:3
 msgid "Settings for the news"
@@ -810,16 +792,6 @@ msgstr "Révoquer"
 msgid "Copy"
 msgstr "Copier"
 
-#: views/collections/show.html.twig:18
-#, php-format
-msgid "A feed from %s, on %s."
-msgstr "Un flux issu de %s, sur %s."
-
-#: views/collections/show.html.twig:22
-#, php-format
-msgid "A collection created by %s on %s."
-msgstr "Une collection créée par %s sur %s."
-
 #: views/collections/show.html.twig:30 views/profiles/show.html.twig:7
 #, php-format
 msgid "Syndication feed of %s"
@@ -880,14 +852,6 @@ msgstr ""
 #: views/notes/_notepad.html.twig:61
 msgid "Delete"
 msgstr "Supprimer"
-
-#: views/collections/show.html.twig:251
-#, php-format
-msgid ""
-"Feed from <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">%s</a>"
-msgstr ""
-"Flux issu de <a target=\"_blank\" rel=\"noopener noreferrer\" "
-"href=\"%s\">%s</a>"
 
 #: views/collections/show.html.twig:258
 msgid "Published by"
@@ -987,11 +951,6 @@ msgstr "Cela pourrait prendre plusieurs minutes, merci d’attendre."
 #: views/exportations/show.html.twig:52
 msgid "Download your archive"
 msgstr "Télécharger votre archive"
-
-#: views/exportations/show.html.twig:57
-#, php-format
-msgid "generated on %s"
-msgstr "générée le %s"
 
 #: views/feeds/feeds.xsl.twig:6
 msgid "(feed)"
@@ -1330,16 +1289,6 @@ msgstr "Ce lien est dans vos signets."
 msgid "via your <strong><a href=\"%s\">bookmarks</a></strong>"
 msgstr "via vos <strong><a href=\"%s\">signets</a></strong>"
 
-#: views/links/_link.html.twig:159
-#, php-format
-msgid "via <strong><a href=\"%s\">%s</a></strong> by <a href=\"%s\">%s</a>"
-msgstr "via <strong><a href=\"%s\">%s</a></strong> de <a href=\"%s\">%s</a>"
-
-#: views/links/_link.html.twig:166 views/links/_link.html.twig:172
-#, php-format
-msgid "via <strong><a href=\"%s\">%s</a></strong>"
-msgstr "via <strong><a href=\"%s\">%s</a></strong>"
-
 #: views/links/_link.html.twig:196
 #, php-format
 msgid "Notepad (%s)"
@@ -1552,9 +1501,7 @@ msgstr "Résultats de la recherche"
 #: views/links/search.html.twig:28
 #, php-format
 msgid "%d result (“%s”)"
-msgid_plural "%d results (“%s”)"
-msgstr[0] "%d résultat (« %s »)"
-msgstr[1] "%d résultats (« %s »)"
+msgstr "%d résultat (« %s »)"
 
 #: views/links/searches/show.html.twig:35
 msgid "What’s the address of the link or feed?"
@@ -1564,16 +1511,6 @@ msgstr "Quelle est l’adresse du lien ou du flux ?"
 #, php-format
 msgid "Syndication feed of notes on %s"
 msgstr "Flux de syndication de notes sur %s"
-
-#: views/links/show.html.twig:16
-#, php-format
-msgid "Shared on %s: %s"
-msgstr "Partagé sur %s : %s"
-
-#: views/links/show.html.twig:17
-#, php-format
-msgid "A link shared by %s on %s."
-msgstr "Un lien partagé par %s sur %s."
 
 #: views/links/show.html.twig:65
 msgid "read"
@@ -1668,22 +1605,6 @@ msgstr ""
 "Merci pour votre inscription sur %s. Pour terminer, vous devez confirmer "
 "votre adresse courriel. Vous avez seulement à cliquer sur le lien suivant, "
 "et tout devrait être bon ensuite :"
-
-#: views/mailers/users/inactivity_email.html.twig:13
-#: views/mailers/users/inactivity_email.txt.twig:6
-#, php-format
-msgid ""
-"You receive this email because you haven’t been active on %s for several "
-"months. To avoid storing outdated data, your account will be deleted after "
-"one month. If you don’t want to keep it, you don’t have to do anything. "
-"However, if you wish to keep your account, you should login to %s by "
-"clicking on the following link:"
-msgstr ""
-"Vous recevez ce courriel parce que vous n’avez pas été acti·ve sur %s depuis "
-"plusieurs mois. Pour éviter de conserver des données inutilement, votre "
-"compte sera supprimé dans un mois. Si vous ne souhaitez pas le conserver, "
-"vous n’avez rien à faire. Toutefois, si vous souhaitez conserver votre "
-"compte, vous devez vous connecter à %s en cliquant sur le lien suivant :"
 
 #: views/mailers/users/inactivity_email.html.twig:21
 #: views/mailers/users/inactivity_email.txt.twig:10
@@ -1823,11 +1744,6 @@ msgstr ""
 msgid "Delete your account"
 msgstr "Supprimer votre compte"
 
-#: views/my/account/show.html.twig:19
-#, php-format
-msgid "You are registered since %s."
-msgstr "Vous êtes inscrit‧e depuis le %s."
-
 #: views/my/account/show.html.twig:25
 msgid "Validate your account"
 msgstr "Valider votre compte"
@@ -1835,16 +1751,6 @@ msgstr "Valider votre compte"
 #: views/my/account/show.html.twig:31
 msgid "You have a <strong>free subscription</strong>! 😊"
 msgstr "Vous bénéficiez d’un <strong>abonnement gratuit</strong> ! 😊"
-
-#: views/my/account/show.html.twig:33
-#, php-format
-msgid "<strong>Your subscription expired on %s.</strong>"
-msgstr "<strong>Votre abonnement a expiré le %s.</strong>"
-
-#: views/my/account/show.html.twig:35
-#, php-format
-msgid "Your subscription will expire on <strong>%s.</strong>"
-msgstr "Votre abonnement expirera le <strong>%s.</strong>"
 
 #: views/my/account/show.html.twig:42
 msgid "Manage your subscription"
@@ -1962,11 +1868,6 @@ msgstr "session courante"
 #: views/my/sessions/index.html.twig:34
 msgid "expired"
 msgstr "expirée"
-
-#: views/my/sessions/index.html.twig:56
-#, php-format
-msgid "connected on %s"
-msgstr "connecté‧e le %s"
 
 #: views/my/validation/new.html.twig:15
 #, php-format
@@ -2090,11 +1991,6 @@ msgstr "Votre note"
 #: views/onboarding/_continue.html.twig:2
 msgid "Continue"
 msgstr "Continuer"
-
-#: views/onboarding/_navigation.html.twig:3
-#, php-format
-msgid "Step %d on %d"
-msgstr "Étape %d sur %d"
 
 #: views/onboarding/_navigation.html.twig:5
 msgid "finished"
@@ -2517,11 +2413,6 @@ msgstr "Mot de passe retrouvé ?"
 msgid "Collections OPML of %s"
 msgstr "OPML des collections de %s"
 
-#: views/profiles/show.html.twig:14
-#, php-format
-msgid "Discover %s’s collections on %s."
-msgstr "Découvrez les collections de %s sur %s."
-
 #: views/profiles/show.html.twig:57
 msgid "This is your public profile!"
 msgstr "Voici votre profil public !"
@@ -2663,3 +2554,93 @@ msgstr "Recommencer l’introduction"
 #: views/support/show.html.twig:117
 msgid "What’s new?"
 msgstr "Quoi de neuf ?"
+
+#, php-format
+#~ msgid "<strong>%s</strong> added this link to <strong>%s</strong>."
+#~ msgstr "<strong>%s</strong> a ajouté ce lien à <strong>%s</strong>."
+
+#, php-format
+#~ msgid ""
+#~ "<strong>%s</strong> added this link to <strong>%s</strong> (shared by %s)."
+#~ msgstr ""
+#~ "<strong>%s</strong> a ajouté ce lien à <strong>%s</strong> (partagée par "
+#~ "%s)."
+
+#, php-format
+#~ msgid "— “<a href=\"%s\">%s</a>” was published on %s"
+#~ msgstr "— « <a href=\"%s\">%s</a> » a été publié sur %s"
+
+#, php-format
+#~ msgid "A feed from %s, on %s."
+#~ msgstr "Un flux issu de %s, sur %s."
+
+#, php-format
+#~ msgid "A collection created by %s on %s."
+#~ msgstr "Une collection créée par %s sur %s."
+
+#, php-format
+#~ msgid ""
+#~ "Feed from <a target=\"_blank\" rel=\"noopener noreferrer\" "
+#~ "href=\"%s\">%s</a>"
+#~ msgstr ""
+#~ "Flux issu de <a target=\"_blank\" rel=\"noopener noreferrer\" "
+#~ "href=\"%s\">%s</a>"
+
+#, php-format
+#~ msgid "generated on %s"
+#~ msgstr "générée le %s"
+
+#, php-format
+#~ msgid "via <strong><a href=\"%s\">%s</a></strong> by <a href=\"%s\">%s</a>"
+#~ msgstr "via <strong><a href=\"%s\">%s</a></strong> de <a href=\"%s\">%s</a>"
+
+#, php-format
+#~ msgid "via <strong><a href=\"%s\">%s</a></strong>"
+#~ msgstr "via <strong><a href=\"%s\">%s</a></strong>"
+
+#, php-format
+#~ msgid "Shared on %s: %s"
+#~ msgstr "Partagé sur %s : %s"
+
+#, php-format
+#~ msgid "A link shared by %s on %s."
+#~ msgstr "Un lien partagé par %s sur %s."
+
+#, php-format
+#~ msgid ""
+#~ "You receive this email because you haven’t been active on %s for several "
+#~ "months. To avoid storing outdated data, your account will be deleted "
+#~ "after one month. If you don’t want to keep it, you don’t have to do "
+#~ "anything. However, if you wish to keep your account, you should login to "
+#~ "%s by clicking on the following link:"
+#~ msgstr ""
+#~ "Vous recevez ce courriel parce que vous n’avez pas été acti·ve sur %s "
+#~ "depuis plusieurs mois. Pour éviter de conserver des données inutilement, "
+#~ "votre compte sera supprimé dans un mois. Si vous ne souhaitez pas le "
+#~ "conserver, vous n’avez rien à faire. Toutefois, si vous souhaitez "
+#~ "conserver votre compte, vous devez vous connecter à %s en cliquant sur le "
+#~ "lien suivant :"
+
+#, php-format
+#~ msgid "You are registered since %s."
+#~ msgstr "Vous êtes inscrit‧e depuis le %s."
+
+#, php-format
+#~ msgid "<strong>Your subscription expired on %s.</strong>"
+#~ msgstr "<strong>Votre abonnement a expiré le %s.</strong>"
+
+#, php-format
+#~ msgid "Your subscription will expire on <strong>%s.</strong>"
+#~ msgstr "Votre abonnement expirera le <strong>%s.</strong>"
+
+#, php-format
+#~ msgid "connected on %s"
+#~ msgstr "connecté‧e le %s"
+
+#, php-format
+#~ msgid "Step %d on %d"
+#~ msgstr "Étape %d sur %d"
+
+#, php-format
+#~ msgid "Discover %s’s collections on %s."
+#~ msgstr "Découvrez les collections de %s sur %s."
