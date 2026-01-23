@@ -1,0 +1,108 @@
+.collection {
+    position: relative;
+
+    display: flex;
+    min-height: 150px;
+
+    flex-direction: column;
+
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    box-shadow: 0 0 2px var(--color-box-shadow);
+    border-radius: var(--border-radius);
+
+    transition:
+        background-color 0.5s ease-in-out,
+        box-shadow 0.5s ease-in-out;
+}
+
+.collection:focus-within {
+    box-shadow: 0 1px 2px 1px var(--color-box-shadow);
+}
+
+.collection__body {
+    padding: var(--space-medium) var(--space-small);
+    padding-top: calc(70px + var(--space-medium));
+
+    flex-grow: 1;
+
+    color: var(--color-text);
+    text-decoration: none;
+    text-shadow:
+        -1px 1px 1px var(--color-grey-base),
+        1px 1px 1px var(--color-grey-base),
+        1px -1px 0 var(--color-grey-base),
+        -1px -1px 0 var(--color-grey-base);
+
+    background-color: rgb(0, 0, 0, 30%);
+    background-image:
+        linear-gradient(
+            to bottom,
+            transparent 30px,
+            rgb(0, 0, 0, 40%) 70px,
+            rgb(0, 0, 0, 60%) 90px,
+            rgb(0, 0, 0, 80%)
+        );
+
+    transition: background-color 0.3s ease-in-out;
+}
+
+.collection__body--large {
+    padding-top: calc(156px + var(--space-medium));
+
+    background-image:
+        linear-gradient(
+            to bottom,
+            transparent 110px,
+            rgb(0, 0, 0, 40%) 150px,
+            rgb(0, 0, 0, 60%) 170px,
+            rgb(0, 0, 0, 80%)
+        );
+}
+
+.collection__body:first-child {
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+.collection__body:last-child,
+.collection__footer {
+    border-bottom-right-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+}
+
+.collection__body:hover,
+.collection__body:focus {
+    color: var(--color-white);
+
+    background-color: transparent;
+}
+
+.collection__title {
+    overflow: hidden;
+
+    font-size: 1.15em;
+    font-weight: bold;
+    line-height: 1.25;
+
+    text-overflow: ellipsis;
+}
+
+.collection__title a {
+    display: block;
+
+    text-decoration: none;
+}
+
+.collection__footer {
+    display: flex;
+    padding: var(--space-small);
+
+    align-items: center;
+    justify-content: center;
+
+    color: var(--color-white);
+
+    background-color: rgb(0, 0, 0, 90%);
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+}

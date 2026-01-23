@@ -1,0 +1,9 @@
+.turbo-progress-bar {
+    position: fixed;
+    top: 0;
+
+    height: 0.2rem;
+
+    background: linear-gradient(to right, var(--color-caribbean), var(--color-accent-text));
+    border-radius: 0 var(--border-radius-small) var(--border-radius-small) 0;
+}

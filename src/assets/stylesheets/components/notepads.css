@@ -1,0 +1,55 @@
+.notepad__container {
+    box-shadow: 0 1px 2px var(--color-box-shadow);
+    border: 1px solid var(--color-grey-line);
+    border-radius: var(--border-radius);
+}
+
+.notepad__header {
+    padding: var(--space-small);
+
+    text-align: center;
+
+    background-color: var(--color-grey-base);
+    border-bottom: 1px solid var(--color-grey-bg-subtle);
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+.notepad__date {
+    color: var(--color-grey-text);
+    font-size: var(--font-size-small);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.notepad__date:hover {
+    text-decoration: underline dotted;
+}
+
+.notepad__note {
+    margin: var(--space-smaller);
+
+    border-radius: var(--border-radius);
+
+    transition: background-color 0.2s ease-in-out;
+}
+
+.notepad__note:has(.popup__opener:focus-visible),
+.notepad__note:has(.popup__opener[aria-expanded="true"]) {
+    background-color: var(--color-grey-base);
+}
+
+.notepad__content {
+    overflow-x: hidden;
+
+    overflow-wrap: break-word;
+
+    padding: var(--space-small);
+}
+
+.notepad__content > *:first-child {
+    margin-top: var(--space-smaller);
+}
+
+.notepad__content > *:last-child {
+    margin-bottom: var(--space-smaller);
+}

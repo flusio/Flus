@@ -15,8 +15,8 @@ export default class extends Controller {
         this.inputTarget.name = 'name';
         this.selectTarget.name = '';
 
-        this.groupInputTarget.style.display = 'block';
-        this.groupSelectTarget.style.display = 'none';
+        this.groupInputTarget.hidden = false;
+        this.groupSelectTarget.hidden = true;
 
         this.inputTarget.focus();
     }

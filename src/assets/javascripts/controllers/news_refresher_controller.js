@@ -23,4 +23,13 @@ export default class extends Controller {
             this.buttonTarget.classList.remove('button--primary');
         }
     }
+
+    refresh (event) {
+        event.preventDefault();
+
+        this.buttonTarget.classList.add('button--animated');
+        this.buttonTarget.disabled = true;
+
+        this.element.requestSubmit();
+    }
 };
