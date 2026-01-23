@@ -27,14 +27,12 @@ class Media
     public function clean(): mixed
     {
         $media_path = \App\Configuration::$application['media_path'];
-        $path_cards = "{$media_path}/cards";
         $path_covers = "{$media_path}/covers";
-        $path_large = "{$media_path}/large";
 
         $count_deleted = 0;
 
         yield Response::text(200, 'Scanning the media directories...');
-        $subdir_names_depth_1 = scandir($path_cards, SCANDIR_SORT_NONE);
+        $subdir_names_depth_1 = scandir($path_covers, SCANDIR_SORT_NONE);
 
         if ($subdir_names_depth_1 === false) {
             throw new \Exception('Cannot read the media directories.');
@@ -56,7 +54,7 @@ class Media
             yield Response::text(200, "Removing files under {$subdir_name}/... ({$progress_percent}%)");
 
             // get the full list of file names under the current subdirectory
-            $subdir_path = "{$path_cards}/{$subdir_name}";
+            $subdir_path = "{$path_covers}/{$subdir_name}";
             $file_paths_on_fs = glob("{$subdir_path}/???/???/*", GLOB_NOSORT);
 
             if ($file_paths_on_fs === false) {
@@ -78,12 +76,10 @@ class Media
             // database, the file can be deleted)
             $file_names_to_delete = array_diff($file_names_on_fs, $file_names_from_db);
 
-            // finally, delete the files under cards, covers and large directories
+            // finally, delete the files under covers directory
             foreach ($file_names_to_delete as $file_name) {
                 $sub_path = utils\Belt::filenameToSubpath($file_name);
-                @unlink("{$path_cards}/{$sub_path}/{$file_name}");
                 @unlink("{$path_covers}/{$sub_path}/{$file_name}");
-                @unlink("{$path_large}/{$sub_path}/{$file_name}");
                 $count_deleted = $count_deleted + 1;
                 yield Response::text(200, "Deleted file {$file_name}");
             }
@@ -94,9 +90,7 @@ class Media
 
             yield Response::text(200, "Cleaning empty dirs under {$subdir_name}/...");
 
-            utils\FilesystemHelper::cleanTreeEmptyDirectories("{$path_cards}/{$subdir_name}");
             utils\FilesystemHelper::cleanTreeEmptyDirectories("{$path_covers}/{$subdir_name}");
-            utils\FilesystemHelper::cleanTreeEmptyDirectories("{$path_large}/{$subdir_name}");
 
             yield Response::text(200, "Cleaned empty dirs under {$subdir_name}/.");
         }

@@ -166,12 +166,8 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($image_filename);
         $media_path = \App\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($image_filename);
-        $card_filepath = "{$media_path}/cards/{$subpath}/{$image_filename}";
         $cover_filepath = "{$media_path}/covers/{$subpath}/{$image_filename}";
-        $large_filepath = "{$media_path}/large/{$subpath}/{$image_filename}";
-        $this->assertTrue(file_exists($card_filepath));
         $this->assertTrue(file_exists($cover_filepath));
-        $this->assertTrue(file_exists($large_filepath));
     }
 
     public function testFetchChangesTitleIfAlreadySetAndForceSync(): void
@@ -235,12 +231,8 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $this->assertNotSame('old.png', $image_filename);
         $media_path = \App\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($image_filename);
-        $card_filepath = "{$media_path}/cards/{$subpath}/{$image_filename}";
         $cover_filepath = "{$media_path}/covers/{$subpath}/{$image_filename}";
-        $large_filepath = "{$media_path}/large/{$subpath}/{$image_filename}";
-        $this->assertTrue(file_exists($card_filepath));
         $this->assertTrue(file_exists($cover_filepath));
-        $this->assertTrue(file_exists($large_filepath));
     }
 
     public function testFetchDoesNotChangeTitleIfAlreadySet(): void

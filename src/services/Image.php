@@ -14,11 +14,7 @@ class Image
 {
     private http\Fetcher $fetcher;
 
-    private string $path_cards;
-
     private string $path_covers;
-
-    private string $path_large;
 
     public function __construct()
     {
@@ -32,9 +28,7 @@ class Image
         );
 
         $media_path = \App\Configuration::$application['media_path'];
-        $this->path_cards = "{$media_path}/cards";
         $this->path_covers = "{$media_path}/covers";
-        $this->path_large = "{$media_path}/large";
     }
 
     /**
@@ -51,29 +45,17 @@ class Image
 
         $url_hash = hash('sha256', $image_url);
         $subpath = utils\Belt::filenameToSubpath($url_hash);
-        $path_card = "{$this->path_cards}/{$subpath}";
-        $path_cover = "{$this->path_covers}/{$subpath}";
-        $path_large = "{$this->path_large}/{$subpath}";
-        $card_image_filepath = "{$path_card}/{$url_hash}";
-        $cover_image_filepath = "{$path_cover}/{$url_hash}";
-        $large_image_filepath = "{$path_large}/{$url_hash}";
+        $path_covers = "{$this->path_covers}/{$subpath}";
+        $cover_image_filepath = "{$path_covers}/{$url_hash}";
 
-        if (!file_exists($path_card)) {
-            @mkdir($path_card, 0755, true);
-        }
-        if (!file_exists($path_cover)) {
-            @mkdir($path_cover, 0755, true);
-        }
-        if (!file_exists($path_large)) {
-            @mkdir($path_large, 0755, true);
+        if (!file_exists($path_covers)) {
+            @mkdir($path_covers, 0755, true);
         }
 
-        $card_file_exists = glob($card_image_filepath . '.*');
         $cover_file_exists = glob($cover_image_filepath . '.*');
-        $large_file_exists = glob($large_image_filepath . '.*');
 
-        if ($card_file_exists && $cover_file_exists && $large_file_exists) {
-            return basename($card_file_exists[0]);
+        if ($cover_file_exists) {
+            return basename($cover_file_exists[0]);
         }
 
         try {
@@ -87,19 +69,9 @@ class Image
         }
 
         try {
-            // We generate three different images from the source to keep the
-            // quality as high as possible
-            $card_image = models\Image::fromString($response->data);
-            $card_image->resize(300, 150);
-            $card_image->save($card_image_filepath . '.webp');
-
             $cover_image = models\Image::fromString($response->data);
             $cover_image->resize(300, 300);
             $cover_image->save($cover_image_filepath . '.webp');
-
-            $large_image = models\Image::fromString($response->data);
-            $large_image->resize(1100, 250);
-            $large_image->save($large_image_filepath . '.webp');
 
             return $url_hash . '.webp';
         } catch (\DomainException $e) {

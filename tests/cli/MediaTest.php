@@ -54,12 +54,8 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $this->assertNotEmpty($image_filename);
         $media_path = \App\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($image_filename);
-        $card_filepath = "{$media_path}/cards/{$subpath}/{$image_filename}";
         $cover_filepath = "{$media_path}/covers/{$subpath}/{$image_filename}";
-        $large_filepath = "{$media_path}/large/{$subpath}/{$image_filename}";
-        $this->assertTrue(file_exists($card_filepath));
         $this->assertTrue(file_exists($cover_filepath));
-        $this->assertTrue(file_exists($large_filepath));
 
         $response = $this->appRun('CLI', '/media/clean');
 
@@ -80,12 +76,8 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $response->next();
         $this->assertResponseCode($response, 200);
         $this->assertResponseEquals($response, '1 files deleted.');
-        $this->assertFalse(file_exists($card_filepath));
         $this->assertFalse(file_exists($cover_filepath));
-        $this->assertFalse(file_exists($large_filepath));
-        $this->assertFalse(file_exists(dirname($card_filepath)));
         $this->assertFalse(file_exists(dirname($cover_filepath)));
-        $this->assertFalse(file_exists(dirname($large_filepath)));
     }
 
     public function testCleanKeepsFilesUsedByLinks(): void
@@ -102,12 +94,8 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $this->assertNotEmpty($image_filename);
         $media_path = \App\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($image_filename);
-        $card_filepath = "{$media_path}/cards/{$subpath}/{$image_filename}";
         $cover_filepath = "{$media_path}/covers/{$subpath}/{$image_filename}";
-        $large_filepath = "{$media_path}/large/{$subpath}/{$image_filename}";
-        $this->assertTrue(file_exists($card_filepath));
         $this->assertTrue(file_exists($cover_filepath));
-        $this->assertTrue(file_exists($large_filepath));
 
         $response = $this->appRun('CLI', '/media/clean');
 
@@ -128,9 +116,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $response->next();
         $this->assertResponseCode($response, 200);
         $this->assertResponseEquals($response, 'No files deleted.');
-        $this->assertTrue(file_exists($card_filepath));
         $this->assertTrue(file_exists($cover_filepath));
-        $this->assertTrue(file_exists($large_filepath));
     }
 
     public function testCleanKeepsFilesUsedByCollections(): void
@@ -147,12 +133,8 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $this->assertNotEmpty($image_filename);
         $media_path = \App\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($image_filename);
-        $card_filepath = "{$media_path}/cards/{$subpath}/{$image_filename}";
         $cover_filepath = "{$media_path}/covers/{$subpath}/{$image_filename}";
-        $large_filepath = "{$media_path}/large/{$subpath}/{$image_filename}";
-        $this->assertTrue(file_exists($card_filepath));
         $this->assertTrue(file_exists($cover_filepath));
-        $this->assertTrue(file_exists($large_filepath));
 
         $response = $this->appRun('CLI', '/media/clean');
 
@@ -173,8 +155,6 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $response->next();
         $this->assertResponseCode($response, 200);
         $this->assertResponseEquals($response, 'No files deleted.');
-        $this->assertTrue(file_exists($card_filepath));
         $this->assertTrue(file_exists($cover_filepath));
-        $this->assertTrue(file_exists($large_filepath));
     }
 }

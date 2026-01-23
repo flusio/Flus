@@ -169,12 +169,8 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($collection->image_filename);
         $media_path = \App\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($collection->image_filename);
-        $card_filepath = "{$media_path}/cards/{$subpath}/{$collection->image_filename}";
         $cover_filepath = "{$media_path}/covers/{$subpath}/{$collection->image_filename}";
-        $large_filepath = "{$media_path}/large/{$subpath}/{$collection->image_filename}";
-        $this->assertTrue(file_exists($card_filepath));
         $this->assertTrue(file_exists($cover_filepath));
-        $this->assertTrue(file_exists($large_filepath));
     }
 
     public function testUpdateWorksIfCollectionIsSharedWithWriteAccess(): void

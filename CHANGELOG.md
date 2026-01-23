@@ -1,5 +1,13 @@
 # Changelog of Flus
 
+## unreleased
+
+### Migration notes
+
+You can remove the media "cards" and "large" folders as these images are no longer used.
+Please make sure **to keep the "avatars" and "covers" folders.**
+The folders are located either under public/media, or under the folder set by the `APP_MEDIA_PATH` environment variable.
+
 ## 2025-12-30 - v2.2.1
 
 ### Bug fixes

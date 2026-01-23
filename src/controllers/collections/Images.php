@@ -87,39 +87,22 @@ class Images extends BaseController
 
         $media_path = \App\Configuration::$application['media_path'];
         $subpath = utils\Belt::filenameToSubpath($collection->id);
-        $card_path = "{$media_path}/cards/{$subpath}/";
-        $cover_path = "{$media_path}/covers/{$subpath}/";
-        $large_path = "{$media_path}/large/{$subpath}/";
-        if (!file_exists($card_path)) {
-            @mkdir($card_path, 0755, true);
-        }
-        if (!file_exists($cover_path)) {
-            @mkdir($cover_path, 0755, true);
-        }
-        if (!file_exists($large_path)) {
-            @mkdir($large_path, 0755, true);
+        $path_covers = "{$media_path}/covers/{$subpath}/";
+        if (!file_exists($path_covers)) {
+            @mkdir($path_covers, 0755, true);
         }
 
         $image_data = $image_file->content() ?: '';
 
-        $card_image = models\Image::fromString($image_data);
         $cover_image = models\Image::fromString($image_data);
-        $large_image = models\Image::fromString($image_data);
-
-        $card_image->resize(300, 150);
         $cover_image->resize(300, 300);
-        $large_image->resize(1100, 250);
 
         if ($collection->image_filename) {
-            @unlink($card_path . $collection->image_filename);
-            @unlink($cover_path . $collection->image_filename);
-            @unlink($large_path . $collection->image_filename);
+            @unlink($path_covers . $collection->image_filename);
         }
 
         $image_filename = "{$collection->id}.webp";
-        $card_image->save($card_path . $image_filename);
-        $cover_image->save($cover_path . $image_filename);
-        $large_image->save($large_path . $image_filename);
+        $cover_image->save($path_covers . $image_filename);
 
         $collection->image_filename = $image_filename;
         $collection->save();
