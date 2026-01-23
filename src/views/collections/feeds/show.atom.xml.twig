@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?xml-stylesheet href="{{ url('feeds xsl') }}" type="text/xsl"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>{{ collection.name }}</title>
+
+    {% if collection.description %}
+        <subtitle type="html"><![CDATA[{{ collection.descriptionAsHtml | raw }}]]></subtitle>
+    {% endif %}
+
+    <link href="{{ url_full('collection', { id: collection.id }) }}" rel="alternate" type="text/html" />
+    <link href="{{ url_full('collection feed', { id: collection.id }) }}" rel="self" type="application/atom+xml" />
+
+    <id>{{ collection.tagUri }}</id>
+    <author>
+        <name>{{ collection.owner.username }}</name>
+    </author>
+    <generator>{{ app.user_agent }}</generator>
+
+    {% if links %}
+        <updated>{{ (links | first).published_at.format(constant('DATE_ATOM')) }}</updated>
+    {% else %}
+        <updated>{{ date().format(constant('DATE_ATOM')) }}</updated>
+    {% endif %}
+
+    {% for topic in topics %}
+        <category term="{{ topic.label }}"></category>
+    {% endfor %}
+
+    {% for link in links %}
+        <entry>
+            <title>{{ link.title }}</title>
+            <id>{{ link.tagUri }}</id>
+
+            {% if direct %}
+                <link href="{{ link.url }}" rel="alternate" type="text/html" />
+                <link href="{{ url_full('link', { id: link.id }) }}" rel="replies" type="text/html" />
+            {% else %}
+                <link href="{{ url_full('link', { id: link.id }) }}" rel="alternate" type="text/html" />
+                <link href="{{ link.url }}" rel="via" type="text/html" />
+            {% endif %}
+
+            {% set notes = link.notes %}
+            {% if notes %}
+                {% set updated = (notes | last).created_at %}
+            {% else %}
+                {% set updated = link.published_at %}
+            {% endif %}
+
+            <published>{{ link.published_at.format(constant('DATE_ATOM')) }}</published>
+            <updated>{{ updated.format(constant('DATE_ATOM')) }}</updated>
+
+            <content type="html"><![CDATA[
+                {% for note in notes %}
+                    <div>{{ note.contentAsHtml | raw }}</div>
+                {% endfor %}
+
+                <p>
+                    {{ t('— “<a href="%s">%s</a>” was published on %s', [link.url | escape, link.title | escape, link.host | escape]) | raw }}
+                </p>
+            ]]></content>
+        </entry>
+    {% endfor %}
+</feed>

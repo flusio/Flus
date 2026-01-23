@@ -1,0 +1,332 @@
+{% extends 'layouts/application.html.twig' %}
+
+{% set owner = collection.owner %}
+{% set is_following = app.user and app.user.isFollowing(collection.id) %}
+{% set is_shared = collection.shares | length > 0 %}
+{% set can_update = can(app.user, 'update', collection) %}
+{% set can_delete = can(app.user, 'delete', collection) %}
+{% set can_add_links = can(app.user, 'addLinks', collection) %}
+
+{% if pagination.isCurrentFirstPage %}
+    {% set current_url_params = { id: collection.id } %}
+{% else %}
+    {% set current_url_params = { id: collection.id, page: pagination.currentPage } %}
+{% endif %}
+
+{% if collection.isFeed %}
+    {% set feed_url = collection.feed_url %}
+    {% set opengraph_description = t('A feed from %s, on %s.', [collection.feedWebsiteHost, app.brand]) %}
+    {% set current_tab = 'feeds' %}
+{% else %}
+    {% set feed_url = url_full('collection feed', { id: collection.id }) %}
+    {% set opengraph_description = t('A collection created by %s on %s.', [owner.username, app.brand]) %}
+    {% set current_tab = 'links' %}
+{% endif %}
+
+{% block title %}{{ collection.name }}{% endblock %}
+{% block canonical %}{{ url_full('collection', current_url_params) }}{% endblock %}
+
+{% block alternates %}
+    <link rel="alternate" type="application/atom+xml" title="{{ t('Syndication feed of %s', [collection.name]) }}" href="{{ feed_url }}">
+{% endblock %}
+
+{% block opengraph %}
+    {{ include('layouts/_opengraph.html.twig', {
+        title: collection.name,
+        description: opengraph_description,
+        locale: owner.locale,
+        url: url_full('collection', { id: collection.id }),
+        image: url_media_full('covers', collection.image_filename, 'collection-card.png'),
+    }) }}
+{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'collection', tab: current_tab }) }}
+{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: collection.name }) }}
+{% endblock %}
+
+{% block body %}
+    <div class="flow">
+        <div class="cols cols--gap-large">
+            <div class="col--size3 text--center">
+                {% if can(app.user, 'update', collection) %}
+                    <button
+                        class="button--edit-image"
+                        data-controller="modal-opener"
+                        data-action="modal-opener#fetch"
+                        data-modal-opener-href-value="{{ url('edit image collection', { id: collection.id }) }}"
+                        aria-haspopup="dialog"
+                        aria-controls="modal"
+                        title="{{ t('Change the illustration') }}"
+                    >
+                        <img
+                            class="illustration"
+                            alt=""
+                            src="{{ url_media('covers', collection.image_filename, 'collection-card.png') }}"
+                        >
+
+                        <span class="sr-only">
+                            {{ t('Change the illustration') }}
+                        </span>
+                    </button>
+                {% else %}
+                    <img
+                        class="illustration"
+                        alt=""
+                        src="{{ url_media('covers', collection.image_filename, 'collection-card.png') }}"
+                    >
+                {% endif %}
+            </div>
+
+            <div class="col--extend flow">
+                <div class="cols cols--gap">
+                    <h1 class="col--extend text--break">{{ collection.name }}</h1>
+
+                    {% if app.user and is_following %}
+                        <form class="col--noshrink" method="post" action="{{ url('unfollow collection', { id: collection.id }) }}">
+                            <button class="button--big">
+                                {{ icon('feed-stop') }}
+                                {{ t('Unfollow') }}
+                            </button>
+
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\UnfollowCollection') }}">
+                        </form>
+                    {% elseif app.user %}
+                        <form class="col--noshrink" method="post" action="{{ url('follow collection', { id: collection.id }) }}">
+                            <button class="button--primary button--big">
+                                {{ icon('feed') }}
+                                {{ t('Follow') }}
+                            </button>
+
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\FollowCollection') }}">
+                        </form>
+                    {% endif %}
+                </div>
+
+                <p class="cols cols--always cols--gap">
+                    <span title="{{ t('Publication frequency') }}">
+                        {{ icon('line-chart') }}
+                        {{ collection.publication_frequency_per_year | format_publication_frequency }}
+                    </span>
+
+                    {% if collection.isCollection %}
+                        <span class="badge badge--accent badge--border">
+                            {{ collection.is_public ? t('public') : t('private') }}
+                        </span>
+                    {% endif %}
+                </p>
+
+                {% if collection.isFeed %}
+                    <p>
+                        {{ icon('feed') }}
+                        {{ t('Feed from <a target="_blank" rel="noopener noreferrer" href="%s">%s</a>', [
+                            collection.feedWebsiteUrl | escape,
+                            collection.feedWebsiteHost | escape,
+                        ]) | raw }}
+                    </p>
+                {% else %}
+                    <p>
+                        {{ t('Published by') }}
+                        {%- for user in collection.publishers -%}
+                            {% if not loop.first %}, {% endif %}
+                            <a class="username" href="{{ url('profile', { id: user.id }) }}">
+                                <img class="avatar avatar--mini" alt="" src="{{ url_avatar(user.avatar_filename) }}">
+                                {{- user.username -}}
+                            </a>
+                        {%- endfor -%}
+                    </p>
+                {% endif %}
+
+                {% if topics %}
+                    <p>
+                        {{ topics | column('label') | join(' ⋅ ') }}
+                    </p>
+                {% endif %}
+
+                {% if collection.description %}
+                    <div class="text-container">
+                        {{ collection.descriptionAsHtml | raw }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if is_following or can_update or can_delete %}
+        <div class="panel panel--rounded stack stack--gap-small">
+            {% if can_update %}
+                <button
+                    data-controller="modal-opener"
+                    data-action="modal-opener#fetch"
+                    data-modal-opener-href-value="{{ url('edit collection', { id: collection.id }) }}"
+                    aria-haspopup="dialog"
+                    aria-controls="modal"
+                >
+                    {{ icon('pencil') }}
+                    {{ t('Edit') }}
+                </button>
+
+                <button
+                    data-controller="modal-opener"
+                    data-action="modal-opener#fetch"
+                    data-modal-opener-href-value="{{ url('collection shares', { id: collection.id }) }}"
+                    aria-haspopup="dialog"
+                    aria-controls="modal"
+                >
+                    {{ icon('users') }}
+                    {{ t('Access') }}
+                </button>
+            {% endif %}
+
+            <details
+                class="popup"
+                data-controller="popup"
+                data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
+            >
+                <summary class="popup__opener">
+                    <span class="button">
+                        {{ icon('menu') }}
+                        {{ t('Actions') }}
+                    </span>
+                </summary>
+
+                <nav class="popup__container popup__container--center">
+                    {% if is_following %}
+                        <button
+                            class="popup__item"
+                            data-controller="modal-opener"
+                            data-action="modal-opener#fetch"
+                            data-modal-opener-href-value="{{ url('edit collection filter', { id: collection.id }) }}"
+                            aria-haspopup="dialog"
+                            aria-controls="modal"
+                        >
+                            {{ icon('slider') }}
+                            {{ t('Adjust for the news') }}
+                        </button>
+                    {% endif %}
+
+                    {% if can_update or is_following %}
+                        <button
+                            class="popup__item"
+                            data-controller="modal-opener"
+                            data-action="modal-opener#fetch"
+                            data-modal-opener-href-value="{{ url('edit group collection', { id: collection.id }) }}"
+                            aria-haspopup="dialog"
+                            aria-controls="modal"
+                        >
+                            {{ icon('directory') }}
+                            {{ t('Put in a group') }}
+                        </button>
+                    {% endif %}
+
+                    <div data-controller="copy-to-clipboard">
+                        <input type="hidden" value="{{ url_full('collection', { id: collection.id }) }}" data-copy-to-clipboard-target="copyable">
+
+                        <button
+                            class="popup__item"
+                            data-action="copy-to-clipboard#copy"
+                            data-copy-to-clipboard-target="feedback"
+                        >
+                            {{ icon('copy-to-clipboard') }}
+                            {{ t('Copy the link') }}
+                        </button>
+                    </div>
+
+                    {% if is_following %}
+                        <div class="popup__separator"></div>
+
+                        <form method="post" action="{{ url('mark collection as read', { id: collection.id }) }}">
+                            <button class="popup__item">
+                                {{ icon('check') }}
+                                {{ t('Mark all as read') }}
+                            </button>
+
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\MarkCollectionAsRead') }}">
+                        </form>
+
+                        <form method="post" action="{{ url('never read collection', { id: collection.id }) }}">
+                            <button class="popup__item">
+                                {{ icon('times') }}
+                                {{ t('Remove the links from the news') }}
+                            </button>
+
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\MarkCollectionAsNever') }}">
+                        </form>
+                    {% endif %}
+
+                    {% if can_delete %}
+                        <div class="popup__separator"></div>
+
+                        <form
+                            method="post"
+                            action="{{ url('delete collection', { id: collection.id }) }}"
+                            data-turbo-confirm="{{ t('Are you sure that you want to delete this collection? You may lose the links that are attached only to this collection.') }}"
+                        >
+                            <button
+                                type="submit"
+                                class="popup__item"
+                            >
+                                {{ icon('trash') }}
+                                {{ t('Delete') }}
+                            </button>
+
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\DeleteCollection') }}">
+                        </form>
+                    {% endif %}
+                </nav>
+            </details>
+        </div>
+    {% endif %}
+
+    {% if pagination.numberElements > 0 %}
+        <p class="text--center text--secondary">
+            {% set count_links = pagination.numberElements %}
+            {{ t('%d link', '%d links', count_links, [count_links | format_number]) }}
+        </p>
+    {% endif %}
+
+    {% if links or can_add_links %}
+        <div class="grid">
+            {% if can_add_links %}
+                <button
+                    class="button--card"
+                    data-controller="modal-opener"
+                    data-action="modal-opener#fetch"
+                    data-modal-opener-href-value="{{ url('new collection link', { id: collection.id }) }}"
+                    aria-haspopup="dialog"
+                    aria-controls="modal"
+                >
+                    {{ icon('plus-circle') }}
+                    {{ t('Add a link') }}
+                </button>
+            {% endif %}
+
+            {% for link in links %}
+                {{ include('links/_link.html.twig', {
+                    link: link,
+                    display_source: can_update and link.source_type != 'bookmarks',
+                    display_notes: collection.isCollection,
+                    display_hidden: collection.is_public and link.is_hidden,
+                    display_edit: can(app.user, 'update', link),
+                    display_repair: can(app.user, 'update', link),
+                    display_delete: can(app.user, 'delete', link),
+                    display_read_later: app.user ? 'auto' : false,
+                    display_mark_as_read: app.user ? 'auto' : false,
+                }) }}
+            {% endfor %}
+
+            {% if can_add_links %}
+                {{ include('grids/_placeholder.html.twig', { count: links | length + 1 }) }}
+            {% endif %}
+        </div>
+    {% else %}
+        <p class="panel panel--grey panel--rounded panel--larger text--bolder text--center">
+            {{ t('This collection is empty.') }}
+        </p>
+    {% endif %}
+
+    {{ include('layouts/_pagination.html.twig', { url: url('collection', { id: collection.id }) }) }}
+{% endblock %}

@@ -1,0 +1,197 @@
+{% extends 'layouts/authentication.html.twig' %}
+
+{% block title %}{{ t('Registration') }}{% endblock %}
+{% block canonical %}{{ url_full('registration') }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'registration' }) }}
+{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: t('Registration'), reset: true, track: false }) }}
+{% endblock %}
+
+{% block body %}
+    <div class="wrapper wrapper--smaller wrapper--center flow flow--large">
+        <h1 class="text--center">{{ t('Registration') }}</h1>
+
+        {% if app_configuration('subscriptions_enabled') %}
+            <p class="text--center text--bold">
+                {{ t('First month is free. <a href="%s">Learn more about pricing.</a>', [app_configuration('subscriptions_host') ~ '/tarifs']) | raw }}
+            </p>
+        {% endif %}
+
+        <form
+            method="post"
+            action="{{ url('create user') }}"
+            data-controller="csrf"
+            data-csrf-name-value="csrf_token"
+            data-csrf-token-value="{{ csrf_token(form) }}"
+            class="flow"
+        >
+            {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+            <div class="form-group">
+                <label for="username">
+                    {{ t('What’s your name?') }}
+                    <span class="label__help">
+                        {{ t('(public, max. %d characters)', [form.username_max_length]) }}
+                    </span>
+                </label>
+
+                {% if form.isInvalid('username') %}
+                    <p id="username-error" class="form-group__error">
+                        {{ t('Error:') }}
+                        {{ form.error('username') }}
+                    </p>
+                {% endif %}
+
+                <input
+                    id="username"
+                    name="username"
+                    type="text"
+                    value="{{ form.username }}"
+                    maxlength="{{ form.username_max_length }}"
+                    required
+                    autofocus
+                    autocomplete="nickname"
+                    {% if form.isInvalid('username') %}
+                        aria-errormessage="username-error"
+                        aria-invalid="true"
+                    {% endif %}
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="email">
+                    {{ t('Your email address') }}
+                </label>
+
+                {% if form.isInvalid('email') %}
+                    <p id="email-error" class="form-group__error">
+                        {{ t('Error:') }}
+                        {{ form.error('email') }}
+                    </p>
+                {% endif %}
+
+                <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value="{{ form.email }}"
+                    required
+                    autocomplete="email"
+                    aria-describedby="email-caption"
+                    {% if form.isInvalid('email') %}
+                        aria-errormessage="email-error"
+                        aria-invalid="true"
+                    {% endif %}
+                >
+
+                <p id="email-caption" class="form-group__caption">
+                    {{ t('We only send emails necessary for the operation of the service.') }}
+                </p>
+            </div>
+
+            <div class="form-group">
+                <label for="new-password">
+                    {{ t('Your password') }}
+                    <span class="label__help">
+                        {{ t('(recommended at least 8 characters)') }}
+                    </span>
+                </label>
+
+                {% if form.isInvalid('password_hash') %}
+                    <p id="password-error" class="form-group__error">
+                        {{ t('Error:') }}
+                        {{ form.error('password_hash') }}
+                    </p>
+                {% endif %}
+
+                <div class="cols cols--always cols--gap-smaller" data-controller="input-password">
+                    <input
+                        id="new-password"
+                        class="col--extend"
+                        name="password"
+                        type="password"
+                        value=""
+                        required
+                        data-input-password-target="input"
+                        autocomplete="new-password"
+                        {% if form.isInvalid('password_hash') %}
+                            aria-errormessage="password-error"
+                            aria-invalid="true"
+                        {% endif %}
+                    >
+
+                    <button
+                        type="button"
+                        class="no-mobile js-only"
+                        data-action="input-password#toggle"
+                        data-input-password-target="button"
+                        aria-label="{{ t('Show password as plain text. Note: this will visually expose your password.') }}"
+                    >
+                        {{ icon('eye') }}
+                        {{ t('Show') }}
+                    </button>
+                </div>
+            </div>
+
+            <div>
+                <input
+                    type="checkbox"
+                    id="accept-contact"
+                    name="accept_contact"
+                />
+
+                <label class="label--checkbox" for="accept-contact">
+                    {{ t('Accept to be contacted by email to help improve the service (optional).') }}
+                </label>
+            </div>
+
+            {% if form.hasTerms() %}
+                <div class="panel panel--base panel--rounded form-group">
+                    {% if form.isInvalid('accept_terms') %}
+                        <p id="accept-terms-error" class="form-group__error">
+                            {{ t('Error:') }}
+                            {{ form.error('accept_terms') }}
+                        </p>
+                    {% endif %}
+
+                    <p id="accept-terms-caption" class="form-group__caption">
+                        {{ t('Please read <a href="%s" target="_blank">the general terms and conditions of service</a> and use to make sure they are suitable for you.', [url('terms')]) | raw }}
+                    </p>
+
+                    <input
+                        type="checkbox"
+                        id="accept-terms"
+                        name="accept_terms"
+                        required
+                        aria-describedby="accept-terms-caption"
+                        {% if form.isInvalid('accept_terms') %}
+                            aria-errormessage="accept-terms-error"
+                            aria-invalid="true"
+                        {% endif %}
+                    >
+
+                    <label class="label--checkbox" for="accept-terms">
+                        {{ t('I acknowledge that I have read and accepted the general terms and conditions of service and use') }}
+                    </label>
+                </div>
+            {% endif %}
+
+            <button type="submit" class="button--primary button--big button--block button--animated">
+                {{ t('Sign up') }}
+                {{ icon('arrow-right') }}
+            </button>
+        </form>
+
+        {% if app_configuration('registrations_opened') %}
+            <p class="text--center">
+                <a class="button" href="{{ url('login') }}">
+                    {{ t('Already an account?') }}
+                </a>
+            </p>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,33 @@
+<div class="sidenav" data-controller="sidenav">
+    <button
+        type="button"
+        class="sidenav__button button--big button--block"
+        data-action="sidenav#open"
+        data-sidenav-target="opener"
+        aria-expanded="false"
+    >
+        {{ icon('angle-double', 'rotate90') }}
+        {{ t('Navigation') }}
+    </button>
+
+    <div class="sidenav__container" data-action="click->sidenav#closeOnMask">
+        <nav class="sidenav__menu flow flow--smaller">
+            <div class="text--right">
+                <button
+                    type="button"
+                    class="sidenav__button button--icon"
+                    data-action="sidenav#close"
+                    data-sidenav-target="closer"
+                >
+                    {{ icon('angle-double', 'rotate270') }}
+                    <span class="sr-only">
+                        {{ t('Close') }}
+                    </span>
+                </button>
+            </div>
+
+            {% block body %}
+            {% endblock %}
+        </nav>
+    </div>
+</div>

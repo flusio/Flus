@@ -1,0 +1,29 @@
+{% extends 'layouts/onboarding.html.twig' %}
+
+{% block title %}{{ t('Share with the rest of Internet') }}{% endblock %}
+{% block canonical %}{{ url_full('onboarding', { step: 5 }) }}{% endblock %}
+
+{% block navigation %}
+    {{ include('onboarding/_navigation.html.twig') }}
+{% endblock %}
+
+{% block body %}
+    <h1 class="text--center">{{ t('Share with the rest of Internet') }}</h1>
+
+    <p class="text--center">
+        {{ icon('avatar') }}
+        {{ t('The <strong>Profile</strong> is your public page listing all what you share.') | raw }}
+    </p>
+
+    <div class="flow">
+        <p>
+            {{ t('Every time you share a link in a public collection, it gets added to your profile. <strong>Annotate your reading to add a personal touch.</strong>') | raw }}
+        </p>
+
+        <p>
+            {{ t('Nothing like spreading the address to your Flus profile around!') }}
+        </p>
+    </div>
+
+    {{ include('onboarding/_continue.html.twig') }}
+{% endblock %}

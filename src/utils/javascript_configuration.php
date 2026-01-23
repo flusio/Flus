@@ -19,11 +19,11 @@ foreach ($translations as $translation) {
 return [
     'l10n' => $l10n,
     'icons' => [
-        'back' => icon('arrow-left'),
-        'check' => icon('check'),
-        'error' => icon('error'),
-        'eye' => icon('eye'),
-        'eye-hide' => icon('eye-hide'),
-        'times' => icon('times'),
+        'back' => \App\twig\IconExtension::icon('arrow-left'),
+        'check' => \App\twig\IconExtension::icon('check'),
+        'error' => \App\twig\IconExtension::icon('error'),
+        'eye' => \App\twig\IconExtension::icon('eye'),
+        'eye-hide' => \App\twig\IconExtension::icon('eye-hide'),
+        'times' => \App\twig\IconExtension::icon('times'),
     ],
 ];

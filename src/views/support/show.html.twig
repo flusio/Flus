@@ -1,0 +1,129 @@
+{% extends 'layouts/simple.html.twig' %}
+
+{% block title %}{{ t('Help & support') | raw }}{% endblock %}
+{% block canonical %}{{ url_full('support') }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'support' }) }}
+{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: t('Help & support') }) }}
+{% endblock %}
+
+{% block body %}
+    <h1 class="text--center">{{ t('Help & support') }}</h1>
+
+    <p class="text--center">
+        {{ t('If you have a question or if you’re facing an issue, you can contact me via this form.') }}
+    </p>
+
+    <form
+        method="post"
+        action="{{ url('call support') }}"
+        data-controller="autosave"
+        data-action="turbo:submit-start@document->autosave#clear"
+        class="flow"
+    >
+        {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+        {% if message_sent %}
+            {{ include('alerts/_success.html.twig', { message: t('Your message has been sent.') }) }}
+        {% endif %}
+
+        <div class="form-group">
+            <label for="subject">
+                {{ t('Subject') }}
+            </label>
+
+            {% if form.isInvalid('subject') %}
+                <p id="subject-error" class="form-group__error">
+                    {{ t('Error:') }}
+                    {{ form.error('subject') }}
+                </p>
+            {% endif %}
+
+            <input
+                id="subject"
+                name="subject"
+                type="text"
+                value="{{ form.subject }}"
+                required
+                data-action="keyup->autosave#save"
+                {% if form.isInvalid('subject') %}
+                    aria-errormessage="subject-error"
+                    aria-invalid="true"
+                {% endif %}
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="message">
+                {{ t('Your message') }}
+            </label>
+
+            {% if form.isInvalid('message') %}
+                <p id="message-error" class="form-group__error">
+                    {{ t('Error:') }}
+                    {{ form.error('message') }}
+                </p>
+            {% endif %}
+
+            <textarea
+                id="message"
+                name="message"
+                required
+                data-controller="text-editor"
+                data-action="text-editor#refresh keyup->autosave#save"
+                aria-describedby="message-desc"
+                {% if form.isInvalid('message') %}
+                    aria-errormessage="message-error"
+                    aria-invalid="true"
+                {% endif %}
+            >{{ form.message }}</textarea>
+        </div>
+
+        <p class="text--center">
+            {{ t('I’ll answer you at <strong>%s</strong>', [app.user.email | escape]) | raw }}
+        </p>
+
+        <div class="text--center">
+            <button type="submit" class="button--primary button--big">
+                {{ t('Send your message') }}
+            </button>
+        </div>
+
+        <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}" />
+    </form>
+
+    <hr>
+
+    <div class="flow">
+        <h2 class="text--center">
+            {{ t('More help') }}
+        </h2>
+
+        <ul class="list--nostyle list--border">
+            <li>
+                <a class="anchor--nostyle anchor--block anchor--padding" href="{{ url('onboarding') }}">
+                    {{ icon('undo') }}
+                    {{ t('Start the onboarding again') }}
+                </a>
+            </li>
+
+            <li>
+                <a class="anchor--nostyle anchor--block anchor--padding" href="{{ url('what is new') }}">
+                    {{ icon('bundle') }}
+                    {{ t('What’s new?') }}
+                </a>
+            </li>
+
+            <li>
+                <a class="anchor--nostyle anchor--block anchor--padding" href="{{ url('about') }}">
+                    {{ icon('info') }}
+                    {{ t('About %s', [app.brand]) }}
+                </a>
+            </li>
+        </ul>
+    </div>
+{% endblock %}

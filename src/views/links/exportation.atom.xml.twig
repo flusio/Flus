@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>{{ link.title }}</title>
+    <link href="{{ url_full('link', { id: link.id }) }}" rel="alternate" type="text/html" />
+    <link href="{{ url_full('link feed', { id: link.id }) }}" rel="self" type="application/atom+xml" />
+    <link href="{{ link.url }}" rel="via" type="text/html" />
+
+    {% if link.is_hidden %}
+        <category term="Flus:hidden" />
+    {% endif %}
+
+    <id>{{ link.tagUri }}</id>
+    <author>
+        <name>{{ link.owner.username }}</name>
+    </author>
+    <generator>{{ app.user_agent }}</generator>
+    {% if notes %}
+        <updated>{{ notes[0].created_at.format(constant('DATE_ATOM')) }}</updated>
+    {% else %}
+        <updated>{{ date().format(constant('DATE_ATOM')) }}</updated>
+    {% endif %}
+
+    {% for note in notes %}
+        {% set user = note.user %}
+        <entry>
+            <title>{{ t('Notes by %s', [user.username]) }}</title>
+            <id>{{ note.tagUri }}</id>
+            <link href="{{ url_full('link', { id: link.id }) }}#note-{{ note.id }}" rel="alternate" type="text/html" />
+            <author>
+                <name>{{ user.username }}</name>
+            </author>
+            <published>{{ note.created_at.format(constant('DATE_ATOM')) }}</published>
+            <updated>{{ note.created_at.format(constant('DATE_ATOM')) }}</updated>
+            <content type="text"><![CDATA[{{ note.content }}]]></content>
+        </entry>
+    {% endfor %}
+</feed>

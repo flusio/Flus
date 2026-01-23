@@ -1,0 +1,393 @@
+{% set display_published_at = display_published_at ?? true %}
+{% if display_published_at and not link.published_at %}
+    {% set display_published_at = false %}
+{% endif %}
+{% set display_notes = display_notes ?? false %}
+{% set display_hidden = display_hidden ?? false %}
+{% set display_edit = display_edit ?? false %}
+{% set display_repair = display_repair ?? false %}
+{% set display_delete = display_delete ?? false %}
+{% set display_read_later = display_read_later ?? false %}
+{% set display_mark_as_read = display_mark_as_read ?? false %}
+{% set display_mark_as_unread = display_mark_as_unread ?? false %}
+{% set display_never = display_never ?? false %}
+{% set display_source = display_source ?? false %}
+{% if display_source and not link.source_type %}
+    {% set display_source = false %}
+{% endif %}
+{% set storing_must_mark_as_read = storing_must_mark_as_read ?? false %}
+
+{% set source_collection = display_source ? link.sourceCollection : null %}
+{% set source_user = display_source ? link.sourceUser : null %}
+
+{% set is_current_user_owner = app.user and app.user.id == link.user_id %}
+{% set in_error = link.inError %}
+{% set trackers_detected = link.trackersDetected %}
+
+{% set number_collections = app.user ? link.numberCollectionsForUser(app.user) : 0 %}
+
+{% set in_bookmarks = link.isInBookmarksOf(app.user) %}
+{% if display_read_later == 'auto' and in_bookmarks %}
+    {% set display_read_later = false %}
+{% elseif display_read_later == 'auto' %}
+    {% set display_read_later = true %}
+{% endif %}
+
+{% set is_read = link.isReadBy(app.user) %}
+{% if display_mark_as_read == 'auto' and is_read %}
+    {% set display_mark_as_read = false %}
+{% elseif display_mark_as_read == 'auto' %}
+    {% set display_mark_as_read = true %}
+{% endif %}
+
+{% set display_collections = app.user != null %}
+
+{% set option_compact_mode = app.user and app.user.option_compact_mode %}
+
+{% set display_share_on_mastodon = can(app.user, 'shareOnMastodon', link) %}
+
+<div class="link {{ option_compact_mode ? 'link--compact' : '' }}">
+    {% if display_published_at or in_error or trackers_detected %}
+        <div class="link__meta cols cols--gap-smaller cols--baseline cols--always">
+            {% if in_error or trackers_detected %}
+                {% if is_current_user_owner %}
+                    <button
+                        class="badge badge--warning button--small"
+                        data-controller="modal-opener"
+                        data-action="modal-opener#fetch"
+                        data-modal-opener-href-value="{{ url('repairing link', { id: link.id }) }}"
+                        aria-haspopup="dialog"
+                        aria-controls="modal"
+                    >
+                        {% if in_error %}
+                            <span title="{{ t('This link seems to be inaccessible, you should repair it.') }}">
+                                {{ icon('disconnect') }}&nbsp;{{ t('inaccessible') }}
+                            </span>
+                        {% endif %}
+
+                        {% if in_error and trackers_detected %}
+                            <br class="no-mobile">
+                        {% endif %}
+
+                        {% if trackers_detected %}
+                            <span title="{{ t('Trackers have been detected in this link, you should repair it.') }}">
+                                {{ icon('eye') }}&nbsp;{{ t('trackers') }}
+                            </span>
+                        {% endif %}
+                    </button>
+                {% else %}
+                    <span class="badge badge--warning">
+                        {% if in_error %}
+                            <span title="{{ t('This link seems to be inaccessible, you may have difficulties to access it.') }}">
+                                {{ icon('disconnect') }} {{ t('inaccessible') }}
+                            </span>
+                        {% endif %}
+
+                        {% if in_error and trackers_detected %}
+                            <br />
+                        {% endif %}
+
+                        {% if trackers_detected %}
+                            <span title="{{ t('Trackers have been detected in this link, your privacy might not be respected if you click on it.') }}">
+                                {{ icon('eye') }} {{ t('trackers') }}
+                            </span>
+                        {% endif %}
+                    </span>
+                {% endif %}
+            {% endif %}
+
+            {% if display_published_at %}
+                <div class="col--extend"></div>
+
+                <time class="badge" datetime="{{ link.published_at | date_iso }}" title="{{ d(link.published_at, 'dd MMM Y, HH:mm') }}">
+                    {% if date().format('Y') == link.published_at.format('Y') %}
+                        {{ d(link.published_at, 'dd MMM') }}
+                    {% else %}
+                        {{ d(link.published_at, 'dd MMM Y') }}
+                    {% endif %}
+                </time>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    <div class="link__body">
+        <a
+            class="link__image-container"
+            target="_blank"
+            rel="noopener noreferrer"
+            tabindex="-1"
+            href="{{ link.url }}"
+        >
+            <img class="link__image" alt="{{ link.title }}" src="{{ url_media('covers', link.image_filename) }}" loading="lazy" />
+        </a>
+
+        <div class="link__content flow flow--small">
+            <h2 class="link__title">
+                <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href="{{ link.url }}"
+                >
+                    {{ link.title }}
+                </a>
+            </h2>
+
+            <p class="link__text text--oneline">
+                {% if not link.fetched_at %}
+                    <span class="text--ellipsis">
+                        {{ icon('sync', 'spin') }}
+                        {{ t('ongoing synchronisation…') }}
+                    </span>
+                {% else %}
+                    <span class="text--ellipsis">{{ link.host }}</span>&nbsp;·&nbsp;{{ link.reading_time | format_reading_time }}
+                {% endif %}
+
+                {% if is_read %}
+                    &nbsp;<span title="{{ t('You read this link.') }}">{{ icon('check') }}<span class="sr-only">{{ t('You read this link.') }}</span></span>
+                {% endif %}
+
+                {% if in_bookmarks %}
+                    &nbsp;<span title="{{ t('This link is in your bookmarks.') }}">{{ icon('bookmark') }}<span class="sr-only">{{ t('This link is in your bookmarks.') }}</span></span>
+                {% endif %}
+            </p>
+
+            {% if display_source %}
+                <p class="link__text link__source">
+                    {% if link.source_type == 'bookmarks' %}
+                        {{ t('via your <strong><a href="%s">bookmarks</a></strong>', [url('bookmarks')]) | raw }}
+                    {% elseif source_collection %}
+                        {% if source_collection.type == 'collection' %}
+                            {% set owner = source_collection.owner %}
+                            {{ t('via <strong><a href="%s">%s</a></strong> by <a href="%s">%s</a>', [
+                                url('collection', { id: source_collection.id }),
+                                source_collection.name | escape,
+                                url('profile', { id: owner.id }),
+                                owner.username | escape,
+                            ]) | raw }}
+                        {% else %}
+                            {{ t('via <strong><a href="%s">%s</a></strong>', [
+                                url('collection', { id: source_collection.id }),
+                                source_collection.name | escape,
+                            ]) | raw }}
+                        {% endif %}
+                    {% elseif source_user %}
+                        {{ t('via <strong><a href="%s">%s</a></strong>', [
+                            url('profile', { id: source_user.id }),
+                            source_user.username | escape,
+                        ]) | raw }}
+                    {% endif %}
+                </p>
+            {% endif %}
+
+            {% if link.tags %}
+                <div class="stack stack--gap-smaller">
+                    {% for tag in link.tags %}
+                        <a class="badge badge--tag" href="{{ url('links', { q: "#" ~ tag }) }}">
+                            #{{ tag }}
+                        </a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% if display_notes %}
+                <p class="cols cols--gap-smaller cols--always">
+                    <span class="col--extend">
+                        <a class="link__notepad" href="{{ url('link', { id: link.id }) }}">
+                            {{ icon('note') }}
+                            {% if link.number_notes > 0 %}
+                                {{ t('Notepad (%s)', [link.number_notes | format_number]) }}
+                            {% else %}
+                                {{ t('Notepad') }}
+                            {% endif %}
+                        </a>
+                    </span>
+
+                    {% if display_hidden %}
+                        <span class="badge badge--accent badge--border">
+                            {{ t('hidden') }}
+                        </span>
+                    {% endif %}
+                </p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="link__actions">
+        <details
+            class="popup"
+            data-controller="popup"
+            data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
+        >
+            <summary class="popup__opener" title="{{ t('Actions') }}">
+                <span class="button button--icon button--ghost">
+                    {{ icon('menu') }}
+                    <span class="sr-only">
+                        {{ t('Actions') }}
+                    </span>
+                </span>
+            </summary>
+
+            <nav class="popup__container popup__container--over">
+                {% if display_never %}
+                    <form data-turbo-preserve-scroll method="post" action="{{ url('mark link to never read', { id: link.id }) }}">
+                        <button class="popup__item">
+                            {{ icon('times') }}
+                            {{ t('Remove from the news') }}
+                        </button>
+
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token('links\\MarkLinkAsNever') }}" />
+                    </form>
+
+                    <div class="popup__separator"></div>
+                {% endif %}
+
+                <div data-controller="copy-to-clipboard">
+                    <input type="hidden" value="{{ link.url }}" data-copy-to-clipboard-target="copyable" />
+
+                    <button
+                        class="popup__item"
+                        data-action="copy-to-clipboard#copy"
+                        data-copy-to-clipboard-target="feedback"
+                    >
+                        {{ icon('copy-to-clipboard') }}
+                        {{ t('Copy the external link') }}
+                    </button>
+                </div>
+
+                {% if display_share_on_mastodon %}
+                    <button
+                        class="popup__item"
+                        data-controller="modal-opener"
+                        data-action="modal-opener#fetch"
+                        data-modal-opener-href-value="{{ url('new link mastodon thread', { id: link.id }) }}"
+                        aria-haspopup="dialog"
+                        aria-controls="modal"
+                    >
+                        {{ icon('mastodon') }}
+                        {{ t('Share on Mastodon') }}
+                    </button>
+                {% endif %}
+
+                {% if display_edit or display_repair %}
+                    <div class="popup__separator"></div>
+                {% endif %}
+
+                {% if display_edit %}
+                    <button
+                        class="popup__item"
+                        data-controller="modal-opener"
+                        data-action="modal-opener#fetch"
+                        data-modal-opener-href-value="{{ url('edit link', { id: link.id }) }}"
+                        aria-haspopup="dialog"
+                        aria-controls="modal"
+                    >
+                        {{ icon('pencil') }}
+                        {{ t('Edit') }}
+                    </button>
+                {% endif %}
+
+                {% if display_repair %}
+                    <button
+                        class="popup__item"
+                        data-controller="modal-opener"
+                        data-action="modal-opener#fetch"
+                        data-modal-opener-href-value="{{ url('repairing link', { id: link.id }) }}"
+                        aria-haspopup="dialog"
+                        aria-controls="modal"
+                    >
+                        {{ icon('wrench') }}
+                        {{ t('Repair') }}
+                    </button>
+                {% endif %}
+
+                {% if display_delete %}
+                    <div class="popup__separator"></div>
+
+                    <form
+                        data-turbo-preserve-scroll
+                        method="post"
+                        action="{{ url('delete link', { id: link.id }) }}"
+                        data-turbo-confirm="{{ t('Are you sure that you want to delete this link?') }}"
+                    >
+                        <button
+                            type="submit"
+                            class="popup__item"
+                        >
+                            {{ icon('trash') }}
+                            {{ t('Delete') }}
+                        </button>
+
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token('links\\DeleteLink') }}" />
+                    </form>
+                {% endif %}
+            </nav>
+        </details>
+
+        <div class="link__actions-group">
+            {% if display_mark_as_read %}
+                <form data-turbo-preserve-scroll method="post" action="{{ url('mark link as read', { id: link.id }) }}">
+                    <button class="button--icon button--ghost" title="{{ t('Mark as read') }}">
+                        {{ icon('check') }}
+                        <span class="sr-only">
+                            {{ t('Mark as read') }}
+                        </span>
+                    </button>
+
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token('links\\MarkLinkAsRead') }}" />
+                </form>
+            {% endif %}
+
+            {% if display_mark_as_unread %}
+                <form data-turbo-preserve-scroll method="post" action="{{ url('mark link as unread', { id: link.id }) }}">
+                    <button class="button--icon button--ghost" title="{{ t('Remove from read list') }}">
+                        {{ icon('uncheck') }}
+                        <span class="sr-only">
+                            {{ t('Remove from read list') }}
+                        </span>
+                    </button>
+
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token('links\\MarkLinkAsUnread') }}" />
+                </form>
+            {% endif %}
+
+            {% if display_read_later %}
+                <form data-turbo-preserve-scroll method="post" action="{{ url('read link later', { id: link.id }) }}">
+                    <button class="button--icon button--ghost" title="{{ t('Read later') }}">
+                        {{ icon('bookmark') }}
+                        <span class="sr-only">
+                            {{ t('Read later') }}
+                        </span>
+                    </button>
+
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token('links\\MarkLinkAsReadLater') }}" />
+                </form>
+            {% endif %}
+
+            {% if display_collections %}
+                <button
+                    class="link__collections-button button--icon button--ghost"
+                    data-controller="modal-opener"
+                    data-action="modal-opener#fetch"
+                    data-modal-opener-href-value="{{ url('link collections', { id: link.id, mark_as_read: storing_must_mark_as_read }) }}"
+                    aria-haspopup="dialog"
+                    aria-controls="modal"
+                    title="{{ t('Store the link') }}"
+                >
+                    {{ icon('collection') }}
+                    <span class="sr-only">
+                        {{ t('Store the link') }}
+                    </span>
+
+                    {% if number_collections > 0 %}
+                        <span
+                            class="link__number-collections"
+                            aria-label="{{ t('In %d collection', 'In %d collections', number_collections, [number_collections]) }}"
+                        >
+                            {{ number_collections }}
+                        </span>
+                    {% endif %}
+                </button>
+            {% endif %}
+        </div>
+    </div>
+</div>

@@ -1,0 +1,26 @@
+{% extends 'layouts/application.html.twig' %}
+
+{% block title %}{{ t('Explore') }}{% endblock %}
+{% block canonical %}{{ url_full('explore') }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'explore', tab: 'reading' }) }}
+{% endblock %}
+
+{% block navigation %}
+    {% if app.user %}
+        {{ include('layouts/_reading_navigation.html.twig', { page: 'explore' }) }}
+    {% endif %}
+{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: t('Explore'), reset: true }) }}
+{% endblock %}
+
+{% block body %}
+    <h1 class="text--center">{{ t('Explore') }}</h1>
+
+    <p class="panel panel--grey panel--rounded panel--larger text--bolder text--center">
+        {{ t('Exploration is disabled as administrator did not setup topics.') }}
+    </p>
+{% endblock %}

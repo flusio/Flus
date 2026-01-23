@@ -36,7 +36,7 @@ class News extends BaseController
 
         $form = new forms\FillNews();
 
-        return Response::ok('news/index.phtml', [
+        return Response::ok('news/index.html.twig', [
             'news' => $news,
             'links_timeline' => $links_timeline,
             'no_news' => \Minz\Flash::pop('no_news'),
@@ -66,7 +66,7 @@ class News extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('news/index.phtml', [
+            return Response::badRequest('news/index.html.twig', [
                 'news' => $user->news(),
                 'links_timeline' => new utils\LinksTimeline([]),
                 'no_news' => false,

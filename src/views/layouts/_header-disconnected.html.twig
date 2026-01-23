@@ -1,0 +1,57 @@
+<noscript>
+    <p class="layout__banner layout__banner--alert">
+        {{ icon('error') }}
+        {{ t('You need to activate JavaScript in order to use %s.', [app.brand]) }}
+    </p>
+</noscript>
+
+{% if app.demo %}
+    <p class="layout__banner">
+        {{ t('You’re using a demo version of %s, the data are reset every night.', [app.brand]) }}
+    </p>
+{% endif %}
+
+<header class="layout__header cols cols--always cols--gap-smaller cols--center">
+    <div class="col--extend">
+        <a class="header__logo" href="{{ url('login') }}">
+            <img alt="Flus" src="{{ url_static('static/logo.svg') }}">
+        </a>
+    </div>
+
+    <details
+        class="popup"
+        data-controller="popup"
+        data-action="toggle->popup#update click@window->popup#closeOnClickOutside"
+    >
+        <summary class="popup__opener">
+            <span class="button button--ghost">
+                {{ icon('language') }}
+                {{ t('Language') }}
+                {{ icon('angle-down') }}
+            </span>
+        </summary>
+
+        <nav class="popup__container popup__container--center">
+            {% set locale_form = locale_form() %}
+            <form
+                data-turbo-preserve-scroll
+                method="post"
+                action="{{ url('change locale') }}"
+                data-controller="autosubmit"
+            >
+                {% for locale_value, locale_name in locale_form.localesValues %}
+                    <button
+                        class="popup__item popup__item--selectable"
+                        name="locale"
+                        value="{{ locale_value }}"
+                        {{ locale_form.locale == locale_value ? 'aria-current="true"' }}
+                    >
+                        {{ locale_name }}
+                    </button>
+                {% endfor %}
+
+                <input type="hidden" name="csrf_token" value="{{ csrf_token(locale_form) }}">
+            </form>
+        </nav>
+    </details>
+</header>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+    <head>
+        <title>{{ app.brand }}</title>
+        <dateCreated>{{ date().format('D, d M Y H:i:s') }}</dateCreated>
+    </head>
+
+    <body>
+        {% set collections = groups_to_collections[null] ?? [] %}
+        {% for collection in collections %}
+            {{ include('collections/_collection.opml.xml.twig') }}
+        {% endfor %}
+
+        {% for group in groups %}
+            <outline text="{{ group.name }}">
+                {% set collections = groups_to_collections[group.id] ?? [] %}
+                {% for collection in collections %}
+                    {{ include('collections/_collection.opml.xml.twig') }}
+                {% endfor %}
+            </outline>
+        {% endfor %}
+    </body>
+</opml>

@@ -1,0 +1,47 @@
+{% extends 'layouts/application.html.twig' %}
+
+{% block title %}{{ t('Mastodon authorization') }}{% endblock %}
+{% block canonical %}{{ url_full('mastodon auth') }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'mastodon auth' }) }}
+{% endblock %}
+
+{% block navigation %}
+    {{ include('layouts/_account_navigation.html.twig', { page: 'mastodon' }) }}
+{% endblock %}
+
+{% block body %}
+    <div class="flow flow--large text--center">
+        <h1>{{ t('Mastodon authorization') }}</h1>
+
+        {% if form.isInvalid %}
+            <form method="post" action="{{ url('authorize mastodon') }}">
+                {{ include('alerts/_error.html.twig', { message: form.errors | join(' ') }) }}
+
+                <button type="submit" class="button--primary button--big">
+                    {{ t('Check authorization') }}
+                </button>
+
+                <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}" />
+                <input type="hidden" name="code" value="{{ form.code }}" />
+            </form>
+        {% else %}
+            <p class="text--bolder">
+                {{ t('Please wait while we’re verifying access to Mastodon…') }}
+            </p>
+
+            <div class="spinner"></div>
+
+            <form
+                 method="post"
+                 action="{{ url('authorize mastodon') }}"
+                 data-controller="autosubmit"
+                 data-autosubmit-mode-value="timeout"
+             >
+                 <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}" />
+                 <input type="hidden" name="code" value="{{ form.code }}" />
+            </form>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -31,7 +31,7 @@ class Preferences extends BaseController
 
         $form = new forms\users\Preferences(model: $user);
 
-        return Response::ok('my/preferences/edit.phtml', [
+        return Response::ok('my/preferences/edit.html.twig', [
             'form' => $form,
         ]);
     }
@@ -61,7 +61,7 @@ class Preferences extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('my/preferences/edit.phtml', [
+            return Response::badRequest('my/preferences/edit.html.twig', [
                 'form' => $form,
             ]);
         }

@@ -44,7 +44,7 @@ class Repairing extends BaseController
             'force_sync' => $link->title === $link->url,
         ]);
 
-        return Response::ok('links/repairing/new.phtml', [
+        return Response::ok('links/repairing/new.html.twig', [
             'link' => $link,
             'form' => $form,
         ]);
@@ -83,7 +83,7 @@ class Repairing extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('links/repairing/new.phtml', [
+            return Response::badRequest('links/repairing/new.html.twig', [
                 'link' => $link,
                 'form' => $form,
             ]);

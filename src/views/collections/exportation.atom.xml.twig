@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>{{ collection.name }}</title>
+    {% if collection.description %}
+        <subtitle type="text"><![CDATA[{{ collection.description }}]]></subtitle>
+    {% endif %}
+
+    <link href="{{ url_full('collection', { id: collection.id }) }}" rel="alternate" type="text/html" />
+    <link href="{{ url_full('collection feed', { id: collection.id }) }}" rel="self" type="application/atom+xml" />
+
+    <id>{{ collection.tagUri }}</id>
+    <author>
+        <name>{{ collection.owner.username }}</name>
+    </author>
+    <generator>{{ app.user_agent }}</generator>
+
+    {% if links %}
+        <updated>{{ links[0].published_at.format(constant('DATE_ATOM')) }}</updated>
+    {% else %}
+        <updated>{{ date().format(constant('DATE_ATOM')) }}</updated>
+    {% endif %}
+
+    {% for topic in topics %}
+        <category term="{{ topic.label }}" />
+    {% endfor %}
+
+    <category term="Flus:type:{{ collection.type }}" />
+
+    {% if collection.is_public %}
+        <category term="Flus:public" />
+    {% endif %}
+
+    {% if collection.group_id %}
+        <category term="Flus:group" label="{{ collection.groupForUser(collection.user_id).name }}" />
+    {% endif %}
+
+    {% for link in links %}
+        <entry>
+            <title>{{ link.title }}</title>
+            <id>{{ link.tagUri }}</id>
+
+            <link href="{{ link.url }}" rel="alternate" type="text/html" />
+            <link href="{{ url_full('link', { id: link.id }) }}" rel="replies" type="text/html" />
+
+            {% if link.is_hidden %}
+                <category term="Flus:hidden" />
+            {% endif %}
+
+            <published>{{ link.published_at.format(constant('DATE_ATOM')) }}</published>
+            <updated>{{ link.published_at.format(constant('DATE_ATOM')) }}</updated>
+
+            <content type="html"></content>
+        </entry>
+    {% endfor %}
+</feed>

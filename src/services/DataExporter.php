@@ -102,9 +102,7 @@ class DataExporter
         $collections = $user->followedCollections(['time_filter']);
         $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
 
-        $view = new \Minz\Template\Simple('collections/followed.opml.xml.php', [
-            'brand' => \App\Configuration::$application['brand'],
-            'now' => \Minz\Time::now(),
+        $view = new \Minz\Template\Twig('collections/followed.opml.xml.twig', [
             'groups' => $groups,
             'groups_to_collections' => $groups_to_collections,
         ]);
@@ -117,9 +115,7 @@ class DataExporter
      */
     private function generateCollection(models\Collection $collection): string
     {
-        $view = new \Minz\Template\Simple('collections/exportation.atom.xml.php', [
-            'brand' => \App\Configuration::$application['brand'],
-            'user_agent' => utils\UserAgent::get(),
+        $view = new \Minz\Template\Twig('collections/exportation.atom.xml.twig', [
             'collection' => $collection,
             'topics' => $collection->topics(),
             'links' => $collection->links(['published_at']),
@@ -133,9 +129,7 @@ class DataExporter
      */
     private function generateLink(models\Link $link): string
     {
-        $view = new \Minz\Template\Simple('links/exportation.atom.xml.php', [
-            'brand' => \App\Configuration::$application['brand'],
-            'user_agent' => utils\UserAgent::get(),
+        $view = new \Minz\Template\Twig('links/exportation.atom.xml.twig', [
             'link' => $link,
             'notes' => $link->notes(),
         ]);

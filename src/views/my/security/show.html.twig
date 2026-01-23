@@ -1,0 +1,104 @@
+{% extends 'layouts/application.html.twig' %}
+
+{% block title %}{{ t('Credentials') }}{% endblock %}
+{% block canonical %}{{ url_full('security') }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'security' }) }}
+{% endblock %}
+
+{% block navigation %}
+    {{ include('layouts/_account_navigation.html.twig', { page: 'security' }) }}
+{% endblock %}
+
+{% block body %}
+    <h1 class="text--center">{{ t('Credentials') }}</h1>
+
+    <p class="text--center">
+        {{ t('You can change your login details here.') }}
+    </p>
+
+    <form method="post" action="{{ url('update security') }}" class="wrapper wrapper--small wrapper--center flow">
+        {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+        <div class="form-group">
+            <label for="email">
+                {{ t('Your email address') }}
+            </label>
+
+            {% if form.isInvalid('email') %}
+                <p id="email-error" class="form-group__error">
+                    {{ t('Error:') }}
+                    {{ form.error('email') }}
+                </p>
+            {% endif %}
+
+            <input
+                id="email"
+                name="email"
+                type="email"
+                value="{{ form.email }}"
+                required
+                {% if form.isInvalid('email') %}
+                    aria-errormessage="email-error"
+                    aria-invalid="true"
+                {% endif %}
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="new-password">
+                {{ t('New password') }}
+                <span class="label__help">
+                    {{ t('(optional)') }}
+                </span>
+            </label>
+
+            {% if form.isInvalid('password_hash') %}
+                <p id="password-error" class="form-group__error">
+                    {{ t('Error:') }}
+                    {{ form.error('password_hash') }}
+                </p>
+            {% endif %}
+
+            <div class="cols cols--always cols--gap-smaller" data-controller="input-password">
+                <input
+                    id="new-password"
+                    class="col--extend"
+                    name="password"
+                    type="password"
+                    data-input-password-target="input"
+                    autocomplete="new-password"
+                    aria-describedby="new-password-caption"
+                    {% if form.isInvalid('password_hash') %}
+                        aria-errormessage="password-error"
+                        aria-invalid="true"
+                    {% endif %}
+                >
+
+                <button
+                    type="button"
+                    class="no-mobile js-only"
+                    data-action="input-password#toggle"
+                    data-input-password-target="button"
+                    aria-label="{{ t('Show password as plain text. Note: this will visually expose your password.') }}"
+                >
+                    {{ icon('eye') }}
+                    {{ t('Show') }}
+                </button>
+            </div>
+
+            <p id="new-password-caption" class="form-group__caption">
+                {{ t('Leave this field empty if you want to keep your current password.') }}
+            </p>
+        </div>
+
+        <div class="text--center">
+            <button type="submit" class="button--primary button--big">
+                {{ t('Save changes') }}
+            </button>
+        </div>
+
+        <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}">
+    </form>
+{% endblock %}

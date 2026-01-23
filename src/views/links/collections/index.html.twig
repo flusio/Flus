@@ -1,0 +1,80 @@
+{% extends 'layouts/modal.html.twig' %}
+
+{% block title %}{{ t('Storing a link') }}{% endblock %}
+
+{% block body %}
+    <div class="flow flow--large">
+        <p class="text--center">
+            {{ link.title }}
+        </p>
+
+        <form
+            data-turbo-preserve-scroll
+            method="post"
+            action="{{ url('update link collections', { id: link.id }) }}"
+            class="flow"
+            data-controller="autosave"
+            data-action="turbo:submit-start@document->autosave#clear"
+        >
+            {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+            <fieldset aria-describedby="collections-desc">
+                <legend>{{ t('Collections') }}</legend>
+
+                {% set collections_by_others = form.collectionsByOthers %}
+                {% if collections_by_others %}
+                    {{ include('collections/_collections_by_others.html.twig', {
+                        collections: collections_by_others,
+                        link: link,
+                    }) }}
+                {% endif %}
+
+                {{ include('collections/_selector.html.twig') }}
+            </fieldset>
+
+            <div class="form-group">
+                <input
+                    type="checkbox"
+                    id="is-hidden"
+                    name="is_hidden"
+                    {{ form.is_hidden ? 'checked' : '' }}
+                >
+
+                <label class="label--checkbox" for="is-hidden">
+                    {{ t('Hide this link in public collections') }}
+                </label>
+            </div>
+
+            {% set notepad = link.notepad %}
+            {% if notepad and link.user_id == app.user.id %}
+                <details class="form-details">
+                    <summary>
+                        {{ t('You already annoted this link.') }}
+                    </summary>
+
+                    <div class="form-details__content panel panel--rounded flow flow--large">
+                        <div class="wrapper wrapper--small wrapper--center flow flow--large">
+                            {{ include('notes/_notepad.html.twig') }}
+                            {{ include('links/collections/_new_note_form.html.twig') }}
+                        </div>
+                    </div>
+                </details>
+            {% else %}
+                {{ include('links/collections/_new_note_form.html.twig') }}
+            {% endif %}
+
+            <div class="text--center">
+                <button type="submit" class="button--primary button--big">
+                    {% if form.mark_as_read %}
+                        {{ t('Store the link and mark as read') }}
+                    {% else %}
+                        {{ t('Store the link') }}
+                    {% endif %}
+                </button>
+            </div>
+
+            <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}">
+            <input type="hidden" name="mark_as_read" value="{{ form.mark_as_read }}">
+        </form>
+    </div>
+{% endblock %}

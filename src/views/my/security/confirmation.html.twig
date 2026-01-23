@@ -1,0 +1,83 @@
+{% extends 'layouts/application.html.twig' %}
+
+{% block title %}{{ t('Password confirmation') }}{% endblock %}
+{% block canonical %}{{ url_full('password confirmation') }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'password confirmation' }) }}
+{% endblock %}
+
+{% block navigation %}
+    {% if form.isRedirectingTo('sessions') %}
+        {% set page = 'sessions' %}
+    {% elseif form.isRedirectingTo('security') %}
+        {% set page = 'security' %}
+    {% else %}
+        {% set page = '' %}
+    {% endif %}
+
+    {{ include('layouts/_account_navigation.html.twig', { page: page }) }}
+{% endblock %}
+
+{% block body %}
+    <div class="wrapper wrapper--small wrapper--center flow flow--large">
+        <h1 class="text--center">{{ t('Password confirmation') }}</h1>
+
+        <p class="text--center">
+            {{ t('We need you to confirm your password before giving you access to sensitive actions.') }}
+        </p>
+
+        <form method="post" action="{{ url('confirm password') }}" class="flow">
+            {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+            <div class="form-group">
+                <label for="current-password">
+                    {{ t('Your current password') }}
+                </label>
+
+                {% if form.isInvalid('password') %}
+                    <p id="password-error" class="form-group__error">
+                        {{ t('Error:') }}
+                        {{ form.error('password') }}
+                    </p>
+                {% endif %}
+
+                <div class="cols cols--always cols--gap-smaller" data-controller="input-password">
+                    <input
+                        id="current-password"
+                        class="col--extend"
+                        name="password"
+                        type="password"
+                        required
+                        data-input-password-target="input"
+                        autocomplete="current-password"
+                        {% if form.isInvalid('password') %}
+                            aria-errormessage="password-error"
+                            aria-invalid="true"
+                        {% endif %}
+                    >
+
+                    <button
+                        type="button"
+                        class="no-mobile js-only"
+                        data-action="input-password#toggle"
+                        data-input-password-target="button"
+                        aria-label="{{ t('Show password as plain text. Note: this will visually expose your password.') }}"
+                    >
+                        {{ icon('eye') }}
+                        {{ t('Show') }}
+                    </button>
+                </div>
+            </div>
+
+            <div class="text--center">
+                <button type="submit" class="button--primary button--big">
+                    {{ t('Confirm your password') }}
+                </button>
+            </div>
+
+            <input type="hidden" name="redirect_to" value="{{ form.redirect_to }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}">
+        </form>
+    </div>
+{% endblock %}

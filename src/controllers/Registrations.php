@@ -41,7 +41,7 @@ class Registrations extends BaseController
 
         $form = new forms\Registration();
 
-        return Response::ok('registrations/new.phtml', [
+        return Response::ok('registrations/new.html.twig', [
             'form' => $form,
         ]);
     }
@@ -80,7 +80,7 @@ class Registrations extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('registrations/new.phtml', [
+            return Response::badRequest('registrations/new.html.twig', [
                 'form' => $form,
             ]);
         }

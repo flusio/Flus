@@ -38,7 +38,7 @@ class Feeds extends BaseController
         $locale = $link->owner()->locale;
         utils\Locale::setCurrentLocale($locale);
 
-        $response = Response::ok('links/feeds/show.atom.xml.php', [
+        $response = Response::ok('links/feeds/show.atom.xml.twig', [
             'link' => $link,
             'notes' => $link->notes(),
             'user_agent' => utils\UserAgent::get(),

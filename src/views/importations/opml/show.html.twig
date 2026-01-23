@@ -1,0 +1,113 @@
+{% extends 'layouts/application.html.twig' %}
+
+{% block title %}{{ t('Importation from an OPML file') }}{% endblock %}
+{% block canonical %}{{ url_full('opml') }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'opml' }) }}
+{% endblock %}
+
+{% block navigation %}
+    {{ include('layouts/_account_navigation.html.twig', { page: 'opml' }) }}
+{% endblock %}
+
+{% block body %}
+    {% set importation = form.currentImportation %}
+
+    <div class="wrapper wrapper--small wrapper--center text--center flow flow--large">
+        <h1>{{ t('Importation from an <abbr>OPML</abbr> file') | raw }}</h1>
+
+        <p>
+            {{ t('<abbr>OPML</abbr> enables you to import your feeds from another software.') | raw }}
+        </p>
+
+        {% if importation and importation.isOngoing %}
+            <div class="flow">
+                <p class="text--bolder" role="alert">
+                    {{ t('We’re importing your data…') }}
+                </p>
+
+                <div class="spinner"></div>
+
+                <p class="text--secondary">
+                    {{ t('This might take several minutes, please wait.') }}
+                </p>
+
+                <form
+                     method="get"
+                     action="{{ url('opml') }}"
+                     data-controller="autosubmit"
+                     data-autosubmit-mode-value="timeout"
+                     data-autosubmit-timeout-value="4000"
+                >
+                </form>
+            </div>
+        {% elseif importation and importation.isFinished %}
+            <div class="flow">
+                {{ include('alerts/_success.html.twig', {
+                    message: t('We’ve imported your data from your OPML file. We’re now going to fetch their links in background.'),
+                }) }}
+
+                <form method="post" action="{{ url('delete importation', { id: importation.id }) }}">
+                    <button type="submit" class="button--primary button--big">
+                        {{ t('Ok!') }}
+                    </button>
+
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token('importations\\DeleteImportation') }}">
+                    <input type="hidden" name="redirect_to" value="{{ url('feeds') }}">
+                </form>
+            </div>
+        {% elseif importation and importation.isInError %}
+            <div class="flow">
+                {{ include('alerts/_error.html.twig', { message: importation.error }) }}
+
+                <form method="post" action="{{ url('delete importation', { id: importation.id }) }}">
+                    <button type="submit" class="button--primary button--big">
+                        {{ t('Ok!') }}
+                    </button>
+
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token('importations\\DeleteImportation') }}">
+                    <input type="hidden" name="redirect_to" value="{{ url('feeds') }}">
+                </form>
+            </div>
+        {% else %}
+            <form
+                method="post"
+                action="{{ url('import opml') }}"
+                data-controller="autosubmit form-file"
+                enctype="multipart/form-data"
+            >
+                {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+                {% if form.isInvalid('opml') %}
+                    <p id="opml-error" class="form-group__error text--center">
+                        {{ t('Error:') }}
+                        {{ form.error('opml') }}
+                    </p>
+                {% endif %}
+
+                <input
+                    type="file"
+                    name="opml"
+                    id="opml"
+                    accept="{{ form.acceptedMimetypes }}"
+                    data-action="autosubmit#submit"
+                    data-form-file-target="file"
+                    hidden
+                >
+
+                <button
+                    type="button"
+                    class="button--primary button--big"
+                    data-action="form-file#openFile"
+                    aria-describedby="opml-desc"
+                    data-autosubmit-target="actionButton"
+                >
+                    {{ t('Import a file') }}
+                </button>
+
+                <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}">
+            </form>
+        {% endif %}
+    </div>
+{% endblock %}

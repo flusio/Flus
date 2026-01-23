@@ -59,7 +59,7 @@ class Feeds extends BaseController
             'limit' => 30,
         ]);
 
-        $response = Response::ok('collections/feeds/show.atom.xml.php', [
+        $response = Response::ok('collections/feeds/show.atom.xml.twig', [
             'collection' => $collection,
             'topics' => $topics,
             'links' => $links,

@@ -1,0 +1,70 @@
+{% extends 'layouts/application.html.twig' %}
+
+{% block title %}{{ t('Downloading your data') }}{% endblock %}
+{% block canonical %}{{ url_full('exportation') }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'exportation' }) }}
+{% endblock %}
+
+{% block navigation %}
+    {{ include('layouts/_account_navigation.html.twig', { page: 'exportation' }) }}
+{% endblock %}
+
+{% block body %}
+    {% set exportation = form.currentExportation %}
+
+    <div class="text--center flow flow--large">
+        <h1>{{ t('Downloading your data') }}</h1>
+
+        <p>
+            {{ t('You can download your data in order to migrate to a different tool.') }}
+        </p>
+
+        {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+        {% if exportation and exportation.isOngoing %}
+            <div class="flow">
+                <p class="text--bolder" role="alert">
+                    {{ t('We’re creating your archive…') }}
+                </p>
+
+                <div class="spinner"></div>
+
+                <p class="text--secondary">
+                    {{ t('This might take several minutes, please wait.') }}
+                </p>
+
+                <form
+                     method="get"
+                     action="{{ url('exportation') }}"
+                     data-controller="autosubmit"
+                     data-autosubmit-mode-value="timeout"
+                     data-autosubmit-timeout-value="4000"
+                >
+                </form>
+            </div>
+        {% elseif exportation and exportation.isFinished %}
+            <div class="flow flow--smaller">
+                <p>
+                    <a class="button button--big" href="{{ url('download exportation') }}" data-turbo="false">
+                        {{ icon('backup') }}
+                        {{ t('Download your archive') }}
+                    </a>
+                </p>
+
+                <p class="text--secondary">
+                    {{ t('generated on %s', [d(exportation.created_at, 'dd MMMM Y')]) }}
+                </p>
+            </div>
+
+            {{ include('exportations/_form.html.twig') }}
+        {% elseif exportation and exportation.isInError %}
+            {{ include('alerts/_error.html.twig', { message: exportation.error }) }}
+
+            {{ include('exportations/_form.html.twig') }}
+        {% else %}
+            {{ include('exportations/_form.html.twig') }}
+        {% endif %}
+    </div>
+{% endblock %}

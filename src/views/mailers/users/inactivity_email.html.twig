@@ -1,0 +1,23 @@
+{% extends 'mailers/base.html.twig' %}
+
+{% block logo %}
+    {{ include('mailers/_logo.html.twig', { cid: logo_cid }) }}
+{% endblock %}
+
+{% block body %}
+    <p>
+        {{ t('Hello %s,', [username]) }}
+    </p>
+
+    <p>
+        {{ t('You receive this email because you haven’t been active on %s for several months. To avoid storing outdated data, your account will be deleted after one month. If you don’t want to keep it, you don’t have to do anything. However, if you wish to keep your account, you should login to %s by clicking on the following link:', [app.brand, app.brand]) }}<br />
+
+        <a href="{{ url_full('login') }}">
+            {{ url_full('login') }}
+        </a>
+    </p>
+
+    <p>
+        {{ t('Note that you will not receive any further notification that your account will be deleted.') }}
+    </p>
+{% endblock %}

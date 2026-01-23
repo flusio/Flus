@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="{{ app.locale | locale_to_bcp_47 }}" data-color-scheme="light">
+    <head>
+        <meta charset="UTF-8" />
+        <title>{{ include('layouts/_title.html.twig', { title: block('title') }) }}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="canonical" href="{% block canonical %}{% endblock %}">
+
+        {% block alternates %}
+        {% endblock %}
+
+        {% block opengraph %}
+        {% endblock %}
+
+        <meta name="application-name" content="{{ app.brand }}">
+        <meta name="theme-color" content="#00d7ad">
+        <link rel="manifest" href="{{ url('webmanifest') }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ url_static('static/icons/icon-32.png') }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ url_static('static/icons/icon-16.png') }}">
+        <link rel="mask-icon" href="{{ url_static('static/icons/safari-pinned-tab.svg') }}" color="#00d7ad">
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ url_static('static/icons/icon-180.png') }}">
+        <meta name="msapplication-TileImage" content="{{ url_static('static/icons/icon-144.png') }}">
+        <meta name="msapplication-TileColor" content="#00d7ad">
+
+        <link rel="stylesheet" href="{{ url_asset('stylesheets/application.css') }}" data-turbo-track="reload">
+
+        <script id="javascript-configuration" type="application/json">
+            {{ js_configuration() }}
+        </script>
+        <script src="{{ url_asset('javascripts/application.js') }}" data-turbo-track="reload" defer></script>
+
+        {% if app_configuration('plausible_url') %}
+            <script defer data-domain="{{ current_host() }}" src="{{ app_configuration('plausible_url') }}/js/script.js"></script>
+        {% endif %}
+    </head>
+
+    <body>
+        <a
+            class="accessibility-nav button button--primary"
+            href="#main-content"
+            tabindex="0"
+            data-turbo="false"
+        >
+            {{ t('Skip to main content') }}
+        </a>
+
+        <div class="layout {{ app.user ? 'layout--connected' : 'layout--disconnected' }} {{ app.user and app.user.isBlocked ? 'layout--blocked' : '' }}" id="layout">
+            {% block layout_header %}
+            {% endblock %}
+
+            <main id="main-content" class="layout__main" tabindex="-1">
+                {% block layout_body %}
+                {% endblock %}
+            </main>
+
+            {% if not app.user %}
+                <footer class="panel panel--larger text--center">
+                    <a class="anchor--padding text--bold" href="{{ url('about') }}">
+                        {{ t('About %s', [app.brand]) }}
+                    </a>
+                </footer>
+            {% endif %}
+        </div>
+
+        {{ include('layouts/_modal_dialog.html.twig') }}
+    </body>
+</html>

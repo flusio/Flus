@@ -1,0 +1,84 @@
+{% extends 'layouts/application.html.twig' %}
+
+{% block title %}{{ t('Account deletion') }}{% endblock %}
+{% block canonical %}{{ url_full('account deletion') }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'account deletion' }) }}
+{% endblock %}
+
+{% block navigation %}
+    {{ include('layouts/_account_navigation.html.twig', { page: 'account deletion' }) }}
+{% endblock %}
+
+{% block body %}
+    <div class="wrapper wrapper--small wrapper--center flow flow--large">
+        <h1 class="text--center">{{ t('Account deletion') }}</h1>
+
+        <div class="text--center flow">
+            <p>
+                <strong>{{ t('You’re connected as %s.', [app.user.username]) }}</strong>
+            </p>
+
+            <p>
+                {{ t('You’re about to delete your account and your data will be lost. This can’t be canceled!') }}
+            </p>
+        </div>
+
+        <form method="post" action="{{ url('delete account') }}" class="flow">
+            {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+            <div class="form-group">
+                <label for="password">
+                    {{ t('Your password') }}
+                </label>
+
+                {% if form.isInvalid('password') %}
+                    <p id="password-error" class="form-group__error">
+                        {{ t('Error:') }}
+                        {{ form.error('password') }}
+                    </p>
+                {% endif %}
+
+                <div class="cols cols--always cols--gap-smaller" data-controller="input-password">
+                    <input
+                        id="password"
+                        class="col--extend"
+                        name="password"
+                        type="password"
+                        required
+                        data-input-password-target="input"
+                        aria-describedby="password-caption"
+                        {% if form.isInvalid('password') %}
+                            aria-errormessage="password-error"
+                            aria-invalid="true"
+                        {% endif %}
+                    >
+
+                    <button
+                        type="button"
+                        class="no-mobile js-only"
+                        data-action="input-password#toggle"
+                        data-input-password-target="button"
+                        aria-label="{{ t('Show password as plain text. Note: this will visually expose your password.') }}"
+                    >
+                        {{ icon('eye') }}
+                        {{ t('Show') }}
+                    </button>
+                </div>
+
+                <p id="password-caption" class="form-group__caption">
+                    {{ t('You must type your password so we can confirm your identity.') }}
+                </p>
+            </div>
+
+            <div class="text--center">
+                <button type="submit" class="button--danger button--big">
+                    {{ t('Delete your account') }}
+                </button>
+            </div>
+
+            <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}" />
+        </form>
+    </div>
+{% endblock %}

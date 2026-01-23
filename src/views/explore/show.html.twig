@@ -1,0 +1,69 @@
+{% extends 'layouts/application.html.twig' %}
+
+{% set title = t('Explore %s', [current_topic.label]) %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block canonical %}{{ url_full('explore', { topic: current_topic.id }) }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'explore', tab: 'reading' }) }}
+{% endblock %}
+
+{% block navigation %}
+    {% if app.user %}
+        {{ include('layouts/_reading_navigation.html.twig', { page: 'explore' }) }}
+    {% endif %}
+{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: title, reset: true }) }}
+{% endblock %}
+
+{% block opengraph %}
+    {{ include('layouts/_opengraph.html.twig', {
+        title: title,
+        description: t('Discover the public collections on %s.', [app.brand]),
+        locale: app.locale,
+        url: url_full('explore'),
+        image: url_static('static/og-card.png'),
+    }) }}
+{% endblock %}
+
+{% block body %}
+    <h1 class="text--center">{{ title }}</h1>
+
+    <p class="text--center">
+        {{ t('Explore the collections published by the %s community.', [app.brand]) }}
+    </p>
+
+    <div class="panel panel--rounded stack stack--center stack--gap-small">
+        {% for topic in topics %}
+            <a
+                class="button button--ghost"
+                href="{{ url('explore', { topic: topic.id }) }}"
+                {{ current_topic and topic.id == current_topic.id ? 'aria-current="page"' : '' }}
+            >
+                {{ topic.label }}
+            </a>
+        {% endfor %}
+    </div>
+
+    {% if collections %}
+        <div class="grid grid--center">
+            {% for collection in collections %}
+                {{ include('collections/_collection.html.twig', {
+                    collection: collection,
+                    display_by: true,
+                    display_number_links: true,
+                    display_visibility: false,
+                }) }}
+            {% endfor %}
+        </div>
+
+        {{ include('layouts/_pagination.html.twig', { url: url('explore', { topic: current_topic.id }) }) }}
+    {% else %}
+        <p class="panel panel--grey panel--rounded panel--larger text--bolder text--center">
+            {{ t('The community didn’t publish any collection in this topic yet.') }}
+        </p>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends 'layouts/onboarding.html.twig' %}
+
+{% block title %}{{ t('Welcome!') }}{% endblock %}
+{% block canonical %}{{ url_full('onboarding', { step: current_step }) }}{% endblock %}
+
+{% block navigation %}
+    {{ include('onboarding/_navigation.html.twig') }}
+{% endblock %}
+
+{% block body %}
+    <h1 class="text--center">{{ t('Welcome %s!', [app.user.username]) }}</h1>
+
+    <form
+        method="post"
+        action="{{ url('onboarding update locale') }}"
+        data-controller="autosubmit"
+        class="flow"
+    >
+        {{ include('alerts/_error.html.twig', { message: locale_form.error('@base') }) }}
+
+        <div class="form-group">
+            <label for="locale">
+                {{ icon('language') }}
+                {{ t('Choose your language') }}
+            </label>
+
+            <select
+                id="locale"
+                name="locale"
+                data-action="autosubmit#submit"
+                data-autosubmit-target="actionButton"
+            >
+                {% for locale_value, locale_name in locale_form.localesValues %}
+                    <option
+                        value="{{ locale_value }}"
+                        {{ locale_value == locale_form.locale ? 'selected' : '' }}
+                    >
+                        {{ locale_name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <input type="hidden" name="csrf_token" value="{{ csrf_token(locale_form) }}" />
+    </form>
+
+    <hr />
+
+    <div class="flow">
+        <p>
+            <strong>{{ t('The few next screens will explain you some main features of %s.', [app.brand]) }}</strong>
+        </p>
+
+        <p>
+            {{ t('There’s not much to know before getting started with %s. This onboarding should take less than 3 minutes of your time.', [app.brand]) }}
+        </p>
+    </div>
+
+    <p class="text--center flow">
+        {{ include('onboarding/_continue.html.twig') }}
+
+        <a class="button" href="{{ url('home') }}">
+            {{ t('or skip the onboarding') }}
+        </a>
+    </p>
+{% endblock %}

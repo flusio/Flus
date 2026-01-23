@@ -1,0 +1,91 @@
+{% extends 'layouts/simple.html.twig' %}
+
+{% block title %}{{ t('New link') }}{% endblock %}
+{% block canonical %}{{ url_full('new link') }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'new link' }) }}
+{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: t('New link') }) }}
+{% endblock %}
+
+{% block body %}
+    <h1 class="text--center">{{ t('New link') }}</h1>
+
+    <form method="post" action="{{ url('create link') }}" class="flow">
+        {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+        <div class="form-group">
+            <label for="url">
+                {{ t('What’s the address of the link?') }}
+            </label>
+
+            {% if form.isInvalid('url') %}
+                <p id="url-error" class="form-group__error">
+                    {{ t('Error:') }}
+                    {{ form.error('url') }}
+                </p>
+            {% endif %}
+
+            <input
+                id="url"
+                name="url"
+                type="url"
+                placeholder="https://…"
+                required
+                value="{{ form.url }}"
+                autocomplete="off"
+                autofocus
+                aria-describedby="url-caption"
+                {% if form.isInvalid('url') %}
+                    aria-errormessage="url-error"
+                    aria-invalid="true"
+                {% endif %}
+            >
+
+            <p id="url-caption" class="form-group__caption">
+                {{ t('It can be copy-paste from the <abbr>URL</abbr> bar, at the top of your browser.') | raw }}
+            </p>
+        </div>
+
+        <fieldset aria-describedby="collections-desc" class="flow">
+            <legend>{{ t('Collections') }}</legend>
+
+            {{ include('collections/_selector.html.twig') }}
+        </fieldset>
+
+        <div>
+            <input
+                type="checkbox"
+                id="is-hidden"
+                name="is_hidden"
+                {{ form.is_hidden ? 'checked' : '' }}
+            >
+
+            <label class="label--checkbox" for="is-hidden">
+                {{ t('Hide this link in public collections') }}
+            </label>
+        </div>
+
+        <div>
+            <input
+                type="checkbox"
+                id="read-later"
+                name="read_later"
+                {{ form.read_later ? 'checked' : '' }}
+            />
+
+            <label class="label--checkbox" for="read-later">
+                {{ t('Mark to read later?') }}
+            </label>
+        </div>
+
+        <button type="submit" class="button--primary button--big button--block">
+            {{ t('Add the link') }}
+        </button>
+
+        <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}" />
+    </form>
+{% endblock %}

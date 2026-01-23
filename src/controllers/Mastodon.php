@@ -38,7 +38,7 @@ class Mastodon extends BaseController
             ]);
         }
 
-        return Response::ok('mastodon/show.phtml', [
+        return Response::ok('mastodon/show.html.twig', [
             'mastodon_account' => $mastodon_account,
             'form' => $form,
         ]);
@@ -117,7 +117,7 @@ class Mastodon extends BaseController
             'code' => $request->parameters->getString('code', ''),
         ]);
 
-        return Response::ok('mastodon/authorization.phtml', [
+        return Response::ok('mastodon/authorization.html.twig', [
             'form' => $form,
         ]);
     }
@@ -151,7 +151,7 @@ class Mastodon extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('mastodon/authorization.phtml', [
+            return Response::badRequest('mastodon/authorization.html.twig', [
                 'form' => $form,
             ]);
         }
@@ -170,7 +170,7 @@ class Mastodon extends BaseController
                 _('The Mastodon host returned an error, please try later.'),
             );
 
-            return Response::badRequest('mastodon/authorization.phtml', [
+            return Response::badRequest('mastodon/authorization.html.twig', [
                 'form' => $form,
             ]);
         }
@@ -209,7 +209,7 @@ class Mastodon extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('mastodon/show.phtml', [
+            return Response::badRequest('mastodon/show.html.twig', [
                 'mastodon_account' => $mastodon_account,
                 'form' => $form,
             ]);

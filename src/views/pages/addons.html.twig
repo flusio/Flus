@@ -1,0 +1,62 @@
+{% extends 'layouts/simple.html.twig' %}
+
+{% block title %}{{ t('Add-ons') }}{% endblock %}
+{% block canonical %}{{ url_full('addons') }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'addons' }) }}
+{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: t('Add-ons') }) }}
+{% endblock %}
+
+{% block body %}
+    <h1 class="text--center">{{ t('Add-ons') }}</h1>
+
+    <div class="flow text--center">
+        <h2>
+            {{ t('Keep %s at hand in your browser', [app.brand]) }}
+        </h2>
+
+        <div class="wrapper wrapper--smaller wrapper--center flow">
+            <a class="button button--big button--block" href="https://addons.mozilla.org/fr/firefox/addon/flus/" target="_blank" rel="noopener noreferrer">
+                <img alt="" src="{{ url_static('static/icon-firefox.svg') }}" width="50" height="50" />
+                {{ t('Download for Firefox and Firefox Mobile') }}
+            </a>
+
+            <a class="button button--big button--block" href="https://chrome.google.com/webstore/detail/flus/gikjpohbbimicecbndkefebbpjobokjd" target="_blank" rel="noopener noreferrer">
+                <img alt="" src="{{ url_static('static/icon-chrome.svg') }}" width="50" height="50" />
+                {{ t('Download for Chrome') }}
+            </a>
+        </div>
+    </div>
+
+    <div class="flow text--center">
+        <p>
+            <strong>{{ t('Your browser is not in the list?') }}</strong>
+            {{ t('Drag and drop this link to your browser bookmarks bar:') }}
+        </p>
+
+        <div class="wrapper wrapper--smaller wrapper--center flow">
+            <a class="button button--big button--block text--left" href="javascript:(function(){var%20win=window.open('about:blank','_blank');win.opener=null;win.location='{{ url_full('new link') }}?url='+encodeURIComponent(location.href);})();">
+                {{ t('Add to %s', [app.brand]) }}
+            </a>
+        </div>
+    </div>
+
+    <div class="panel panel--gable panel--rounded flow text--center">
+        <h2>
+            {{ t('Using a smartphone?') }}
+        </h2>
+
+        <p class="text--secondary">
+            <i>{{ t('Sorry, there’s no app for that.') }}</i>
+        </p>
+
+        <p>
+            {{ t('Instead, you can <strong>add a shortcut to %s on your home screen.</strong>', [app.brand]) | raw }}
+            {{ t('With modern browsers, it will work as a mobile application.') }}
+        </p>
+    </div>
+{% endblock %}

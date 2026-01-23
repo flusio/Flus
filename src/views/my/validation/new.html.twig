@@ -1,0 +1,45 @@
+{% extends 'layouts/simple.html.twig' %}
+
+{% block title %}{{ t('Account validation') | raw }}{% endblock %}
+{% block canonical %}{{ url_full('account validation') }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'account validation', display_validation_banner: false }) }}
+{% endblock %}
+
+{% block body %}
+    <div class="flow flow--large text--center">
+        <h1>{{ t('Account validation') }}</h1>
+
+        <p>
+            {{ t('You’re about to validate your account on %s. Please click the button below to confirm.', [app.brand]) }}
+        </p>
+
+        <form method="post" action="{{ url('create account validation') }}" class="flow">
+            {% if form.isInvalid('@base') %}
+                {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+                <p>
+                    <a class="button button--primary button--big button--animated" href="{{ url('account validation') }}">
+                        {{ icon('arrow-left') }}
+                        {{ t('Back to the account validation') }}
+                    </a>
+                </p>
+            {% else %}
+                <button class="button--primary button--big" type="submit">
+                    {{ icon('check') }}
+                    {{ t('Confirm my account') }}
+                </button>
+
+                <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}">
+                <input type="hidden" name="t" value="{{ form.t }}">
+            {% endif %}
+        </form>
+
+        <img
+            alt=""
+            src="{{ url_static('static/illustrations/contact.svg') }}"
+            height="250"
+        >
+    </div>
+{% endblock %}

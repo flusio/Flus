@@ -1,0 +1,107 @@
+{% extends 'layouts/simple.html.twig' %}
+
+{% block title %}{{ t('Preferences') }}{% endblock %}
+{% block canonical %}{{ url_full('preferences') }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'preferences' }) }}
+{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: t('Preferences') }) }}
+{% endblock %}
+
+{% block body %}
+    <h1 class="text--center">{{ t('Preferences') }}</h1>
+
+    <form method="post" action="{{ url('update preferences') }}" class="flow">
+        {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+        <div class="form-group">
+            <label for="locale">
+                {{ icon('language') }}
+                {{ t('Your language') }}
+            </label>
+
+            {% if form.isInvalid('locale') %}
+                <p id="locale-error" class="form-group__error">
+                    {{ t('Error:') }}
+                    {{ form.error('locale') }}
+                </p>
+            {% endif %}
+
+            <select
+                id="locale"
+                name="locale"
+                {% if form.isInvalid('locale') %}
+                    aria-errormessage="locale-error"
+                    aria-invalid="true"
+                {% endif %}
+            >
+                {% for locale_value, locale_name in form.localesValues %}
+                    <option
+                        value="{{ locale_value }}"
+                        {{ locale_value == form.locale ? 'selected' : '' }}
+                    >
+                        {{ locale_name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <input
+                type="checkbox"
+                id="option-compact-mode"
+                name="option_compact_mode"
+                aria-describedby="option-compact-mode-caption"
+                {{ form.option_compact_mode ? 'checked' : '' }}
+            >
+
+            <label class="label--checkbox" for="option-compact-mode">
+                {{ t('Enable compact mode') }}
+            </label>
+
+            <p class="form-group__caption" id="option-compact-mode-caption">
+                {{ t('In compact mode, you see more links at a glance, but you may feel overwhelmed by the information.') }}
+            </p>
+        </div>
+
+        <div>
+            <input
+                type="checkbox"
+                id="accept-contact"
+                name="accept_contact"
+                {{ form.accept_contact ? 'checked' : '' }}
+            >
+
+            <label class="label--checkbox" for="accept-contact">
+                {{ t('Accept to be contacted by email to help improve the service (optional).') }}
+            </label>
+        </div>
+
+        <div>
+            <input
+                type="checkbox"
+                id="beta-enabled"
+                name="beta_enabled"
+                aria-describedby="beta-enabled-caption"
+                {{ form.beta_enabled ? 'checked' : '' }}
+            >
+
+            <label class="label--checkbox" for="beta-enabled">
+                {{ t('Enable beta features') }}
+            </label>
+
+            <p class="form-group__caption" id="beta-enabled-caption">
+                {{ t('With beta features you test some features before everyone else, but you enter a turbulent zone.') }}
+            </p>
+        </div>
+
+        <button type="submit" class="button--primary button--big button--block">
+            {{ t('Save changes') }}
+        </button>
+
+        <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}" />
+    </form>
+{% endblock %}

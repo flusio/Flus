@@ -32,7 +32,7 @@ class Opml extends BaseController
         $user = models\User::requireFromRequest($request);
 
         if ($user->isSupportUser()) {
-            return Response::notFound('not_found.phtml');
+            return Response::notFound('errors/not_found.html.twig');
         }
 
         utils\Locale::setCurrentLocale($user->locale);
@@ -41,10 +41,9 @@ class Opml extends BaseController
         ]);
         $collections = utils\Sorter::localeSort($collections, 'name');
 
-        return Response::ok('profiles/opml/show.opml.xml.php', [
+        return Response::ok('profiles/opml/show.opml.xml.twig', [
             'user' => $user,
             'collections' => $collections,
-            'user_agent' => utils\UserAgent::get(),
         ]);
     }
 

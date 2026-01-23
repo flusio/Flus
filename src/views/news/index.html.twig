@@ -1,0 +1,318 @@
+{% extends 'layouts/application.html.twig' %}
+
+{% block title %}{{ t('News') }}{% endblock %}
+{% block canonical %}{{ url_full('news') }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'news', tab: 'reading' }) }}
+{% endblock %}
+
+{% block navigation %}
+    {{ include('layouts/_reading_navigation.html.twig', { page: 'news' }) }}
+{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: t('News'), reset: true }) }}
+{% endblock %}
+
+{% block body %}
+    <h1 class="text--center">{{ t('News') }}</h1>
+
+    {% if not links_timeline.empty %}
+        <p class="text--center text--secondary">
+            {% set count_links = links_timeline.count %}
+            {{ t('%d link', '%d links', count_links, [count_links | format_number]) }}
+        </p>
+    {% endif %}
+
+    {% if not links_timeline.empty %}
+        <div class="flow flow--large" data-controller="zindex-inverser">
+            {% for date_group in links_timeline.datesGroups %}
+                <section class="group flow flow--large">
+                    <header class="group__header" data-zindex-inverser-target="item">
+                        <h2 class="group__title">
+                            {{ d(date_group.date, 'dd MMMM') }}
+
+                            {% if date_group.isToday %}
+                                <small class="text--secondary">· {{ t('today') }}</small>
+                            {% elseif date_group.isYesterday %}
+                                <small class="text--secondary">· {{ t('yesterday') }}</small>
+                            {% endif %}
+                        </h2>
+
+                        <div class="group__separator"></div>
+
+                        <details
+                            class="popup"
+                            data-controller="popup"
+                            data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
+                        >
+                            <summary class="popup__opener">
+                                <span class="button button--icon-mobile">
+                                    {{ icon('menu') }}
+
+                                    <span class="no-mobile">
+                                        {{ t('Actions') }}
+                                    </span>
+                                </span>
+                            </summary>
+
+                            <nav class="popup__container popup__container--right" role="menu">
+                                <div class="popup__title">{{ t('Actions on the day') }}</div>
+
+                                <form method="post" action="{{ url('mark collection as read', { id: news.id }) }}" role="menuitem">
+                                    <button class="popup__item popup__item--button">
+                                        {{ icon('check') }}
+                                        {{ t('Mark all as read') }}
+                                    </button>
+
+                                    <input type="hidden" name="date" value="{{ date_group.date.format('Y-m-d') }}">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\MarkCollectionAsRead') }}">
+                                </form>
+
+                                <form method="post" action="{{ url('read collection later', { id: news.id }) }}" role="menuitem">
+                                    <button class="popup__item popup__item--button">
+                                        {{ icon('bookmark') }}
+                                        {{ t('Read the links later') }}
+                                    </button>
+
+                                    <input type="hidden" name="date" value="{{ date_group.date.format('Y-m-d') }}">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\MarkCollectionAsReadLater') }}">
+                                </form>
+
+                                <div class="popup__separator"></div>
+
+                                <form
+                                    method="post"
+                                    action="{{ url('never read collection', { id: news.id }) }}"
+                                    data-turbo-confirm="{{ t('You’ll remove all the news links, this action cannot be canceled. Are you sure?') }}"
+                                    role="menuitem"
+                                >
+                                    <button class="popup__item popup__item--button">
+                                        {{ icon('times') }}
+                                        {{ t('Remove the links from the news') }}
+                                    </button>
+
+                                    <input type="hidden" name="date" value="{{ date_group.date.format('Y-m-d') }}">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\MarkCollectionAsNever') }}">
+                                </form>
+                            </nav>
+                        </details>
+                    </header>
+
+                    <div class="group__body flow flow--large">
+                        {% set links = date_group.links %}
+
+                        {% if links %}
+                            <div class="grid">
+                                {% for link in date_group.links %}
+                                    {{ include('links/_link.html.twig', {
+                                        link: link,
+                                        from: url('news'),
+                                        display_edit: true,
+                                        display_repair: true,
+                                        display_source: true,
+                                        display_read_later: true,
+                                        display_mark_as_read: true,
+                                        display_never: true,
+                                        storing_must_mark_as_read: true,
+                                    })}}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        {% for source_group in date_group.sourceGroups %}
+                            <div class="source-group flow flow--small">
+                                <div class="source-group__header cols cols--always cols--gap cols--center">
+                                    <h3 class="source-group__title">
+                                        {{ source_group.title }}
+                                    </h3>
+
+                                    <span class="col--noshrink text--secondary">
+                                        {{ t('%d link', '%d links', source_group.links | length, [source_group.links | length]) }}
+                                    </span>
+
+                                    <details
+                                        class="popup"
+                                        data-controller="popup"
+                                        data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
+                                    >
+                                        <summary class="popup__opener">
+                                            <span class="button button--icon button-ghost">
+                                                {{ icon('menu') }}
+
+                                                <span class="sr-only">
+                                                    {{ t('Actions') }}
+                                                </span>
+                                            </span>
+                                        </summary>
+
+                                        <nav class="popup__container popup__container--center" role="menu">
+                                            <div class="popup__title">{{ t('Actions on the feed') }}</div>
+
+                                            <form data-turbo-preserve-scroll method="post" action="{{ url('mark collection as read', { id: news.id }) }}" role="menuitem">
+                                                <button class="popup__item popup__item--button">
+                                                    {{ icon('check') }}
+                                                    {{ t('Mark all as read') }}
+                                                </button>
+
+                                                <input type="hidden" name="date" value="{{ date_group.date.format('Y-m-d') }}">
+                                                <input type="hidden" name="source" value="{{ source_group.reference }}">
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\MarkCollectionAsRead') }}">
+                                            </form>
+
+                                            <form data-turbo-preserve-scroll method="post" action="{{ url('read collection later', { id: news.id }) }}" role="menuitem">
+                                                <button class="popup__item popup__item--button">
+                                                    {{ icon('bookmark') }}
+                                                    {{ t('Read the links later') }}
+                                                </button>
+
+                                                <input type="hidden" name="date" value="{{ date_group.date.format('Y-m-d') }}">
+                                                <input type="hidden" name="source" value="{{ source_group.reference }}">
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\MarkCollectionAsReadLater') }}">
+                                            </form>
+
+                                            <div class="popup__separator"></div>
+
+                                            <form
+                                                data-turbo-preserve-scroll
+                                                method="post"
+                                                action="{{ url('never read collection', { id: news.id }) }}"
+                                                data-turbo-confirm="{{ t('You’ll remove all the news links, this action cannot be canceled. Are you sure?') }}"
+                                                role="menuitem"
+                                            >
+                                                <button class="popup__item popup__item--button">
+                                                    {{ icon('times') }}
+                                                    {{ t('Remove the links from the news') }}
+                                                </button>
+
+                                                <input type="hidden" name="date" value="{{ date_group.date.format('Y-m-d') }}">
+                                                <input type="hidden" name="source" value="{{ source_group.reference }}">
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\MarkCollectionAsNever') }}">
+                                            </form>
+                                        </nav>
+                                    </details>
+                                </div>
+
+                                <div class="source-group__body grid">
+                                    {% for link in source_group.links %}
+                                        {{ include('links/_link.html.twig', {
+                                            link: link,
+                                            from: url('news'),
+                                            display_edit: true,
+                                            display_repair: true,
+                                            display_source: true,
+                                            display_read_later: true,
+                                            display_mark_as_read: true,
+                                            display_never: true,
+                                            storing_must_mark_as_read: true,
+                                        }) }}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </section>
+            {% endfor %}
+        </div>
+
+        <div class="news__postpone text--center flow">
+            <details
+                class="popup news__postpone-popup"
+                data-controller="popup"
+                data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
+            >
+                <summary class="popup__opener">
+                    <span class="button button--primary button--big news__postpone-button">
+                        {{ icon('menu') }}
+                        {{ t('Actions') }}
+                    </span>
+                </summary>
+
+                <nav class="popup__container popup__container--center" role="menu">
+                    <div class="popup__title">{{ t('Empty the news') }}</div>
+
+                    <form method="post" action="{{ url('mark collection as read', { id: news.id }) }}" role="menuitem">
+                        <button class="popup__item popup__item--button">
+                            {{ icon('check') }}
+                            {{ t('Mark all as read') }}
+                        </button>
+
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\MarkCollectionAsRead') }}">
+                    </form>
+
+                    <form method="post" action="{{ url('read collection later', { id: news.id }) }}" role="menuitem">
+                        <button class="popup__item popup__item--button">
+                            {{ icon('bookmark') }}
+                            {{ t('Read the links later') }}
+                        </button>
+
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\MarkCollectionAsReadLater') }}">
+                    </form>
+
+                    <div class="popup__separator"></div>
+
+                    <form
+                        method="post"
+                        action="{{ url('never read collection', { id: news.id }) }}"
+                        data-turbo-confirm="{{ t('You’ll remove all the news links, this action cannot be canceled. Are you sure?') }}"
+                        role="menuitem"
+                    >
+                        <button class="popup__item popup__item--button">
+                            {{ icon('times') }}
+                            {{ t('Remove the links from the news') }}
+                        </button>
+
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\MarkCollectionAsNever') }}">
+                    </form>
+                </nav>
+            </details>
+
+            <p class="wrapper wrapper--small wrapper--center text--secondary">
+                {{ t('Note: you will need to clear the news before you can refresh it. Mark the links as read, to be read later, or remove them with the appropriate actions.') }}
+            </p>
+        </div>
+    {% else %}
+        <p class="text--center">
+            {{ t('Fill your news feed with the content published by the feeds that you follow.') }}
+        </p>
+
+        <div class="wrapper wrapper--small wrapper--center">
+            {% if no_news %}
+                {{ include('alerts/_info.html.twig', {
+                    message: t('There are no relevant links to suggest at this time.'),
+                }) }}
+            {% endif %}
+
+            <form
+                method="post"
+                action="{{ url('fill news') }}"
+                data-controller="news-refresher"
+                data-news-refresher-url-value="{{ url('news available') }}"
+            >
+                {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+                <div class="text--center">
+                    <button
+                        class="button--primary button--big"
+                        data-action="news-refresher#refresh"
+                        data-news-refresher-target="button"
+                    >
+                        {{ icon('sync') }}
+                        {{ t('Refresh the news') }}
+                    </button>
+                </div>
+
+                <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}">
+            </form>
+        </div>
+    {% endif %}
+
+    <div class="text--center">
+        <img
+            alt=""
+            src="{{ url_static('static/illustrations/explore.svg') }}"
+            height="250"
+        >
+    </div>
+{% endblock %}

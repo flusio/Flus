@@ -1,9 +1,0 @@
-<form method="post" action="<?= url('create exportation') ?>">
-    <div class="form__actions">
-        <button type="submit" class="button--primary">
-            <?= _('Generate a new data archive') ?>
-        </button>
-    </div>
-
-    <input type="hidden" name="csrf_token" value="<?= csrf_token($form) ?>" />
-</form>

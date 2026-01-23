@@ -46,7 +46,7 @@ class Read extends BaseController
             ]
         );
 
-        return Response::ok('read/index.phtml', [
+        return Response::ok('read/index.html.twig', [
             'collection' => $read_list,
             'links' => $links,
             'pagination' => $pagination,

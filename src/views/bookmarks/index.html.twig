@@ -1,0 +1,73 @@
+{% extends 'layouts/application.html.twig' %}
+
+{% if pagination.isCurrentFirstPage %}
+    {% set current_url_params = {} %}
+{% else %}
+    {% set current_url_params = { page: pagination.currentPage } %}
+{% endif %}
+
+{% block title %}{{ collection.name }}{% endblock %}
+{% block canonical %}{{ url_full('bookmarks', current_url_params) }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'bookmarks', tab: 'reading' }) }}
+{% endblock %}
+
+{% block navigation %}
+    {{ include('layouts/_reading_navigation.html.twig', { page: 'bookmarks' }) }}
+{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: collection.name, reset: true }) }}
+{% endblock %}
+
+{% block body %}
+    <h1 class="text--center">{{ collection.name }}</h1>
+
+    <p class="text--center">
+        {{ t('Place here the links you want to consult later on.') }}
+    </p>
+
+    {% if pagination.numberElements > 0 %}
+        <p class="text--center text--secondary">
+            {% set count_links = pagination.numberElements %}
+            {{ t('%d link', '%d links', count_links, [count_links | format_number]) }}
+        </p>
+    {% endif %}
+
+    <div class="grid">
+        <button
+            class="button--card"
+            data-controller="modal-opener"
+            data-action="modal-opener#fetch"
+            data-modal-opener-href-value="{{ url('new collection link', { id: collection.id }) }}"
+            aria-haspopup="dialog"
+            aria-controls="modal"
+        >
+            {{ icon('plus-circle') }}
+            {{ t('Add a link') }}
+        </button>
+
+        {% for link in links %}
+            {{ include('links/_link.html.twig', {
+                link: link,
+                display_source: link.source_type != 'bookmarks',
+                display_notes: true,
+                display_edit: true,
+                display_repair: true,
+                display_delete: true,
+                display_mark_as_read: true,
+            }) }}
+        {% endfor %}
+    </div>
+
+    {{ include('layouts/_pagination.html.twig', { url: url('bookmarks') }) }}
+
+    <div class="text--center">
+        <img
+            alt=""
+            src="{{ url_static('static/illustrations/working-late.svg') }}"
+            height="250"
+        >
+    </div>
+{% endblock %}

@@ -38,7 +38,7 @@ class Feeds extends BaseController
         $user = models\User::requireFromRequest($request);
 
         if ($user->isSupportUser()) {
-            return Response::notFound('not_found.phtml');
+            return Response::notFound('errors/not_found.html.twig');
         }
 
         utils\Locale::setCurrentLocale($user->locale);
@@ -47,7 +47,7 @@ class Feeds extends BaseController
             'limit' => 30,
         ]);
 
-        $response = Response::ok('profiles/feeds/show.atom.xml.php', [
+        $response = Response::ok('profiles/feeds/show.atom.xml.twig', [
             'user' => $user,
             'links' => $links,
             'user_agent' => utils\UserAgent::get(),

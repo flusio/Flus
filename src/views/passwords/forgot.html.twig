@@ -1,0 +1,74 @@
+{% extends 'layouts/authentication.html.twig' %}
+
+{% block title %}{{ t('Reset your password') }}{% endblock %}
+{% block canonical %}{{ url_full('forgot password') }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'forgot password' }) }}
+{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: t('Reset your password'), reset: true, track: false }) }}
+{% endblock %}
+
+{% block body %}
+    <div class="wrapper wrapper--smaller wrapper--center flow flow--large">
+        <h1 class="text--center">{{ t('Reset your password') }}</h1>
+
+        <p>
+            {{ t('We’ll send you an email with a link to reset your password.') }}
+        </p>
+
+        <form
+            method="post"
+            action="{{ url('reset password') }}"
+            data-controller="csrf"
+            data-csrf-name-value="csrf_token"
+            data-csrf-token-value="{{ csrf_token(form) }}"
+            class="flow"
+        >
+            {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+            {% if email_sent %}
+                {{ include('alerts/_success.html.twig', { message: t('We’ve sent you an email to reset your password.') }) }}
+            {% endif %}
+
+            <div class="form-group">
+                <label for="email">
+                    {{ t('Email address') }}
+                </label>
+
+                {% if form.isInvalid('email') %}
+                    <p id="email-error" class="form-group__error">
+                        {{ t('Error:') }}
+                        {{ form.error('email') }}
+                    </p>
+                {% endif %}
+
+                <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value="{{ form.email }}"
+                    required
+                    autofocus
+                    autocomplete="username"
+                    {% if form.isInvalid('email') %}
+                        aria-errormessage="email-error"
+                        aria-invalid="true"
+                    {% endif %}
+                >
+            </div>
+
+            <button type="submit" class="button--primary button--big button--block">
+                {{ t('Send the reset email') }}
+            </button>
+        </form>
+
+        <p class="text--center">
+            <a class="button" href="{{ url('login') }}">
+                {{ t('Remember password?') }}
+            </a>
+        </p>
+    </div>
+{% endblock %}

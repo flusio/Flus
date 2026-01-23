@@ -1,0 +1,41 @@
+<div
+    id="modal"
+    class="modal modal--opened"
+    role="dialog"
+    data-controller="modal"
+    data-action="click->modal#closeOnMask"
+    aria-labelledby="modal-title"
+    aria-modal="true"
+    aria-hidden="true"
+    tabindex="-1"
+>
+    <section
+        class="modal__box"
+        data-modal-target="box"
+        role="document"
+    >
+        <header class="modal__header">
+            <button
+                type="button"
+                class="button--ghost button--icon"
+                data-action="modal#close"
+                aria-label="{{ t('Close') }}"
+                title="{{ t('Close this window') }}"
+            >
+                {{ icon('times') }}
+            </button>
+        </header>
+
+        <div data-modal-target="body" class="modal__body">
+            <turbo-frame data-modal-target="content">
+                <div class="flow text--center">
+                    <p class="text--bold">
+                        {{ t('Loading…') }}
+                    </p>
+
+                    <div class="spinner"></div>
+                </div>
+            </turbo-frame>
+        </div>
+    </section>
+</div>

@@ -1,0 +1,102 @@
+{% extends 'layouts/application.html.twig' %}
+
+{% block title %}{{ t('New') }}{% endblock %}
+{% block canonical %}{{ url_full('show search link') }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'search link' }) }}
+{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: t('New'), reset: true }) }}
+{% endblock %}
+
+{% set link = form.existingLink %}
+{% set feeds = form.existingFeeds %}
+
+{% block body %}
+    <h1 class="text--center">{{ t('New') }}</h1>
+
+    <form
+        method="post"
+        action="{{ url('search link') }}"
+        class="wrapper wrapper--small wrapper--center"
+        {% if form.autosubmit %}
+             data-controller="autosubmit"
+             data-autosubmit-mode-value="timeout"
+             data-autosubmit-timeout-value="0"
+        {% endif %}
+    >
+        {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+        <div class="form-group">
+            <label for="url">
+                {{ t('What’s the address of the link or feed?') }}
+            </label>
+
+            {% if form.isInvalid('url') %}
+                <p id="url-error" class="form-group__error">
+                    {{ t('Error:') }}
+                    {{ form.error('url') }}
+                </p>
+            {% endif %}
+
+            <div class="cols cols--gap-smaller">
+                <input
+                    id="url"
+                    name="url"
+                    type="url"
+                    placeholder="https://…"
+                    required
+                    value="{{ form.url }}"
+                    autocomplete="off"
+                    {% if form.isInvalid('url') %}
+                        aria-errormessage="url-error"
+                        aria-invalid="true"
+                    {% endif %}
+                >
+
+                <button
+                    type="submit"
+                    class="button--primary button--big"
+                    data-autosubmit-target="actionButton"
+                >
+                    {{ t('Search') }}
+                </button>
+            </div>
+        </div>
+
+        <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}" />
+    </form>
+
+    {% if link %}
+        <div class="grid grid--center">
+            {{ include('links/_link.html.twig', {
+                link: link,
+                display_published_at: false,
+                display_notes: true,
+                display_edit: true,
+                display_repair: true,
+                display_delete: true,
+                display_read_later: 'auto',
+                display_mark_as_read: 'auto',
+            }) }}
+
+            {% for feed in feeds %}
+                {{ include('collections/_collection_follow.html.twig', {
+                    collection: feed,
+                }) }}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if not link and not feeds %}
+        <div class="text--center">
+            <img
+                alt=""
+                src="{{ url_static('static/illustrations/location-search.svg') }}"
+                height="250"
+            >
+        </div>
+    {% endif %}
+{% endblock %}

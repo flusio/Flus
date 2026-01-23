@@ -1,0 +1,29 @@
+{% extends 'layouts/onboarding.html.twig' %}
+
+{% block title %}{{ t('Store your links') }}{% endblock %}
+{% block canonical %}{{ url_full('onboarding', { step: 3 }) }}{% endblock %}
+
+{% block navigation %}
+    {{ include('onboarding/_navigation.html.twig') }}
+{% endblock %}
+
+{% block body %}
+    <h1 class="text--center">{{ t('Store your links') }}</h1>
+
+    <p class="text--center">
+        {{ icon('link') }}
+        {{ t('<strong>My links</strong> organises your links into collections.') | raw }}
+    </p>
+
+    <div class="flow">
+        <p>
+            {{ t('All the links you want to be able to find easily have their place in the collections.') }}
+        </p>
+
+        <p>
+            {{ t('By default, you start with 2 collections: <strong>“My favorites” and “My shares”.</strong> Obviously, you can create as many thematic collections as you want!') | raw }}
+        </p>
+    </div>
+
+    {{ include('onboarding/_continue.html.twig') }}
+{% endblock %}

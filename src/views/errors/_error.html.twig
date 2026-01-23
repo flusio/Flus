@@ -1,0 +1,3 @@
+{% if not is_environment('production') and error is defined %}
+    <pre class="layout__error">{{ error }}</pre>
+{% endif %}

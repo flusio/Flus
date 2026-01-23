@@ -1,0 +1,74 @@
+{% set display_actions = display_actions ?? false %}
+
+<article class="notepad flow">
+    {% for date_iso, notes in notepad %}
+        {% set date = date(date_iso) %}
+
+        <div id="notepad-{{ date_iso }}" class="notepad__container">
+            <p class="notepad__header">
+                <a class="notepad__date" href="#notepad-{{ date_iso }}">
+                    <time datetime="{{ date_iso }}">
+                        {{ d(date, 'dd MMMM y') }}
+                    </time>
+                </a>
+            </p>
+
+            {% for note in notes %}
+                <div class="notepad__note cols cols--gap-smaller">
+                    <div class="notepad__content text-container col--extend">
+                        {{ note.contentAsHtml | raw }}
+                    </div>
+
+                    {% if display_actions and app.user and note.user_id == app.user.id %}
+                        <div class="text--right">
+                            <details
+                                class="popup"
+                                data-controller="popup"
+                                data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
+                            >
+                                <summary class="popup__opener" title="{{ t('Actions') }}">
+                                    <span class="button button--ghost button--icon">
+                                        {{ icon('menu') }}
+                                        <span class="sr-only">
+                                            {{ t('Actions') }}
+                                        </span>
+                                    </span>
+                                </summary>
+
+                                <nav class="popup__container popup__container--right">
+                                    <button
+                                        class="popup__item popup__item--button"
+                                        data-controller="modal-opener"
+                                        data-action="modal-opener#fetch"
+                                        data-modal-opener-href-value="{{ url('edit note', { id: note.id }) }}"
+                                        aria-haspopup="dialog"
+                                        aria-controls="modal"
+                                    >
+                                        {{ icon('pencil') }}
+                                        {{ t('Edit') }}
+                                    </button>
+
+                                    <div class="popup__separator"></div>
+
+                                    <form
+                                        data-turbo-preserve-scroll
+                                        method="post"
+                                        action="{{ url('delete note', { id: note.id }) }}"
+                                        data-turbo-confirm="{{ t('Are you sure that you want to delete this note?') }}"
+                                    >
+                                        <button type="submit" class="popup__item popup__item--button">
+                                            {{ icon('trash') }}
+                                            {{ t('Delete') }}
+                                        </button>
+
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token('notes\\DeleteNote') }}" />
+                                    </form>
+                                </nav>
+                            </details>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+</article>

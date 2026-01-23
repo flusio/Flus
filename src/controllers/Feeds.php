@@ -44,7 +44,7 @@ class Feeds extends BaseController
         $collections = utils\Sorter::localeSort($collections, 'name');
         $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
 
-        return Response::ok('feeds/index.phtml', [
+        return Response::ok('feeds/index.html.twig', [
             'groups' => $groups,
             'groups_to_collections' => $groups_to_collections,
         ]);
@@ -65,7 +65,7 @@ class Feeds extends BaseController
 
         $form = new forms\collections\NewFeed();
 
-        return Response::ok('feeds/new.phtml', [
+        return Response::ok('feeds/new.html.twig', [
             'form' => $form,
         ]);
     }
@@ -93,7 +93,7 @@ class Feeds extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('feeds/new.phtml', [
+            return Response::badRequest('feeds/new.html.twig', [
                 'form' => $form,
             ]);
         }
@@ -151,6 +151,6 @@ class Feeds extends BaseController
      */
     public function xsl(Request $request): Response
     {
-        return Response::ok('feeds/feeds.xsl.php');
+        return Response::ok('feeds/feeds.xsl.twig');
     }
 }

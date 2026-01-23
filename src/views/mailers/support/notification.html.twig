@@ -1,0 +1,15 @@
+{% extends 'mailers/base.html.twig' %}
+
+{% block logo %}
+    {{ include('mailers/_logo.html.twig', { cid: logo_cid }) }}
+{% endblock %}
+
+{% block body %}
+    <p>
+        {{ t('Hello %s,', [username]) }}
+    </p>
+
+    <p>
+        {{ t('Your message named “%s” has been sent. Someone will reply to you as soon as possible!', [subject]) }}
+    </p>
+{% endblock %}

@@ -1,0 +1,162 @@
+{% set tab = tab ?? '' %}
+{% set display_validation_banner = display_validation_banner ?? true %}
+
+<noscript>
+    <p class="layout__banner layout__banner--alert">
+        {{ icon('error') }}
+        {{ t('You need to activate JavaScript in order to use %s.', [app.brand]) }}
+    </p>
+</noscript>
+
+{% if app.demo %}
+    <p class="layout__banner">
+        {{ t('You’re using a demo version of %s, the data are reset every night.', [app.brand]) }}
+    </p>
+{% endif %}
+
+{% if display_validation_banner and not app.user.isValidated %}
+    <div class="layout__banner stack stack--center stack--gap">
+        <p>
+            {{ t('Your account is not validated yet.') }}
+        </p>
+
+        <a class="button button--animated" href="{{ url('account validation') }}">
+            {{ t('Validate') }}
+            {{ icon('arrow-right') }}
+        </a>
+    </div>
+{% endif %}
+
+<header class="layout__header cols cols--always cols--gap cols--center">
+    <div class="col--extend"></div>
+
+    {% if not app.user.isBlocked %}
+        <div class="text--center">
+            <a
+                class="header__link {{ tab == 'reading' ? 'header__link--active' : '' }}"
+                {{ page == 'reading' ? 'aria-current="page"' : '' }}
+                href="{{ url('news') }}"
+            >
+                {{ icon('reading') }}
+
+                <span class="sr-mobile">
+                    {{ t('Reading') }}
+                </span>
+            </a>
+
+            <a
+                class="header__link {{ tab == 'links' ? 'header__link--active' : '' }}"
+                {{ page == 'links' ? 'aria-current="page"' : '' }}
+                href="{{ url('links') }}"
+            >
+                {{ icon('link') }}
+                <span class="sr-mobile">
+                    {{ t('My links') }}
+                </span>
+            </a>
+
+            <a
+                class="header__link {{ tab == 'feeds' ? 'header__link--active' : '' }}"
+                {{ page == 'feeds' ? 'aria-current="page"' : '' }}
+                href="{{ url('feeds') }}"
+            >
+                {{ icon('feed') }}
+                <span class="sr-mobile">
+                    {{ t('Feeds') }}
+                </span>
+            </a>
+        </div>
+
+        <div class="col--extend no-mobile"></div>
+
+        <div>
+            <a
+                class="header__button button button--primary button--icon-mobile"
+                {{ page == 'search link' ? 'aria-current="page"' : '' }}
+                href="{{ url('show search link') }}"
+            >
+                {{ icon('plus') }}
+                <span class="no-mobile">
+                    {{ t('New') }}
+                </span>
+            </a>
+        </div>
+    {% endif %}
+
+    <details
+        class="header__avatar-container popup"
+        data-controller="popup"
+        data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
+    >
+        <summary class="popup__opener" title="{{ t('Menu of %s', [app.user.username]) }}">
+            <img class="header__avatar avatar" src="{{ url_avatar(app.user.avatar_filename) }}" alt="">
+            <span class="sr-only">
+                {{ t('Menu of %s', [app.user.username]) }}
+            </span>
+        </summary>
+
+        <nav class="popup__container popup__container--large popup__container--right">
+            <div class="popup__title">{{ app.user.username }}</div>
+
+            {% if not app.user.isBlocked %}
+                <a
+                    class="popup__item"
+                    {{ page == 'profile' ? 'aria-current="page"' : '' }}
+                    href="{{ url('profile', { id: app.user.id }) }}"
+                >
+                    {{ icon('avatar') }}
+                    {{ t('Profile') }}
+                </a>
+            {% endif %}
+
+            <a
+                class="popup__item"
+                {{ page == 'preferences' ? 'aria-current="page"' : '' }}
+                href="{{ url('preferences') }}"
+            >
+                {{ icon('color-palette') }}
+                {{ t('Preferences') }}
+            </a>
+
+            <a
+                class="popup__item"
+                {{ page == 'account' ? 'aria-current="page"' : '' }}
+                href="{{ url('account') }}"
+            >
+                {{ icon('cog') }}
+                {{ t('Account & data') }}
+            </a>
+
+            <div class="popup__separator"></div>
+
+            <a
+                class="popup__item"
+                {{ page == 'addons' ? 'aria-current="page"' : '' }}
+                href="{{ url('addons') }}"
+            >
+                {{ icon('plugin') }}
+                {{ t('Add-ons') }}
+            </a>
+
+            <a
+                class="popup__item"
+                {{ page == 'support' ? 'aria-current="page"' : '' }}
+                href="{{ url('support') }}"
+            >
+                {{ icon('help') }}
+                {{ t('Help & support') }}
+            </a>
+
+            <div class="popup__separator"></div>
+
+            <form method="post" action="{{ url('logout') }}">
+                <button type="submit" class="popup__item">
+                    {{ icon('logout') }}
+                    {{ t('Log out') }}
+                </button>
+
+                <input type="hidden" name="csrf_token" value="{{ csrf_token('Logout') }}" />
+            </form>
+        </nav>
+    </details>
+</header>
