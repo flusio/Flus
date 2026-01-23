@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2025-12-30 14:56+0100\n"
-"PO-Revision-Date: 2025-12-30 14:57+0100\n"
+"POT-Creation-Date: 2026-01-23 15:45+0100\n"
+"PO-Revision-Date: 2026-01-23 15:46+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 3.8\n"
 "X-Poedit-Basepath: ../../../src\n"
-"X-Poedit-KeywordsList: _f;_n:1,2;_nf:1,2;Translatable\n"
+"X-Poedit-KeywordsList: t:1,2;t;translate:1,2;translate:1;Translatable\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: assets/javascripts/controllers/back_button_controller.js:47
@@ -87,12 +87,6 @@ msgid ""
 msgstr ""
 "Une erreur est survenue pendant que nous récupérions les informations de "
 "votre compte, merci de contacter le support."
-
-#: controllers/my/Subscription.php:109
-msgid "An error occured while logging you, please contact the support."
-msgstr ""
-"Une erreur est survenue pendant que nous vous connections, merci de "
-"contacter le support."
 
 #: forms/BaseForm.php:24
 msgid "A security verification failed: you should retry to submit the form."
@@ -285,11 +279,11 @@ msgstr "Le nom est obligatoire."
 msgid "The name must be less than {max} characters."
 msgstr "Le nom ne doit pas faire plus de {max} caractères."
 
-#: models/Collection.php:139 models/Collection.php:219
+#: models/Collection.php:139 models/Collection.php:229
 msgid "Bookmarks"
 msgstr "Signets"
 
-#: models/Collection.php:150 models/Collection.php:221
+#: models/Collection.php:150 models/Collection.php:231
 msgid "Links read"
 msgstr "Liens lus"
 
@@ -297,7 +291,7 @@ msgstr "Liens lus"
 msgid "Links never to read"
 msgstr "Liens à ne jamais lire"
 
-#: models/Collection.php:172 models/Collection.php:223
+#: models/Collection.php:172 models/Collection.php:233
 msgid "News"
 msgstr "Journal"
 
@@ -398,6 +392,47 @@ msgstr "Mes favoris"
 msgid "My shares"
 msgstr "Mes partages"
 
+#: twig/FormattersExtension.php:38
+msgid "< 1 min"
+msgstr "< 1 min"
+
+#: twig/FormattersExtension.php:40
+#, php-format
+msgid "%s&nbsp;min"
+msgstr "%s&nbsp;min"
+
+#: twig/FormattersExtension.php:61
+#, php-format
+msgid "%d link per day"
+msgid_plural "%d links per day"
+msgstr[0] "%d lien par jour"
+msgstr[1] "%d liens par jour"
+
+#: twig/FormattersExtension.php:70
+#, php-format
+msgid "%d link per week"
+msgid_plural "%d links per week"
+msgstr[0] "%d lien par semaine"
+msgstr[1] "%d liens par semaine"
+
+#: twig/FormattersExtension.php:79
+#, php-format
+msgid "%d link per month"
+msgid_plural "%d links per month"
+msgstr[0] "%d lien par mois"
+msgstr[1] "%d liens par mois"
+
+#: twig/FormattersExtension.php:88
+#, php-format
+msgid "%d link per year"
+msgid_plural "%d links per year"
+msgstr[0] "%d lien par an"
+msgstr[1] "%d liens par an"
+
+#: twig/FormattersExtension.php:95
+msgid "Inactive"
+msgstr "Inactif"
+
 #: utils/Browser.php:41
 msgid "Unknown browser"
 msgstr "Navigateur inconnu"
@@ -411,494 +446,222 @@ msgstr "plateforme inconnue"
 msgid "%s on %s"
 msgstr "%s sur %s"
 
-#: utils/additionnal_translations.php:10
-#, php-format
-msgid "This email has been sent by %s (%s)"
-msgstr "Ce courriel a été envoyé par %s (%s)"
-
-#: utils/view_helpers.php:92
-#, php-format
-msgid "%d link per day"
-msgid_plural "%d links per day"
-msgstr[0] "%d lien par jour"
-msgstr[1] "%d liens par jour"
-
-#: utils/view_helpers.php:96
-#, php-format
-msgid "%d link per week"
-msgid_plural "%d links per week"
-msgstr[0] "%d lien par semaine"
-msgstr[1] "%d liens par semaine"
-
-#: utils/view_helpers.php:100
-#, php-format
-msgid "%d link per month"
-msgid_plural "%d links per month"
-msgstr[0] "%d lien par mois"
-msgstr[1] "%d liens par mois"
-
-#: utils/view_helpers.php:104
-#, php-format
-msgid "%d link per year"
-msgid_plural "%d links per year"
-msgstr[0] "%d lien par an"
-msgstr[1] "%d liens par an"
-
-#: utils/view_helpers.php:107
-msgid "Inactive"
-msgstr "Inactif"
-
-#: utils/view_helpers.php:153
-msgid "< 1 min"
-msgstr "< 1 min"
-
-#: utils/view_helpers.php:155
-#, php-format
-msgid "%s&nbsp;min"
-msgstr "%s&nbsp;min"
-
-#: utils/view_helpers.php:282
-msgid "you"
-msgstr "vous"
-
-#: views/collections/feeds/show.atom.xml.php:59
-#: views/profiles/feeds/show.atom.xml.php:52
-#, php-format
-msgid "— “<a href=\"%s\">%s</a>” was published on %s"
-msgstr "— « <a href=\"%s\">%s</a> » a été publié sur %s"
-
-#: views/feeds/feeds.xsl.php:6 views/feeds/feeds.xsl.php:19
-msgid "(feed)"
-msgstr "(flux)"
-
-#: views/feeds/feeds.xsl.php:24
-msgid ""
-"<strong>This is an Atom feed.</strong> You can follow its publications by "
-"adding its <abbr>URL</abbr> to your feed aggregator."
-msgstr ""
-"<strong>Ceci est un flux Atom.</strong> Vous pouvez suivre ses publications "
-"en ajoutant son <abbr>URL</abbr> à votre agrégateur de flux."
-
-#: views/feeds/feeds.xsl.php:32
-#, php-format
-msgid "Follow on %s"
-msgstr "Suivre sur %s"
-
-#: views/feeds/feeds.xsl.php:38
-msgid "Feed overview"
-msgstr "Aperçu du flux"
-
-#: views/feeds/feeds.xsl.php:47
-msgid "Published on:"
-msgstr "Publié le :"
-
-#: views/feeds/feeds.xsl.php:53
-msgid "Read on the website"
-msgstr "Lire sur le site"
-
-#: views/links/exportation.atom.xml.php:26
-#: views/links/feeds/show.atom.xml.php:25
-#, php-format
-msgid "Notes by %s"
-msgstr "Notes par %s"
-
-#: views/links/feeds/show.atom.xml.php:4
-#, php-format
-msgid "Notes on %s"
-msgstr "Notes sur %s"
-
-#: views/pages/webmanifest.json.php:4
-msgid "Collect, organise, annotate and share links from around the Web."
-msgstr ""
-"Collectez, organisez, annotez et partagez les liens provenant de l'ensemble "
-"du Web."
-
-#: views/pages/webmanifest.json.php:25
-#, php-format
-msgid "Bookmarks screen of %s on desktop"
-msgstr "L’écran des signets de %s sur ordinateur"
-
-#: views/pages/webmanifest.json.php:32
-#, php-format
-msgid "Bookmarks screen of %s on mobile"
-msgstr "L’écran des signets de %s sur mobile"
-
-#: views/_layouts/connected.phtml:5 views/_layouts/connected_blocked.phtml:5
-#: views/_layouts/not_connected.phtml:5
-msgid "Error: "
-msgstr "Erreur : "
-
-#: views/_layouts/connected.phtml:42 views/_layouts/connected_blocked.phtml:38
-#: views/_layouts/not_connected.phtml:56 views/_layouts/onboarding.phtml:38
-msgid "Skip to main content"
-msgstr "Accéder au contenu principal"
-
-#: views/_layouts/connected.phtml:49 views/_layouts/connected_blocked.phtml:45
-#: views/_layouts/not_connected.phtml:63 views/_layouts/onboarding.phtml:45
-#, php-format
-msgid "You need to activate JavaScript in order to use %s."
-msgstr "Vous devez activer JavaScript pour utiliser %s."
-
-#: views/_layouts/connected.phtml:57 views/_layouts/connected_blocked.phtml:53
-#: views/_layouts/not_connected.phtml:71
-#, php-format
-msgid "You’re using a demo version of %s, the data are reset every night."
-msgstr ""
-"Vous utilisez une version de démo de %s, les données sont réinitialisées "
-"chaque nuit."
-
-#: views/_layouts/connected.phtml:65 views/_layouts/connected_blocked.phtml:61
-msgid "You must validate your account&nbsp;→"
-msgstr "Vous devez valider votre compte&nbsp;→"
-
-#: views/_layouts/connected.phtml:82
-msgid "Reading"
-msgstr "Lecture"
-
-#: views/_layouts/connected.phtml:93 views/links/index.phtml:3
-#: views/links/index.phtml:19
-msgid "My links"
-msgstr "Mes liens"
-
-#: views/_layouts/connected.phtml:104 views/feeds/index.phtml:3
-#: views/feeds/index.phtml:15
-msgid "Feeds"
-msgstr "Flux"
-
-#: views/_layouts/connected.phtml:117 views/collections/_selector.phtml:76
-#: views/collections/groups/edit.phtml:100 views/links/searches/show.phtml:3
-#: views/links/searches/show.phtml:18
-msgid "New"
-msgstr "Nouveau"
-
-#: views/_layouts/connected.phtml:126 views/_layouts/connected.phtml:129
-#: views/_layouts/connected_blocked.phtml:84
-#: views/_layouts/connected_blocked.phtml:87
-#, php-format
-msgid "Menu of %s"
-msgstr "Menu de %s"
-
-#: views/_layouts/connected.phtml:146
-#: views/_layouts/connected_blocked.phtml:104 views/my/profile/edit.phtml:3
-#: views/my/profile/edit.phtml:13
-msgid "Profile"
-msgstr "Profil"
-
-#: views/_layouts/connected.phtml:156
-#: views/_layouts/connected_blocked.phtml:114 views/my/preferences/edit.phtml:3
-#: views/my/preferences/edit.phtml:12
-msgid "Preferences"
-msgstr "Préférences"
-
-#: views/_layouts/connected.phtml:166
-#: views/_layouts/connected_blocked.phtml:124 views/my/account/show.phtml:3
-#: views/my/account/show.phtml:11
-msgid "Account & data"
-msgstr "Compte & données"
-
-#: views/_layouts/connected.phtml:178
-#: views/_layouts/connected_blocked.phtml:136 views/pages/addons.phtml:3
-#: views/pages/addons.phtml:11
-msgid "Add-ons"
-msgstr "Extensions"
-
-#: views/_layouts/connected.phtml:188
-#: views/_layouts/connected_blocked.phtml:146 views/support/show.phtml:3
-#: views/support/show.phtml:12
-msgid "Help & support"
-msgstr "Aide & support"
-
-#: views/_layouts/connected.phtml:196
-#: views/_layouts/connected_blocked.phtml:154
-msgid "Log out"
-msgstr "Se déconnecter"
-
-#: views/_layouts/connected.phtml:232 views/_layouts/connected.phtml:233
-msgid "Search links by words or URL"
-msgstr "Rechercher des liens par mots ou URL"
-
-#: views/_layouts/connected.phtml:241 views/links/searches/show.phtml:64
-#: views/links/searches/show.phtml:71
-msgid "Search"
-msgstr "Rechercher"
-
-#: views/_layouts/emails/default.phtml:15
-#, php-format
-msgid "Hello %s,"
-msgstr "Bonjour %s,"
-
-#: views/_layouts/emails/default.phtml:21
-msgid "Best regards,"
-msgstr "Bien à vous,"
-
-#: views/_layouts/emails/default.phtml:25
-#, php-format
-msgid "The %s robot"
-msgstr "Le robot %s"
-
-#: views/_layouts/emails/default.phtml:30
-#, php-format
-msgid ""
-"This email has been sent by <a href=\"%s\" style=\"color: #4f4e5e;\">%s</a>."
-msgstr ""
-"Ce courriel a été envoyé par <a href=\"%s\" style=\"color: #4f4e5e;\">%s</a>."
-
-#: views/_layouts/error.phtml:22
-msgid "Oh no&nbsp;😟"
-msgstr "Oh non&nbsp;😟"
-
-#: views/_layouts/not_connected.phtml:91 views/registrations/new.phtml:184
-msgid "Sign up"
-msgstr "S’inscrire"
-
-#: views/_layouts/not_connected.phtml:95 views/sessions/new.phtml:98
-msgid "Login"
-msgstr "Se connecter"
-
-#: views/_layouts/not_connected.phtml:108 views/onboarding/step1.phtml:25
-msgid "Choose your language"
-msgstr "Choisissez votre langue"
-
-#: views/_layouts/not_connected.phtml:162 views/pages/about.phtml:3
-#: views/pages/about.phtml:11 views/support/show.phtml:118
-#, php-format
-msgid "About %s"
-msgstr "À propos de %s"
-
-#: views/_layouts/onboarding.phtml:64
-#, php-format
-msgid "Step %d on %d"
-msgstr "Étape %d sur %d"
-
-#: views/_layouts/onboarding.phtml:66
-msgid "skip"
-msgstr "passer"
-
-#: views/_layouts/onboarding.phtml:68
-msgid "finished"
-msgstr "terminé"
-
-#: views/_modal.phtml:25
-msgid "Close"
-msgstr "Fermer"
-
-#: views/_modal.phtml:26
-msgid "Close this window"
-msgstr "Fermer cette fenêtre"
-
-#: views/_pagination.phtml:11 views/_pagination.phtml:14
-msgid "Previous page"
-msgstr "Page précédente"
-
-#: views/_pagination.phtml:44 views/_pagination.phtml:47
-msgid "Next page"
-msgstr "Page suivante"
-
-#: views/alerts/_error.phtml:3 views/my/profile/edit.phtml:60
+#: views/alerts/_error.html.twig:3
 msgid "Error"
 msgstr "Erreur"
 
-#: views/alerts/_info.phtml:3
+#: views/alerts/_info.html.twig:3
 msgid "Info"
 msgstr "Info"
 
-#: views/alerts/_success.phtml:3
+#: views/alerts/_success.html.twig:3
 msgid "Success"
 msgstr "Succès"
 
-#: views/bad_request.phtml:3
-msgid "Bad request"
-msgstr "Mauvaise requête"
-
-#: views/bad_request.phtml:10
-msgid "The request is invalid."
-msgstr "La requête est invalide."
-
-#: views/bad_request.phtml:22 views/forbidden.phtml:22
-#: views/internal_server_error.phtml:22 views/not_found.phtml:22
-#: views/unauthorized.phtml:22
-msgid "Back to the previous page"
-msgstr "Retour à la page précédente"
-
-#: views/bad_request.phtml:26 views/forbidden.phtml:26
-#: views/internal_server_error.phtml:26 views/not_found.phtml:26
-#: views/unauthorized.phtml:26
-msgid "Back to the home page"
-msgstr "Retour à la page d’accueil"
-
-#: views/bookmarks/index.phtml:23
+#: views/bookmarks/index.html.twig:28
 msgid "Place here the links you want to consult later on."
 msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
 
-#: views/bookmarks/index.phtml:28 views/collections/_collection.phtml:31
-#: views/collections/show.phtml:213 views/collections/show_public.phtml:233
-#: views/links/searches/show.phtml:105 views/news/index.phtml:18
-#: views/news/index.phtml:118 views/read/index.phtml:29
+#: views/bookmarks/index.html.twig:34
+#: views/collections/_collection.html.twig:26
+#: views/collections/_collection_follow.html.twig:18
+#: views/collections/show.html.twig:287 views/news/index.html.twig:24
+#: views/news/index.html.twig:132 views/read/index.html.twig:34
 #, php-format
-msgid "%s link"
-msgid_plural "%s links"
-msgstr[0] "%s lien"
-msgstr[1] "%s liens"
+msgid "%d link"
+msgid_plural "%d links"
+msgstr[0] "%d lien"
+msgstr[1] "%d liens"
 
-#: views/bookmarks/index.phtml:43 views/collections/show.phtml:228
+#: views/bookmarks/index.html.twig:48 views/collections/show.html.twig:303
 msgid "Add a link"
 msgstr "Ajouter un lien"
 
-#: views/collections/_collection.phtml:18 views/links/searches/show.phtml:100
+#: views/collections/_collection.html.twig:18
+#: views/collections/_collection_follow.html.twig:13
 #, php-format
 msgid "Feed %s"
 msgstr "Flux %s"
 
-#: views/collections/_collection.phtml:20
+#: views/collections/_collection.html.twig:20
 #, php-format
 msgid "By %s"
 msgstr "Par %s"
 
-#: views/collections/_collection.phtml:29 views/links/searches/show.phtml:103
+#: views/collections/_collection.html.twig:24
+#: views/collections/_collection_follow.html.twig:16
 msgid "no links"
 msgstr "aucun lien"
 
-#: views/collections/_collection.phtml:47 views/collections/_selector.phtml:127
-#: views/collections/show.phtml:59
+#: views/collections/_collection.html.twig:44
+#: views/collections/_selector.html.twig:90
+#: views/collections/show.html.twig:117
 msgid "public"
 msgstr "publique"
 
-#: views/collections/_collection.phtml:49 views/collections/show.phtml:59
-#: views/collections/show_public.phtml:98
+#: views/collections/_collection.html.twig:46
+#: views/collections/show.html.twig:117
 msgid "private"
 msgstr "privée"
 
-#: views/collections/_collection.phtml:55 views/collections/show.phtml:64
-#: views/collections/show_public.phtml:89
-#: views/collections/show_public.phtml:104 views/links/searches/show.phtml:111
+#: views/collections/_collection.html.twig:52
+#: views/collections/_collection_follow.html.twig:24
+#: views/collections/show.html.twig:110
 msgid "Publication frequency"
 msgstr "Fréquence de publication"
 
-#: views/collections/_collections_by_others.phtml:9
+#: views/collections/_collection_follow.html.twig:36
+#: views/collections/show.html.twig:92
+msgid "Unfollow"
+msgstr "Ne plus suivre"
+
+#: views/collections/_collection_follow.html.twig:45
+#: views/collections/show.html.twig:101
+msgid "Follow"
+msgstr "Suivre"
+
+#: views/collections/_collections_by_others.html.twig:9
 #, php-format
 msgid "<strong>%s</strong> added this link to <strong>%s</strong>."
 msgstr "<strong>%s</strong> a ajouté ce lien à <strong>%s</strong>."
 
-#: views/collections/_collections_by_others.phtml:11
+#: views/collections/_collections_by_others.html.twig:11
 #, php-format
 msgid ""
 "<strong>%s</strong> added this link to <strong>%s</strong> (shared by %s)."
 msgstr ""
 "<strong>%s</strong> a ajouté ce lien à <strong>%s</strong> (partagée par %s)."
 
-#: views/collections/_form.phtml:11
+#: views/collections/_form.html.twig:12
 msgid "What do you want to name this collection?"
 msgstr "Comment voulez-vous nommer cette collection ?"
 
-#: views/collections/_form.phtml:13 views/collections/_selector.phtml:86
-#: views/collections/groups/edit.phtml:33 views/groups/edit.phtml:22
-#: views/mastodon/show.phtml:57
+#: views/collections/_form.html.twig:14
+#: views/collections/_selector.html.twig:48
+#: views/collections/groups/edit.html.twig:23 views/groups/edit.html.twig:14
+#: views/mastodon/show.html.twig:56
 #, php-format
 msgid "(max. %d characters)"
 msgstr "(max. %d caractères)"
 
-#: views/collections/_form.phtml:19 views/collections/_form.phtml:50
-#: views/collections/_form.phtml:79 views/collections/_selector.phtml:50
-#: views/collections/_selector.phtml:57 views/collections/filters/edit.phtml:27
-#: views/collections/groups/edit.phtml:39
-#: views/collections/groups/edit.phtml:75
-#: views/collections/images/edit.phtml:35 views/collections/links/new.phtml:25
-#: views/collections/shares/index.phtml:33
-#: views/collections/shares/index.phtml:66 views/feeds/new.phtml:26
-#: views/groups/edit.phtml:28 views/importations/opml/show.phtml:81
-#: views/links/collections/_new_note_form.phtml:11 views/links/edit.phtml:29
-#: views/links/edit.phtml:75 views/links/mastodon_threads/new.phtml:26
-#: views/links/new.phtml:26 views/links/repairing/new.phtml:33
-#: views/links/searches/show.phtml:39 views/links/show.phtml:311
-#: views/mastodon/show.phtml:63 views/mastodon/show.phtml:134
-#: views/my/account/deletion.phtml:37 views/my/preferences/edit.phtml:26
-#: views/my/profile/edit.phtml:29 views/my/profile/edit.phtml:86
-#: views/my/security/confirmation.phtml:32 views/my/security/show.phtml:29
-#: views/my/security/show.phtml:57 views/notes/edit.phtml:31
-#: views/passwords/edit.phtml:31 views/passwords/forgot.phtml:42
-#: views/registrations/new.phtml:44 views/registrations/new.phtml:72
-#: views/registrations/new.phtml:106 views/registrations/new.phtml:155
-#: views/sessions/new.phtml:34 views/sessions/new.phtml:61
-#: views/support/show.phtml:38 views/support/show.phtml:64
+#: views/collections/_form.html.twig:20 views/collections/_form.html.twig:51
+#: views/collections/_form.html.twig:80
+#: views/collections/_selector.html.twig:20
+#: views/collections/_selector.html.twig:27
+#: views/collections/filters/edit.html.twig:19
+#: views/collections/groups/edit.html.twig:29
+#: views/collections/groups/edit.html.twig:65
+#: views/collections/images/edit.html.twig:26
+#: views/collections/links/new.html.twig:21
+#: views/collections/shares/index.html.twig:25
+#: views/collections/shares/index.html.twig:58 views/feeds/new.html.twig:17
+#: views/groups/edit.html.twig:20 views/importations/opml/show.html.twig:84
+#: views/links/collections/_new_note_form.html.twig:11
+#: views/links/edit.html.twig:26 views/links/edit.html.twig:72
+#: views/links/mastodon_threads/new.html.twig:17 views/links/new.html.twig:27
+#: views/links/repairing/new.html.twig:30
+#: views/links/searches/show.html.twig:39 views/links/show.html.twig:248
+#: views/mastodon/show.html.twig:62 views/mastodon/show.html.twig:139
+#: views/my/account/deletion.html.twig:38
+#: views/my/preferences/edit.html.twig:28 views/my/profile/edit.html.twig:20
+#: views/my/profile/edit.html.twig:67
+#: views/my/security/confirmation.html.twig:40
+#: views/my/security/show.html.twig:31 views/my/security/show.html.twig:59
+#: views/notes/edit.html.twig:24 views/passwords/edit.html.twig:31
+#: views/passwords/forgot.html.twig:43 views/registrations/new.html.twig:44
+#: views/registrations/new.html.twig:72 views/registrations/new.html.twig:106
+#: views/registrations/new.html.twig:156 views/sessions/new.html.twig:32
+#: views/sessions/new.html.twig:67 views/support/show.html.twig:41
+#: views/support/show.html.twig:67
 msgid "Error:"
 msgstr "Erreur :"
 
-#: views/collections/_form.phtml:42
+#: views/collections/_form.html.twig:43
 msgid "What’s the purpose of this collection?"
 msgstr "Quelle est la raison d’être de cette collection ?"
 
-#: views/collections/_form.phtml:44
-#: views/links/collections/_new_note_form.phtml:5
-#: views/my/security/show.phtml:51
+#: views/collections/_form.html.twig:45
+#: views/links/collections/_new_note_form.html.twig:5
+#: views/my/security/show.html.twig:53
 msgid "(optional)"
 msgstr "(optionnel)"
 
-#: views/collections/_form.phtml:68
+#: views/collections/_form.html.twig:69
 msgid "You can format the description in Markdown."
 msgstr "Vous pouvez formater la description en Markdown."
 
-#: views/collections/_form.phtml:75
+#: views/collections/_form.html.twig:76
 msgid "What topics will be covered?"
 msgstr "Quelles thématiques seront abordées ?"
 
-#: views/collections/_form.phtml:114
+#: views/collections/_form.html.twig:114
 msgid "Show the collection publicly"
 msgstr "Afficher la collection publiquement"
 
-#: views/collections/_selector.phtml:45
+#: views/collections/_selector.html.twig:5
 msgid "Select a collection"
 msgstr "Sélectionner une collection"
 
-#: views/collections/_selector.phtml:84
+#: views/collections/_selector.html.twig:12
+#: views/collections/groups/edit.html.twig:91
+#: views/layouts/_header-connected.html.twig:80
+#: views/links/searches/show.html.twig:3 views/links/searches/show.html.twig:11
+#: views/links/searches/show.html.twig:18
+msgid "New"
+msgstr "Nouveau"
+
+#: views/collections/_selector.html.twig:46
 msgid "What do you want to name the collection?"
 msgstr "Comment voulez-vous nommer la collection ?"
 
-#: views/collections/_selector.phtml:102
-msgid "Add"
-msgstr "Ajouter"
-
-#: views/collections/_selector.phtml:106
-msgid "Cancel the creation of the collection"
-msgstr "Annuler la création de la collection"
-
-#: views/collections/_selector.phtml:110
+#: views/collections/_selector.html.twig:54
 msgid "Cancel"
 msgstr "Annuler"
 
-#: views/collections/_selector.phtml:128
+#: views/collections/_selector.html.twig:70 views/passwords/edit.html.twig:65
+msgid "Confirm"
+msgstr "Confirmer"
+
+#: views/collections/_selector.html.twig:91
 msgid "new"
 msgstr "nouvelle"
 
-#: views/collections/_selector.phtml:139
+#: views/collections/_selector.html.twig:103
 msgid "Unselect"
 msgstr "Désélectionner"
 
-#: views/collections/edit.phtml:3 views/collections/edit.phtml:13
+#: views/collections/edit.html.twig:3
 msgid "Collection edition"
 msgstr "Modification d'une collection"
 
-#: views/collections/edit.phtml:19 views/collections/filters/edit.phtml:104
-#: views/collections/groups/edit.phtml:108 views/groups/edit.phtml:51
-#: views/links/edit.phtml:83 views/mastodon/show.phtml:97
-#: views/my/preferences/edit.phtml:101 views/my/profile/edit.phtml:108
-#: views/my/security/show.phtml:95 views/notes/edit.phtml:56
+#: views/collections/edit.html.twig:9
+#: views/collections/filters/edit.html.twig:96
+#: views/collections/groups/edit.html.twig:99 views/groups/edit.html.twig:43
+#: views/links/edit.html.twig:80 views/mastodon/show.html.twig:96
+#: views/my/preferences/edit.html.twig:102 views/my/profile/edit.html.twig:89
+#: views/my/security/show.html.twig:98 views/notes/edit.html.twig:49
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
 
-#: views/collections/filters/edit.phtml:3
-#: views/collections/filters/edit.phtml:12
+#: views/collections/feeds/show.atom.xml.twig:58
+#: views/profiles/feeds/show.atom.xml.twig:50
+#, php-format
+msgid "— “<a href=\"%s\">%s</a>” was published on %s"
+msgstr "— « <a href=\"%s\">%s</a> » a été publié sur %s"
+
+#: views/collections/filters/edit.html.twig:3
 msgid "Settings for the news"
 msgstr "Réglages pour le journal"
 
-#: views/collections/filters/edit.phtml:23
+#: views/collections/filters/edit.html.twig:15
 msgid "How to filter the links from this feed in the news?"
 msgstr "Comment filtrer les liens de ce flux dans le journal ?"
 
-#: views/collections/filters/edit.phtml:47
+#: views/collections/filters/edit.html.twig:39
 msgid "Strict"
 msgstr "Strict"
 
-#: views/collections/filters/edit.phtml:51
+#: views/collections/filters/edit.html.twig:43
 msgid ""
 "You’ll receive the links published during the last 24 hours (recommended for "
 "high-traffic feeds)."
@@ -906,11 +669,11 @@ msgstr ""
 "Vous recevrez les liens publiés durant les 24 dernières heures (recommandé "
 "pour les flux à fort trafic)."
 
-#: views/collections/filters/edit.phtml:70
+#: views/collections/filters/edit.html.twig:62
 msgid "Normal"
 msgstr "Normal"
 
-#: views/collections/filters/edit.phtml:74
+#: views/collections/filters/edit.html.twig:66
 msgid ""
 "You’ll receive the links published over the past week (recommended for most "
 "of the feeds)."
@@ -918,11 +681,11 @@ msgstr ""
 "Vous recevrez les liens publiés au cours de la semaine passée (recommandé "
 "pour la plupart des flux)."
 
-#: views/collections/filters/edit.phtml:93
+#: views/collections/filters/edit.html.twig:85
 msgid "All"
 msgstr "Tout"
 
-#: views/collections/filters/edit.phtml:97
+#: views/collections/filters/edit.html.twig:89
 msgid ""
 "You’ll receive all the published links (recommended if you don’t want to "
 "miss anything)."
@@ -930,11 +693,11 @@ msgstr ""
 "Vous recevrez tous les liens publiés (recommandé si vous souhaitez ne rien "
 "manquer)."
 
-#: views/collections/groups/edit.phtml:3 views/collections/groups/edit.phtml:12
+#: views/collections/groups/edit.html.twig:3
 msgid "Collection group"
 msgstr "Groupe de la collection"
 
-#: views/collections/groups/edit.phtml:21
+#: views/collections/groups/edit.html.twig:11
 msgid ""
 "Groups help you to organize your collections. They are only visible to you "
 "on the main collections page."
@@ -942,52 +705,52 @@ msgstr ""
 "Les groupes vous permettent d’organiser les collections. Ils ne sont "
 "visibles que par vous sur la page principale des collections."
 
-#: views/collections/groups/edit.phtml:31
+#: views/collections/groups/edit.html.twig:21
 msgid "How to name the group?"
 msgstr "Comment nommer le groupe ?"
 
-#: views/collections/groups/edit.phtml:70
+#: views/collections/groups/edit.html.twig:60
 msgid "Select a group"
 msgstr "Sélectionner un groupe"
 
-#: views/collections/groups/edit.phtml:88
+#: views/collections/groups/edit.html.twig:79
 msgid "No groups"
 msgstr "Aucun groupe"
 
-#: views/collections/images/edit.phtml:3 views/collections/images/edit.phtml:12
+#: views/collections/images/edit.html.twig:3
 msgid "Collection illustration"
 msgstr "Illustration de la collection"
 
-#: views/collections/images/edit.phtml:21
+#: views/collections/images/edit.html.twig:11
 msgid "Illustrations help to distinguish your collection among the others."
 msgstr ""
 "Les illustrations aident à distinguer votre collection parmi les autres."
 
-#: views/collections/images/edit.phtml:62
+#: views/collections/images/edit.html.twig:53
 msgid "Upload an image"
 msgstr "Téléverser une image"
 
-#: views/collections/images/edit.phtml:67
+#: views/collections/images/edit.html.twig:58
 msgid "<abbr>PNG</abbr>, <abbr>JPG</abbr> and <abbr>WEBP</abbr> images only."
 msgstr ""
 "Images <abbr>PNG</abbr>, <abbr>JPG</abbr> ou <abbr>WEBP</abbr> seulement."
 
-#: views/collections/images/edit.phtml:68
+#: views/collections/images/edit.html.twig:59
 msgid "The minimum recommended dimensions are 1100x400px."
 msgstr "Les dimensions minimales recommandées sont de 1100x400px."
 
-#: views/collections/links/new.phtml:3 views/collections/links/new.phtml:12
-#: views/links/new.phtml:3 views/links/new.phtml:13
+#: views/collections/links/new.html.twig:3 views/links/new.html.twig:3
+#: views/links/new.html.twig:11 views/links/new.html.twig:15
 msgid "New link"
 msgstr "Nouveau lien"
 
-#: views/collections/links/new.phtml:20 views/links/new.phtml:21
-#: views/links/repairing/new.phtml:28
+#: views/collections/links/new.html.twig:16 views/links/new.html.twig:22
+#: views/links/repairing/new.html.twig:25
 msgid "What’s the address of the link?"
 msgstr "Quelle est l’adresse du lien ?"
 
-#: views/collections/links/new.phtml:47 views/feeds/new.phtml:48
-#: views/links/new.phtml:48
+#: views/collections/links/new.html.twig:43 views/feeds/new.html.twig:39
+#: views/links/new.html.twig:49
 msgid ""
 "It can be copy-paste from the <abbr>URL</abbr> bar, at the top of your "
 "browser."
@@ -995,63 +758,59 @@ msgstr ""
 "Elle peut être copiée-collée depuis la barre <abbr>URL</abbr>, en haut de "
 "votre navigateur."
 
-#: views/collections/links/new.phtml:60 views/links/collections/index.phtml:53
-#: views/links/new.phtml:69
+#: views/collections/links/new.html.twig:56
+#: views/links/collections/index.html.twig:44 views/links/new.html.twig:68
 msgid "Hide this link in public collections"
 msgstr "Masquer ce lien dans les collections publiques"
 
-#: views/collections/links/new.phtml:66 views/links/new.phtml:88
+#: views/collections/links/new.html.twig:62 views/links/new.html.twig:86
 msgid "Add the link"
 msgstr "Ajouter le lien"
 
-#: views/collections/new.phtml:3 views/collections/new.phtml:13
+#: views/collections/new.html.twig:3
 msgid "New collection"
 msgstr "Nouvelle collection"
 
-#: views/collections/new.phtml:19
+#: views/collections/new.html.twig:9
 msgid "Create the collection"
 msgstr "Créer la collection"
 
-#: views/collections/shares/index.phtml:3
-msgid "Share collection"
-msgstr "Partager la collection"
-
-#: views/collections/shares/index.phtml:12
+#: views/collections/shares/index.html.twig:3
 #, php-format
-msgid "Share “%s”"
-msgstr "Partager « %s »"
+msgid "Sharing access to “%s”"
+msgstr "Partager l’accès de « %s »"
 
-#: views/collections/shares/index.phtml:17
+#: views/collections/shares/index.html.twig:9
 msgid "This collection is public, anyone can access it."
 msgstr "Cette collection est publique, n’importe qui peut y accéder."
 
-#: views/collections/shares/index.phtml:19
+#: views/collections/shares/index.html.twig:11
 msgid "This collection is private, you can share access to other users."
 msgstr ""
 "Cette collection est privée, vous pouvez en partager l’accès à d’autres "
 "utilisateur‧ices."
 
-#: views/collections/shares/index.phtml:28
+#: views/collections/shares/index.html.twig:20
 msgid "Share access with"
 msgstr "Partagez l’accès avec"
 
-#: views/collections/shares/index.phtml:54 views/collections/show.phtml:97
+#: views/collections/shares/index.html.twig:46 views/links/show.html.twig:203
 msgid "Share"
 msgstr "Partager"
 
-#: views/collections/shares/index.phtml:59
+#: views/collections/shares/index.html.twig:51
 msgid "Copy and paste the <abbr>URL</abbr> of a user’s profile."
 msgstr "Copiez et collez l’<abbr>URL</abbr> du profil d’un‧e utilisateur‧ice."
 
-#: views/collections/shares/index.phtml:88
+#: views/collections/shares/index.html.twig:80
 msgid "Read access"
 msgstr "Accès en lecture"
 
-#: views/collections/shares/index.phtml:107
+#: views/collections/shares/index.html.twig:99
 msgid "Read and write access"
 msgstr "Accès en lecture et écriture"
 
-#: views/collections/shares/index.phtml:113
+#: views/collections/shares/index.html.twig:105
 msgid ""
 "Sharing read access with other users gives them access to the whole "
 "collection, <strong>including their hidden links,</strong> but they can’t "
@@ -1061,7 +820,7 @@ msgstr ""
 "l’ensemble de la collection, <strong>liens masqués inclus,</strong> mais ils "
 "et elles ne pourront pas la modifier."
 
-#: views/collections/shares/index.phtml:117
+#: views/collections/shares/index.html.twig:109
 msgid ""
 "Sharing read and write access with other users gives them access to the "
 "whole collection, <strong>including their hidden links,</strong> and they "
@@ -1071,99 +830,46 @@ msgstr ""
 "collection, <strong>liens masqués inclus,</strong> et ils et elles peuvent "
 "en modifier les informations ou ajouter des liens."
 
-#: views/collections/shares/index.phtml:127
+#: views/collections/shares/index.html.twig:120
 msgid "Shared with:"
 msgstr "Partagée avec :"
 
-#: views/collections/shares/index.phtml:145
+#: views/collections/shares/index.html.twig:135
 msgid "read only"
 msgstr "lecture seule"
 
-#: views/collections/shares/index.phtml:147
+#: views/collections/shares/index.html.twig:137
 msgid "read / write"
 msgstr "lecture / écriture"
 
-#: views/collections/shares/index.phtml:155
+#: views/collections/shares/index.html.twig:146
 msgid "Revoke"
 msgstr "Révoquer"
 
-#: views/collections/shares/index.phtml:176
+#: views/collections/shares/index.html.twig:167
 msgid "Copy"
 msgstr "Copier"
 
-#: views/collections/show.phtml:6 views/collections/show.phtml:14
-#: views/collections/show_public.phtml:15
-#: views/collections/show_public.phtml:28 views/profiles/show.phtml:20
-#, php-format
-msgid "Syndication feed of %s"
-msgstr "Flux de syndication de %s"
-
-#: views/collections/show.phtml:61 views/collections/show_public.phtml:101
-#, php-format
-msgid "Published by %s"
-msgstr "Publiée par %s"
-
-#: views/collections/show.phtml:79 views/collections/show_public.phtml:122
-#: views/links/_link.phtml:239 views/links/_link.phtml:243
-#: views/links/show.phtml:239 views/links/show.phtml:243
-#: views/news/index.phtml:47 views/news/index.phtml:132
-#: views/news/index.phtml:214
-msgid "Actions"
-msgstr "Actions"
-
-#: views/collections/show.phtml:113 views/collections/show_public.phtml:137
-msgid "Adjust for the news"
-msgstr "Régler pour le journal"
-
-#: views/collections/show.phtml:127 views/groups/_group.phtml:19
-#: views/groups/_group.phtml:33 views/links/_link.phtml:306
-#: views/links/show.phtml:259 views/profiles/show.phtml:55
-msgid "Edit"
-msgstr "Modifier"
-
-#: views/collections/show.phtml:140 views/collections/show_public.phtml:150
-msgid "Put in a group"
-msgstr "Placer dans un groupe"
-
-#: views/collections/show.phtml:153
-msgid "Change the illustration"
-msgstr "Changer l’illustration"
-
-#: views/collections/show.phtml:162 views/collections/show_public.phtml:192
-#: views/links/searches/show.phtml:123
-msgid "Unfollow"
-msgstr "Ne plus suivre"
-
-#: views/collections/show.phtml:173 views/collections/show_public.phtml:203
-#: views/collections/show_public.phtml:219 views/links/searches/show.phtml:132
-msgid "Follow"
-msgstr "Suivre"
-
-#: views/collections/show.phtml:186
-msgid ""
-"Are you sure that you want to delete this collection? You may lose the links "
-"that are attached only to this collection."
-msgstr ""
-"Êtes-vous sur·e de vouloir supprimer cette collection ? Vous pourriez perdre "
-"les liens qui lui sont attachés."
-
-#: views/collections/show.phtml:194 views/links/_link.phtml:340
-#: views/links/show.phtml:273
-msgid "Delete"
-msgstr "Supprimer"
-
-#: views/collections/show_public.phtml:7
+#: views/collections/show.html.twig:18
 #, php-format
 msgid "A feed from %s, on %s."
 msgstr "Un flux issu de %s, sur %s."
 
-#: views/collections/show_public.phtml:20
+#: views/collections/show.html.twig:22
 #, php-format
 msgid "A collection created by %s on %s."
 msgstr "Une collection créée par %s sur %s."
 
-#: views/collections/show_public.phtml:83
-#: views/collections/show_public.phtml:85
+#: views/collections/show.html.twig:30 views/profiles/show.html.twig:7
+#, php-format
+msgid "Syndication feed of %s"
+msgstr "Flux de syndication de %s"
+
+#: views/collections/show.html.twig:63 views/collections/show.html.twig:72
+msgid "Change the illustration"
+msgstr "Changer l’illustration"
+
+#: views/collections/show.html.twig:125
 #, php-format
 msgid ""
 "Feed from <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">%s</a>"
@@ -1171,125 +877,232 @@ msgstr ""
 "Flux issu de <a target=\"_blank\" rel=\"noopener noreferrer\" "
 "href=\"%s\">%s</a>"
 
-#: views/collections/show_public.phtml:163
+#: views/collections/show.html.twig:132
+msgid "Published by"
+msgstr "Publiée par"
+
+#: views/collections/show.html.twig:169 views/groups/_group.html.twig:20
+#: views/links/_link.html.twig:285 views/notes/_notepad.html.twig:48
+#: views/profiles/show.html.twig:60
+msgid "Edit"
+msgstr "Modifier"
+
+#: views/collections/show.html.twig:180
+msgid "Access"
+msgstr "Accès"
+
+#: views/collections/show.html.twig:192 views/links/_link.html.twig:221
+#: views/links/_link.html.twig:225 views/news/index.html.twig:55
+#: views/news/index.html.twig:145 views/news/index.html.twig:228
+#: views/notes/_notepad.html.twig:29 views/notes/_notepad.html.twig:33
+msgid "Actions"
+msgstr "Actions"
+
+#: views/collections/show.html.twig:207
+msgid "Adjust for the news"
+msgstr "Régler pour le journal"
+
+#: views/collections/show.html.twig:221
+msgid "Put in a group"
+msgstr "Placer dans un groupe"
+
+#: views/collections/show.html.twig:234
 msgid "Copy the link"
 msgstr "Copier le lien"
 
-#: views/collections/show_public.phtml:172 views/news/index.phtml:58
-#: views/news/index.phtml:143 views/news/index.phtml:224
+#: views/collections/show.html.twig:244 views/news/index.html.twig:66
+#: views/news/index.html.twig:156 views/news/index.html.twig:238
 msgid "Mark all as read"
 msgstr "Tout marquer comme lu"
 
-#: views/collections/show_public.phtml:181 views/news/index.phtml:85
-#: views/news/index.phtml:173 views/news/index.phtml:249
+#: views/collections/show.html.twig:253 views/news/index.html.twig:93
+#: views/news/index.html.twig:186 views/news/index.html.twig:263
 msgid "Remove the links from the news"
 msgstr "Retirer les liens du journal"
 
-#: views/collections/show_public.phtml:255
+#: views/collections/show.html.twig:266
+msgid ""
+"Are you sure that you want to delete this collection? You may lose the links "
+"that are attached only to this collection."
+msgstr ""
+"Êtes-vous sur·e de vouloir supprimer cette collection ? Vous pourriez perdre "
+"les liens qui lui sont attachés."
+
+#: views/collections/show.html.twig:273 views/links/_link.html.twig:317
+#: views/notes/_notepad.html.twig:61
+msgid "Delete"
+msgstr "Supprimer"
+
+#: views/collections/show.html.twig:327
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 
-#: views/discovery/show.phtml:3 views/discovery/show.phtml:7
-#: views/discovery/show.phtml:20
-msgid "Discover collections"
-msgstr "Découvrir des collections"
+#: views/errors/forbidden.html.twig:3 views/errors/forbidden.html.twig:10
+msgid "Access forbidden"
+msgstr "Accès interdit"
 
-#: views/discovery/show.phtml:8
+#: views/errors/forbidden.html.twig:13
+msgid "You don’t have the permission to access this page."
+msgstr "Vous n’avez pas les permissions nécessaires pour accéder à cette page."
+
+#: views/errors/forbidden.html.twig:18
+#: views/errors/internal_server_error.html.twig:18
+#: views/errors/not_found.html.twig:18
+msgid "Back to the home page"
+msgstr "Retour à la page d’accueil"
+
+#: views/errors/internal_server_error.html.twig:3
+#: views/errors/internal_server_error.html.twig:10
+msgid "Something bad happened"
+msgstr "Quelque chose s’est mal passé"
+
+#: views/errors/internal_server_error.html.twig:13
+msgid ""
+"An error occurred during the processing of your request. In any case, this "
+"error is not your fault."
+msgstr ""
+"Une erreur est survenue pendant le traitement de votre requête. Dans tous "
+"les cas, cette erreur n’est pas de votre fait."
+
+#: views/errors/not_found.html.twig:3 views/errors/not_found.html.twig:10
+msgid "Page not found"
+msgstr "Page non trouvée"
+
+#: views/errors/not_found.html.twig:13
+msgid ""
+"You may have followed an invalid link, or the page may have been deleted. In "
+"any case, this error is not your fault, and you just need to go back."
+msgstr ""
+"Vous avez peut-être suivi un lien invalide, ou la page a été supprimée. "
+"Quoiqu’il en soit, cette erreur n’est pas de votre fait et vous n’avez plus "
+"qu’à revenir en arrière."
+
+#: views/explore/disabled.html.twig:3 views/explore/disabled.html.twig:17
+#: views/explore/disabled.html.twig:21
+#: views/layouts/_reading_navigation.html.twig:37
+msgid "Explore"
+msgstr "Explorer"
+
+#: views/explore/disabled.html.twig:24
+msgid "Exploration is disabled as administrator did not setup topics."
+msgstr ""
+"L’exploration est désactivée car l’administrateur n’a pas configuré les "
+"thématiques."
+
+#: views/explore/show.html.twig:3
+#, php-format
+msgid "Explore %s"
+msgstr "Explorer %s"
+
+#: views/explore/show.html.twig:25
 #, php-format
 msgid "Discover the public collections on %s."
 msgstr "Découvrir les collections publiques sur %s."
 
-#: views/discovery/show.phtml:24
-msgid "Choose a topic…"
-msgstr "Choisissez une thématique…"
-
-#: views/discovery/show.phtml:37
+#: views/explore/show.html.twig:36
 #, php-format
-msgid "%s collection"
-msgid_plural "%s collections"
-msgstr[0] "%s collection"
-msgstr[1] "%s collections"
+msgid "Explore the collections published by the %s community."
+msgstr "Explorez les collections publiées par la communauté de %s."
 
-#: views/discovery/show.phtml:39
-msgid "No collections"
-msgstr "Aucune collection"
+#: views/explore/show.html.twig:66
+msgid "The community didn’t publish any collection in this topic yet."
+msgstr ""
+"La communauté n’a pas encore publié de collection dans cette thématique."
 
-#: views/discovery/show.phtml:48
-msgid "There’s no topics to show."
-msgstr "Il n’y a aucune thématique à afficher."
-
-#: views/exportations/_form.phtml:4
+#: views/exportations/_form.html.twig:4
 msgid "Generate a new data archive"
 msgstr "Générer une nouvelle archive de données"
 
-#: views/exportations/show.phtml:3 views/exportations/show.phtml:16
+#: views/exportations/show.html.twig:3 views/exportations/show.html.twig:18
 msgid "Downloading your data"
 msgstr "Téléchargement de vos données"
 
-#: views/exportations/show.phtml:20
+#: views/exportations/show.html.twig:21
 msgid "You can download your data in order to migrate to a different tool."
 msgstr ""
 "Vous pouvez télécharger vos données afin de migrer vers un autre outil."
 
-#: views/exportations/show.phtml:27
+#: views/exportations/show.html.twig:29
 msgid "We’re creating your archive…"
 msgstr "Nous créons votre archive…"
 
-#: views/exportations/show.phtml:33 views/importations/opml/show.phtml:31
+#: views/exportations/show.html.twig:35
+#: views/importations/opml/show.html.twig:33
 msgid "This might take several minutes, please wait."
 msgstr "Cela pourrait prendre plusieurs minutes, merci d’attendre."
 
-#: views/exportations/show.phtml:47
+#: views/exportations/show.html.twig:52
 msgid "Download your archive"
 msgstr "Télécharger votre archive"
 
-#: views/exportations/show.phtml:53
+#: views/exportations/show.html.twig:57
 #, php-format
 msgid "generated on %s"
 msgstr "générée le %s"
 
-#: views/feeds/index.phtml:20
+#: views/feeds/feeds.xsl.twig:6
+msgid "(feed)"
+msgstr "(flux)"
+
+#: views/feeds/feeds.xsl.twig:23
+msgid ""
+"<strong>This is an Atom feed.</strong> You can follow its publications by "
+"adding its <abbr>URL</abbr> to your feed aggregator."
+msgstr ""
+"<strong>Ceci est un flux Atom.</strong> Vous pouvez suivre ses publications "
+"en ajoutant son <abbr>URL</abbr> à votre agrégateur de flux."
+
+#: views/feeds/feeds.xsl.twig:31
+#, php-format
+msgid "Follow on %s"
+msgstr "Suivre sur %s"
+
+#: views/feeds/feeds.xsl.twig:36
+msgid "Feed overview"
+msgstr "Aperçu du flux"
+
+#: views/feeds/feeds.xsl.twig:45
+msgid "Published on:"
+msgstr "Publié le :"
+
+#: views/feeds/feeds.xsl.twig:51
+msgid "Read on the website"
+msgstr "Lire sur le site"
+
+#: views/feeds/index.html.twig:3 views/feeds/index.html.twig:11
+#: views/feeds/index.html.twig:15 views/layouts/_header-connected.html.twig:65
+msgid "Feeds"
+msgstr "Flux"
+
+#: views/feeds/index.html.twig:18
 msgid "All the feeds that you follow are listed here."
 msgstr "Tous les flux que vous suivez sont listés ici."
 
-#: views/feeds/index.phtml:24
-#, php-format
-msgid "<a href=\"%s\">Discover collections feeds</a>"
-msgstr "<a href=\"%s\">Découvrez des flux de collections</a>"
-
-#: views/feeds/index.phtml:40
+#: views/feeds/index.html.twig:32
 msgid "Add a feed"
 msgstr "Ajouter un flux"
 
-#: views/feeds/new.phtml:3 views/feeds/new.phtml:13
+#: views/feeds/new.html.twig:3
 msgid "New feed"
 msgstr "Nouveau flux"
 
-#: views/feeds/new.phtml:21
+#: views/feeds/new.html.twig:12
 msgid "What’s the address of the website or feed to follow?"
 msgstr "Quelle est l’adresse du site ou du flux à suivre ?"
 
-#: views/feeds/new.phtml:54
+#: views/feeds/new.html.twig:45
 msgid "Add the feed"
 msgstr "Ajouter le flux"
 
-#: views/forbidden.phtml:3
-msgid "Access forbidden"
-msgstr "Accès interdit"
-
-#: views/forbidden.phtml:10
-msgid "You cannot access this page."
-msgstr "Vous ne pouvez pas accéder à cette page."
-
-#: views/groups/edit.phtml:3 views/groups/edit.phtml:12
+#: views/groups/edit.html.twig:3
 msgid "Group edition"
 msgstr "Modification d’un groupe"
 
-#: views/groups/edit.phtml:20
+#: views/groups/edit.html.twig:12
 msgid "The name of your group"
 msgstr "Le nom de votre groupe"
 
-#: views/groups/edit.phtml:62
+#: views/groups/edit.html.twig:56
 msgid ""
 "Are you sure that you want to delete this group? The associated collections "
 "will NOT be deleted."
@@ -1297,76 +1110,254 @@ msgstr ""
 "Êtes-vous sur·e de vouloir supprimer ce groupe ? Les collections associées "
 "ne seront PAS supprimées."
 
-#: views/groups/edit.phtml:66
+#: views/groups/edit.html.twig:60
 msgid "Delete the group"
 msgstr "Supprimer le groupe"
 
-#: views/importations/opml/show.phtml:3
+#: views/importations/opml/show.html.twig:3
 msgid "Importation from an OPML file"
 msgstr "Importation depuis un fichier OPML"
 
-#: views/importations/opml/show.phtml:16
+#: views/importations/opml/show.html.twig:18
 msgid "Importation from an <abbr>OPML</abbr> file"
 msgstr "Importation depuis un fichier <abbr>OPML</abbr>"
 
-#: views/importations/opml/show.phtml:20
+#: views/importations/opml/show.html.twig:21
 msgid ""
 "<abbr>OPML</abbr> enables you to import your feeds from another software."
 msgstr ""
 "<abbr>OPML</abbr> vous permet d’importer vos flux depuis un autre logiciel."
 
-#: views/importations/opml/show.phtml:25
+#: views/importations/opml/show.html.twig:27
 msgid "We’re importing your data…"
 msgstr "Nous importons vos données…"
 
-#: views/importations/opml/show.phtml:44
+#: views/importations/opml/show.html.twig:48
 msgid ""
-"We’ve imported your data from your <abbr>OPML</abbr> file. We’re now going "
-"to fetch their links in background."
+"We’ve imported your data from your OPML file. We’re now going to fetch their "
+"links in background."
 msgstr ""
-"Nous venons d’importer vos données depuis votre fichier <abbr>OPML</abbr>. "
-"Nous allons désormais télécharger leurs liens en tâche de fond."
+"Nous venons d’importer vos données depuis votre fichier OPML. Nous allons "
+"désormais télécharger leurs liens en tâche de fond."
 
-#: views/importations/opml/show.phtml:50 views/importations/opml/show.phtml:63
+#: views/importations/opml/show.html.twig:53
+#: views/importations/opml/show.html.twig:66
 msgid "Ok!"
 msgstr "Ok !"
 
-#: views/importations/opml/show.phtml:104
+#: views/importations/opml/show.html.twig:106
 msgid "Import a file"
 msgstr "Importer un fichier"
 
-#: views/internal_server_error.phtml:3
-msgid "Something bad happened"
-msgstr "Quelque chose s’est mal passé"
+#: views/layouts/_account_navigation.html.twig:5
+msgid "Account"
+msgstr "Compte"
 
-#: views/internal_server_error.phtml:10
-msgid "An error occurred during the processing of your request."
-msgstr "Une erreur est survenue pendant le traitement de votre requête."
+#: views/layouts/_account_navigation.html.twig:13
+msgid "Overview"
+msgstr "Aperçu"
 
-#: views/links/_link.phtml:67
+#: views/layouts/_account_navigation.html.twig:23
+#: views/my/validation/new.html.twig:3 views/my/validation/new.html.twig:12
+#: views/my/validation/show.html.twig:3 views/my/validation/show.html.twig:16
+msgid "Account validation"
+msgstr "Validation du compte"
+
+#: views/layouts/_account_navigation.html.twig:34
+msgid "Mastodon"
+msgstr "Mastodon"
+
+#: views/layouts/_account_navigation.html.twig:40
+msgid "Data"
+msgstr "Données"
+
+#: views/layouts/_account_navigation.html.twig:49
+msgid "OPML import"
+msgstr "Importation OPML"
+
+#: views/layouts/_account_navigation.html.twig:59
+msgid "Data export"
+msgstr "Exportation des données"
+
+#: views/layouts/_account_navigation.html.twig:64
+msgid "Security"
+msgstr "Sécurité"
+
+#: views/layouts/_account_navigation.html.twig:72
+#: views/my/security/show.html.twig:3 views/my/security/show.html.twig:15
+msgid "Credentials"
+msgstr "Identifiants"
+
+#: views/layouts/_account_navigation.html.twig:81
+msgid "Sessions"
+msgstr "Sessions"
+
+#: views/layouts/_account_navigation.html.twig:90
+#: views/my/account/deletion.html.twig:3 views/my/account/deletion.html.twig:16
+msgid "Account deletion"
+msgstr "Suppression du compte"
+
+#: views/layouts/_header-connected.html.twig:7
+#: views/layouts/_header-disconnected.html.twig:4
+#, php-format
+msgid "You need to activate JavaScript in order to use %s."
+msgstr "Vous devez activer JavaScript pour utiliser %s."
+
+#: views/layouts/_header-connected.html.twig:13
+#: views/layouts/_header-disconnected.html.twig:10
+#, php-format
+msgid "You’re using a demo version of %s, the data are reset every night."
+msgstr ""
+"Vous utilisez une version de démo de %s, les données sont réinitialisées "
+"chaque nuit."
+
+#: views/layouts/_header-connected.html.twig:20
+msgid "Your account is not validated yet."
+msgstr "Votre compte n’est pas encore validé."
+
+#: views/layouts/_header-connected.html.twig:24
+msgid "Validate"
+msgstr "Valider"
+
+#: views/layouts/_header-connected.html.twig:43
+msgid "Reading"
+msgstr "Lecture"
+
+#: views/layouts/_header-connected.html.twig:54 views/links/index.html.twig:3
+#: views/links/index.html.twig:11 views/links/index.html.twig:19
+msgid "My links"
+msgstr "Mes liens"
+
+#: views/layouts/_header-connected.html.twig:91
+#: views/layouts/_header-connected.html.twig:94
+#, php-format
+msgid "Menu of %s"
+msgstr "Menu de %s"
+
+#: views/layouts/_header-connected.html.twig:108
+#: views/my/profile/edit.html.twig:3
+msgid "Profile"
+msgstr "Profil"
+
+#: views/layouts/_header-connected.html.twig:118
+#: views/my/preferences/edit.html.twig:3 views/my/preferences/edit.html.twig:11
+#: views/my/preferences/edit.html.twig:15
+msgid "Preferences"
+msgstr "Préférences"
+
+#: views/layouts/_header-connected.html.twig:127
+#: views/my/account/show.html.twig:3 views/my/account/show.html.twig:15
+msgid "Account & data"
+msgstr "Compte & données"
+
+#: views/layouts/_header-connected.html.twig:138 views/pages/addons.html.twig:3
+#: views/pages/addons.html.twig:11 views/pages/addons.html.twig:15
+msgid "Add-ons"
+msgstr "Extensions"
+
+#: views/layouts/_header-connected.html.twig:147 views/support/show.html.twig:3
+#: views/support/show.html.twig:11 views/support/show.html.twig:15
+msgid "Help & support"
+msgstr "Aide & support"
+
+#: views/layouts/_header-connected.html.twig:155
+msgid "Log out"
+msgstr "Se déconnecter"
+
+#: views/layouts/_header-disconnected.html.twig:29
+msgid "Language"
+msgstr "Langue"
+
+#: views/layouts/_modal_dialog.html.twig:22 views/layouts/sidenav.html.twig:24
+msgid "Close"
+msgstr "Fermer"
+
+#: views/layouts/_modal_dialog.html.twig:23
+msgid "Close this window"
+msgstr "Fermer cette fenêtre"
+
+#: views/layouts/_modal_dialog.html.twig:33
+msgid "Loading…"
+msgstr "Chargement…"
+
+#: views/layouts/_pagination.html.twig:8
+msgid "Previous page"
+msgstr "Page précédente"
+
+#: views/layouts/_pagination.html.twig:12
+msgid "Previous"
+msgstr "Précédent"
+
+#: views/layouts/_pagination.html.twig:38
+msgid "Next page"
+msgstr "Page suivante"
+
+#: views/layouts/_pagination.html.twig:40
+#: views/onboarding/_navigation.html.twig:10
+msgid "Next"
+msgstr "Suivant"
+
+#: views/layouts/_search.html.twig:6 views/layouts/_search.html.twig:7
+msgid "Search links by words or URL"
+msgstr "Rechercher des liens par mots ou URL"
+
+#: views/layouts/_search.html.twig:15 views/links/searches/show.html.twig:64
+msgid "Search"
+msgstr "Rechercher"
+
+#: views/layouts/_title.html.twig:6
+msgid "Error: "
+msgstr "Erreur : "
+
+#: views/layouts/authentication.html.twig:13 views/pages/about.html.twig:26
+msgid ""
+"Collect, organise, annotate and share links<br><strong>from around the Web.</"
+"strong>"
+msgstr ""
+"Collectez, organisez, annotez et partagez les liens<br><strong>provenant de "
+"l'ensemble du Web.</strong>"
+
+#: views/layouts/base.html.twig:44
+msgid "Skip to main content"
+msgstr "Accéder au contenu principal"
+
+#: views/layouts/base.html.twig:59 views/pages/about.html.twig:3
+#: views/pages/about.html.twig:11 views/pages/about.html.twig:15
+#: views/support/show.html.twig:124
+#, php-format
+msgid "About %s"
+msgstr "À propos de %s"
+
+#: views/layouts/sidenav.html.twig:10
+msgid "Navigation"
+msgstr "Navigation"
+
+#: views/links/_link.html.twig:63
 msgid "This link seems to be inaccessible, you should repair it."
 msgstr "Ce lien semble inaccessible, vous devriez le réparer."
 
-#: views/links/_link.phtml:68 views/links/_link.phtml:86
+#: views/links/_link.html.twig:64 views/links/_link.html.twig:82
+#: views/links/show.html.twig:52
 msgid "inaccessible"
 msgstr "inaccessible"
 
-#: views/links/_link.phtml:77
+#: views/links/_link.html.twig:73
 msgid "Trackers have been detected in this link, you should repair it."
 msgstr "Des pisteurs ont été détectés dans ce lien, vous devriez le réparer."
 
-#: views/links/_link.phtml:78 views/links/_link.phtml:96
+#: views/links/_link.html.twig:74 views/links/_link.html.twig:92
+#: views/links/show.html.twig:58
 msgid "trackers"
 msgstr "pisteurs"
 
-#: views/links/_link.phtml:85
+#: views/links/_link.html.twig:81 views/links/show.html.twig:51
 msgid ""
 "This link seems to be inaccessible, you may have difficulties to access it."
 msgstr ""
 "Ce lien semble inaccessible, vous pourriez rencontrer des difficultés pour y "
 "accéder."
 
-#: views/links/_link.phtml:95
+#: views/links/_link.html.twig:91 views/links/show.html.twig:57
 msgid ""
 "Trackers have been detected in this link, your privacy might not be "
 "respected if you click on it."
@@ -1374,190 +1365,188 @@ msgstr ""
 "Des pisteurs ont été détectés dans ce lien, votre vie privée pourrait ne pas "
 "être respectée si vous cliquez dessus."
 
-#: views/links/_link.phtml:143 views/links/show.phtml:94
+#: views/links/_link.html.twig:139 views/links/show.html.twig:98
 msgid "ongoing synchronisation…"
 msgstr "synchronisation en cours…"
 
-#: views/links/_link.phtml:150
+#: views/links/_link.html.twig:146 views/links/show.html.twig:105
 msgid "You read this link."
 msgstr "Vous avez lu ce lien."
 
-#: views/links/_link.phtml:154
+#: views/links/_link.html.twig:150 views/links/show.html.twig:109
 msgid "This link is in your bookmarks."
 msgstr "Ce lien est dans vos signets."
 
-#: views/links/_link.phtml:161
+#: views/links/_link.html.twig:157
 #, php-format
-msgid ""
-"via your <strong><a class=\"anchor--hidden\" href=\"%s\">bookmarks</a></"
-"strong>"
-msgstr ""
-"via vos <strong><a class=\"anchor--hidden\" href=\"%s\">signets</a></strong>"
+msgid "via your <strong><a href=\"%s\">bookmarks</a></strong>"
+msgstr "via vos <strong><a href=\"%s\">signets</a></strong>"
 
-#: views/links/_link.phtml:166
+#: views/links/_link.html.twig:161
 #, php-format
-msgid ""
-"via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong> by <a "
-"class=\"anchor--hidden\" href=\"%s\">%s</a>"
-msgstr ""
-"via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong> de <a "
-"class=\"anchor--hidden\" href=\"%s\">%s</a>"
+msgid "via <strong><a href=\"%s\">%s</a></strong> by <a href=\"%s\">%s</a>"
+msgstr "via <strong><a href=\"%s\">%s</a></strong> de <a href=\"%s\">%s</a>"
 
-#: views/links/_link.phtml:174 views/links/_link.phtml:181
+#: views/links/_link.html.twig:168 views/links/_link.html.twig:174
 #, php-format
-msgid "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong>"
-msgstr "via <strong><a class=\"anchor--hidden\" href=\"%s\">%s</a></strong>"
+msgid "via <strong><a href=\"%s\">%s</a></strong>"
+msgstr "via <strong><a href=\"%s\">%s</a></strong>"
 
-#: views/links/_link.phtml:204
+#: views/links/_link.html.twig:198
 #, php-format
 msgid "Notepad (%s)"
 msgstr "Bloc-note (%s)"
 
-#: views/links/_link.phtml:206 views/links/show.phtml:203
+#: views/links/_link.html.twig:200 views/links/show.html.twig:214
 msgid "Notepad"
 msgstr "Bloc-note"
 
-#: views/links/_link.phtml:212
+#: views/links/_link.html.twig:207
 msgid "hidden"
 msgstr "masqué"
 
-#: views/links/_link.phtml:226
-msgid "Comments"
-msgstr "Commentaires"
-
-#: views/links/_link.phtml:253
+#: views/links/_link.html.twig:235
 msgid "Remove from the news"
 msgstr "Retirer du journal"
 
-#: views/links/_link.phtml:272
+#: views/links/_link.html.twig:253
 msgid "Copy the external link"
 msgstr "Copier le lien externe"
 
-#: views/links/_link.phtml:287 views/links/show.phtml:117
-#: views/links/show.phtml:121
+#: views/links/_link.html.twig:267 views/links/show.html.twig:200
 msgid "Share on Mastodon"
 msgstr "Partager vers Mastodon"
 
-#: views/links/_link.phtml:321
+#: views/links/_link.html.twig:299
 msgid "Repair"
 msgstr "Réparer"
 
-#: views/links/_link.phtml:332
+#: views/links/_link.html.twig:310
 msgid "Are you sure that you want to delete this link?"
 msgstr "Êtes-vous sur·e de vouloir supprimer ce lien ?"
 
-#: views/links/_link.phtml:352 views/links/_link.phtml:355
-#: views/links/show.phtml:146 views/links/show.phtml:149
+#: views/links/_link.html.twig:329 views/links/_link.html.twig:332
+#: views/links/show.html.twig:158
 msgid "Mark as read"
 msgstr "Marquer comme lu"
 
-#: views/links/_link.phtml:365 views/links/_link.phtml:368
+#: views/links/_link.html.twig:342 views/links/_link.html.twig:345
 msgid "Remove from read list"
 msgstr "Retirer des liens lus"
 
-#: views/links/_link.phtml:378 views/links/_link.phtml:381
-#: views/links/show.phtml:159 views/links/show.phtml:162
+#: views/links/_link.html.twig:355 views/links/_link.html.twig:358
+#: views/links/show.html.twig:169
 msgid "Read later"
 msgstr "Lire plus tard"
 
-#: views/links/_link.phtml:396 views/links/_link.phtml:400
-#: views/links/collections/index.phtml:104 views/links/show.phtml:182
+#: views/links/_link.html.twig:374 views/links/_link.html.twig:378
+#: views/links/collections/index.html.twig:71
 msgid "Store the link"
 msgstr "Ranger le lien"
 
-#: views/links/_link.phtml:406 views/links/show.phtml:187
+#: views/links/_link.html.twig:384
 #, php-format
 msgid "In %d collection"
 msgid_plural "In %d collections"
 msgstr[0] "Dans %d collection"
 msgstr[1] "Dans %d collections"
 
-#: views/links/collections/_new_note_form.phtml:3 views/links/show.phtml:306
+#: views/links/collections/_new_note_form.html.twig:3
+#: views/links/show.html.twig:243
 msgid "What do you retain from this content?"
 msgstr "Que retenez-vous de ce contenu ?"
 
-#: views/links/collections/_new_note_form.phtml:29 views/links/show.phtml:330
-#: views/notes/edit.phtml:50
+#: views/links/collections/_new_note_form.html.twig:29
+#: views/links/show.html.twig:267 views/notes/edit.html.twig:43
 msgid "You can format the content in Markdown and use #tags."
 msgstr "Vous pouvez formater le contenu en Markdown et utiliser des #tags."
 
-#: views/links/collections/index.phtml:3 views/links/collections/index.phtml:12
+#: views/links/collections/index.html.twig:3
 msgid "Storing a link"
 msgstr "Rangement d’un lien"
 
-#: views/links/collections/index.phtml:29 views/links/new.phtml:53
+#: views/links/collections/index.html.twig:22 views/links/new.html.twig:54
 msgid "Collections"
 msgstr "Collections"
 
-#: views/links/collections/index.phtml:61
+#: views/links/collections/index.html.twig:52
 msgid "You already annoted this link."
 msgstr "Vous avez déjà annoté ce lien."
 
-#: views/links/collections/index.phtml:102
+#: views/links/collections/index.html.twig:69
 msgid "Store the link and mark as read"
 msgstr "Ranger le lien et marquer comme lu"
 
-#: views/links/edit.phtml:3 views/links/edit.phtml:12
+#: views/links/edit.html.twig:3
 msgid "Link edition"
 msgstr "Modification d’un lien"
 
-#: views/links/edit.phtml:24
+#: views/links/edit.html.twig:21
 msgid "The title of your link"
 msgstr "Le titre de votre lien"
 
-#: views/links/edit.phtml:52
+#: views/links/edit.html.twig:49
 msgid "It takes"
 msgstr "Il faut"
 
-#: views/links/edit.phtml:70
+#: views/links/edit.html.twig:67
 msgid "minutes to consult."
 msgstr "minutes pour le consulter."
 
-#: views/links/index.phtml:23
+#: views/links/exportation.atom.xml.twig:26
+#: views/links/feeds/show.atom.xml.twig:25
+#, php-format
+msgid "Notes by %s"
+msgstr "Notes par %s"
+
+#: views/links/feeds/show.atom.xml.twig:4
+#, php-format
+msgid "Notes on %s"
+msgstr "Notes sur %s"
+
+#: views/links/index.html.twig:22
 msgid "Organize your links in your thematic collections."
 msgstr "Organisez vos liens dans vos collections thématiques."
 
-#: views/links/index.phtml:38
+#: views/links/index.html.twig:35
 msgid "Create a collection"
 msgstr "Créer une collection"
 
-#: views/links/mastodon_threads/created.phtml:3
-#: views/links/mastodon_threads/created.phtml:13
+#: views/links/mastodon_threads/created.html.twig:3
 msgid "Your posts are going to be published on Mastodon!"
 msgstr "Vos messages vont être publiés sur Mastodon !"
 
-#: views/links/mastodon_threads/new.phtml:3
-#: views/links/mastodon_threads/new.phtml:12
+#: views/links/mastodon_threads/new.html.twig:3
 msgid "Share a link on Mastodon"
 msgstr "Partager un lien vers Mastodon"
 
-#: views/links/mastodon_threads/new.phtml:45
-#: views/links/mastodon_threads/new.phtml:93
+#: views/links/mastodon_threads/new.html.twig:36
+#: views/links/mastodon_threads/new.html.twig:84
 msgid "Post #__number__"
 msgstr "Message n°__number__"
 
-#: views/links/mastodon_threads/new.phtml:63
-#: views/links/mastodon_threads/new.phtml:110
+#: views/links/mastodon_threads/new.html.twig:54
+#: views/links/mastodon_threads/new.html.twig:101
 msgid "Remove from thread"
 msgstr "Retirer du fil"
 
-#: views/links/mastodon_threads/new.phtml:76
+#: views/links/mastodon_threads/new.html.twig:67
 msgid "Add a post to thread"
 msgstr "Ajouter un message au fil"
 
-#: views/links/mastodon_threads/new.phtml:120
+#: views/links/mastodon_threads/new.html.twig:111
 msgid "Publish on Mastodon"
 msgstr "Publier sur Mastodon"
 
-#: views/links/new.phtml:82
+#: views/links/new.html.twig:81
 msgid "Mark to read later?"
 msgstr "Marquer à lire plus tard ?"
 
-#: views/links/repairing/new.phtml:3 views/links/repairing/new.phtml:12
+#: views/links/repairing/new.html.twig:3
 msgid "Repairing a link"
 msgstr "Réparation d’un lien"
 
-#: views/links/repairing/new.phtml:16
+#: views/links/repairing/new.html.twig:8
 msgid ""
 "You can change the <abbr>URL</abbr> of a link if it’s broken, or if you made "
 "a mistake in it."
@@ -1565,16 +1554,16 @@ msgstr ""
 "Vous pouvez modifier l’<abbr>URL</abbr> d’un lien s’il est cassé, ou si vous "
 "avez fait une erreur."
 
-#: views/links/repairing/new.phtml:64
+#: views/links/repairing/new.html.twig:61
 #, php-format
 msgid "%s has detected trackers in this <abbr>URL</abbr>. Suggestion:"
 msgstr "%s a détecté des pisteurs dans cette <abbr>URL</abbr>. Suggestion :"
 
-#: views/links/repairing/new.phtml:72
+#: views/links/repairing/new.html.twig:64
 msgid "Ok"
 msgstr "Ok"
 
-#: views/links/repairing/new.phtml:75
+#: views/links/repairing/new.html.twig:66
 #, php-format
 msgid ""
 "%s has detected that this <abbr>URL</abbr> tracks users. It is suggested to "
@@ -1583,11 +1572,11 @@ msgstr ""
 "%s a détecté que cette <abbr>URL</abbr> piste les utilisateur‧ices. Il est "
 "suggéré de supprimer le lien."
 
-#: views/links/repairing/new.phtml:93
+#: views/links/repairing/new.html.twig:84
 msgid "Force the synchronization"
 msgstr "Forcer la synchronisation"
 
-#: views/links/repairing/new.phtml:98
+#: views/links/repairing/new.html.twig:89
 msgid ""
 "The title, reading time and illustration will be re-synchronized even if "
 "you’ve changed them."
@@ -1595,7 +1584,7 @@ msgstr ""
 "Le titre, le temps de lecture et l’illustration seront re-synchronisés même "
 "si vous les avez changés."
 
-#: views/links/repairing/new.phtml:102
+#: views/links/repairing/new.html.twig:93
 msgid ""
 "The title, reading time and illustration will be synchronize only if you’ve "
 "never changed them."
@@ -1603,82 +1592,120 @@ msgstr ""
 "Le titre, le temps de lecture et l’illustration seront synchronisés "
 "seulement si vous ne les avez jamais changés."
 
-#: views/links/repairing/new.phtml:109
+#: views/links/repairing/new.html.twig:100
 msgid "Repair the link"
 msgstr "Réparer le lien"
 
-#: views/links/search.phtml:8 views/links/search.phtml:20
+#: views/links/search.html.twig:9 views/links/search.html.twig:17
+#: views/links/search.html.twig:25
 msgid "Results of the search"
 msgstr "Résultats de la recherche"
 
-#: views/links/search.phtml:24
+#: views/links/search.html.twig:28
 #, php-format
-msgid "%s result (“%s”)"
-msgid_plural "%s results (“%s”)"
-msgstr[0] "%s résultat (« %s »)"
-msgstr[1] "%s résultats (« %s »)"
+msgid "%d result (“%s”)"
+msgid_plural "%d results (“%s”)"
+msgstr[0] "%d résultat (« %s »)"
+msgstr[1] "%d résultats (« %s »)"
 
-#: views/links/searches/show.phtml:34
+#: views/links/searches/show.html.twig:34
 msgid "What’s the address of the link or feed?"
 msgstr "Quelle est l’adresse du lien ou du flux ?"
 
-#: views/links/show.phtml:26
-#, php-format
-msgid "Shared on %s: %s"
-msgstr "Partagé sur %s : %s"
-
-#: views/links/show.phtml:27
-#, php-format
-msgid "A link shared by %s on %s."
-msgstr "Un lien partagé par %s sur %s."
-
-#: views/links/show.phtml:42
+#: views/links/show.html.twig:13
 #, php-format
 msgid "Syndication feed of notes on %s"
 msgstr "Flux de syndication de notes sur %s"
 
-#: views/links/show.phtml:105
+#: views/links/show.html.twig:18
 #, php-format
-msgid "Added by <a href=\"%s\">%s</a>"
-msgstr "Ajouté par <a href=\"%s\">%s</a>"
+msgid "Shared on %s: %s"
+msgstr "Partagé sur %s : %s"
 
-#: views/links/show.phtml:133
+#: views/links/show.html.twig:19
+#, php-format
+msgid "A link shared by %s on %s."
+msgstr "Un lien partagé par %s sur %s."
+
+#: views/links/show.html.twig:85
 msgid "read"
 msgstr "lire"
 
-#: views/links/show.phtml:135
+#: views/links/show.html.twig:87
 msgid "(open a new window)"
 msgstr "(ouvre une nouvelle fenêtre)"
 
-#: views/links/show.phtml:208
+#: views/links/show.html.twig:125
+msgid "Added by"
+msgstr "Ajouté par"
+
+#: views/links/show.html.twig:136
+msgid "See also"
+msgstr "Voir aussi"
+
+#: views/links/show.html.twig:187
+msgid "No collections"
+msgstr "Aucune collection"
+
+#: views/links/show.html.twig:189
+#, php-format
+msgid "%d collection"
+msgid_plural "%d collections"
+msgstr[0] "%d collection"
+msgstr[1] "%d collections"
+
+#: views/links/show.html.twig:218
 msgid "This link being hidden, the notes are private."
 msgstr "Ce lien étant masqué, les notes sont privées."
 
-#: views/links/show.phtml:268
-msgid "Are you sure that you want to delete this note?"
-msgstr "Êtes-vous sur·e de vouloir supprimer cette note ?"
-
-#: views/links/show.phtml:289
+#: views/links/show.html.twig:226
 msgid "No notes have yet been taken."
 msgstr "Aucune note n’a encore été prise."
 
-#: views/links/show.phtml:336
+#: views/links/show.html.twig:273
 msgid "Add a note"
 msgstr "Ajouter une note"
 
-#: views/links/show.phtml:348
-msgid "See notes from:"
-msgstr "Voir les notes de :"
+#: views/mailers/base.html.twig:17 views/mailers/base.txt.twig:4
+msgid "Best regards,"
+msgstr "Bien à vous,"
 
-#: views/links/show.phtml:360
-msgid "(yourself)"
-msgstr "(vous-même)"
+#: views/mailers/base.html.twig:18 views/mailers/base.txt.twig:5
+#, php-format
+msgid "The %s robot"
+msgstr "Le robot %s"
 
-#: views/mailers/support/message.phtml:2
+#: views/mailers/base.html.twig:23
+#, php-format
+msgid ""
+"This email has been sent by <a href=\"%s\" style=\"color: #4f4e5e;\">%s</a>."
+msgstr ""
+"Ce courriel a été envoyé par <a href=\"%s\" style=\"color: #4f4e5e;\">%s</a>."
+
+#: views/mailers/base.txt.twig:8
+#, php-format
+msgid "This email has been sent by %s (%s)"
+msgstr "Ce courriel a été envoyé par %s (%s)"
+
+#: views/mailers/support/message.html.twig:2
+#: views/mailers/support/message.txt.twig:1
 msgid "New message from the support."
 msgstr "Nouveau message depuis le support."
 
-#: views/mailers/support/notification.phtml:7
+#: views/mailers/support/notification.html.twig:9
+#: views/mailers/support/notification.txt.twig:4
+#: views/mailers/users/account_validation_email.html.twig:9
+#: views/mailers/users/account_validation_email.txt.twig:4
+#: views/mailers/users/inactivity_email.html.twig:9
+#: views/mailers/users/inactivity_email.txt.twig:4
+#: views/mailers/users/reset_password_email.html.twig:9
+#: views/mailers/users/reset_password_email.txt.twig:4
+#, php-format
+msgid "Hello %s,"
+msgstr "Bonjour %s,"
+
+#: views/mailers/support/notification.html.twig:13
+#: views/mailers/support/notification.txt.twig:6
 #, php-format
 msgid ""
 "Your message named “%s” has been sent. Someone will reply to you as soon as "
@@ -1687,7 +1714,8 @@ msgstr ""
 "Votre message intitulé « %s » a été envoyé. Quelqu’un va vous répondre aussi "
 "rapidement que possible !"
 
-#: views/mailers/users/account_validation_email.phtml:7
+#: views/mailers/users/account_validation_email.html.twig:13
+#: views/mailers/users/account_validation_email.txt.twig:6
 #, php-format
 msgid ""
 "Thank you for your inscription on %s. To finish, you’ll have to confirm your "
@@ -1698,7 +1726,8 @@ msgstr ""
 "votre adresse courriel. Vous avez seulement à cliquer sur le lien suivant, "
 "et tout devrait être bon ensuite :"
 
-#: views/mailers/users/inactivity_email.phtml:7
+#: views/mailers/users/inactivity_email.html.twig:13
+#: views/mailers/users/inactivity_email.txt.twig:6
 #, php-format
 msgid ""
 "You receive this email because you haven’t been active on %s for several "
@@ -1713,7 +1742,8 @@ msgstr ""
 "vous n’avez rien à faire. Toutefois, si vous souhaitez conserver votre "
 "compte, vous devez vous connecter à %s en cliquant sur le lien suivant :"
 
-#: views/mailers/users/inactivity_email.phtml:14
+#: views/mailers/users/inactivity_email.html.twig:21
+#: views/mailers/users/inactivity_email.txt.twig:10
 msgid ""
 "Note that you will not receive any further notification that your account "
 "will be deleted."
@@ -1721,7 +1751,8 @@ msgstr ""
 "Notez que vous ne recevrez pas d’autre notification concernant la "
 "suppression de votre compte."
 
-#: views/mailers/users/reset_password_email.phtml:7
+#: views/mailers/users/reset_password_email.html.twig:13
+#: views/mailers/users/reset_password_email.txt.twig:6
 #, php-format
 msgid ""
 "You receive this email because you’ve asked to reset your password on %s. "
@@ -1731,30 +1762,31 @@ msgstr ""
 "mot de passe sur %s. Vous avez seulement à cliquer sur le lien suivant et "
 "suivre les instructions :"
 
-#: views/mailers/users/reset_password_email.phtml:14
+#: views/mailers/users/reset_password_email.html.twig:21
+#: views/mailers/users/reset_password_email.txt.twig:10
 msgid "If you didn’t ask to reset your password, please ignore this email."
 msgstr ""
 "Si vous n’avez pas demandé à réinitialiser votre mot de passe, vous pouvez "
 "ignorer ce courriel."
 
-#: views/mastodon/authorization.phtml:3 views/mastodon/authorization.phtml:11
+#: views/mastodon/authorization.html.twig:3
+#: views/mastodon/authorization.html.twig:16
 msgid "Mastodon authorization"
 msgstr "Autorisation de Mastodon"
 
-#: views/mastodon/authorization.phtml:19
+#: views/mastodon/authorization.html.twig:23
 msgid "Check authorization"
 msgstr "Vérifier l’autorisation"
 
-#: views/mastodon/authorization.phtml:27
+#: views/mastodon/authorization.html.twig:31
 msgid "Please wait while we’re verifying access to Mastodon…"
 msgstr "Merci de patienter pendant que nous vérifions l’accès à Mastodon…"
 
-#: views/mastodon/show.phtml:3 views/mastodon/show.phtml:14
-#: views/my/account/show.phtml:67
+#: views/mastodon/show.html.twig:3 views/mastodon/show.html.twig:16
 msgid "Configure sharing to Mastodon"
 msgstr "Configurer le partage vers Mastodon"
 
-#: views/mastodon/show.phtml:18
+#: views/mastodon/show.html.twig:19
 #, php-format
 msgid ""
 "%s lets you edit a thread of posts to share your links and notes on Mastodon."
@@ -1762,66 +1794,61 @@ msgstr ""
 "%s vous permet d’éditer un fil de messages pour partager vos liens et notes "
 "sur Mastodon."
 
-#: views/mastodon/show.phtml:36
+#: views/mastodon/show.html.twig:35
 msgid "Pre-fill the thread with the contents of your notes"
 msgstr "Pré-remplir le fil avec le contenu de vos notes"
 
-#: views/mastodon/show.phtml:49
+#: views/mastodon/show.html.twig:48
 msgid "Add a link to your notes in the first post of the thread"
 msgstr "Ajouter un lien vers vos notes dans le premier message du fil"
 
-#: views/mastodon/show.phtml:55
+#: views/mastodon/show.html.twig:54
 msgid "Something to add to the first post of the thread? (postscript)"
 msgstr "Quelque chose à ajouter au premier message du fil ? (post-scriptum)"
 
-#: views/mastodon/show.phtml:74
+#: views/mastodon/show.html.twig:73
 msgid "#monitoring"
 msgstr "#veille"
 
-#: views/mastodon/show.phtml:91
+#: views/mastodon/show.html.twig:90
 msgid "Add the postscript in all the posts of the thread"
 msgstr "Ajouter le post-scriptum à tous les messages du fil"
 
-#: views/mastodon/show.phtml:108
+#: views/mastodon/show.html.twig:107
 #, php-format
 msgid "Connected with account <em>%s</em>"
 msgstr "Connecté‧e avec le compte <em>%s</em>"
 
-#: views/mastodon/show.phtml:114
+#: views/mastodon/show.html.twig:113
 msgid "Are you sure that you want to disconnect your Mastodon account?"
 msgstr "Êtes-vous sur·e de vouloir déconnecter votre compte Mastodon ?"
 
-#: views/mastodon/show.phtml:117 views/my/sessions/index.phtml:52
+#: views/mastodon/show.html.twig:117 views/my/sessions/index.html.twig:43
 msgid "disconnect"
 msgstr "déconnecter"
 
-#: views/mastodon/show.phtml:129
+#: views/mastodon/show.html.twig:134
 msgid "What’s the address of your Mastodon server?"
 msgstr "Quelle est l’adresse de votre serveur Mastodon ?"
 
-#: views/mastodon/show.phtml:154
-msgid ""
-"Not using Mastodon yet? <a target=\"_blank\" rel=\"noopener noreferrer\" "
-"href=\"https://joinmastodon.org/servers\">Let’s choose a server.</a>"
-msgstr ""
-"Vous n’utilisez pas encore Mastodon ? <a target=\"_blank\" rel=\"noopener "
-"noreferrer\" href=\"https://joinmastodon.org/servers\">Choisissez un serveur."
-"</a>"
+#: views/mastodon/show.html.twig:159
+msgid "Not using Mastodon yet?"
+msgstr "Vous n’utilisez pas encore Mastodon ?"
 
-#: views/mastodon/show.phtml:160
+#: views/mastodon/show.html.twig:162
+msgid "Let’s choose a server."
+msgstr "Choisissez un serveur."
+
+#: views/mastodon/show.html.twig:169
 msgid "Connect to Mastodon"
 msgstr "Se connecter à Mastodon"
 
-#: views/my/account/deletion.phtml:3 views/my/account/deletion.phtml:14
-msgid "Account deletion"
-msgstr "Suppression du compte"
-
-#: views/my/account/deletion.phtml:19
+#: views/my/account/deletion.html.twig:20
 #, php-format
 msgid "You’re connected as %s."
 msgstr "Vous êtes connecté‧e en tant que %s."
 
-#: views/my/account/deletion.phtml:23
+#: views/my/account/deletion.html.twig:24
 msgid ""
 "You’re about to delete your account and your data will be lost. This can’t "
 "be canceled!"
@@ -1829,106 +1856,70 @@ msgstr ""
 "Vous êtes sur le point de supprimer votre compte : vos données seront alors "
 "perdues. Cette action ne peut pas être annulée !"
 
-#: views/my/account/deletion.phtml:32
+#: views/my/account/deletion.html.twig:33 views/registrations/new.html.twig:98
 msgid "Your password"
 msgstr "Votre mot de passe"
 
-#: views/my/account/deletion.phtml:62 views/my/security/confirmation.phtml:56
-#: views/my/security/show.phtml:81 views/passwords/edit.phtml:55
-#: views/registrations/new.phtml:131 views/sessions/new.phtml:88
+#: views/my/account/deletion.html.twig:63
+#: views/my/security/confirmation.html.twig:65
+#: views/my/security/show.html.twig:84 views/passwords/edit.html.twig:56
+#: views/registrations/new.html.twig:132 views/sessions/new.html.twig:95
 msgid ""
 "Show password as plain text. Note: this will visually expose your password."
 msgstr ""
 "Afficher le mot de passe sous forme de texte. Attention, cela exposera votre "
 "mot de passe visuellement."
 
-#: views/my/account/deletion.phtml:70
+#: views/my/account/deletion.html.twig:71
 msgid "You must type your password so we can confirm your identity."
 msgstr ""
 "Vous devez saisir votre mot de passe afin que nous puissions confirmer votre "
 "identité."
 
-#: views/my/account/deletion.phtml:76
+#: views/my/account/deletion.html.twig:77
 msgid "Delete your account"
 msgstr "Supprimer votre compte"
 
-#: views/my/account/show.phtml:15
+#: views/my/account/show.html.twig:19
 #, php-format
 msgid "You are registered since %s."
 msgstr "Vous êtes inscrit‧e depuis le %s."
 
-#: views/my/account/show.phtml:20
-msgid "You have a <strong>free subscription</strong>!&nbsp;😊"
-msgstr ""
-"Vous bénéficiez d’un <strong>abonnement gratuit</strong>&nbsp;!&nbsp;😊"
+#: views/my/account/show.html.twig:25
+msgid "Validate your account"
+msgstr "Valider votre compte"
 
-#: views/my/account/show.phtml:22
+#: views/my/account/show.html.twig:31
+msgid "You have a <strong>free subscription</strong>! 😊"
+msgstr "Vous bénéficiez d’un <strong>abonnement gratuit</strong> ! 😊"
+
+#: views/my/account/show.html.twig:33
 #, php-format
 msgid "<strong>Your subscription expired on %s.</strong>"
 msgstr "<strong>Votre abonnement a expiré le %s.</strong>"
 
-#: views/my/account/show.phtml:24
+#: views/my/account/show.html.twig:35
 #, php-format
 msgid "Your subscription will expire on <strong>%s.</strong>"
 msgstr "Votre abonnement expirera le <strong>%s.</strong>"
 
-#: views/my/account/show.phtml:33
-msgid "Account"
-msgstr "Compte"
-
-#: views/my/account/show.phtml:39
-msgid "Validate your account"
-msgstr "Valider votre compte"
-
-#: views/my/account/show.phtml:45
+#: views/my/account/show.html.twig:42
 msgid "Manage your subscription"
 msgstr "Gérer votre abonnement"
 
-#: views/my/account/show.phtml:52
+#: views/my/account/show.html.twig:48
 msgid "Create your payment account"
 msgstr "Créer votre compte de paiement"
 
-#: views/my/account/show.phtml:62
-msgid "Sharing"
-msgstr "Partage"
-
-#: views/my/account/show.phtml:72
-msgid "Data"
-msgstr "Données"
-
-#: views/my/account/show.phtml:78
-msgid "Import your data from an <abbr>OPML</abbr> file"
-msgstr "Importer vos données depuis un fichier <abbr>OPML</abbr>"
-
-#: views/my/account/show.phtml:85
-msgid "Download your data"
-msgstr "Télécharger vos données"
-
-#: views/my/account/show.phtml:90
-msgid "Security"
-msgstr "Sécurité"
-
-#: views/my/account/show.phtml:95
-msgid "Manage your credentials"
-msgstr "Gérer vos identifiants"
-
-#: views/my/account/show.phtml:101
-msgid "Manage your sessions"
-msgstr "Gérer vos sessions"
-
-#: views/my/account/show.phtml:107
-msgid "Delete your account?"
-msgstr "Supprimer votre compte&nbsp;?"
-
-#: views/my/preferences/edit.phtml:21
+#: views/my/preferences/edit.html.twig:23
 msgid "Your language"
 msgstr "Votre langue"
 
-#: views/my/preferences/edit.phtml:60
+#: views/my/preferences/edit.html.twig:62
 msgid "Enable compact mode"
 msgstr "Activer le mode compact"
 
-#: views/my/preferences/edit.phtml:64
+#: views/my/preferences/edit.html.twig:66
 msgid ""
 "In compact mode, you see more links at a glance, but you may feel "
 "overwhelmed by the information."
@@ -1936,17 +1927,17 @@ msgstr ""
 "En mode compact, vous voyez plus de liens en un coup d’œil, mais vous "
 "pourriez vous sentir submergé par la quantité d’informations."
 
-#: views/my/preferences/edit.phtml:77 views/registrations/new.phtml:147
+#: views/my/preferences/edit.html.twig:79 views/registrations/new.html.twig:148
 msgid "Accept to be contacted by email to help improve the service (optional)."
 msgstr ""
 "Accepter d’être contacté‧e par courriel pour aider à améliorer le service "
 "(facultatif)."
 
-#: views/my/preferences/edit.phtml:91
+#: views/my/preferences/edit.html.twig:93
 msgid "Enable beta features"
 msgstr "Activer les fonctionnalités bêta"
 
-#: views/my/preferences/edit.phtml:95
+#: views/my/preferences/edit.html.twig:97
 msgid ""
 "With beta features you test some features before everyone else, but you "
 "enter a turbulent zone."
@@ -1954,11 +1945,11 @@ msgstr ""
 "Avec les fonctionnalités bêta, vous testez des fonctionnalités avant tout le "
 "monde, mais vous entrez dans une zone de turbulences."
 
-#: views/my/profile/edit.phtml:53
+#: views/my/profile/edit.html.twig:43
 msgid "Upload a photo"
 msgstr "Téléverser une photo"
 
-#: views/my/profile/edit.phtml:66
+#: views/my/profile/edit.html.twig:48
 msgid ""
 "<abbr>PNG</abbr> or <abbr>JPG</abbr> images only, a 150x150 image is "
 "recommended."
@@ -1966,21 +1957,21 @@ msgstr ""
 "Formats <abbr>PNG</abbr> ou <abbr>JPG</abbr> seulement, une image de 150x150 "
 "est recommandée."
 
-#: views/my/profile/edit.phtml:78
+#: views/my/profile/edit.html.twig:59
 msgid "Your name"
 msgstr "Votre nom"
 
-#: views/my/profile/edit.phtml:80 views/registrations/new.phtml:38
+#: views/my/profile/edit.html.twig:61 views/registrations/new.html.twig:38
 #, php-format
 msgid "(public, max. %d characters)"
 msgstr "(public, max. %d caractères)"
 
-#: views/my/security/confirmation.phtml:3
-#: views/my/security/confirmation.phtml:15
+#: views/my/security/confirmation.html.twig:3
+#: views/my/security/confirmation.html.twig:24
 msgid "Password confirmation"
 msgstr "Confirmation du mot de passe"
 
-#: views/my/security/confirmation.phtml:19
+#: views/my/security/confirmation.html.twig:27
 msgid ""
 "We need you to confirm your password before giving you access to sensitive "
 "actions."
@@ -1988,62 +1979,53 @@ msgstr ""
 "Vous devez confirmer votre mot de passe avant de pouvoir effectuer des "
 "actions sensibles."
 
-#: views/my/security/confirmation.phtml:27
+#: views/my/security/confirmation.html.twig:35
 msgid "Your current password"
 msgstr "Votre mot de passe actuel"
 
-#: views/my/security/confirmation.phtml:66
+#: views/my/security/confirmation.html.twig:75
 msgid "Confirm your password"
 msgstr "Confirmer votre mot de passe"
 
-#: views/my/security/show.phtml:3 views/my/security/show.phtml:12
-msgid "Login & security"
-msgstr "Identifiants & sécurité"
-
-#: views/my/security/show.phtml:16
+#: views/my/security/show.html.twig:18
 msgid "You can change your login details here."
 msgstr "Vous pouvez changer vos identifiants de connexion ici."
 
-#: views/my/security/show.phtml:24 views/registrations/new.phtml:67
+#: views/my/security/show.html.twig:26 views/registrations/new.html.twig:67
 msgid "Your email address"
 msgstr "Votre adresse courriel"
 
-#: views/my/security/show.phtml:49
+#: views/my/security/show.html.twig:51
 msgid "New password"
 msgstr "Nouveau mot de passe"
 
-#: views/my/security/show.phtml:89
+#: views/my/security/show.html.twig:92
 msgid "Leave this field empty if you want to keep your current password."
 msgstr ""
 "Laissez ce champ vide si vous souhaitez conserver votre mot de passe actuel."
 
-#: views/my/sessions/index.phtml:3 views/my/sessions/index.phtml:11
+#: views/my/sessions/index.html.twig:3 views/my/sessions/index.html.twig:15
 msgid "Sessions management"
 msgstr "Gestion des sessions"
 
-#: views/my/sessions/index.phtml:15
+#: views/my/sessions/index.html.twig:18
 msgid "List and manage your login sessions."
 msgstr "Listez et gérez vos sessions de connexion."
 
-#: views/my/sessions/index.phtml:26
+#: views/my/sessions/index.html.twig:30
+msgid "current session"
+msgstr "session courante"
+
+#: views/my/sessions/index.html.twig:34
+msgid "expired"
+msgstr "expirée"
+
+#: views/my/sessions/index.html.twig:56
 #, php-format
 msgid "connected on %s"
 msgstr "connecté‧e le %s"
 
-#: views/my/sessions/index.phtml:33
-msgid "current session"
-msgstr "session courante"
-
-#: views/my/sessions/index.phtml:37
-msgid "expired"
-msgstr "expirée"
-
-#: views/my/validation/new.phtml:3 views/my/validation/new.phtml:15
-#: views/my/validation/show.phtml:3 views/my/validation/show.phtml:14
-msgid "Account validation"
-msgstr "Validation du compte"
-
-#: views/my/validation/new.phtml:19
+#: views/my/validation/new.html.twig:15
 #, php-format
 msgid ""
 "You’re about to validate your account on %s. Please click the button below "
@@ -2052,23 +2034,23 @@ msgstr ""
 "Vous êtes sur le point de confirmer votre compte sur %s. Veuillez cliquer "
 "sur le bouton ci-dessous pour confirmer."
 
-#: views/my/validation/new.phtml:28
+#: views/my/validation/new.html.twig:25
 msgid "Back to the account validation"
 msgstr "Retour à la validation du compte"
 
-#: views/my/validation/new.phtml:34
+#: views/my/validation/new.html.twig:31
 msgid "Confirm my account"
 msgstr "Confirmer mon compte"
 
-#: views/my/validation/show.phtml:19
-msgid "Your account is now validated."
-msgstr "Votre compte est maintenant validé."
+#: views/my/validation/show.html.twig:20
+msgid "Your account is now validated 🎉"
+msgstr "Votre compte est maintenant validé 🎉"
 
-#: views/my/validation/show.phtml:24
-msgid "Nice! Go to the home page"
-msgstr "Chouette ! Retourner à la page d’accueil"
+#: views/my/validation/show.html.twig:26
+msgid "Go to the home page"
+msgstr "Retourner à la page d’accueil"
 
-#: views/my/validation/show.phtml:29
+#: views/my/validation/show.html.twig:31
 msgid ""
 "You must validate your account so we can contact you in case of a change in "
 "our end-user license agreement or a problem concerning your account. "
@@ -2080,38 +2062,38 @@ msgstr ""
 "votre compte. <strong>Vous devriez avoir reçu un courriel contenant un lien "
 "permettant cela.</strong>"
 
-#: views/my/validation/show.phtml:34
+#: views/my/validation/show.html.twig:37
 #, php-format
 msgid "We’ve just sent you an email at %s"
 msgstr "Nous vous avons envoyé un courriel à %s"
 
-#: views/my/validation/show.phtml:38
+#: views/my/validation/show.html.twig:41
 msgid "Still nothing? Did you check your spam?"
-msgstr "Toujours rien&nbsp;? Avez-vous vérifié votre spam&nbsp;?"
+msgstr "Toujours rien ? Avez-vous vérifié votre spam ?"
 
-#: views/my/validation/show.phtml:45
+#: views/my/validation/show.html.twig:49
 msgid "Didn’t receive the email? Resend it"
 msgstr "Courriel non reçu ? Renvoyer"
 
-#: views/news/index.phtml:29
+#: views/news/index.html.twig:37
 msgid "today"
 msgstr "aujourd’hui"
 
-#: views/news/index.phtml:31
+#: views/news/index.html.twig:39
 msgid "yesterday"
 msgstr "hier"
 
-#: views/news/index.phtml:53
+#: views/news/index.html.twig:61
 msgid "Actions on the day"
 msgstr "Actions pour la journée"
 
-#: views/news/index.phtml:68 views/news/index.phtml:154
-#: views/news/index.phtml:233
+#: views/news/index.html.twig:76 views/news/index.html.twig:167
+#: views/news/index.html.twig:247
 msgid "Read the links later"
 msgstr "Lire les liens plus tard"
 
-#: views/news/index.phtml:80 views/news/index.phtml:168
-#: views/news/index.phtml:244
+#: views/news/index.html.twig:88 views/news/index.html.twig:181
+#: views/news/index.html.twig:258
 msgid ""
 "You’ll remove all the news links, this action cannot be canceled. Are you "
 "sure?"
@@ -2119,15 +2101,15 @@ msgstr ""
 "Vous allez retirer tous les liens du journal, cette action ne peut pas être "
 "annulée. Confirmez-vous ?"
 
-#: views/news/index.phtml:138
+#: views/news/index.html.twig:151
 msgid "Actions on the feed"
 msgstr "Actions pour le flux"
 
-#: views/news/index.phtml:219
+#: views/news/index.html.twig:233
 msgid "Empty the news"
 msgstr "Vider le journal"
 
-#: views/news/index.phtml:258
+#: views/news/index.html.twig:272
 msgid ""
 "Note: you will need to clear the news before you can refresh it. Mark the "
 "links as read, to be read later, or remove them with the appropriate actions."
@@ -2136,53 +2118,66 @@ msgstr ""
 "Marquez les liens comme lus, à lire plus tard, ou retirez-les avec les "
 "actions adéquats."
 
-#: views/news/index.phtml:263
+#: views/news/index.html.twig:277
 msgid ""
 "Fill your news feed with the content published by the feeds that you follow."
 msgstr ""
 "Remplissez votre journal avec le contenu publié par les flux que vous suivez."
 
-#: views/news/index.phtml:269
+#: views/news/index.html.twig:283
 msgid "There are no relevant links to suggest at this time."
 msgstr "Il n'y a aucun lien pertinent à vous proposer pour le moment."
 
-#: views/news/index.phtml:287
+#: views/news/index.html.twig:302
 msgid "Refresh the news"
 msgstr "Rafraichir le journal"
 
-#: views/not_found.phtml:3
-msgid "Page not found"
-msgstr "Page non trouvée"
+#: views/notes/_notepad.html.twig:57
+msgid "Are you sure that you want to delete this note?"
+msgstr "Êtes-vous sur·e de vouloir supprimer cette note ?"
 
-#: views/not_found.phtml:10
-msgid "This page doesn’t exist."
-msgstr "Cette page n’existe pas."
-
-#: views/notes/edit.phtml:3 views/notes/edit.phtml:12
+#: views/notes/edit.html.twig:3
 msgid "Note edition"
 msgstr "Modification d’une note"
 
-#: views/notes/edit.phtml:26
+#: views/notes/edit.html.twig:19
 msgid "Your note"
 msgstr "Votre note"
 
-#: views/onboarding/step1.phtml:3
+#: views/onboarding/_continue.html.twig:2
+msgid "Continue"
+msgstr "Continuer"
+
+#: views/onboarding/_navigation.html.twig:3
+#, php-format
+msgid "Step %d on %d"
+msgstr "Étape %d sur %d"
+
+#: views/onboarding/_navigation.html.twig:5
+msgid "finished"
+msgstr "terminé"
+
+#: views/onboarding/step1.html.twig:3
 msgid "Welcome!"
 msgstr "Bienvenue !"
 
-#: views/onboarding/step1.phtml:11
+#: views/onboarding/step1.html.twig:11
 #, php-format
 msgid "Welcome %s!"
 msgstr "Bienvenue %s !"
 
-#: views/onboarding/step1.phtml:51
+#: views/onboarding/step1.html.twig:24
+msgid "Choose your language"
+msgstr "Choisissez votre langue"
+
+#: views/onboarding/step1.html.twig:51
 #, php-format
 msgid "The few next screens will explain you some main features of %s."
 msgstr ""
 "Les écrans qui suivent vous expliqueront quelques-unes des principales "
 "fonctionnalités de %s."
 
-#: views/onboarding/step1.phtml:55
+#: views/onboarding/step1.html.twig:55
 #, php-format
 msgid ""
 "There’s not much to know before getting started with %s. This onboarding "
@@ -2191,35 +2186,21 @@ msgstr ""
 "Il n’y a pas grand-chose à savoir avant de pouvoir utiliser %s. Cette "
 "introduction devrait vous prendre moins de 3 minutes à parcourir."
 
-#: views/onboarding/step1.phtml:60 views/onboarding/step2.phtml:39
-#: views/onboarding/step3.phtml:29 views/onboarding/step4.phtml:29
-#: views/onboarding/step5.phtml:29
-msgid "Continue"
-msgstr "Continuer"
-
-#: views/onboarding/step1.phtml:67
+#: views/onboarding/step1.html.twig:63
 msgid "or skip the onboarding"
 msgstr "ou passer l’introduction"
 
-#: views/onboarding/step2.phtml:3 views/onboarding/step2.phtml:11
+#: views/onboarding/step2.html.twig:3 views/onboarding/step2.html.twig:11
 msgid "Read at your own pace"
 msgstr "Lisez à votre rythme"
 
-#: views/onboarding/step2.phtml:16
+#: views/onboarding/step2.html.twig:15
 msgid "The <strong>Reading</strong> tab helps you organise your reading list."
 msgstr ""
 "L’onglet <strong>Lecture</strong> vous aide à organiser votre liste de "
 "lecture."
 
-#: views/onboarding/step2.phtml:21 views/showcases/show_reading.phtml:24
-msgid ""
-"The screenshot of the Reading menu. It shows three elements: News, Bookmarks "
-"and Links read."
-msgstr ""
-"La capture d’écran du menu Lecture. Il montre trois éléments : Journal, "
-"Signets et Liens lus."
-
-#: views/onboarding/step2.phtml:26
+#: views/onboarding/step2.html.twig:20
 msgid ""
 "“News” gives you suggestions of what to read from the websites that you "
 "follow."
@@ -2227,14 +2208,14 @@ msgstr ""
 "Le « Journal » vous suggère des choses à lire depuis les sites que vous "
 "suivez."
 
-#: views/onboarding/step2.phtml:30
+#: views/onboarding/step2.html.twig:24
 msgid ""
 "Short on time? “Bookmark” links to read later and find them in one click."
 msgstr ""
 "Vous manquez de temps ? Placez vos liens dans les « Signets » pour les lire "
 "plus tard et les retrouver en un clic."
 
-#: views/onboarding/step2.phtml:34
+#: views/onboarding/step2.html.twig:28
 msgid ""
 "Finally, keep track of the links you have already read in the “Links read” "
 "section."
@@ -2242,15 +2223,15 @@ msgstr ""
 "Enfin, gardez une trace des liens que vous avez déjà lus depuis la section "
 "« Liens lus »."
 
-#: views/onboarding/step3.phtml:3 views/onboarding/step3.phtml:11
+#: views/onboarding/step3.html.twig:3 views/onboarding/step3.html.twig:11
 msgid "Store your links"
 msgstr "Stockez vos liens"
 
-#: views/onboarding/step3.phtml:16
+#: views/onboarding/step3.html.twig:15
 msgid "<strong>My links</strong> organises your links into collections."
 msgstr "<strong>Mes liens</strong> organisent vos liens en collections."
 
-#: views/onboarding/step3.phtml:20
+#: views/onboarding/step3.html.twig:20
 msgid ""
 "All the links you want to be able to find easily have their place in the "
 "collections."
@@ -2258,7 +2239,7 @@ msgstr ""
 "Tous les liens que vous souhaitez retrouver facilement plus tard ont leur "
 "place dans les collections."
 
-#: views/onboarding/step3.phtml:24
+#: views/onboarding/step3.html.twig:24
 msgid ""
 "By default, you start with 2 collections: <strong>“My favorites” and “My "
 "shares”.</strong> Obviously, you can create as many thematic collections as "
@@ -2268,18 +2249,18 @@ msgstr ""
 "« Mes partages ».</strong> Vous pouvez évidemment créer autant de "
 "collections thématiques que vous voulez !"
 
-#: views/onboarding/step4.phtml:3 views/onboarding/step4.phtml:11
+#: views/onboarding/step4.html.twig:3 views/onboarding/step4.html.twig:11
 msgid "Follow content from Internet"
 msgstr "Suivez le contenu d’Internet"
 
-#: views/onboarding/step4.phtml:16
+#: views/onboarding/step4.html.twig:15
 msgid ""
 "The <strong>Feeds</strong> list the websites and collections that you follow."
 msgstr ""
 "Les <strong>Flux</strong> listent les sites et les collections que vous "
 "suivez."
 
-#: views/onboarding/step4.phtml:20
+#: views/onboarding/step4.html.twig:20
 #, php-format
 msgid ""
 "A lot of websites can be followed in %s <strong>as long as they offer a Web "
@@ -2289,7 +2270,7 @@ msgstr ""
 "un flux Web</strong> : la plupart des sites d’actualités, les blogs, les "
 "podcasts… Même les chaînes YouTube !"
 
-#: views/onboarding/step4.phtml:24
+#: views/onboarding/step4.html.twig:25
 msgid ""
 "This is perfect if you want to be notified when new content is published "
 "without wasting time checking each website individually."
@@ -2297,18 +2278,18 @@ msgstr ""
 "C’est parfait si vous souhaitez être averti⋅e lorsque de nouveaux contenus "
 "sont publiés sans perdre de temps à vérifier chaque site un par un."
 
-#: views/onboarding/step5.phtml:3 views/onboarding/step5.phtml:11
+#: views/onboarding/step5.html.twig:3 views/onboarding/step5.html.twig:11
 msgid "Share with the rest of Internet"
 msgstr "Partagez avec le reste d’Internet"
 
-#: views/onboarding/step5.phtml:16
+#: views/onboarding/step5.html.twig:15
 msgid ""
 "The <strong>Profile</strong> is your public page listing all what you share."
 msgstr ""
 "Le <strong>Profil</strong> est la page publique qui répertorie tout ce que "
 "vous partagez."
 
-#: views/onboarding/step5.phtml:20
+#: views/onboarding/step5.html.twig:20
 msgid ""
 "Every time you share a link in a public collection, it gets added to your "
 "profile. <strong>Annotate your reading to add a personal touch.</strong>"
@@ -2317,15 +2298,15 @@ msgstr ""
 "apparaîtra dans votre profil. <strong>Annotez vos lectures pour y ajouter "
 "une touche personnelle.</strong>"
 
-#: views/onboarding/step5.phtml:24
+#: views/onboarding/step5.html.twig:24
 msgid "Nothing like spreading the address to your Flus profile around!"
 msgstr "Rien de tel que de diffuser l’adresse de votre profil autour de vous !"
 
-#: views/onboarding/step6.phtml:3 views/onboarding/step6.phtml:11
-msgid "Start exploring"
-msgstr "Commençons à explorer"
+#: views/onboarding/step6.html.twig:3 views/onboarding/step6.html.twig:11
+msgid "Start exploring 🚀"
+msgstr "Commencez à explorer 🚀"
 
-#: views/onboarding/step6.phtml:15
+#: views/onboarding/step6.html.twig:15
 #, php-format
 msgid ""
 "This is the end of the onboarding. You should now have the keys to use %s in "
@@ -2334,77 +2315,80 @@ msgstr ""
 "C’est la fin de cette introduction. Vous devriez maintenant avoir tous les "
 "éléments en main pour utiliser %s de manière efficace."
 
-#: views/onboarding/step6.phtml:19
-msgid "You still have things to discover, stay curious!"
-msgstr "Vous avez encore des choses à découvrir, restez curieux ou curieuse !"
-
-#: views/onboarding/step6.phtml:24
-#, php-format
-msgid "Start using %s"
-msgstr "Commencer à utiliser %s"
-
-#: views/onboarding/step6.phtml:37
-msgid "Make your life easier by using the Web extension on"
-msgstr "Simplifiez-vous la vie en utilisant l’extension navigateur sur"
-
-#: views/onboarding/step6.phtml:43
-msgid "or"
-msgstr "ou"
-
-#: views/onboarding/step6.phtml:53
-msgid ""
-"You can import your feeds if you already use a <abbr>RSS</abbr> aggregator:"
+#: views/onboarding/step6.html.twig:19
+msgid "However, you still have things to discover, so stay curious!"
 msgstr ""
-"Vous pouvez importer vos flux si vous utilisez déjà un agrégateur <abbr>RSS</"
-"abbr> :"
+"Il vous reste cependant encore des choses à découvrir, restez donc curieux "
+"ou curieuse !"
 
-#: views/onboarding/step6.phtml:58
-msgid "Import an <abbr>OPML</abbr> file"
-msgstr "Importer un fichier <abbr>OPML</abbr>"
+#: views/onboarding/step6.html.twig:25
+#, php-format
+msgid "Use %s"
+msgstr "Utiliser %s"
 
-#: views/pages/about.phtml:20
+#: views/onboarding/step6.html.twig:32
+msgid "Extra tips"
+msgstr "Rab d’astuces"
+
+#: views/onboarding/step6.html.twig:35
+msgid "The browser extension is the ideal companion for your monitoring:"
+msgstr "L’extension navigateur est le compagnon idéal de votre veille :"
+
+#: views/onboarding/step6.html.twig:41
+msgid "Download for Firefox"
+msgstr "Télécharger pour Firefox"
+
+#: views/onboarding/step6.html.twig:46 views/pages/addons.html.twig:30
+msgid "Download for Chrome"
+msgstr "Télécharger pour Chrome"
+
+#: views/onboarding/step6.html.twig:53
+msgid "Using a <abbr>RSS</abbr> aggregator?"
+msgstr "Déjà un agrégateur <abbr>RSS</abbr> ?"
+
+#: views/onboarding/step6.html.twig:58
+msgid "Import your feeds (<abbr>OPML</abbr>)"
+msgstr "Importer vos flux (<abbr>OPML</abbr>)"
+
+#: views/pages/about.html.twig:19
 #, php-format
 msgid "The logo of %s"
 msgstr "Le logo de %s"
 
-#: views/pages/about.phtml:27
+#: views/pages/about.html.twig:31
 #, php-format
 msgid "%s is an instance of Flus."
 msgstr "%s est une instance de Flus."
 
-#: views/pages/about.phtml:31
-msgid "Website (in French)"
+#: views/pages/about.html.twig:39
+msgid "Website (French)"
 msgstr "Site Web"
 
-#: views/pages/about.phtml:32
+#: views/pages/about.html.twig:45
 msgid "Source code"
 msgstr "Code source"
 
-#: views/pages/about.phtml:33
-msgid "Firefox extension"
-msgstr "Extension Firefox"
+#: views/pages/about.html.twig:51
+msgid "Addons"
+msgstr "Extensions"
 
-#: views/pages/about.phtml:34
-msgid "Chrome extension"
-msgstr "Extension Chrome"
-
-#: views/pages/about.phtml:37
+#: views/pages/about.html.twig:59
 msgid "Version"
 msgstr "Version"
 
-#: views/pages/about.phtml:43
+#: views/pages/about.html.twig:69
 msgid "License"
 msgstr "Licence"
 
-#: views/pages/about.phtml:49
+#: views/pages/about.html.twig:79
 msgid "Author"
 msgstr "Auteur"
 
-#: views/pages/about.phtml:55
+#: views/pages/about.html.twig:89
 msgid "Credits"
 msgstr "Crédits"
 
-#: views/pages/about.phtml:58
+#: views/pages/about.html.twig:92
 msgid ""
 "the user experience and interface have been designed with the help of <a "
 "href=\"https://www.maiwann.net/\">Maiwann</a> and <a href=\"https://"
@@ -2414,7 +2398,7 @@ msgstr ""
 "href=\"https://www.maiwann.net/\">Maiwann</a> et <a href=\"https://"
 "fr.linkedin.com/in/elina-bufferne\">Elina Bufferne</a> ;"
 
-#: views/pages/about.phtml:59
+#: views/pages/about.html.twig:93
 msgid ""
 "the logo has been made by <a href=\"https://www.clara-chambon.fr/\">Clara "
 "Chambon</a>;"
@@ -2422,23 +2406,17 @@ msgstr ""
 "le logo a été réalisé par <a href=\"https://www.clara-chambon.fr/\">Clara "
 "Chambon</a> ;"
 
-#: views/pages/about.phtml:60
+#: views/pages/about.html.twig:94
 msgid ""
-"the font <a href=\"https://fonts.google.com/specimen/Comfortaa\">Comfortaa</"
-"a>, by Johan Aakerlund;"
+"the font <a href=\"https://www.theleagueofmoveabletype.com/"
+"raleway\">Raleway</a>, by Matt McInerney, Pablo Impallari, Rodrigo "
+"Fuenzalida;"
 msgstr ""
-"la police <a href=\"https://fonts.google.com/specimen/Comfortaa\">Comfortaa</"
-"a>, par Johan Aakerlund ;"
+"la police <a href=\"https://www.theleagueofmoveabletype.com/"
+"raleway\">Raleway</a>, par Matt McInerney, Pablo Impallari, Rodrigo "
+"Fuenzalida;"
 
-#: views/pages/about.phtml:61
-msgid ""
-"the font <a href=\"https://fonts.google.com/specimen/Open+Sans\">Open Sans</"
-"a>, by Steve Matteson;"
-msgstr ""
-"la police <a href=\"https://fonts.google.com/specimen/Open+Sans\">Open Sans</"
-"a>, par Steve Matteson ;"
-
-#: views/pages/about.phtml:62
+#: views/pages/about.html.twig:95
 msgid ""
 "the icons are from <a href=\"https://clarity.design/\">the Clarity project</"
 "a>;"
@@ -2446,7 +2424,7 @@ msgstr ""
 "les icônes viennent du <a href=\"https://clarity.design/\">projet Clarity</"
 "a> ;"
 
-#: views/pages/about.phtml:63
+#: views/pages/about.html.twig:96
 msgid ""
 "the illustrations are from <a href=\"https://undraw.co\">the unDraw project</"
 "a>, by <a href=\"https://twitter.com/ninaLimpi\">Katerina Limpitsouni</a>;"
@@ -2454,15 +2432,15 @@ msgstr ""
 "les illustrations viennent du <a href=\"https://undraw.co\">projet unDraw</"
 "a>, par <a href=\"https://twitter.com/ninaLimpi\">Katerina Limpitsouni</a> ;"
 
-#: views/pages/about.phtml:64
+#: views/pages/about.html.twig:97
 msgid ""
-"default cards illustrations are from <a href=\"https://"
-"www.svgbackgrounds.com/\">SVGBackgrounds</a>."
+"default cards illustrations are from <a href=\"https://pattern.monster/"
+"\">Pattern Monster</a>."
 msgstr ""
 "les illustrations par défaut des cartes viennent de <a href=\"https://"
-"www.svgbackgrounds.com/\">SVGBackgrounds</a>."
+"pattern.monster/\">Pattern Monster</a>."
 
-#: views/pages/about.phtml:69
+#: views/pages/about.html.twig:102
 msgid ""
 "And a huge thanks to the people who subscribe to the official service, talk "
 "about Flus around them, share their opinion and ideas, or report bugs!"
@@ -2471,43 +2449,39 @@ msgstr ""
 "de Flus autour d’elleux, partagent leur opinion et leurs idées, ou remontent "
 "des bugs !"
 
-#: views/pages/addons.phtml:16
+#: views/pages/addons.html.twig:19
 #, php-format
 msgid "Keep %s at hand in your browser"
 msgstr "Gardez %s à portée de navigateur"
 
-#: views/pages/addons.phtml:24
-msgid "Download for Firefox"
-msgstr "Télécharger pour Firefox"
+#: views/pages/addons.html.twig:25
+msgid "Download for Firefox and Firefox Mobile"
+msgstr "Télécharger pour Firefox et Firefox mobile"
 
-#: views/pages/addons.phtml:32
-msgid "Download for Chrome"
-msgstr "Télécharger pour Chrome"
-
-#: views/pages/addons.phtml:40
+#: views/pages/addons.html.twig:37
 msgid "Your browser is not in the list?"
 msgstr "Votre navigateur n’est pas dans la liste ?"
 
-#: views/pages/addons.phtml:45
+#: views/pages/addons.html.twig:38
 msgid "Drag and drop this link to your browser bookmarks bar:"
 msgstr ""
 "Glissez et déposez ce lien dans la barre de marque-pages de votre "
 "navigateur :"
 
-#: views/pages/addons.phtml:52
+#: views/pages/addons.html.twig:43
 #, php-format
 msgid "Add to %s"
 msgstr "Ajouter à %s"
 
-#: views/pages/addons.phtml:59
+#: views/pages/addons.html.twig:50
 msgid "Using a smartphone?"
 msgstr "Vous utilisez un smartphone ?"
 
-#: views/pages/addons.phtml:63
+#: views/pages/addons.html.twig:54
 msgid "Sorry, there’s no app for that."
 msgstr "Désolé, il n’y a pas d’application pour ça."
 
-#: views/pages/addons.phtml:67
+#: views/pages/addons.html.twig:58
 #, php-format
 msgid ""
 "Instead, you can <strong>add a shortcut to %s on your home screen.</strong>"
@@ -2515,148 +2489,155 @@ msgstr ""
 "À la place, vous pouvez <strong>ajouter un raccourci vers %s à votre écran "
 "d’accueil.</strong>"
 
-#: views/pages/addons.phtml:68
+#: views/pages/addons.html.twig:59
 msgid "With modern browsers, it will work as a mobile application."
 msgstr ""
 "Avec les navigateurs modernes, il fonctionnera comme une application mobile."
 
-#: views/pages/terms.phtml:3 views/pages/terms.phtml:10
+#: views/pages/terms.html.twig:3 views/pages/terms.html.twig:4
+#: views/pages/terms.html.twig:12 views/pages/terms.html.twig:16
 msgid "Terms of service"
 msgstr "Conditions générales d’utilisation"
 
-#: views/pages/terms.phtml:17
-msgid "back to the registration"
-msgstr "retour à l’inscription"
+#: views/pages/terms.html.twig:25
+msgid "Back to the registration"
+msgstr "Retour à l’inscription"
 
-#: views/passwords/edit.phtml:3 views/passwords/edit.phtml:11
-msgid "Edit a password"
-msgstr "Modifier un mot de passe"
+#: views/pages/webmanifest.json.twig:4
+msgid "Collect, organise, annotate and share links from around the Web."
+msgstr ""
+"Collectez, organisez, annotez et partagez les liens provenant de l'ensemble "
+"du Web."
 
-#: views/passwords/edit.phtml:15
+#: views/pages/webmanifest.json.twig:25
 #, php-format
-msgid "You’re changing the password of %s."
-msgstr "Vous êtes en train de modifier le mot de passe de %s."
+msgid "Bookmarks screen of %s on desktop"
+msgstr "L’écran des signets de %s sur ordinateur"
 
-#: views/passwords/edit.phtml:23
-msgid "Your new password"
-msgstr "Votre nouveau mot de passe"
+#: views/pages/webmanifest.json.twig:32
+#, php-format
+msgid "Bookmarks screen of %s on mobile"
+msgstr "L’écran des signets de %s sur mobile"
 
-#: views/passwords/edit.phtml:25 views/registrations/new.phtml:100
-msgid "(recommended at least 8 characters)"
-msgstr "(recommandé au moins 8 caractères)"
-
-#: views/passwords/edit.phtml:65
+#: views/passwords/edit.html.twig:3
 msgid "Change your password"
 msgstr "Modifier votre mot de passe"
 
-#: views/passwords/forgot.phtml:3 views/passwords/forgot.phtml:15
+#: views/passwords/edit.html.twig:11
+#, php-format
+msgid "You’re changing the password of the account <strong>%s</strong>."
+msgstr "Vous êtes en train de modifier le mot de passe de <strong>%s</strong>."
+
+#: views/passwords/edit.html.twig:23
+msgid "Your new password"
+msgstr "Votre nouveau mot de passe"
+
+#: views/passwords/edit.html.twig:25 views/registrations/new.html.twig:100
+msgid "(recommended at least 8 characters)"
+msgstr "(recommandé au moins 8 caractères)"
+
+#: views/passwords/forgot.html.twig:3 views/passwords/forgot.html.twig:11
+#: views/passwords/forgot.html.twig:16
 msgid "Reset your password"
 msgstr "Réinitialiser votre mot de passe"
 
-#: views/passwords/forgot.phtml:19
+#: views/passwords/forgot.html.twig:19
 msgid "We’ll send you an email with a link to reset your password."
 msgstr ""
 "Nous allons vous envoyer un courriel pour réinitialiser votre mot de passe."
 
-#: views/passwords/forgot.phtml:32
+#: views/passwords/forgot.html.twig:33
 msgid "We’ve sent you an email to reset your password."
 msgstr ""
 "Nous vous avons envoyé un courriel pour réinitialiser votre mot de passe."
 
-#: views/passwords/forgot.phtml:37 views/sessions/new.phtml:29
+#: views/passwords/forgot.html.twig:38 views/sessions/new.html.twig:27
 msgid "Email address"
 msgstr "Adresse courriel"
 
-#: views/passwords/forgot.phtml:64
+#: views/passwords/forgot.html.twig:64
 msgid "Send the reset email"
 msgstr "Envoyer le courriel de réinitialisation"
 
-#: views/passwords/forgot.phtml:71
+#: views/passwords/forgot.html.twig:70
 msgid "Remember password?"
 msgstr "Mot de passe retrouvé ?"
 
-#: views/profiles/show.phtml:4
-#, php-format
-msgid "Discover %s’s collections on %s."
-msgstr "Découvrez les collections de %s sur %s."
-
-#: views/profiles/show.phtml:25
+#: views/profiles/show.html.twig:8
 #, php-format
 msgid "Collections OPML of %s"
 msgstr "OPML des collections de %s"
 
-#: views/profiles/show.phtml:42
+#: views/profiles/show.html.twig:14
+#, php-format
+msgid "Discover %s’s collections on %s."
+msgstr "Découvrez les collections de %s sur %s."
+
+#: views/profiles/show.html.twig:44
 msgid "This is your public profile!"
 msgstr "Voici votre profil public !"
 
-#: views/profiles/show.phtml:63
+#: views/profiles/show.html.twig:68
 msgid "Last shared links"
 msgstr "Derniers liens partagés"
 
-#: views/profiles/show.phtml:82
-#, php-format
-msgid ""
-"You didn’t share any links yet. Start by <a href=\"%s\">creating a public "
-"collection</a>."
-msgstr ""
-"Vous n’avez pas encore partagé de lien. Commencez par <a href=\"%s\">créer "
-"une collection publique</a>."
+#: views/profiles/show.html.twig:88
+msgid "You didn’t share any links yet."
+msgstr "Vous n’avez encore partagé aucun lien."
 
-#: views/profiles/show.phtml:86
+#: views/profiles/show.html.twig:92
+msgid "Create a public collection"
+msgstr "Créer une collection publique"
+
+#: views/profiles/show.html.twig:97
 msgid "This user didn’t share any links yet."
 msgstr "Cet·te utilisateur·ice n’a pas encore partagé de lien."
 
-#: views/profiles/show.phtml:92
+#: views/profiles/show.html.twig:104
 msgid "Published collections"
 msgstr "Collections publiées"
 
-#: views/profiles/show.phtml:109
+#: views/profiles/show.html.twig:123
 msgid "Collections shared with you"
 msgstr "Collections partagées avec vous"
 
-#: views/read/index.phtml:24
+#: views/read/index.html.twig:28
 msgid "Find here all the links you’ve marked as read."
 msgstr "Retrouvez ici tous les liens que vous avez marqués comme lu."
 
-#: views/registrations/new.phtml:3 views/registrations/new.phtml:16
+#: views/registrations/new.html.twig:3 views/registrations/new.html.twig:11
+#: views/registrations/new.html.twig:16
 msgid "Registration"
 msgstr "Inscription"
 
-#: views/registrations/new.phtml:21
+#: views/registrations/new.html.twig:20
 #, php-format
 msgid "First month is free. <a href=\"%s\">Learn more about pricing.</a>"
 msgstr ""
 "Le premier mois est gratuit. <a href=\"%s\">En savoir plus sur les tarifs.</"
 "a>"
 
-#: views/registrations/new.phtml:36
-msgid "How should we name you?"
-msgstr "Comment devons-nous vous appeler ?"
+#: views/registrations/new.html.twig:36
+msgid "What’s your name?"
+msgstr "Quel est votre nom ?"
 
-#: views/registrations/new.phtml:92
-msgid ""
-"We only send emails necessary for the operation of the service, or in the "
-"event of a problem with your account."
+#: views/registrations/new.html.twig:92
+msgid "We only send emails necessary for the operation of the service."
 msgstr ""
 "Nous n’y enverrons que des courriels nécessaires au fonctionnement du "
-"service, ou en cas de problème avec votre compte."
+"service."
 
-#: views/registrations/new.phtml:98
-msgid "And a password"
-msgstr "Et un mot de passe"
-
-#: views/registrations/new.phtml:161
+#: views/registrations/new.html.twig:162
 #, php-format
 msgid ""
-"Before going any further, please read <a href=\"%s\" target=\"_blank\">the "
-"general terms and conditions of service and use</a> to make sure they are "
-"suitable for you."
+"Please read <a href=\"%s\" target=\"_blank\">the general terms and "
+"conditions of service</a> and use to make sure they are suitable for you."
 msgstr ""
-"Avant d’aller plus loin, prenez le temps de lire <a href=\"%s\" "
-"target=\"_blank\">les conditions générales de services et d’utilisation</a> "
-"pour vous assurer que celles-ci vous conviennent."
+"Prenez le temps de lire <a href=\"%s\" target=\"_blank\">les conditions "
+"générales de services et d’utilisation</a> pour vous assurer que celles-ci "
+"vous conviennent."
 
-#: views/registrations/new.phtml:177
+#: views/registrations/new.html.twig:178
 msgid ""
 "I acknowledge that I have read and accepted the general terms and conditions "
 "of service and use"
@@ -2664,142 +2645,36 @@ msgstr ""
 "Je reconnais avoir lu et accepté les conditions générales de services et "
 "d’utilisation"
 
-#: views/registrations/new.phtml:191
+#: views/registrations/new.html.twig:184
+msgid "Sign up"
+msgstr "S’inscrire"
+
+#: views/registrations/new.html.twig:192
 msgid "Already an account?"
 msgstr "Déjà un compte ?"
 
-#: views/sessions/new.phtml:3 views/sessions/new.phtml:17
+#: views/sessions/new.html.twig:3 views/sessions/new.html.twig:11
+#: views/sessions/new.html.twig:16
 msgid "Log in"
 msgstr "Connexion"
 
-#: views/sessions/new.phtml:21
-msgid "Your account and your data are now deleted."
-msgstr "Votre compte ainsi que vos données sont maintenant supprimées."
-
-#: views/sessions/new.phtml:56
+#: views/sessions/new.html.twig:55
 msgid "Password"
 msgstr "Mot de passe"
 
-#: views/sessions/new.phtml:109
+#: views/sessions/new.html.twig:60
 msgid "Forgot password?"
 msgstr "Mot de passe oublié ?"
 
-#: views/sessions/new.phtml:117
+#: views/sessions/new.html.twig:104
+msgid "Login"
+msgstr "Se connecter"
+
+#: views/sessions/new.html.twig:115
 msgid "No account yet?"
 msgstr "Pas encore de compte ?"
 
-#: views/showcases/show_contact.phtml:3 views/showcases/show_contact.phtml:11
-msgid "You can help to improve the service"
-msgstr "Vous pouvez aider à améliorer le service"
-
-#: views/showcases/show_contact.phtml:15
-#, php-format
-msgid "To help us improve %s, you can now accept to be contacted by email."
-msgstr ""
-"Afin de nous aider à améliorer %s, vous pouvez désormais accepter d’être "
-"contacté‧e par courriel."
-
-#: views/showcases/show_contact.phtml:20
-msgid "Go to your preferences"
-msgstr "Rendez-vous dans vos préférences"
-
-#: views/showcases/show_contact.phtml:27
-msgid "No thanks!"
-msgstr "Non merci !"
-
-#: views/showcases/show_link.phtml:3 views/showcases/show_link.phtml:11
-msgid "Links have been improved"
-msgstr "Les liens ont été améliorés"
-
-#: views/showcases/show_link.phtml:15 views/showcases/show_navigation.phtml:15
-#: views/showcases/show_reading.phtml:15
-msgid "Something has changed!"
-msgstr "Quelque chose a changé !"
-
-#: views/showcases/show_link.phtml:19
-msgid ""
-"<strong>The link interface is now more consistent and practical.</strong> "
-"You can mark a link as read, or add it to your bookmarks in one click. The "
-"“read” link has been removed, but don’t worry: you still can click on titles "
-"to read your links!"
-msgstr ""
-"<strong>L’interface des liens est désormais plus cohérente et pratique.</"
-"strong> Vous pouvez marquer un lien comme lu, ou l’ajouter à vos signets en "
-"un clic. Le lien « lire » a été enlevé, mais ne vous inquiétez pas : vous "
-"pouvez toujours cliquer sur les titres pour lire vos liens !"
-
-#: views/showcases/show_link.phtml:24
-msgid ""
-"The screenshot of a link card. The actions at its bottom allow to mark as "
-"read, add to bookmarks and store the link."
-msgstr ""
-"La capture d’écran d’un lien. Les actions en-dessous du lien permettent de "
-"le marquer comme lu, de l’ajouter aux signets et de le ranger."
-
-#: views/showcases/show_link.phtml:29
-msgid "The look of the links on mobile has also been improved to save space."
-msgstr ""
-"Les liens ont également été améliorés sur mobile pour gagner de la place."
-
-#: views/showcases/show_link.phtml:33 views/showcases/show_navigation.phtml:33
-#: views/showcases/show_reading.phtml:29
-msgid ""
-"Don’t hesitate <strong>to give feedback</strong> from the “Help & support” "
-"menu!"
-msgstr ""
-"N’hésitez pas <strong>à faire des retours</strong> depuis le menu « Aide & "
-"support » !"
-
-#: views/showcases/show_link.phtml:39 views/showcases/show_navigation.phtml:39
-#: views/showcases/show_reading.phtml:35
-msgid "Got it!"
-msgstr "C’est noté !"
-
-#: views/showcases/show_navigation.phtml:3
-#: views/showcases/show_navigation.phtml:11
-msgid "A new navigation is available"
-msgstr "Une nouvelle navigation est disponible"
-
-#: views/showcases/show_navigation.phtml:19
-msgid ""
-"<strong>The navigation has been revised to make it more intuitive.</strong> "
-"The things you own are now separated from the things you follow."
-msgstr ""
-"<strong>La navigation a été revue pour la rendre plus intuitive.</strong> "
-"Les choses que vous possédez sont désormais séparées des choses que vous "
-"suivez."
-
-#: views/showcases/show_navigation.phtml:24
-msgid "The navigation bar showing three tabs: News, My links and Feeds"
-msgstr ""
-"La barre de navigation qui montre trois onglets : Journal, Mes liens et Flux"
-
-#: views/showcases/show_navigation.phtml:29
-msgid ""
-"Your bookmarks, read links and your own collections are now under the “My "
-"links” tab. Followed collections and feeds are only one concept and can be "
-"found under the “Feeds” tab."
-msgstr ""
-"Vos signets, liens lus et vos propres collections se trouvent maintenant "
-"dans l’onglet « Mes liens ». Les collections et les flux suivis ne sont plus "
-"qu’un seul concept et peuvent être retrouvés dans l’onglet « Flux »."
-
-#: views/showcases/show_reading.phtml:3 views/showcases/show_reading.phtml:11
-msgid "Organise your reading list more easily"
-msgstr "Organisez votre liste de lecture plus facilement"
-
-#: views/showcases/show_reading.phtml:19
-msgid ""
-"<strong>A new “Reading” tab is now available in the main navigation menu.</"
-"strong> It brings together all the features related to reading: “News”, "
-"“Bookmarks” and “Links read” are accessible in one click."
-msgstr ""
-"<strong>Un nouvel onglet « Lecture » est désormais disponible dans le menu "
-"de navigation principal.</strong> Il regroupe toutes les fonctionnalités "
-"liées à la lecture : le « Journal », les « Signets » et les « Liens lus » "
-"sont accessibles en un clic."
-
-#: views/support/show.phtml:16
+#: views/support/show.html.twig:18
 msgid ""
 "If you have a question or if you’re facing an issue, you can contact me via "
 "this form."
@@ -2807,56 +2682,41 @@ msgstr ""
 "Si vous avez une question ou faites face à un souci, vous pouvez me "
 "contacter à partir de ce formulaire."
 
-#: views/support/show.phtml:28
+#: views/support/show.html.twig:31
 msgid "Your message has been sent."
 msgstr "Votre message a été envoyé."
 
-#: views/support/show.phtml:33
+#: views/support/show.html.twig:36
 msgid "Subject"
 msgstr "Sujet"
 
-#: views/support/show.phtml:59
+#: views/support/show.html.twig:62
 msgid "Your message"
 msgstr "Votre message"
 
-#: views/support/show.phtml:84
+#: views/support/show.html.twig:87
 #, php-format
 msgid "I’ll answer you at <strong>%s</strong>"
 msgstr "Je vous répondrai à <strong>%s</strong>"
 
-#: views/support/show.phtml:89
+#: views/support/show.html.twig:92
 msgid "Send your message"
 msgstr "Envoyer votre message"
 
-#: views/support/show.phtml:99
+#: views/support/show.html.twig:103
 msgid "More help"
 msgstr "Plus d’aide"
 
-#: views/support/show.phtml:106
+#: views/support/show.html.twig:110
 msgid "Start the onboarding again"
 msgstr "Recommencer l’introduction"
 
-#: views/support/show.phtml:112
+#: views/support/show.html.twig:117
 msgid "What’s new?"
 msgstr "Quoi de neuf ?"
 
-#: views/topics/show.phtml:13
-#, php-format
-msgid "The collections about %s, on %s."
-msgstr "Les collection à propos de %s, sur %s."
+#~ msgid "See notes by"
+#~ msgstr "Voir les notes de"
 
-#: views/topics/show.phtml:57
-msgid ""
-"The community didn’t publish any collection in this topic yet. Will you be "
-"the first?"
-msgstr ""
-"La communauté n’a pas encore publié de collection dans cette thématique. "
-"Serez-vous le ou la première ?"
-
-#: views/unauthorized.phtml:3
-msgid "Unauthorized"
-msgstr "Non autorisé"
-
-#: views/unauthorized.phtml:10
-msgid "You must be connected to see this page."
-msgstr "Vous devez être connecté·e pour voir cette page."
+#~ msgid "About"
+#~ msgstr "À propos"
