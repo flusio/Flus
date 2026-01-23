@@ -33,7 +33,6 @@ class Topics
      * Create a topic.
      *
      * @request_param label
-     * @request_param image_url An URL to an image to illustrate the topic (optional)
      *
      * @response 400 if the label is invalid
      * @response 200
@@ -41,14 +40,7 @@ class Topics
     public function create(Request $request): Response
     {
         $label = $request->parameters->getString('label', '');
-        $image_url = $request->parameters->getString('image_url', '');
         $topic = new models\Topic($label);
-
-        if ($image_url) {
-            $image_service = new services\Image();
-            $image_filename = $image_service->generatePreviews($image_url);
-            $topic->image_filename = $image_filename;
-        }
 
         if (!$topic->validate()) {
             $errors = implode(' ', $topic->errors());
@@ -65,7 +57,6 @@ class Topics
      *
      * @request_param id
      * @request_param label
-     * @request_param image_url An URL to an image to illustrate the topic (optional)
      *
      * @response 404 if the id doesn't exist
      * @response 400 if the label is invalid
@@ -75,7 +66,6 @@ class Topics
     {
         $id = $request->parameters->getString('id', '');
         $label = trim($request->parameters->getString('label', ''));
-        $image_url = trim($request->parameters->getString('image_url', ''));
 
         $topic = models\Topic::find($id);
         if (!$topic) {
@@ -84,12 +74,6 @@ class Topics
 
         if ($label) {
             $topic->label = $label;
-        }
-
-        if ($image_url) {
-            $image_service = new services\Image();
-            $image_filename = $image_service->generatePreviews($image_url);
-            $topic->image_filename = $image_filename;
         }
 
         if (!$topic->validate()) {

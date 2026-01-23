@@ -202,11 +202,6 @@ flus# sudo -u www-data php cli topics create --label=LABEL
 ```
 
 You must change `LABEL` by the name of your topic (e.g. economics, politics, health).
-You can pass an `image_url` param to set an illustration:
-
-```console
-flus# sudo -u www-data php cli topics create --label=LABEL --image_url=https://flus.fr/carnet/card.png
-```
 
 If you’ve made a mistake, you can update or delete a topic with:
 

@@ -78,13 +78,11 @@ class Help
         $usage .= "  topics                   List the topics\n";
         $usage .= "  topics create            Create a topic\n";
         $usage .= "      --label=TEXT         where TEXT is a {$topic_label_max_size}-chars max string\n";
-        $usage .= "      [--image_url=URL]    where URL is an optional illustration image\n";
         $usage .= "  topics delete            Delete a topic\n";
         $usage .= "      --id=ID              where ID is the id of the topic to delete\n";
         $usage .= "  topics update            Update a topic\n";
         $usage .= "      --id=ID              where ID is the id of the topic to delete\n";
         $usage .= "      [--label=TEXT]       where TEXT is a {$topic_label_max_size}-chars max string\n";
-        $usage .= "      [--image_url=URL]    where URL is an optional illustration image\n";
         $usage .= "\n";
         $usage .= "  urls show                Show the HTTP response returned by an URL\n";
         $usage .= "      --url=TEXT           where TEXT is an external URL\n";

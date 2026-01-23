@@ -71,7 +71,6 @@ class Media
             $file_names_from_db = array_merge(
                 models\Link::listImageFilenamesStartingWith($subdir_name),
                 models\Collection::listImageFilenamesStartingWith($subdir_name),
-                models\Topic::listImageFilenamesStartingWith($subdir_name),
             );
 
             // do the diff between those 2 arrays to get the list of files to

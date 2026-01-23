@@ -233,11 +233,8 @@ CREATE INDEX idx_notes_link_id ON notes(link_id);
 CREATE TABLE topics (
     id TEXT PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,
-    label TEXT NOT NULL,
-    image_filename TEXT
+    label TEXT NOT NULL
 );
-
-CREATE INDEX idx_topics_image_filename ON topics(image_filename) WHERE image_filename IS NOT NULL;
 
 CREATE TABLE collections_to_topics (
     id SERIAL PRIMARY KEY,

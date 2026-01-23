@@ -10,8 +10,6 @@ use Minz\Database;
  */
 trait Topic
 {
-    use MediaQueries;
-
     /**
      * Returns the list of topics attached to the given collection
      *

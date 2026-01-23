@@ -36,9 +36,6 @@ class Topic
     )]
     public string $label;
 
-    #[Database\Column]
-    public ?string $image_filename;
-
     public function __construct(string $label)
     {
         $this->id = \Minz\Random::timebased();
