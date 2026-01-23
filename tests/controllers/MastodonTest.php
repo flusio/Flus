@@ -26,7 +26,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/mastodon');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'mastodon/show.phtml');
+        $this->assertResponseTemplateName($response, 'mastodon/show.html.twig');
         $this->assertResponseContains($response, 'Configure sharing to Mastodon');
     }
 
@@ -238,7 +238,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'mastodon/authorization.phtml');
+        $this->assertResponseTemplateName($response, 'mastodon/authorization.html.twig');
         $this->assertResponseContains($response, 'Mastodon authorization');
         $this->assertResponseContains($response, $code);
     }

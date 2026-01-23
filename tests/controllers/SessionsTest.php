@@ -24,7 +24,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'Login');
-        $this->assertResponseTemplateName($response, 'sessions/new.phtml');
+        $this->assertResponseTemplateName($response, 'sessions/new.html.twig');
     }
 
     public function testNewRedirectsToHomeIfConnected(): void

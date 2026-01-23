@@ -30,7 +30,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', "/collections/{$collection->id}/share");
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'collections/shares/index.phtml');
+        $this->assertResponseTemplateName($response, 'collections/shares/index.html.twig');
         $this->assertResponseContains($response, $collection_name);
     }
 
@@ -69,7 +69,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', "/collections/{$collection->id}/share");
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'collections/shares/index.phtml');
+        $this->assertResponseTemplateName($response, 'collections/shares/index.html.twig');
         $this->assertResponseContains($response, $collection_name);
     }
 
@@ -144,7 +144,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'collections/shares/index.phtml');
+        $this->assertResponseTemplateName($response, 'collections/shares/index.html.twig');
     }
 
     public function testCreateCreatesCollectionShare(): void
@@ -277,7 +277,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseTemplateName($response, 'collections/shares/index.phtml');
+        $this->assertResponseTemplateName($response, 'collections/shares/index.html.twig');
         $this->assertResponseContains($response, 'A security verification failed');
         $collection_share = models\CollectionShare::findBy([
             'collection_id' => $collection->id,
@@ -301,7 +301,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseTemplateName($response, 'collections/shares/index.phtml');
+        $this->assertResponseTemplateName($response, 'collections/shares/index.html.twig');
         $this->assertResponseContains($response, 'You can’t share access with the owner of the collection.');
         $collection_share = models\CollectionShare::findBy([
             'collection_id' => $collection->id,
@@ -325,7 +325,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseTemplateName($response, 'collections/shares/index.phtml');
+        $this->assertResponseTemplateName($response, 'collections/shares/index.html.twig');
         $this->assertResponseContains($response, 'This user doesn’t exist');
         $collection_share = models\CollectionShare::findBy([
             'collection_id' => $collection->id,
@@ -350,7 +350,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseTemplateName($response, 'collections/shares/index.phtml');
+        $this->assertResponseTemplateName($response, 'collections/shares/index.html.twig');
         $this->assertResponseContains($response, 'This user doesn’t exist');
         $collection_share = models\CollectionShare::findBy([
             'collection_id' => $collection->id,
@@ -376,7 +376,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseTemplateName($response, 'collections/shares/index.phtml');
+        $this->assertResponseTemplateName($response, 'collections/shares/index.html.twig');
         $this->assertResponseContains($response, 'The collection is already shared with this user');
     }
 
@@ -396,7 +396,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseTemplateName($response, 'collections/shares/index.phtml');
+        $this->assertResponseTemplateName($response, 'collections/shares/index.html.twig');
         $this->assertResponseContains($response, 'The type is invalid');
         $collection_share = models\CollectionShare::findBy([
             'collection_id' => $collection->id,
@@ -421,7 +421,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseTemplateName($response, 'collections/shares/index.phtml');
+        $this->assertResponseTemplateName($response, 'collections/shares/index.html.twig');
         $this->assertResponseContains($response, 'The type is required');
         $collection_share = models\CollectionShare::findBy([
             'collection_id' => $collection->id,
@@ -497,7 +497,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'collections/shares/index.phtml');
+        $this->assertResponseTemplateName($response, 'collections/shares/index.html.twig');
         $this->assertFalse($collection->sharedWith($other_user));
     }
 
@@ -620,7 +620,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseTemplateName($response, 'collections/shares/index.phtml');
+        $this->assertResponseTemplateName($response, 'collections/shares/index.html.twig');
         $this->assertSame('This user doesn’t exist.', \Minz\Flash::get('error'));
         $this->assertTrue($collection->sharedWith($other_user));
     }
@@ -641,7 +641,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseTemplateName($response, 'collections/shares/index.phtml');
+        $this->assertResponseTemplateName($response, 'collections/shares/index.html.twig');
         $this->assertSame(
             'A security verification failed: you should retry to submit the form.',
             \Minz\Flash::get('error'),

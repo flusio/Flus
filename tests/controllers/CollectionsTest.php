@@ -36,7 +36,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'New collection');
-        $this->assertResponseTemplateName($response, 'collections/new.phtml');
+        $this->assertResponseTemplateName($response, 'collections/new.html.twig');
     }
 
     public function testNewRedirectsIfNotConnected(): void
@@ -229,7 +229,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $link_title);
         $this->assertResponseContains($response, '<strong>foo bar</strong>');
-        $this->assertResponseTemplateName($response, 'collections/show.phtml');
+        $this->assertResponseTemplateName($response, 'collections/show.html.twig');
     }
 
     public function testShowRendersCorrectlyIfPublicAndNotConnected(): void
@@ -256,7 +256,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $link_title);
-        $this->assertResponseTemplateName($response, 'collections/show_public.phtml');
+        $this->assertResponseTemplateName($response, 'collections/show.html.twig');
     }
 
     public function testShowRendersCorrectlyIfPublicAndDoesNotOwnTheLink(): void
@@ -284,7 +284,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $link_title);
-        $this->assertResponseTemplateName($response, 'collections/show_public.phtml');
+        $this->assertResponseTemplateName($response, 'collections/show.html.twig');
     }
 
     public function testShowRendersCorrectlyIfCollectionIsPrivateAndSharedWithReadAccess(): void
@@ -316,7 +316,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $link_title);
-        $this->assertResponseTemplateName($response, 'collections/show_public.phtml');
+        $this->assertResponseTemplateName($response, 'collections/show.html.twig');
     }
 
     public function testShowRendersCorrectlyIfCollectionIsPrivateAndSharedWithWriteAccess(): void
@@ -348,7 +348,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $link_title);
-        $this->assertResponseTemplateName($response, 'collections/show.phtml');
+        $this->assertResponseTemplateName($response, 'collections/show.html.twig');
     }
 
     public function testShowHidesHiddenLinksInPublicCollections(): void
@@ -458,7 +458,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', "/collections/{$collection->id}/edit");
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'collections/edit.phtml');
+        $this->assertResponseTemplateName($response, 'collections/edit.html.twig');
     }
 
     public function testEditRendersCorrectlyIfCollectionIsSharedWithWriteAccess(): void
@@ -478,7 +478,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', "/collections/{$collection->id}/edit");
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'collections/edit.phtml');
+        $this->assertResponseTemplateName($response, 'collections/edit.html.twig');
     }
 
     public function testEditRedirectsIfNotConnected(): void

@@ -38,7 +38,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/news');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'news/index.phtml');
+        $this->assertResponseTemplateName($response, 'news/index.html.twig');
         $this->assertResponseContains($response, $title);
     }
 
@@ -59,7 +59,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $bookmarks_url = \Minz\Url::for('bookmarks');
-        $bookmarks_anchor = "<a class=\"anchor--hidden\" href=\"{$bookmarks_url}\">bookmarks</a>";
+        $bookmarks_anchor = "<a href=\"{$bookmarks_url}\">bookmarks</a>";
         $this->assertResponseContains($response, "via your <strong>{$bookmarks_anchor}</strong>");
     }
 
@@ -93,9 +93,9 @@ class NewsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $collection_url = \Minz\Url::for('collection', ['id' => $collection->id]);
-        $collection_anchor = "<a class=\"anchor--hidden\" href=\"{$collection_url}\">{$collection_name}</a>";
+        $collection_anchor = "<a href=\"{$collection_url}\">{$collection_name}</a>";
         $profile_url = \Minz\Url::for('profile', ['id' => $other_user->id]);
-        $profile_anchor = "<a class=\"anchor--hidden\" href=\"{$profile_url}\">{$username}</a>";
+        $profile_anchor = "<a href=\"{$profile_url}\">{$username}</a>";
         $this->assertResponseContains($response, "via <strong>{$collection_anchor}</strong> by {$profile_anchor}");
     }
 

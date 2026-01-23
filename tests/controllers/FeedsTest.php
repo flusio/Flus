@@ -25,10 +25,13 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         /** @var string */
         $feed_name = $this->fake('words', 3, true);
+        /** @var string */
+        $feed_url = $this->fake('url');
         $collection = CollectionFactory::create([
             'name' => $feed_name,
             'type' => 'feed',
             'is_public' => true,
+            'feed_url' => $feed_url,
         ]);
         FollowedCollectionFactory::create([
             'user_id' => $user->id,
@@ -38,7 +41,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/feeds');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'feeds/index.phtml');
+        $this->assertResponseTemplateName($response, 'feeds/index.html.twig');
         $this->assertResponseContains($response, $feed_name);
     }
 
@@ -51,9 +54,12 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'name' => $group_name,
         ]);
+        /** @var string */
+        $feed_url = $this->fake('url');
         $collection = CollectionFactory::create([
             'type' => 'feed',
             'is_public' => true,
+            'feed_url' => $feed_url,
         ]);
         FollowedCollectionFactory::create([
             'user_id' => $user->id,
@@ -71,10 +77,13 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         /** @var string */
         $feed_name = $this->fake('words', 3, true);
+        /** @var string */
+        $feed_url = $this->fake('url');
         $collection = CollectionFactory::create([
             'name' => $feed_name,
             'type' => 'feed',
             'is_public' => false,
+            'feed_url' => $feed_url,
         ]);
         FollowedCollectionFactory::create([
             'user_id' => $user->id,
@@ -91,10 +100,13 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create();
         /** @var string */
         $feed_name = $this->fake('words', 3, true);
+        /** @var string */
+        $feed_url = $this->fake('url');
         $collection = CollectionFactory::create([
             'name' => $feed_name,
             'type' => 'feed',
             'is_public' => true,
+            'feed_url' => $feed_url,
         ]);
         FollowedCollectionFactory::create([
             'user_id' => $user->id,
@@ -113,7 +125,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/feeds/new');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'feeds/new.phtml');
+        $this->assertResponseTemplateName($response, 'feeds/new.html.twig');
         $this->assertResponseContains($response, 'New feed');
     }
 

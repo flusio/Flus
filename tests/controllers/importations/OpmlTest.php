@@ -25,7 +25,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'Importation from an OPML file');
-        $this->assertResponseTemplateName($response, 'importations/opml/show.phtml');
+        $this->assertResponseTemplateName($response, 'importations/opml/show.html.twig');
     }
 
     public function testShowRendersIfImportationIsOngoing(): void
@@ -55,7 +55,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/opml');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, 'We’ve imported your data from your <abbr>OPML</abbr> file.');
+        $this->assertResponseContains($response, 'We’ve imported your data from your OPML file.');
     }
 
     public function testShowRendersIfImportationIsInError(): void

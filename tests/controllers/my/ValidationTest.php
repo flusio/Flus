@@ -52,7 +52,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/my/account/validation');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, 'Your account is now validated.');
+        $this->assertResponseContains($response, 'Your account is now validated 🎉');
     }
 
     public function testShowRendersCorrectlyWithValidationEmailSentStatus(): void

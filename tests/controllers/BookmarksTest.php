@@ -32,7 +32,7 @@ class BookmarksTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/bookmarks');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'bookmarks/index.phtml');
+        $this->assertResponseTemplateName($response, 'bookmarks/index.html.twig');
         $this->assertResponseContains($response, $link_title);
     }
 
