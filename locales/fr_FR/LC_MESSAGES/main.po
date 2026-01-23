@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-01-23 15:45+0100\n"
-"PO-Revision-Date: 2026-01-23 15:46+0100\n"
+"POT-Creation-Date: 2026-01-23 17:07+0100\n"
+"PO-Revision-Date: 2026-01-23 17:07+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -736,8 +736,8 @@ msgstr ""
 "Images <abbr>PNG</abbr>, <abbr>JPG</abbr> ou <abbr>WEBP</abbr> seulement."
 
 #: views/collections/images/edit.html.twig:59
-msgid "The minimum recommended dimensions are 1100x400px."
-msgstr "Les dimensions minimales recommandées sont de 1100x400px."
+msgid "The minimum recommended dimensions are 400x400px."
+msgstr "Les dimensions minimales recommandées sont de 400x400px."
 
 #: views/collections/links/new.html.twig:3 views/links/new.html.twig:3
 #: views/links/new.html.twig:11 views/links/new.html.twig:15

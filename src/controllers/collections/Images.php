@@ -95,7 +95,7 @@ class Images extends BaseController
         $image_data = $image_file->content() ?: '';
 
         $cover_image = models\Image::fromString($image_data);
-        $cover_image->resize(300, 300);
+        $cover_image->resize(400, 400);
 
         if ($collection->image_filename) {
             @unlink($path_covers . $collection->image_filename);

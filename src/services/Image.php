@@ -70,7 +70,7 @@ class Image
 
         try {
             $cover_image = models\Image::fromString($response->data);
-            $cover_image->resize(300, 300);
+            $cover_image->resize(400, 400);
             $cover_image->save($cover_image_filepath . '.webp');
 
             return $url_hash . '.webp';
