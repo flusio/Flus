@@ -1,10 +1,9 @@
 # How to update Flus
 
-This is quite simple, but there are some important things to note. First,
-ALWAYS check if there are migration notes in the [changelog](/CHANGELOG.md).
-This is critical: you might miss important tasks to do otherwise and
-potentially lose your data. Also, always make a backup of your data before
-performing an update.
+This is quite simple, but there are some important things to note.
+First, ALWAYS check if there are migration notes in the [changelog](/CHANGELOG.md).
+This is critical: you might miss important tasks to do otherwise and potentially lose your data.
+Also, always make a backup of your data before performing an update.
 
 Then, you can pull the new code from GitHub:
 
@@ -40,33 +39,31 @@ flus$ # In development
 flus$ make db-setup
 ```
 
-Finally, you might need to restart PHP and the job worker so it detects
-localization and code changes:
+Finally, you might need to restart PHP and the job worker so it detects localization and code changes:
 
 ```console
 flus$ sudo systemctl restart php flus-worker
 ```
 
-**In development,** don’t prefix commands with `sudo -u www-data`. To restart
-php, just stop and restart the `make docker-start` command. You also might want
-to rebuild the Docker images from time to time with `make docker-build`.
+**In development,** don’t prefix commands with `sudo -u www-data`.
+To restart php, just stop and restart the `make docker-start` command.
+You also might want to rebuild the Docker images from time to time with `make docker-build`.
 
 That’s all!
 
-Obviously, if you made changes in your own working directory, things might not
-go so easily. Please always check the current status of the Git repository.
+Obviously, if you made changes in your own working directory, things might not go so easily.
+Please always check the current status of the Git repository.
 
 ---
 
-If at any time something goes wrong and you need to reset the application to
-its previous state, you should start by reverse the migrations with:
+If at any time something goes wrong and you need to reset the application to its previous state, you should start by reverse the migrations with:
 
 ```console
 flus$ sudo -u www-data php cli migrations rollback --steps=1
 ```
 
-You can increase `STEP` to rollback more migrations (its default value is `1`
-so its optional). Then, you can checkout to a previous version with:
+You can increase `STEP` to rollback more migrations (its default value is `1` so its optional).
+Then, you can checkout to a previous version with:
 
 ```console
 flus$ git checkout PREVIOUS_TAG
@@ -78,5 +75,5 @@ If something goes really wrong with the database, you can use the joker command:
 flus$ make db-reset FORCE=true
 ```
 
-It will reset the database and reload the schema. **Note this command doesn't
-work in production.**
+It will reset the database and reload the schema.
+**Note this command doesn't work in production.**

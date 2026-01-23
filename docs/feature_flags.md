@@ -1,11 +1,9 @@
 # Enable experimental features
 
-Some features might be available behind a feature flag. This allows to ship
-new code and tests it in production without showing unfinished work to users.
+Some features might be available behind a feature flag. This allows to ship new code and tests it in production without showing unfinished work to users.
 You can enable them for specific users.
 
-If you’re unfamiliar with the CLI, you’re encouraged to take a look at [its
-documentation](/docs/cli.md).
+If you’re unfamiliar with the CLI, you’re encouraged to take a look at [its documentation](/docs/cli.md).
 
 First of all, you can list the features with the following command:
 
@@ -27,8 +25,7 @@ a97f04ac01bce558a06fca5023cd3b54 2021-04-07 test2@example.com
 
 Each line corresponds to a user, it shows: id, creation date and email.
 
-If you want to enable the feature `beta` for the user `test3@example.com`, you
-must run the following command:
+If you want to enable the feature `beta` for the user `test3@example.com`, you must run the following command:
 
 ```console
 $ php cli features enable --type=beta --user_id=8dff621fbf93ee18b39ee48fe6ec44d4
@@ -44,8 +41,7 @@ $ php cli features flags
 beta 8dff621fbf93ee18b39ee48fe6ec44d4 test3@example.com
 ```
 
-Each line corresponds to an enabled flag, it shows: flag type, user id, user
-email.
+Each line corresponds to an enabled flag, it shows: flag type, user id, user email.
 
 You can disable the flags at any moment:
 
