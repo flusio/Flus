@@ -46,10 +46,6 @@ trait Fetchable
     #[Database\Column]
     public ?\DateTimeImmutable $fetched_retry_at = null;
 
-    // This variable is deprecated and should no longer be used.
-    #[Database\Column]
-    public bool $to_be_fetched = true;
-
     /**
      * Changes the fetching information of the Fetchable model.
      */
