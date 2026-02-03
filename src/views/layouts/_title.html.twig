@@ -1,6 +1,6 @@
 {# response_code is declared on AfterAction in the BaseController.
  # However, it can be undefined on some errors (e.g. a user tries to access an
- non existing page), so we add "Error:" in this situation too.
+ # non existing page), so we add "Error:" in this situation too.
  #}
 {%- if response_code is not defined or response_code >= 400 -%}
     {%- set title = t('Error: ') ~ title -%}
