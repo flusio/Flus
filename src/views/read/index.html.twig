@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block navigation %}
-    {{ include('layouts/_reading_navigation.html.twig', { page: 'read' }) }}
+    {{ include('layouts/_sidenav.html.twig', { navigation: reading_navigation(current: 'read') }) }}
 {% endblock %}
 
 {% block back %}

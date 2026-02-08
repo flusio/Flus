@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block navigation %}
-    {{ include('layouts/_account_navigation.html.twig', { page: 'account validation' }) }}
+    {{ include('layouts/_sidenav.html.twig', { navigation: account_navigation(current: 'account validation') }) }}
 {% endblock %}
 
 {% block body %}

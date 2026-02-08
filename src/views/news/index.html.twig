@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block navigation %}
-    {{ include('layouts/_reading_navigation.html.twig', { page: 'news' }) }}
+    {{ include('layouts/_sidenav.html.twig', { navigation: reading_navigation(current: 'news') }) }}
 {% endblock %}
 
 {% block back %}

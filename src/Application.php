@@ -51,6 +51,7 @@ class Application
         \Minz\Template\Twig::addAttributeExtension(twig\FormattersExtension::class);
         \Minz\Template\Twig::addAttributeExtension(twig\IconExtension::class);
         \Minz\Template\Twig::addAttributeExtension(twig\LocaleExtension::class);
+        \Minz\Template\Twig::addAttributeExtension(twig\NavigationExtension::class);
         \Minz\Template\Twig::addAttributeExtension(twig\UrlExtension::class);
     }
 

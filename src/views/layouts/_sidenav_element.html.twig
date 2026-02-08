@@ -1,0 +1,18 @@
+{% if element.is('group') %}
+    <div class="flow flow--smaller">
+        <h2 class="sidenav__menu-title">{{ element.label }}</h2>
+
+        {% for item in element.items %}
+            {{ include('layouts/_sidenav_element.html.twig', { element: item }) }}
+        {% endfor %}
+    </div>
+{% else %}
+    <a
+        class="sidenav__menu-item"
+        href="{{ element.url }}"
+        {{ navigation.isCurrent(element) ? 'aria-current="page"' : '' }}
+    >
+        {{ icon(element.icon) }}
+        {{ element.label }}
+    </a>
+{% endif %}

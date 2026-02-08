@@ -11,7 +11,7 @@
 
 {% block navigation %}
     {% if app.user %}
-        {{ include('layouts/_reading_navigation.html.twig', { page: 'explore' }) }}
+        {{ include('layouts/_sidenav.html.twig', { navigation: reading_navigation(current: 'explore') }) }}
     {% endif %}
 {% endblock %}
 

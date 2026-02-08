@@ -6,7 +6,7 @@
         data-sidenav-target="opener"
         aria-expanded="false"
     >
-        {{ icon('angle-double', 'rotate90') }}
+        {{ icon('bars') }}
         {{ t('Navigation') }}
     </button>
 
@@ -19,15 +19,16 @@
                     data-action="sidenav#close"
                     data-sidenav-target="closer"
                 >
-                    {{ icon('angle-double', 'rotate270') }}
+                    {{ icon('times') }}
                     <span class="sr-only">
                         {{ t('Close') }}
                     </span>
                 </button>
             </div>
 
-            {% block body %}
-            {% endblock %}
+            {% for element in navigation.elements %}
+                {{ include('layouts/_sidenav_element.html.twig') }}
+            {% endfor %}
         </nav>
     </div>
 </div>

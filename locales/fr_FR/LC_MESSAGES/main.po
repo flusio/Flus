@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-01-23 17:07+0100\n"
-"PO-Revision-Date: 2026-01-23 17:07+0100\n"
+"POT-Creation-Date: 2026-02-08 22:00+0100\n"
+"PO-Revision-Date: 2026-02-08 22:00+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -280,10 +280,12 @@ msgid "The name must be less than {max} characters."
 msgstr "Le nom ne doit pas faire plus de {max} caractères."
 
 #: models/Collection.php:139 models/Collection.php:229
+#: navigations/ReadingNavigation.php:27
 msgid "Bookmarks"
 msgstr "Signets"
 
 #: models/Collection.php:150 models/Collection.php:231
+#: navigations/ReadingNavigation.php:34
 msgid "Links read"
 msgstr "Liens lus"
 
@@ -292,6 +294,7 @@ msgid "Links never to read"
 msgstr "Liens à ne jamais lire"
 
 #: models/Collection.php:172 models/Collection.php:233
+#: navigations/ReadingNavigation.php:20
 msgid "News"
 msgstr "Journal"
 
@@ -346,6 +349,54 @@ msgstr "Le nom d’utilisateur·ice ne doit pas contenir le caractère ‘@’."
 #: models/User.php:86
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
+
+#: navigations/AccountNavigation.php:26
+msgid "Overview"
+msgstr "Aperçu"
+
+#: navigations/AccountNavigation.php:34
+msgid "Account validation"
+msgstr "Validation du compte"
+
+#: navigations/AccountNavigation.php:43
+msgid "Mastodon"
+msgstr "Mastodon"
+
+#: navigations/AccountNavigation.php:52
+msgid "OPML import"
+msgstr "Importation OPML"
+
+#: navigations/AccountNavigation.php:60
+msgid "Data export"
+msgstr "Exportation des données"
+
+#: navigations/AccountNavigation.php:67
+msgid "Credentials"
+msgstr "Identifiants"
+
+#: navigations/AccountNavigation.php:74
+msgid "Sessions"
+msgstr "Sessions"
+
+#: navigations/AccountNavigation.php:81
+msgid "Account deletion"
+msgstr "Suppression du compte"
+
+#: navigations/AccountNavigation.php:85
+msgid "Account"
+msgstr "Compte"
+
+#: navigations/AccountNavigation.php:86
+msgid "Data"
+msgstr "Données"
+
+#: navigations/AccountNavigation.php:87
+msgid "Security"
+msgstr "Sécurité"
+
+#: navigations/ReadingNavigation.php:41
+msgid "Explore"
+msgstr "Explorer"
 
 #: seeds.php:15
 msgid "Business"
@@ -977,12 +1028,6 @@ msgstr ""
 "Quoiqu’il en soit, cette erreur n’est pas de votre fait et vous n’avez plus "
 "qu’à revenir en arrière."
 
-#: views/explore/disabled.html.twig:3 views/explore/disabled.html.twig:17
-#: views/explore/disabled.html.twig:21
-#: views/layouts/_reading_navigation.html.twig:37
-msgid "Explore"
-msgstr "Explorer"
-
 #: views/explore/disabled.html.twig:24
 msgid "Exploration is disabled as administrator did not setup topics."
 msgstr ""
@@ -1149,54 +1194,6 @@ msgstr "Ok !"
 msgid "Import a file"
 msgstr "Importer un fichier"
 
-#: views/layouts/_account_navigation.html.twig:5
-msgid "Account"
-msgstr "Compte"
-
-#: views/layouts/_account_navigation.html.twig:13
-msgid "Overview"
-msgstr "Aperçu"
-
-#: views/layouts/_account_navigation.html.twig:23
-#: views/my/validation/new.html.twig:3 views/my/validation/new.html.twig:12
-#: views/my/validation/show.html.twig:3 views/my/validation/show.html.twig:16
-msgid "Account validation"
-msgstr "Validation du compte"
-
-#: views/layouts/_account_navigation.html.twig:34
-msgid "Mastodon"
-msgstr "Mastodon"
-
-#: views/layouts/_account_navigation.html.twig:40
-msgid "Data"
-msgstr "Données"
-
-#: views/layouts/_account_navigation.html.twig:49
-msgid "OPML import"
-msgstr "Importation OPML"
-
-#: views/layouts/_account_navigation.html.twig:59
-msgid "Data export"
-msgstr "Exportation des données"
-
-#: views/layouts/_account_navigation.html.twig:64
-msgid "Security"
-msgstr "Sécurité"
-
-#: views/layouts/_account_navigation.html.twig:72
-#: views/my/security/show.html.twig:3 views/my/security/show.html.twig:15
-msgid "Credentials"
-msgstr "Identifiants"
-
-#: views/layouts/_account_navigation.html.twig:81
-msgid "Sessions"
-msgstr "Sessions"
-
-#: views/layouts/_account_navigation.html.twig:90
-#: views/my/account/deletion.html.twig:3 views/my/account/deletion.html.twig:16
-msgid "Account deletion"
-msgstr "Suppression du compte"
-
 #: views/layouts/_header-connected.html.twig:7
 #: views/layouts/_header-disconnected.html.twig:4
 #, php-format
@@ -1268,7 +1265,7 @@ msgstr "Se déconnecter"
 msgid "Language"
 msgstr "Langue"
 
-#: views/layouts/_modal_dialog.html.twig:22 views/layouts/sidenav.html.twig:24
+#: views/layouts/_modal_dialog.html.twig:22 views/layouts/_sidenav.html.twig:24
 msgid "Close"
 msgstr "Fermer"
 
@@ -1305,6 +1302,10 @@ msgstr "Rechercher des liens par mots ou URL"
 msgid "Search"
 msgstr "Rechercher"
 
+#: views/layouts/_sidenav.html.twig:10
+msgid "Navigation"
+msgstr "Navigation"
+
 #: views/layouts/_title.html.twig:6
 msgid "Error: "
 msgstr "Erreur : "
@@ -1327,10 +1328,6 @@ msgstr "Accéder au contenu principal"
 #, php-format
 msgid "About %s"
 msgstr "À propos de %s"
-
-#: views/layouts/sidenav.html.twig:10
-msgid "Navigation"
-msgstr "Navigation"
 
 #: views/links/_link.html.twig:63
 msgid "This link seems to be inaccessible, you should repair it."
@@ -2714,9 +2711,3 @@ msgstr "Recommencer l’introduction"
 #: views/support/show.html.twig:117
 msgid "What’s new?"
 msgstr "Quoi de neuf ?"
-
-#~ msgid "See notes by"
-#~ msgstr "Voir les notes de"
-
-#~ msgid "About"
-#~ msgstr "À propos"

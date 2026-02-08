@@ -85,10 +85,6 @@
     transition: background-color 0.2s ease-in-out;
 }
 
-.sidenav__menu-item--bold {
-    font-weight: 600;
-}
-
 .sidenav__menu-item:hover,
 .sidenav__menu-item:focus {
     background-color: rgb(0 0 0 / 5%);

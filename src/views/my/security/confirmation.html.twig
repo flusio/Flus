@@ -9,14 +9,14 @@
 
 {% block navigation %}
     {% if form.isRedirectingTo('sessions') %}
-        {% set page = 'sessions' %}
+        {% set current = 'sessions' %}
     {% elseif form.isRedirectingTo('security') %}
-        {% set page = 'security' %}
+        {% set current = 'security' %}
     {% else %}
-        {% set page = '' %}
+        {% set current = '' %}
     {% endif %}
 
-    {{ include('layouts/_account_navigation.html.twig', { page: page }) }}
+    {{ include('layouts/_sidenav.html.twig', { navigation: account_navigation(current: current) }) }}
 {% endblock %}
 
 {% block body %}
