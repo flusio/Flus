@@ -2,6 +2,7 @@
 
 namespace App\navigations;
 
+use App\auth;
 use Minz\Template\TwigExtension;
 
 /**
@@ -12,7 +13,9 @@ class ReadingNavigation extends BaseNavigation
 {
     public function elements(): array
     {
-        return [
+        $current_user = auth\CurrentUser::require();
+
+        $elements = [
             new Item(
                 'news',
                 \Minz\Url::for('news'),
@@ -33,13 +36,17 @@ class ReadingNavigation extends BaseNavigation
                 'check',
                 TwigExtension::translate('Links read'),
             ),
+        ];
 
-            new Item(
+        if ($current_user->isBetaEnabled()) {
+            $elements[] = new Item(
                 'explore',
                 \Minz\Url::for('explore'),
                 'compass',
                 TwigExtension::translate('Explore'),
-            ),
-        ];
+            );
+        }
+
+        return $elements;
     }
 }

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-02-08 22:00+0100\n"
-"PO-Revision-Date: 2026-02-08 22:00+0100\n"
+"POT-Creation-Date: 2026-02-08 22:16+0100\n"
+"PO-Revision-Date: 2026-02-08 22:16+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -280,12 +280,12 @@ msgid "The name must be less than {max} characters."
 msgstr "Le nom ne doit pas faire plus de {max} caractères."
 
 #: models/Collection.php:139 models/Collection.php:229
-#: navigations/ReadingNavigation.php:27
+#: navigations/ReadingNavigation.php:30
 msgid "Bookmarks"
 msgstr "Signets"
 
 #: models/Collection.php:150 models/Collection.php:231
-#: navigations/ReadingNavigation.php:34
+#: navigations/ReadingNavigation.php:37
 msgid "Links read"
 msgstr "Liens lus"
 
@@ -294,7 +294,7 @@ msgid "Links never to read"
 msgstr "Liens à ne jamais lire"
 
 #: models/Collection.php:172 models/Collection.php:233
-#: navigations/ReadingNavigation.php:20
+#: navigations/ReadingNavigation.php:23
 msgid "News"
 msgstr "Journal"
 
@@ -394,7 +394,7 @@ msgstr "Données"
 msgid "Security"
 msgstr "Sécurité"
 
-#: navigations/ReadingNavigation.php:41
+#: navigations/ReadingNavigation.php:46
 msgid "Explore"
 msgstr "Explorer"
 

@@ -2,7 +2,7 @@
 
 namespace App\navigations;
 
-use App\auth\CurrentUser;
+use App\auth;
 use Minz\Template\TwigExtension;
 
 /**
@@ -13,7 +13,7 @@ class AccountNavigation extends BaseNavigation
 {
     public function elements(): array
     {
-        $current_user = CurrentUser::require();
+        $current_user = auth\CurrentUser::require();
 
         $account_items = [];
         $data_items = [];
