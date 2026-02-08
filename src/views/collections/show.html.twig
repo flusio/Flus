@@ -20,7 +20,7 @@
 {% else %}
     {% set feed_url = url_full('collection feed', { id: collection.id }) %}
     {% set opengraph_description = t('A collection created by %s on %s.', [owner.username, app.brand]) %}
-    {% set current_tab = 'links' %}
+    {% set current_tab = can_update ? 'links' : 'reading' %}
 {% endif %}
 
 {% block title %}{{ collection.name }}{% endblock %}
