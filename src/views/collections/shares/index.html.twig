@@ -1,6 +1,6 @@
 {% extends 'layouts/modal.html.twig' %}
 
-{% block title %}{{ t('Sharing access to “%s”', [collection.name]) }}{% endblock %}
+{% block title %}{{ t('Sharing access to “%s”', [collection.name()]) }}{% endblock %}
 
 {% block body %}
     <div class="flow flow--larger">

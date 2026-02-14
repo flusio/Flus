@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <?xml-stylesheet href="{{ url('feeds xsl') }}" type="text/xsl"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <title>{{ collection.name }}</title>
+    <title>{{ collection.name() }}</title>
 
     {% if collection.description %}
         <subtitle type="html"><![CDATA[{{ collection.descriptionAsHtml | raw }}]]></subtitle>

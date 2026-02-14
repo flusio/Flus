@@ -5,7 +5,7 @@
 {% block body %}
     <div class="wrapper wrapper--small wrapper--center flow flow--large">
         <p class="text--center text--bold">
-            {{ collection.name }}
+            {{ collection.name() }}
         </p>
 
         <form method="post" action="{{ url('update collection filter', { id: collection.id }) }}" class="flow">

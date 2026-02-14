@@ -6,7 +6,7 @@
     {% set current_url_params = { page: pagination.currentPage } %}
 {% endif %}
 
-{% block title %}{{ collection.name }}{% endblock %}
+{% block title %}{{ collection.name() }}{% endblock %}
 {% block canonical %}{{ url_full('bookmarks', current_url_params) }}{% endblock %}
 
 {% block layout_header %}
@@ -18,11 +18,11 @@
 {% endblock %}
 
 {% block back %}
-    {{ include('layouts/_back.html.twig', { title: collection.name, reset: true }) }}
+    {{ include('layouts/_back.html.twig', { title: collection.name(), reset: true }) }}
 {% endblock %}
 
 {% block body %}
-    <h1 class="text--center">{{ collection.name }}</h1>
+    <h1 class="text--center">{{ collection.name() }}</h1>
 
     <p class="text--center">
         {{ t('Place here the links you want to consult later on.') }}

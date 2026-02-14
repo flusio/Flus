@@ -3,7 +3,7 @@
 {% if collection.isFeed %}
     <outline
         type="rss"
-        text="{{ collection.name }}"
+        text="{{ collection.name() }}"
         xmlUrl="{{ collection.feed_url }}"
         htmlUrl="{{ collection.feed_site_url }}"
         {% if display_time_filter %}
@@ -13,7 +13,7 @@
 {% else %}
     <outline
         type="rss"
-        text="{{ collection.name }}"
+        text="{{ collection.name() }}"
         xmlUrl="{{ url_full('collection feed', { id: collection.id, direct: 'true' }) }}"
         htmlUrl="{{ url_full('collection', { id: collection.id }) }}"
         {% if display_time_filter %}

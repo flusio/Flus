@@ -126,7 +126,7 @@
                         {{ collection.is_public ? 'data-public' : '' }}
                         data-illustration="{{ url_media('covers', collection.image_filename, 'collection-card.png') }}"
                     >
-                        {{ collection.name }}
+                        {{ collection.name() }}
                     </option>
                 {% endfor %}
 

@@ -160,14 +160,14 @@
                             {% set owner = source_collection.owner %}
                             {{ t('via <strong><a href="%s">%s</a></strong> by <a href="%s">%s</a>', [
                                 url('collection', { id: source_collection.id }),
-                                source_collection.name | escape,
+                                source_collection.name() | escape,
                                 url('profile', { id: owner.id }),
                                 owner.username | escape,
                             ]) | raw }}
                         {% else %}
                             {{ t('via <strong><a href="%s">%s</a></strong>', [
                                 url('collection', { id: source_collection.id }),
-                                source_collection.name | escape,
+                                source_collection.name() | escape,
                             ]) | raw }}
                         {% endif %}
                     {% elseif source_user %}

@@ -23,16 +23,16 @@
     {% set current_tab = can_update ? 'links' : 'reading' %}
 {% endif %}
 
-{% block title %}{{ collection.name }}{% endblock %}
+{% block title %}{{ collection.name() }}{% endblock %}
 {% block canonical %}{{ url_full('collection', current_url_params) }}{% endblock %}
 
 {% block alternates %}
-    <link rel="alternate" type="application/atom+xml" title="{{ t('Syndication feed of %s', [collection.name]) }}" href="{{ feed_url }}">
+    <link rel="alternate" type="application/atom+xml" title="{{ t('Syndication feed of %s', [collection.name()]) }}" href="{{ feed_url }}">
 {% endblock %}
 
 {% block opengraph %}
     {{ include('layouts/_opengraph.html.twig', {
-        title: collection.name,
+        title: collection.name(),
         description: opengraph_description,
         locale: owner.locale,
         url: url_full('collection', { id: collection.id }),
@@ -45,7 +45,7 @@
 {% endblock %}
 
 {% block back %}
-    {{ include('layouts/_back.html.twig', { title: collection.name }) }}
+    {{ include('layouts/_back.html.twig', { title: collection.name() }) }}
 {% endblock %}
 
 {% block body %}
@@ -83,7 +83,7 @@
 
             <div class="col--extend flow">
                 <div class="cols cols--gap">
-                    <h1 class="col--extend text--break">{{ collection.name }}</h1>
+                    <h1 class="col--extend text--break">{{ collection.name() }}</h1>
 
                     {% if app.user and is_following %}
                         <form class="col--noshrink" method="post" action="{{ url('unfollow collection', { id: collection.id }) }}">
