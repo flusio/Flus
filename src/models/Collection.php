@@ -136,7 +136,7 @@ class Collection
     {
         $collection = new self();
 
-        $collection->name = _('Bookmarks');
+        $collection->name = _('To read');
         $collection->type = 'bookmarks';
         $collection->user_id = $user_id;
 
@@ -226,7 +226,7 @@ class Collection
     public function name(): string
     {
         if ($this->type === 'bookmarks') {
-            return _('Bookmarks');
+            return _('To read');
         } elseif ($this->type === 'read') {
             return _('Links read');
         } elseif ($this->type === 'news') {

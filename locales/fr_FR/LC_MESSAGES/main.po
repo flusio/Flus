@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-02-08 22:16+0100\n"
-"PO-Revision-Date: 2026-02-08 22:16+0100\n"
+"POT-Creation-Date: 2026-02-14 22:24+0100\n"
+"PO-Revision-Date: 2026-02-14 22:24+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -281,8 +281,8 @@ msgstr "Le nom ne doit pas faire plus de {max} caractères."
 
 #: models/Collection.php:139 models/Collection.php:229
 #: navigations/ReadingNavigation.php:30
-msgid "Bookmarks"
-msgstr "Signets"
+msgid "To read"
+msgstr "À lire"
 
 #: models/Collection.php:150 models/Collection.php:231
 #: navigations/ReadingNavigation.php:37

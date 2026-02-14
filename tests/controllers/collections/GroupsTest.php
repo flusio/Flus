@@ -64,6 +64,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $collection_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
+            'type' => 'collection',
             'user_id' => $other_user->id,
             'name' => $collection_name,
             'is_public' => true,
