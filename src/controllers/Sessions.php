@@ -111,7 +111,7 @@ class Sessions extends BaseController
 
         if (!$form->validate()) {
             $error = implode(' ', $form->errors());
-            \Minz\Flash::set('error', $error);
+            utils\Notification::error($error);
 
             return Response::found($from);
         }
@@ -143,7 +143,7 @@ class Sessions extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            \Minz\Flash::set('error', $form->error('@base'));
+            utils\Notification::error($form->error('@base'));
             return Response::redirect('home');
         }
 

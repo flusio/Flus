@@ -4,6 +4,7 @@ namespace App\controllers;
 
 use App\forms;
 use App\models;
+use App\utils;
 use tests\factories\ImportationFactory;
 use tests\factories\UserFactory;
 
@@ -78,8 +79,7 @@ class ImportationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $error = \Minz\Flash::get('error');
-        $this->assertTrue(is_string($error));
+        $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
         $this->assertTrue(models\Importation::exists($importation->id));
     }

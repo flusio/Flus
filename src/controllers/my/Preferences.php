@@ -77,6 +77,8 @@ class Preferences extends BaseController
             $user->disableBeta();
         }
 
+        utils\Notification::success(_('Your changes have been successfully saved.'));
+
         return Response::redirect('preferences');
     }
 }

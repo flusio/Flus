@@ -8,6 +8,7 @@ use App\forms;
 use App\mailers;
 use App\models;
 use App\services;
+use App\utils;
 use Minz\Mailer;
 use Minz\Request;
 use Minz\Response;
@@ -32,7 +33,6 @@ class Validation extends BaseController
 
         return Response::ok('my/validation/show.html.twig', [
             'status' => \Minz\Flash::pop('status'),
-            'error' => \Minz\Flash::pop('error'),
         ]);
     }
 
@@ -121,7 +121,7 @@ class Validation extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            \Minz\Flash::set('error', $form->error('@base'));
+            utils\Notification::error($form->error('@base'));
             return Response::redirect('account validation');
         }
 

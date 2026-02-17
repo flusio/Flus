@@ -4,6 +4,7 @@ namespace App\controllers;
 
 use App\forms;
 use App\models;
+use App\utils;
 use tests\factories\CollectionFactory;
 use tests\factories\CollectionShareFactory;
 use tests\factories\CollectionToTopicFactory;
@@ -1023,8 +1024,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/');
         $this->assertTrue(models\Collection::exists($collection->id));
-        $error = \Minz\Flash::get('error');
-        $this->assertTrue(is_string($error));
+        $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
     }
 }

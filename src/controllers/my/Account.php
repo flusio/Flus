@@ -99,7 +99,8 @@ class Account extends BaseController
         auth\CurrentUser::deleteSession();
         $current_user->remove();
 
-        \Minz\Flash::set('status', 'user_deleted');
+        utils\Notification::success(_('Your account and your data are now deleted.'));
+
         return Response::redirect('login');
     }
 }

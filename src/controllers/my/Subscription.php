@@ -6,6 +6,7 @@ use App\auth;
 use App\controllers\BaseController;
 use App\forms;
 use App\services;
+use App\utils;
 use Minz\Request;
 use Minz\Response;
 
@@ -45,7 +46,7 @@ class Subscription extends BaseController
         }
 
         if (!$user->isValidated()) {
-            \Minz\Flash::set('error', _('You must verify your account first.'));
+            utils\Notification::error(_('You must verify your account first.'));
             return Response::redirect('account');
         }
 
@@ -53,7 +54,7 @@ class Subscription extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            \Minz\Flash::set('error', $form->error('@base'));
+            utils\Notification::error($form->error('@base'));
             return Response::redirect('account');
         }
 
@@ -61,8 +62,7 @@ class Subscription extends BaseController
         $result = $subscription_service->initAccount($user);
 
         if (!$result) {
-            \Minz\Flash::set(
-                'error',
+            utils\Notification::error(
                 _('An error occured when getting you a subscription account, please contact the support.')
             );
             return Response::redirect('account');

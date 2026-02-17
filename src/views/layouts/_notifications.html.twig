@@ -1,0 +1,25 @@
+<div class="layout__notifications flow">
+    {% for notification_type, notification in notifications() %}
+        <div class="notification notification--{{ notification_type }}" data-controller="notification">
+            <div class="cols cols--always cols--center cols--gap-small">
+                <p class="notification__text col--extend" role="alert">
+                    {{ notification }}
+                </p>
+
+                <div>
+                    <button
+                        class="button--icon button--ghost"
+                        type="button"
+                        data-action="notification#close"
+                    >
+                        {{ icon('times') }}
+
+                        <span class="sr-only">
+                            {{ t('Close the notification') }}
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>

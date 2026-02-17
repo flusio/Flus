@@ -1,0 +1,46 @@
+.layout__notifications {
+    position: fixed;
+    z-index: 9999;
+    top: 0;
+    right: 0;
+    left: 0;
+
+    padding: var(--space-medium);
+
+    pointer-events: none;
+}
+
+@media (min-width: 800px) {
+    .layout__notifications {
+        padding: var(--space-large);
+    }
+}
+
+.notification {
+    position: relative;
+
+    max-width: 550px;
+    margin-left: auto;
+    padding: var(--space-medium);
+
+    box-shadow: 0 0 8px 0 var(--color-box-shadow);
+    border-radius: var(--border-radius);
+
+    pointer-events: auto;
+}
+
+.notification--success {
+    color: var(--color-accent-text-contrast);
+
+    background-color: var(--color-accent-bg-hover);
+}
+
+.notification--error {
+    color: var(--color-danger-text-contrast);
+
+    background-color: var(--color-danger-bg-hover);
+}
+
+.notification__text {
+    font-weight: 600;
+}

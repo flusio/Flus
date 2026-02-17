@@ -45,6 +45,8 @@
         </a>
 
         <div class="layout {{ app.user ? 'layout--connected' : 'layout--disconnected' }} {{ app.user and app.user.isBlocked ? 'layout--blocked' : '' }}" id="layout">
+            {{ include('layouts/_notifications.html.twig') }}
+
             {% block layout_header %}
             {% endblock %}
 

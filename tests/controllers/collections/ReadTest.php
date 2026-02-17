@@ -4,6 +4,7 @@ namespace App\controllers\collections;
 
 use App\forms;
 use App\models;
+use App\utils;
 use tests\factories\CollectionFactory;
 use tests\factories\LinkFactory;
 use tests\factories\UserFactory;
@@ -212,8 +213,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $error = \Minz\Flash::get('error');
-        $this->assertTrue(is_string($error));
+        $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
         $this->assertFalse($link->isReadBy($user), 'The link should not be in read list.');
         $this->assertTrue($link->isInNewsOf($user), 'The link should be in news.');
@@ -408,8 +408,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $error = \Minz\Flash::get('error');
-        $this->assertTrue(is_string($error));
+        $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
         $this->assertFalse($link->isInBookmarksOf($user), 'The link should not be in bookmarks.');
     }
@@ -600,8 +599,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $error = \Minz\Flash::get('error');
-        $this->assertTrue(is_string($error));
+        $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
         $this->assertFalse($link->isInNeverList($user), 'The link should not be in never list.');
         $this->assertTrue($link->isInNewsOf($user), 'The link should be in news.');

@@ -114,7 +114,7 @@ class Notes extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            \Minz\Flash::set('error', $form->error('@base'));
+            utils\Notification::error($form->error('@base'));
             return Response::found($from);
         }
 

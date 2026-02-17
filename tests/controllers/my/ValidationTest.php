@@ -4,6 +4,7 @@ namespace App\controllers\my;
 
 use App\forms;
 use App\models;
+use App\utils;
 use tests\factories\UserFactory;
 use tests\factories\TokenFactory;
 
@@ -397,10 +398,8 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/my/account/validation');
-        $this->assertSame(
-            'A security verification failed: you should retry to submit the form.',
-            \Minz\Flash::get('error'),
-        );
+        $error = utils\Notification::popError();
+        $this->assertStringContainsString('A security verification failed', $error);
         $this->assertEmailsCount(0);
     }
 

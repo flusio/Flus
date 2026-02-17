@@ -43,8 +43,6 @@
                 </div>
             {% else %}
                 <form class="form--centered" method="post" action="{{ url('resend validation email') }}">
-                    {{ include('alerts/_error.html.twig', { message: error }) }}
-
                     <button class="button--primary button--big" type="submit">
                         {{ t('Didn’t receive the email? Resend it') }}
                     </button>

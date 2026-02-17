@@ -4,6 +4,7 @@ namespace App\controllers\links;
 
 use App\forms;
 use App\models;
+use App\utils;
 use tests\factories\LinkFactory;
 use tests\factories\LinkToCollectionFactory;
 use tests\factories\UserFactory;
@@ -177,8 +178,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $error = \Minz\Flash::get('error');
-        $this->assertTrue(is_string($error));
+        $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
         $this->assertTrue(models\LinkToCollection::exists($link_to_bookmarks->id));
         $this->assertTrue(models\LinkToCollection::exists($link_to_news->id));
@@ -359,8 +359,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $error = \Minz\Flash::get('error');
-        $this->assertTrue(is_string($error));
+        $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
         $this->assertTrue(models\LinkToCollection::exists($link_to_news->id));
         $link_to_bookmarks = models\LinkToCollection::findBy([
@@ -531,8 +530,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $error = \Minz\Flash::get('error');
-        $this->assertTrue(is_string($error));
+        $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
         $this->assertTrue(models\LinkToCollection::exists($link_to_news->id));
         $this->assertTrue(models\LinkToCollection::exists($link_to_bookmarks->id));
@@ -634,8 +632,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $error = \Minz\Flash::get('error');
-        $this->assertTrue(is_string($error));
+        $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
         $this->assertTrue(models\LinkToCollection::exists($link_to_read->id));
     }

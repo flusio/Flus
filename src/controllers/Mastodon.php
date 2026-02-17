@@ -6,6 +6,7 @@ use App\auth;
 use App\forms;
 use App\models;
 use App\services;
+use App\utils;
 use Minz\Request;
 use Minz\Response;
 
@@ -70,7 +71,7 @@ class Mastodon extends BaseController
 
         if (!$form->validate()) {
             $error = implode(' ', $form->errors());
-            \Minz\Flash::set('error', $error);
+            utils\Notification::error($error);
 
             return Response::redirect('mastodon');
         }
@@ -83,7 +84,7 @@ class Mastodon extends BaseController
         } catch (services\MastodonError $error) {
             \Minz\Log::error($error->getMessage());
 
-            \Minz\Flash::set('error', _('The Mastodon host returned an error, please try later.'));
+            utils\Notification::error(_('The Mastodon host returned an error, please try later.'));
             return Response::redirect('mastodon');
         }
 
@@ -218,6 +219,8 @@ class Mastodon extends BaseController
         $mastodon_account = $form->model();
         $mastodon_account->save();
 
+        utils\Notification::success(_('Your changes have been successfully saved.'));
+
         return Response::redirect('mastodon');
     }
 
@@ -250,7 +253,7 @@ class Mastodon extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            \Minz\Flash::set('error', $form->error('@base'));
+            utils\Notification::error($form->error('@base'));
             return Response::redirect('mastodon');
         }
 

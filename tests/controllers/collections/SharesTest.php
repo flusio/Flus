@@ -4,6 +4,7 @@ namespace App\controllers\collections;
 
 use App\forms;
 use App\models;
+use App\utils;
 use tests\factories\CollectionFactory;
 use tests\factories\UserFactory;
 
@@ -621,7 +622,8 @@ class SharesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseTemplateName($response, 'collections/shares/index.html.twig');
-        $this->assertSame('This user doesn’t exist.', \Minz\Flash::get('error'));
+        $error = utils\Notification::popError();
+        $this->assertSame('This user doesn’t exist.', $error);
         $this->assertTrue($collection->sharedWith($other_user));
     }
 
@@ -642,10 +644,8 @@ class SharesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseTemplateName($response, 'collections/shares/index.html.twig');
-        $this->assertSame(
-            'A security verification failed: you should retry to submit the form.',
-            \Minz\Flash::get('error'),
-        );
+        $error = utils\Notification::popError();
+        $this->assertStringContainsString('A security verification failed', $error);
         $this->assertTrue($collection->sharedWith($other_user));
     }
 }

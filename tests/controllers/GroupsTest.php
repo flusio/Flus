@@ -4,6 +4,7 @@ namespace App\controllers;
 
 use App\forms;
 use App\models;
+use App\utils;
 use tests\factories\GroupFactory;
 use tests\factories\UserFactory;
 
@@ -373,8 +374,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $error = \Minz\Flash::get('error');
-        $this->assertTrue(is_string($error));
+        $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
         $this->assertTrue(models\Group::exists($group->id));
     }

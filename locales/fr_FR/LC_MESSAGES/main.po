@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-02-14 22:24+0100\n"
-"PO-Revision-Date: 2026-02-14 22:24+0100\n"
+"POT-Creation-Date: 2026-02-19 10:42+0100\n"
+"PO-Revision-Date: 2026-02-19 10:42+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -64,9 +64,14 @@ msgstr "Liens wallabag"
 msgid "All your links imported from wallabag."
 msgstr "Tous vos liens importés depuis wallabag."
 
-#: controllers/Mastodon.php:86 controllers/Mastodon.php:170
+#: controllers/Mastodon.php:87 controllers/Mastodon.php:171
 msgid "The Mastodon host returned an error, please try later."
 msgstr "Le serveur Mastodon a renvoyé une erreur, veuillez essayer plus tard."
+
+#: controllers/Mastodon.php:222 controllers/my/Preferences.php:80
+#: controllers/my/Security.php:89
+msgid "Your changes have been successfully saved."
+msgstr "Vos changements ont été sauvegardés avec succès."
 
 #: controllers/Support.php:101
 msgid "The message could not be sent due to a server-side problem."
@@ -76,7 +81,11 @@ msgstr "Le message n’a pas pu être envoyé à cause d’un problème côté s
 msgid "This file cannot be uploaded."
 msgstr "Ce fichier ne peut pas être téléversé."
 
-#: controllers/my/Subscription.php:48
+#: controllers/my/Account.php:102
+msgid "Your account and your data are now deleted."
+msgstr "Votre compte et vos données sont désormais supprimées."
+
+#: controllers/my/Subscription.php:49
 msgid "You must verify your account first."
 msgstr "Vous devez valider votre compte avant."
 
@@ -1277,6 +1286,10 @@ msgstr "Fermer cette fenêtre"
 msgid "Loading…"
 msgstr "Chargement…"
 
+#: views/layouts/_notifications.html.twig:18
+msgid "Close the notification"
+msgstr "Fermer la notification"
+
 #: views/layouts/_pagination.html.twig:8
 msgid "Previous page"
 msgstr "Page précédente"
@@ -1322,7 +1335,7 @@ msgstr ""
 msgid "Skip to main content"
 msgstr "Accéder au contenu principal"
 
-#: views/layouts/base.html.twig:59 views/pages/about.html.twig:3
+#: views/layouts/base.html.twig:61 views/pages/about.html.twig:3
 #: views/pages/about.html.twig:11 views/pages/about.html.twig:15
 #: views/support/show.html.twig:124
 #, php-format
@@ -2068,7 +2081,7 @@ msgstr "Nous vous avons envoyé un courriel à %s"
 msgid "Still nothing? Did you check your spam?"
 msgstr "Toujours rien ? Avez-vous vérifié votre spam ?"
 
-#: views/my/validation/show.html.twig:49
+#: views/my/validation/show.html.twig:47
 msgid "Didn’t receive the email? Resend it"
 msgstr "Courriel non reçu ? Renvoyer"
 

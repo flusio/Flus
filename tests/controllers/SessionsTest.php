@@ -409,8 +409,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $error = \Minz\Flash::get('error');
-        $this->assertIsString($error);
+        $error = utils\Notification::popError();
         $this->assertSame('A security verification failed: you should retry to submit the form.', $error);
         $this->assertSame(1, models\Session::count());
     }

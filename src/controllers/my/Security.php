@@ -6,6 +6,7 @@ use App\auth;
 use App\controllers\BaseController;
 use App\forms;
 use App\models;
+use App\utils;
 use Minz\Request;
 use Minz\Response;
 
@@ -84,6 +85,8 @@ class Security extends BaseController
             $session = auth\CurrentUser::session();
             models\Session::deleteByUserId($user->id, $session->id);
         }
+
+        utils\Notification::success(_('Your changes have been successfully saved.'));
 
         return Response::redirect('security');
     }

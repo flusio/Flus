@@ -71,7 +71,7 @@ class Onboarding extends BaseController
 
         if (!$form->validate()) {
             $error = implode(' ', $form->errors());
-            \Minz\Flash::set('error', $error);
+            utils\Notification::error($error);
 
             return Response::redirect('onboarding');
         }

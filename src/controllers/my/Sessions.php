@@ -6,6 +6,7 @@ use App\auth;
 use App\controllers\BaseController;
 use App\forms;
 use App\models;
+use App\utils;
 use Minz\Request;
 use Minz\Response;
 
@@ -78,7 +79,7 @@ class Sessions extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            \Minz\Flash::set('error', $form->error('@base'));
+            utils\Notification::error($form->error('@base'));
             return Response::redirect('sessions');
         }
 

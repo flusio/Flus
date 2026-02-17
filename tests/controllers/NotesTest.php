@@ -4,6 +4,7 @@ namespace App\controllers;
 
 use App\forms;
 use App\models;
+use App\utils;
 use tests\factories\LinkFactory;
 use tests\factories\NoteFactory;
 use tests\factories\UserFactory;
@@ -319,8 +320,7 @@ class NotesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/');
         $this->assertTrue(models\Note::exists($note->id));
-        $error = \Minz\Flash::get('error');
-        $this->assertTrue(is_string($error));
+        $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
     }
 }

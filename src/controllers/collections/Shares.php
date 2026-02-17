@@ -116,7 +116,7 @@ class Shares extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            \Minz\Flash::set('error', $form->error('@base'));
+            utils\Notification::error($form->error('@base'));
             return Response::badRequest('collections/shares/index.html.twig', [
                 'collection' => $collection,
                 'form' => new forms\collections\ShareCollection(options: [

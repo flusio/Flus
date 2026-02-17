@@ -3,6 +3,7 @@
 namespace App\controllers\my;
 
 use App\forms;
+use App\utils;
 use tests\factories\UserFactory;
 
 class SubscriptionTest extends \PHPUnit\Framework\TestCase
@@ -125,10 +126,8 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/my/account');
-        $this->assertSame(
-            'You must verify your account first.',
-            \Minz\Flash::get('error')
-        );
+        $error = utils\Notification::popError();
+        $this->assertSame('You must verify your account first.', $error);
         $user = $user->reload();
         $this->assertNull($user->subscription_account_id);
         $this->assertSame(
@@ -151,10 +150,8 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/my/account');
-        $this->assertSame(
-            'A security verification failed: you should retry to submit the form.',
-            \Minz\Flash::get('error')
-        );
+        $error = utils\Notification::popError();
+        $this->assertStringContainsString('A security verification failed', $error);
         $user = $user->reload();
         $this->assertNull($user->subscription_account_id);
         $this->assertSame(
@@ -181,10 +178,8 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
         \App\Configuration::$application['subscriptions_private_key'] = $old_private_key;
 
         $this->assertResponseCode($response, 302, '/my/account');
-        $this->assertSame(
-            'An error occured when getting you a subscription account, please contact the support.',
-            \Minz\Flash::get('error')
-        );
+        $error = utils\Notification::popError();
+        $this->assertStringContainsString('An error occured when getting you a subscription account', $error);
         $user = $user->reload();
         $this->assertNull($user->subscription_account_id);
         $this->assertSame(

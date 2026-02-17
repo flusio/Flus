@@ -217,7 +217,8 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/login');
-        $this->assertSame('user_deleted', \Minz\Flash::get('status'));
+        $success = utils\Notification::popSuccess();
+        $this->assertSame('Your account and your data are now deleted.', $success);
         $this->assertFalse(models\User::exists($user->id));
         $this->assertNull(auth\CurrentUser::get());
     }

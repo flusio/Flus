@@ -5,6 +5,7 @@ namespace App\controllers;
 use App\forms;
 use App\models;
 use App\services;
+use App\utils;
 use tests\factories\MastodonAccountFactory;
 use tests\factories\MastodonServerFactory;
 use tests\factories\UserFactory;
@@ -139,8 +140,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/mastodon');
-        $error = \Minz\Flash::get('error');
-        $this->assertIsString($error);
+        $error = utils\Notification::popError();
         $this->assertSame('The URL is invalid.', $error);
         $this->assertSame(0, models\MastodonServer::count());
         $this->assertSame(0, models\MastodonAccount::count());
@@ -169,8 +169,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/mastodon');
-        $error = \Minz\Flash::get('error');
-        $this->assertIsString($error);
+        $error = utils\Notification::popError();
         $this->assertSame('The Mastodon host returned an error, please try later.', $error);
         $this->assertSame(0, models\MastodonServer::count());
         $this->assertSame(0, models\MastodonAccount::count());
@@ -197,8 +196,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/mastodon');
-        $error = \Minz\Flash::get('error');
-        $this->assertIsString($error);
+        $error = utils\Notification::popError();
         $this->assertSame('The Mastodon host returned an error, please try later.', $error);
         $this->assertSame(0, models\MastodonServer::count());
         $this->assertSame(0, models\MastodonAccount::count());
@@ -217,8 +215,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/mastodon');
-        $error = \Minz\Flash::get('error');
-        $this->assertIsString($error);
+        $error = utils\Notification::popError();
         $this->assertSame('A security verification failed: you should retry to submit the form.', $error);
         $this->assertSame(0, models\MastodonServer::count());
         $this->assertSame(0, models\MastodonAccount::count());

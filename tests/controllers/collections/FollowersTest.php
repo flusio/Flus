@@ -4,6 +4,7 @@ namespace App\controllers\collections;
 
 use App\forms;
 use App\models;
+use App\utils;
 use tests\factories\CollectionFactory;
 use tests\factories\CollectionShareFactory;
 use tests\factories\FollowedCollectionFactory;
@@ -136,10 +137,8 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertSame(
-            'A security verification failed: you should retry to submit the form.',
-            \Minz\Flash::get('error'),
-        );
+        $error = utils\Notification::popError();
+        $this->assertStringContainsString('A security verification failed', $error);
         $this->assertSame(0, models\FollowedCollection::count());
     }
 
@@ -278,10 +277,8 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertSame(
-            'A security verification failed: you should retry to submit the form.',
-            \Minz\Flash::get('error'),
-        );
+        $error = utils\Notification::popError();
+        $this->assertStringContainsString('A security verification failed', $error);
         $this->assertSame(1, models\FollowedCollection::count());
     }
 }

@@ -17,6 +17,7 @@ import LinkSuggestionController from './controllers/link_suggestion_controller.j
 import ModalController from './controllers/modal_controller.js';
 import ModalOpenerController from './controllers/modal_opener_controller.js';
 import NewsRefresherController from './controllers/news_refresher_controller.js';
+import NotificationController from './controllers/notification_controller.js';
 import PopupController from './controllers/popup_controller.js';
 import SidenavController from './controllers/sidenav_controller.js';
 import TextEditorController from './controllers/text_editor_controller.js';
@@ -41,6 +42,7 @@ application.register('link-suggestion', LinkSuggestionController);
 application.register('modal', ModalController);
 application.register('modal-opener', ModalOpenerController);
 application.register('news-refresher', NewsRefresherController);
+application.register('notification', NotificationController);
 application.register('popup', PopupController);
 application.register('sidenav', SidenavController);
 application.register('text-editor', TextEditorController);
