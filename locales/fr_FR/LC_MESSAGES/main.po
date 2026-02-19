@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-02-19 16:00+0100\n"
-"PO-Revision-Date: 2026-02-19 16:00+0100\n"
+"POT-Creation-Date: 2026-02-19 16:13+0100\n"
+"PO-Revision-Date: 2026-02-19 16:13+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -1211,9 +1211,12 @@ msgstr "Vous devez activer JavaScript pour utiliser %s."
 #: views/layouts/_header-connected.html.twig:13
 #: views/layouts/_header-disconnected.html.twig:10
 #, php-format
-msgid "You’re using a demo version of %s, the data are reset every night."
+msgid ""
+"You are using a demo version of %s. Your changes are public and visible to "
+"anyone. Data is reset every night."
 msgstr ""
-"Vous utilisez une version de démo de %s, les données sont réinitialisées "
+"Vous utilisez une version de démonstration de %s. Vos modifications sont "
+"publiques et visibles par n’importe qui. Les données sont réinitialisées "
 "chaque nuit."
 
 #: views/layouts/_header-connected.html.twig:20
