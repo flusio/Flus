@@ -59,6 +59,8 @@
                 display_mark_as_read: true,
             }) }}
         {% endfor %}
+
+        {{ include('grids/_placeholder.html.twig', { count: links | length + 1 }) }}
     </div>
 
     {{ include('layouts/_pagination.html.twig', { url: url('bookmarks') }) }}
