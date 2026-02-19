@@ -1,0 +1,12 @@
+{% if pagination.numberElements > 0 %}
+    <p class="text--center text--secondary">
+        {% set count_links = links | length %}
+        {% set count_total = pagination.numberElements %}
+
+        {% if count_total <= count_links %}
+            {{ t('%d link', '%d links', count_links, [count_links | format_number]) }}
+        {% else %}
+            {{ t('%d of %d links', [count_links | format_number, count_total | format_number]) }}
+        {% endif %}
+    </p>
+{% endif %}

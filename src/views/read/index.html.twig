@@ -28,12 +28,7 @@
         {{ t('Find here all the links you’ve marked as read.') }}
     </p>
 
-    {% if pagination.numberElements > 0 %}
-        <p class="text--center text--secondary">
-            {% set count_links = pagination.numberElements %}
-            {{ t('%d link', '%d links', count_links, [count_links | format_number]) }}
-        </p>
-    {% endif %}
+    {{ include('links/_pagination_count.html.twig') }}
 
     <div class="grid">
         {% for link in links %}

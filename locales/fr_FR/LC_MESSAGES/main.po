@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-02-19 10:42+0100\n"
-"PO-Revision-Date: 2026-02-19 10:42+0100\n"
+"POT-Creation-Date: 2026-02-19 15:26+0100\n"
+"PO-Revision-Date: 2026-02-19 15:26+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -522,18 +522,7 @@ msgstr "Succès"
 msgid "Place here the links you want to consult later on."
 msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
 
-#: views/bookmarks/index.html.twig:34
-#: views/collections/_collection.html.twig:26
-#: views/collections/_collection_follow.html.twig:18
-#: views/collections/show.html.twig:287 views/news/index.html.twig:24
-#: views/news/index.html.twig:132 views/read/index.html.twig:34
-#, php-format
-msgid "%d link"
-msgid_plural "%d links"
-msgstr[0] "%d lien"
-msgstr[1] "%d liens"
-
-#: views/bookmarks/index.html.twig:48 views/collections/show.html.twig:303
+#: views/bookmarks/index.html.twig:43 views/collections/show.html.twig:298
 msgid "Add a link"
 msgstr "Ajouter un lien"
 
@@ -552,6 +541,16 @@ msgstr "Par %s"
 #: views/collections/_collection_follow.html.twig:16
 msgid "no links"
 msgstr "aucun lien"
+
+#: views/collections/_collection.html.twig:26
+#: views/collections/_collection_follow.html.twig:18
+#: views/links/_pagination_count.html.twig:7 views/news/index.html.twig:24
+#: views/news/index.html.twig:132
+#, php-format
+msgid "%d link"
+msgid_plural "%d links"
+msgstr[0] "%d lien"
+msgstr[1] "%d liens"
 
 #: views/collections/_collection.html.twig:44
 #: views/collections/_selector.html.twig:90
@@ -993,7 +992,7 @@ msgstr ""
 msgid "Delete"
 msgstr "Supprimer"
 
-#: views/collections/show.html.twig:327
+#: views/collections/show.html.twig:322
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 
@@ -1460,6 +1459,11 @@ msgid "In %d collection"
 msgid_plural "In %d collections"
 msgstr[0] "Dans %d collection"
 msgstr[1] "Dans %d collections"
+
+#: views/links/_pagination_count.html.twig:9
+#, php-format
+msgid "%d of %d links"
+msgstr "%d sur %d liens"
 
 #: views/links/collections/_new_note_form.html.twig:3
 #: views/links/show.html.twig:243
