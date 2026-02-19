@@ -118,7 +118,6 @@ class Application
         $response = \Minz\Engine::run($request);
 
         if ($response instanceof \Minz\Response) {
-            $response->setHeader('Permissions-Policy', 'interest-cohort=()'); // @see https://cleanuptheweb.org/
             $response->setHeader('Referrer-Policy', 'same-origin');
             $response->setHeader('X-Content-Type-Options', 'nosniff');
             $response->setHeader('X-Frame-Options', 'deny');
