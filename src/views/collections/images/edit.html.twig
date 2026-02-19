@@ -56,7 +56,7 @@
 
             <p id="file-caption" class="form-group__caption text--centered">
                 {{ t('<abbr>PNG</abbr>, <abbr>JPG</abbr> and <abbr>WEBP</abbr> images only.') | raw }}<br />
-                {{ t('The minimum recommended dimensions are 400x400px.') }}
+                {{ t('The minimum recommended dimensions are %sx%spx.', [400, 400]) }}
             </p>
 
             <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}" />

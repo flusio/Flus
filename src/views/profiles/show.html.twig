@@ -29,11 +29,33 @@
 {% block body %}
     <div class="cols cols--gap">
         <div class="col--size3 text--center">
-            <img
-                class="avatar avatar--max"
-                alt=""
-                src="{{ url_avatar(user.avatar_filename) }}"
-            >
+            {% if is_current_user_profile %}
+                <button
+                    class="button--edit-image"
+                    data-controller="modal-opener"
+                    data-action="modal-opener#fetch"
+                    data-modal-opener-href-value="{{ url('edit avatar') }}"
+                    aria-haspopup="dialog"
+                    aria-controls="modal"
+                    title="{{ t('Change your profile picture') }}"
+                >
+                    <img
+                        class="avatar avatar--max"
+                        alt=""
+                        src="{{ url_avatar(user.avatar_filename) }}"
+                    >
+
+                    <span class="sr-only">
+                        {{ t('Change your profile picture') }}
+                    </span>
+                </button>
+            {% else %}
+                <img
+                    class="avatar avatar--max"
+                    alt=""
+                    src="{{ url_avatar(user.avatar_filename) }}"
+                >
+            {% endif %}
         </div>
 
         <div class="col--extend flow">

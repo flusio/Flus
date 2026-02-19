@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-02-19 16:43+0100\n"
-"PO-Revision-Date: 2026-02-19 16:43+0100\n"
+"POT-Creation-Date: 2026-02-19 20:34+0100\n"
+"PO-Revision-Date: 2026-02-19 20:34+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -621,9 +621,8 @@ msgstr "(max. %d caractères)"
 #: views/links/repairing/new.html.twig:30
 #: views/links/searches/show.html.twig:39 views/links/show.html.twig:324
 #: views/mastodon/show.html.twig:62 views/mastodon/show.html.twig:139
-#: views/my/account/deletion.html.twig:38
+#: views/my/account/deletion.html.twig:38 views/my/avatar/edit.html.twig:20
 #: views/my/preferences/edit.html.twig:28 views/my/profile/edit.html.twig:20
-#: views/my/profile/edit.html.twig:67
 #: views/my/security/confirmation.html.twig:40
 #: views/my/security/show.html.twig:31 views/my/security/show.html.twig:59
 #: views/notes/edit.html.twig:24 views/passwords/edit.html.twig:31
@@ -697,7 +696,7 @@ msgstr "Modification d'une collection"
 #: views/collections/filters/edit.html.twig:96
 #: views/collections/groups/edit.html.twig:99 views/groups/edit.html.twig:43
 #: views/links/edit.html.twig:80 views/mastodon/show.html.twig:96
-#: views/my/preferences/edit.html.twig:102 views/my/profile/edit.html.twig:89
+#: views/my/preferences/edit.html.twig:102 views/my/profile/edit.html.twig:42
 #: views/my/security/show.html.twig:98 views/notes/edit.html.twig:49
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
@@ -789,14 +788,15 @@ msgstr ""
 msgid "Upload an image"
 msgstr "Téléverser une image"
 
-#: views/collections/images/edit.html.twig:58
+#: views/collections/images/edit.html.twig:58 views/my/avatar/edit.html.twig:48
 msgid "<abbr>PNG</abbr>, <abbr>JPG</abbr> and <abbr>WEBP</abbr> images only."
 msgstr ""
 "Images <abbr>PNG</abbr>, <abbr>JPG</abbr> ou <abbr>WEBP</abbr> seulement."
 
-#: views/collections/images/edit.html.twig:59
-msgid "The minimum recommended dimensions are 400x400px."
-msgstr "Les dimensions minimales recommandées sont de 400x400px."
+#: views/collections/images/edit.html.twig:59 views/my/avatar/edit.html.twig:49
+#, php-format
+msgid "The minimum recommended dimensions are %sx%spx."
+msgstr "Les dimensions minimales recommandées sont de %sx%spx."
 
 #: views/collections/links/new.html.twig:3 views/links/new.html.twig:3
 #: views/links/new.html.twig:11 views/links/new.html.twig:15
@@ -942,7 +942,7 @@ msgstr "Publiée par"
 
 #: views/collections/show.html.twig:169 views/groups/_group.html.twig:20
 #: views/links/_link.html.twig:285 views/links/show.html.twig:245
-#: views/notes/_notepad.html.twig:48 views/profiles/show.html.twig:60
+#: views/notes/_notepad.html.twig:48 views/profiles/show.html.twig:82
 msgid "Edit"
 msgstr "Modifier"
 
@@ -1276,6 +1276,11 @@ msgstr "Se déconnecter"
 #: views/layouts/_header-disconnected.html.twig:29
 msgid "Language"
 msgstr "Langue"
+
+#: views/layouts/_header-disconnected.html.twig:60
+#: views/sessions/new.html.twig:104
+msgid "Login"
+msgstr "Se connecter"
 
 #: views/layouts/_modal_dialog.html.twig:22 views/layouts/_sidenav.html.twig:24
 msgid "Close"
@@ -1929,6 +1934,14 @@ msgstr "Gérer votre abonnement"
 msgid "Create your payment account"
 msgstr "Créer votre compte de paiement"
 
+#: views/my/avatar/edit.html.twig:3
+msgid "Profile picture"
+msgstr "Photo de profil"
+
+#: views/my/avatar/edit.html.twig:43
+msgid "Upload a photo"
+msgstr "Téléverser une photo"
+
 #: views/my/preferences/edit.html.twig:23
 msgid "Your language"
 msgstr "Votre langue"
@@ -1963,23 +1976,11 @@ msgstr ""
 "Avec les fonctionnalités bêta, vous testez des fonctionnalités avant tout le "
 "monde, mais vous entrez dans une zone de turbulences."
 
-#: views/my/profile/edit.html.twig:43
-msgid "Upload a photo"
-msgstr "Téléverser une photo"
-
-#: views/my/profile/edit.html.twig:48
-msgid ""
-"<abbr>PNG</abbr> or <abbr>JPG</abbr> images only, a 150x150 image is "
-"recommended."
-msgstr ""
-"Formats <abbr>PNG</abbr> ou <abbr>JPG</abbr> seulement, une image de 150x150 "
-"est recommandée."
-
-#: views/my/profile/edit.html.twig:59
+#: views/my/profile/edit.html.twig:12
 msgid "Your name"
 msgstr "Votre nom"
 
-#: views/my/profile/edit.html.twig:61 views/registrations/new.html.twig:38
+#: views/my/profile/edit.html.twig:14 views/registrations/new.html.twig:38
 #, php-format
 msgid "(public, max. %d characters)"
 msgstr "(public, max. %d caractères)"
@@ -2591,31 +2592,35 @@ msgstr "OPML des collections de %s"
 msgid "Discover %s’s collections on %s."
 msgstr "Découvrez les collections de %s sur %s."
 
-#: views/profiles/show.html.twig:44
+#: views/profiles/show.html.twig:40 views/profiles/show.html.twig:49
+msgid "Change your profile picture"
+msgstr "Modifier votre photo de profil"
+
+#: views/profiles/show.html.twig:66
 msgid "This is your public profile!"
 msgstr "Voici votre profil public !"
 
-#: views/profiles/show.html.twig:68
+#: views/profiles/show.html.twig:90
 msgid "Last shared links"
 msgstr "Derniers liens partagés"
 
-#: views/profiles/show.html.twig:88
+#: views/profiles/show.html.twig:110
 msgid "You didn’t share any links yet."
 msgstr "Vous n’avez encore partagé aucun lien."
 
-#: views/profiles/show.html.twig:92
+#: views/profiles/show.html.twig:114
 msgid "Create a public collection"
 msgstr "Créer une collection publique"
 
-#: views/profiles/show.html.twig:97
+#: views/profiles/show.html.twig:119
 msgid "This user didn’t share any links yet."
 msgstr "Cet·te utilisateur·ice n’a pas encore partagé de lien."
 
-#: views/profiles/show.html.twig:104
+#: views/profiles/show.html.twig:126
 msgid "Published collections"
 msgstr "Collections publiées"
 
-#: views/profiles/show.html.twig:123
+#: views/profiles/show.html.twig:145
 msgid "Collections shared with you"
 msgstr "Collections partagées avec vous"
 
@@ -2683,10 +2688,6 @@ msgstr "Mot de passe"
 #: views/sessions/new.html.twig:60
 msgid "Forgot password?"
 msgstr "Mot de passe oublié ?"
-
-#: views/sessions/new.html.twig:104
-msgid "Login"
-msgstr "Se connecter"
 
 #: views/sessions/new.html.twig:115
 msgid "No account yet?"

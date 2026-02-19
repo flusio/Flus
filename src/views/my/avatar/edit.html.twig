@@ -1,0 +1,55 @@
+{% extends 'layouts/modal.html.twig' %}
+
+{% block title %}{{ t('Profile picture') }}{% endblock %}
+
+{% block body %}
+    <div class="wrapper wrapper--small wrapper--center flow flow--large">
+        <form
+            method="post"
+            action="{{ url('update avatar') }}"
+            data-controller="autosubmit form-file"
+            enctype="multipart/form-data"
+            class="flow text--center"
+        >
+            <img class="avatar avatar--max" src="{{ url_avatar(app.user.avatar_filename) }}" alt="">
+
+            {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+            {% if form.isInvalid('avatar') %}
+                <p id="avatar-error" class="form-group__error text--center">
+                    {{ t('Error:') }}
+                    {{ form.error('avatar') }}
+                </p>
+            {% endif %}
+
+            <input
+                type="file"
+                name="avatar"
+                id="avatar"
+                class="form-avatar__input"
+                accept="{{ form.imageAcceptedMimetypes }}"
+                data-action="autosubmit#submit"
+                data-form-file-target="file"
+                hidden
+            >
+
+            <div class="text--center">
+                <button
+                    type="button"
+                    data-action="form-file#openFile"
+                    data-autosubmit-target="actionButton"
+                    aria-describedby="avatar-caption"
+                >
+                    {{ t('Upload a photo') }}
+                </button>
+            </div>
+
+            <p id="avatar-caption" class="form-group__caption text--centered">
+                {{ t('<abbr>PNG</abbr>, <abbr>JPG</abbr> and <abbr>WEBP</abbr> images only.') | raw }}<br />
+                {{ t('The minimum recommended dimensions are %sx%spx.', [200, 200]) }}
+            </p>
+
+            <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}">
+        </form>
+    </div>
+{% endblock %}

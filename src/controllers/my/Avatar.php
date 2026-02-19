@@ -17,6 +17,26 @@ use Minz\Response;
 class Avatar extends BaseController
 {
     /**
+     * Show the form to edit the current user’s avatar.
+     *
+     * @response 200
+     *    On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     */
+    public function edit(Request $request): Response
+    {
+        $user = auth\CurrentUser::require();
+
+        $form = new forms\users\EditAvatar();
+
+        return Response::ok('my/avatar/edit.html.twig', [
+            'form' => $form,
+        ]);
+    }
+
+    /**
      * Set the avatar of the current user
      *
      * @request_param file avatar
@@ -34,22 +54,19 @@ class Avatar extends BaseController
     {
         $user = auth\CurrentUser::require();
 
-        $form_profile = new forms\users\Profile(model: $user);
+        $form = new forms\users\EditAvatar();
+        $form->handleRequest($request);
 
-        $form_avatar = new forms\users\EditAvatar();
-        $form_avatar->handleRequest($request);
-
-        if (!$form_avatar->validate()) {
-            return Response::badRequest('my/profile/edit.html.twig', [
-                'form_profile' => $form_profile,
-                'form_avatar' => $form_avatar,
+        if (!$form->validate()) {
+            return Response::badRequest('my/avatar/edit.html.twig', [
+                'form' => $form,
             ]);
         }
 
-        $avatar_file = $form_avatar->avatar;
+        $avatar_file = $form->avatar;
 
         // Cannot be null as $form->validate() is true, which means the
-        // $form->image attribute is set.
+        // $form->avatar attribute is set.
         assert($avatar_file !== null);
 
         $media_path = \App\Configuration::$application['media_path'];
@@ -64,7 +81,7 @@ class Avatar extends BaseController
 
         $image = models\Image::fromString($image_data);
 
-        $image->resize(150, 150);
+        $image->resize(200, 200);
 
         if ($user->avatar_filename) {
             $subpath = utils\Belt::filenameToSubpath($user->avatar_filename);

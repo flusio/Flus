@@ -29,12 +29,10 @@ class Profile extends BaseController
     {
         $user = auth\CurrentUser::require();
 
-        $form_profile = new forms\users\Profile(model: $user);
-        $form_avatar = new forms\users\EditAvatar();
+        $form = new forms\users\Profile(model: $user);
 
         return Response::ok('my/profile/edit.html.twig', [
-            'form_profile' => $form_profile,
-            'form_avatar' => $form_avatar,
+            'form' => $form,
         ]);
     }
 
@@ -56,19 +54,16 @@ class Profile extends BaseController
     {
         $current_user = auth\CurrentUser::require();
 
-        $form_avatar = new forms\users\EditAvatar();
+        $form = new forms\users\Profile(model: $current_user);
+        $form->handleRequest($request);
 
-        $form_profile = new forms\users\Profile(model: $current_user);
-        $form_profile->handleRequest($request);
-
-        if (!$form_profile->validate()) {
+        if (!$form->validate()) {
             return Response::badRequest('my/profile/edit.html.twig', [
-                'form_profile' => $form_profile,
-                'form_avatar' => $form_avatar,
+                'form' => $form,
             ]);
         }
 
-        $user = $form_profile->model();
+        $user = $form->model();
         $user->save();
 
         return Response::redirect('profile', ['id' => $user->id]);

@@ -58,6 +58,7 @@ class Router
         $router->addRoute('GET', '/p/:id/opml', 'profiles/Opml#alias');
         $router->addRoute('GET', '/my/profile', 'my/Profile#edit', 'edit profile');
         $router->addRoute('POST', '/my/profile', 'my/Profile#update', 'update profile');
+        $router->addRoute('GET', '/my/profile/avatar', 'my/Avatar#edit', 'edit avatar');
         $router->addRoute('POST', '/my/profile/avatar', 'my/Avatar#update', 'update avatar');
 
         // "My" section

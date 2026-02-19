@@ -18,6 +18,23 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
     use \tests\FakerHelper;
     use \tests\LoginHelper;
 
+    public function testEditRendersCorrectly(): void
+    {
+        $this->login();
+
+        $response = $this->appRun('GET', '/my/profile/avatar');
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseTemplateName($response, 'my/avatar/edit.html.twig');
+    }
+
+    public function testEditRedirectsToLoginIfUserNotConnected(): void
+    {
+        $response = $this->appRun('GET', '/my/profile/avatar');
+
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Fprofile%2Favatar');
+    }
+
     public function testUpdateCreatesAvatarAndRedirects(): void
     {
         $image_filepath = \App\Configuration::$app_path . '/public/static/default-card.png';
@@ -102,7 +119,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
             'avatar' => $file,
         ]);
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fmy%2Fprofile%2Favatar');
         $user = $user->reload();
         $this->assertNull($user->avatar_filename);
     }

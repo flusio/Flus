@@ -4,7 +4,7 @@
     vertical-align: middle;
 
     background-color: var(--color-background);
-    border-radius: 50%;
+    border-radius: var(--border-radius);
 }
 
 .avatar--mini {
@@ -12,5 +12,5 @@
 }
 
 .avatar--max {
-    width: 8rem;
+    width: 200px;
 }
