@@ -133,14 +133,7 @@
             </h2>
 
             <p class="link__text text--oneline">
-                {% if not link.fetched_at %}
-                    <span class="text--ellipsis">
-                        {{ icon('sync', 'spin') }}
-                        {{ t('ongoing synchronisation…') }}
-                    </span>
-                {% else %}
-                    <span class="text--ellipsis">{{ link.host }}</span>&nbsp;·&nbsp;{{ link.reading_time | format_reading_time }}
-                {% endif %}
+                <span class="text--ellipsis">{{ link.host }}</span>&nbsp;·&nbsp;{{ link.reading_time | format_reading_time }}
 
                 {% if is_read %}
                     &nbsp;<span title="{{ t('You read this link.') }}">{{ icon('check') }}<span class="sr-only">{{ t('You read this link.') }}</span></span>
@@ -150,6 +143,13 @@
                     &nbsp;<span title="{{ t('This link is in your bookmarks.') }}">{{ icon('bookmark') }}<span class="sr-only">{{ t('This link is in your bookmarks.') }}</span></span>
                 {% endif %}
             </p>
+
+            {% if not link.fetched_at %}
+                <p class="link__text">
+                    {{ icon('sync', 'spin') }}
+                    {{ t('ongoing synchronisation…') }}
+                </p>
+            {% endif %}
 
             {% if display_source %}
                 <p class="link__text link__source">

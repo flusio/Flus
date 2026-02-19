@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-02-19 15:26+0100\n"
-"PO-Revision-Date: 2026-02-19 15:26+0100\n"
+"POT-Creation-Date: 2026-02-19 16:00+0100\n"
+"PO-Revision-Date: 2026-02-19 16:00+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -1374,17 +1374,17 @@ msgstr ""
 "Des pisteurs ont été détectés dans ce lien, votre vie privée pourrait ne pas "
 "être respectée si vous cliquez dessus."
 
-#: views/links/_link.html.twig:139 views/links/show.html.twig:98
-msgid "ongoing synchronisation…"
-msgstr "synchronisation en cours…"
-
-#: views/links/_link.html.twig:146 views/links/show.html.twig:105
+#: views/links/_link.html.twig:139 views/links/show.html.twig:105
 msgid "You read this link."
 msgstr "Vous avez lu ce lien."
 
-#: views/links/_link.html.twig:150 views/links/show.html.twig:109
+#: views/links/_link.html.twig:143 views/links/show.html.twig:109
 msgid "This link is in your bookmarks."
 msgstr "Ce lien est dans vos signets."
+
+#: views/links/_link.html.twig:150 views/links/show.html.twig:98
+msgid "ongoing synchronisation…"
+msgstr "synchronisation en cours…"
 
 #: views/links/_link.html.twig:157
 #, php-format
