@@ -92,14 +92,7 @@
 
                         <div class="stack stack--gap">
                             <p>
-                                {% if not link.fetched_at %}
-                                    <span>
-                                        {{ icon('sync', 'spin') }}
-                                        {{ t('ongoing synchronisation…') }}
-                                    </span>
-                                {% else %}
-                                    {{ link.host }}&nbsp;·&nbsp;{{ link.reading_time | format_reading_time }}
-                                {% endif %}
+                                {{ link.host }}&nbsp;·&nbsp;{{ link.reading_time | format_reading_time }}
 
                                 {% if is_read %}
                                     &nbsp;<span title="{{ t('You read this link.') }}">{{ icon('check') }}<span class="sr-only">{{ t('You read this link.') }}</span></span>
@@ -120,6 +113,13 @@
                                 </p>
                             {% endif %}
                         </div>
+
+                        {% if not link.fetched_at %}
+                            <p>
+                                {{ icon('sync', 'spin') }}
+                                {{ t('ongoing synchronisation…') }}
+                            </p>
+                        {% endif %}
 
                         <p>
                             {{ t('Added by') }}
@@ -203,6 +203,82 @@
                             {{ t('Share') }}
                         </button>
                     {% endif %}
+
+                    <details
+                        class="popup"
+                        data-controller="popup"
+                        data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
+                    >
+                        <summary class="popup__opener" title="{{ t('Actions') }}">
+                            <span class="button">
+                                {{ icon('menu') }}
+                                {{ t('Actions') }}
+                            </span>
+                        </summary>
+
+                        <nav class="popup__container popup__container--center">
+                            <div data-controller="copy-to-clipboard">
+                                <input type="hidden" value="{{ link.url }}" data-copy-to-clipboard-target="copyable" />
+
+                                <button
+                                    class="popup__item"
+                                    data-action="copy-to-clipboard#copy"
+                                    data-copy-to-clipboard-target="feedback"
+                                >
+                                    {{ icon('copy-to-clipboard') }}
+                                    {{ t('Copy the external link') }}
+                                </button>
+                            </div>
+
+                            {% if can(app.user, 'update', link) %}
+                                <div class="popup__separator"></div>
+
+                                <button
+                                    class="popup__item"
+                                    data-controller="modal-opener"
+                                    data-action="modal-opener#fetch"
+                                    data-modal-opener-href-value="{{ url('edit link', { id: link.id }) }}"
+                                    aria-haspopup="dialog"
+                                    aria-controls="modal"
+                                >
+                                    {{ icon('pencil') }}
+                                    {{ t('Edit') }}
+                                </button>
+
+                                <button
+                                    class="popup__item"
+                                    data-controller="modal-opener"
+                                    data-action="modal-opener#fetch"
+                                    data-modal-opener-href-value="{{ url('repairing link', { id: link.id }) }}"
+                                    aria-haspopup="dialog"
+                                    aria-controls="modal"
+                                >
+                                    {{ icon('wrench') }}
+                                    {{ t('Repair') }}
+                                </button>
+                            {% endif %}
+
+                            {% if can(app.user, 'delete', link) %}
+                                <div class="popup__separator"></div>
+
+                                <form
+                                    method="post"
+                                    action="{{ url('delete link', { id: link.id }) }}"
+                                    data-turbo-confirm="{{ t('Are you sure that you want to delete this link?') }}"
+                                >
+                                    <button
+                                        type="submit"
+                                        class="popup__item"
+                                    >
+                                        {{ icon('trash') }}
+                                        {{ t('Delete') }}
+                                    </button>
+
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token('links\\DeleteLink') }}" />
+                                </form>
+                            {% endif %}
+                        </nav>
+                    </details>
                 </div>
             {% endif %}
         </div>
