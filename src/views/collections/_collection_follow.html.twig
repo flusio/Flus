@@ -22,7 +22,7 @@
             </p>
 
             <p title="{{ t('Publication frequency') }}">
-                {{ icon('line-chart') }}
+                {{ icon('frequency') }}
                 {{ collection.publication_frequency_per_year | format_publication_frequency }}
             </p>
         </div>
@@ -32,7 +32,6 @@
         {% if app.user.isFollowing(collection.id) %}
             <form data-turbo-preserve-scroll method="post" action="{{ url('unfollow collection', { id: collection.id }) }}">
                 <button class="button--big">
-                    {{ icon('feed-stop') }}
                     {{ t('Unfollow') }}
                 </button>
 
@@ -41,7 +40,6 @@
         {% else %}
             <form data-turbo-preserve-scroll method="post" action="{{ url('follow collection', { id: collection.id }) }}">
                 <button class="button--big">
-                    {{ icon('feed') }}
                     {{ t('Follow') }}
                 </button>
 
