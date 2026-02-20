@@ -33,7 +33,7 @@ Flus is built upon the work of many other people:
 - the logo has been made by [Clara Chambon](https://www.clara-chambon.fr/);
 - the font [Comfortaa](https://fonts.google.com/specimen/Comfortaa), by Johan Aakerlund;
 - the font [Open Sans](https://fonts.google.com/specimen/Open+Sans), by Steve Matteson;
-- the icons are from [the Clarity project](https://clarity.design/);
+- the icons comes from [Lucide](https://lucide.dev/) and [Simple Icons](https://simpleicons.org);
 - the illustrations are from [the unDraw project](https://undraw.co), by [Katerina Limpitsouni](https://twitter.com/ninaLimpi);
 - default cards illustrations are from [SVGBackgrounds](https://www.svgbackgrounds.com/).
 

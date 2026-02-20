@@ -56,7 +56,7 @@ class AccountNavigation extends BaseNavigation
         $data_items[] = new Item(
             'exportation',
             \Minz\Url::for('exportation'),
-            'backup',
+            'cloud-download',
             TwigExtension::translate('Data export'),
         );
 
@@ -70,7 +70,7 @@ class AccountNavigation extends BaseNavigation
         $security_items[] = new Item(
             'sessions',
             \Minz\Url::for('sessions'),
-            'connect',
+            'session',
             TwigExtension::translate('Sessions'),
         );
 

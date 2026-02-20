@@ -19,7 +19,7 @@ class ReadingNavigation extends BaseNavigation
             new Item(
                 'news',
                 \Minz\Url::for('news'),
-                'reading',
+                'news',
                 TwigExtension::translate('News'),
             ),
 

@@ -88,7 +88,6 @@
                     {% if app.user and is_following %}
                         <form class="col--noshrink" method="post" action="{{ url('unfollow collection', { id: collection.id }) }}">
                             <button class="button--big">
-                                {{ icon('feed-stop') }}
                                 {{ t('Unfollow') }}
                             </button>
 
@@ -97,7 +96,6 @@
                     {% elseif app.user %}
                         <form class="col--noshrink" method="post" action="{{ url('follow collection', { id: collection.id }) }}">
                             <button class="button--primary button--big">
-                                {{ icon('feed') }}
                                 {{ t('Follow') }}
                             </button>
 
@@ -108,7 +106,7 @@
 
                 <p class="cols cols--always cols--gap">
                     <span title="{{ t('Publication frequency') }}">
-                        {{ icon('line-chart') }}
+                        {{ icon('frequency') }}
                         {{ collection.publication_frequency_per_year | format_publication_frequency }}
                     </span>
 
