@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-02-19 20:34+0100\n"
-"PO-Revision-Date: 2026-02-19 20:34+0100\n"
+"POT-Creation-Date: 2026-03-09 11:13+0100\n"
+"PO-Revision-Date: 2026-03-09 11:13+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -1458,7 +1458,7 @@ msgid "Read later"
 msgstr "Lire plus tard"
 
 #: views/links/_link.html.twig:374 views/links/_link.html.twig:378
-#: views/links/collections/index.html.twig:71
+#: views/links/collections/index.html.twig:69
 msgid "Store the link"
 msgstr "Ranger le lien"
 
@@ -1496,7 +1496,7 @@ msgstr "Collections"
 msgid "You already annoted this link."
 msgstr "Vous avez déjà annoté ce lien."
 
-#: views/links/collections/index.html.twig:69
+#: views/links/collections/index.html.twig:67
 msgid "Store the link and mark as read"
 msgstr "Ranger le lien et marquer comme lu"
 

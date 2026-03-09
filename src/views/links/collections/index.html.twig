@@ -47,16 +47,14 @@
 
             {% set notepad = link.notepad %}
             {% if notepad and link.user_id == app.user.id %}
-                <details class="form-details">
+                <details class="flow flow--large">
                     <summary>
                         {{ t('You already annoted this link.') }}
                     </summary>
 
-                    <div class="form-details__content panel panel--rounded flow flow--large">
-                        <div class="wrapper wrapper--small wrapper--center flow flow--large">
-                            {{ include('notes/_notepad.html.twig') }}
-                            {{ include('links/collections/_new_note_form.html.twig') }}
-                        </div>
+                    <div class="wrapper wrapper--small wrapper--center flow flow--large">
+                        {{ include('notes/_notepad.html.twig') }}
+                        {{ include('links/collections/_new_note_form.html.twig') }}
                     </div>
                 </details>
             {% else %}
