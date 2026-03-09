@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-03-09 11:13+0100\n"
-"PO-Revision-Date: 2026-03-09 11:13+0100\n"
+"POT-Creation-Date: 2026-03-09 14:39+0100\n"
+"PO-Revision-Date: 2026-03-09 14:39+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -56,11 +56,11 @@ msgstr "Liens Pocket"
 msgid "All your links imported from Pocket."
 msgstr "Tous vos liens importés depuis Pocket."
 
-#: cli/Wallabag.php:82
+#: cli/Wallabag.php:90
 msgid "wallabag links"
 msgstr "Liens wallabag"
 
-#: cli/Wallabag.php:86
+#: cli/Wallabag.php:94
 msgid "All your links imported from wallabag."
 msgstr "Tous vos liens importés depuis wallabag."
 
@@ -547,10 +547,10 @@ msgstr "aucun lien"
 #: views/links/_pagination_count.html.twig:7 views/news/index.html.twig:24
 #: views/news/index.html.twig:132
 #, php-format
-msgid "%d link"
-msgid_plural "%d links"
-msgstr[0] "%d lien"
-msgstr[1] "%d liens"
+msgid "%s link"
+msgid_plural "%s links"
+msgstr[0] "%s lien"
+msgstr[1] "%s liens"
 
 #: views/collections/_collection.html.twig:44
 #: views/collections/_selector.html.twig:90
@@ -1471,8 +1471,8 @@ msgstr[1] "Dans %d collections"
 
 #: views/links/_pagination_count.html.twig:9
 #, php-format
-msgid "%d of %d links"
-msgstr "%d sur %d liens"
+msgid "%s of %s links"
+msgstr "%s sur %s liens"
 
 #: views/links/collections/_new_note_form.html.twig:3
 #: views/links/show.html.twig:319

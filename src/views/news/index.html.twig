@@ -21,7 +21,7 @@
     {% if not links_timeline.empty %}
         <p class="text--center text--secondary">
             {% set count_links = links_timeline.count %}
-            {{ t('%d link', '%d links', count_links, [count_links | format_number]) }}
+            {{ t('%s link', '%s links', count_links, [count_links | format_number]) }}
         </p>
     {% endif %}
 
@@ -129,7 +129,7 @@
                                     </h3>
 
                                     <span class="col--noshrink text--secondary">
-                                        {{ t('%d link', '%d links', source_group.links | length, [source_group.links | length]) }}
+                                        {{ t('%s link', '%s links', source_group.links | length, [source_group.links | length]) }}
                                     </span>
 
                                     <details
