@@ -27,7 +27,7 @@
                         id="time-filter-strict"
                         name="time_filter"
                         value="strict"
-                        {{ form.time_filter == 'strict' ? 'checked' : '' }}
+                        {{ form.time_filter === 'strict' ? 'checked' : '' }}
                         aria-describedby="time-filter-strict-caption"
                         {% if form.isInvalid('time_filter') %}
                             aria-errormessage="time-filter-error"
@@ -50,7 +50,7 @@
                         id="time-filter-normal"
                         name="time_filter"
                         value="normal"
-                        {{ form.time_filter == 'normal' ? 'checked' : '' }}
+                        {{ form.time_filter === 'normal' ? 'checked' : '' }}
                         aria-describedby="time-filter-normal-caption"
                         {% if form.isInvalid('time_filter') %}
                             aria-errormessage="time-filter-error"
@@ -73,7 +73,7 @@
                         id="time-filter-all"
                         name="time_filter"
                         value="all"
-                        {{ form.time_filter == 'all' ? 'checked' : '' }}
+                        {{ form.time_filter === 'all' ? 'checked' : '' }}
                         aria-describedby="time-filter-all-caption"
                         {% if form.isInvalid('time_filter') %}
                             aria-errormessage="time-filter-error"

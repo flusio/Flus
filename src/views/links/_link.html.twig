@@ -20,23 +20,23 @@
 {% set source_collection = display_source ? link.sourceCollection : null %}
 {% set source_user = display_source ? link.sourceUser : null %}
 
-{% set is_current_user_owner = app.user and app.user.id == link.user_id %}
+{% set is_current_user_owner = app.user and app.user.id === link.user_id %}
 {% set in_error = link.inError %}
 {% set trackers_detected = link.trackersDetected %}
 
 {% set number_collections = app.user ? link.numberCollectionsForUser(app.user) : 0 %}
 
 {% set in_bookmarks = link.isInBookmarksOf(app.user) %}
-{% if display_read_later == 'auto' and in_bookmarks %}
+{% if display_read_later === 'auto' and in_bookmarks %}
     {% set display_read_later = false %}
-{% elseif display_read_later == 'auto' %}
+{% elseif display_read_later === 'auto' %}
     {% set display_read_later = true %}
 {% endif %}
 
 {% set is_read = link.isReadBy(app.user) %}
-{% if display_mark_as_read == 'auto' and is_read %}
+{% if display_mark_as_read === 'auto' and is_read %}
     {% set display_mark_as_read = false %}
-{% elseif display_mark_as_read == 'auto' %}
+{% elseif display_mark_as_read === 'auto' %}
     {% set display_mark_as_read = true %}
 {% endif %}
 
@@ -100,7 +100,7 @@
                 <div class="col--extend"></div>
 
                 <time class="badge" datetime="{{ link.published_at | date_iso }}" title="{{ d(link.published_at, 'dd MMM Y, HH:mm') }}">
-                    {% if date().format('Y') == link.published_at.format('Y') %}
+                    {% if date().format('Y') === link.published_at.format('Y') %}
                         {{ d(link.published_at, 'dd MMM') }}
                     {% else %}
                         {{ d(link.published_at, 'dd MMM Y') }}
@@ -153,10 +153,10 @@
 
             {% if display_source %}
                 <p class="link__text link__source">
-                    {% if link.source_type == 'bookmarks' %}
+                    {% if link.source_type === 'bookmarks' %}
                         {{ t('via your <strong><a href="%s">bookmarks</a></strong>', [url('bookmarks')]) | raw }}
                     {% elseif source_collection %}
-                        {% if source_collection.type == 'collection' %}
+                        {% if source_collection.type === 'collection' %}
                             {% set owner = source_collection.owner %}
                             {{ t('via <strong><a href="%s">%s</a></strong> by <a href="%s">%s</a>', [
                                 url('collection', { id: source_collection.id }),

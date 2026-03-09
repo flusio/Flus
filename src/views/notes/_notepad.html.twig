@@ -19,7 +19,7 @@
                         {{ note.contentAsHtml | raw }}
                     </div>
 
-                    {% if display_actions and app.user and note.user_id == app.user.id %}
+                    {% if display_actions and app.user and note.user_id === app.user.id %}
                         <div class="text--right">
                             <details
                                 class="popup"

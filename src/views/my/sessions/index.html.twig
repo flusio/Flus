@@ -25,7 +25,7 @@
                     <div class="col--extend stack stack--gap-small">
                         <strong>{{ session.name }}</strong>
 
-                        {% if session.id == current_session.id %}
+                        {% if session.id === current_session.id %}
                             <span class="badge badge--accent">
                                 {{ t('current session') }}
                             </span>

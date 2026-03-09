@@ -41,7 +41,7 @@
             <a
                 class="button button--ghost"
                 href="{{ url('explore', { topic: topic.id }) }}"
-                {{ current_topic and topic.id == current_topic.id ? 'aria-current="page"' : '' }}
+                {{ current_topic and topic.id === current_topic.id ? 'aria-current="page"' : '' }}
             >
                 {{ topic.label }}
             </a>

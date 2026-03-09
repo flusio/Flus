@@ -44,7 +44,7 @@
                         class="popup__item popup__item--selectable"
                         name="locale"
                         value="{{ locale_value }}"
-                        {{ locale_form.locale == locale_value ? 'aria-current="true"' }}
+                        {{ locale_form.locale === locale_value ? 'aria-current="true"' }}
                     >
                         {{ locale_name }}
                     </button>

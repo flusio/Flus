@@ -31,7 +31,7 @@
                 {{ t('You must validate your account so we can contact you in case of a change in our end-user license agreement or a problem concerning your account. <strong>You should have received an email containing a link intended to this purpose.</strong>') | raw }}
             </p>
 
-            {% if status == 'validation_email_sent' %}
+            {% if status === 'validation_email_sent' %}
                 <div class="flow">
                     {{ include('alerts/_success.html.twig', {
                         message: t('We’ve just sent you an email at %s', [app.user.email]),

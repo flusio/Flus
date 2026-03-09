@@ -16,7 +16,7 @@
             {% endif %}
 
             {% for page in pagination.pages %}
-                {% if page.type == 'number' %}
+                {% if page.type === 'number' %}
                     <li class="pagination__item pagination__item--number {{ pagination.isPageCurrent(page.number) ? 'pagination__item--current' : '' }}">
                         <a
                             class="pagination__link"

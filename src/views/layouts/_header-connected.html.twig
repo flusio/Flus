@@ -33,8 +33,8 @@
     {% if not app.user.isBlocked %}
         <div class="text--center">
             <a
-                class="header__link {{ tab == 'reading' ? 'header__link--active' : '' }}"
-                {{ page == 'reading' ? 'aria-current="page"' : '' }}
+                class="header__link {{ tab === 'reading' ? 'header__link--active' : '' }}"
+                {{ page === 'reading' ? 'aria-current="page"' : '' }}
                 href="{{ url('news') }}"
             >
                 {{ icon('reading') }}
@@ -45,8 +45,8 @@
             </a>
 
             <a
-                class="header__link {{ tab == 'links' ? 'header__link--active' : '' }}"
-                {{ page == 'links' ? 'aria-current="page"' : '' }}
+                class="header__link {{ tab === 'links' ? 'header__link--active' : '' }}"
+                {{ page === 'links' ? 'aria-current="page"' : '' }}
                 href="{{ url('links') }}"
             >
                 {{ icon('link') }}
@@ -56,8 +56,8 @@
             </a>
 
             <a
-                class="header__link {{ tab == 'feeds' ? 'header__link--active' : '' }}"
-                {{ page == 'feeds' ? 'aria-current="page"' : '' }}
+                class="header__link {{ tab === 'feeds' ? 'header__link--active' : '' }}"
+                {{ page === 'feeds' ? 'aria-current="page"' : '' }}
                 href="{{ url('feeds') }}"
             >
                 {{ icon('feed') }}
@@ -72,7 +72,7 @@
         <div>
             <a
                 class="header__button button button--primary button--icon-mobile"
-                {{ page == 'search link' ? 'aria-current="page"' : '' }}
+                {{ page === 'search link' ? 'aria-current="page"' : '' }}
                 href="{{ url('show search link') }}"
             >
                 {{ icon('plus') }}
@@ -101,7 +101,7 @@
             {% if not app.user.isBlocked %}
                 <a
                     class="popup__item"
-                    {{ page == 'profile' ? 'aria-current="page"' : '' }}
+                    {{ page === 'profile' ? 'aria-current="page"' : '' }}
                     href="{{ url('profile', { id: app.user.id }) }}"
                 >
                     {{ icon('avatar') }}
@@ -111,7 +111,7 @@
 
             <a
                 class="popup__item"
-                {{ page == 'preferences' ? 'aria-current="page"' : '' }}
+                {{ page === 'preferences' ? 'aria-current="page"' : '' }}
                 href="{{ url('preferences') }}"
             >
                 {{ icon('color-palette') }}
@@ -120,7 +120,7 @@
 
             <a
                 class="popup__item"
-                {{ page == 'account' ? 'aria-current="page"' : '' }}
+                {{ page === 'account' ? 'aria-current="page"' : '' }}
                 href="{{ url('account') }}"
             >
                 {{ icon('cog') }}
@@ -131,7 +131,7 @@
 
             <a
                 class="popup__item"
-                {{ page == 'addons' ? 'aria-current="page"' : '' }}
+                {{ page === 'addons' ? 'aria-current="page"' : '' }}
                 href="{{ url('addons') }}"
             >
                 {{ icon('plugin') }}
@@ -140,7 +140,7 @@
 
             <a
                 class="popup__item"
-                {{ page == 'support' ? 'aria-current="page"' : '' }}
+                {{ page === 'support' ? 'aria-current="page"' : '' }}
                 href="{{ url('support') }}"
             >
                 {{ icon('help') }}

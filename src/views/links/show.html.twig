@@ -183,7 +183,7 @@
                         aria-controls="modal"
                     >
                         {{ icon('collection') }}
-                        {% if number_collections == 0 %}
+                        {% if number_collections === 0 %}
                             {{ t('No collections') }}
                         {% else %}
                             {{ t('%d collection', '%d collections', number_collections, [number_collections]) }}

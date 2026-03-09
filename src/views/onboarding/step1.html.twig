@@ -33,7 +33,7 @@
                 {% for locale_value, locale_name in locale_form.localesValues %}
                     <option
                         value="{{ locale_value }}"
-                        {{ locale_value == locale_form.locale ? 'selected' : '' }}
+                        {{ locale_value === locale_form.locale ? 'selected' : '' }}
                     >
                         {{ locale_name }}
                     </option>

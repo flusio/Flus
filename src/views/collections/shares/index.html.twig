@@ -66,7 +66,7 @@
                         id="type-read"
                         name="type"
                         value="read"
-                        {{ form.type == 'read' ? 'checked' : '' }}
+                        {{ form.type === 'read' ? 'checked' : '' }}
                         aria-describedby="type-caption"
                         data-action="caption-switcher#switch"
                         data-caption-switcher-target="switch"
@@ -85,7 +85,7 @@
                         id="type-write"
                         name="type"
                         value="write"
-                        {{ form.type == 'write' ? 'checked' : '' }}
+                        {{ form.type === 'write' ? 'checked' : '' }}
                         aria-describedby="type-caption"
                         data-action="caption-switcher#switch"
                         data-caption-switcher-target="switch"
@@ -131,7 +131,7 @@
                             </span>
 
                             <span class="line__item text--secondary">
-                                {% if collection_share.type == 'read' %}
+                                {% if collection_share.type === 'read' %}
                                     {{ t('read only') }}
                                 {% else %}
                                     {{ t('read / write') }}
