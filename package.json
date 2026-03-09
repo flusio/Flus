@@ -12,9 +12,10 @@
     "lint-css-fix": "stylelint --fix src/assets/stylesheets/**/*.css"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@stylistic/stylelint-plugin": "^5",
-    "esbuild": "0.27.2",
-    "eslint": "^9.4.0",
+    "esbuild": "0.27.3",
+    "eslint": "^10.0.0",
     "globals": "^17",
     "stylelint": "^17",
     "stylelint-config-standard": "^40",

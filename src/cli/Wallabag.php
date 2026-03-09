@@ -44,22 +44,30 @@ class Wallabag
             return Response::text(400, 'Invalid file content.');
         }
 
+        $sanitized_items = [];
+
         foreach ($items as $item) {
             if (!is_array($item)) {
                 continue;
             }
 
-            $items[] = [
-                'title' => $item['title'] ?? '',
-                'url' => $item['url'] ?? '',
-                'created_at' => $item['created_at'] ?? '',
-                'tags' => $item['tags'] ?? [],
-                'is_archived' => $item['is_archived'] ?? false,
-                'is_public' => $item['is_public'] ?? false,
+            $item = array_filter($item, fn ($key): bool => is_string($key), ARRAY_FILTER_USE_KEY);
+            $item_bag = new \Minz\ParameterBag($item);
+
+            $tags = $item_bag->getArray('tags', []);
+            $tags = array_map(fn ($tag): string => is_string($tag) ? $tag : '', $tags);
+
+            $sanitized_items[] = [
+                'title' => $item_bag->getString('title', ''),
+                'url' => $item_bag->getString('url', ''),
+                'created_at' => $item_bag->getString('created_at', ''),
+                'tags' => $tags,
+                'is_archived' => $item_bag->getBoolean('is_archived'),
+                'is_public' => $item_bag->getBoolean('is_public'),
             ];
         }
 
-        $this->importWallabagItems($user, $items, $import_read_later);
+        $this->importWallabagItems($user, $sanitized_items, $import_read_later);
 
         return Response::text(200, 'Importation finished.');
     }
@@ -70,7 +78,7 @@ class Wallabag
      *     url: string,
      *     created_at: string,
      *     tags: string[],
-     *     is_archived: string,
+     *     is_archived: bool,
      *     is_public: bool,
      * }> $items
      */

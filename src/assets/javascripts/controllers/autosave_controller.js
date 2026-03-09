@@ -31,7 +31,7 @@ export default class extends Controller {
     loadData (namespace) {
         const rawData = window.localStorage.getItem(namespace);
 
-        let data = {};
+        let data;
         try {
             data = JSON.parse(rawData);
         } catch {
