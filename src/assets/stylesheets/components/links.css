@@ -157,6 +157,7 @@
 }
 
 .link__notepad {
+    color: var(--color-grey-text);
     font-weight: 600;
 }
 
