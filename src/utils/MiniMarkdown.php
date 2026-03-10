@@ -85,6 +85,7 @@ class MiniMarkdown extends \Parsedown
                     'text' => "#{$tag}",
                     'attributes' => array(
                         'href' => $tag_url,
+                        'class' => 'badge badge--tag',
                     ),
                 ),
             );
