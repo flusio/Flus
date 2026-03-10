@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-03-09 14:39+0100\n"
-"PO-Revision-Date: 2026-03-09 14:39+0100\n"
+"POT-Creation-Date: 2026-03-10 14:49+0100\n"
+"PO-Revision-Date: 2026-03-10 14:49+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.8\n"
+"X-Generator: Poedit 3.9\n"
 "X-Poedit-Basepath: ../../../src\n"
 "X-Poedit-KeywordsList: t:1,2;t;translate:1,2;translate:1;Translatable\n"
 "X-Poedit-SearchPath-0: .\n"
@@ -522,7 +522,7 @@ msgstr "Succès"
 msgid "Place here the links you want to consult later on."
 msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
 
-#: views/bookmarks/index.html.twig:43 views/collections/show.html.twig:298
+#: views/bookmarks/index.html.twig:43 views/collections/show.html.twig:296
 msgid "Add a link"
 msgstr "Ajouter un lien"
 
@@ -554,28 +554,28 @@ msgstr[1] "%s liens"
 
 #: views/collections/_collection.html.twig:44
 #: views/collections/_selector.html.twig:90
-#: views/collections/show.html.twig:117
+#: views/collections/show.html.twig:115
 msgid "public"
 msgstr "publique"
 
 #: views/collections/_collection.html.twig:46
-#: views/collections/show.html.twig:117
+#: views/collections/show.html.twig:115
 msgid "private"
 msgstr "privée"
 
 #: views/collections/_collection.html.twig:52
 #: views/collections/_collection_follow.html.twig:24
-#: views/collections/show.html.twig:110
+#: views/collections/show.html.twig:108
 msgid "Publication frequency"
 msgstr "Fréquence de publication"
 
-#: views/collections/_collection_follow.html.twig:36
-#: views/collections/show.html.twig:92
+#: views/collections/_collection_follow.html.twig:35
+#: views/collections/show.html.twig:91
 msgid "Unfollow"
 msgstr "Ne plus suivre"
 
-#: views/collections/_collection_follow.html.twig:45
-#: views/collections/show.html.twig:101
+#: views/collections/_collection_follow.html.twig:43
+#: views/collections/show.html.twig:99
 msgid "Follow"
 msgstr "Suivre"
 
@@ -928,7 +928,7 @@ msgstr "Flux de syndication de %s"
 msgid "Change the illustration"
 msgstr "Changer l’illustration"
 
-#: views/collections/show.html.twig:125
+#: views/collections/show.html.twig:123
 #, php-format
 msgid ""
 "Feed from <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">%s</a>"
@@ -936,21 +936,21 @@ msgstr ""
 "Flux issu de <a target=\"_blank\" rel=\"noopener noreferrer\" "
 "href=\"%s\">%s</a>"
 
-#: views/collections/show.html.twig:132
+#: views/collections/show.html.twig:130
 msgid "Published by"
 msgstr "Publiée par"
 
-#: views/collections/show.html.twig:169 views/groups/_group.html.twig:20
+#: views/collections/show.html.twig:167 views/groups/_group.html.twig:20
 #: views/links/_link.html.twig:285 views/links/show.html.twig:245
 #: views/notes/_notepad.html.twig:48 views/profiles/show.html.twig:82
 msgid "Edit"
 msgstr "Modifier"
 
-#: views/collections/show.html.twig:180
+#: views/collections/show.html.twig:178
 msgid "Access"
 msgstr "Accès"
 
-#: views/collections/show.html.twig:192 views/links/_link.html.twig:221
+#: views/collections/show.html.twig:190 views/links/_link.html.twig:221
 #: views/links/_link.html.twig:225 views/links/show.html.twig:212
 #: views/links/show.html.twig:215 views/news/index.html.twig:55
 #: views/news/index.html.twig:145 views/news/index.html.twig:228
@@ -958,29 +958,29 @@ msgstr "Accès"
 msgid "Actions"
 msgstr "Actions"
 
-#: views/collections/show.html.twig:207
+#: views/collections/show.html.twig:205
 msgid "Adjust for the news"
 msgstr "Régler pour le journal"
 
-#: views/collections/show.html.twig:221
+#: views/collections/show.html.twig:219
 msgid "Put in a group"
 msgstr "Placer dans un groupe"
 
-#: views/collections/show.html.twig:234
+#: views/collections/show.html.twig:232
 msgid "Copy the link"
 msgstr "Copier le lien"
 
-#: views/collections/show.html.twig:244 views/news/index.html.twig:66
+#: views/collections/show.html.twig:242 views/news/index.html.twig:66
 #: views/news/index.html.twig:156 views/news/index.html.twig:238
 msgid "Mark all as read"
 msgstr "Tout marquer comme lu"
 
-#: views/collections/show.html.twig:253 views/news/index.html.twig:93
+#: views/collections/show.html.twig:251 views/news/index.html.twig:93
 #: views/news/index.html.twig:186 views/news/index.html.twig:263
 msgid "Remove the links from the news"
 msgstr "Retirer les liens du journal"
 
-#: views/collections/show.html.twig:266
+#: views/collections/show.html.twig:264
 msgid ""
 "Are you sure that you want to delete this collection? You may lose the links "
 "that are attached only to this collection."
@@ -988,12 +988,12 @@ msgstr ""
 "Êtes-vous sur·e de vouloir supprimer cette collection ? Vous pourriez perdre "
 "les liens qui lui sont attachés."
 
-#: views/collections/show.html.twig:273 views/links/_link.html.twig:317
+#: views/collections/show.html.twig:271 views/links/_link.html.twig:317
 #: views/links/show.html.twig:274 views/notes/_notepad.html.twig:61
 msgid "Delete"
 msgstr "Supprimer"
 
-#: views/collections/show.html.twig:322
+#: views/collections/show.html.twig:320
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 
@@ -2437,19 +2437,19 @@ msgstr ""
 
 #: views/pages/about.html.twig:95
 msgid ""
-"the icons are from <a href=\"https://clarity.design/\">the Clarity project</"
-"a>;"
+"the icons comes from <a href=\"https://lucide.dev/\">Lucide</a> and <a "
+"href=\"https://simpleicons.org/\">Simple icons</a>;"
 msgstr ""
-"les icônes viennent du <a href=\"https://clarity.design/\">projet Clarity</"
-"a> ;"
+"les icônes viennent de <a href=\"https://lucide.dev/\">Lucide</a> et de <a "
+"href=\"https://simpleicons.org/\">Simple icons</a>;"
 
 #: views/pages/about.html.twig:96
 msgid ""
 "the illustrations are from <a href=\"https://undraw.co\">the unDraw project</"
-"a>, by <a href=\"https://twitter.com/ninaLimpi\">Katerina Limpitsouni</a>;"
+"a>, by <a href=\"https://ninalimpi.com/\">Katerina Limpitsouni</a>;"
 msgstr ""
 "les illustrations viennent du <a href=\"https://undraw.co\">projet unDraw</"
-"a>, par <a href=\"https://twitter.com/ninaLimpi\">Katerina Limpitsouni</a> ;"
+"a>, par <a href=\"https://ninalimpi.com/\">Katerina Limpitsouni</a> ;"
 
 #: views/pages/about.html.twig:97
 msgid ""

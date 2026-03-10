@@ -31,11 +31,10 @@ Flus is built upon the work of many other people:
 
 - the user experience and interface have been designed with the help of [Maiwann](https://www.maiwann.net/) and [Elina Bufferne](https://fr.linkedin.com/in/elina-bufferne);
 - the logo has been made by [Clara Chambon](https://www.clara-chambon.fr/);
-- the font [Comfortaa](https://fonts.google.com/specimen/Comfortaa), by Johan Aakerlund;
-- the font [Open Sans](https://fonts.google.com/specimen/Open+Sans), by Steve Matteson;
+- the font [Raleway](https://www.theleagueofmoveabletype.com/raleway), by Matt McInerney, Pablo Impallari, Rodrigo Fuenzalida
 - the icons comes from [Lucide](https://lucide.dev/) and [Simple Icons](https://simpleicons.org);
-- the illustrations are from [the unDraw project](https://undraw.co), by [Katerina Limpitsouni](https://twitter.com/ninaLimpi);
-- default cards illustrations are from [SVGBackgrounds](https://www.svgbackgrounds.com/).
+- the illustrations are from [the unDraw project](https://undraw.co), by [Katerina Limpitsouni](https://ninalimpi.com/);
+- default cards illustrations comes from [Pattern Monster](https://pattern.monster/).
 
 It’s also based on other projects:
 
