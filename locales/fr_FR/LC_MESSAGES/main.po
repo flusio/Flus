@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-03-10 14:49+0100\n"
-"PO-Revision-Date: 2026-03-10 14:49+0100\n"
+"POT-Creation-Date: 2026-03-10 15:05+0100\n"
+"PO-Revision-Date: 2026-03-10 15:06+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -1324,8 +1324,8 @@ msgid "Search"
 msgstr "Rechercher"
 
 #: views/layouts/_sidenav.html.twig:10
-msgid "Navigation"
-msgstr "Navigation"
+msgid "Menu"
+msgstr "Menu"
 
 #: views/layouts/_title.html.twig:6
 msgid "Error: "
