@@ -61,34 +61,17 @@
                             </p>
                         {% endif %}
 
-                        <div class="cols cols--gap">
-                            <h1 class="col--extend text--break">
-                                <a
-                                    class="anchor--nostyle"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    href="{{ link.url }}"
-                                    tabindex="-1"
-                                >
-                                    {{ link.title }}
-                                </a>
-                            </h1>
-
-                            <div class="col--noshrink">
-                                <a
-                                    class="button button--primary button--big"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    href="{{ link.url }}"
-                                >
-                                    {{ icon('pop-out') }}
-                                    {{ t('read') }}
-                                    <span class="sr-only">
-                                        {{ t('(open a new window)') }}
-                                    </span>
-                                </a>
-                            </div>
-                        </div>
+                        <h1 class="text--break">
+                            <a
+                                class="anchor--nostyle"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                href="{{ link.url }}"
+                                tabindex="-1"
+                            >
+                                {{ link.title }}
+                            </a>
+                        </h1>
 
                         <div class="stack stack--gap">
                             <p>
@@ -149,8 +132,22 @@
                 </div>
             </div>
 
-            {% if app.user %}
-                <div class="panel panel--rounded stack stack--gap-small">
+            <div class="panel panel--rounded stack stack--gap-small">
+                <a
+                    class="button button--primary"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href="{{ link.url }}"
+                >
+                    {{ icon('pop-out') }}
+                    {{ t('Read') }}
+
+                    <span class="sr-only">
+                        {{ t('(open a new window)') }}
+                    </span>
+                </a>
+
+                {% if app.user %}
                     {% if not is_read or in_bookmarks %}
                         <form data-turbo-preserve-scroll method="post" action="{{ url('mark link as read', { id: link.id }) }}">
                             <button>
@@ -279,8 +276,8 @@
                             {% endif %}
                         </nav>
                     </details>
-                </div>
-            {% endif %}
+                {% endif %}
+            </div>
         </div>
 
         {% set notepad = link.notepad %}

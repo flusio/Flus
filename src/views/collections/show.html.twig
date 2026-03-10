@@ -82,27 +82,7 @@
             </div>
 
             <div class="col--extend flow">
-                <div class="cols cols--gap">
-                    <h1 class="col--extend text--break">{{ collection.name() }}</h1>
-
-                    {% if app.user and is_following %}
-                        <form class="col--noshrink" method="post" action="{{ url('unfollow collection', { id: collection.id }) }}">
-                            <button class="button--big">
-                                {{ t('Unfollow') }}
-                            </button>
-
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\UnfollowCollection') }}">
-                        </form>
-                    {% elseif app.user %}
-                        <form class="col--noshrink" method="post" action="{{ url('follow collection', { id: collection.id }) }}">
-                            <button class="button--primary button--big">
-                                {{ t('Follow') }}
-                            </button>
-
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\FollowCollection') }}">
-                        </form>
-                    {% endif %}
-                </div>
+                <h1 class="text--break">{{ collection.name() }}</h1>
 
                 <p class="cols cols--always cols--gap">
                     <span title="{{ t('Publication frequency') }}">
@@ -153,8 +133,26 @@
         </div>
     </div>
 
-    {% if is_following or can_update or can_delete %}
+    {% if app.user %}
         <div class="panel panel--rounded stack stack--gap-small">
+            {% if is_following %}
+                <form method="post" action="{{ url('unfollow collection', { id: collection.id }) }}">
+                    <button>
+                        {{ t('Unfollow') }}
+                    </button>
+
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\UnfollowCollection') }}">
+                </form>
+            {% else %}
+                <form method="post" action="{{ url('follow collection', { id: collection.id }) }}">
+                    <button class="button--primary">
+                        {{ t('Follow') }}
+                    </button>
+
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\FollowCollection') }}">
+                </form>
+            {% endif %}
+
             {% if can_update %}
                 <button
                     data-controller="modal-opener"
