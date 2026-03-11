@@ -49,88 +49,87 @@
 {% endblock %}
 
 {% block body %}
-    <div class="flow">
-        <div class="cols cols--gap-large">
-            <div class="col--size3 text--center">
-                {% if can(app.user, 'update', collection) %}
-                    <button
-                        class="button--edit-image"
-                        data-controller="modal-opener"
-                        data-action="modal-opener#fetch"
-                        data-modal-opener-href-value="{{ url('edit image collection', { id: collection.id }) }}"
-                        aria-haspopup="dialog"
-                        aria-controls="modal"
-                        title="{{ t('Change the illustration') }}"
-                    >
-                        <img
-                            class="illustration"
-                            alt=""
-                            src="{{ url_media('covers', collection.image_filename, 'collection-card.png') }}"
-                        >
-
-                        <span class="sr-only">
-                            {{ t('Change the illustration') }}
-                        </span>
-                    </button>
-                {% else %}
+    <div class="cols cols--gap-large">
+        <div class="col--size3 text--center">
+            {% if can(app.user, 'update', collection) %}
+                <button
+                    class="button--edit-image"
+                    data-controller="modal-opener"
+                    data-action="modal-opener#fetch"
+                    data-modal-opener-href-value="{{ url('edit image collection', { id: collection.id }) }}"
+                    aria-haspopup="dialog"
+                    aria-controls="modal"
+                    title="{{ t('Change the illustration') }}"
+                >
                     <img
                         class="illustration"
                         alt=""
                         src="{{ url_media('covers', collection.image_filename, 'collection-card.png') }}"
                     >
-                {% endif %}
-            </div>
 
-            <div class="col--extend flow">
-                <h1 class="text--break">{{ collection.name() }}</h1>
-
-                <p class="cols cols--always cols--gap">
-                    <span title="{{ t('Publication frequency') }}">
-                        {{ icon('frequency') }}
-                        {{ collection.publication_frequency_per_year | format_publication_frequency }}
+                    <span class="sr-only">
+                        {{ t('Change the illustration') }}
                     </span>
+                </button>
+            {% else %}
+                <img
+                    class="illustration"
+                    alt=""
+                    src="{{ url_media('covers', collection.image_filename, 'collection-card.png') }}"
+                >
+            {% endif %}
+        </div>
 
-                    {% if collection.isCollection %}
-                        <span class="badge badge--accent badge--border">
-                            {{ collection.is_public ? t('public') : t('private') }}
-                        </span>
-                    {% endif %}
-                </p>
+        <div class="col--extend flow">
+            <h1 class="text--break">{{ collection.name() }}</h1>
 
+            <p class="stack stack--gap">
                 {% if collection.isFeed %}
-                    <p>
+                    <span title="{{ t('Feed of %s website', [collection.feedWebsiteHost]) }}">
                         {{ icon('feed') }}
-                        {{ t('Feed from <a target="_blank" rel="noopener noreferrer" href="%s">%s</a>', [
-                            collection.feedWebsiteUrl | escape,
-                            collection.feedWebsiteHost | escape,
-                        ]) | raw }}
-                    </p>
-                {% else %}
-                    <p>
-                        {{ t('Published by') }}
-                        {%- for user in collection.publishers -%}
-                            {% if not loop.first %}, {% endif %}
-                            <a class="username" href="{{ url('profile', { id: user.id }) }}">
-                                <img class="avatar avatar--mini" alt="" src="{{ url_avatar(user.avatar_filename) }}">
-                                {{- user.username -}}
-                            </a>
-                        {%- endfor -%}
-                    </p>
+                        <a target="_blank" rel="noopener noreferrer" href="{{ collection.feedWebsiteUrl }}">
+                            {{ collection.feedWebsiteHost }}
+                        </a>
+                    </span>
                 {% endif %}
 
-                {% if topics %}
-                    <p>
-                        {{ t('Topic:', 'Topics:', topics | length, []) }}
-                        {{ topics | column('label') | join(', ') }}
-                    </p>
-                {% endif %}
+                <span title="{{ t('Publication frequency') }}">
+                    {{ icon('frequency') }}
+                    {{ collection.publication_frequency_per_year | format_publication_frequency }}
+                </span>
 
-                {% if collection.description %}
-                    <div class="text-container">
-                        {{ collection.descriptionAsHtml | raw }}
-                    </div>
+                {% if collection.isCollection %}
+                    <span class="badge badge--accent badge--border">
+                        {{ collection.is_public ? t('public') : t('private') }}
+                    </span>
                 {% endif %}
-            </div>
+            </p>
+
+            {% if not collection.isFeed %}
+                <p>
+                    {{ t('Published by') }}
+                    {%- for user in collection.publishers -%}
+                        {% if not loop.first %}, {% endif %}
+                        <a class="username" href="{{ url('profile', { id: user.id }) }}">
+                            <img class="avatar avatar--mini" alt="" src="{{ url_avatar(user.avatar_filename) }}">
+                            {{- user.username -}}
+                        </a>
+                    {%- endfor -%}
+                </p>
+            {% endif %}
+
+            {% if topics %}
+                <p>
+                    {{ t('Topic:', 'Topics:', topics | length, []) }}
+                    {{ topics | column('label') | join(', ') }}
+                </p>
+            {% endif %}
+
+            {% if collection.description %}
+                <div class="text-container">
+                    {{ collection.descriptionAsHtml | raw }}
+                </div>
+            {% endif %}
         </div>
     </div>
 
