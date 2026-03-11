@@ -131,7 +131,7 @@
 
 @media (min-width: 800px) {
     .link:not(.link--compact) .link__title {
-        font-size: 1.15em;
+        font-size: 1.1em;
     }
 }
 
@@ -139,12 +139,6 @@
     color: var(--color-grey-text);
     font-size: var(--font-size-small);
     overflow-wrap: anywhere;
-}
-
-@media (min-width: 800px) {
-    .link--compact .link__text {
-        font-size: var(--font-size-smaller);
-    }
 }
 
 .link__source {

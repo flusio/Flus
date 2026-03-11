@@ -28,7 +28,7 @@
     {% if not links_timeline.empty %}
         <div class="flow flow--large" data-controller="zindex-inverser">
             {% for date_group in links_timeline.datesGroups %}
-                <section class="group flow flow--large">
+                <section class="group flow">
                     <header class="group__header" data-zindex-inverser-target="item">
                         <h2 class="group__title">
                             {{ d(date_group.date, 'dd MMMM') }}
@@ -100,7 +100,7 @@
                         </details>
                     </header>
 
-                    <div class="group__body flow flow--large">
+                    <div class="group__body flow">
                         {% set links = date_group.links %}
 
                         {% if links %}

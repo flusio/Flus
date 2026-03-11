@@ -16,14 +16,8 @@
 .group__title {
     overflow: hidden;
 
-    font-size: var(--font-size-normal);
+    font-size: var(--font-size-big);
     text-overflow: ellipsis;
-}
-
-@media (min-width: 800px) {
-    .group__title {
-        font-size: var(--font-size-big);
-    }
 }
 
 .group__separator {
