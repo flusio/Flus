@@ -136,11 +136,11 @@
                 <span class="text--ellipsis">{{ link.host }}</span>&nbsp;·&nbsp;{{ link.reading_time | format_reading_time }}
 
                 {% if is_read %}
-                    &nbsp;<span title="{{ t('You read this link.') }}">{{ icon('check') }}<span class="sr-only">{{ t('You read this link.') }}</span></span>
+                    &nbsp;<span title="{{ t('You read this link.') }}">{{ icon('check') }}</span>
                 {% endif %}
 
                 {% if in_bookmarks %}
-                    &nbsp;<span title="{{ t('This link is in your bookmarks.') }}">{{ icon('bookmark') }}<span class="sr-only">{{ t('This link is in your bookmarks.') }}</span></span>
+                    &nbsp;<span title="{{ t('You marked this link to be read.') }}">{{ icon('bookmark') }}</span>
                 {% endif %}
             </p>
 
@@ -154,7 +154,7 @@
             {% if display_source %}
                 <p class="link__text link__source">
                     {% if link.source_type === 'bookmarks' %}
-                        {{ t('via your <strong><a href="%s">bookmarks</a></strong>', [url('bookmarks')]) | raw }}
+                        {{ t('via <strong><a href="%s">To read</a></strong>', [url('bookmarks')]) | raw }}
                     {% elseif source_collection %}
                         {% if source_collection.type === 'collection' %}
                             {% set owner = source_collection.owner %}

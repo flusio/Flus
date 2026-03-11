@@ -78,11 +78,11 @@
                                 {{ link.host }}&nbsp;·&nbsp;{{ link.reading_time | format_reading_time }}
 
                                 {% if is_read %}
-                                    &nbsp;<span title="{{ t('You read this link.') }}">{{ icon('check') }}<span class="sr-only">{{ t('You read this link.') }}</span></span>
+                                    &nbsp;<span title="{{ t('You read this link.') }}">{{ icon('check') }}</span>
                                 {% endif %}
 
                                 {% if in_bookmarks %}
-                                    &nbsp;<span title="{{ t('This link is in your bookmarks.') }}">{{ icon('bookmark') }}<span class="sr-only">{{ t('This link is in your bookmarks.') }}</span></span>
+                                    &nbsp;<span title="{{ t('You marked this link to be read.') }}">{{ icon('bookmark') }}</span>
                                 {% endif %}
                             </p>
 

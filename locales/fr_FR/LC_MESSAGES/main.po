@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-03-11 11:09+0100\n"
-"PO-Revision-Date: 2026-03-11 11:09+0100\n"
+"POT-Creation-Date: 2026-03-11 14:44+0100\n"
+"PO-Revision-Date: 2026-03-11 14:45+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -1393,8 +1393,8 @@ msgid "You read this link."
 msgstr "Vous avez lu ce lien."
 
 #: views/links/_link.html.twig:143 views/links/show.html.twig:85
-msgid "This link is in your bookmarks."
-msgstr "Ce lien est dans vos signets."
+msgid "You marked this link to be read."
+msgstr "Vous avez marqué ce lien à lire."
 
 #: views/links/_link.html.twig:150 views/links/show.html.twig:103
 msgid "ongoing synchronisation…"
@@ -1402,8 +1402,8 @@ msgstr "synchronisation en cours…"
 
 #: views/links/_link.html.twig:157
 #, php-format
-msgid "via your <strong><a href=\"%s\">bookmarks</a></strong>"
-msgstr "via vos <strong><a href=\"%s\">signets</a></strong>"
+msgid "via <strong><a href=\"%s\">To read</a></strong>"
+msgstr "via <strong><a href=\"%s\">À lire</a></strong>"
 
 #: views/links/_link.html.twig:161
 #, php-format
@@ -2234,10 +2234,10 @@ msgstr ""
 
 #: views/onboarding/step2.html.twig:24
 msgid ""
-"Short on time? “Bookmark” links to read later and find them in one click."
+"Short on time? Place links in “To read” list to find them later in one click."
 msgstr ""
-"Vous manquez de temps ? Placez vos liens dans les « Signets » pour les lire "
-"plus tard et les retrouver en un clic."
+"Vous manquez de temps ? Placez vos liens dans la liste « À lire » pour les "
+"retrouver plus tard en un clic."
 
 #: views/onboarding/step2.html.twig:28
 msgid ""
@@ -2535,13 +2535,13 @@ msgstr ""
 
 #: views/pages/webmanifest.json.twig:25
 #, php-format
-msgid "Bookmarks screen of %s on desktop"
-msgstr "L’écran des signets de %s sur ordinateur"
+msgid "“To read” screen of %s on desktop"
+msgstr "L’écran « À lire » de %s sur ordinateur"
 
 #: views/pages/webmanifest.json.twig:32
 #, php-format
-msgid "Bookmarks screen of %s on mobile"
-msgstr "L’écran des signets de %s sur mobile"
+msgid "“To read” screen of %s on mobile"
+msgstr "L’écran « À lire » de %s sur mobile"
 
 #: views/passwords/edit.html.twig:3
 msgid "Change your password"
@@ -2738,6 +2738,3 @@ msgstr "Recommencer l’introduction"
 #: views/support/show.html.twig:117
 msgid "What’s new?"
 msgstr "Quoi de neuf ?"
-
-#~ msgid "read"
-#~ msgstr "lire"

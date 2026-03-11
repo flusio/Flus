@@ -59,8 +59,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $bookmarks_url = \Minz\Url::for('bookmarks');
-        $bookmarks_anchor = "<a href=\"{$bookmarks_url}\">bookmarks</a>";
-        $this->assertResponseContains($response, "via your <strong>{$bookmarks_anchor}</strong>");
+        $bookmarks_anchor = "<a href=\"{$bookmarks_url}\">To read</a>";
+        $this->assertResponseContains($response, "via <strong>{$bookmarks_anchor}</strong>");
     }
 
     public function testIndexRendersIfViaFollowedCollections(): void
