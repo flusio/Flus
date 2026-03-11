@@ -1,12 +1,44 @@
 # Changelog of Flus
 
-## unreleased
+## 2026-03-11 - v2.3.0
 
 ### Migration notes
 
 You can remove the media "cards" and "large" folders as these images are no longer used.
 Please make sure **to keep the "avatars" and "covers" folders.**
 The folders are located either under public/media, or under the folder set by the `APP_MEDIA_PATH` environment variable.
+
+### Features
+
+- Provide the new design based on @flus/design ([2b2a34ef](https://github.com/flusio/Flus/commit/2b2a34ef))
+- Rename "Bookmarks" in "To read" ([15b80984](https://github.com/flusio/Flus/commit/15b80984), [62ddb720](https://github.com/flusio/Flus/commit/62ddb720))
+- Improve form feedbacks on error and successful actions ([a2602943](https://github.com/flusio/Flus/commit/a2602943))
+- Display total number of elements in paginations ([0b04d186](https://github.com/flusio/Flus/commit/0b04d186))
+- Add more actions on the notepad page ([14e6d992](https://github.com/flusio/Flus/commit/14e6d992))
+- Add style to the tags in notepads ([99b8ca12](https://github.com/flusio/Flus/commit/99b8ca12))
+- Improve editing avatar ([dd856473](https://github.com/flusio/Flus/commit/dd856473))
+- Improve the text explaining the demo version ([66656015](https://github.com/flusio/Flus/commit/66656015))
+- Put the explore/discovery menu item behind the beta flag ([bc7ed80e](https://github.com/flusio/Flus/commit/bc7ed80e))
+
+### Bug fixes
+
+- Display host and reading time while link is syncing ([e9dea67e](https://github.com/flusio/Flus/commit/e9dea67e))
+
+### Maintenance
+
+- Migrate PHTML files to Twig and the new design system ([a98d2307](https://github.com/flusio/Flus/commit/a98d2307))
+- Update the icons to Lucide icons ([779ce043](https://github.com/flusio/Flus/commit/779ce043))
+- Update the dependencies ([bc16e6d4](https://github.com/flusio/Flus/commit/bc16e6d4), [0667b293](https://github.com/flusio/Flus/commit/0667b293), [3797fa9a](https://github.com/flusio/Flus/commit/3797fa9a), [5b2b06b8](https://github.com/flusio/Flus/commit/5b2b06b8), [4f4fbf4e](https://github.com/flusio/Flus/commit/4f4fbf4e))
+- Remove the `Permissions-Policy` HTTP header ([7cd6fa0d](https://github.com/flusio/Flus/commit/7cd6fa0d))
+- Remove the `links.to_be_fetched` unused column ([3d82906b](https://github.com/flusio/Flus/commit/3d82906b))
+- Remove support of "card" and "large" images ([52c585ce](https://github.com/flusio/Flus/commit/52c585ce))
+- Remove the topic illustrations ([4ef68778](https://github.com/flusio/Flus/commit/4ef68778))
+
+### Documentation
+
+- Update the documentation ([b81b2ae8](https://github.com/flusio/Flus/commit/b81b2ae8))
+- Update the screenshots ([414fba50](https://github.com/flusio/Flus/commit/414fba50))
+- Fix the credits ([56775a6b](https://github.com/flusio/Flus/commit/56775a6b))
 
 ## 2025-12-30 - v2.2.1
 
