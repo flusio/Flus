@@ -120,7 +120,8 @@
 
                 {% if topics %}
                     <p>
-                        {{ topics | column('label') | join(' ⋅ ') }}
+                        {{ t('Topic:', 'Topics:', topics | length, []) }}
+                        {{ topics | column('label') | join(', ') }}
                     </p>
                 {% endif %}
 
