@@ -64,16 +64,16 @@
         },
         {
             "name": "flus/minz",
-            "version": "2.3.2",
+            "version": "2.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/flusio/Minz.git",
-                "reference": "26784b09e1730a99a7fb155588bbabc81182b4a9"
+                "reference": "4c0c056bc82fb74cc5bb26f44f6b6d35410a06df"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/flusio/Minz/zipball/26784b09e1730a99a7fb155588bbabc81182b4a9",
-                "reference": "26784b09e1730a99a7fb155588bbabc81182b4a9",
+                "url": "https://api.github.com/repos/flusio/Minz/zipball/4c0c056bc82fb74cc5bb26f44f6b6d35410a06df",
+                "reference": "4c0c056bc82fb74cc5bb26f44f6b6d35410a06df",
                 "shasum": ""
             },
             "require": {
@@ -104,9 +104,9 @@
             "homepage": "https://github.com/flusio/Minz",
             "support": {
                 "issues": "https://github.com/flusio/Minz/issues",
-                "source": "https://github.com/flusio/Minz/tree/2.3.2"
+                "source": "https://github.com/flusio/Minz/tree/2.3.3"
             },
-            "time": "2026-03-09T10:20:50+00:00"
+            "time": "2026-03-11T15:40:39+00:00"
         },
         {
             "name": "phpmailer/phpmailer",
