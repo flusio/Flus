@@ -1,4 +1,6 @@
 .illustration {
+    max-width: 200px;
+
     box-shadow: 0 0 1px var(--color-box-shadow);
     border-radius: var(--border-radius);
 }
