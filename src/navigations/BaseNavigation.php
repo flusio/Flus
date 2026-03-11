@@ -13,6 +13,8 @@ abstract class BaseNavigation
     ) {
     }
 
+    abstract public function title(): string;
+
     public function currentLabel(): string
     {
         $items = [];

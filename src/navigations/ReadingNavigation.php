@@ -11,6 +11,11 @@ use Minz\Template\TwigExtension;
  */
 class ReadingNavigation extends BaseNavigation
 {
+    public function title(): string
+    {
+        return TwigExtension::translate('Reading menu');
+    }
+
     public function elements(): array
     {
         $current_user = auth\CurrentUser::require();

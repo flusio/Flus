@@ -11,6 +11,11 @@ use Minz\Template\TwigExtension;
  */
 class AccountNavigation extends BaseNavigation
 {
+    public function title(): string
+    {
+        return TwigExtension::translate('Account & data menu');
+    }
+
     public function elements(): array
     {
         $current_user = auth\CurrentUser::require();

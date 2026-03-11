@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-03-11 14:44+0100\n"
-"PO-Revision-Date: 2026-03-11 14:45+0100\n"
+"POT-Creation-Date: 2026-03-11 14:54+0100\n"
+"PO-Revision-Date: 2026-03-11 14:55+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -289,12 +289,12 @@ msgid "The name must be less than {max} characters."
 msgstr "Le nom ne doit pas faire plus de {max} caractères."
 
 #: models/Collection.php:139 models/Collection.php:229
-#: navigations/ReadingNavigation.php:30
+#: navigations/ReadingNavigation.php:35
 msgid "To read"
 msgstr "À lire"
 
 #: models/Collection.php:150 models/Collection.php:231
-#: navigations/ReadingNavigation.php:37
+#: navigations/ReadingNavigation.php:42
 msgid "Links read"
 msgstr "Liens lus"
 
@@ -303,7 +303,7 @@ msgid "Links never to read"
 msgstr "Liens à ne jamais lire"
 
 #: models/Collection.php:172 models/Collection.php:233
-#: navigations/ReadingNavigation.php:23
+#: navigations/ReadingNavigation.php:28
 msgid "News"
 msgstr "Journal"
 
@@ -359,51 +359,59 @@ msgstr "Le nom d’utilisateur·ice ne doit pas contenir le caractère ‘@’."
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
 
-#: navigations/AccountNavigation.php:26
+#: navigations/AccountNavigation.php:16
+msgid "Account & data menu"
+msgstr "Menu compte & données"
+
+#: navigations/AccountNavigation.php:31
 msgid "Overview"
 msgstr "Aperçu"
 
-#: navigations/AccountNavigation.php:34
+#: navigations/AccountNavigation.php:39
 msgid "Account validation"
 msgstr "Validation du compte"
 
-#: navigations/AccountNavigation.php:43
+#: navigations/AccountNavigation.php:48
 msgid "Mastodon"
 msgstr "Mastodon"
 
-#: navigations/AccountNavigation.php:52
+#: navigations/AccountNavigation.php:57
 msgid "OPML import"
 msgstr "Importation OPML"
 
-#: navigations/AccountNavigation.php:60
+#: navigations/AccountNavigation.php:65
 msgid "Data export"
 msgstr "Exportation des données"
 
-#: navigations/AccountNavigation.php:67
+#: navigations/AccountNavigation.php:72
 msgid "Credentials"
 msgstr "Identifiants"
 
-#: navigations/AccountNavigation.php:74
+#: navigations/AccountNavigation.php:79
 msgid "Sessions"
 msgstr "Sessions"
 
-#: navigations/AccountNavigation.php:81
+#: navigations/AccountNavigation.php:86
 msgid "Account deletion"
 msgstr "Suppression du compte"
 
-#: navigations/AccountNavigation.php:85
+#: navigations/AccountNavigation.php:90
 msgid "Account"
 msgstr "Compte"
 
-#: navigations/AccountNavigation.php:86
+#: navigations/AccountNavigation.php:91
 msgid "Data"
 msgstr "Données"
 
-#: navigations/AccountNavigation.php:87
+#: navigations/AccountNavigation.php:92
 msgid "Security"
 msgstr "Sécurité"
 
-#: navigations/ReadingNavigation.php:46
+#: navigations/ReadingNavigation.php:16
+msgid "Reading menu"
+msgstr "Menu lecture"
+
+#: navigations/ReadingNavigation.php:51
 msgid "Explore"
 msgstr "Explorer"
 
@@ -1260,7 +1268,6 @@ msgid "Preferences"
 msgstr "Préférences"
 
 #: views/layouts/_header-connected.html.twig:127
-#: views/my/account/show.html.twig:3 views/my/account/show.html.twig:15
 msgid "Account & data"
 msgstr "Compte & données"
 
@@ -1327,10 +1334,6 @@ msgstr "Rechercher des liens par mots ou URL"
 #: views/layouts/_search.html.twig:15 views/links/searches/show.html.twig:64
 msgid "Search"
 msgstr "Rechercher"
-
-#: views/layouts/_sidenav.html.twig:10
-msgid "Menu"
-msgstr "Menu"
 
 #: views/layouts/_title.html.twig:6
 msgid "Error: "
@@ -1907,6 +1910,10 @@ msgstr ""
 #: views/my/account/deletion.html.twig:77
 msgid "Delete your account"
 msgstr "Supprimer votre compte"
+
+#: views/my/account/show.html.twig:3 views/my/account/show.html.twig:15
+msgid "Account overview"
+msgstr "Aperçu du compte"
 
 #: views/my/account/show.html.twig:19
 #, php-format
