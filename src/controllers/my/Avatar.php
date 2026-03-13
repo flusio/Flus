@@ -81,7 +81,7 @@ class Avatar extends BaseController
 
         $image = models\Image::fromString($image_data);
 
-        $image->resize(200, 200);
+        $image->resize(400, 400);
 
         if ($user->avatar_filename) {
             $subpath = utils\Belt::filenameToSubpath($user->avatar_filename);
