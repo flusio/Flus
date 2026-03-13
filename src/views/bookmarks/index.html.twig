@@ -13,7 +13,7 @@
     {{ include('layouts/_header.html.twig', { page: 'bookmarks', tab: 'reading' }) }}
 {% endblock %}
 
-{% block navigation %}
+{% block layout_sidenav %}
     {{ include('layouts/_sidenav.html.twig', { navigation: reading_navigation(current: 'bookmarks') }) }}
 {% endblock %}
 

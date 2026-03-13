@@ -9,7 +9,7 @@
     {{ include('layouts/_header.html.twig', { page: 'explore', tab: 'reading' }) }}
 {% endblock %}
 
-{% block navigation %}
+{% block layout_sidenav %}
     {% if app.user %}
         {{ include('layouts/_sidenav.html.twig', { navigation: reading_navigation(current: 'explore') }) }}
     {% endif %}

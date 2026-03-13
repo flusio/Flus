@@ -7,7 +7,7 @@
     {{ include('layouts/_header.html.twig', { page: 'password confirmation' }) }}
 {% endblock %}
 
-{% block navigation %}
+{% block layout_sidenav %}
     {% if form.isRedirectingTo('sessions') %}
         {% set current = 'sessions' %}
     {% elseif form.isRedirectingTo('security') %}

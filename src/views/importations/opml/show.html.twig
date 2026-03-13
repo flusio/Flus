@@ -7,7 +7,7 @@
     {{ include('layouts/_header.html.twig', { page: 'opml' }) }}
 {% endblock %}
 
-{% block navigation %}
+{% block layout_sidenav %}
     {{ include('layouts/_sidenav.html.twig', { navigation: account_navigation(current: 'opml') }) }}
 {% endblock %}
 
