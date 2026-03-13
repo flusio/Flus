@@ -1,5 +1,27 @@
 # Changelog of Flus
 
+## 2026-03-13 - v2.3.1
+
+### Improvements
+
+- Increase the default font size ([726ab273](https://github.com/flusio/Flus/commit/726ab273))
+- Center content even if the sidenav is present ([c80251de](https://github.com/flusio/Flus/commit/c80251de))
+- Add a light transparent outline around illustrations ([ed90a1a7](https://github.com/flusio/Flus/commit/ed90a1a7))
+- Increase space above page illustrations ([d5391a28](https://github.com/flusio/Flus/commit/d5391a28))
+- Increase avatar size to 400x400px ([46da718d](https://github.com/flusio/Flus/commit/46da718d))
+- Increase space below navigation close button ([f0740af3](https://github.com/flusio/Flus/commit/f0740af3))
+
+### Bug fixes
+
+- Use the correct icon to download data ([0daf6370](https://github.com/flusio/Flus/commit/0daf6370))
+- Fix accessibility button border when hovering header ([6bbf9182](https://github.com/flusio/Flus/commit/6bbf9182))
+
+### Maintenance
+
+- Rename `navigation` block into `layout_sidenav` ([13938b7e](https://github.com/flusio/Flus/commit/13938b7e))
+- Use relative widths ([a098aa98](https://github.com/flusio/Flus/commit/a098aa98))
+- Update @flus/design ([726ab273](https://github.com/flusio/Flus/commit/726ab273))
+
 ## 2026-03-11 - v2.3.0
 
 ### Migration notes
