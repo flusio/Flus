@@ -1,10 +1,9 @@
 .layout__content--application {
-    display: flex;
-    max-width: var(--width-larger);
-    margin-right: auto;
-    margin-left: auto;
+    --layout-content-gap: var(--space-smaller);
 
-    gap: var(--space-smaller);
+    display: flex;
+
+    gap: var(--layout-content-gap);
 }
 
 @media(max-width: 799px) {
@@ -15,6 +14,23 @@
 
 @media(min-width: 800px) {
     .layout__content--application {
-        gap: var(--space-medium);
+        --layout-content-gap: var(--space-medium);
     }
+}
+
+.layout__content--application:has(.sidenav) {
+    /* Extend the max-width so it can contain the content + 2 sidebars. This
+     * allows to center the content on the page when the screen is large
+     * enough.
+     */
+    max-width: calc(
+        var(--layout-content-width)
+        + 2 * var(--layout-content-padding)
+        + 2 * (var(--sidenav-width) + var(--layout-content-gap))
+    );
+}
+
+.layout__content--application:has(.sidenav) .layout__body {
+    margin-right: 0;
+    margin-left: 0;
 }

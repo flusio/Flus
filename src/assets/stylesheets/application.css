@@ -14,11 +14,11 @@
 @import url('./components/topics.css');
 @import url('./components/turbo.css');
 @import url('./components/usernames.css');
+@import url('./layouts/base.css');
 @import url('./layouts/application.css');
 @import url('./layouts/authentication.css');
 @import url('./layouts/back.css');
 @import url('./layouts/banner.css');
-@import url('./layouts/base.css');
 @import url('./layouts/error.css');
 @import url('./layouts/header.css');
 @import url('./layouts/modal.css');

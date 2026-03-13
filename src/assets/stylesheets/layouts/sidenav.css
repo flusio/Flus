@@ -1,3 +1,17 @@
+:root {
+    --sidenav-width: 17rem;
+}
+
+@media (min-width: 800px) and (max-width: 1300px) {
+    :root {
+        --sidenav-width: 11rem;
+    }
+}
+
+.sidenav__menu {
+    width: var(--sidenav-width);
+}
+
 @media (max-width: 799px) {
     .sidenav__container {
         position: fixed;
@@ -55,7 +69,7 @@
     }
 
     .sidenav__open-button[aria-expanded="true"] + .sidenav__container .sidenav__menu {
-        width: 17rem;
+        width: var(--sidenav-width);
     }
 }
 
@@ -63,16 +77,6 @@
     .sidenav__open-button,
     .sidenav__close-button {
         display: none;
-    }
-
-    .sidenav__menu {
-        width: 11rem;
-    }
-}
-
-@media (min-width: 1200px) {
-    .sidenav__menu {
-        width: 16rem;
     }
 }
 

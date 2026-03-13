@@ -1,5 +1,9 @@
 .layout__content--authentication {
+    --layout-content-width: 100%;
+
     display: flex;
+    margin-right: 0;
+    margin-left: 0;
 
     align-items: stretch;
     justify-content: stretch;
