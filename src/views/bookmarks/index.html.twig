@@ -24,47 +24,51 @@
 {% block body %}
     <h1 class="text--center">{{ collection.name() }}</h1>
 
-    <p class="text--center">
-        {{ t('Place here the links you want to consult later on.') }}
-    </p>
+    <div class="flow flow--larger">
+        <div class="flow flow--large">
+            <p class="text--center">
+                {{ t('Place here the links you want to consult later on.') }}
+            </p>
 
-    {{ include('links/_pagination_count.html.twig') }}
+            {{ include('links/_pagination_count.html.twig') }}
 
-    <div class="grid">
-        <button
-            class="button--card"
-            data-controller="modal-opener"
-            data-action="modal-opener#fetch"
-            data-modal-opener-href-value="{{ url('new collection link', { id: collection.id }) }}"
-            aria-haspopup="dialog"
-            aria-controls="modal"
-        >
-            {{ icon('plus-circle') }}
-            {{ t('Add a link') }}
-        </button>
+            <div class="grid">
+                <button
+                    class="button--card"
+                    data-controller="modal-opener"
+                    data-action="modal-opener#fetch"
+                    data-modal-opener-href-value="{{ url('new collection link', { id: collection.id }) }}"
+                    aria-haspopup="dialog"
+                    aria-controls="modal"
+                >
+                    {{ icon('plus-circle') }}
+                    {{ t('Add a link') }}
+                </button>
 
-        {% for link in links %}
-            {{ include('links/_link.html.twig', {
-                link: link,
-                display_source: link.source_type != 'bookmarks',
-                display_notes: true,
-                display_edit: true,
-                display_repair: true,
-                display_delete: true,
-                display_mark_as_read: true,
-            }) }}
-        {% endfor %}
+                {% for link in links %}
+                    {{ include('links/_link.html.twig', {
+                        link: link,
+                        display_source: link.source_type != 'bookmarks',
+                        display_notes: true,
+                        display_edit: true,
+                        display_repair: true,
+                        display_delete: true,
+                        display_mark_as_read: true,
+                    }) }}
+                {% endfor %}
 
-        {{ include('grids/_placeholder.html.twig', { count: links | length + 1 }) }}
-    </div>
+                {{ include('grids/_placeholder.html.twig', { count: links | length + 1 }) }}
+            </div>
 
-    {{ include('layouts/_pagination.html.twig', { url: url('bookmarks') }) }}
+            {{ include('layouts/_pagination.html.twig', { url: url('bookmarks') }) }}
+        </div>
 
-    <div class="text--center">
-        <img
-            alt=""
-            src="{{ url_static('static/illustrations/working-late.svg') }}"
-            height="250"
-        >
+        <div class="text--center">
+            <img
+                alt=""
+                src="{{ url_static('static/illustrations/working-late.svg') }}"
+                height="250"
+            >
+        </div>
     </div>
 {% endblock %}
