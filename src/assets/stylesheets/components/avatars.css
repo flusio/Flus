@@ -5,6 +5,8 @@
 
     background-color: var(--color-background);
     border-radius: var(--border-radius);
+    outline: 1px solid var(--color-box-shadow);
+    outline-offset: -1px;
 }
 
 .avatar--mini {
