@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-03-11 15:31+0100\n"
-"PO-Revision-Date: 2026-03-11 15:31+0100\n"
+"POT-Creation-Date: 2026-03-13 16:01+0100\n"
+"PO-Revision-Date: 2026-03-13 16:01+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -526,11 +526,11 @@ msgstr "Info"
 msgid "Success"
 msgstr "Succès"
 
-#: views/bookmarks/index.html.twig:28
+#: views/bookmarks/index.html.twig:30
 msgid "Place here the links you want to consult later on."
 msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
 
-#: views/bookmarks/index.html.twig:43 views/collections/show.html.twig:294
+#: views/bookmarks/index.html.twig:45 views/collections/show.html.twig:294
 msgid "Add a link"
 msgstr "Ajouter un lien"
 
@@ -552,7 +552,7 @@ msgstr "aucun lien"
 
 #: views/collections/_collection.html.twig:26
 #: views/collections/_collection_follow.html.twig:18
-#: views/links/_pagination_count.html.twig:7 views/news/index.html.twig:24
+#: views/links/_pagination_count.html.twig:7 views/news/index.html.twig:26
 #: views/news/index.html.twig:132
 #, php-format
 msgid "%s link"
@@ -1533,11 +1533,11 @@ msgstr "Notes par %s"
 msgid "Notes on %s"
 msgstr "Notes sur %s"
 
-#: views/links/index.html.twig:22
+#: views/links/index.html.twig:24
 msgid "Organize your links in your thematic collections."
 msgstr "Organisez vos liens dans vos collections thématiques."
 
-#: views/links/index.html.twig:35
+#: views/links/index.html.twig:37
 msgid "Create a collection"
 msgstr "Créer une collection"
 
@@ -2634,7 +2634,7 @@ msgstr "Collections publiées"
 msgid "Collections shared with you"
 msgstr "Collections partagées avec vous"
 
-#: views/read/index.html.twig:28
+#: views/read/index.html.twig:30
 msgid "Find here all the links you’ve marked as read."
 msgstr "Retrouvez ici tous les liens que vous avez marqués comme lu."
 
