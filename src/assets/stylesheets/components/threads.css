@@ -31,8 +31,8 @@
     left: var(--space-medium);
 
     display: block;
-    width: 15px;
-    height: 15px;
+    width: 0.8rem;
+    height: 0.8rem;
     margin-top: var(--space-medium);
     margin-left: 1px;
 

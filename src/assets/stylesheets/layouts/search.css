@@ -7,7 +7,7 @@
 
 @media (min-width: 800px) {
     .layout__search {
-        max-width: 800px;
+        max-width: var(--width-small);
         margin-right: auto;
         margin-left: auto;
     }

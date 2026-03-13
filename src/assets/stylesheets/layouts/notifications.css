@@ -19,7 +19,7 @@
 .notification {
     position: relative;
 
-    max-width: 550px;
+    max-width: var(--width-smaller);
     margin-left: auto;
     padding: var(--space-medium);
 

@@ -68,8 +68,8 @@
 .link__image-container {
     overflow: hidden;
 
-    width: 75px;
-    height: 75px;
+    width: 5rem;
+    height: 5rem;
 
     flex-shrink: 0;
 
@@ -88,7 +88,7 @@
 @media (min-width: 800px) {
     .link:not(.link--compact) .link__image-container {
         width: 100%;
-        height: 156px;
+        height: 8rem;
 
         border-radius: var(--border-radius) var(--border-radius) 0 0;
     }

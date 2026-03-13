@@ -43,7 +43,7 @@
 .layout__body {
     --layout-body-flow: var(--space-medium);
 
-    max-width: 1200px;
+    max-width: var(--width-large);
     margin-right: auto;
     margin-left: auto;
     padding: var(--layout-body-flow) var(--space-smaller);

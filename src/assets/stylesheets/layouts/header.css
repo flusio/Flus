@@ -73,7 +73,7 @@
 
 .header__logo {
     display: inline-block;
-    width: 150px;
+    width: 8rem;
     padding-right: var(--space-smaller);
     padding-left: var(--space-smaller);
 

@@ -1,6 +1,6 @@
 .layout__content--application {
     display: flex;
-    max-width: 1400px;
+    max-width: var(--width-larger);
     margin-right: auto;
     margin-left: auto;
 

@@ -23,7 +23,7 @@
 }
 
 .modal__box {
-    max-width: 1000px;
+    max-width: var(--width-medium);
     margin: var(--space-medium) auto var(--space-larger);
 
     background-color: var(--color-base);
