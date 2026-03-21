@@ -1,5 +1,5 @@
 {% if pagination.mustPaginate %}
-    {% set url = url ~ '?' in url ? '&amp;' : '?' %}
+    {% set url = url ~ ('?' in url ? '&' : '?') %}
 
     <nav class="pagination">
         <ul class="pagination__container">
