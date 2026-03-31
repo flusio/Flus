@@ -24,6 +24,8 @@ $job_links_sync_count = max(1, intval($dotenv->pop('JOB_LINKS_SYNC_COUNT', '1'))
 
 $server_ips = array_map('trim', explode(',', $dotenv->pop('APP_SERVER_IPS', '')));
 
+$tmp_path = sys_get_temp_dir() . '/Flus/' . md5($flus_version);
+
 return [
     'app_name' => 'App',
 
@@ -67,6 +69,7 @@ return [
     ],
 
     'data_path' => $dotenv->pop('APP_DATA_PATH', $app_path . '/data'),
+    'tmp_path' => $tmp_path,
 
     'database' => [
         'dsn' => "pgsql:host={$db_host};port={$db_port};dbname={$db_name}",
