@@ -24,6 +24,7 @@ class HttpTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(200, $response->status);
         $data = json_decode($response->data, true);
         $this->assertIsArray($data);
+        $this->assertIsArray($data['args']);
         $this->assertSame($expected_url, $data['url']);
         $this->assertSame($parameters['foo'], $data['args']['foo']);
         $this->assertSame($parameters['baz'], $data['args']['baz']);

@@ -33,12 +33,14 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('https://framablog.org/', $outlines[0]['htmlUrl']);
         $this->assertSame('La route est longue mais la voie est libre…', $outlines[0]['description']);
 
+        $this->assertIsArray($outlines[1]);
         $this->assertSame('carnet de flus', $outlines[1]['text']);
         $this->assertSame('rss', $outlines[1]['type']);
         $this->assertSame('https://flus.fr/carnet/feeds/all.atom.xml', $outlines[1]['xmlUrl']);
         $this->assertSame('https://flus.fr/carnet/', $outlines[1]['htmlUrl']);
         $this->assertSame('', $outlines[1]['description']);
 
+        $this->assertIsArray($outlines[2]);
         $this->assertSame('Marien Fressinaud', $outlines[2]['text']);
         $this->assertSame('rss', $outlines[2]['type']);
         $this->assertSame('https://marienfressinaud.fr/feeds/all.atom.xml', $outlines[2]['xmlUrl']);
@@ -66,12 +68,14 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('http://www.framablog.org/index.php/feed/atom', $outlines[0]['xmlUrl']);
         $this->assertSame('https://framablog.org', $outlines[0]['htmlUrl']);
 
+        $this->assertIsArray($outlines[1]);
         $this->assertSame('carnet de flus', $outlines[1]['text']);
         $this->assertSame('carnet de flus', $outlines[1]['title']);
         $this->assertSame('rss', $outlines[1]['type']);
         $this->assertSame('https://flus.fr/carnet/feeds/all.atom.xml', $outlines[1]['xmlUrl']);
         $this->assertSame('https://flus.fr/carnet/', $outlines[1]['htmlUrl']);
 
+        $this->assertIsArray($outlines[2]);
         $this->assertSame('Marien Fressinaud', $outlines[2]['text']);
         $this->assertSame('Marien Fressinaud', $outlines[2]['title']);
         $this->assertSame('rss', $outlines[2]['type']);

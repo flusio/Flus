@@ -81,7 +81,9 @@ class JsonParser
         }
         $entry->id = $id;
 
-        $published_at = Date::parse($json_item['date_published'] ?? '');
+        $published_at = self::getString($json_item, 'date_published');
+        $published_at = Date::parse($published_at);
+
         if ($published_at) {
             $entry->published_at = $published_at;
         }
@@ -93,14 +95,18 @@ class JsonParser
         }
 
         $tags = $json_item['tags'] ?? [];
+        if (!is_array($tags)) {
+            $tags = [];
+        }
+
         foreach ($tags as $tag) {
             if (is_string($tag)) {
                 $entry->categories[] = $tag;
             }
         }
 
-        $html_content = $json_item['content_html'] ?? '';
-        $text_content = $json_item['content_text'] ?? '';
+        $html_content = self::getString($json_item, 'content_html');
+        $text_content = self::getString($json_item, 'content_text');
 
         if ($html_content) {
             $entry->content_type = 'html';
@@ -114,12 +120,11 @@ class JsonParser
     }
 
     /**
-     * Return the string value of the given array key. The string is sanitized
-     * from HTML content.
+     * Return the string value of the given array key.
      *
      * @param mixed[] $array
      */
-    private static function getSecureString(array $array, string $key): string
+    private static function getString(array $array, string $key): string
     {
         $value = $array[$key] ?? '';
 
@@ -127,6 +132,18 @@ class JsonParser
             return '';
         }
 
+        return $value;
+    }
+
+    /**
+     * Return the string value of the given array key. The string is sanitized
+     * from HTML content.
+     *
+     * @param mixed[] $array
+     */
+    private static function getSecureString(array $array, string $key): string
+    {
+        $value = self::getString($array, $key);
         return trim(htmlspecialchars_decode($value, ENT_QUOTES));
     }
 }
