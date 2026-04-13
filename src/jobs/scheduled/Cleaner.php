@@ -43,6 +43,7 @@ class Cleaner extends \Minz\Job
         http\FetchLog::deleteOlderThan(\Minz\Time::ago(3, 'days'));
         models\Token::deleteExpired();
         models\Session::deleteExpired();
+        models\User::deleteNotValidatedOlderThan(\Minz\Time::ago(1, 'month'));
         models\User::deleteInactiveAndNotified(
             inactive_since: \Minz\Time::ago(12, 'months'),
             notified_since: \Minz\Time::ago(1, 'month'),

@@ -135,6 +135,63 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Token::exists($token->token));
     }
 
+    public function testPerformDeletesOldNotValidatedUsers(): void
+    {
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $cleaner_job = new Cleaner();
+        /** @var int */
+        $months = $this->fake('numberBetween', 2, 12);
+        $created_at = \Minz\Time::ago($months, 'months');
+        $user = UserFactory::create([
+            'created_at' => $created_at,
+            'validated_at' => null,
+        ]);
+
+        $cleaner_job->perform();
+
+        $this->assertFalse(models\User::exists($user->id));
+    }
+
+    public function testPerformKeepsOldValidatedUsers(): void
+    {
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $cleaner_job = new Cleaner();
+        /** @var int */
+        $months = $this->fake('numberBetween', 2, 12);
+        $created_at = \Minz\Time::ago($months, 'months');
+        $user = UserFactory::create([
+            'created_at' => $created_at,
+            'validated_at' => \Minz\Time::now(),
+        ]);
+
+        $cleaner_job->perform();
+
+        $this->assertTrue(models\User::exists($user->id));
+    }
+
+    public function testPerformKeepsRecentNotValidatedUsers(): void
+    {
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $cleaner_job = new Cleaner();
+        /** @var int */
+        $months = $this->fake('numberBetween', 0, 1);
+        $created_at = \Minz\Time::ago($months, 'months');
+        $user = UserFactory::create([
+            'created_at' => $created_at,
+            'validated_at' => null,
+        ]);
+
+        $cleaner_job->perform();
+
+        $this->assertTrue(models\User::exists($user->id));
+    }
+
     public function testPerformDeletesInactiveAndNotifiedUsers(): void
     {
         $this->freeze();
@@ -144,6 +201,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create([
             'last_activity_at' => \Minz\Time::ago($inactivity_months, 'months'),
             'deletion_notified_at' => \Minz\Time::ago($notified_months, 'months'),
+            'validated_at' => \Minz\Time::now(),
         ]);
 
         $cleaner_job->perform();
@@ -159,6 +217,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create([
             'last_activity_at' => \Minz\Time::ago($inactivity_months, 'months'),
             'deletion_notified_at' => null,
+            'validated_at' => \Minz\Time::now(),
         ]);
 
         $cleaner_job->perform();
@@ -175,6 +234,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create([
             'last_activity_at' => \Minz\Time::ago($inactivity_months, 'months'),
             'deletion_notified_at' => \Minz\Time::ago($notified_months, 'months'),
+            'validated_at' => \Minz\Time::now(),
         ]);
 
         $cleaner_job->perform();
@@ -191,6 +251,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create([
             'last_activity_at' => \Minz\Time::ago($inactivity_months, 'months'),
             'deletion_notified_at' => \Minz\Time::ago($notified_months, 'months'),
+            'validated_at' => \Minz\Time::now(),
         ]);
 
         $cleaner_job->perform();

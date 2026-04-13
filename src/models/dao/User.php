@@ -124,6 +124,26 @@ trait User
     }
 
     /**
+     * Delete the users who are not validated
+     */
+    public static function deleteNotValidatedOlderThan(\DateTimeImmutable $since): bool
+    {
+        $sql = <<<SQL
+            DELETE FROM users
+            WHERE validated_at IS NULL
+            AND created_at < :since
+            AND id != :support_user_id
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        return $statement->execute([
+            ':since' => $since->format(Database\Column::DATETIME_FORMAT),
+            ':support_user_id' => models\User::supportUser()->id,
+        ]);
+    }
+
+    /**
      * Delete the inactive users that have been notified about it.
      */
     public static function deleteInactiveAndNotified(
