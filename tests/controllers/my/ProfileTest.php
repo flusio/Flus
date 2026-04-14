@@ -48,7 +48,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
             'username' => $new_username,
         ]);
 
-        $this->assertResponseCode($response, 302, "/p/{$user->id}");
+        $this->assertResponseCode($response, 302, '/my/profile');
         $user = $user->reload();
         $this->assertSame($new_username, $user->username);
     }

@@ -1,0 +1,44 @@
+{% extends 'profiles/layout.html.twig' %}
+
+{% block title %}{{ t('Collections of %s', [user.username]) }}{% endblock %}
+{% block canonical %}{{ url_full('profile collections', { id: user.id }) }}{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: t('Collections of %s', [user.username]) }) }}
+{% endblock %}
+
+{% block profile_navigation %}
+    {{ include('profiles/_navigation.html.twig', { page: 'collections' }) }}
+{% endblock %}
+
+{% block profile_body %}
+    {% set is_current_user_profile = app.user and app.user.id === user.id %}
+
+    {% set count_collections = collections | length %}
+    {% if count_collections > 0 %}
+        <p class="text--center text--secondary">
+            {{ t('%s collection', '%s collections', count_collections, [count_collections | format_number]) }}
+        </p>
+    {% endif %}
+
+    {% if collections %}
+        <div class="grid">
+            {% for collection in collections %}
+                {{ include('collections/_collection.html.twig', {
+                    collection: collection,
+                    display_by: false,
+                    display_number_links: true,
+                    display_visibility: false,
+                }) }}
+            {% endfor %}
+        </div>
+    {% elseif is_current_user_profile %}
+        <p class="panel panel--grey panel--rounded panel--larger text--bolder text--center">
+            {{ t('You didn’t share any public collections yet.') }}
+        </p>
+    {% else %}
+        <p class="panel panel--grey panel--rounded panel--larger text--bolder text--center">
+            {{ t('This user didn’t share any public collections yet.') }}
+        </p>
+    {% endif %}
+{% endblock %}

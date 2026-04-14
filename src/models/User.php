@@ -320,6 +320,23 @@ class User
     }
 
     /**
+     * Return the number of links of the user.
+     *
+     * @see Link::countByUserId
+     *
+     * @param array{
+     *     'unshared'?: bool,
+     * } $options
+     */
+    public function countLinks(array $options = []): int
+    {
+        return Link::countByUserId(
+            $this->id,
+            $options
+        );
+    }
+
+    /**
      * Return the collections of the user.
      *
      * @see Collection::listComputedByUserId

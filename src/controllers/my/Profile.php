@@ -5,6 +5,7 @@ namespace App\controllers\my;
 use App\auth;
 use App\controllers\BaseController;
 use App\forms;
+use App\utils;
 use Minz\Request;
 use Minz\Response;
 
@@ -66,6 +67,6 @@ class Profile extends BaseController
         $user = $form->model();
         $user->save();
 
-        return Response::redirect('profile', ['id' => $user->id]);
+        return Response::found(utils\RequestHelper::from($request));
     }
 }

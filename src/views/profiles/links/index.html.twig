@@ -1,0 +1,44 @@
+{% extends 'profiles/layout.html.twig' %}
+
+{% block title %}{{ t('Links of %s', [user.username]) }}{% endblock %}
+{% block canonical %}{{ url_full('profile links', { id: user.id }) }}{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: t('Links of %s', [user.username]) }) }}
+{% endblock %}
+
+{% block profile_navigation %}
+    {{ include('profiles/_navigation.html.twig', { page: 'links' }) }}
+{% endblock %}
+
+{% block profile_body %}
+    {% set is_current_user_profile = app.user and app.user.id === user.id %}
+
+    {{ include('links/_pagination_count.html.twig') }}
+
+    {% if links %}
+        <div class="grid">
+            {% for link in links %}
+                {{ include('links/_link.html.twig', {
+                    link: link,
+                    display_notes: true,
+                    display_edit: is_current_user_profile,
+                    display_repair: is_current_user_profile,
+                    display_delete: is_current_user_profile,
+                    display_read_later: app.user ? 'auto' : false,
+                    display_mark_as_read: app.user ? 'auto' : false,
+                }) }}
+            {% endfor %}
+        </div>
+    {% elseif is_current_user_profile %}
+        <p class="panel panel--grey panel--rounded panel--larger text--bolder text--center">
+            {{ t('You didn’t share any links yet.') }}
+        </p>
+    {% else %}
+        <p class="panel panel--grey panel--rounded panel--larger text--bolder text--center">
+            {{ t('This user didn’t share any links yet.') }}
+        </p>
+    {% endif %}
+
+    {{ include('layouts/_pagination.html.twig', { url: url('profile links', { id: user.id }) }) }}
+{% endblock %}

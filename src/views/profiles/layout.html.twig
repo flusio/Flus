@@ -1,0 +1,87 @@
+{% extends 'layouts/application.html.twig' %}
+
+{% set is_current_user_profile = app.user and app.user.id === user.id %}
+
+{% block alternates %}
+    <link rel="alternate" type="application/atom+xml" title="{{ t('Syndication feed of %s', [user.username]) }}" href="{{ url_full('profile feed', { id: user.id }) }}">
+    <link rel="alternate" type="text/x-opml" title="{{ t('Collections OPML of %s', [user.username]) }}" href="{{ url_full('profile opml', { id: user.id }) }}">
+{% endblock %}
+
+{% block opengraph %}
+    {{ include('layouts/_opengraph.html.twig', {
+        title: t('%s on %s', [user.username, app.brand]),
+        description: t('Follow %s on %s.', [user.username, app.brand]),
+        locale: user.locale,
+        url: url_full('profile', { id: user.id }),
+        image: url_media_full('avatars', user.avatar_filename),
+    }) }}
+{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: is_current_user_profile ? 'profile' : '' }) }}
+{% endblock %}
+
+{% block body %}
+    <div class="cols cols--gap">
+        <div class="col--size3 text--center">
+            {% if is_current_user_profile %}
+                <button
+                    class="button--edit-image"
+                    data-controller="modal-opener"
+                    data-action="modal-opener#fetch"
+                    data-modal-opener-href-value="{{ url('edit avatar') }}"
+                    aria-haspopup="dialog"
+                    aria-controls="modal"
+                    title="{{ t('Change your profile picture') }}"
+                >
+                    <img
+                        class="avatar avatar--max"
+                        alt=""
+                        src="{{ url_avatar(user.avatar_filename) }}"
+                    >
+
+                    <span class="sr-only">
+                        {{ t('Change your profile picture') }}
+                    </span>
+                </button>
+            {% else %}
+                <img
+                    class="avatar avatar--max"
+                    alt=""
+                    src="{{ url_avatar(user.avatar_filename) }}"
+                >
+            {% endif %}
+        </div>
+
+        <div class="col--extend flow">
+            <h1>{{ user.username }}</h1>
+
+            {% if is_current_user_profile %}
+                <p>
+                    {{ t('This is your public profile!') }}
+                </p>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if is_current_user_profile %}
+        <div class="panel panel--rounded stack stack--gap-small">
+            <button
+                data-controller="modal-opener"
+                data-action="modal-opener#fetch"
+                data-modal-opener-href-value="{{ url('edit profile') }}"
+                aria-haspopup="dialog"
+                aria-controls="modal"
+            >
+                {{ icon('pencil') }}
+                {{ t('Edit') }}
+            </button>
+        </div>
+    {% endif %}
+
+    {% block profile_navigation %}
+    {% endblock %}
+
+    {% block profile_body %}
+    {% endblock %}
+{% endblock %}

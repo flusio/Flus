@@ -204,6 +204,67 @@ trait Link
     }
 
     /**
+     * Count links of the given user.
+     *
+     * @param string $user_id
+     *     The user id the links must match.
+     * @param array{
+     *     'unshared'?: bool,
+     * } $options
+     *
+     * Description of the options:
+     *
+     * - unshared (default to true), indicates if unshared links must be
+     *   included. Shared links are visible and are included in one public
+     *   collection at least.
+     */
+    public static function countByUserId(
+        string $user_id,
+        array $options = [],
+    ): int {
+        $default_options = [
+            'unshared' => true,
+        ];
+        $options = array_merge($default_options, $options);
+
+        $parameters = [
+            ':user_id' => $user_id,
+        ];
+
+        $visibility_clause = '';
+        $join_clause = '';
+        if (!$options['unshared']) {
+            $visibility_clause = 'AND l.is_hidden = false';
+            $join_clause = <<<SQL
+                INNER JOIN links_to_collections lc
+                ON lc.link_id = l.id
+
+                INNER JOIN collections c
+                ON lc.collection_id = c.id
+                AND c.is_public = true
+                AND c.user_id = :user_id
+            SQL;
+        }
+
+        $sql = <<<SQL
+            SELECT COUNT(distinct l.id)
+            FROM links l
+
+            {$join_clause}
+
+            WHERE l.user_id = :user_id
+
+            {$visibility_clause}
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute($parameters);
+
+        return intval($statement->fetchColumn());
+    }
+
+    /**
      * Return links of the given collection with its computed properties.
      *
      * Links are sorted by published_at if the property is included, or by

@@ -1,0 +1,17 @@
+<div class="stack stack--gap-small">
+    <a
+        class="button button--ghost"
+        href="{{ url('profile links', { id: user.id }) }}"
+        {{ page === 'links' ? 'aria-current="page"' : '' }}
+    >
+        {{ t('Links') }}
+    </a>
+
+    <a
+        class="button button--ghost"
+        href="{{ url('profile collections', { id: user.id }) }}"
+        {{ page === 'collections' ? 'aria-current="page"' : '' }}
+    >
+        {{ t('Collections') }}
+    </a>
+</div>

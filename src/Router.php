@@ -52,6 +52,8 @@ class Router
 
         // Profile
         $router->addRoute('GET', '/p/:id', 'Profiles#show', 'profile');
+        $router->addRoute('GET', '/p/:id/links', 'profiles/Links#index', 'profile links');
+        $router->addRoute('GET', '/p/:id/collections', 'profiles/Collections#index', 'profile collections');
         $router->addRoute('GET', '/p/:id/feed.atom.xml', 'profiles/Feeds#show', 'profile feed');
         $router->addRoute('GET', '/p/:id/feed', 'profiles/Feeds#alias');
         $router->addRoute('GET', '/p/:id/opml.xml', 'profiles/Opml#show', 'profile opml');
