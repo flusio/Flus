@@ -63,7 +63,7 @@ class BaseController
         Request $request,
         auth\AccessDeniedError $error,
     ): Response {
-        return Response::forbidden('forbidden.html.twig', [
+        return Response::forbidden('errors/forbidden.html.twig', [
             'error' => $error,
         ]);
     }
