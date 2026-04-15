@@ -12,12 +12,11 @@ class Migration202108310001InitNewDefaultCollections
         $collections_to_create = [];
 
         $users = models\User::listAll();
-        $support_user = models\User::supportUser();
 
         $now = \Minz\Time::now();
 
         foreach ($users as $user) {
-            if ($user->id === $support_user->id) {
+            if ($user->isSupportUser()) {
                 continue;
             }
 
