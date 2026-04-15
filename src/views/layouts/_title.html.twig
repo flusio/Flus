@@ -9,4 +9,6 @@
     {%- set title = '[dev] ' ~ title -%}
 {%- endif -%}
 {%- set title = title ~ ' · ' ~ app.brand -%}
-{{- title -}}
+{# It is fine to render raw title as the content is passed from a block which
+ # is already escaped. This avoids to escape title twice. #}
+{{- title | raw -}}
