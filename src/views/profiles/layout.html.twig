@@ -10,7 +10,7 @@
 {% block opengraph %}
     {{ include('layouts/_opengraph.html.twig', {
         title: t('%s on %s', [user.username, app.brand]),
-        description: t('Follow %s on %s.', [user.username, app.brand]),
+        description: user.biography ? user.biography : t('Follow %s on %s.', [user.username, app.brand]),
         locale: user.locale,
         url: url_full('profile', { id: user.id }),
         image: url_media_full('avatars', user.avatar_filename),
@@ -56,7 +56,11 @@
         <div class="col--extend flow">
             <h1>{{ user.username }}</h1>
 
-            {% if is_current_user_profile %}
+            {% if user.biography %}
+                <div class="text-container">
+                    {{ user.biographyAsHtml | raw }}
+                </div>
+            {% elseif is_current_user_profile %}
                 <p>
                     {{ t('This is your public profile!') }}
                 </p>

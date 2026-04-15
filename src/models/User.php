@@ -100,6 +100,9 @@ class User
     public ?string $avatar_filename;
 
     #[Database\Column]
+    public string $biography = '';
+
+    #[Database\Column]
     public ?string $autoload_modal;
 
     #[Database\Column]
@@ -727,6 +730,20 @@ class User
     public function isValidated(): bool
     {
         return $this->validated_at !== null;
+    }
+
+    public function setBiography(string $biography): void
+    {
+        $this->biography = trim($biography);
+    }
+
+    /**
+     * Return the biography as HTML (from Markdown).
+     */
+    public function biographyAsHtml(): string
+    {
+        $markdown = new utils\MiniMarkdown(context_user: $this);
+        return $markdown->text($this->biography);
     }
 
     /**

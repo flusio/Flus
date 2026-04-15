@@ -37,6 +37,38 @@
                 >
             </div>
 
+            <div class="form-group">
+                <label for="biography">
+                    {{ t('A few words about you') }}
+                    <span class="label__help">
+                        {{ t('(public, optional)') }}
+                    </span>
+                </label>
+
+                {% if form.isInvalid('biography') %}
+                    <p id="biography-error" class="form-group__error">
+                        {{ t('Error:') }}
+                        {{ form.error('biography') }}
+                    </p>
+                {% endif %}
+
+                <textarea
+                    id="biography"
+                    name="biography"
+                    data-controller="text-editor"
+                    data-action="text-editor#refresh keyup->autosave#save"
+                    aria-describedby="biography-caption"
+                    {% if form.isInvalid('biography') %}
+                        aria-errormessage="biography-error"
+                        aria-invalid="true"
+                    {% endif %}
+                >{{ form.biography }}</textarea>
+
+                <p id="biography-caption" class="form-group__caption">
+                    {{ t('You can format the biography in Markdown and use #tags.') }}
+                </p>
+            </div>
+
             <div class="text--center">
                 <button type="submit" class="button--primary button--big">
                     {{ t('Save changes') }}

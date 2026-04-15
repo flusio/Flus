@@ -17,5 +17,8 @@ class Profile extends BaseForm
     #[Form\Field(bind: 'setUsername')]
     public string $username = '';
 
+    #[Form\Field(bind: 'setBiography')]
+    public string $biography = '';
+
     public int $username_max_length = models\User::USERNAME_MAX_LENGTH;
 }

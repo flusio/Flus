@@ -39,18 +39,25 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         $old_username = $this->fakeUnique('username');
         /** @var string */
         $new_username = $this->fakeUnique('username');
+        /** @var string */
+        $old_biography = $this->fakeUnique('words', 3, true);
+        /** @var string */
+        $new_biography = $this->fakeUnique('words', 3, true);
         $user = $this->login([
             'username' => $old_username,
+            'biography' => $old_biography,
         ]);
 
         $response = $this->appRun('POST', '/my/profile', [
             'csrf_token' => $this->csrfToken(forms\users\Profile::class),
             'username' => $new_username,
+            'biography' => $new_biography,
         ]);
 
         $this->assertResponseCode($response, 302, '/my/profile');
         $user = $user->reload();
         $this->assertSame($new_username, $user->username);
+        $this->assertSame($new_biography, $user->biography);
     }
 
     public function testUpdateRedirectsToLoginIfUserNotConnected(): void

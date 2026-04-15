@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-04-15 21:24+0200\n"
-"PO-Revision-Date: 2026-04-15 21:24+0200\n"
+"POT-Creation-Date: 2026-04-15 22:17+0200\n"
+"PO-Revision-Date: 2026-04-15 22:18+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -631,6 +631,7 @@ msgstr "(max. %d caractères)"
 #: views/mastodon/show.html.twig:62 views/mastodon/show.html.twig:139
 #: views/my/account/deletion.html.twig:38 views/my/avatar/edit.html.twig:20
 #: views/my/preferences/edit.html.twig:28 views/my/profile/edit.html.twig:20
+#: views/my/profile/edit.html.twig:50
 #: views/my/security/confirmation.html.twig:40
 #: views/my/security/show.html.twig:31 views/my/security/show.html.twig:59
 #: views/notes/edit.html.twig:24 views/passwords/edit.html.twig:31
@@ -704,7 +705,7 @@ msgstr "Modification d'une collection"
 #: views/collections/filters/edit.html.twig:96
 #: views/collections/groups/edit.html.twig:99 views/groups/edit.html.twig:43
 #: views/links/edit.html.twig:80 views/mastodon/show.html.twig:96
-#: views/my/preferences/edit.html.twig:102 views/my/profile/edit.html.twig:42
+#: views/my/preferences/edit.html.twig:102 views/my/profile/edit.html.twig:74
 #: views/my/security/show.html.twig:98 views/notes/edit.html.twig:49
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
@@ -953,7 +954,7 @@ msgstr[1] "Thématiques :"
 
 #: views/collections/show.html.twig:165 views/groups/_group.html.twig:20
 #: views/links/_link.html.twig:285 views/links/show.html.twig:242
-#: views/notes/_notepad.html.twig:48 views/profiles/layout.html.twig:77
+#: views/notes/_notepad.html.twig:48 views/profiles/layout.html.twig:81
 msgid "Edit"
 msgstr "Modifier"
 
@@ -1996,6 +1997,18 @@ msgstr "Votre nom"
 msgid "(public, max. %d characters)"
 msgstr "(public, max. %d caractères)"
 
+#: views/my/profile/edit.html.twig:42
+msgid "A few words about you"
+msgstr "Quelques mots à propos de vous"
+
+#: views/my/profile/edit.html.twig:44
+msgid "(public, optional)"
+msgstr "(public, optionnel)"
+
+#: views/my/profile/edit.html.twig:68
+msgid "You can format the biography in Markdown and use #tags."
+msgstr "Vous pouvez formater la biographie en Markdown et utiliser des #tags."
+
 #: views/my/security/confirmation.html.twig:3
 #: views/my/security/confirmation.html.twig:24
 msgid "Password confirmation"
@@ -2632,7 +2645,7 @@ msgstr "Suivez %s sur %s."
 msgid "Change your profile picture"
 msgstr "Modifier votre photo de profil"
 
-#: views/profiles/layout.html.twig:61
+#: views/profiles/layout.html.twig:65
 msgid "This is your public profile!"
 msgstr "Voici votre profil public !"
 
