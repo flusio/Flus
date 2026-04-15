@@ -304,6 +304,7 @@ class User
      * @param string[] $selected_computed_props
      * @param array{
      *     'unshared'?: bool,
+     *     'tag'?: string,
      *     'offset'?: int,
      *     'limit'?: int|'ALL',
      * } $options
@@ -326,6 +327,7 @@ class User
      *
      * @param array{
      *     'unshared'?: bool,
+     *     'tag'?: string,
      * } $options
      */
     public function countLinks(array $options = []): int

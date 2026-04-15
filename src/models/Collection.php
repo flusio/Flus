@@ -464,7 +464,7 @@ class Collection
     public function descriptionAsHtml(): string
     {
         if ($this->type === 'collection') {
-            $markdown = new utils\MiniMarkdown();
+            $markdown = new utils\MiniMarkdown(context_user: $this->owner());
             return $markdown->text($this->description);
         } else {
             if ($this->feed_site_url) {

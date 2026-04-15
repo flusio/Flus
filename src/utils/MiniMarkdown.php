@@ -2,6 +2,7 @@
 
 namespace App\utils;
 
+use App\models;
 use App\utils;
 
 /**
@@ -36,8 +37,9 @@ class MiniMarkdown extends \Parsedown
         'h6',
     ];
 
-    public function __construct()
-    {
+    public function __construct(
+        private models\User $context_user,
+    ) {
         $this->setSafeMode(true);
         $this->setBreaksEnabled(true);
 
@@ -74,8 +76,9 @@ class MiniMarkdown extends \Parsedown
 
         if ($result) {
             $tag = $matches['tag'];
-            $tag_url = \Minz\Url::absoluteFor('links', [
-                'q' => "#{$tag}",
+            $tag_url = \Minz\Url::absoluteFor('profile links', [
+                'id' => $this->context_user->id,
+                'tag' => $tag,
             ]);
 
             return array(

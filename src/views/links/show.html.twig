@@ -89,7 +89,7 @@
                             {% if link.tags %}
                                 <p class="stack stack--gap-smaller">
                                     {% for tag in link.tags %}
-                                        <a class="badge badge--tag" href="{{ url('links', { q: "#" ~ tag }) }}">
+                                        <a class="badge badge--tag" href="{{ url('profile links', { id: link.user_id, tag: tag }) }}">
                                             #{{ tag }}
                                         </a>
                                     {% endfor %}

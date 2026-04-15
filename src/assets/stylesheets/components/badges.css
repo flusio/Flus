@@ -1,0 +1,18 @@
+.badge--filter {
+    --badge-background-color: var(--color-grey-bg-subtle);
+    --badge-border-color: var(--color-grey-border);
+
+    display: inline-flex;
+
+    transition:
+        background-color 0.2s ease-in-out,
+        border-color 0.2s ease-in-out;
+}
+
+.badge--filter:hover {
+    --badge-background-color: var(--color-grey-bg-hover);
+}
+
+.badge--filter .icon {
+    width: 1.3em;
+}

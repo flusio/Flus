@@ -17,6 +17,7 @@ class Links extends BaseController
 {
     /**
      * @request_param string id
+     * @request_param string tag
      *
      * @response 404
      *    If the requested profile is associated to the support user.
@@ -34,22 +35,30 @@ class Links extends BaseController
             return Response::notFound('errors/not_found.html.twig');
         }
 
+        $tag = $request->parameters->getString('tag', '');
+        if (!utils\Tag::isValid("#{$tag}")) {
+            $tag = '';
+        }
+
         $current_user = auth\CurrentUser::get();
 
         $number_links = $user->countLinks([
             'unshared' => false,
+            'tag' => $tag,
         ]);
         $pagination_page = $request->parameters->getInteger('page', 1);
         $pagination = new utils\Pagination($number_links, 30, $pagination_page);
 
         $links = $user->links(['published_at', 'number_notes'], [
             'unshared' => false,
+            'tag' => $tag,
             'offset' => $pagination->currentOffset(),
             'limit' => $pagination->numberPerPage(),
         ]);
 
         return Response::ok('profiles/links/index.html.twig', [
             'user' => $user,
+            'tag' => $tag,
             'links' => $links,
             'pagination' => $pagination,
         ]);

@@ -14,6 +14,22 @@
 {% block profile_body %}
     {% set is_current_user_profile = app.user and app.user.id === user.id %}
 
+    {% if tag %}
+        <p>
+            <strong>{{ t('Tag:') }}</strong>
+
+            <a
+                class="badge badge--filter"
+                href="{{ url('profile links', { id: user.id }) }}"
+                title="{{ t('Remove “%s” tag filter', [tag]) }}"
+            >
+                #{{ tag }}
+
+                {{ icon('times') }}
+            </a>
+        </p>
+    {% endif %}
+
     {{ include('links/_pagination_count.html.twig') }}
 
     {% if links %}

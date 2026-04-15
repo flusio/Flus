@@ -102,6 +102,7 @@ trait Link
      *     properties.
      * @param array{
      *     'unshared'?: bool,
+     *     'tag'?: string,
      *     'offset'?: int,
      *     'limit'?: int|'ALL',
      * } $options
@@ -111,6 +112,7 @@ trait Link
      * - unshared (default to true), indicates if unshared links must be
      *   included. Shared links are visible and are included in one public
      *   collection at least.
+     * - tag, to filter links by the given tag.
      * - offset (default to 0), the offset for pagination
      * - limit (default to 'ALL') the limit for pagination
      *
@@ -123,6 +125,7 @@ trait Link
     ): array {
         $default_options = [
             'unshared' => true,
+            'tag' => '',
             'offset' => 0,
             'limit' => 'ALL',
         ];
@@ -171,6 +174,12 @@ trait Link
             }
         }
 
+        $tag_clause = '';
+        if ($options['tag']) {
+            $tag_clause = 'AND l.tags ?? :tag';
+            $parameters[':tag'] = mb_strtolower($options['tag']);
+        }
+
         $limit_clause = '';
         if ($options['limit'] !== 'ALL') {
             $limit_clause = 'LIMIT :limit';
@@ -189,6 +198,7 @@ trait Link
             WHERE l.user_id = :user_id
 
             {$visibility_clause}
+            {$tag_clause}
 
             {$group_by_clause}
             {$order_by_clause}
@@ -210,6 +220,7 @@ trait Link
      *     The user id the links must match.
      * @param array{
      *     'unshared'?: bool,
+     *     'tag'?: string,
      * } $options
      *
      * Description of the options:
@@ -217,6 +228,7 @@ trait Link
      * - unshared (default to true), indicates if unshared links must be
      *   included. Shared links are visible and are included in one public
      *   collection at least.
+     * - tag, to filter links by the given tag.
      */
     public static function countByUserId(
         string $user_id,
@@ -224,6 +236,7 @@ trait Link
     ): int {
         $default_options = [
             'unshared' => true,
+            'tag' => '',
         ];
         $options = array_merge($default_options, $options);
 
@@ -246,6 +259,12 @@ trait Link
             SQL;
         }
 
+        $tag_clause = '';
+        if ($options['tag']) {
+            $tag_clause = 'AND l.tags ?? :tag';
+            $parameters[':tag'] = mb_strtolower($options['tag']);
+        }
+
         $sql = <<<SQL
             SELECT COUNT(distinct l.id)
             FROM links l
@@ -255,6 +274,7 @@ trait Link
             WHERE l.user_id = :user_id
 
             {$visibility_clause}
+            {$tag_clause}
         SQL;
 
         $database = Database::get();

@@ -100,7 +100,7 @@ class Note
      */
     public function contentAsHtml(): string
     {
-        $markdown = new utils\MiniMarkdown();
+        $markdown = new utils\MiniMarkdown(context_user: $this->user());
         return $markdown->text($this->content);
     }
 

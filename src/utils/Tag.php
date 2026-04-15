@@ -23,4 +23,9 @@ class Tag
 
         return $matches['tag'];
     }
+
+    public static function isValid(string $tag): bool
+    {
+        return preg_match(self::TAG_REGEX, $tag) === 1;
+    }
 }

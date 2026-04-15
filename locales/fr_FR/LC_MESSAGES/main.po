@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-03-13 16:01+0100\n"
-"PO-Revision-Date: 2026-03-13 16:01+0100\n"
+"POT-Creation-Date: 2026-04-15 21:24+0200\n"
+"PO-Revision-Date: 2026-04-15 21:24+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -927,7 +927,7 @@ msgstr "Un flux issu de %s, sur %s."
 msgid "A collection created by %s on %s."
 msgstr "Une collection créée par %s sur %s."
 
-#: views/collections/show.html.twig:30 views/profiles/show.html.twig:7
+#: views/collections/show.html.twig:30 views/profiles/layout.html.twig:6
 #, php-format
 msgid "Syndication feed of %s"
 msgstr "Flux de syndication de %s"
@@ -953,7 +953,7 @@ msgstr[1] "Thématiques :"
 
 #: views/collections/show.html.twig:165 views/groups/_group.html.twig:20
 #: views/links/_link.html.twig:285 views/links/show.html.twig:242
-#: views/notes/_notepad.html.twig:48 views/profiles/show.html.twig:82
+#: views/notes/_notepad.html.twig:48 views/profiles/layout.html.twig:77
 msgid "Edit"
 msgstr "Modifier"
 
@@ -1495,6 +1495,7 @@ msgid "Storing a link"
 msgstr "Rangement d’un lien"
 
 #: views/links/collections/index.html.twig:22 views/links/new.html.twig:54
+#: views/profiles/_navigation.html.twig:15
 msgid "Collections"
 msgstr "Collections"
 
@@ -2592,47 +2593,71 @@ msgstr "Envoyer le courriel de réinitialisation"
 msgid "Remember password?"
 msgstr "Mot de passe retrouvé ?"
 
-#: views/profiles/show.html.twig:8
+#: views/profiles/_navigation.html.twig:7
+msgid "Links"
+msgstr "Liens"
+
+#: views/profiles/collections/index.html.twig:3
+#: views/profiles/collections/index.html.twig:7
+#, php-format
+msgid "Collections of %s"
+msgstr "Collections de %s"
+
+#: views/profiles/collections/index.html.twig:20
+#, php-format
+msgid "%s collection"
+msgid_plural "%s collections"
+msgstr[0] "%s collection"
+msgstr[1] "%s collections"
+
+#: views/profiles/collections/index.html.twig:37
+msgid "You didn’t share any public collections yet."
+msgstr "Vous n’avez encore partagé aucune collection publique."
+
+#: views/profiles/collections/index.html.twig:41
+msgid "This user didn’t share any public collections yet."
+msgstr "Cet·te utilisateur·ice n’a pas encore partagé de collection publique."
+
+#: views/profiles/layout.html.twig:7
 #, php-format
 msgid "Collections OPML of %s"
 msgstr "OPML des collections de %s"
 
-#: views/profiles/show.html.twig:14
+#: views/profiles/layout.html.twig:13
 #, php-format
-msgid "Discover %s’s collections on %s."
-msgstr "Découvrez les collections de %s sur %s."
+msgid "Follow %s on %s."
+msgstr "Suivez %s sur %s."
 
-#: views/profiles/show.html.twig:40 views/profiles/show.html.twig:49
+#: views/profiles/layout.html.twig:35 views/profiles/layout.html.twig:44
 msgid "Change your profile picture"
 msgstr "Modifier votre photo de profil"
 
-#: views/profiles/show.html.twig:66
+#: views/profiles/layout.html.twig:61
 msgid "This is your public profile!"
 msgstr "Voici votre profil public !"
 
-#: views/profiles/show.html.twig:90
-msgid "Last shared links"
-msgstr "Derniers liens partagés"
+#: views/profiles/links/index.html.twig:3
+#: views/profiles/links/index.html.twig:7
+#, php-format
+msgid "Links of %s"
+msgstr "Liens de %s"
 
-#: views/profiles/show.html.twig:110
+#: views/profiles/links/index.html.twig:19
+msgid "Tag:"
+msgstr "Tag :"
+
+#: views/profiles/links/index.html.twig:24
+#, php-format
+msgid "Remove “%s” tag filter"
+msgstr "Supprimer le filtre de tag « %s »"
+
+#: views/profiles/links/index.html.twig:51
 msgid "You didn’t share any links yet."
 msgstr "Vous n’avez encore partagé aucun lien."
 
-#: views/profiles/show.html.twig:114
-msgid "Create a public collection"
-msgstr "Créer une collection publique"
-
-#: views/profiles/show.html.twig:119
+#: views/profiles/links/index.html.twig:55
 msgid "This user didn’t share any links yet."
 msgstr "Cet·te utilisateur·ice n’a pas encore partagé de lien."
-
-#: views/profiles/show.html.twig:126
-msgid "Published collections"
-msgstr "Collections publiées"
-
-#: views/profiles/show.html.twig:145
-msgid "Collections shared with you"
-msgstr "Collections partagées avec vous"
 
 #: views/read/index.html.twig:30
 msgid "Find here all the links you’ve marked as read."
