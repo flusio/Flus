@@ -11,7 +11,7 @@ use App\models;
 class SourceHelper
 {
     /**
-     * Return the source type and resource id from a path.
+     * Return the source type and resource id from a URL or a path.
      *
      * For instance:
      *
@@ -21,13 +21,26 @@ class SourceHelper
      *   returned (if the user exists in db)
      * - For other paths, ['', null] will be returned
      *
-     * @return array{
-     *     ''|'collection'|'user',
-     *     ?string
+     * The method also handles URLs starting with the base URL of the application.
+     *
+     * @return array{'collection'|'user', string}|array{'', null}
      * }
      */
-    public static function extractFromPath(string $path): array
+    public static function extractFromPath(string $url_or_path): array
     {
+        $base_url = \Minz\Url::baseUrl();
+
+        if (str_starts_with($url_or_path, $base_url)) {
+            $path = substr($url_or_path, strlen($base_url));
+        } else {
+            $path = $url_or_path;
+        }
+
+        $query_position = strpos($path, '?');
+        if ($query_position !== false) {
+            $path = substr($path, 0, $query_position);
+        }
+
         $matches = [];
 
         $result = preg_match('#^/collections/(?P<id>\d+)$#', $path, $matches);
@@ -41,7 +54,7 @@ class SourceHelper
             return ['collection', $collection_id];
         }
 
-        $result = preg_match('#^/p/(?P<id>\d+)$#', $path, $matches);
+        $result = preg_match('#^/p/(?P<id>\d+)/?#', $path, $matches);
         if (isset($matches['id'])) {
             $user_id = $matches['id'];
 

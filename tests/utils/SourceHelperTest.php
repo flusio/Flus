@@ -21,6 +21,17 @@ class SourceHelperTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($collection->id, $source_resource_id);
     }
 
+    public function testExtractSourceFromPathWithExistingCollectionAndUrl(): void
+    {
+        $collection = CollectionFactory::create();
+        $url = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
+
+        list($source_type, $source_resource_id) = SourceHelper::extractFromPath($url);
+
+        $this->assertSame('collection', $source_type);
+        $this->assertSame($collection->id, $source_resource_id);
+    }
+
     public function testExtractSourceFromPathWithExistingUser(): void
     {
         $user = UserFactory::create();
@@ -57,6 +68,18 @@ class SourceHelperTest extends \PHPUnit\Framework\TestCase
         $path = \Minz\Url::for('bookmarks');
 
         list($source_type, $source_resource_id) = SourceHelper::extractFromPath($path);
+
+        $this->assertSame('', $source_type);
+        $this->assertNull($source_resource_id);
+    }
+
+    public function testExtractSourceFromPathWithUnsupportedBaseUrl(): void
+    {
+        $collection = CollectionFactory::create();
+        $path = \Minz\Url::for('collection', ['id' => $collection->id]);
+        $url = 'https://not-the-domain.org' . $path;
+
+        list($source_type, $source_resource_id) = SourceHelper::extractFromPath($url);
 
         $this->assertSame('', $source_type);
         $this->assertNull($source_resource_id);
