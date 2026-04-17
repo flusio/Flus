@@ -1,7 +1,7 @@
 <div class="stack stack--gap-small">
     <a
         class="button button--ghost"
-        href="{{ url('profile links', { id: user.id }) }}"
+        href="{{ url('profile', { id: user.id }) }}"
         {{ page === 'links' ? 'aria-current="page"' : '' }}
     >
         {{ t('Links') }}

@@ -51,7 +51,7 @@ class Router
         $router->addRoute('POST', '/onboarding/locale', 'Onboarding#updateLocale', 'onboarding update locale');
 
         // Profile
-        $router->addRoute('GET', '/p/:id', 'Profiles#show', 'profile');
+        $router->addRoute('GET', '/p/:id', 'profiles/Links#index', 'profile');
         $router->addRoute('GET', '/p/:id/links', 'profiles/Links#index', 'profile links');
         $router->addRoute('GET', '/p/:id/collections', 'profiles/Collections#index', 'profile collections');
         $router->addRoute('GET', '/p/:id/feed.atom.xml', 'profiles/Feeds#show', 'profile feed');
