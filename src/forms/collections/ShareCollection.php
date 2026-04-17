@@ -55,22 +55,11 @@ class ShareCollection extends BaseForm
     #[Form\OnHandleRequest]
     public function extractUserIdFromProfileUrl(Request $request): void
     {
-        $profile_url = \SpiderBits\Url::sanitize($this->user_id);
-        $base_url = \Minz\Url::baseUrl();
+        list($source_type, $source_id) = utils\SourceHelper::extractFromPath($this->user_id);
 
-        if (!str_starts_with($profile_url, $base_url)) {
-            return;
+        if ($source_type === 'user' && $source_id) {
+            $this->user_id = $source_id;
         }
-
-        $parsed_url = parse_url($profile_url);
-        $path = $parsed_url['path'] ?? '/';
-
-        $result = preg_match('#^/p/(?P<id>\d+)$#', $path, $matches);
-        if ($result !== 1) {
-            return;
-        }
-
-        $this->user_id = $matches['id'];
     }
 
     #[Validable\Check]
