@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-04-20 10:37+0200\n"
-"PO-Revision-Date: 2026-04-20 10:37+0200\n"
+"POT-Creation-Date: 2026-04-20 11:08+0200\n"
+"PO-Revision-Date: 2026-04-20 11:08+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -2667,26 +2667,30 @@ msgstr "Voici votre profil public !"
 msgid "Copy link to profile"
 msgstr "Copier le lien du profil"
 
-#: views/profiles/links/index.html.twig:3
-#: views/profiles/links/index.html.twig:7
+#: views/profiles/links/index.html.twig:4
+#, php-format
+msgid "Links tagged “%s” of %s"
+msgstr "Liens tagués « %s » de %s"
+
+#: views/profiles/links/index.html.twig:6
 #, php-format
 msgid "Links of %s"
 msgstr "Liens de %s"
 
-#: views/profiles/links/index.html.twig:19
+#: views/profiles/links/index.html.twig:25
 msgid "Tag:"
 msgstr "Tag :"
 
-#: views/profiles/links/index.html.twig:24
+#: views/profiles/links/index.html.twig:30
 #, php-format
 msgid "Remove “%s” tag filter"
 msgstr "Supprimer le filtre de tag « %s »"
 
-#: views/profiles/links/index.html.twig:51
+#: views/profiles/links/index.html.twig:57
 msgid "You didn’t share any links yet."
 msgstr "Vous n’avez encore partagé aucun lien."
 
-#: views/profiles/links/index.html.twig:55
+#: views/profiles/links/index.html.twig:61
 msgid "This user didn’t share any links yet."
 msgstr "Cet·te utilisateur·ice n’a pas encore partagé de lien."
 

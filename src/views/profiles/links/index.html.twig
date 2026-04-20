@@ -1,10 +1,16 @@
 {% extends 'profiles/layout.html.twig' %}
 
-{% block title %}{{ t('Links of %s', [user.username]) }}{% endblock %}
+{% if tag %}
+    {% set title = t('Links tagged “%s” of %s', [tag, user.username]) %}
+{% else %}
+    {% set title = t('Links of %s', [user.username]) %}
+{% endif %}
+
+{% block title %}{{ title }}{% endblock %}
 {% block canonical %}{{ url_full('profile links', { id: user.id }) }}{% endblock %}
 
 {% block back %}
-    {{ include('layouts/_back.html.twig', { title: t('Links of %s', [user.username]) }) }}
+    {{ include('layouts/_back.html.twig', { title: title }) }}
 {% endblock %}
 
 {% block profile_navigation %}
