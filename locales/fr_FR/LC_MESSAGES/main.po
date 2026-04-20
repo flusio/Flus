@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-04-20 10:12+0200\n"
-"PO-Revision-Date: 2026-04-20 10:12+0200\n"
+"POT-Creation-Date: 2026-04-20 10:37+0200\n"
+"PO-Revision-Date: 2026-04-20 10:37+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -530,7 +530,7 @@ msgstr "Succès"
 msgid "Place here the links you want to consult later on."
 msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
 
-#: views/bookmarks/index.html.twig:45 views/collections/show.html.twig:294
+#: views/bookmarks/index.html.twig:45 views/collections/show.html.twig:309
 msgid "Add a link"
 msgstr "Ajouter un lien"
 
@@ -627,7 +627,7 @@ msgstr "(max. %d caractères)"
 #: views/links/edit.html.twig:26 views/links/edit.html.twig:72
 #: views/links/mastodon_threads/new.html.twig:17 views/links/new.html.twig:27
 #: views/links/repairing/new.html.twig:30
-#: views/links/searches/show.html.twig:39 views/links/show.html.twig:321
+#: views/links/searches/show.html.twig:39 views/links/show.html.twig:347
 #: views/mastodon/show.html.twig:62 views/mastodon/show.html.twig:139
 #: views/my/account/deletion.html.twig:38 views/my/avatar/edit.html.twig:20
 #: views/my/preferences/edit.html.twig:28 views/my/profile/edit.html.twig:20
@@ -953,7 +953,7 @@ msgstr[0] "Thématique :"
 msgstr[1] "Thématiques :"
 
 #: views/collections/show.html.twig:165 views/groups/_group.html.twig:20
-#: views/links/_link.html.twig:285 views/links/show.html.twig:242
+#: views/links/_link.html.twig:285 views/links/show.html.twig:269
 #: views/notes/_notepad.html.twig:48 views/profiles/layout.html.twig:81
 msgid "Edit"
 msgstr "Modifier"
@@ -962,37 +962,43 @@ msgstr "Modifier"
 msgid "Access"
 msgstr "Accès"
 
-#: views/collections/show.html.twig:188 views/links/_link.html.twig:221
-#: views/links/_link.html.twig:225 views/links/show.html.twig:209
-#: views/links/show.html.twig:212 views/news/index.html.twig:55
+#: views/collections/show.html.twig:189 views/links/_link.html.twig:221
+#: views/links/_link.html.twig:225 views/links/show.html.twig:210
+#: views/links/show.html.twig:213 views/news/index.html.twig:55
 #: views/news/index.html.twig:145 views/news/index.html.twig:228
 #: views/notes/_notepad.html.twig:29 views/notes/_notepad.html.twig:33
+#: views/profiles/layout.html.twig:93
 msgid "Actions"
 msgstr "Actions"
 
-#: views/collections/show.html.twig:203
+#: views/collections/show.html.twig:204
 msgid "Adjust for the news"
 msgstr "Régler pour le journal"
 
-#: views/collections/show.html.twig:217
+#: views/collections/show.html.twig:218
 msgid "Put in a group"
 msgstr "Placer dans un groupe"
 
-#: views/collections/show.html.twig:230
-msgid "Copy the link"
-msgstr "Copier le lien"
+#: views/collections/show.html.twig:233
+msgid "Copy link to collection"
+msgstr "Copier le lien de la collection"
 
-#: views/collections/show.html.twig:240 views/news/index.html.twig:66
+#: views/collections/show.html.twig:246 views/links/show.html.twig:253
+#: views/profiles/layout.html.twig:120
+msgid "Copy link to Web feed"
+msgstr "Copier le lien du flux Web"
+
+#: views/collections/show.html.twig:256 views/news/index.html.twig:66
 #: views/news/index.html.twig:156 views/news/index.html.twig:238
 msgid "Mark all as read"
 msgstr "Tout marquer comme lu"
 
-#: views/collections/show.html.twig:249 views/news/index.html.twig:93
+#: views/collections/show.html.twig:265 views/news/index.html.twig:93
 #: views/news/index.html.twig:186 views/news/index.html.twig:263
 msgid "Remove the links from the news"
 msgstr "Retirer les liens du journal"
 
-#: views/collections/show.html.twig:262
+#: views/collections/show.html.twig:278
 msgid ""
 "Are you sure that you want to delete this collection? You may lose the links "
 "that are attached only to this collection."
@@ -1000,12 +1006,12 @@ msgstr ""
 "Êtes-vous sur·e de vouloir supprimer cette collection ? Vous pourriez perdre "
 "les liens qui lui sont attachés."
 
-#: views/collections/show.html.twig:269 views/links/_link.html.twig:317
-#: views/links/show.html.twig:271 views/notes/_notepad.html.twig:61
+#: views/collections/show.html.twig:285 views/links/_link.html.twig:317
+#: views/links/show.html.twig:298 views/notes/_notepad.html.twig:61
 msgid "Delete"
 msgstr "Supprimer"
 
-#: views/collections/show.html.twig:318
+#: views/collections/show.html.twig:333
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 
@@ -1422,7 +1428,7 @@ msgstr "via <strong><a href=\"%s\">%s</a></strong>"
 msgid "Notepad (%s)"
 msgstr "Bloc-note (%s)"
 
-#: views/links/_link.html.twig:200 views/links/show.html.twig:287
+#: views/links/_link.html.twig:200 views/links/show.html.twig:313
 msgid "Notepad"
 msgstr "Bloc-note"
 
@@ -1434,7 +1440,7 @@ msgstr "masqué"
 msgid "Remove from the news"
 msgstr "Retirer du journal"
 
-#: views/links/_link.html.twig:253 views/links/show.html.twig:226
+#: views/links/_link.html.twig:253
 msgid "Copy the external link"
 msgstr "Copier le lien externe"
 
@@ -1442,11 +1448,11 @@ msgstr "Copier le lien externe"
 msgid "Share on Mastodon"
 msgstr "Partager vers Mastodon"
 
-#: views/links/_link.html.twig:299 views/links/show.html.twig:254
+#: views/links/_link.html.twig:299 views/links/show.html.twig:281
 msgid "Repair"
 msgstr "Réparer"
 
-#: views/links/_link.html.twig:310 views/links/show.html.twig:264
+#: views/links/_link.html.twig:310 views/links/show.html.twig:291
 msgid "Are you sure that you want to delete this link?"
 msgstr "Êtes-vous sur·e de vouloir supprimer ce lien ?"
 
@@ -1482,12 +1488,12 @@ msgid "%s of %s links"
 msgstr "%s sur %s liens"
 
 #: views/links/collections/_new_note_form.html.twig:3
-#: views/links/show.html.twig:316
+#: views/links/show.html.twig:342
 msgid "What do you retain from this content?"
 msgstr "Que retenez-vous de ce contenu ?"
 
 #: views/links/collections/_new_note_form.html.twig:29
-#: views/links/show.html.twig:340 views/notes/edit.html.twig:43
+#: views/links/show.html.twig:366 views/notes/edit.html.twig:43
 msgid "You can format the content in Markdown and use #tags."
 msgstr "Vous pouvez formater le contenu en Markdown et utiliser des #tags."
 
@@ -1685,15 +1691,23 @@ msgid_plural "%d collections"
 msgstr[0] "%d collection"
 msgstr[1] "%d collections"
 
-#: views/links/show.html.twig:291
+#: views/links/show.html.twig:227
+msgid "Copy link"
+msgstr "Copier le lien"
+
+#: views/links/show.html.twig:240
+msgid "Copy external link"
+msgstr "Copier le lien externe"
+
+#: views/links/show.html.twig:317
 msgid "This link being hidden, the notes are private."
 msgstr "Ce lien étant masqué, les notes sont privées."
 
-#: views/links/show.html.twig:299
+#: views/links/show.html.twig:325
 msgid "No notes have yet been taken."
 msgstr "Aucune note n’a encore été prise."
 
-#: views/links/show.html.twig:346
+#: views/links/show.html.twig:372
 msgid "Add a note"
 msgstr "Ajouter une note"
 
@@ -2648,6 +2662,10 @@ msgstr "Modifier votre photo de profil"
 #: views/profiles/layout.html.twig:65
 msgid "This is your public profile!"
 msgstr "Voici votre profil public !"
+
+#: views/profiles/layout.html.twig:107
+msgid "Copy link to profile"
+msgstr "Copier le lien du profil"
 
 #: views/profiles/links/index.html.twig:3
 #: views/profiles/links/index.html.twig:7
