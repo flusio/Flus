@@ -14,7 +14,14 @@
 {% block body %}
     <h1 class="text--center">{{ t('Preferences') }}</h1>
 
-    <form method="post" action="{{ url('update preferences') }}" class="flow">
+    <form
+        method="post"
+        action="{{ url('update preferences') }}"
+        class="flow"
+        {# Disable Turbo as changing the "text size" option sets a "data-"
+         # attribute on the <html> tag. #}
+        data-turbo="false"
+    >
         {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
 
         <div class="form-group">
@@ -44,6 +51,37 @@
                         {{ locale_value === form.locale ? 'selected' : '' }}
                     >
                         {{ locale_name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="option-text-size">
+                {{ t('Text size') }}
+            </label>
+
+            {% if form.isInvalid('option_text_size') %}
+                <p id="option-text-size-error" class="form-group__error">
+                    {{ t('Error:') }}
+                    {{ form.error('option_text_size') }}
+                </p>
+            {% endif %}
+
+            <select
+                id="option-text-size"
+                name="option_text_size"
+                {% if form.isInvalid('option_text_size') %}
+                    aria-errormessage="option-text-size-error"
+                    aria-invalid="true"
+                {% endif %}
+            >
+                {% for text_size_value, text_size_label in form.textSizeValues %}
+                    <option
+                        value="{{ text_size_value }}"
+                        {{ text_size_value === form.option_text_size ? 'selected' : '' }}
+                    >
+                        {{ text_size_label }}
                     </option>
                 {% endfor %}
             </select>

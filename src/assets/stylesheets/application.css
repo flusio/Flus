@@ -32,3 +32,29 @@
 :root {
     background-color: var(--color-background);
 }
+
+:root[data-text-size="small"] {
+    font-size: 100%;
+}
+
+:root[data-text-size="medium"] {
+    font-size: 105%;
+}
+
+:root[data-text-size="large"] {
+    font-size: 115%;
+}
+
+@media (min-width: 800px) {
+    :root[data-text-size="small"] {
+        font-size: 105%;
+    }
+
+    :root[data-text-size="medium"] {
+        font-size: 115%;
+    }
+
+    :root[data-text-size="large"] {
+        font-size: 125%;
+    }
+}

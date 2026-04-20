@@ -22,6 +22,8 @@ class User
     use utils\Memoizer;
     use Validable;
 
+    public const VALID_TEXT_SIZES = ['small', 'medium', 'large'];
+
     public const USERNAME_MAX_LENGTH = 50;
 
     public const DEMO_EMAIL = 'demo@flus.fr';
@@ -104,6 +106,16 @@ class User
 
     #[Database\Column]
     public ?string $autoload_modal;
+
+    #[Database\Column]
+    #[Validable\Presence(
+        message: new Translatable('The text size is required. Please select an option from the list.'),
+    )]
+    #[Validable\Inclusion(
+        in: self::VALID_TEXT_SIZES,
+        message: new Translatable('The text size is invalid. Please select an option from the list.'),
+    )]
+    public string $option_text_size = 'medium';
 
     #[Database\Column]
     public bool $option_compact_mode;

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-04-20 11:35+0200\n"
-"PO-Revision-Date: 2026-04-20 11:36+0200\n"
+"POT-Creation-Date: 2026-04-20 12:17+0200\n"
+"PO-Revision-Date: 2026-04-20 12:17+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -210,11 +210,11 @@ msgstr "L’URL est invalide."
 msgid "You already have configured a Mastodon account."
 msgstr "Vous avez déjà configuré un compte Mastodon."
 
-#: forms/security/AskResetPassword.php:22 models/User.php:60
+#: forms/security/AskResetPassword.php:22 models/User.php:62
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: forms/security/AskResetPassword.php:25 models/User.php:63
+#: forms/security/AskResetPassword.php:25 models/User.php:65
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
@@ -235,11 +235,11 @@ msgstr "L’une des collections associées n’existe pas."
 msgid "Sorry but you cannot do that in the demo 😉"
 msgstr "Désolé mais vous ne pouvez pas faire ça dans la démo 😉"
 
-#: forms/traits/Locale.php:19 models/User.php:92
+#: forms/traits/Locale.php:19 models/User.php:94
 msgid "The locale is required."
 msgstr "La langue est obligatoire."
 
-#: forms/traits/Locale.php:22 models/User.php:95
+#: forms/traits/Locale.php:22 models/User.php:97
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
@@ -254,6 +254,18 @@ msgstr ""
 #: forms/users/AccountValidation.php:38
 msgid "The token has expired or has been invalidated."
 msgstr "Le token a expiré ou a été invalidé."
+
+#: forms/users/Preferences.php:47
+msgid "Small"
+msgstr "Petite"
+
+#: forms/users/Preferences.php:48
+msgid "Medium"
+msgstr "Moyenne"
+
+#: forms/users/Preferences.php:49
+msgid "Large"
+msgstr "Grande"
 
 #: mailers/Support.php:32
 #, php-format
@@ -339,25 +351,37 @@ msgstr "Le nom est obligatoire."
 msgid "The label must be less than {max} characters."
 msgstr "Le nom doit faire moins de {max} caractères."
 
-#: models/User.php:66
+#: models/User.php:68
 msgid "An account already exists with this email address."
 msgstr "Un compte existe déjà avec cette adresse courriel."
 
-#: models/User.php:72
+#: models/User.php:74
 msgid "The username is required."
 msgstr "Le nom d’utilisateur·ice est obligatoire."
 
-#: models/User.php:76
+#: models/User.php:78
 msgid "The username must be less than {max} characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de {max} caractères."
 
-#: models/User.php:80
+#: models/User.php:82
 msgid "The username cannot contain the character ‘@’."
 msgstr "Le nom d’utilisateur·ice ne doit pas contenir le caractère ‘@’."
 
-#: models/User.php:86
+#: models/User.php:88
 msgid "The password is required."
 msgstr "Le mot de passe est obligatoire."
+
+#: models/User.php:112
+msgid "The text size is required. Please select an option from the list."
+msgstr ""
+"La taille de texte est obligatoire. Veuillez sélectionner une valeur depuis "
+"la liste."
+
+#: models/User.php:116
+msgid "The text size is invalid. Please select an option from the list."
+msgstr ""
+"La taille de texte est invalide. Veuillez sélectionner une valeur depuis la "
+"liste."
 
 #: navigations/AccountNavigation.php:16
 msgid "Account & data menu"
@@ -630,7 +654,8 @@ msgstr "(max. %d caractères)"
 #: views/links/searches/show.html.twig:39 views/links/show.html.twig:347
 #: views/mastodon/show.html.twig:62 views/mastodon/show.html.twig:139
 #: views/my/account/deletion.html.twig:38 views/my/avatar/edit.html.twig:20
-#: views/my/preferences/edit.html.twig:28 views/my/profile/edit.html.twig:20
+#: views/my/preferences/edit.html.twig:35
+#: views/my/preferences/edit.html.twig:66 views/my/profile/edit.html.twig:20
 #: views/my/profile/edit.html.twig:50
 #: views/my/security/confirmation.html.twig:40
 #: views/my/security/show.html.twig:31 views/my/security/show.html.twig:59
@@ -705,7 +730,7 @@ msgstr "Modification d'une collection"
 #: views/collections/filters/edit.html.twig:96
 #: views/collections/groups/edit.html.twig:99 views/groups/edit.html.twig:43
 #: views/links/edit.html.twig:80 views/mastodon/show.html.twig:96
-#: views/my/preferences/edit.html.twig:102 views/my/profile/edit.html.twig:74
+#: views/my/preferences/edit.html.twig:140 views/my/profile/edit.html.twig:74
 #: views/my/security/show.html.twig:98 views/notes/edit.html.twig:49
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
@@ -1352,11 +1377,11 @@ msgstr ""
 "Collectez, organisez, annotez et partagez les liens<br><strong>provenant de "
 "l'ensemble du Web.</strong>"
 
-#: views/layouts/base.html.twig:44
+#: views/layouts/base.html.twig:48
 msgid "Skip to main content"
 msgstr "Accéder au contenu principal"
 
-#: views/layouts/base.html.twig:61 views/pages/about.html.twig:3
+#: views/layouts/base.html.twig:65 views/pages/about.html.twig:3
 #: views/pages/about.html.twig:11 views/pages/about.html.twig:15
 #: views/support/show.html.twig:124
 #, php-format
@@ -1968,15 +1993,19 @@ msgstr "Photo de profil"
 msgid "Upload a photo"
 msgstr "Téléverser une photo"
 
-#: views/my/preferences/edit.html.twig:23
+#: views/my/preferences/edit.html.twig:30
 msgid "Your language"
 msgstr "Votre langue"
 
-#: views/my/preferences/edit.html.twig:62
+#: views/my/preferences/edit.html.twig:61
+msgid "Text size"
+msgstr "Taille du texte"
+
+#: views/my/preferences/edit.html.twig:100
 msgid "Enable compact mode"
 msgstr "Activer le mode compact"
 
-#: views/my/preferences/edit.html.twig:66
+#: views/my/preferences/edit.html.twig:104
 msgid ""
 "In compact mode, you see more links at a glance, but you may feel "
 "overwhelmed by the information."
@@ -1984,17 +2013,18 @@ msgstr ""
 "En mode compact, vous voyez plus de liens en un coup d’œil, mais vous "
 "pourriez vous sentir submergé par la quantité d’informations."
 
-#: views/my/preferences/edit.html.twig:79 views/registrations/new.html.twig:148
+#: views/my/preferences/edit.html.twig:117
+#: views/registrations/new.html.twig:148
 msgid "Accept to be contacted by email to help improve the service (optional)."
 msgstr ""
 "Accepter d’être contacté‧e par courriel pour aider à améliorer le service "
 "(facultatif)."
 
-#: views/my/preferences/edit.html.twig:93
+#: views/my/preferences/edit.html.twig:131
 msgid "Enable beta features"
 msgstr "Activer les fonctionnalités bêta"
 
-#: views/my/preferences/edit.html.twig:97
+#: views/my/preferences/edit.html.twig:135
 msgid ""
 "With beta features you test some features before everyone else, but you "
 "enter a turbulent zone."

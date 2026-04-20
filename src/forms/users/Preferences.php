@@ -18,6 +18,9 @@ class Preferences extends BaseForm
     use traits\Locale;
 
     #[Form\Field]
+    public string $option_text_size = 'medium';
+
+    #[Form\Field]
     public bool $option_compact_mode = false;
 
     #[Form\Field]
@@ -36,5 +39,17 @@ class Preferences extends BaseForm
         }
 
         parent::__construct($default_values, $model);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function textSizeValues(): array
+    {
+        return [
+            'small' => \Minz\Template\TwigExtension::translate('Small'),
+            'medium' => \Minz\Template\TwigExtension::translate('Medium'),
+            'large' => \Minz\Template\TwigExtension::translate('Large'),
+        ];
     }
 }

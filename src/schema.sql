@@ -39,6 +39,7 @@ CREATE TABLE users (
     avatar_filename TEXT,
     biography TEXT NOT NULL DEFAULT '',
     autoload_modal TEXT NOT NULL DEFAULT '',
+    option_text_size TEXT NOT NULL DEFAULT 'medium',
     option_compact_mode BOOLEAN NOT NULL DEFAULT false,
     accept_contact BOOLEAN NOT NULL DEFAULT false,
 

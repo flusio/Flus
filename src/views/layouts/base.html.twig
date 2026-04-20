@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-<html lang="{{ app.locale | locale_to_bcp_47 }}" data-color-scheme="light">
+<html
+    lang="{{ app.locale | locale_to_bcp_47 }}"
+    data-color-scheme="light"
+    data-text-size="{{ app.user ? app.user.option_text_size : 'medium' }}"
+>
     <head>
         <meta charset="UTF-8" />
         <title>{{ include('layouts/_title.html.twig', { title: block('title') }) }}</title>
