@@ -32,6 +32,7 @@
         {% for link in links %}
             {{ include('links/_link.html.twig', {
                 link: link,
+                tag_filter_mode: 'search',
                 display_source: true,
                 display_notes: true,
                 display_hidden: link.is_hidden,

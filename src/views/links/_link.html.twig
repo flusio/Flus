@@ -17,6 +17,8 @@
 {% endif %}
 {% set storing_must_mark_as_read = storing_must_mark_as_read ?? false %}
 
+{% set tag_filter_mode = tag_filter_mode ?? 'profile filter' %}
+
 {% set source_collection = display_source ? link.sourceCollection : null %}
 {% set source_user = display_source ? link.sourceUser : null %}
 
@@ -182,7 +184,12 @@
             {% if link.tags %}
                 <div class="stack stack--gap-smaller">
                     {% for tag in link.tags %}
-                        <a class="badge badge--tag" href="{{ url('profile links', { id: link.user_id, tag: tag }) }}">
+                        {% if tag_filter_mode === 'search' %}
+                            {% set tag_url = url('links', { q: "#" ~ tag }) %}
+                        {% else %}
+                            {% set tag_url = url('profile links', { id: link.user_id, tag: tag }) %}
+                        {% endif %}
+                        <a class="badge badge--tag" href="{{ tag_url }}">
                             #{{ tag }}
                         </a>
                     {% endfor %}
