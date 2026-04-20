@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-04-20 11:09+0200\n"
-"PO-Revision-Date: 2026-04-20 11:09+0200\n"
+"POT-Creation-Date: 2026-04-20 11:20+0200\n"
+"PO-Revision-Date: 2026-04-20 11:21+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -2012,16 +2012,16 @@ msgid "(public, max. %d characters)"
 msgstr "(public, max. %d caractères)"
 
 #: views/my/profile/edit.html.twig:42
-msgid "A few words about you"
-msgstr "Quelques mots à propos de vous"
+msgid "A few words about you and your monitoring practices"
+msgstr "Quelques mots à propos de vous et de vos pratiques de veille"
 
 #: views/my/profile/edit.html.twig:44
 msgid "(public, optional)"
 msgstr "(public, optionnel)"
 
 #: views/my/profile/edit.html.twig:68
-msgid "You can format the biography in Markdown and use #tags."
-msgstr "Vous pouvez formater la biographie en Markdown et utiliser des #tags."
+msgid "You can format this section in Markdown and use #tags."
+msgstr "Vous pouvez formater cette section en Markdown et utiliser des #tags."
 
 #: views/my/security/confirmation.html.twig:3
 #: views/my/security/confirmation.html.twig:24
