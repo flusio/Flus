@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-04-20 11:08+0200\n"
-"PO-Revision-Date: 2026-04-20 11:08+0200\n"
+"POT-Creation-Date: 2026-04-20 11:09+0200\n"
+"PO-Revision-Date: 2026-04-20 11:09+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -1333,8 +1333,8 @@ msgid "Next"
 msgstr "Suivant"
 
 #: views/layouts/_search.html.twig:6 views/layouts/_search.html.twig:7
-msgid "Search links by words or URL"
-msgstr "Rechercher des liens par mots ou URL"
+msgid "Search links by words, URL or #tag"
+msgstr "Rechercher des liens par mots, URL ou #tag"
 
 #: views/layouts/_search.html.twig:15 views/links/searches/show.html.twig:64
 msgid "Search"
