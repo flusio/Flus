@@ -14,5 +14,6 @@
 }
 
 .badge--filter .icon {
-    width: 1.3em;
+    width: 1.1em;
+    margin-left: var(--space-smaller);
 }
