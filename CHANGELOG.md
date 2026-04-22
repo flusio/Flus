@@ -1,5 +1,41 @@
 # Changelog of Flus
 
+## 2026-04-22 - v2.4.0
+
+### Features
+
+- Allow to filter links by users' tags ([d6e3e65a](https://github.com/flusio/Flus/commit/d6e3e65a), [48b502a5](https://github.com/flusio/Flus/commit/48b502a5), [b4344ceb](https://github.com/flusio/Flus/commit/b4344ceb), [7e243a21](https://github.com/flusio/Flus/commit/7e243a21))
+- Allow to fill a profile's biography ([e5d60d6f](https://github.com/flusio/Flus/commit/e5d60d6f), [048beacb](https://github.com/flusio/Flus/commit/048beacb))
+- Show links and collections distinctly on profiles ([f6d5f319](https://github.com/flusio/Flus/commit/f6d5f319))
+- Add more "copy" links ([61f86105](https://github.com/flusio/Flus/commit/61f86105))
+- Delete users not validated after a month ([5c9df5ef](https://github.com/flusio/Flus/commit/5c9df5ef))
+
+### Improvements
+
+- Clarify users can search by #tags ([7e5e6a10](https://github.com/flusio/Flus/commit/7e5e6a10))
+- Increase space between preferences form elements ([c05bd508](https://github.com/flusio/Flus/commit/c05bd508))
+- Improve explanation of the contact form ([84e6bdf3](https://github.com/flusio/Flus/commit/84e6bdf3))
+
+### Bug fixes
+
+- Fix page titles escaped too many times ([c77029ac](https://github.com/flusio/Flus/commit/c77029ac))
+- Fix setting the link "via" information when adding a link from a collection or a profile ([f215e8cb](https://github.com/flusio/Flus/commit/f215e8cb))
+- Check that Mastodon account is setup when checking user authorization ([a8d92a73](https://github.com/flusio/Flus/commit/a8d92a73))
+- Fix the rendering of the forbidden page ([25e8ce44](https://github.com/flusio/Flus/commit/25e8ce44))
+
+### Maintenance
+
+- Update Docker image to PHP 8.4 ([2717265a](https://github.com/flusio/Flus/commit/2717265a))
+- Update the dependencies ([45a308c6](https://github.com/flusio/Flus/commit/45a308c6), [abfc3a73](https://github.com/flusio/Flus/commit/abfc3a73))
+- Update the ClearUrls rules ([5ca4217d](https://github.com/flusio/Flus/commit/5ca4217d))
+- Set a unique tmp path per Flus version ([59a5b8b7](https://github.com/flusio/Flus/commit/59a5b8b7))
+
+### Beta
+
+- Allow to select interface theme (aka dark mode) ([5bde3dc6](https://github.com/flusio/Flus/commit/5bde3dc6))
+- Allow to choose the text size of the application ([9ef77671](https://github.com/flusio/Flus/commit/9ef77671), [8ae1b083](https://github.com/flusio/Flus/commit/8ae1b083))
+- Fix pagination when filtering by topic in the "Explore" section ([15f8fb4a](https://github.com/flusio/Flus/commit/15f8fb4a))
+
 ## 2026-03-13 - v2.3.1
 
 ### Improvements
