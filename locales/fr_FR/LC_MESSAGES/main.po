@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-04-20 12:17+0200\n"
-"PO-Revision-Date: 2026-04-20 12:17+0200\n"
+"POT-Creation-Date: 2026-04-22 16:41+0200\n"
+"PO-Revision-Date: 2026-04-22 16:41+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -255,15 +255,15 @@ msgstr ""
 msgid "The token has expired or has been invalidated."
 msgstr "Le token a expiré ou a été invalidé."
 
-#: forms/users/Preferences.php:47
+#: forms/users/Preferences.php:50
 msgid "Small"
 msgstr "Petite"
 
-#: forms/users/Preferences.php:48
+#: forms/users/Preferences.php:51
 msgid "Medium"
 msgstr "Moyenne"
 
-#: forms/users/Preferences.php:49
+#: forms/users/Preferences.php:52
 msgid "Large"
 msgstr "Grande"
 
@@ -2795,11 +2795,11 @@ msgstr "Pas encore de compte ?"
 
 #: views/support/show.html.twig:18
 msgid ""
-"If you have a question or if you’re facing an issue, you can contact me via "
-"this form."
+"If you have a question, want to make suggestions, or if you’re facing an "
+"issue, you can contact me via this form."
 msgstr ""
-"Si vous avez une question ou faites face à un souci, vous pouvez me "
-"contacter à partir de ce formulaire."
+"Si vous avez une question, voulez faire des suggestions, ou faites face à un "
+"souci, vous pouvez me contacter à partir de ce formulaire."
 
 #: views/support/show.html.twig:31
 msgid "Your message has been sent."
