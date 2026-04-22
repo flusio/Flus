@@ -87,6 +87,39 @@
             </select>
         </div>
 
+        {% if app.user.isBetaEnabled %}
+            <div class="form-group">
+                <label for="option-color-scheme">
+                    {{ t('Interface theme') }}
+                </label>
+
+                {% if form.isInvalid('option_color_scheme') %}
+                    <p id="option-color-scheme-error" class="form-group__error">
+                        {{ t('Error:') }}
+                        {{ form.error('option_color_scheme') }}
+                    </p>
+                {% endif %}
+
+                <select
+                    id="option-color-scheme"
+                    name="option_color_scheme"
+                    {% if form.isInvalid('option_color_scheme') %}
+                        aria-errormessage="option-color-scheme-error"
+                        aria-invalid="true"
+                    {% endif %}
+                >
+                    {% for color_scheme_value, color_scheme_label in form.colorSchemeValues %}
+                        <option
+                            value="{{ color_scheme_value }}"
+                            {{ color_scheme_value === form.option_color_scheme ? 'selected' : '' }}
+                        >
+                            {{ color_scheme_label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        {% endif %}
+
         <div>
             <input
                 type="checkbox"

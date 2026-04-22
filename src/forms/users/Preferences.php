@@ -21,6 +21,9 @@ class Preferences extends BaseForm
     public string $option_text_size = 'medium';
 
     #[Form\Field]
+    public string $option_color_scheme = 'system';
+
+    #[Form\Field]
     public bool $option_compact_mode = false;
 
     #[Form\Field]
@@ -50,6 +53,18 @@ class Preferences extends BaseForm
             'small' => \Minz\Template\TwigExtension::translate('Small'),
             'medium' => \Minz\Template\TwigExtension::translate('Medium'),
             'large' => \Minz\Template\TwigExtension::translate('Large'),
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function colorSchemeValues(): array
+    {
+        return [
+            'system' => \Minz\Template\TwigExtension::translate('System'),
+            'light' => \Minz\Template\TwigExtension::translate('Light'),
+            'dark' => \Minz\Template\TwigExtension::translate('Dark'),
         ];
     }
 }

@@ -23,6 +23,7 @@ class User
     use Validable;
 
     public const VALID_TEXT_SIZES = ['small', 'medium', 'large'];
+    public const VALID_COLOR_SCHEMES = ['system', 'light', 'dark'];
 
     public const USERNAME_MAX_LENGTH = 50;
 
@@ -116,6 +117,16 @@ class User
         message: new Translatable('The text size is invalid. Please select an option from the list.'),
     )]
     public string $option_text_size = 'medium';
+
+    #[Database\Column]
+    #[Validable\Presence(
+        message: new Translatable('The theme is required. Please select an option from the list.'),
+    )]
+    #[Validable\Inclusion(
+        in: self::VALID_COLOR_SCHEMES,
+        message: new Translatable('The theme is invalid. Please select an option from the list.'),
+    )]
+    public string $option_color_scheme = 'system';
 
     #[Database\Column]
     public bool $option_compact_mode;
