@@ -1,0 +1,75 @@
+<form
+    method="post"
+    action="{{ action }}"
+    data-controller="autosave"
+    data-action="turbo:submit-start@document->autosave#clear"
+    class="flow"
+>
+    {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+    <div class="form-group">
+        <label for="name">
+            {{ t('What’s the name of this stream?') }}
+        </label>
+
+        {% if form.isInvalid('name') %}
+            <p id="name-error" class="form-group__error">
+                {{ t('Error:') }}
+                {{ form.error('name') }}
+            </p>
+        {% endif %}
+
+        <input
+            id="name"
+            name="name"
+            type="text"
+            required
+            value="{{ form.name }}"
+            data-action="keyup->autosave#save"
+            {% if form.isInvalid('name') %}
+                aria-errormessage="name-error"
+                aria-invalid="true"
+            {% endif %}
+        />
+    </div>
+
+    <div class="form-group">
+        <label for="description">
+            {{ t('What’s the purpose of this stream?') }}
+            <span class="label__help">
+                {{ t('(optional)') }}
+            </span>
+        </label>
+
+        {% if form.isInvalid('description') %}
+            <p id="description-error" class="form-group__error">
+                {{ t('Error:') }}
+                {{ form.error('description') }}
+            </p>
+        {% endif %}
+
+        <textarea
+            id="description"
+            name="description"
+            data-controller="text-editor"
+            data-action="text-editor#refresh keyup->autosave#save"
+            aria-describedby="description-caption"
+            {% if form.isInvalid('description') %}
+                aria-errormessage="description-error"
+                aria-invalid="true"
+            {% endif %}
+        >{{ form.description }}</textarea>
+
+        <p id="description-caption" class="form-group__caption">
+            {{ t('You can format the description in Markdown.') }}
+        </p>
+    </div>
+
+    <div class="text--center">
+        <button type="submit" class="button--primary button--big">
+            {{ submit_label }}
+        </button>
+    </div>
+
+    <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}" />
+</form>

@@ -62,3 +62,131 @@
 :root[data-font-family="system-ui"] body {
     font-family: system-ui, sans-serif;
 }
+
+.panel--border {
+    border: 1px solid var(--color-grey-line);
+}
+
+.sources__container {
+    overflow-y: auto;
+
+    max-height: 50vh;
+}
+
+.panel__separator {
+    height: 1px;
+    margin-right: calc(-1 * var(--space-medium));
+    margin-left: calc(-1 * var(--space-medium));
+
+    background-color: var(--color-grey-line);
+}
+
+.button--source {
+    --button-border-color: var(--color-grey-line);
+
+    display: flex;
+    max-width: 300px;
+    height: calc(64px + 2 * var(--space-small));
+
+    align-items: flex-start;
+    gap: var(--space-small);
+}
+
+.button--source .source__name {
+    overflow: hidden;
+
+    max-height: 40px;
+
+    line-height: 1.2;
+}
+
+.source__image {
+    width: 64px;
+    max-width: none;
+
+    background-color: var(--color-base);
+    border-radius: var(--border-radius);
+}
+
+.source__unread-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+
+    vertical-align: middle;
+
+    background-color: var(--color-accent-solid);
+    border-radius: 50%;
+}
+
+.stream__timeline {
+    overflow: auto;
+
+    padding-bottom: var(--space-small);
+}
+
+.stream__timeline-container {
+    display: flex;
+    margin: 0;
+    padding: 0;
+
+    list-style: none;
+}
+
+.stream__timeline-date {
+    display: block;
+    width: 95px;
+    padding: var(--space-smaller);
+
+    color: var(--color-grey-text) !important;
+    text-align: center;
+    text-decoration: none;
+
+    border-bottom: 2px solid transparent;
+    border-radius: var(--border-radius);
+}
+
+.stream__timeline-date-day {
+    display: block;
+
+    font-size: var(--font-size-smaller);
+}
+
+.stream__timeline-date-count {
+    font-size: var(--font-size-small);
+}
+
+.stream__timeline-date[aria-current="page"] {
+    color: var(--color-grey-text-contrast) !important;
+    font-weight: 600;
+
+    background-color: var(--color-accent-bg);
+    border-color: var(--color-accent-solid);
+}
+
+.stream__timeline-bar-container {
+    display: flex;
+    height: 100px;
+    margin-right: calc(-1 * var(--space-smaller));
+    margin-bottom: var(--space-smaller);
+    margin-left: calc(-1 * var(--space-smaller));
+
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+
+    border-bottom: 1px solid var(--color-grey-bg);
+}
+
+.stream__timeline-date[aria-current="page"] .stream__timeline-bar-container {
+    border-color: var(--color-accent-bg-active);
+}
+
+.stream__timeline-bar {
+    display: inline-block;
+    width: 5px;
+    height: var(--bar-height, 0);
+
+    background-color: var(--color-accent-solid);
+    border-radius: var(--border-radius-small) var(--border-radius-small) 0 0;
+}

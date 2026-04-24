@@ -83,6 +83,12 @@ document.addEventListener('turbo:submit-start', (event) => {
     }
 });
 
+document.addEventListener('turbo:click', (event) => {
+    if (event.target.hasAttribute('data-turbo-preserve-scroll')) {
+        disableScroll = true;
+    }
+});
+
 document.addEventListener('turbo:before-render', () => {
     if (disableScroll) {
         // As explained on GitHub, `Turbo.navigator.currentVisit.scrolled`
