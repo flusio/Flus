@@ -1,0 +1,53 @@
+<article class="panel panel--base panel--rounded cols cols--always cols--center cols--gap">
+    <div class="col--extend cols cols--always cols--center cols--gap">
+        <img
+            class="source__image"
+            alt=""
+            src="{{ url_media('covers', source.image_filename, 'collection-card.png') }}"
+        >
+
+        <div class="col--extend flow flow--smaller">
+            <h3 class="text--bold text--normal">
+                <a class="anchor--nostyle" href="{{ url('collection', { id: source.id }) }}">
+                    {{ source.name }}
+                </a>
+            </h3>
+
+            <p class="text--secondary">
+                <span title="{{ t('Publication frequency') }}">
+                    {{ icon('frequency') }}
+                    {{ source.publication_frequency_per_year | format_publication_frequency }}
+                </span>
+            </p>
+
+            <p class="text--secondary">
+                {{ t('By') }}
+                {% if source.isFeed %}
+                    {{ source.feedWebsiteHost }}
+                {% else %}
+                    {%- for user in source.publishers -%}
+                        {% if not loop.first %}, {% endif %}
+                        <a class="username" href="{{ url('profile', { id: user.id }) }}">
+                            <img class="avatar avatar--mini" alt="" src="{{ url_avatar(user.avatar_filename) }}">
+                            {{- user.username -}}
+                        </a>
+                    {%- endfor -%}
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+    {% if action === 'add' %}
+        <form method="post" action="{{ url('add stream source', { id: stream.id, source_id: source.id }) }}" data-turbo-preserve-scroll>
+            <button>
+                {{ t('Add') }}
+            </button>
+        </form>
+    {% else %}
+        <form method="post" action="{{ url('remove stream source', { id: stream.id, source_id: source.id }) }}" data-turbo-preserve-scroll>
+            <button>
+                {{ t('Remove') }}
+            </button>
+        </form>
+    {% endif %}
+</article>

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-04-22 17:29+0200\n"
-"PO-Revision-Date: 2026-04-22 17:29+0200\n"
+"POT-Creation-Date: 2026-04-29 15:50+0200\n"
+"PO-Revision-Date: 2026-04-29 15:50+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -461,6 +461,14 @@ msgstr "Menu lecture"
 msgid "Explore"
 msgstr "Explorer"
 
+#: navigations/ReadingNavigation.php:68
+msgid "New Stream"
+msgstr "Nouveau fil"
+
+#: navigations/ReadingNavigation.php:71
+msgid "Monitoring streams"
+msgstr "Fils de veille"
+
 #: seeds.php:15
 msgid "Business"
 msgstr "Business"
@@ -619,7 +627,10 @@ msgstr "privée"
 
 #: views/collections/_collection.html.twig:52
 #: views/collections/_collection_follow.html.twig:24
-#: views/collections/show.html.twig:96
+#: views/collections/show.html.twig:96 views/streams/show.html.twig:37
+#: views/streams/sources/_source.html.twig:15
+#: views/streams/sources/edit.html.twig:49
+#: views/streams/sources/index.html.twig:33
 msgid "Publication frequency"
 msgstr "Fréquence de publication"
 
@@ -677,7 +688,7 @@ msgstr "(max. %d caractères)"
 #: views/mastodon/show.html.twig:62 views/mastodon/show.html.twig:139
 #: views/my/account/deletion.html.twig:38 views/my/avatar/edit.html.twig:20
 #: views/my/preferences/edit.html.twig:35
-#: views/my/preferences/edit.html.twig:66
+#: views/my/preferences/edit.html.twig:67
 #: views/my/preferences/edit.html.twig:98 views/my/profile/edit.html.twig:20
 #: views/my/profile/edit.html.twig:50
 #: views/my/security/confirmation.html.twig:40
@@ -686,7 +697,8 @@ msgstr "(max. %d caractères)"
 #: views/passwords/forgot.html.twig:43 views/registrations/new.html.twig:44
 #: views/registrations/new.html.twig:72 views/registrations/new.html.twig:106
 #: views/registrations/new.html.twig:156 views/sessions/new.html.twig:32
-#: views/sessions/new.html.twig:67 views/support/show.html.twig:41
+#: views/sessions/new.html.twig:67 views/streams/_form.html.twig:17
+#: views/streams/_form.html.twig:46 views/support/show.html.twig:41
 #: views/support/show.html.twig:67
 msgid "Error:"
 msgstr "Erreur :"
@@ -697,11 +709,11 @@ msgstr "Quelle est la raison d’être de cette collection ?"
 
 #: views/collections/_form.html.twig:45
 #: views/links/collections/_new_note_form.html.twig:5
-#: views/my/security/show.html.twig:53
+#: views/my/security/show.html.twig:53 views/streams/_form.html.twig:40
 msgid "(optional)"
 msgstr "(optionnel)"
 
-#: views/collections/_form.html.twig:69
+#: views/collections/_form.html.twig:69 views/streams/_form.html.twig:64
 msgid "You can format the description in Markdown."
 msgstr "Vous pouvez formater la description en Markdown."
 
@@ -796,7 +808,7 @@ msgstr ""
 "Vous recevrez les liens publiés au cours de la semaine passée (recommandé "
 "pour la plupart des flux)."
 
-#: views/collections/filters/edit.html.twig:85
+#: views/collections/filters/edit.html.twig:85 views/streams/show.html.twig:131
 msgid "All"
 msgstr "Tout"
 
@@ -2020,7 +2032,7 @@ msgstr "Téléverser une photo"
 msgid "Your language"
 msgstr "Votre langue"
 
-#: views/my/preferences/edit.html.twig:61
+#: views/my/preferences/edit.html.twig:62
 msgid "Text size"
 msgstr "Taille du texte"
 
@@ -2820,6 +2832,86 @@ msgstr "Mot de passe oublié ?"
 msgid "No account yet?"
 msgstr "Pas encore de compte ?"
 
+#: views/streams/_form.html.twig:12
+msgid "What’s the name of this stream?"
+msgstr "Quel est le nom de ce fil ?"
+
+#: views/streams/_form.html.twig:38
+msgid "What’s the purpose of this stream?"
+msgstr "Quelle est la raison d’être de ce fil ?"
+
+#: views/streams/new.html.twig:3
+msgid "New stream"
+msgstr "Nouveau fil"
+
+#: views/streams/new.html.twig:9
+msgid "Create the stream"
+msgstr "Créer le fil"
+
+#: views/streams/show.html.twig:34 views/streams/sources/edit.html.twig:46
+#: views/streams/sources/index.html.twig:30
+#, php-format
+msgid "%d source"
+msgid_plural "%d sources"
+msgstr[0] "%d source"
+msgstr[1] "%d sources"
+
+#: views/streams/show.html.twig:44 views/streams/sources/_source.html.twig:22
+msgid "By"
+msgstr "Par"
+
+#: views/streams/show.html.twig:61
+msgid "Manage sources"
+msgstr "Gérer les sources"
+
+#: views/streams/show.html.twig:69
+#, php-format
+msgid "Since the %s"
+msgstr "Depuis le %s"
+
+#: views/streams/show.html.twig:78
+msgid "Today"
+msgstr "Aujourd’hui"
+
+#: views/streams/show.html.twig:86
+msgid "Last week"
+msgstr "Dernière semaine"
+
+#: views/streams/show.html.twig:94
+msgid "Last month"
+msgstr "Dernier mois"
+
+#: views/streams/show.html.twig:107
+msgid "Links unread"
+msgstr "Liens non lus"
+
+#: views/streams/sources/_source.html.twig:41
+msgid "Add"
+msgstr "Ajouter"
+
+#: views/streams/sources/_source.html.twig:47
+msgid "Remove"
+msgstr "Retirer"
+
+#: views/streams/sources/edit.html.twig:3
+#: views/streams/sources/index.html.twig:3
+#, php-format
+msgid "Sources of %s"
+msgstr "Sources de %s"
+
+#: views/streams/sources/edit.html.twig:24
+msgid "Add or remove sources to customise your thread."
+msgstr "Ajoutez ou retirez des sources pour personnaliser votre fil."
+
+#: views/streams/sources/edit.html.twig:29
+msgid "Sources to add"
+msgstr "Sources à ajouter"
+
+#: views/streams/sources/edit.html.twig:42
+#: views/streams/sources/index.html.twig:26
+msgid "Sources in your thread"
+msgstr "Sources dans votre fil"
+
 #: views/support/show.html.twig:18
 msgid ""
 "If you have a question, want to make suggestions, or if you’re facing an "
@@ -2860,3 +2952,6 @@ msgstr "Recommencer l’introduction"
 #: views/support/show.html.twig:117
 msgid "What’s new?"
 msgstr "Quoi de neuf ?"
+
+#~ msgid "Threads"
+#~ msgstr "Fils"

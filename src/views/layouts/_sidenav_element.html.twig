@@ -6,6 +6,18 @@
             {{ include('layouts/_sidenav_element.html.twig', { element: item }) }}
         {% endfor %}
     </div>
+{% elseif element.is('action') %}
+    <button
+        class="button--block"
+        data-controller="modal-opener"
+        data-action="modal-opener#fetch"
+        data-modal-opener-href-value="{{ element.url }}"
+        aria-haspopup="dialog"
+        aria-controls="modal"
+    >
+        {{ icon(element.icon) }}
+        {{ element.label }}
+    </button>
 {% else %}
     <a
         class="sidenav__menu-item"

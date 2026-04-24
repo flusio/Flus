@@ -213,6 +213,25 @@ class Router
         $router->addRoute('GET', '/discovery', 'Explore#discovery', 'discovery');
         $router->addRoute('GET', '/topics/:id', 'Explore#topic', 'topic');
 
+        // Streams
+        $router->addRoute('GET', '/streams/new', 'Streams#new', 'new stream');
+        $router->addRoute('POST', '/streams/new', 'Streams#create', 'create stream');
+        $router->addRoute('GET', '/streams/:id', 'Streams#show', 'stream');
+        $router->addRoute('GET', '/streams/:id/sources', 'streams/Sources#index', 'stream sources');
+        $router->addRoute('GET', '/streams/:id/sources/edit', 'streams/Sources#edit', 'edit stream sources');
+        $router->addRoute(
+            'POST',
+            '/streams/:id/sources/:source_id/add',
+            'streams/Sources#add',
+            'add stream source',
+        );
+        $router->addRoute(
+            'POST',
+            '/streams/:id/sources/:source_id/remove',
+            'streams/Sources#remove',
+            'remove stream source',
+        );
+
         // API v1
         $router->addRoute('POST', '/api/v1/sessions', 'api/v1/Sessions#create');
         $router->addRoute('DELETE', '/api/v1/session', 'api/v1/Sessions#delete');

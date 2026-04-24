@@ -661,4 +661,236 @@ trait Link
 
         return $published_at;
     }
+
+    public static function listByStreamId(
+        string $stream_id,
+        array $options = [],
+    ): array {
+        $default_options = [
+            'context_user' => null,
+            'after' => null,
+            'source_id' => null,
+            'status' => 'all',
+        ];
+        $options = array_merge($default_options, $options);
+
+        $parameters = [
+            ':stream_id' => $stream_id,
+        ];
+
+        $after_clause = '';
+        if ($options['after']) {
+            $after_clause = 'AND lc.created_at >= :after';
+            $parameters[':after'] = $options['after']->format(Database\Column::DATETIME_FORMAT);
+        }
+
+        $source_clause = '';
+        if ($options['source_id']) {
+            $source_clause = 'AND lc.collection_id = :source_id';
+            $parameters[':source_id'] = $options['source_id'];
+        }
+
+        $status_clause = '';
+        if ($options['status'] === 'unread') {
+            $status_clause = <<<SQL
+                AND l.url_hash NOT IN (
+                    SELECT l2.url_hash
+                    FROM links l2, links_to_collections lc2, collections c2
+                    WHERE l2.id = lc2.link_id
+                    AND c2.id = lc2.collection_id
+                    AND (c2.type = 'read' OR c2.type = 'bookmarks' OR c2.type = 'never')
+                    AND c2.user_id = :user_id
+                )
+            SQL;
+        } elseif ($options['status'] === 'read') {
+            $status_clause = <<<SQL
+                AND l.url_hash NOT IN (
+                    SELECT l2.url_hash
+                    FROM links l2, links_to_collections lc2, collections c2
+                    WHERE l2.id = lc2.link_id
+                    AND c2.id = lc2.collection_id
+                    AND c2.type = 'never'
+                    AND c2.user_id = :user_id
+                )
+                AND l.url_hash IN (
+                    SELECT l2.url_hash
+                    FROM links l2, links_to_collections lc2, collections c2
+                    WHERE l2.id = lc2.link_id
+                    AND c2.id = lc2.collection_id
+                    AND c2.type = 'read'
+                    AND c2.user_id = :user_id
+                )
+            SQL;
+        } elseif ($options['status'] === 'to-read') {
+            $status_clause = <<<SQL
+                AND l.url_hash NOT IN (
+                    SELECT l2.url_hash
+                    FROM links l2, links_to_collections lc2, collections c2
+                    WHERE l2.id = lc2.link_id
+                    AND c2.id = lc2.collection_id
+                    AND c2.type = 'never'
+                    AND c2.user_id = :user_id
+                )
+                AND l.url_hash IN (
+                    SELECT l2.url_hash
+                    FROM links l2, links_to_collections lc2, collections c2
+                    WHERE l2.id = lc2.link_id
+                    AND c2.id = lc2.collection_id
+                    AND c2.type = 'bookmarks'
+                    AND c2.user_id = :user_id
+                )
+            SQL;
+        } else {
+            $status_clause = <<<SQL
+                AND l.url_hash NOT IN (
+                    SELECT l2.url_hash
+                    FROM links l2, links_to_collections lc2, collections c2
+                    WHERE l2.id = lc2.link_id
+                    AND c2.id = lc2.collection_id
+                    AND c2.type = 'never'
+                    AND c2.user_id = :user_id
+                )
+            SQL;
+        }
+        $parameters[':user_id'] = $options['context_user']->id;
+
+        $sql = <<<SQL
+            SELECT l.*, lc.created_at AS published_at
+            FROM links l, links_to_collections lc, collections c, streams_to_collections sc
+
+            WHERE l.id = lc.link_id
+            AND lc.collection_id = c.id
+            AND c.id = sc.collection_id
+            AND sc.stream_id = :stream_id
+
+            AND l.is_hidden = false
+
+            {$after_clause}
+            {$status_clause}
+            {$source_clause}
+
+            ORDER BY lc.created_at DESC, l.id
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute($parameters);
+
+        return self::fromDatabaseRows($statement->fetchAll());
+    }
+
+    public static function countByStreamId(
+        string $stream_id,
+        array $options = [],
+    ): int {
+        $default_options = [
+            'context_user' => null,
+            'after' => null,
+            'source_id' => null,
+            'status' => 'all',
+        ];
+        $options = array_merge($default_options, $options);
+
+        $parameters = [
+            ':stream_id' => $stream_id,
+        ];
+
+        $after_clause = '';
+        if ($options['after']) {
+            $after_clause = 'AND lc.created_at >= :after';
+            $parameters[':after'] = $options['after']->format(Database\Column::DATETIME_FORMAT);
+        }
+
+        $source_clause = '';
+        if ($options['source_id']) {
+            $source_clause = 'AND lc.collection_id = :source_id';
+            $parameters[':source_id'] = $options['source_id'];
+        }
+
+        $status_clause = '';
+        if ($options['status'] === 'unread') {
+            $status_clause = <<<SQL
+                AND l.url_hash NOT IN (
+                    SELECT l2.url_hash
+                    FROM links l2, links_to_collections lc2, collections c2
+                    WHERE l2.id = lc2.link_id
+                    AND c2.id = lc2.collection_id
+                    AND (c2.type = 'read' OR c2.type = 'bookmarks' OR c2.type = 'never')
+                    AND c2.user_id = :user_id
+                )
+            SQL;
+        } elseif ($options['status'] === 'read') {
+            $status_clause = <<<SQL
+                AND l.url_hash NOT IN (
+                    SELECT l2.url_hash
+                    FROM links l2, links_to_collections lc2, collections c2
+                    WHERE l2.id = lc2.link_id
+                    AND c2.id = lc2.collection_id
+                    AND c2.type = 'never'
+                    AND c2.user_id = :user_id
+                )
+                AND l.url_hash IN (
+                    SELECT l2.url_hash
+                    FROM links l2, links_to_collections lc2, collections c2
+                    WHERE l2.id = lc2.link_id
+                    AND c2.id = lc2.collection_id
+                    AND c2.type = 'read'
+                    AND c2.user_id = :user_id
+                )
+            SQL;
+        } elseif ($options['status'] === 'to-read') {
+            $status_clause = <<<SQL
+                AND l.url_hash NOT IN (
+                    SELECT l2.url_hash
+                    FROM links l2, links_to_collections lc2, collections c2
+                    WHERE l2.id = lc2.link_id
+                    AND c2.id = lc2.collection_id
+                    AND c2.type = 'never'
+                    AND c2.user_id = :user_id
+                )
+                AND l.url_hash IN (
+                    SELECT l2.url_hash
+                    FROM links l2, links_to_collections lc2, collections c2
+                    WHERE l2.id = lc2.link_id
+                    AND c2.id = lc2.collection_id
+                    AND c2.type = 'bookmarks'
+                    AND c2.user_id = :user_id
+                )
+            SQL;
+        } else {
+            $status_clause = <<<SQL
+                AND l.url_hash NOT IN (
+                    SELECT l2.url_hash
+                    FROM links l2, links_to_collections lc2, collections c2
+                    WHERE l2.id = lc2.link_id
+                    AND c2.id = lc2.collection_id
+                    AND c2.type = 'never'
+                    AND c2.user_id = :user_id
+                )
+            SQL;
+        }
+        $parameters[':user_id'] = $options['context_user']->id;
+
+        $sql = <<<SQL
+            SELECT count(l.*)
+            FROM links l, links_to_collections lc, collections c, streams_to_collections sc
+
+            WHERE l.id = lc.link_id
+            AND lc.collection_id = c.id
+            AND c.id = sc.collection_id
+            AND sc.stream_id = :stream_id
+
+            AND l.is_hidden = false
+
+            {$after_clause}
+            {$status_clause}
+            {$source_clause}
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute($parameters);
+
+        return intval($statement->fetchColumn());
+    }
 }

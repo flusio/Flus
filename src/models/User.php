@@ -710,6 +710,23 @@ class User
         LinkToCollection::markToNeverRead($this, $link_ids);
     }
 
+    public function initStream(): Stream
+    {
+        $stream = new Stream();
+        $stream->user_id = $this->id;
+        return $stream;
+    }
+
+    public function streams(): array
+    {
+        return $this->memoize('streams', function (): array {
+            // TODO order by name in php instead
+            return Stream::listBy([
+                'user_id' => $this->id,
+            ], order_by: 'name');
+        });
+    }
+
     /**
      * Set the user password.
      */

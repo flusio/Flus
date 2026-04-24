@@ -50,6 +50,25 @@ class ReadingNavigation extends BaseNavigation
                 'compass',
                 TwigExtension::translate('Explore'),
             );
+
+            $stream_items = [];
+
+            foreach ($current_user->streams() as $stream) {
+                $stream_items[] = new Item(
+                    $stream->id,
+                    \Minz\Url::for('stream', ['id' => $stream->id]),
+                    'feed',
+                    $stream->name,
+                );
+            }
+
+            $stream_items[] = new ItemAction(
+                \Minz\Url::for('new stream'),
+                'plus-circle',
+                TwigExtension::translate('New Stream'),
+            );
+
+            $elements[] = new ItemGroup(TwigExtension::translate('Monitoring streams'), $stream_items);
         }
 
         return $elements;

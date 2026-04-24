@@ -484,4 +484,30 @@ trait Collection
 
         return self::fromDatabaseRows($statement->fetchAll());
     }
+
+    public static function listByStreamId(
+        string $stream_id,
+    ): array {
+        $parameters = [
+            ':stream_id' => $stream_id,
+        ];
+
+        $sql = <<<SQL
+            SELECT c.*
+            FROM collections c, streams_to_collections sc
+
+            WHERE c.id = sc.collection_id
+            AND sc.stream_id = :stream_id
+
+            ORDER BY name
+        SQL;
+
+        // TODO order by name in PHP instead
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute($parameters);
+
+        return self::fromDatabaseRows($statement->fetchAll());
+    }
 }

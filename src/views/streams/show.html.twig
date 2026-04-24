@@ -1,0 +1,212 @@
+{% extends 'layouts/application.html.twig' %}
+
+{% block title %}{{ stream.name }}{% endblock %}
+{% block canonical %}{{ url_full('stream', { id: stream.id }) }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'stream', tab: 'reading' }) }}
+{% endblock %}
+
+{% block layout_sidenav %}
+    {{ include('layouts/_sidenav.html.twig', { navigation: reading_navigation(current: stream.id) }) }}
+{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: stream.name, reset: true }) }}
+{% endblock %}
+
+{% block body %}
+    <div class="cols cols--gap-large">
+        <div class="col--size3 text--center">
+            <img
+                class="illustration"
+                alt=""
+                src="{{ url_media('covers', stream.image_filename, 'collection-card.png') }}"
+            >
+        </div>
+
+        <div class="col--extend flow">
+            <h1 class="text--break">{{ stream.name }}</h1>
+
+            <p class="stack stack--gap">
+                <span title="{{ t('Publication frequency') }}">
+                    {{ icon('frequency') }}
+                    {{ stream.publicationFrequencyPerYear | format_publication_frequency }}
+                </span>
+
+                <a href="{{ url('stream sources', { id: stream.id }) }}">
+                    {% set sources = stream.sources %}
+                    {{ t('%d source', '%d sources', sources | length, [sources | length]) }}
+                </a>
+            </p>
+
+            <p>
+                {{ t('By') }}
+                <a class="username" href="{{ url('profile', { id: stream.user.id }) }}">
+                    <img class="avatar avatar--mini" alt="" src="{{ url_avatar(stream.user.avatar_filename) }}">
+                    {{- stream.user.username -}}
+                </a>
+            </p>
+
+            {% if stream.description %}
+                <div class="text-container">
+                    {{ stream.descriptionAsHtml | raw }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="panel panel--rounded stack stack--gap-small">
+        <a class="button" href="{{ url('edit stream sources', { id: stream.id }) }}">
+            {{ t('Manage sources') }}
+        </a>
+    </div>
+
+    <div class="panel panel--border panel--rounded flow">
+        <div class="cols cols--center cols--gap">
+            <p class="col--extend text--bold">
+                {{ t('Since the %s', [d(stream_view.after)]) }}
+            </p>
+
+            <div class="stack stack--gap-small">
+                <a
+                    class="button"
+                    href="{{ stream_view.urlPeriod('today') }}"
+                    {% if stream_view.isPeriod('today') %}aria-current="page"{% endif %}
+                >
+                    {{ t('Today') }}
+                </a>
+
+                <a
+                    class="button"
+                    href="{{ stream_view.urlPeriod('last-week') }}"
+                    {% if stream_view.isPeriod('last-week') %}aria-current="page"{% endif %}
+                >
+                    {{ t('Last week') }}
+                </a>
+
+                <a
+                    class="button"
+                    href="{{ stream_view.urlPeriod('last-month') }}"
+                    {% if stream_view.isPeriod('last-month') %}aria-current="page"{% endif %}
+                >
+                    {{ t('Last month') }}
+                </a>
+            </div>
+        </div>
+
+        <div class="panel__separator"></div>
+
+        <div class="flow flow--small">
+            {% set sources_and_counts = stream_view.countedSources(context_user: app.user) %}
+
+            <p class="text--bold">
+                {{ t('Sources (%d)', [sources_and_counts | length]) }}
+            </p>
+
+            <div class="stack stack--gap-small">
+                {% for source_and_count in sources_and_counts %}
+                    {% set source = source_and_count[0] %}
+                    {% set count_all_links = source_and_count[1] %}
+                    {% set count_unread_links = source_and_count[2] %}
+
+                    <a
+                        class="button button--source"
+                        href="{{ stream_view.urlSource(source.id) }}"
+                        {% if stream_view.isSource(source) %}aria-current="page"{% endif %}
+                        title="{{ t('%s : %d unread link', '%s : %d unread links', count_unread_links, [source.name, count_unread_links]) }}"
+                    >
+                        <img
+                            class="source__image"
+                            alt=""
+                            src="{{ url_media('covers', source.image_filename, 'collection-card.png') }}"
+                        >
+
+                        <div class="col--extend flow flow--smaller">
+                            <div class="source__name text--left">
+                                {{ source.name }}
+                            </div>
+
+                            <div class="text--secondary text--right">
+                                {% if count_unread_links > 0 %}
+                                    {{ count_unread_links }}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="panel__separator"></div>
+
+        <div class="stack stack--gap-smaller">
+            <a
+                class="button"
+                href="{{ stream_view.urlStatus('unread') }}"
+                {% if stream_view.isStatus('unread') %}aria-current="page"{% endif %}
+            >
+                {{ t('Links unread') }}
+            </a>
+
+            <a
+                class="button"
+                href="{{ stream_view.urlStatus('to-read') }}"
+                {% if stream_view.isStatus('to-read') %}aria-current="page"{% endif %}
+            >
+                {{ t('To read') }}
+            </a>
+
+            <a
+                class="button"
+                href="{{ stream_view.urlStatus('read') }}"
+                {% if stream_view.isStatus('read') %}aria-current="page"{% endif %}
+            >
+                {{ t('Links read') }}
+            </a>
+
+            <a
+                class="button"
+                href="{{ stream_view.urlStatus('all') }}"
+                {% if stream_view.isStatus('all') %}aria-current="page"{% endif %}
+            >
+                {{ t('All') }}
+            </a>
+        </div>
+    </div>
+
+    {% set links_timeline = stream_view.linksTimeline(context_user: app.user) %}
+
+    {% if not links_timeline.empty %}
+        <div class="flow flow--large" data-controller="zindex-inverser">
+            {% for date_group in links_timeline.datesGroups %}
+                <section class="group flow">
+                    <header class="group__header" data-zindex-inverser-target="item">
+                        <h2 class="group__title">
+                            {{ d(date_group.date, 'dd MMMM') }}
+                        </h2>
+
+                        <div class="group__separator"></div>
+                    </header>
+
+                    <div class="group__body flow">
+                        {% set links = date_group.links %}
+
+                        {% if links %}
+                            <div class="grid">
+                                {% for link in date_group.links %}
+                                    {{ include('links/_link.html.twig', {
+                                        link: link,
+                                        display_read_later: 'auto',
+                                        display_mark_as_read: 'auto',
+                                        storing_must_mark_as_read: true,
+                                    })}}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </section>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}

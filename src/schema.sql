@@ -286,3 +286,25 @@ CREATE INDEX idx_mastodon_statuses_posted_at ON mastodon_statuses(posted_at) WHE
 CREATE INDEX idx_mastodon_statuses_mastodon_account_id ON mastodon_statuses(mastodon_account_id);
 CREATE INDEX idx_mastodon_statuses_reply_to_id ON mastodon_statuses(reply_to_id);
 CREATE INDEX idx_mastodon_statuses_link_id ON mastodon_statuses(link_id);
+
+CREATE TABLE streams (
+    id TEXT PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL,
+    name TEXT NOT NULL,
+    description TEXT NOT NULL DEFAULT '',
+    image_filename TEXT,
+    user_id TEXT NOT NULL REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE INDEX idx_streams_user_id ON streams(user_id);
+CREATE INDEX idx_streams_image_filename ON streams(image_filename) WHERE image_filename IS NOT NULL;
+
+CREATE TABLE streams_to_collections (
+    id BIGSERIAL PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL,
+    stream_id TEXT REFERENCES streams ON DELETE CASCADE ON UPDATE CASCADE,
+    collection_id TEXT REFERENCES collections ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE UNIQUE INDEX idx_streams_to_collections ON streams_to_collections(stream_id, collection_id);
+CREATE INDEX idx_streams_to_collections_collection_id ON streams_to_collections(collection_id);
