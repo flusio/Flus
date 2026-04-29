@@ -343,6 +343,58 @@ class DomExtractorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(2, $duration);
     }
 
+    public function testDurationWithJsonLdDurationAttribute(): void
+    {
+        /** @var string */
+        $content = $this->fake('words', 400, true);
+        $dom = Dom::fromText(<<<HTML
+            <html>
+                <body>
+                    <script type="application/ld+json">
+                        {
+                            "@context": "http://schema.org",
+                            "@type": "VideoObject",
+                            "name": "My video",
+                            "url": "https://videos.example.com/my-video",
+                            "duration": "PT2520S"
+                        }
+                    </script>
+
+                    <main>
+                        {$content}
+                    </main>
+                </body>
+            </html>
+        HTML);
+
+        $duration = DomExtractor::duration($dom);
+
+        $this->assertSame(42, $duration);
+    }
+
+    public function testDurationWithInvalidJsonLd(): void
+    {
+        /** @var string */
+        $content = $this->fake('words', 400, true);
+        $dom = Dom::fromText(<<<HTML
+            <html>
+                <body>
+                    <script type="application/ld+json">
+                        Not JSON+LD
+                    </script>
+
+                    <main>
+                        {$content}
+                    </main>
+                </body>
+            </html>
+        HTML);
+
+        $duration = DomExtractor::duration($dom);
+
+        $this->assertSame(2, $duration);
+    }
+
     public function testFeeds(): void
     {
         $dom = Dom::fromText(<<<HTML

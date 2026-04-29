@@ -138,16 +138,25 @@ class DomExtractor
         // @see https://schema.org/docs/gs.html
         $duration_node = $dom->select('//*[@itemprop = "duration"]/attribute::content');
 
+        $duration_text = '';
+
         if ($duration_node) {
+            $duration_text = $duration_node->text();
+        } else {
+            $duration_text = self::extractDurationFromJsonLd($dom);
+        }
+
+        if ($duration_text) {
             try {
-                $interval = new \DateInterval($duration_node->text());
+                $interval = new \DateInterval($duration_text);
                 // Convert the interval to minutes
                 $duration = $interval->y * 12 * 30 * 24 * 60;
                 $duration += $interval->m * 30 * 24 * 60;
                 $duration += $interval->d * 24 * 60;
                 $duration += $interval->h * 60;
                 $duration += $interval->i;
-                if ($interval->s >= 30) {
+                $duration += intval($interval->s / 60);
+                if ($interval->s % 60 >= 30) {
                     $duration += 1;
                 }
                 return $duration;
@@ -156,8 +165,9 @@ class DomExtractor
             }
         }
 
-        // If there is no duration node (or if its content can't be parsed),
-        // roughly estimate the duration from the DOM content.
+        // If we didn't detect a duration indication (or if the duration
+        // content can't be parsed), roughly estimate the duration from the DOM
+        // content.
         $content = self::content($dom);
         $words = array_filter(explode(' ', $content));
         $average_reading_speed = 200;
@@ -188,5 +198,31 @@ class DomExtractor
         }
 
         return $feeds;
+    }
+
+    private static function extractDurationFromJsonLd(Dom $dom): string
+    {
+        $json_ld_nodes = $dom->select('//script[@type = "application/ld+json"]');
+
+        if (!$json_ld_nodes) {
+            return '';
+        }
+
+        foreach ($json_ld_nodes->list() as $json_ld_node) {
+            $json = json_decode(trim($json_ld_node->textContent), associative: true);
+
+            if (!is_array($json)) {
+                continue;
+            }
+
+            $json_ld = new JsonLd($json);
+            $duration_text = $json_ld->duration();
+
+            if ($duration_text) {
+                return $duration_text;
+            }
+        }
+
+        return '';
     }
 }
