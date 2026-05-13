@@ -196,8 +196,16 @@ class Subscriptions
      */
     public function sync(array $users): void
     {
-        $account_ids_to_users = array_column($users, null, 'subscription_account_id');
-        $account_ids = array_keys($account_ids_to_users);
+        $account_ids_to_users = [];
+        $account_ids = [];
+
+        foreach ($users as $user) {
+            $account_id = $user->subscription_account_id;
+            if ($account_id !== null) {
+                $account_ids_to_users[$account_id] = $user;
+                $account_ids[] = $account_id;
+            }
+        }
 
         try {
             $response = $this->http->post($this->host . '/api/accounts/sync', [

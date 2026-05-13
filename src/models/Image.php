@@ -97,7 +97,6 @@ class Image
             $src_rect['height']
         );
 
-        imagedestroy($this->resource);
         $this->resource = $new_resource;
         $this->width = $width;
         $this->height = $height;

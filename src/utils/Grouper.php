@@ -22,7 +22,8 @@ class Grouper
         $grouped_items = [];
 
         foreach ($items as $item) {
-            $grouped_items[$item->$property][] = $item;
+            $key = $item->$property ?? '';
+            $grouped_items[$key][] = $item;
         }
 
         return $grouped_items;

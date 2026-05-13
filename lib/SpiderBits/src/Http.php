@@ -179,13 +179,8 @@ class Http
 
         if ($data === false) {
             $error = curl_error($curl_handle);
-
-            curl_close($curl_handle);
-
             throw new HttpError($error);
         }
-
-        curl_close($curl_handle);
 
         return new Response($status, $data, $headers);
     }

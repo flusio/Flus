@@ -321,8 +321,9 @@ class Response
      */
     public static function parseHttpDate(string $expires): ?\DateTimeImmutable
     {
+        $rfc7231_format = 'D, d M Y H:i:s \\G\\M\\T';
         $formats = [
-            \DateTimeInterface::RFC7231,
+            $rfc7231_format,
             \DateTimeInterface::RFC850,
             // Ignore the ANSI C's asctime() format as obsolete and more
             // difficult to parse.

@@ -119,7 +119,8 @@ class CacheTest extends \PHPUnit\Framework\TestCase
     {
         $this->freeze();
         $url = 'https://example.com';
-        $expires = \Minz\Time::fromNow(24, 'hours')->format(\DateTimeInterface::RFC7231);
+        $rfc7231_format = 'D, d M Y H:i:s \\G\\M\\T';
+        $expires = \Minz\Time::fromNow(24, 'hours')->format($rfc7231_format);
         $raw_response = <<<TEXT
             HTTP/2 200
             Content-type: text/plain
@@ -165,7 +166,8 @@ class CacheTest extends \PHPUnit\Framework\TestCase
     {
         $this->freeze();
         $url = 'https://example.com';
-        $retry_after = \Minz\Time::fromNow(24, 'hours')->format(\DateTimeInterface::RFC7231);
+        $rfc7231_format = 'D, d M Y H:i:s \\G\\M\\T';
+        $retry_after = \Minz\Time::fromNow(24, 'hours')->format($rfc7231_format);
         $raw_response = <<<TEXT
             HTTP/2 429
             Content-type: text/plain
