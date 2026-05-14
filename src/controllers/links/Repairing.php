@@ -94,7 +94,13 @@ class Repairing extends BaseController
             ]);
         }
 
-        $old_link = models\Link::copy($link, $user->id);
+        if ($link->url !== $form->url) {
+            // Add the old link to the never list. It avoids to a link coming from
+            // the news to reappear.
+            $old_link = models\Link::copy($link, $user->id);
+            $old_link->save();
+            $user->removeFromJournal($old_link);
+        }
 
         $link->url = $form->url;
 
@@ -112,11 +118,6 @@ class Repairing extends BaseController
         }
 
         $link->save();
-
-        // Add the old link to the never list. It avoids to a link coming from
-        // the news to reappear.
-        $old_link->save();
-        $user->removeFromJournal($old_link);
 
         return Response::found(utils\RequestHelper::from($request));
     }

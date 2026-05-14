@@ -213,11 +213,41 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         ]);
         $never_list = $user->neverList();
         $this->assertNotNull($link);
-        $link_to_never_list = models\LinkToCollection::findBy([
+        $is_in_never_list = models\LinkToCollection::existsBy([
             'link_id' => $link->id,
             'collection_id' => $never_list->id,
         ]);
-        $this->assertNotNull($link_to_never_list);
+        $this->assertTrue($is_in_never_list);
+    }
+
+    public function testCreateDoesNotAddTheUrlToTheNeverListIfNotChanged(): void
+    {
+        $user = $this->login();
+        /** @var string */
+        $url = $this->fakeUnique('url');
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'url' => $url,
+        ]);
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
+
+        $response = $this->appRun('POST', "/links/{$link->id}/repair", [
+            'url' => $url,
+            'csrf_token' => $this->csrfToken(forms\links\RepairLink::class),
+        ]);
+
+        $this->assertResponseCode($response, 302, "/links/{$link->id}/repair");
+        $count_links = models\Link::countBy([
+            'user_id' => $user->id,
+            'url' => $url,
+        ]);
+        $this->assertSame(1, $count_links);
+        $never_list = $user->neverList();
+        $is_in_never_list = models\LinkToCollection::existsBy([
+            'link_id' => $link->id,
+            'collection_id' => $never_list->id,
+        ]);
+        $this->assertFalse($is_in_never_list);
     }
 
     public function testCreateRedirectsIfNotConnected(): void
