@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-04-22 17:29+0200\n"
-"PO-Revision-Date: 2026-04-22 17:29+0200\n"
+"POT-Creation-Date: 2026-05-14 11:43+0200\n"
+"PO-Revision-Date: 2026-05-14 11:43+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -677,7 +677,7 @@ msgstr "(max. %d caractères)"
 #: views/mastodon/show.html.twig:62 views/mastodon/show.html.twig:139
 #: views/my/account/deletion.html.twig:38 views/my/avatar/edit.html.twig:20
 #: views/my/preferences/edit.html.twig:35
-#: views/my/preferences/edit.html.twig:66
+#: views/my/preferences/edit.html.twig:67
 #: views/my/preferences/edit.html.twig:98 views/my/profile/edit.html.twig:20
 #: views/my/profile/edit.html.twig:50
 #: views/my/security/confirmation.html.twig:40
@@ -2020,13 +2020,13 @@ msgstr "Téléverser une photo"
 msgid "Your language"
 msgstr "Votre langue"
 
-#: views/my/preferences/edit.html.twig:61
-msgid "Text size"
-msgstr "Taille du texte"
-
-#: views/my/preferences/edit.html.twig:93
+#: views/my/preferences/edit.html.twig:62
 msgid "Interface theme"
 msgstr "Thème de l’interface"
+
+#: views/my/preferences/edit.html.twig:93
+msgid "Text size"
+msgstr "Taille du texte"
 
 #: views/my/preferences/edit.html.twig:133
 msgid "Enable compact mode"
