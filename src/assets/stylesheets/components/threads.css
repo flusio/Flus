@@ -50,7 +50,7 @@
 .thread__new-button {
     position: relative;
 
-    background-color: var(--color-white);
+    background-color: var(--color-base);
 }
 
 .thread__post-counter {
