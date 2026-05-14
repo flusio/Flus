@@ -18,6 +18,9 @@ class Preferences extends BaseForm
     use traits\Locale;
 
     #[Form\Field]
+    public string $option_font_family = 'default';
+
+    #[Form\Field]
     public string $option_text_size = 'medium';
 
     #[Form\Field]
@@ -42,6 +45,17 @@ class Preferences extends BaseForm
         }
 
         parent::__construct($default_values, $model);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function fontFamilyValues(): array
+    {
+        return [
+            'default' => \Minz\Template\TwigExtension::translate('Raleway (default)'),
+            'system-ui' => \Minz\Template\TwigExtension::translate('System font'),
+        ];
     }
 
     /**

@@ -89,6 +89,37 @@
             </div>
 
             <div class="form-group">
+                <label for="option-font-family">
+                    {{ t('Font family') }}
+                </label>
+
+                {% if form.isInvalid('option_font_family') %}
+                    <p id="option-font-family-error" class="form-group__error">
+                        {{ t('Error:') }}
+                        {{ form.error('option_font_family') }}
+                    </p>
+                {% endif %}
+
+                <select
+                    id="option-font-family"
+                    name="option_font_family"
+                    {% if form.isInvalid('option_font_family') %}
+                        aria-errormessage="option-font-family-error"
+                        aria-invalid="true"
+                    {% endif %}
+                >
+                    {% for font_family_value, font_family_label in form.fontFamilyValues %}
+                        <option
+                            value="{{ font_family_value }}"
+                            {{ font_family_value === form.option_font_family ? 'selected' : '' }}
+                        >
+                            {{ font_family_label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
                 <label for="option-text-size">
                     {{ t('Text size') }}
                 </label>

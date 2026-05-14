@@ -58,3 +58,7 @@
         font-size: 125%;
     }
 }
+
+:root[data-font-family="system-ui"] body {
+    font-family: system-ui, sans-serif;
+}

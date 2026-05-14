@@ -39,6 +39,7 @@ CREATE TABLE users (
     avatar_filename TEXT,
     biography TEXT NOT NULL DEFAULT '',
     autoload_modal TEXT NOT NULL DEFAULT '',
+    option_font_family TEXT NOT NULL DEFAULT 'default',
     option_text_size TEXT NOT NULL DEFAULT 'medium',
     option_color_scheme TEXT NOT NULL DEFAULT 'system',
     option_compact_mode BOOLEAN NOT NULL DEFAULT false,

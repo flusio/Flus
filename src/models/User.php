@@ -22,6 +22,7 @@ class User
     use utils\Memoizer;
     use Validable;
 
+    public const VALID_FONT_FAMILIES = ['default', 'system-ui'];
     public const VALID_TEXT_SIZES = ['small', 'medium', 'large'];
     public const VALID_COLOR_SCHEMES = ['system', 'light', 'dark'];
 
@@ -107,6 +108,16 @@ class User
 
     #[Database\Column]
     public ?string $autoload_modal;
+
+    #[Database\Column]
+    #[Validable\Presence(
+        message: new Translatable('The font family is required. Please select an option from the list.'),
+    )]
+    #[Validable\Inclusion(
+        in: self::VALID_FONT_FAMILIES,
+        message: new Translatable('The font family is invalid. Please select an option from the list.'),
+    )]
+    public string $option_font_family = 'default';
 
     #[Database\Column]
     #[Validable\Presence(
