@@ -291,6 +291,18 @@
                         {{ icon('pencil') }}
                         {{ t('Edit') }}
                     </button>
+
+                    <button
+                        class="popup__item"
+                        data-controller="modal-opener"
+                        data-action="modal-opener#fetch"
+                        data-modal-opener-href-value="{{ url('edit image link', { id: link.id }) }}"
+                        aria-haspopup="dialog"
+                        aria-controls="modal"
+                    >
+                        {{ icon('image-up') }}
+                        {{ t('Change the illustration') }}
+                    </button>
                 {% endif %}
 
                 {% if display_repair %}
