@@ -95,5 +95,9 @@
 }
 
 .header__avatar {
+    /* Useful so the outline color is the same as the other header elements in
+     * dark mode. */
+    color: var(--color-gable);
+
     cursor: pointer;
 }
