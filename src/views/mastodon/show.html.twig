@@ -23,7 +23,7 @@
             <form method="post" action="{{ url('update mastodon account') }}" class="flow">
                 {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
 
-                <div class="form-group">
+                <div>
                     <input
                         type="checkbox"
                         id="prefill-with-notes"
@@ -31,12 +31,12 @@
                         {{ form.prefill_with_notes ? 'checked' : '' }}
                     >
 
-                    <label class="label--checkbox" for="prefill-with-notes">
+                    <label for="prefill-with-notes">
                         {{ t('Pre-fill the thread with the contents of your notes') }}
                     </label>
                 </div>
 
-                <div class="form-group">
+                <div>
                     <input
                         type="checkbox"
                         id="link-to-notes"
@@ -44,7 +44,7 @@
                         {{ form.link_to_notes ? 'checked' : '' }}
                     >
 
-                    <label class="label--checkbox" for="link-to-notes">
+                    <label for="link-to-notes">
                         {{ t('Add a link to your notes in the first post of the thread') }}
                     </label>
                 </div>
@@ -78,7 +78,7 @@
                     >
                 </div>
 
-                <div class="form-group">
+                <div>
                     <input
                         type="checkbox"
                         id="post-scriptum-on-all-posts"
@@ -86,7 +86,7 @@
                         {{ form.post_scriptum_in_all_posts ? 'checked' : '' }}
                     >
 
-                    <label class="label--checkbox" for="post-scriptum-on-all-posts">
+                    <label for="post-scriptum-on-all-posts">
                         {{ t('Add the postscript in all the posts of the thread') }}
                     </label>
                 </div>

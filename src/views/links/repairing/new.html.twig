@@ -69,7 +69,7 @@
                 {% endif %}
             </div>
 
-            <div class="form-group" data-controller="caption-switcher">
+            <div data-controller="caption-switcher">
                 <input
                     type="checkbox"
                     id="force-sync"
@@ -80,7 +80,7 @@
                     data-caption-switcher-target="switch"
                 >
 
-                <label class="label--checkbox" for="force-sync">
+                <label for="force-sync">
                     {{ t('Force the synchronization') }}
                 </label>
 
@@ -96,7 +96,7 @@
             </div>
 
             {% if form.displayMarkAsAccessibleField %}
-                <div class="form-group">
+                <div>
                     <input
                         type="checkbox"
                         id="mark-as-accessible"
@@ -105,7 +105,7 @@
                         aria-describedby="mark-as-accessible-caption"
                     >
 
-                    <label class="label--checkbox" for="mark-as-accessible">
+                    <label for="mark-as-accessible">
                         {{ t('Mark the link as accessible') }}
                     </label>
 
