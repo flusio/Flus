@@ -150,6 +150,37 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         $this->assertNotSame($old_illustration, $link->image_filename);
     }
 
+    public function testCreateMarksTheLinkAsAccessibleIfSet(): void
+    {
+        $user = $this->login();
+        /** @var string */
+        $url = $this->fakeUnique('url');
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'url' => $url,
+        ]);
+        $this->mockHttpWithResponse($url, <<<TEXT
+            HTTP/2 404
+            Content-type: text/html
+
+            Not found!
+            TEXT
+        );
+
+        $response = $this->appRun('POST', "/links/{$link->id}/repair", [
+            'url' => $url,
+            'mark_as_accessible' => true,
+            'csrf_token' => $this->csrfToken(forms\links\RepairLink::class),
+        ]);
+
+        $this->assertResponseCode($response, 302, "/links/{$link->id}/repair");
+        $link = $link->reload();
+        $this->assertSame($url, $link->url);
+        $this->assertTrue($link->isInaccessibleToServer());
+        $this->assertTrue($link->isAccessibleToUser());
+        $this->assertFalse($link->isInaccessible());
+    }
+
     public function testCreateAddsTheOldUrlToTheNeverList(): void
     {
         $user = $this->login();

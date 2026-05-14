@@ -29,6 +29,9 @@ class RepairLink extends BaseForm
     #[Form\Field]
     public bool $force_sync = false;
 
+    #[Form\Field]
+    public bool $mark_as_accessible = false;
+
     public function urlCleared(): string
     {
         return $this->memoize('url_cleared', function (): string {
@@ -39,5 +42,10 @@ class RepairLink extends BaseForm
     public function hasDetectedTrackers(): bool
     {
         return $this->url !== $this->urlCleared();
+    }
+
+    public function displayMarkAsAccessibleField(): bool
+    {
+        return $this->options->getBoolean('display_mark_as_accessible_field');
     }
 }

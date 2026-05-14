@@ -95,6 +95,26 @@
                 </p>
             </div>
 
+            {% if form.displayMarkAsAccessibleField %}
+                <div class="form-group">
+                    <input
+                        type="checkbox"
+                        id="mark-as-accessible"
+                        name="mark_as_accessible"
+                        {{ form.mark_as_accessible ? 'checked' : '' }}
+                        aria-describedby="mark-as-accessible-caption"
+                    >
+
+                    <label class="label--checkbox" for="mark-as-accessible">
+                        {{ t('Mark the link as accessible') }}
+                    </label>
+
+                    <p class="form-group__caption" id="mark-as-accessible-caption">
+                        {{ t('The server couldn’t reach this link. Check this box if it works for you.') }}
+                    </p>
+                </div>
+            {% endif %}
+
             <div class="text--center">
                 <button type="submit" class="button--primary button--big">
                     {{ t('Repair the link') }}

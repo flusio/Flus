@@ -3,7 +3,7 @@
 {% set owner = link.owner %}
 {% set is_read = app.user and link.isReadBy(app.user) %}
 {% set in_bookmarks = app.user and link.isInBookmarksOf(app.user) %}
-{% set in_error = link.inError %}
+{% set is_inaccessible = link.isInaccessible %}
 {% set trackers_detected = link.trackersDetected %}
 
 {% block title %}{{ link.title }}{% endblock %}
@@ -67,9 +67,9 @@
 
                 <div class="col--extend flow flow--large">
                     <div class="flow">
-                        {% if in_error or trackers_detected %}
+                        {% if is_inaccessible or trackers_detected %}
                             <p class="stack stack--gap-small">
-                                {% if in_error %}
+                                {% if is_inaccessible %}
                                     <span class="badge badge--warning" title="{{ t('This link seems to be inaccessible, you may have difficulties to access it.') }}">
                                         {{ icon('disconnect') }} {{ t('inaccessible') }}
                                     </span>

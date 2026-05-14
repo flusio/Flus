@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-05-14 12:27+0200\n"
-"PO-Revision-Date: 2026-05-14 12:27+0200\n"
+"POT-Creation-Date: 2026-05-14 15:50+0200\n"
+"PO-Revision-Date: 2026-05-14 15:50+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -1712,7 +1712,18 @@ msgstr ""
 "Le titre, le temps de lecture et l’illustration seront synchronisés "
 "seulement si vous ne les avez jamais changés."
 
-#: views/links/repairing/new.html.twig:100
+#: views/links/repairing/new.html.twig:109
+msgid "Mark the link as accessible"
+msgstr "Marquer le lien comme accessible"
+
+#: views/links/repairing/new.html.twig:113
+msgid ""
+"The server couldn’t reach this link. Check this box if it works for you."
+msgstr ""
+"Le serveur n’a pas pu accéder à ce lien. Cochez cette case si cela "
+"fonctionne pour vous."
+
+#: views/links/repairing/new.html.twig:120
 msgid "Repair the link"
 msgstr "Réparer le lien"
 

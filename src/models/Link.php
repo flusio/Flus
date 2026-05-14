@@ -64,6 +64,10 @@ class Link
     #[Database\Column]
     public string $user_id;
 
+    /** @var 'unset'|'ok' */
+    #[Database\Column]
+    public string $user_fetched_status = 'unset';
+
     #[Database\Column]
     public ?string $feed_entry_id = null;
 
@@ -451,13 +455,48 @@ class Link
     }
 
     /**
-     * Return whether a link is in error or not.
+     * Mark the link as accessible to the user.
      */
-    public function inError(): bool
+    public function markAsAccessibleToUser(): void
     {
-        return $this->fetched_at !== null && (
-            $this->fetched_code < 200 || $this->fetched_code >= 400
-        );
+        $this->user_fetched_status = 'ok';
+    }
+
+    /**
+     * Reset information that the link is accessible to the user.
+     */
+    public function resetIsAccessibleToUser(): void
+    {
+        $this->user_fetched_status = 'unset';
+    }
+
+    /**
+     * Return whether the link is inaccessible or not.
+     *
+     * It returns false if the link is inaccessible to the server, but that
+     * the user indicated it is accessible to them.
+     */
+    public function isInaccessible(): bool
+    {
+        return $this->isInaccessibleToServer() && !$this->isAccessibleToUser();
+    }
+
+    /**
+     * Return whether the link is inaccessible or not to the server.
+     */
+    public function isInaccessibleToServer(): bool
+    {
+        $is_fetched = $this->fetched_at !== null;
+        $is_error_code = $this->fetched_code < 200 || $this->fetched_code >= 400;
+        return $is_fetched && $is_error_code;
+    }
+
+    /**
+     * Return whether the link is explicitely marked as accessible to the user.
+     */
+    public function isAccessibleToUser(): bool
+    {
+        return $this->user_fetched_status === 'ok';
     }
 
     /**

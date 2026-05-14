@@ -169,6 +169,8 @@ CREATE TABLE links (
     fetched_count INTEGER NOT NULL DEFAULT 0,
     fetched_retry_at TIMESTAMPTZ DEFAULT NULL,
 
+    user_fetched_status TEXT NOT NULL DEFAULT 'unset',
+
     feed_entry_id TEXT,
 
     source_type TEXT NOT NULL DEFAULT '',

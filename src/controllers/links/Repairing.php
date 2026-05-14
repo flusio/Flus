@@ -42,6 +42,9 @@ class Repairing extends BaseController
         $form = new forms\links\RepairLink([
             'url' => $link->url,
             'force_sync' => $link->title === $link->url,
+            'mark_as_accessible' => $link->isAccessibleToUser(),
+        ], options: [
+            'display_mark_as_accessible_field' => $link->isInaccessibleToServer(),
         ]);
 
         return Response::ok('links/repairing/new.html.twig', [
@@ -79,7 +82,9 @@ class Repairing extends BaseController
 
         auth\Access::require($user, 'update', $link);
 
-        $form = new forms\links\RepairLink();
+        $form = new forms\links\RepairLink(options: [
+            'display_mark_as_accessible_field' => $link->isInaccessibleToServer(),
+        ]);
         $form->handleRequest($request);
 
         if (!$form->validate()) {
@@ -99,6 +104,13 @@ class Repairing extends BaseController
             'force_sync' => $form->force_sync,
         ]);
         $link_fetcher_service->fetch($link);
+
+        if ($link->isInaccessibleToServer() && $form->mark_as_accessible) {
+            $link->markAsAccessibleToUser();
+        } else {
+            $link->resetIsAccessibleToUser();
+        }
+
         $link->save();
 
         // Add the old link to the never list. It avoids to a link coming from
