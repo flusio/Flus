@@ -55,10 +55,10 @@ class ShareCollection extends BaseForm
     #[Form\OnHandleRequest]
     public function extractUserIdFromProfileUrl(Request $request): void
     {
-        list($source_type, $source_id) = utils\SourceHelper::extractFromPath($this->user_id);
+        list($origin_type, $origin_id) = utils\OriginHelper::extractFromPath($this->user_id);
 
-        if ($source_type === 'user' && $source_id) {
-            $this->user_id = $source_id;
+        if ($origin_type === 'user' && $origin_id) {
+            $this->user_id = $origin_id;
         }
     }
 

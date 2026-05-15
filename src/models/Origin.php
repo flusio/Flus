@@ -31,12 +31,12 @@ class Origin
      */
     private function modelFromValue(): User|Collection|null
     {
-        list($source_type, $source_resource_id) = utils\SourceHelper::extractFromPath($this->value);
+        list($origin_type, $origin_id) = utils\OriginHelper::extractFromPath($this->value);
 
-        if ($source_type === 'user' && $source_resource_id) {
-            return User::find($source_resource_id);
-        } elseif ($source_type === 'collection' && $source_resource_id) {
-            return Collection::find($source_resource_id);
+        if ($origin_type === 'user' && $origin_id) {
+            return User::find($origin_id);
+        } elseif ($origin_type === 'collection' && $origin_id) {
+            return Collection::find($origin_id);
         } else {
             return null;
         }

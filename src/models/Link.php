@@ -336,11 +336,11 @@ class Link
         $this->source_resource_id = null;
 
         if ($origin) {
-            list($source_type, $source_resource_id) = utils\SourceHelper::extractFromPath($origin);
+            list($origin_type, $origin_id) = utils\OriginHelper::extractFromPath($origin);
 
-            if ($source_type) {
-                $this->source_type = $source_type;
-                $this->source_resource_id = $source_resource_id;
+            if ($origin_type) {
+                $this->source_type = $origin_type;
+                $this->source_resource_id = $origin_id;
             }
         }
     }

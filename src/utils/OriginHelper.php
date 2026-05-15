@@ -8,10 +8,10 @@ use App\models;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class SourceHelper
+class OriginHelper
 {
     /**
-     * Return the source type and resource id from a URL or a path.
+     * Return the origin type and origin id from a URL or a path.
      *
      * For instance:
      *
