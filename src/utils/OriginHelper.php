@@ -17,13 +17,15 @@ class OriginHelper
      *
      * - For the path `/collections/1234567890`, ['collection', '1234567890']
      *   will be returned (if the collection exists in db)
-     * - For the path `/p/1234567890`, ['user', '1234567890'] will be
-     *   returned (if the user exists in db)
+     * - For the path `/links/1234567890`, ['link', '1234567890'] will be
+     *   returned (if the link exists in db)
+     * - For the path `/p/1234567890`, ['user', '1234567890'] will be returned
+     *   (if the user exists in db)
      * - For other paths, ['', null] will be returned
      *
      * The method also handles URLs starting with the base URL of the application.
      *
-     * @return array{'collection'|'user', string}|array{'', null}
+     * @return array{'collection'|'link'|'user', string}|array{'', null}
      * }
      */
     public static function extractFromPath(string $url_or_path): array
@@ -52,6 +54,17 @@ class OriginHelper
             }
 
             return ['collection', $collection_id];
+        }
+
+        $result = preg_match('#^/links/(?P<id>\d+)$#', $path, $matches);
+        if (isset($matches['id'])) {
+            $link_id = $matches['id'];
+
+            if (!models\Link::exists($link_id)) {
+                return ['', null];
+            }
+
+            return ['link', $link_id];
         }
 
         $result = preg_match('#^/p/(?P<id>\d+)/?#', $path, $matches);

@@ -12,7 +12,7 @@ class Origin
 {
     public readonly string $value;
 
-    public readonly User|Collection|null $model;
+    public readonly User|Link|Collection|null $model;
 
     public readonly string $label;
 
@@ -29,12 +29,14 @@ class Origin
     /**
      * Return the model (User or Collection) matching with the value if any.
      */
-    private function modelFromValue(): User|Collection|null
+    private function modelFromValue(): User|Link|Collection|null
     {
         list($origin_type, $origin_id) = utils\OriginHelper::extractFromPath($this->value);
 
         if ($origin_type === 'user' && $origin_id) {
             return User::find($origin_id);
+        } elseif ($origin_type === 'link' && $origin_id) {
+            return Link::find($origin_id);
         } elseif ($origin_type === 'collection' && $origin_id) {
             return Collection::find($origin_id);
         } else {
@@ -59,6 +61,8 @@ class Origin
 
         if ($this->model instanceof User) {
             return $this->model->username;
+        } elseif ($this->model instanceof Link) {
+            return $this->model->title;
         } elseif ($this->model instanceof Collection) {
             return $this->model->name();
         } else {
@@ -77,6 +81,8 @@ class Origin
 
         if ($this->model instanceof User) {
             return \Minz\Url::absoluteFor('profile', ['id' => $this->model->id]);
+        } elseif ($this->model instanceof Link) {
+            return \Minz\Url::absoluteFor('link', ['id' => $this->model->id]);
         } elseif ($this->model instanceof Collection) {
             return \Minz\Url::absoluteFor('collection', ['id' => $this->model->id]);
         } else {
