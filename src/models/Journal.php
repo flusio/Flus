@@ -39,10 +39,6 @@ class Journal
                 $link->setOrigin($collection_url);
             }
 
-            // Make sure to reset this value: it will be set to true later with
-            // Link::groupLinksBySources
-            $link->group_by_source = false;
-
             $link->save();
 
             // And don't forget to add the link to the news collection!
@@ -52,8 +48,6 @@ class Journal
                 sync_publication_frequency: false,
             );
         }
-
-        Link::groupLinksBySources($news->id);
 
         return count($links);
     }

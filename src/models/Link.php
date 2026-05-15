@@ -89,9 +89,6 @@ class Link
     #[Database\Column]
     public ?string $source_resource_id = null;
 
-    #[Database\Column]
-    public bool $group_by_source = false;
-
     /** @var string[] */
     #[Database\Column]
     public array $tags = [];

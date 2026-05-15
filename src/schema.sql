@@ -177,7 +177,6 @@ CREATE TABLE links (
 
     source_type TEXT NOT NULL DEFAULT '',
     source_resource_id TEXT,
-    group_by_source BOOLEAN NOT NULL DEFAULT false,
 
     search_index TSVECTOR GENERATED ALWAYS AS (to_tsvector('french', title || ' ' || url)) STORED,
     url_hash TEXT GENERATED ALWAYS AS (encode(digest(url, 'sha256'), 'hex')) STORED,
