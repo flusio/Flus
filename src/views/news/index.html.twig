@@ -125,7 +125,7 @@
                                     <div class="origin-group flow flow--small">
                                         <div class="origin-group__header cols cols--always cols--gap cols--center">
                                             <h3 class="origin-group__title">
-                                                {{ origin_group.origin.label }}
+                                                {{ origin_group.label }}
                                             </h3>
 
                                             <span class="col--noshrink text--secondary">
@@ -157,7 +157,7 @@
                                                         </button>
 
                                                         <input type="hidden" name="date" value="{{ date_group.date.format('Y-m-d') }}">
-                                                        <input type="hidden" name="origin" value="{{ origin_group.origin.value }}">
+                                                        <input type="hidden" name="origin" value="{{ origin_group.origin }}">
                                                         <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\MarkCollectionAsRead') }}">
                                                     </form>
 
@@ -168,7 +168,7 @@
                                                         </button>
 
                                                         <input type="hidden" name="date" value="{{ date_group.date.format('Y-m-d') }}">
-                                                        <input type="hidden" name="origin" value="{{ origin_group.origin.value }}">
+                                                        <input type="hidden" name="origin" value="{{ origin_group.origin }}">
                                                         <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\MarkCollectionAsReadLater') }}">
                                                     </form>
 
@@ -187,7 +187,7 @@
                                                         </button>
 
                                                         <input type="hidden" name="date" value="{{ date_group.date.format('Y-m-d') }}">
-                                                        <input type="hidden" name="origin" value="{{ origin_group.origin.value }}">
+                                                        <input type="hidden" name="origin" value="{{ origin_group.origin }}">
                                                         <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\MarkCollectionAsNever') }}">
                                                     </form>
                                                 </nav>

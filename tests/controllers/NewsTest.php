@@ -56,6 +56,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'type' => 'collection',
             'name' => $collection_name,
+            'is_public' => true,
         ]);
         $news = $user->news();
         $origin = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);

@@ -2,6 +2,7 @@
 
 namespace App\utils\LinksTimeline;
 
+use App\auth;
 use App\models;
 use App\utils;
 
@@ -19,20 +20,24 @@ class DateGroup
     /** @var array<string, OriginGroup> */
     public array $origin_groups = [];
 
+    private utils\OriginFormatter $origin_formatter;
+
     public function __construct(\DateTimeImmutable $date)
     {
         $this->date = $date;
+        $current_user = auth\CurrentUser::get();
+        $this->origin_formatter = new utils\OriginFormatter($current_user);
     }
 
     public function addLink(models\Link $link): void
     {
-        $origin = $link->origin();
-        if ($origin) {
-            if (isset($this->origin_groups[$origin->value])) {
-                $origin_group = $this->origin_groups[$origin->value];
+        if ($link->origin) {
+            if (isset($this->origin_groups[$link->origin])) {
+                $origin_group = $this->origin_groups[$link->origin];
             } else {
-                $origin_group = new OriginGroup($origin);
-                $this->origin_groups[$origin->value] = $origin_group;
+                $label = $this->origin_formatter->labelFromOrigin($link->origin);
+                $origin_group = new OriginGroup($link->origin, $label);
+                $this->origin_groups[$link->origin] = $origin_group;
             }
 
             $origin_group->links[] = $link;
@@ -60,12 +65,7 @@ class DateGroup
      */
     public function originGroups(): array
     {
-        return utils\Sorter::localeSort(
-            $this->origin_groups,
-            function (OriginGroup $origin_group): string {
-                return $origin_group->origin->label;
-            },
-        );
+        return utils\Sorter::localeSort($this->origin_groups, 'label');
     }
 
     public function count(): int

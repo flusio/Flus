@@ -134,7 +134,7 @@
                             </a>
 
                             {% if can(app.user, 'viewOrigin', link) %}
-                                {{ include('links/_origin.html.twig', { origin: link.origin() }) }}
+                                {{ include('links/_origin.html.twig', { origin: link.origin }) }}
                             {% endif %}
                         </p>
 

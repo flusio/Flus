@@ -36,7 +36,7 @@
     {% set display_mark_as_read = true %}
 {% endif %}
 
-{% set origin = link.origin() %}
+{% set origin = link.origin %}
 {% if display_origin and not origin %}
     {% set display_origin = false %}
 {% endif %}

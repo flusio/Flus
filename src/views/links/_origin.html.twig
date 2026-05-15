@@ -1,10 +1,14 @@
-{% if origin and origin.url %}
-    {{ t('via <strong><a href="%s">%s</a></strong>', [
-        origin.url | escape,
-        origin.label | escape,
-    ]) | raw }}
-{% elseif origin %}
-    {{ t('via <strong>%s</strong>', [
-        origin.label | escape,
-    ]) | raw }}
+{% if origin %}
+    {% set origin_url = origin | format_origin_url %}
+    {% set origin_label = origin | format_origin_label %}
+    {% if origin_url %}
+        {{ t('via <strong><a href="%s">%s</a></strong>', [
+            origin_url | escape,
+            origin_label | escape,
+        ]) | raw }}
+    {% else %}
+        {{ t('via <strong>%s</strong>', [
+            origin_label | escape,
+        ]) | raw }}
+    {% endif %}
 {% endif %}

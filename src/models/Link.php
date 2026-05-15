@@ -352,41 +352,6 @@ class Link
         }
     }
 
-    public function origin(): ?Origin
-    {
-        if (!$this->origin) {
-            return null;
-        }
-
-        return new Origin($this->origin);
-    }
-
-    /**
-     * Return the (deprecated) source.
-     *
-     * @deprecated
-     */
-    public function source(): ?string
-    {
-        $origin = $this->origin();
-
-        if (!$origin || !$origin->model) {
-            return null;
-        }
-
-        $source_type = match ($origin->model::class) {
-            User::class => 'user',
-            Collection::class => 'collection',
-            default => '',
-        };
-
-        if (!$source_type) {
-            return null;
-        }
-
-        return "{$source_type}#{$origin->model->id}";
-    }
-
     /**
      * Return whether or not the given user has the link URL in its news.
      */
@@ -549,18 +514,19 @@ class Link
      */
     public function toJson(User $context_user): array
     {
-        $origin_model = $this->origin();
         $origin = null;
         $source = null;
 
-        if ($origin_model && auth\Access::can($context_user, 'viewOrigin', $this)) {
+        if ($this->origin && auth\Access::can($context_user, 'viewOrigin', $this)) {
+            $origin_formatter = new utils\OriginFormatter($context_user);
+
             $origin = [
-                'value' => $origin_model->value,
-                'label' => $origin_model->label,
-                'url' => $origin_model->url,
+                'value' => $this->origin,
+                'label' => $origin_formatter->labelFromOrigin($this->origin),
+                'url' => $origin_formatter->urlFromOrigin($this->origin),
             ];
 
-            $source = $this->source();
+            $source = $origin_formatter->sourceFromOrigin($this->origin);
         }
 
         return [

@@ -11,7 +11,8 @@ use App\models;
 class OriginGroup
 {
     public function __construct(
-        public models\Origin $origin,
+        public string $origin,
+        public string $label,
         /** @var models\Link[] */
         public array $links = [],
     ) {

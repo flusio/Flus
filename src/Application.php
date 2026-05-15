@@ -53,6 +53,7 @@ class Application
         \Minz\Template\Twig::addAttributeExtension(twig\LocaleExtension::class);
         \Minz\Template\Twig::addAttributeExtension(twig\NavigationExtension::class);
         \Minz\Template\Twig::addAttributeExtension(twig\NotificationsExtension::class);
+        \Minz\Template\Twig::addAttributeExtension(twig\OriginFormatterExtension::class);
         \Minz\Template\Twig::addAttributeExtension(twig\UrlExtension::class);
     }
 
