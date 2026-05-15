@@ -1,0 +1,10 @@
+{% if origin and origin.url %}
+    {{ t('via <strong><a href="%s">%s</a></strong>', [
+        origin.url | escape,
+        origin.label | escape,
+    ]) | raw }}
+{% elseif origin %}
+    {{ t('via <strong>%s</strong>', [
+        origin.label | escape,
+    ]) | raw }}
+{% endif %}

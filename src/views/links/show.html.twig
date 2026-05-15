@@ -132,6 +132,10 @@
                                 <img class="avatar avatar--mini" alt="" src="{{ url_avatar(owner.avatar_filename) }}">
                                 {{- owner.username -}}
                             </a>
+
+                            {% if can(app.user, 'viewOrigin', link) %}
+                                {{ include('links/_origin.html.twig', { origin: link.origin() }) }}
+                            {% endif %}
                         </p>
 
                         {% set suggested_links = app.user ? app.user.suggestedLinksFor(link) : [] %}

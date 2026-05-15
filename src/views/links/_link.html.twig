@@ -154,16 +154,7 @@
 
             {% if display_origin %}
                 <p class="link__text link__origin">
-                    {% if origin.url %}
-                        {{ t('via <strong><a href="%s">%s</a></strong>', [
-                            origin.url | escape,
-                            origin.label | escape,
-                        ]) | raw }}
-                    {% else %}
-                        {{ t('via <strong>%s</strong>', [
-                            origin.label | escape,
-                        ]) | raw }}
-                    {% endif %}
+                    {{ include('links/_origin.html.twig', { origin: origin }) }}
                 </p>
             {% endif %}
 

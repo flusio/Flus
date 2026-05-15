@@ -313,7 +313,7 @@
             {% for link in links %}
                 {{ include('links/_link.html.twig', {
                     link: link,
-                    display_origin: can_update,
+                    display_origin: can(app.user, 'viewOrigin', link),
                     display_notes: collection.isCollection,
                     display_hidden: collection.is_public and link.is_hidden,
                     display_edit: can(app.user, 'update', link),
