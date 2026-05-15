@@ -33,8 +33,7 @@ trait NewsQueries
                 l.url_hash,
                 l.*,
                 lc.created_at AS published_at,
-                'collection' AS source_news_type,
-                c.id AS source_news_resource_id
+                c.id AS initial_collection_id
             FROM collections c, links_to_collections lc, followed_collections fc, links l
 
             WHERE fc.user_id = :user_id
@@ -169,10 +168,10 @@ trait NewsQueries
     }
 
     /**
-     * Mark the relevant links to be grouped by sources in the given collection.
+     * Mark the relevant links to be grouped by origins in the given collection.
      *
      * Links are grouped if there are several links in the given collection
-     * corresponding to the same source and the same day.
+     * corresponding to the same origin and the same day.
      *
      * The passed collection_id must correspond to a "news" collection. For
      * now, it's passed this way to improve performance and to simplify a bit
@@ -184,33 +183,31 @@ trait NewsQueries
             UPDATE links
             SET group_by_source = true
             WHERE links.id IN (
-                -- Create a "temporary table" to select the available sources
-                -- from the given collection (e.g. sources that are
-                -- referenced by more than 1 link).
-                WITH sources AS (
-                    SELECT date_trunc('day', slc.created_at) AS published_day,
-                           sl.source_type,
-                           sl.source_resource_id
-                    FROM links sl, links_to_collections slc
+                -- Create a "temporary table" to select the available origins
+                -- from the given collection (e.g. origins that are referenced
+                -- by more than 1 link).
+                WITH origins AS (
+                    SELECT date_trunc('day', olc.created_at) AS published_day,
+                           ol.origin
+                    FROM links ol, links_to_collections olc
 
-                    WHERE sl.id = slc.link_id
-                    AND slc.collection_id = :collection_id
+                    WHERE ol.id = olc.link_id
+                    AND olc.collection_id = :collection_id
 
-                    GROUP BY published_day, sl.source_type, sl.source_resource_id
-                    HAVING COUNT(sl.id) > 1
+                    GROUP BY published_day, ol.origin
+                    HAVING COUNT(ol.id) > 1
                 )
 
-                -- Select the ids of links which have a source corresponding to
-                -- one of the selected sources.
+                -- Select the ids of links which have a origin corresponding to
+                -- one of the selected origins.
                 SELECT l.id
-                FROM links l, links_to_collections lc, sources s
+                FROM links l, links_to_collections lc, origins o
 
                 WHERE l.id = lc.link_id
                 AND lc.collection_id = :collection_id
 
-                AND l.source_type = s.source_type
-                AND l.source_resource_id = s.source_resource_id
-                AND date_trunc('day', lc.created_at) = s.published_day
+                AND l.origin = o.origin
+                AND date_trunc('day', lc.created_at) = o.published_day
             );
         SQL;
 

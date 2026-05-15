@@ -62,6 +62,9 @@ class Link
     public ?string $image_filename = null;
 
     #[Database\Column]
+    public string $origin = '';
+
+    #[Database\Column]
     public string $user_id;
 
     /** @var 'unset'|'ok' */
@@ -85,10 +88,7 @@ class Link
     public array $tags = [];
 
     #[Database\Column(computed: true)]
-    public ?string $source_news_type = null;
-
-    #[Database\Column(computed: true)]
-    public ?string $source_news_resource_id = null;
+    public ?string $initial_collection_id = null;
 
     #[Database\Column(computed: true)]
     public ?\DateTimeImmutable $published_at = null;
@@ -160,7 +160,7 @@ class Link
         $link_copied->fetched_code = $link->fetched_code;
         $link_copied->fetched_count = $link->fetched_count;
         $link_copied->fetched_retry_at = $link->fetched_retry_at;
-        $link_copied->source_type = '';
+        $link_copied->setOrigin('');
 
         return $link_copied;
     }
@@ -321,51 +321,63 @@ class Link
         }
     }
 
-    public function sourceCollection(): ?Collection
+    /**
+     * Set the origin of the link.
+     *
+     * It is useful to keep the old source_type and source_resource_id columns
+     * in sync even if they are not used anymore. This is to ease an eventual
+     * rollback if the new system doesn't work or isn't efficient enough.
+     */
+    public function setOrigin(string $origin): void
     {
-        if (
-            $this->source_type !== 'collection' ||
-            !$this->source_resource_id
-        ) {
-            return null;
-        }
+        $this->origin = $origin;
 
-        return Collection::find($this->source_resource_id);
+        $this->source_type = '';
+        $this->source_resource_id = null;
+
+        if ($origin) {
+            list($source_type, $source_resource_id) = utils\SourceHelper::extractFromPath($origin);
+
+            if ($source_type) {
+                $this->source_type = $source_type;
+                $this->source_resource_id = $source_resource_id;
+            }
+        }
     }
 
-    public function sourceUser(): ?User
+    public function origin(): ?Origin
     {
-        if (
-            $this->source_type !== 'user' ||
-            !$this->source_resource_id
-        ) {
+        if (!$this->origin) {
             return null;
         }
 
-        return User::find($this->source_resource_id);
-    }
-
-    public function source(): User|Collection|null
-    {
-        if ($this->source_type == 'user') {
-            return $this->sourceUser();
-        } elseif ($this->source_type == 'collection') {
-            return $this->sourceCollection();
-        } else {
-            return null;
-        }
+        return new Origin($this->origin);
     }
 
     /**
-     * Set the source properties of the link if "from" is a supported internal path.
+     * Return the (deprecated) source.
+     *
+     * @deprecated
      */
-    public function setSourceFrom(string $from): void
+    public function source(): ?string
     {
-        list($source_type, $source_resource_id) = utils\SourceHelper::extractFromPath($from);
-        if ($source_type) {
-            $this->source_type = $source_type;
-            $this->source_resource_id = $source_resource_id;
+        $origin = $this->origin();
+
+        if (!$origin || !$origin->model) {
+            return null;
         }
+
+        $source_type = match ($origin->model::class) {
+            User::class => 'user',
+            Collection::class => 'collection',
+            default => '',
+        };
+
+        if (!$source_type) {
+            return null;
+        }
+
+        return "{$source_type}#{$origin->model->id}";
     }
 
     /**
@@ -530,9 +542,11 @@ class Link
      */
     public function toJson(User $context_user): array
     {
+        $origin_model = $this->origin();
         $source = null;
-        if ($this->source_type) {
-            $source = "{$this->source_type}#{$this->source_resource_id}";
+
+        if ($context_user->id === $this->user_id && $origin_model) {
+            $source = $this->source();
         }
 
         return [
@@ -543,7 +557,7 @@ class Link
             'is_hidden' => $this->is_hidden,
             'reading_time' => $this->reading_time,
             'tags' => $this->tags,
-            'source' => $source,
+            'source' => $source, // @deprecated Can be removed in version 3.0.0.
             'is_read' => $this->isReadBy($context_user),
             'is_read_later' => $this->isInBookmarksOf($context_user),
             'collections' => array_column($this->collections(), 'id'),

@@ -48,7 +48,7 @@
                 {% for link in links %}
                     {{ include('links/_link.html.twig', {
                         link: link,
-                        display_source: link.source_type != 'bookmarks',
+                        display_origin: true,
                         display_notes: true,
                         display_edit: true,
                         display_repair: true,

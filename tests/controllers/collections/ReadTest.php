@@ -71,8 +71,8 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
         $this->assertNotNull($new_link);
         $this->assertSame($public_link->url, $new_link->url);
-        $this->assertSame('collection', $new_link->source_type);
-        $this->assertSame($collection->id, $new_link->source_resource_id);
+        $origin = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
+        $this->assertSame($origin, $new_link->origin);
         $this->assertTrue($new_link->isReadBy($user), 'The link should be in read list.');
     }
 
@@ -129,28 +129,28 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($link2->isInNewsOf($user), 'The link should be in news.');
     }
 
-    public function testCreateMarksLinksAsReadForSpecificSource(): void
+    public function testCreateMarksLinksAsReadForSpecificOrigin(): void
     {
         $user = $this->login();
         $news = $user->news();
-        $source1 = CollectionFactory::create();
-        $source2 = CollectionFactory::create();
+        $collection1 = CollectionFactory::create();
+        $collection2 = CollectionFactory::create();
+        $origin1 = \Minz\Url::absoluteFor('collection', ['id' => $collection1->id]);
+        $origin2 = \Minz\Url::absoluteFor('collection', ['id' => $collection2->id]);
         $link1 = LinkFactory::create([
             'user_id' => $user->id,
-            'source_type' => 'collection',
-            'source_resource_id' => $source1->id,
+            'origin' => $origin1,
         ]);
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
-            'source_type' => 'collection',
-            'source_resource_id' => $source2->id,
+            'origin' => $origin2,
         ]);
         $link1->addCollection($news);
         $link2->addCollection($news);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsRead::class),
-            'source' => "collection#{$source1->id}",
+            'origin' => $origin1,
         ]);
 
         $this->assertResponseCode($response, 302, '/');
@@ -270,8 +270,8 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $this->assertNotNull($new_link);
-        $this->assertSame('collection', $new_link->source_type);
-        $this->assertSame($collection->id, $new_link->source_resource_id);
+        $origin = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
+        $this->assertSame($origin, $new_link->origin);
         $this->assertTrue($new_link->isInBookmarksOf($user), 'The link should be in bookmarks.');
     }
 
@@ -325,29 +325,29 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($link2->isInBookmarksOf($user), 'The link should not be in bookmarks.');
     }
 
-    public function testLaterMarksNewsLinksToReadLaterForSpecificSource(): void
+    public function testLaterMarksNewsLinksToReadLaterForSpecificOrigin(): void
     {
         $user = $this->login();
         $bookmarks = $user->bookmarks();
         $news = $user->news();
-        $source1 = CollectionFactory::create();
-        $source2 = CollectionFactory::create();
+        $collection1 = CollectionFactory::create();
+        $collection2 = CollectionFactory::create();
+        $origin1 = \Minz\Url::absoluteFor('collection', ['id' => $collection1->id]);
+        $origin2 = \Minz\Url::absoluteFor('collection', ['id' => $collection2->id]);
         $link1 = LinkFactory::create([
             'user_id' => $user->id,
-            'source_type' => 'collection',
-            'source_resource_id' => $source1->id,
+            'origin' => $origin1,
         ]);
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
-            'source_type' => 'collection',
-            'source_resource_id' => $source2->id,
+            'origin' => $origin2,
         ]);
         $link1->addCollection($news);
         $link2->addCollection($news);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/later", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsReadLater::class),
-            'source' => "collection#{$source1->id}",
+            'origin' => $origin1,
         ]);
 
         $this->assertResponseCode($response, 302, '/');
@@ -517,28 +517,28 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($link2->isInNeverList($user), 'The link should not be in never list.');
     }
 
-    public function testNeverMarksNewsLinksToNeverReadForSpecificSource(): void
+    public function testNeverMarksNewsLinksToNeverReadForSpecificOrigin(): void
     {
         $user = $this->login();
         $news = $user->news();
-        $source1 = CollectionFactory::create();
-        $source2 = CollectionFactory::create();
+        $collection1 = CollectionFactory::create();
+        $collection2 = CollectionFactory::create();
+        $origin1 = \Minz\Url::absoluteFor('collection', ['id' => $collection1->id]);
+        $origin2 = \Minz\Url::absoluteFor('collection', ['id' => $collection2->id]);
         $link1 = LinkFactory::create([
             'user_id' => $user->id,
-            'source_type' => 'collection',
-            'source_resource_id' => $source1->id,
+            'origin' => $origin1,
         ]);
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
-            'source_type' => 'collection',
-            'source_resource_id' => $source2->id,
+            'origin' => $origin2,
         ]);
         $link1->addCollection($news);
         $link2->addCollection($news);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/never", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsNever::class),
-            'source' => "collection#{$source1->id}",
+            'origin' => $origin1,
         ]);
 
         $this->assertResponseCode($response, 302, '/');

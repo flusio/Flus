@@ -276,7 +276,7 @@ class Collection
      * @param string[] $selected_computed_props
      * @param array{
      *     'published_date'?: ?\DateTimeImmutable,
-     *     'source'?: ?string,
+     *     'origin'?: ?string,
      *     'hidden'?: bool,
      *     'offset'?: int,
      *     'limit'?: int|'ALL',

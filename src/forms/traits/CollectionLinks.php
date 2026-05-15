@@ -18,7 +18,7 @@ trait CollectionLinks
     public ?\DateTimeImmutable $date = null;
 
     #[Form\Field]
-    public string $source = '';
+    public string $origin = '';
 
     private string $from = '';
 
@@ -34,8 +34,8 @@ trait CollectionLinks
         if ($this->date) {
             $options['published_date'] = $this->date;
         }
-        if ($this->source) {
-            $options['source'] = $this->source;
+        if ($this->origin) {
+            $options['origin'] = $this->origin;
         }
 
         $options['hidden'] = auth\Access::can($user, 'viewHiddenLinks', $collection);
@@ -48,7 +48,7 @@ trait CollectionLinks
         foreach ($links as $link) {
             if (!$link->isPersisted()) {
                 $link->created_at = \Minz\Time::now();
-                $link->setSourceFrom($this->from);
+                $link->setOrigin($this->from);
                 $links_to_create[] = $link;
             }
         }
@@ -61,6 +61,8 @@ trait CollectionLinks
     #[Form\OnHandleRequest]
     public function setFrom(Request $request): void
     {
-        $this->from = utils\RequestHelper::from($request);
+        $from = utils\RequestHelper::from($request);
+        $from = \SpiderBits\Url::absolutize($from, \Minz\Url::baseUrl());
+        $this->from = $from;
     }
 }

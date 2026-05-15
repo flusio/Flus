@@ -55,7 +55,8 @@ class Read extends BaseController
         $link = $user->obtainLink($link);
 
         if (!$link->isPersisted()) {
-            $link->setSourceFrom($from);
+            $origin = \SpiderBits\Url::absolutize($from, \Minz\Url::baseUrl());
+            $link->setOrigin($origin);
             $link->save();
         }
 
@@ -103,7 +104,8 @@ class Read extends BaseController
         $link = $user->obtainLink($link);
 
         if (!$link->isPersisted()) {
-            $link->setSourceFrom($from);
+            $origin = \SpiderBits\Url::absolutize($from, \Minz\Url::baseUrl());
+            $link->setOrigin($origin);
             $link->save();
         }
 

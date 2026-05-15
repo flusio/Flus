@@ -114,8 +114,8 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
         $this->assertNotNull($new_link);
-        $this->assertSame('collection', $new_link->source_type);
-        $this->assertSame($news->id, $new_link->source_resource_id);
+        $origin = \Minz\Url::absoluteFor('collection', ['id' => $news->id]);
+        $this->assertSame($origin, $new_link->origin);
         $link_to_read_list = models\LinkToCollection::findBy([
             'link_id' => $new_link->id,
             'collection_id' => $read_list->id,
@@ -306,8 +306,8 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
         $this->assertNotNull($new_link);
-        $this->assertSame('collection', $new_link->source_type);
-        $this->assertSame($news->id, $new_link->source_resource_id);
+        $origin = \Minz\Url::absoluteFor('collection', ['id' => $news->id]);
+        $this->assertSame($origin, $new_link->origin);
         $link_to_bookmarks = models\LinkToCollection::findBy([
             'link_id' => $new_link->id,
             'collection_id' => $bookmarks->id,

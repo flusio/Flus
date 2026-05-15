@@ -64,10 +64,10 @@ class LaterTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $news = $user->news();
         $collection = CollectionFactory::create();
+        $origin = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
         $link1 = LinkFactory::create([
             'user_id' => $user->id,
-            'source_type' => 'collection',
-            'source_resource_id' => $collection->id,
+            'origin' => $origin,
         ]);
         $link2 = LinkFactory::create([
             'user_id' => $user->id,

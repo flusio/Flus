@@ -65,11 +65,9 @@ class NewsQueriesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(2, count($links));
         $this->assertSame($link2->id, $links[0]->id);
-        $this->assertSame('collection', $links[0]->source_news_type);
-        $this->assertSame($collection->id, $links[0]->source_news_resource_id);
+        $this->assertSame($collection->id, $links[0]->initial_collection_id);
         $this->assertSame($link1->id, $links[1]->id);
-        $this->assertSame('collection', $links[1]->source_news_type);
-        $this->assertSame($collection->id, $links[1]->source_news_resource_id);
+        $this->assertSame($collection->id, $links[1]->initial_collection_id);
     }
 
     public function testListFromFollowedCollectionsSelectsHiddenLinkIfCollectionIsShared(): void
@@ -107,8 +105,7 @@ class NewsQueriesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, count($links));
         $this->assertSame($link->id, $links[0]->id);
-        $this->assertSame('collection', $links[0]->source_news_type);
-        $this->assertSame($collection->id, $links[0]->source_news_resource_id);
+        $this->assertSame($collection->id, $links[0]->initial_collection_id);
     }
 
     public function testListFromFollowedCollectionsSelectsFromPrivateCollectionIfShared(): void
@@ -146,8 +143,7 @@ class NewsQueriesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, count($links));
         $this->assertSame($link->id, $links[0]->id);
-        $this->assertSame('collection', $links[0]->source_news_type);
-        $this->assertSame($collection->id, $links[0]->source_news_resource_id);
+        $this->assertSame($collection->id, $links[0]->initial_collection_id);
     }
 
     public function testListFromFollowedCollectionsRespectsFromFollowedIfOldLinksButWithTimeFilterAll(): void
@@ -188,8 +184,7 @@ class NewsQueriesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, count($links));
         $this->assertSame($link->id, $links[0]->id);
-        $this->assertSame('collection', $links[0]->source_news_type);
-        $this->assertSame($collection->id, $links[0]->source_news_resource_id);
+        $this->assertSame($collection->id, $links[0]->initial_collection_id);
     }
 
     public function testListFromFollowedCollectionsDoesNotPickFromFollowedIfTooOld(): void

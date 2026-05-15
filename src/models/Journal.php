@@ -30,12 +30,13 @@ class Journal
         foreach ($links as $news_link) {
             $link = $this->user->obtainLink($news_link);
 
-            // If the link has already a source info, we want to keep it (it
-            // might have been get via a followed collection, and put in the
-            // bookmarks then)
-            if (!$link->source_type && $news_link->source_news_type !== null) {
-                $link->source_type = $news_link->source_news_type;
-                $link->source_resource_id = $news_link->source_news_resource_id;
+            // If the link has already an origin info, we want to keep it.
+            // Otherwise, we use the initial collection URL.
+            if (!$link->origin) {
+                $collection_url = \Minz\Url::absoluteFor('collection', [
+                    'id' => $news_link->initial_collection_id,
+                ]);
+                $link->setOrigin($collection_url);
             }
 
             // Make sure to reset this value: it will be set to true later with

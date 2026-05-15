@@ -106,7 +106,8 @@ class Collections extends BaseController
 
         if (!auth\LinksAccess::canUpdate($user, $link)) {
             $link = $user->obtainLink($link);
-            $link->setSourceFrom($from);
+            $origin = \SpiderBits\Url::absolutize($from, \Minz\Url::baseUrl());
+            $link->setOrigin($origin);
         }
 
         $form = new forms\links\EditLinkCollections(model: $link, options: [

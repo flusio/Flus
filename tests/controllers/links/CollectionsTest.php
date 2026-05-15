@@ -542,8 +542,8 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
         $this->assertNotNull($new_link);
-        $this->assertSame('collection', $new_link->source_type);
-        $this->assertSame($other_collection->id, $new_link->source_resource_id);
+        $origin = \Minz\Url::absoluteFor('collection', ['id' => $other_collection->id]);
+        $this->assertSame($origin, $new_link->origin);
         $new_link_to_other_collection = models\LinkToCollection::findBy([
             'link_id' => $new_link->id,
             'collection_id' => $other_collection->id,

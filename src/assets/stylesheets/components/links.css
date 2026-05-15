@@ -141,13 +141,12 @@
     overflow-wrap: anywhere;
 }
 
-.link__source {
+.link__origin {
     font-style: italic;
 }
 
-.link__source a {
+.link__origin a {
     color: currentcolor;
-    text-decoration: none;
 }
 
 .link__notepad {

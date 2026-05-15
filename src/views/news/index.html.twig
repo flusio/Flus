@@ -111,7 +111,7 @@
                                                 from: url('news'),
                                                 display_edit: true,
                                                 display_repair: true,
-                                                display_source: true,
+                                                display_origin: true,
                                                 display_read_later: true,
                                                 display_mark_as_read: true,
                                                 display_never: true,
@@ -121,15 +121,15 @@
                                     </div>
                                 {% endif %}
 
-                                {% for source_group in date_group.sourceGroups %}
-                                    <div class="source-group flow flow--small">
-                                        <div class="source-group__header cols cols--always cols--gap cols--center">
-                                            <h3 class="source-group__title">
-                                                {{ source_group.title }}
+                                {% for origin_group in date_group.originGroups %}
+                                    <div class="origin-group flow flow--small">
+                                        <div class="origin-group__header cols cols--always cols--gap cols--center">
+                                            <h3 class="origin-group__title">
+                                                {{ origin_group.origin.label }}
                                             </h3>
 
                                             <span class="col--noshrink text--secondary">
-                                                {{ t('%s link', '%s links', source_group.links | length, [source_group.links | length]) }}
+                                                {{ t('%s link', '%s links', origin_group.links | length, [origin_group.links | length]) }}
                                             </span>
 
                                             <details
@@ -157,7 +157,7 @@
                                                         </button>
 
                                                         <input type="hidden" name="date" value="{{ date_group.date.format('Y-m-d') }}">
-                                                        <input type="hidden" name="source" value="{{ source_group.reference }}">
+                                                        <input type="hidden" name="origin" value="{{ origin_group.origin.value }}">
                                                         <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\MarkCollectionAsRead') }}">
                                                     </form>
 
@@ -168,7 +168,7 @@
                                                         </button>
 
                                                         <input type="hidden" name="date" value="{{ date_group.date.format('Y-m-d') }}">
-                                                        <input type="hidden" name="source" value="{{ source_group.reference }}">
+                                                        <input type="hidden" name="origin" value="{{ origin_group.origin.value }}">
                                                         <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\MarkCollectionAsReadLater') }}">
                                                     </form>
 
@@ -187,21 +187,21 @@
                                                         </button>
 
                                                         <input type="hidden" name="date" value="{{ date_group.date.format('Y-m-d') }}">
-                                                        <input type="hidden" name="source" value="{{ source_group.reference }}">
+                                                        <input type="hidden" name="origin" value="{{ origin_group.origin.value }}">
                                                         <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\MarkCollectionAsNever') }}">
                                                     </form>
                                                 </nav>
                                             </details>
                                         </div>
 
-                                        <div class="source-group__body grid">
-                                            {% for link in source_group.links %}
+                                        <div class="origin-group__body grid">
+                                            {% for link in origin_group.links %}
                                                 {{ include('links/_link.html.twig', {
                                                     link: link,
                                                     from: url('news'),
                                                     display_edit: true,
                                                     display_repair: true,
-                                                    display_source: true,
+                                                    display_origin: true,
                                                     display_read_later: true,
                                                     display_mark_as_read: true,
                                                     display_never: true,

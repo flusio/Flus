@@ -42,27 +42,6 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $title);
     }
 
-    public function testIndexRendersIfViaBookmarks(): void
-    {
-        $user = $this->login();
-        $news = $user->news();
-        $link = LinkFactory::create([
-            'user_id' => $user->id,
-            'source_type' => 'bookmarks',
-        ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
-
-        $response = $this->appRun('GET', '/news');
-
-        $this->assertResponseCode($response, 200);
-        $bookmarks_url = \Minz\Url::for('bookmarks');
-        $bookmarks_anchor = "<a href=\"{$bookmarks_url}\">To read</a>";
-        $this->assertResponseContains($response, "via <strong>{$bookmarks_anchor}</strong>");
-    }
-
     public function testIndexRendersIfViaFollowedCollections(): void
     {
         $user = $this->login();
@@ -79,10 +58,10 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'name' => $collection_name,
         ]);
         $news = $user->news();
+        $origin = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
         $link = LinkFactory::create([
             'user_id' => $user->id,
-            'source_type' => 'collection',
-            'source_resource_id' => $collection->id,
+            'origin' => $origin,
         ]);
         LinkToCollectionFactory::create([
             'link_id' => $link->id,
@@ -92,11 +71,41 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/news');
 
         $this->assertResponseCode($response, 200);
-        $collection_url = \Minz\Url::for('collection', ['id' => $collection->id]);
+        $collection_url = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
         $collection_anchor = "<a href=\"{$collection_url}\">{$collection_name}</a>";
-        $profile_url = \Minz\Url::for('profile', ['id' => $other_user->id]);
-        $profile_anchor = "<a href=\"{$profile_url}\">{$username}</a>";
-        $this->assertResponseContains($response, "via <strong>{$collection_anchor}</strong> by {$profile_anchor}");
+        $this->assertResponseContains($response, "via <strong>{$collection_anchor}</strong>");
+    }
+
+    public function testIndexRendersIfViaCustomOrigin(): void
+    {
+        $user = $this->login();
+        /** @var string */
+        $username = $this->fake('username');
+        $other_user = UserFactory::create([
+            'username' => $username,
+        ]);
+        /** @var string */
+        $collection_name = $this->fake('sentence');
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
+            'type' => 'collection',
+            'name' => $collection_name,
+        ]);
+        $news = $user->news();
+        $origin = 'Internet';
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'origin' => $origin,
+        ]);
+        LinkToCollectionFactory::create([
+            'link_id' => $link->id,
+            'collection_id' => $news->id,
+        ]);
+
+        $response = $this->appRun('GET', '/news');
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, "via <strong>{$origin}</strong>");
     }
 
     public function testIndexRendersTipsIfNoNewsFlash(): void
@@ -200,8 +209,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($news_link);
         $this->assertSame($link->url, $news_link->url);
         $this->assertSame($link->title, $news_link->title);
-        $this->assertSame('collection', $news_link->source_type);
-        $this->assertSame($collection->id, $news_link->source_resource_id);
+        $origin = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
+        $this->assertSame($origin, $news_link->origin);
         $link_to_news = models\LinkToCollection::findBy([
             'link_id' => $news_link->id,
             'collection_id' => $news->id,

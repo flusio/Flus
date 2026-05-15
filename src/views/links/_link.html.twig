@@ -11,16 +11,10 @@
 {% set display_mark_as_read = display_mark_as_read ?? false %}
 {% set display_mark_as_unread = display_mark_as_unread ?? false %}
 {% set display_never = display_never ?? false %}
-{% set display_source = display_source ?? false %}
-{% if display_source and not link.source_type %}
-    {% set display_source = false %}
-{% endif %}
+{% set display_origin = display_origin ?? false %}
 {% set storing_must_mark_as_read = storing_must_mark_as_read ?? false %}
 
 {% set tag_filter_mode = tag_filter_mode ?? 'profile filter' %}
-
-{% set source_collection = display_source ? link.sourceCollection : null %}
-{% set source_user = display_source ? link.sourceUser : null %}
 
 {% set is_current_user_owner = app.user and app.user.id === link.user_id %}
 {% set is_inaccessible = link.isInaccessible %}
@@ -40,6 +34,11 @@
     {% set display_mark_as_read = false %}
 {% elseif display_mark_as_read === 'auto' %}
     {% set display_mark_as_read = true %}
+{% endif %}
+
+{% set origin = link.origin() %}
+{% if display_origin and not origin %}
+    {% set display_origin = false %}
 {% endif %}
 
 {% set display_collections = app.user != null %}
@@ -153,29 +152,16 @@
                 </p>
             {% endif %}
 
-            {% if display_source %}
-                <p class="link__text link__source">
-                    {% if link.source_type === 'bookmarks' %}
-                        {{ t('via <strong><a href="%s">To read</a></strong>', [url('bookmarks')]) | raw }}
-                    {% elseif source_collection %}
-                        {% if source_collection.type === 'collection' %}
-                            {% set owner = source_collection.owner %}
-                            {{ t('via <strong><a href="%s">%s</a></strong> by <a href="%s">%s</a>', [
-                                url('collection', { id: source_collection.id }),
-                                source_collection.name() | escape,
-                                url('profile', { id: owner.id }),
-                                owner.username | escape,
-                            ]) | raw }}
-                        {% else %}
-                            {{ t('via <strong><a href="%s">%s</a></strong>', [
-                                url('collection', { id: source_collection.id }),
-                                source_collection.name() | escape,
-                            ]) | raw }}
-                        {% endif %}
-                    {% elseif source_user %}
+            {% if display_origin %}
+                <p class="link__text link__origin">
+                    {% if origin.url %}
                         {{ t('via <strong><a href="%s">%s</a></strong>', [
-                            url('profile', { id: source_user.id }),
-                            source_user.username | escape,
+                            origin.url | escape,
+                            origin.label | escape,
+                        ]) | raw }}
+                    {% else %}
+                        {{ t('via <strong>%s</strong>', [
+                            origin.label | escape,
                         ]) | raw }}
                     {% endif %}
                 </p>

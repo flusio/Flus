@@ -16,8 +16,8 @@ class DateGroup
     /** @var models\Link[] */
     public array $links = [];
 
-    /** @var array<string, SourceGroup> */
-    public array $source_groups = [];
+    /** @var array<string, OriginGroup> */
+    public array $origin_groups = [];
 
     public function __construct(\DateTimeImmutable $date)
     {
@@ -26,23 +26,16 @@ class DateGroup
 
     public function addLink(models\Link $link): void
     {
-        if ($link->group_by_source) {
-            $source_key = $link->source_type . '#' . $link->source_resource_id;
-            if (isset($this->source_groups[$source_key])) {
-                $source_group = $this->source_groups[$source_key];
+        $origin = $link->origin();
+        if ($origin) {
+            if (isset($this->origin_groups[$origin->value])) {
+                $origin_group = $this->origin_groups[$origin->value];
             } else {
-                $source = $link->source();
-
-                if (!$source) {
-                    $this->links[] = $link;
-                    return;
-                }
-
-                $source_group = new SourceGroup($source);
-                $this->source_groups[$source_key] = $source_group;
+                $origin_group = new OriginGroup($origin);
+                $this->origin_groups[$origin->value] = $origin_group;
             }
 
-            $source_group->links[] = $link;
+            $origin_group->links[] = $link;
         } else {
             $this->links[] = $link;
         }
@@ -61,21 +54,26 @@ class DateGroup
     }
 
     /**
-     * Return the source groups sorted by titles.
+     * Return the origin groups sorted by titles.
      *
-     * @return SourceGroup[]
+     * @return OriginGroup[]
      */
-    public function sourceGroups(): array
+    public function originGroups(): array
     {
-        return utils\Sorter::localeSort($this->source_groups, 'title');
+        return utils\Sorter::localeSort(
+            $this->origin_groups,
+            function (OriginGroup $origin_group): string {
+                return $origin_group->origin->label;
+            },
+        );
     }
 
     public function count(): int
     {
         $count = count($this->links);
 
-        foreach ($this->source_groups as $source_group) {
-            $count += $source_group->count();
+        foreach ($this->origin_groups as $origin_group) {
+            $count += $origin_group->count();
         }
 
         return $count;

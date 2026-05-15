@@ -35,11 +35,29 @@ class EmptyJournal extends Form
         if ($this->date) {
             $options['published_date'] = $this->date;
         }
-        if ($this->source) {
-            $options['source'] = $this->source;
+
+        // @deprecated Can be removed in version 3.0.0.
+        $source_origin = $this->sourceToOrigin();
+        if ($source_origin) {
+            $options['origin'] = $source_origin;
         }
 
         $news = $this->user->news();
         return $news->links(options: $options);
+    }
+
+    public function sourceToOrigin(): ?string
+    {
+        if (!$this->source) {
+            return null;
+        }
+
+        list($source_type, $source_id) = explode('#', $this->source, 2);
+
+        return match ($source_type) {
+            'user' => \Minz\Url::absoluteFor('profile', ['id' => $source_id]),
+            'collection' => \Minz\Url::absoluteFor('collection', ['id' => $source_id]),
+            default => null,
+        };
     }
 }
