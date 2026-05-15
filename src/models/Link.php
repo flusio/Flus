@@ -20,6 +20,8 @@ class Link
     use Fetchable;
     use Validable;
 
+    public const ORIGIN_MAX_LENGTH = 2000;
+
     #[Database\Column]
     public string $id;
 
@@ -62,7 +64,14 @@ class Link
     public ?string $image_filename = null;
 
     #[Database\Column]
+    #[Validable\Length(
+        max: self::ORIGIN_MAX_LENGTH,
+        message: new Translatable('The origin must be less than {max} characters.'),
+    )]
     public string $origin = '';
+
+    #[Database\Column]
+    public bool $origin_is_public = false;
 
     #[Database\Column]
     public string $user_id;

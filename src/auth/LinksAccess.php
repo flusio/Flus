@@ -27,6 +27,11 @@ class LinksAccess
         return $link->sharedWith($user);
     }
 
+    public static function canViewOrigin(?models\User $user, models\Link $link): bool
+    {
+        return ($user && $user->id === $link->user_id) || $link->origin_is_public;
+    }
+
     public static function canUpdate(?models\User $user, models\Link $link): bool
     {
         return $user && $user->id === $link->user_id;

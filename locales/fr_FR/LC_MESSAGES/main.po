@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-05-14 15:50+0200\n"
-"PO-Revision-Date: 2026-05-14 15:50+0200\n"
+"POT-Creation-Date: 2026-05-16 00:28+0200\n"
+"PO-Revision-Date: 2026-05-16 00:28+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -126,12 +126,12 @@ msgid "You must accept the terms of service."
 msgstr "Vous devez accepter les conditions générales d’utilisation."
 
 #: forms/Search.php:22 forms/collections/NewFeed.php:21
-#: forms/links/RepairLink.php:22 models/Link.php:37
+#: forms/links/RepairLink.php:22 models/Link.php:40
 msgid "The link is required."
 msgstr "Le lien est obligatoire."
 
 #: forms/Search.php:25 forms/collections/NewFeed.php:24
-#: forms/links/RepairLink.php:25 models/Link.php:40
+#: forms/links/RepairLink.php:25 models/Link.php:43
 msgid "The link is invalid."
 msgstr "Le lien est invalide."
 
@@ -355,13 +355,17 @@ msgstr "Le filtre est invalide."
 msgid "You already have a group with this name."
 msgstr "Vous avez déjà un groupe portant le même nom."
 
-#: models/Link.php:31
+#: models/Link.php:34
 msgid "The title is required."
 msgstr "Le titre est obligatoire."
 
-#: models/Link.php:57
+#: models/Link.php:60
 msgid "The reading time must be greater or equal to 0."
 msgstr "Le temps de lecture doit être supérieur ou égal à 0."
+
+#: models/Link.php:70
+msgid "The origin must be less than {max} characters."
+msgstr "L’origine ne doit pas faire plus de {max} caractères."
 
 #: models/Note.php:30
 msgid "The content is required."
@@ -694,11 +698,11 @@ msgstr "(max. %d caractères)"
 #: views/collections/shares/index.html.twig:58 views/feeds/new.html.twig:17
 #: views/groups/edit.html.twig:20 views/importations/opml/show.html.twig:84
 #: views/links/collections/_new_note_form.html.twig:11
-#: views/links/edit.html.twig:26 views/links/edit.html.twig:72
-#: views/links/images/edit.html.twig:20
+#: views/links/edit.html.twig:26 views/links/edit.html.twig:71
+#: views/links/edit.html.twig:91 views/links/images/edit.html.twig:20
 #: views/links/mastodon_threads/new.html.twig:17 views/links/new.html.twig:27
 #: views/links/repairing/new.html.twig:30
-#: views/links/searches/show.html.twig:39 views/links/show.html.twig:369
+#: views/links/searches/show.html.twig:39 views/links/show.html.twig:373
 #: views/mastodon/show.html.twig:62 views/mastodon/show.html.twig:139
 #: views/my/account/deletion.html.twig:38 views/my/avatar/edit.html.twig:20
 #: views/my/preferences/edit.html.twig:35
@@ -778,7 +782,7 @@ msgstr "Modification d'une collection"
 #: views/collections/edit.html.twig:9
 #: views/collections/filters/edit.html.twig:96
 #: views/collections/groups/edit.html.twig:99 views/groups/edit.html.twig:43
-#: views/links/edit.html.twig:80 views/mastodon/show.html.twig:96
+#: views/links/edit.html.twig:126 views/mastodon/show.html.twig:96
 #: views/my/preferences/edit.html.twig:204 views/my/profile/edit.html.twig:74
 #: views/my/security/show.html.twig:98 views/notes/edit.html.twig:49
 msgid "Save changes"
@@ -939,7 +943,7 @@ msgstr ""
 msgid "Share access with"
 msgstr "Partagez l’accès avec"
 
-#: views/collections/shares/index.html.twig:46 views/links/show.html.twig:222
+#: views/collections/shares/index.html.twig:46 views/links/show.html.twig:226
 msgid "Share"
 msgstr "Partager"
 
@@ -1011,7 +1015,7 @@ msgid "Syndication feed of %s"
 msgstr "Flux de syndication de %s"
 
 #: views/collections/show.html.twig:62 views/collections/show.html.twig:71
-#: views/links/_link.html.twig:304 views/links/show.html.twig:47
+#: views/links/_link.html.twig:281 views/links/show.html.twig:47
 #: views/links/show.html.twig:56
 msgid "Change the illustration"
 msgstr "Changer l’illustration"
@@ -1032,7 +1036,7 @@ msgstr[0] "Thématique :"
 msgstr[1] "Thématiques :"
 
 #: views/collections/show.html.twig:165 views/groups/_group.html.twig:20
-#: views/links/_link.html.twig:292 views/links/show.html.twig:291
+#: views/links/_link.html.twig:269 views/links/show.html.twig:295
 #: views/notes/_notepad.html.twig:48 views/profiles/layout.html.twig:81
 msgid "Edit"
 msgstr "Modifier"
@@ -1041,9 +1045,9 @@ msgstr "Modifier"
 msgid "Access"
 msgstr "Accès"
 
-#: views/collections/show.html.twig:189 views/links/_link.html.twig:228
-#: views/links/_link.html.twig:232 views/links/show.html.twig:232
-#: views/links/show.html.twig:235 views/news/index.html.twig:55
+#: views/collections/show.html.twig:189 views/links/_link.html.twig:205
+#: views/links/_link.html.twig:209 views/links/show.html.twig:236
+#: views/links/show.html.twig:239 views/news/index.html.twig:55
 #: views/news/index.html.twig:145 views/news/index.html.twig:228
 #: views/notes/_notepad.html.twig:29 views/notes/_notepad.html.twig:33
 #: views/profiles/layout.html.twig:93
@@ -1062,7 +1066,7 @@ msgstr "Placer dans un groupe"
 msgid "Copy link to collection"
 msgstr "Copier le lien de la collection"
 
-#: views/collections/show.html.twig:246 views/links/show.html.twig:275
+#: views/collections/show.html.twig:246 views/links/show.html.twig:279
 #: views/profiles/layout.html.twig:120
 msgid "Copy link to Web feed"
 msgstr "Copier le lien du flux Web"
@@ -1085,8 +1089,8 @@ msgstr ""
 "Êtes-vous sur·e de vouloir supprimer cette collection ? Vous pourriez perdre "
 "les liens qui lui sont attachés."
 
-#: views/collections/show.html.twig:285 views/links/_link.html.twig:336
-#: views/links/show.html.twig:320 views/notes/_notepad.html.twig:61
+#: views/collections/show.html.twig:285 views/links/_link.html.twig:313
+#: views/links/show.html.twig:324 views/notes/_notepad.html.twig:61
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -1442,32 +1446,32 @@ msgstr "Accéder au contenu principal"
 msgid "About %s"
 msgstr "À propos de %s"
 
-#: views/links/_link.html.twig:65
+#: views/links/_link.html.twig:64
 msgid "This link seems to be inaccessible, you should repair it."
 msgstr "Ce lien semble inaccessible, vous devriez le réparer."
 
-#: views/links/_link.html.twig:66 views/links/_link.html.twig:84
+#: views/links/_link.html.twig:65 views/links/_link.html.twig:83
 #: views/links/show.html.twig:74
 msgid "inaccessible"
 msgstr "inaccessible"
 
-#: views/links/_link.html.twig:75
+#: views/links/_link.html.twig:74
 msgid "Trackers have been detected in this link, you should repair it."
 msgstr "Des pisteurs ont été détectés dans ce lien, vous devriez le réparer."
 
-#: views/links/_link.html.twig:76 views/links/_link.html.twig:94
+#: views/links/_link.html.twig:75 views/links/_link.html.twig:93
 #: views/links/show.html.twig:80
 msgid "trackers"
 msgstr "pisteurs"
 
-#: views/links/_link.html.twig:83 views/links/show.html.twig:73
+#: views/links/_link.html.twig:82 views/links/show.html.twig:73
 msgid ""
 "This link seems to be inaccessible, you may have difficulties to access it."
 msgstr ""
 "Ce lien semble inaccessible, vous pourriez rencontrer des difficultés pour y "
 "accéder."
 
-#: views/links/_link.html.twig:93 views/links/show.html.twig:79
+#: views/links/_link.html.twig:92 views/links/show.html.twig:79
 msgid ""
 "Trackers have been detected in this link, your privacy might not be "
 "respected if you click on it."
@@ -1475,91 +1479,86 @@ msgstr ""
 "Des pisteurs ont été détectés dans ce lien, votre vie privée pourrait ne pas "
 "être respectée si vous cliquez dessus."
 
-#: views/links/_link.html.twig:141 views/links/show.html.twig:103
+#: views/links/_link.html.twig:140 views/links/show.html.twig:103
 msgid "You read this link."
 msgstr "Vous avez lu ce lien."
 
-#: views/links/_link.html.twig:145 views/links/show.html.twig:107
+#: views/links/_link.html.twig:144 views/links/show.html.twig:107
 msgid "You marked this link to be read."
 msgstr "Vous avez marqué ce lien à lire."
 
-#: views/links/_link.html.twig:152 views/links/show.html.twig:125
+#: views/links/_link.html.twig:151 views/links/show.html.twig:125
 msgid "ongoing synchronisation…"
 msgstr "synchronisation en cours…"
 
-#: views/links/_link.html.twig:159
-#, php-format
-msgid "via <strong><a href=\"%s\">To read</a></strong>"
-msgstr "via <strong><a href=\"%s\">À lire</a></strong>"
-
-#: views/links/_link.html.twig:163
-#, php-format
-msgid "via <strong><a href=\"%s\">%s</a></strong> by <a href=\"%s\">%s</a>"
-msgstr "via <strong><a href=\"%s\">%s</a></strong> de <a href=\"%s\">%s</a>"
-
-#: views/links/_link.html.twig:170 views/links/_link.html.twig:176
-#, php-format
-msgid "via <strong><a href=\"%s\">%s</a></strong>"
-msgstr "via <strong><a href=\"%s\">%s</a></strong>"
-
-#: views/links/_link.html.twig:205
+#: views/links/_link.html.twig:182
 #, php-format
 msgid "Notepad (%s)"
 msgstr "Bloc-note (%s)"
 
-#: views/links/_link.html.twig:207 views/links/show.html.twig:335
+#: views/links/_link.html.twig:184 views/links/show.html.twig:339
 msgid "Notepad"
 msgstr "Bloc-note"
 
-#: views/links/_link.html.twig:214
+#: views/links/_link.html.twig:191
 msgid "hidden"
 msgstr "masqué"
 
-#: views/links/_link.html.twig:242
+#: views/links/_link.html.twig:219
 msgid "Remove from the news"
 msgstr "Retirer du journal"
 
-#: views/links/_link.html.twig:260
+#: views/links/_link.html.twig:237
 msgid "Copy the external link"
 msgstr "Copier le lien externe"
 
-#: views/links/_link.html.twig:274 views/links/show.html.twig:219
+#: views/links/_link.html.twig:251 views/links/show.html.twig:223
 msgid "Share on Mastodon"
 msgstr "Partager vers Mastodon"
 
-#: views/links/_link.html.twig:318 views/links/show.html.twig:303
+#: views/links/_link.html.twig:295 views/links/show.html.twig:307
 msgid "Repair"
 msgstr "Réparer"
 
-#: views/links/_link.html.twig:329 views/links/show.html.twig:313
+#: views/links/_link.html.twig:306 views/links/show.html.twig:317
 msgid "Are you sure that you want to delete this link?"
 msgstr "Êtes-vous sur·e de vouloir supprimer ce lien ?"
 
-#: views/links/_link.html.twig:348 views/links/_link.html.twig:351
-#: views/links/show.html.twig:177
+#: views/links/_link.html.twig:325 views/links/_link.html.twig:328
+#: views/links/show.html.twig:181
 msgid "Mark as read"
 msgstr "Marquer comme lu"
 
-#: views/links/_link.html.twig:361 views/links/_link.html.twig:364
+#: views/links/_link.html.twig:338 views/links/_link.html.twig:341
 msgid "Remove from read list"
 msgstr "Retirer des liens lus"
 
-#: views/links/_link.html.twig:374 views/links/_link.html.twig:377
-#: views/links/show.html.twig:188
+#: views/links/_link.html.twig:351 views/links/_link.html.twig:354
+#: views/links/show.html.twig:192
 msgid "Read later"
 msgstr "Lire plus tard"
 
-#: views/links/_link.html.twig:393 views/links/_link.html.twig:397
+#: views/links/_link.html.twig:370 views/links/_link.html.twig:374
 #: views/links/collections/index.html.twig:69
 msgid "Store the link"
 msgstr "Ranger le lien"
 
-#: views/links/_link.html.twig:403
+#: views/links/_link.html.twig:380
 #, php-format
 msgid "In %d collection"
 msgid_plural "In %d collections"
 msgstr[0] "Dans %d collection"
 msgstr[1] "Dans %d collections"
+
+#: views/links/_origin.html.twig:5
+#, php-format
+msgid "via <strong><a href=\"%s\">%s</a></strong>"
+msgstr "via <strong><a href=\"%s\">%s</a></strong>"
+
+#: views/links/_origin.html.twig:10
+#, php-format
+msgid "via <strong>%s</strong>"
+msgstr "via <strong>%s</strong>"
 
 #: views/links/_pagination_count.html.twig:9
 #, php-format
@@ -1567,12 +1566,12 @@ msgid "%s of %s links"
 msgstr "%s sur %s liens"
 
 #: views/links/collections/_new_note_form.html.twig:3
-#: views/links/show.html.twig:364
+#: views/links/show.html.twig:368
 msgid "What do you retain from this content?"
 msgstr "Que retenez-vous de ce contenu ?"
 
 #: views/links/collections/_new_note_form.html.twig:29
-#: views/links/show.html.twig:388 views/notes/edit.html.twig:43
+#: views/links/show.html.twig:392 views/notes/edit.html.twig:43
 msgid "You can format the content in Markdown and use #tags."
 msgstr "Vous pouvez formater le contenu en Markdown et utiliser des #tags."
 
@@ -1601,13 +1600,29 @@ msgstr "Modification d’un lien"
 msgid "The title of your link"
 msgstr "Le titre de votre lien"
 
-#: views/links/edit.html.twig:49
+#: views/links/edit.html.twig:48
 msgid "It takes"
 msgstr "Il faut"
 
-#: views/links/edit.html.twig:67
+#: views/links/edit.html.twig:66
 msgid "minutes to consult."
 msgstr "minutes pour le consulter."
+
+#: views/links/edit.html.twig:78
+msgid "Origin"
+msgstr "Origine"
+
+#: views/links/edit.html.twig:83
+msgid "Where did you find that link?"
+msgstr "Où avez-vous trouvé ce lien ?"
+
+#: views/links/edit.html.twig:85
+msgid "(optional, preferably an URL)"
+msgstr "(optionnel, une URL de préférence)"
+
+#: views/links/edit.html.twig:118
+msgid "Display this information publicly"
+msgstr "Afficher cette information publiquement"
 
 #: views/links/exportation.atom.xml.twig:26
 #: views/links/feeds/show.atom.xml.twig:25
@@ -1762,46 +1777,46 @@ msgstr "Un lien partagé par %s sur %s."
 msgid "Added by"
 msgstr "Ajouté par"
 
-#: views/links/show.html.twig:141
+#: views/links/show.html.twig:145
 msgid "See also"
 msgstr "Voir aussi"
 
-#: views/links/show.html.twig:165
+#: views/links/show.html.twig:169
 msgid "Read"
 msgstr "Lire"
 
-#: views/links/show.html.twig:168
+#: views/links/show.html.twig:172
 msgid "(open a new window)"
 msgstr "(ouvre une nouvelle fenêtre)"
 
-#: views/links/show.html.twig:206
+#: views/links/show.html.twig:210
 msgid "No collections"
 msgstr "Aucune collection"
 
-#: views/links/show.html.twig:208
+#: views/links/show.html.twig:212
 #, php-format
 msgid "%d collection"
 msgid_plural "%d collections"
 msgstr[0] "%d collection"
 msgstr[1] "%d collections"
 
-#: views/links/show.html.twig:249
+#: views/links/show.html.twig:253
 msgid "Copy link"
 msgstr "Copier le lien"
 
-#: views/links/show.html.twig:262
+#: views/links/show.html.twig:266
 msgid "Copy external link"
 msgstr "Copier le lien externe"
 
-#: views/links/show.html.twig:339
+#: views/links/show.html.twig:343
 msgid "This link being hidden, the notes are private."
 msgstr "Ce lien étant masqué, les notes sont privées."
 
-#: views/links/show.html.twig:347
+#: views/links/show.html.twig:351
 msgid "No notes have yet been taken."
 msgstr "Aucune note n’a encore été prise."
 
-#: views/links/show.html.twig:394
+#: views/links/show.html.twig:398
 msgid "Add a note"
 msgstr "Ajouter une note"
 

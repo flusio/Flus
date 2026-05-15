@@ -163,6 +163,7 @@ CREATE TABLE links (
     image_filename TEXT,
     tags JSONB NOT NULL DEFAULT '[]',
     origin TEXT NOT NULL DEFAULT '',
+    origin_is_public BOOLEAN NOT NULL DEFAULT false,
 
     fetched_at TIMESTAMPTZ,
     fetched_code INTEGER NOT NULL DEFAULT 0,

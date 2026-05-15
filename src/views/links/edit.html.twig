@@ -36,7 +36,6 @@
                     required
                     autocomplete="off"
                     autofocus
-                    aria-describedby="title-desc"
                     {% if form.isInvalid('title') %}
                         aria-errormessage="title-error"
                         aria-invalid="true"
@@ -74,6 +73,53 @@
                     </p>
                 {% endif %}
             </div>
+
+            <fieldset>
+                <legend>{{ t('Origin') }}</legend>
+
+                <div class="flow">
+                    <div class="form-group">
+                        <label for="origin">
+                            {{ t('Where did you find that link?') }}
+                            <span class="label__help">
+                                {{ t('(optional, preferably an URL)') }}
+                            </span>
+                        </label>
+
+                        {% if form.isInvalid('origin') %}
+                            <p id="origin-error" class="form-group__error">
+                                {{ t('Error:') }}
+                                {{ form.error('origin') }}
+                            </p>
+                        {% endif %}
+
+                        <input
+                            id="origin"
+                            name="origin"
+                            type="text"
+                            value="{{ form.origin }}"
+                            maxlength="{{ form.origin_max_length }}"
+                            {% if form.isInvalid('origin') %}
+                                aria-errormessage="origin-error"
+                                aria-invalid="true"
+                            {% endif %}
+                        >
+                    </div>
+
+                    <div>
+                        <input
+                            type="checkbox"
+                            id="origin-is-public"
+                            name="origin_is_public"
+                            {{ form.origin_is_public ? 'checked' : '' }}
+                        >
+
+                        <label for="origin-is-public">
+                            {{ t('Display this information publicly') }}
+                        </label>
+                    </div>
+                </div>
+            </fieldset>
 
             <div class="text--center">
                 <button type="submit" class="button--primary button--big">
