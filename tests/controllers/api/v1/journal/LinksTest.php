@@ -59,7 +59,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($link2->isInNeverList($user));
     }
 
-    public function testDeleteAllCanRemoveLinksBySource(): void
+    public function testDeleteAllCanRemoveLinksByOrigin(): void
     {
         $user = $this->login();
         $news = $user->news();
@@ -79,7 +79,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($link2->isInNeverList($user));
 
         $response = $this->apiRun('DELETE', '/api/v1/journal/links', [
-            'source' => "collection#{$collection->id}",
+            'origin' => $origin,
         ]);
 
         $this->assertResponseCode($response, 200);

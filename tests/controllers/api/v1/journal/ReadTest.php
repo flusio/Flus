@@ -59,7 +59,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($link2->isReadBy($user));
     }
 
-    public function testCreateCanMarkAsReadBySource(): void
+    public function testCreateCanMarkAsReadByOrigin(): void
     {
         $user = $this->login();
         $news = $user->news();
@@ -79,7 +79,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($link2->isReadBy($user));
 
         $response = $this->apiRun('POST', '/api/v1/journal/read', [
-            'source' => "collection#{$collection->id}",
+            'origin' => $origin,
         ]);
 
         $this->assertResponseCode($response, 200);

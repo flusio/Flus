@@ -59,7 +59,7 @@ class LaterTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($link2->isInBookmarksOf($user));
     }
 
-    public function testCreateCanMakAsReadLaterBySource(): void
+    public function testCreateCanMakAsReadLaterByOrigin(): void
     {
         $user = $this->login();
         $news = $user->news();
@@ -79,7 +79,7 @@ class LaterTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($link2->isInBookmarksOf($user));
 
         $response = $this->apiRun('POST', '/api/v1/journal/later', [
-            'source' => "collection#{$collection->id}",
+            'origin' => $origin,
         ]);
 
         $this->assertResponseCode($response, 200);

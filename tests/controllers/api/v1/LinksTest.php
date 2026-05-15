@@ -321,21 +321,31 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $old_reading_time = 21;
         $new_title = 'The link';
         $new_reading_time = 42;
+        $old_origin = 'Internet';
+        $new_origin = 'The Web';
+        $old_origin_is_public = false;
+        $new_origin_is_public = true;
         $link = LinkFactory::create([
             'user_id' => $user->id,
             'title' => $old_title,
             'reading_time' => $old_reading_time,
+            'origin' => $old_origin,
+            'origin_is_public' => $old_origin_is_public,
         ]);
 
         $response = $this->apiRun('PATCH', "/api/v1/links/{$link->id}", [
             'title' => $new_title,
             'reading_time' => $new_reading_time,
+            'origin' => $new_origin,
+            'origin_is_public' => $new_origin_is_public,
         ]);
 
         $this->assertResponseCode($response, 200);
         $link = $link->reload();
         $this->assertSame($new_title, $link->title);
         $this->assertSame($new_reading_time, $link->reading_time);
+        $this->assertSame($new_origin, $link->origin);
+        $this->assertSame($new_origin_is_public, $link->origin_is_public);
         $this->assertApiResponse($response, $link->toJson($user));
     }
 

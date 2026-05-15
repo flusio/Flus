@@ -2,6 +2,7 @@
 
 namespace App\models;
 
+use App\auth;
 use App\utils;
 use Minz\Database;
 use Minz\Translatable;
@@ -549,9 +550,16 @@ class Link
     public function toJson(User $context_user): array
     {
         $origin_model = $this->origin();
+        $origin = null;
         $source = null;
 
-        if ($context_user->id === $this->user_id && $origin_model) {
+        if ($origin_model && auth\Access::can($context_user, 'viewOrigin', $this)) {
+            $origin = [
+                'value' => $origin_model->value,
+                'label' => $origin_model->label,
+                'url' => $origin_model->url,
+            ];
+
             $source = $this->source();
         }
 
@@ -564,6 +572,7 @@ class Link
             'reading_time' => $this->reading_time,
             'tags' => $this->tags,
             'source' => $source, // @deprecated Can be removed in version 3.0.0.
+            'origin' => $origin,
             'is_read' => $this->isReadBy($context_user),
             'is_read_later' => $this->isInBookmarksOf($context_user),
             'collections' => array_column($this->collections(), 'id'),

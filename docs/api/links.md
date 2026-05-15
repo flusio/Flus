@@ -36,6 +36,7 @@ $ curl -H "Content-Type: application/json" \
         "reading_time": 3,
         "tags": [],
         "source": null,
+        "origin": null,
         "is_read": false,
         "is_read_later": false,
         "collections": [],
@@ -80,6 +81,7 @@ $ curl -H "Content-Type: application/json" \
 ### Changelog
 
 - 2.0.0: added
+- 2.5.0: `source` is deprecated, use `origin` instead
 
 ## Get a link
 
@@ -110,6 +112,7 @@ $ curl -H "Content-Type: application/json" \
     "reading_time": 3,
     "tags": [],
     "source": null,
+    "origin": null,
     "is_read": false,
     "is_read_later": false,
     "collections": [],
@@ -145,6 +148,7 @@ $ curl -H "Content-Type: application/json" \
 ### Changelog
 
 - 2.0.0: added
+- 2.5.0: `source` is deprecated, use `origin` instead
 
 ## Update a link
 
@@ -163,7 +167,7 @@ PATCH /api/v1/links/:id
 $ curl -H "Content-Type: application/json" \
        -H "Authorization: Bearer <token>" \
        -X PATCH \
-       -d '{"title": "Flus homepage", "reading_time": 10}' \
+       -d '{"title": "Flus homepage", "reading_time": 10, "origin": "https://example.org", "origin_is_public": true}' \
        "https://app.flus.fr/api/v1/links/<id>"
 ```
 
@@ -181,6 +185,11 @@ $ curl -H "Content-Type: application/json" \
     "reading_time": 10,
     "tags": [],
     "source": null,
+    "origin": {
+        "value": "https://example.org",
+        "label": "example.org",
+        "url": "https://example.org"
+    },
     "is_read": false,
     "is_read_later": false,
     "collections": [],
@@ -240,6 +249,8 @@ $ curl -H "Content-Type: application/json" \
 ### Changelog
 
 - 2.0.0: added
+- 2.5.0: `origin` and `origin_is_public` can be updated
+- 2.5.0: `source` is deprecated, use `origin` instead
 
 ## Delete a link
 

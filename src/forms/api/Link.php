@@ -18,4 +18,10 @@ class Link extends Form
 
     #[Form\Field]
     public int $reading_time;
+
+    #[Form\Field(bind: 'setOrigin')]
+    public string $origin;
+
+    #[Form\Field]
+    public bool $origin_is_public;
 }

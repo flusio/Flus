@@ -15,6 +15,9 @@ class EmptyJournal extends Form
     public ?\DateTimeImmutable $date = null;
 
     #[Form\Field]
+    public ?string $origin = null;
+
+    #[Form\Field]
     public ?string $source = null;
 
     private models\User $user;
@@ -40,6 +43,10 @@ class EmptyJournal extends Form
         $source_origin = $this->sourceToOrigin();
         if ($source_origin) {
             $options['origin'] = $source_origin;
+        }
+
+        if ($this->origin) {
+            $options['origin'] = $this->origin;
         }
 
         $news = $this->user->news();
