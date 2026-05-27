@@ -33,7 +33,7 @@ trait NewsQueries
                 l.url_hash,
                 l.*,
                 lc.created_at AS published_at,
-                c.id AS initial_collection_id
+                c.id AS source_id
             FROM collections c, links_to_collections lc, followed_collections fc, links l
 
             WHERE fc.user_id = :user_id

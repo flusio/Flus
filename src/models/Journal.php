@@ -29,12 +29,13 @@ class Journal
 
         foreach ($links as $news_link) {
             $link = $this->user->obtainLink($news_link);
+            $link->source_id = $news_link->source_id;
 
             // If the link has already an origin info, we want to keep it.
-            // Otherwise, we use the initial collection URL.
+            // Otherwise, we use the initial source URL.
             if (!$link->origin) {
                 $collection_url = \Minz\Url::absoluteFor('collection', [
-                    'id' => $news_link->initial_collection_id,
+                    'id' => $link->source_id,
                 ]);
                 $link->setOrigin($collection_url);
             }

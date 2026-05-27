@@ -8,11 +8,10 @@ use App\models;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class OriginGroup
+class SourceGroup
 {
     public function __construct(
-        public string $origin,
-        public string $label,
+        public models\Collection $source,
         /** @var models\Link[] */
         public array $links = [],
     ) {

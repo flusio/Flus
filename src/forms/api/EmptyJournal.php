@@ -15,9 +15,6 @@ class EmptyJournal extends Form
     public ?\DateTimeImmutable $date = null;
 
     #[Form\Field]
-    public ?string $origin = null;
-
-    #[Form\Field]
     public ?string $source = null;
 
     private models\User $user;
@@ -39,32 +36,44 @@ class EmptyJournal extends Form
             $options['published_date'] = $this->date;
         }
 
-        // @deprecated Can be removed in version 3.0.0.
-        $source_origin = $this->sourceToOrigin();
-        if ($source_origin) {
-            $options['origin'] = $source_origin;
-        }
-
-        if ($this->origin) {
-            $options['origin'] = $this->origin;
+        $source = $this->normalizedSource();
+        if ($source) {
+            $options['source'] = $source;
         }
 
         $news = $this->user->news();
         return $news->links(options: $options);
     }
 
-    public function sourceToOrigin(): ?string
+    /**
+     * Return the normalized source.
+     *
+     * Before Flus 2.5.0, sources followed the format "<source type>#<source id>",
+     * where "source type" could either be "user" or "collection". Since Flus
+     * 2.5.0, only "collection" source are supported. Thus, the source only
+     * contains the id of the collection.
+     *
+     * This method enables to support both formats by always returning (only)
+     * the source id.
+     *
+     * @deprecated Can be removed in version 3.0.0.
+     */
+    public function normalizedSource(): ?string
     {
         if (!$this->source) {
             return null;
         }
 
+        if (!str_contains($this->source, '#')) {
+            return $this->source;
+        }
+
         list($source_type, $source_id) = explode('#', $this->source, 2);
 
-        return match ($source_type) {
-            'user' => \Minz\Url::absoluteFor('profile', ['id' => $source_id]),
-            'collection' => \Minz\Url::absoluteFor('collection', ['id' => $source_id]),
-            default => null,
-        };
+        if ($source_type !== 'collection') {
+            return null;
+        }
+
+        return $source_id;
     }
 }

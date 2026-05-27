@@ -29,7 +29,7 @@ $ curl -H "Content-Type: application/json" \
         "is_hidden": false,
         "reading_time": 3,
         "tags": [],
-        "source": "collection#<id>",
+        "source": "<id>",
         "origin": {
             "value": "https://app.flus.fr/collections/<id>",
             "label": "<collection's name>",
@@ -55,7 +55,8 @@ $ curl -H "Content-Type: application/json" \
 ### Changelog
 
 - 2.0.0: added
-- 2.5.0: `source` is deprecated, use `origin` instead
+- 2.5.0: `origin` is added
+- 2.5.0: `source` format changed from `<source type>#<source id>` to `<source id>`
 
 ## Refresh the journal
 
@@ -103,8 +104,7 @@ POST /api/v1/journal/read
 ### JSON Parameters
 
 - `date` (string, optional, format: `YYYY-MM-DD`): a date to filter the links to mark as read
-- `origin` (string, optional): an origin to filter the links to mark as read
-- `source` (**deprecated,** string, optional): a source to filter the links to mark as read
+- `source` (string, optional): a source to filter the links to mark as read
 
 ### Example
 
@@ -135,7 +135,7 @@ $ curl -H "Content-Type: application/json" \
 ### Changelog
 
 - 2.0.0: added
-- 2.5.0: `source` is deprecated, use `origin` instead
+- 2.5.0: old `source` format (e.g. `collection#<id>`) is deprecated, use `<id>` format instead
 
 ## Mark the links of the journal to read later
 
@@ -146,8 +146,7 @@ POST /api/v1/journal/later
 ### JSON Parameters
 
 - `date` (string, optional, format: `YYYY-MM-DD`): a date to filter the links to mark to read later
-- `origin` (string, optional): an origin to filter the links to mark to read later
-- `source` (**deprecated,** string, optional): a source to filter the links to mark to read later
+- `source` (string, optional): a source to filter the links to mark to read later
 
 ### Example
 
@@ -178,7 +177,7 @@ $ curl -H "Content-Type: application/json" \
 ### Changelog
 
 - 2.0.0: added
-- 2.5.0: `source` is deprecated, use `origin` instead
+- 2.5.0: old `source` format (e.g. `collection#<id>`) is deprecated, use `<id>` format instead
 
 ## Remove the links from the journal
 
@@ -189,8 +188,7 @@ DELETE /api/v1/journal/links
 ### JSON Parameters
 
 - `date` (string, optional, format: `YYYY-MM-DD`): a date to filter the links to remove
-- `origin` (string, optional): an origin to filter the links to remove
-- `source` (**deprecated,** string, optional): a source to filter the links to remove
+- `source` (string, optional): a source to filter the links to remove
 
 ### Example
 
@@ -221,7 +219,7 @@ $ curl -H "Content-Type: application/json" \
 ### Changelog
 
 - 2.0.0: added
-- 2.5.0: `source` is deprecated, use `origin` instead
+- 2.5.0: old `source` format (e.g. `collection#<id>`) is deprecated, use `<id>` format instead
 
 ## Remove a single link from the journal
 

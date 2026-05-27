@@ -85,6 +85,9 @@ class Link
     public ?string $feed_entry_id = null;
 
     #[Database\Column]
+    public ?string $source_id = null;
+
+    #[Database\Column]
     public string $source_type = '';
 
     #[Database\Column]
@@ -93,9 +96,6 @@ class Link
     /** @var string[] */
     #[Database\Column]
     public array $tags = [];
-
-    #[Database\Column(computed: true)]
-    public ?string $initial_collection_id = null;
 
     #[Database\Column(computed: true)]
     public ?\DateTimeImmutable $published_at = null;
@@ -167,7 +167,6 @@ class Link
         $link_copied->fetched_code = $link->fetched_code;
         $link_copied->fetched_count = $link->fetched_count;
         $link_copied->fetched_retry_at = $link->fetched_retry_at;
-        $link_copied->setOrigin('');
 
         return $link_copied;
     }
@@ -353,6 +352,17 @@ class Link
     }
 
     /**
+     * Return the source of the link.
+     */
+    public function source(): ?Collection
+    {
+        if (!$this->source_id) {
+            return null;
+        }
+        return Collection::find($this->source_id);
+    }
+
+    /**
      * Return whether or not the given user has the link URL in its news.
      */
     public function isInNewsOf(?User $user): bool
@@ -515,7 +525,6 @@ class Link
     public function toJson(User $context_user): array
     {
         $origin = null;
-        $source = null;
 
         if ($this->origin && auth\Access::can($context_user, 'viewOrigin', $this)) {
             $origin_formatter = new utils\OriginFormatter($context_user);
@@ -525,8 +534,6 @@ class Link
                 'label' => $origin_formatter->labelFromOrigin($this->origin),
                 'url' => $origin_formatter->urlFromOrigin($this->origin),
             ];
-
-            $source = $origin_formatter->sourceFromOrigin($this->origin);
         }
 
         return [
@@ -537,7 +544,7 @@ class Link
             'is_hidden' => $this->is_hidden,
             'reading_time' => $this->reading_time,
             'tags' => $this->tags,
-            'source' => $source, // @deprecated Can be removed in version 3.0.0.
+            'source' => $this->source_id,
             'origin' => $origin,
             'is_read' => $this->isReadBy($context_user),
             'is_read_later' => $this->isInBookmarksOf($context_user),

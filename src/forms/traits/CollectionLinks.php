@@ -18,7 +18,7 @@ trait CollectionLinks
     public ?\DateTimeImmutable $date = null;
 
     #[Form\Field]
-    public string $origin = '';
+    public string $source = '';
 
     private string $from = '';
 
@@ -34,8 +34,8 @@ trait CollectionLinks
         if ($this->date) {
             $options['published_date'] = $this->date;
         }
-        if ($this->origin) {
-            $options['origin'] = $this->origin;
+        if ($this->source) {
+            $options['source'] = $this->source;
         }
 
         $options['hidden'] = auth\Access::can($user, 'viewHiddenLinks', $collection);

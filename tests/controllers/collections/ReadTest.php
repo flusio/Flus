@@ -135,22 +135,20 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $news = $user->news();
         $collection1 = CollectionFactory::create();
         $collection2 = CollectionFactory::create();
-        $origin1 = \Minz\Url::absoluteFor('collection', ['id' => $collection1->id]);
-        $origin2 = \Minz\Url::absoluteFor('collection', ['id' => $collection2->id]);
         $link1 = LinkFactory::create([
             'user_id' => $user->id,
-            'origin' => $origin1,
+            'source_id' => $collection1->id,
         ]);
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
-            'origin' => $origin2,
+            'source_id' => $collection2->id,
         ]);
         $link1->addCollection($news);
         $link2->addCollection($news);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsRead::class),
-            'origin' => $origin1,
+            'source' => $collection1->id,
         ]);
 
         $this->assertResponseCode($response, 302, '/');
@@ -332,22 +330,20 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $news = $user->news();
         $collection1 = CollectionFactory::create();
         $collection2 = CollectionFactory::create();
-        $origin1 = \Minz\Url::absoluteFor('collection', ['id' => $collection1->id]);
-        $origin2 = \Minz\Url::absoluteFor('collection', ['id' => $collection2->id]);
         $link1 = LinkFactory::create([
             'user_id' => $user->id,
-            'origin' => $origin1,
+            'source_id' => $collection1->id,
         ]);
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
-            'origin' => $origin2,
+            'source_id' => $collection2->id,
         ]);
         $link1->addCollection($news);
         $link2->addCollection($news);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/later", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsReadLater::class),
-            'origin' => $origin1,
+            'source' => $collection1->id,
         ]);
 
         $this->assertResponseCode($response, 302, '/');
@@ -523,22 +519,20 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $news = $user->news();
         $collection1 = CollectionFactory::create();
         $collection2 = CollectionFactory::create();
-        $origin1 = \Minz\Url::absoluteFor('collection', ['id' => $collection1->id]);
-        $origin2 = \Minz\Url::absoluteFor('collection', ['id' => $collection2->id]);
         $link1 = LinkFactory::create([
             'user_id' => $user->id,
-            'origin' => $origin1,
+            'source_id' => $collection1->id,
         ]);
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
-            'origin' => $origin2,
+            'source_id' => $collection2->id,
         ]);
         $link1->addCollection($news);
         $link2->addCollection($news);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/never", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsNever::class),
-            'origin' => $origin1,
+            'source' => $collection1->id,
         ]);
 
         $this->assertResponseCode($response, 302, '/');

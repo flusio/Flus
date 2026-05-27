@@ -64,10 +64,9 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $news = $user->news();
         $collection = CollectionFactory::create();
-        $origin = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
         $link1 = LinkFactory::create([
             'user_id' => $user->id,
-            'origin' => $origin,
+            'source_id' => $collection->id,
         ]);
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
@@ -79,7 +78,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($link2->isInNeverList($user));
 
         $response = $this->apiRun('DELETE', '/api/v1/journal/links', [
-            'origin' => $origin,
+            'source' => $collection->id,
         ]);
 
         $this->assertResponseCode($response, 200);

@@ -81,7 +81,7 @@ $ curl -H "Content-Type: application/json" \
 ### Changelog
 
 - 2.0.0: added
-- 2.5.0: `source` is deprecated, use `origin` instead
+- 2.5.0: `origin` added
 
 ## Get a link
 
@@ -148,7 +148,7 @@ $ curl -H "Content-Type: application/json" \
 ### Changelog
 
 - 2.0.0: added
-- 2.5.0: `source` is deprecated, use `origin` instead
+- 2.5.0: `origin` added
 
 ## Update a link
 
@@ -160,6 +160,8 @@ PATCH /api/v1/links/:id
 
 - `title` (string, optional): the title of the link
 - `reading_time` (integer, optional): the reading time of the link, in minutes
+- `origin` (string, optional): the origin of the link, URL preferred
+- `origin_is_public` (boolean, optional): whether the origin of the link is public or not
 
 ### Example
 
@@ -249,8 +251,7 @@ $ curl -H "Content-Type: application/json" \
 ### Changelog
 
 - 2.0.0: added
-- 2.5.0: `origin` and `origin_is_public` can be updated
-- 2.5.0: `source` is deprecated, use `origin` instead
+- 2.5.0: `origin` and `origin_is_public` added
 
 ## Delete a link
 

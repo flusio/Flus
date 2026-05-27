@@ -90,4 +90,4 @@ Thus, you can follow feeds using the same endpoint as for the collections.
 - 2.0.0: added
 - 2.0.5: add missing `created_at`, `is_hidden`, `source`, `published_at`, `number_notes`
 - 2.0.5: `feeds` entry added
-- 2.5.0: `source` is deprecated, use `origin` instead
+- 2.5.0: `origin` added to links
