@@ -55,7 +55,7 @@ class Registrations extends BaseController
      * @request_param string username
      * @request_param string password
      * @request_param bool accept_terms
-     * @request_param bool accept_contact
+     * @request_param string altcha
      * @request_param string csrf_token
      *
      * @response 302 /

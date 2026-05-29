@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-05-29 16:40+0200\n"
-"PO-Revision-Date: 2026-05-29 16:41+0200\n"
+"POT-Creation-Date: 2026-05-29 17:08+0200\n"
+"PO-Revision-Date: 2026-05-29 17:08+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -121,7 +121,7 @@ msgstr ""
 "Que faites-vous ? Vous ne pouvez pas vous connecter en tant qu’utilisateur "
 "support."
 
-#: forms/Registration.php:53
+#: forms/Registration.php:50
 msgid "You must accept the terms of service."
 msgstr "Vous devez accepter les conditions générales d’utilisation."
 
@@ -725,7 +725,7 @@ msgstr "(max. %d caractères)"
 #: views/notes/edit.html.twig:24 views/passwords/edit.html.twig:31
 #: views/passwords/forgot.html.twig:43 views/registrations/new.html.twig:51
 #: views/registrations/new.html.twig:79 views/registrations/new.html.twig:113
-#: views/registrations/new.html.twig:163 views/sessions/new.html.twig:32
+#: views/registrations/new.html.twig:151 views/sessions/new.html.twig:32
 #: views/sessions/new.html.twig:67 views/support/show.html.twig:41
 #: views/support/show.html.twig:67
 msgid "Error:"
@@ -2116,7 +2116,6 @@ msgstr ""
 "pourriez vous sentir submergé par la quantité d’informations."
 
 #: views/my/preferences/edit.html.twig:181
-#: views/registrations/new.html.twig:155
 msgid "Accept to be contacted by email to help improve the service (optional)."
 msgstr ""
 "Accepter d’être contacté‧e par courriel pour aider à améliorer le service "
@@ -2852,7 +2851,7 @@ msgstr ""
 "Nous n’y enverrons que des courriels nécessaires au fonctionnement du "
 "service."
 
-#: views/registrations/new.html.twig:169
+#: views/registrations/new.html.twig:157
 #, php-format
 msgid ""
 "Please read <a href=\"%s\" target=\"_blank\">the general terms and "
@@ -2862,7 +2861,7 @@ msgstr ""
 "générales de services et d’utilisation</a> pour vous assurer que celles-ci "
 "vous conviennent."
 
-#: views/registrations/new.html.twig:185
+#: views/registrations/new.html.twig:173
 msgid ""
 "I acknowledge that I have read and accepted the general terms and conditions "
 "of service and use"
@@ -2870,11 +2869,11 @@ msgstr ""
 "Je reconnais avoir lu et accepté les conditions générales de services et "
 "d’utilisation"
 
-#: views/registrations/new.html.twig:197
+#: views/registrations/new.html.twig:185
 msgid "Sign up"
 msgstr "S’inscrire"
 
-#: views/registrations/new.html.twig:205
+#: views/registrations/new.html.twig:193
 msgid "Already an account?"
 msgstr "Déjà un compte ?"
 

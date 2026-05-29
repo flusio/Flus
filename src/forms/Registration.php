@@ -27,9 +27,6 @@ class Registration extends BaseForm
     #[Form\Field(bind: 'setPassword')]
     public string $password = '';
 
-    #[Form\Field]
-    public bool $accept_contact = false;
-
     #[Form\Field(bind: false)]
     public bool $accept_terms = false;
 

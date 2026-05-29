@@ -144,18 +144,6 @@
                 </div>
             </div>
 
-            <div>
-                <input
-                    type="checkbox"
-                    id="accept-contact"
-                    name="accept_contact"
-                />
-
-                <label for="accept-contact">
-                    {{ t('Accept to be contacted by email to help improve the service (optional).') }}
-                </label>
-            </div>
-
             {% if form.hasTerms() %}
                 <div class="panel panel--base panel--rounded form-group">
                     {% if form.isInvalid('accept_terms') %}
