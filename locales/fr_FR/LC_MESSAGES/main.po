@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-05-29 17:08+0200\n"
-"PO-Revision-Date: 2026-05-29 17:08+0200\n"
+"POT-Creation-Date: 2026-06-08 16:45+0200\n"
+"PO-Revision-Date: 2026-06-08 16:45+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -716,9 +716,9 @@ msgstr "(max. %d caractères)"
 #: views/mastodon/show.html.twig:62 views/mastodon/show.html.twig:139
 #: views/my/account/deletion.html.twig:38 views/my/avatar/edit.html.twig:20
 #: views/my/preferences/edit.html.twig:35
-#: views/my/preferences/edit.html.twig:67
-#: views/my/preferences/edit.html.twig:98
-#: views/my/preferences/edit.html.twig:129 views/my/profile/edit.html.twig:20
+#: views/my/preferences/edit.html.twig:66
+#: views/my/preferences/edit.html.twig:97
+#: views/my/preferences/edit.html.twig:128 views/my/profile/edit.html.twig:20
 #: views/my/profile/edit.html.twig:50
 #: views/my/security/confirmation.html.twig:40
 #: views/my/security/show.html.twig:31 views/my/security/show.html.twig:59
@@ -793,7 +793,7 @@ msgstr "Modification d'une collection"
 #: views/collections/filters/edit.html.twig:96
 #: views/collections/groups/edit.html.twig:99 views/groups/edit.html.twig:43
 #: views/links/edit.html.twig:126 views/mastodon/show.html.twig:96
-#: views/my/preferences/edit.html.twig:204 views/my/profile/edit.html.twig:74
+#: views/my/preferences/edit.html.twig:202 views/my/profile/edit.html.twig:74
 #: views/my/security/show.html.twig:98 views/notes/edit.html.twig:49
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
@@ -2091,23 +2091,23 @@ msgstr "Téléverser une photo"
 msgid "Your language"
 msgstr "Votre langue"
 
-#: views/my/preferences/edit.html.twig:62
+#: views/my/preferences/edit.html.twig:61
 msgid "Interface theme"
 msgstr "Thème de l’interface"
 
-#: views/my/preferences/edit.html.twig:93
+#: views/my/preferences/edit.html.twig:92
 msgid "Font family"
 msgstr "Police d’écriture"
 
-#: views/my/preferences/edit.html.twig:124
+#: views/my/preferences/edit.html.twig:123
 msgid "Text size"
 msgstr "Taille du texte"
 
-#: views/my/preferences/edit.html.twig:164
+#: views/my/preferences/edit.html.twig:162
 msgid "Enable compact mode"
 msgstr "Activer le mode compact"
 
-#: views/my/preferences/edit.html.twig:168
+#: views/my/preferences/edit.html.twig:166
 msgid ""
 "In compact mode, you see more links at a glance, but you may feel "
 "overwhelmed by the information."
@@ -2115,17 +2115,17 @@ msgstr ""
 "En mode compact, vous voyez plus de liens en un coup d’œil, mais vous "
 "pourriez vous sentir submergé par la quantité d’informations."
 
-#: views/my/preferences/edit.html.twig:181
+#: views/my/preferences/edit.html.twig:179
 msgid "Accept to be contacted by email to help improve the service (optional)."
 msgstr ""
 "Accepter d’être contacté‧e par courriel pour aider à améliorer le service "
 "(facultatif)."
 
-#: views/my/preferences/edit.html.twig:195
+#: views/my/preferences/edit.html.twig:193
 msgid "Enable beta features"
 msgstr "Activer les fonctionnalités bêta"
 
-#: views/my/preferences/edit.html.twig:199
+#: views/my/preferences/edit.html.twig:197
 msgid ""
 "With beta features you test some features before everyone else, but you "
 "enter a turbulent zone."

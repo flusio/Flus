@@ -2,9 +2,9 @@
 <html
     lang="{{ app.locale | locale_to_bcp_47 }}"
     data-controller="color-scheme"
-    data-color-scheme="{{ app.user and app.user.isBetaEnabled ? app.user.option_color_scheme : 'light' }}"
-    data-font-family="{{ app.user and app.user.isBetaEnabled ? app.user.option_font_family : 'default' }}"
-    data-text-size="{{ app.user and app.user.isBetaEnabled ? app.user.option_text_size : 'medium' }}"
+    data-color-scheme="{{ app.user ? app.user.option_color_scheme : 'light' }}"
+    data-font-family="{{ app.user ? app.user.option_font_family : 'default' }}"
+    data-text-size="{{ app.user ? app.user.option_text_size : 'medium' }}"
 >
     <head>
         <meta charset="UTF-8" />
