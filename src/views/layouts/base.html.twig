@@ -38,6 +38,9 @@
         {% if app_configuration('plausible_url') %}
             <script defer data-domain="{{ current_host() }}" src="{{ app_configuration('plausible_url') }}/js/script.js"></script>
         {% endif %}
+
+        {% block head_additional_tags %}
+        {% endblock %}
     </head>
 
     <body>

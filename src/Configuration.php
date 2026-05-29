@@ -12,6 +12,7 @@ namespace App;
  *     'media_path': string,
  *     'demo': bool,
  *     'registrations_opened': bool,
+ *     'registration_captcha': bool,
  *     'feed_what_is_new': string,
  *     'subscriptions_enabled': bool,
  *     'subscriptions_host': string,

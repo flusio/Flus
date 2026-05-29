@@ -1,6 +1,9 @@
 import * as Turbo from '@hotwired/turbo';
 import { Application } from '@hotwired/stimulus';
 
+import 'altcha';
+import 'altcha/i18n/fr-fr';
+
 import AutosubmitController from './controllers/autosubmit_controller.js';
 import AutosaveController from './controllers/autosave_controller.js';
 import BackButtonController from './controllers/back_button_controller.js';

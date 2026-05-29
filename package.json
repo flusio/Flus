@@ -26,6 +26,7 @@
     "@flus/design": "^1.0.0",
     "@hotwired/stimulus": "^3.1.0",
     "@hotwired/turbo": "^8",
+    "altcha": "^3.0.10",
     "stringz": "^2.1.0",
     "twitter-text": "^3.1.0"
   }

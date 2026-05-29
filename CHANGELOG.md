@@ -7,6 +7,9 @@
 The `source` field has been deprecated in the API.
 You must use the new `origin` field instead.
 
+You can enable Altcha to protect your registration page.
+Set the new `APP_REGISTRATION_CAPTCHA` environment variable to `true`.
+
 ## 2026-04-22 - v2.4.0
 
 ### Features

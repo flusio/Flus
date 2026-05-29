@@ -30,6 +30,8 @@ class Router
 
         $router->addRoute('GET', '/showcases/:id', 'Showcases#show', 'showcase');
 
+        $router->addRoute('GET', '/altcha', 'Altcha#show', 'altcha');
+
         // Registration
         $router->addRoute('GET', '/registration', 'Registrations#new', 'registration');
         $router->addRoute('POST', '/registration', 'Registrations#create', 'create user');

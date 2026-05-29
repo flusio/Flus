@@ -41,9 +41,11 @@ class Registrations extends BaseController
 
         $form = new forms\Registration();
 
-        return Response::ok('registrations/new.html.twig', [
+        $response = Response::ok('registrations/new.html.twig', [
             'form' => $form,
         ]);
+        $this->setAltchaCSPHeaders($response);
+        return $response;
     }
 
     /**
@@ -80,9 +82,11 @@ class Registrations extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('registrations/new.html.twig', [
+            $response = Response::badRequest('registrations/new.html.twig', [
                 'form' => $form,
             ]);
+            $this->setAltchaCSPHeaders($response);
+            return $response;
         }
 
         $user = $form->model();
@@ -110,5 +114,16 @@ class Registrations extends BaseController
             'samesite' => 'Lax',
         ]);
         return $response;
+    }
+
+    public function setAltchaCSPHeaders(Response $response): void
+    {
+        if (\App\Configuration::$application['registration_captcha']) {
+            $response->setContentSecurityPolicy('worker-src', "'self' blob:");
+            $response->setContentSecurityPolicy(
+                'style-src-elem',
+                "'self' 'sha256-egofkfASsSTkzuyfBiXWBobV9ZDK4UIMKiNlvLr9nNE=' 'unsafe-hashes'"
+            );
+        }
     }
 }

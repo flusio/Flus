@@ -16,6 +16,7 @@ use Minz\Validable;
 class Registration extends BaseForm
 {
     use utils\Memoizer;
+    use traits\Altcha;
 
     #[Form\Field(bind: 'setUsername')]
     public string $username = '';
@@ -52,5 +53,10 @@ class Registration extends BaseForm
                 _('You must accept the terms of service.'),
             );
         }
+    }
+
+    public function mustCheckAltcha(): bool
+    {
+        return \App\Configuration::$application['registration_captcha'];
     }
 }
