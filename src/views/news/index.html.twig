@@ -104,14 +104,12 @@
                                 {% set links = date_group.links %}
 
                                 {% if links %}
-                                    <div class="grid">
+                                    <div class="list">
                                         {% for link in date_group.links %}
-                                            {{ include('links/_link.html.twig', {
+                                            {{ include('links/_link_list.html.twig', {
                                                 link: link,
-                                                from: url('news'),
                                                 display_edit: true,
                                                 display_repair: true,
-                                                display_origin: true,
                                                 display_read_later: true,
                                                 display_mark_as_read: true,
                                                 display_never: true,
@@ -194,19 +192,17 @@
                                             </details>
                                         </div>
 
-                                        <div class="source-group__body grid">
+                                        <div class="source-group__body list">
                                             {% for link in source_group.links %}
-                                                {{ include('links/_link.html.twig', {
+                                                {{ include('links/_link_list.html.twig', {
                                                     link: link,
-                                                    from: url('news'),
                                                     display_edit: true,
                                                     display_repair: true,
-                                                    display_origin: true,
                                                     display_read_later: true,
                                                     display_mark_as_read: true,
                                                     display_never: true,
                                                     storing_must_mark_as_read: true,
-                                                }) }}
+                                                })}}
                                             {% endfor %}
                                         </div>
                                     </div>

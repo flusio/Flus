@@ -63,3 +63,13 @@
 :root[data-font-family="system-ui"] body {
     font-family: system-ui, sans-serif;
 }
+
+.cols--start {
+    align-items: stretch;
+}
+
+@media (min-width: 800px) {
+    .cols--start {
+        align-items: flex-start;
+    }
+}

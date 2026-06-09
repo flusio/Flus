@@ -68,6 +68,7 @@
 .link__image-container {
     overflow: hidden;
 
+    display: block;
     width: 5rem;
     height: 5rem;
 
@@ -112,7 +113,7 @@
 
 .link__title {
     margin-top: 0;
-    margin-bottom: var(--space-medium);
+    margin-bottom: 0;
 
     font-size: var(--font-size-normal);
     font-weight: bold;
@@ -131,7 +132,7 @@
 
 @media (min-width: 800px) {
     .link:not(.link--compact) .link__title {
-        font-size: 1.1em;
+        font-size: 1.0em;
     }
 }
 
@@ -203,4 +204,29 @@
 
     background-color: var(--color-accent-bg);
     border-radius: 50%;
+}
+
+.list {
+    border: 1px solid var(--color-grey-bg);
+    border-radius: var(--border-radius);
+}
+
+.link-list {
+    padding: var(--space-small);
+}
+
+.link-list + .link-list {
+    margin-top: var(--space-smaller);
+
+    border-top: 1px solid var(--color-grey-bg);
+}
+
+.link-list__padding {
+    padding: var(--space-smaller);
+}
+
+.link-list__actions {
+    padding: var(--space-smaller);
+
+    border-radius: var(--border-radius-small);
 }
