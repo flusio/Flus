@@ -29,7 +29,7 @@ class DateGroup
     public function addLink(models\Link $link): void
     {
         $source = $link->source();
-        if ($source) {
+        if ($source && $link->group_by_source) {
             if (isset($this->source_groups[$source->id])) {
                 $source_group = $this->source_groups[$source->id];
             } else {
