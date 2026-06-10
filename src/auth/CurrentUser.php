@@ -26,9 +26,6 @@ class CurrentUser
      *
      * If a Request is passed, it is used to store the IP address and the
      * session name built from the user agent.
-     *
-     * @throws \RuntimeException
-     *     Raised if the user is the support user.
      */
     public static function createBrowserSession(models\User $user, ?Request $request = null): models\Session
     {
@@ -53,9 +50,6 @@ class CurrentUser
      * Create a new session (valid for 1 month) connected to the given user.
      *
      * If a Request is passed, it is used to store the IP address of the user.
-     *
-     * @throws \RuntimeException
-     *     Raised if the user is the support user.
      */
     public static function createApiSession(
         models\User $user,
@@ -75,9 +69,6 @@ class CurrentUser
      * Create a new session (valid for 1 month) connected to the given user.
      *
      * @param Scope $scope
-     *
-     * @throws \RuntimeException
-     *     Raised if the user is the support user.
      */
     private static function createSession(
         models\User $user,
@@ -85,11 +76,6 @@ class CurrentUser
         string $session_name,
         string $session_ip,
     ): models\Session {
-        if ($user->isSupportUser()) {
-            \Minz\Log::error('Someone tried to log in with the support user');
-            throw new \RuntimeException('Cannot log in with the support user');
-        }
-
         $token = new models\Token(1, 'month');
         $token->save();
 
@@ -120,9 +106,6 @@ class CurrentUser
      *
      * If the session token doesn't exist, has expired or is invalid, it
      * returns null.
-     *
-     * @throws \RuntimeException
-     *     Raised if the user is the support user.
      */
     public static function authenticate(string $session_token, string $scope): ?models\User
     {
@@ -133,12 +116,6 @@ class CurrentUser
         }
 
         $user = $session->user();
-
-        if ($user->isSupportUser()) {
-            $session->remove();
-            \Minz\Log::error('Someone tried to log in with the support user');
-            throw new \RuntimeException('Cannot log in with the support user');
-        }
 
         self::$session = $session;
         self::$instance = $user;

@@ -349,11 +349,10 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testPerformDuplicatesLinkUrlIfNotInCollection(): void
     {
-        $support_user = models\User::supportUser();
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $collection = CollectionFactory::create([
             'type' => 'feed',
-            'user_id' => $support_user->id,
+            'user_id' => null,
             'feed_url' => $feed_url,
             'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
@@ -369,7 +368,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $link_published = '2021-03-30T09:26:00+00:00';
         $original_link = LinkFactory::create([
             'url' => $link_url,
-            'user_id' => $support_user->id,
+            'user_id' => null,
             'feed_entry_id' => null,
             'created_at' => \Minz\Time::now(),
         ]);
@@ -606,11 +605,10 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
     public function testPerformIgnoresEntriesIfUrlExistsInCollection(): void
     {
-        $support_user = models\User::supportUser();
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $collection = CollectionFactory::create([
             'type' => 'feed',
-            'user_id' => $support_user->id,
+            'user_id' => null,
             'feed_url' => $feed_url,
             'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
@@ -626,7 +624,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $link_published = '2021-03-30T09:26:00+00:00';
         $link = LinkFactory::create([
             'url' => $link_url,
-            'user_id' => $support_user->id,
+            'user_id' => null,
             'feed_entry_id' => null,
             'created_at' => \Minz\Time::now(),
         ]);

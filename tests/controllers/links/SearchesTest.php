@@ -37,7 +37,6 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
     public function testShowDisplaysExistingLink(): void
     {
         $user = $this->login();
-        $support_user = models\User::supportUser();
         /** @var string */
         $url = $this->fake('url');
         /** @var string */
@@ -62,14 +61,13 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
     public function testShowDisplaysFeedCollections(): void
     {
         $user = $this->login();
-        $support_user = models\User::supportUser();
         /** @var string */
         $name = $this->fake('sentence');
         /** @var string */
         $feed_url = $this->fake('url');
         $collection = CollectionFactory::create([
             'type' => 'feed',
-            'user_id' => $support_user->id,
+            'user_id' => null,
             'is_public' => true,
             'name' => $name,
             'feed_url' => $feed_url,
@@ -128,7 +126,6 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
     public function testCreateCreatesFeedCollections(): void
     {
         $user = $this->login();
-        $support_user = models\User::supportUser();
         $url = 'https://flus.fr/carnet/';
         $url_feed = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
@@ -144,7 +141,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Collection::count());
         $collection = models\Collection::findBy(['feed_url' => $url_feed]);
         $this->assertNotNull($collection);
-        $this->assertSame($support_user->id, $collection->user_id);
+        $this->assertNull($collection->user_id);
         $this->assertSame('feed', $collection->type);
         $this->assertSame('Carnet de Flus', $collection->name);
         $this->assertSame(200, $collection->feed_fetched_code);
@@ -154,7 +151,6 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
     public function testCreateHandlesFeedUrl(): void
     {
         $user = $this->login();
-        $support_user = models\User::supportUser();
         $url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
 
@@ -170,7 +166,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame([$url], $link->url_feeds);
         $collection = models\Collection::findBy(['feed_url' => $url]);
         $this->assertNotNull($collection);
-        $this->assertSame($support_user->id, $collection->user_id);
+        $this->assertNull($collection->user_id);
         $this->assertSame('feed', $collection->type);
         $this->assertSame('Carnet de Flus', $collection->name);
         $this->assertSame(200, $collection->feed_fetched_code);
@@ -180,7 +176,6 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
     public function testCreateDiscoversYoutubePlaylistFeed(): void
     {
         $user = $this->login();
-        $support_user = models\User::supportUser();
         $url = 'https://www.youtube.com/playlist?list=PLdhqndoLhA_7mQKanRpMGscqEgejpEWaJ';
         $this->mockHttpWithResponse($url, <<<TEXT
             HTTP/2 200
@@ -212,7 +207,6 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateRedirectsIfNotConnected(): void
     {
-        $support_user = models\User::supportUser();
         $url = 'https://github.com/flusio/Flus';
 
         $this->assertSame(0, models\Link::count());
@@ -229,7 +223,6 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
-        $support_user = models\User::supportUser();
         $url = 'https://github.com/flusio/Flus';
 
         $this->assertSame(0, models\Link::count());
@@ -247,7 +240,6 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfUrlIsInvalid(): void
     {
         $user = $this->login();
-        $support_user = models\User::supportUser();
         $url = '';
 
         $this->assertSame(0, models\Link::count());

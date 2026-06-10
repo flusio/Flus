@@ -435,7 +435,7 @@ trait Collection
             WHERE lc.collection_id = c.id
             AND lc.link_id = l.id
 
-            AND l.user_id != :user_id
+            AND l.user_id IS DISTINCT FROM :user_id
             AND l.url_hash = :url_hash
 
             AND (

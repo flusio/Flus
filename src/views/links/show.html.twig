@@ -16,8 +16,8 @@
 {% block opengraph %}
     {{ include('layouts/_opengraph.html.twig', {
         title: t('Shared on %s: %s', [app.brand, link.title]),
-        description: t('A link shared by %s on %s.', [owner.username, app.brand]),
-        locale: owner.locale,
+        description: t('A link shared by %s on %s.', [owner?.username ?? app.brand, app.brand]),
+        locale: owner?.locale ?? '',
         url: url_full('link', { id: link.id }),
         image: url_media_full('covers', link.image_filename),
     }) }}
@@ -127,11 +127,13 @@
                         {% endif %}
 
                         <p>
-                            {{ t('Added by') }}
-                            <a class="username" href="{{ url('profile', { id: owner.id }) }}">
-                                <img class="avatar avatar--mini" alt="" src="{{ url_avatar(owner.avatar_filename) }}">
-                                {{- owner.username -}}
-                            </a>
+                            {% if owner %}
+                                {{ t('Added by') }}
+                                <a class="username" href="{{ url('profile', { id: owner.id }) }}">
+                                    <img class="avatar avatar--mini" alt="" src="{{ url_avatar(owner.avatar_filename) }}">
+                                    {{- owner.username -}}
+                                </a>
+                            {% endif %}
 
                             {% if can(app.user, 'viewOrigin', link) %}
                                 {{ include('links/_origin.html.twig', { origin: link.origin }) }}
@@ -145,12 +147,15 @@
                                 {{ t('See also') }}
 
                                 {%- for suggested_link in suggested_links -%}
-                                    {% if not loop.first %}, {% endif %}
                                     {% set suggested_link_owner = suggested_link.owner %}
-                                    <a class="username" href="{{ url('link', { id: suggested_link.id }) }}">
-                                        <img class="avatar avatar--mini" src="{{ url_avatar(suggested_link_owner.avatar_filename) }}" alt="">
-                                        {{- suggested_link_owner.username -}}
-                                    </a>
+
+                                    {% if suggested_link_owner %}
+                                        {% if not loop.first %}, {% endif %}
+                                        <a class="username" href="{{ url('link', { id: suggested_link.id }) }}">
+                                            <img class="avatar avatar--mini" src="{{ url_avatar(suggested_link_owner.avatar_filename) }}" alt="">
+                                            {{- suggested_link_owner.username -}}
+                                        </a>
+                                    {% endif %}
                                 {%- endfor -%}
                             </p>
                         {% endif %}

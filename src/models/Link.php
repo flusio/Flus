@@ -75,7 +75,7 @@ class Link
     public bool $origin_is_public = false;
 
     #[Database\Column]
-    public string $user_id;
+    public ?string $user_id = null;
 
     /** @var 'unset'|'ok' */
     #[Database\Column]
@@ -112,7 +112,7 @@ class Link
     #[Database\Column(computed: true)]
     public string $url_hash;
 
-    public function __construct(string $url, string $user_id, bool $is_hidden = false)
+    public function __construct(string $url, ?string $user_id = null, bool $is_hidden = false)
     {
         $url = \SpiderBits\Url::sanitize($url);
 
@@ -122,6 +122,32 @@ class Link
         $this->url_hash = self::hashUrl($url);
         $this->is_hidden = $is_hidden;
         $this->user_id = $user_id;
+    }
+
+    /**
+     * Return a link with the given URL owned by the user. Any matching link
+     * that already exists in the database is returned.
+     *
+     * If no users are passed, the method looks for a link without any owner.
+     *
+     * The URL is sanitized before being searched, so you don't have to do it
+     * yourself.
+     */
+    public static function findOrBuildByUrl(string $url, ?User $user = null): Link
+    {
+        $url = \SpiderBits\Url::sanitize($url);
+        $user_id = $user?->id;
+
+        $link = self::findBy([
+            'user_id' => $user_id,
+            'url_hash' => self::hashUrl($url),
+        ]);
+
+        if (!$link) {
+            $link = new Link($url, $user_id, is_hidden: false);
+        }
+
+        return $link;
     }
 
     public function refreshTags(): void
@@ -175,17 +201,15 @@ class Link
     }
 
     /**
-     * Return the owner of the link.
+     * Return the owner of the link if any.
      */
-    public function owner(): User
+    public function owner(): ?User
     {
-        $user = User::find($this->user_id);
-
-        if (!$user) {
-            throw new \Exception("Link #{$this->id} has invalid user.");
+        if (!$this->user_id) {
+            return null;
         }
 
-        return $user;
+        return User::find($this->user_id);
     }
 
     /**
@@ -316,6 +340,10 @@ class Link
      */
     public function initNote(): Note
     {
+        if (!$this->user_id) {
+            throw new \Exception("Cannot initialize a note for link #{$this->id} as user is null.");
+        }
+
         return new Note($this->user_id, $this->id);
     }
 

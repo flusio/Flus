@@ -191,27 +191,6 @@ class User
         return $this->email === self::DEMO_EMAIL;
     }
 
-    public static function supportUser(): self
-    {
-        $support_email = \App\Configuration::$application['support_email'];
-        $default_password = \Minz\Random::hex(128);
-
-        return self::findOrCreateBy([
-            'email' => \Minz\Email::sanitize($support_email),
-        ], [
-            'id' => \Minz\Random::timebased(),
-            'username' => 'Flus',
-            'password_hash' => self::passwordHash($default_password),
-            'validated_at' => \Minz\Time::now(),
-        ]);
-    }
-
-    public function isSupportUser(): bool
-    {
-        $support_email = \App\Configuration::$application['support_email'];
-        return $this->email === $support_email;
-    }
-
     public function enableBeta(): void
     {
         FeatureFlag::enable('beta', $this->id);
@@ -606,26 +585,12 @@ class User
     }
 
     /**
-     * Return a link with the given URL owned by the user. Any matching link
-     * that already exists in the database is returned.
-     *
-     * The URL is sanitized before being searched, so you don't have to do it
-     * yourself.
+     * Return a link with the given URL owned by the current user. Any matching
+     * link that already exists in the database is returned.
      */
     public function findOrBuildLink(string $url): Link
     {
-        $url = \SpiderBits\Url::sanitize($url);
-
-        $link = Link::findBy([
-            'user_id' => $this->id,
-            'url_hash' => Link::hashUrl($url),
-        ]);
-
-        if (!$link) {
-            $link = new Link($url, $this->id, is_hidden: false);
-        }
-
-        return $link;
+        return Link::findOrBuildByUrl($url, $this);
     }
 
     /**

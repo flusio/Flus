@@ -132,7 +132,7 @@ CREATE TABLE collections (
     is_public BOOLEAN NOT NULL DEFAULT false,
     image_filename TEXT,
     image_fetched_at TIMESTAMPTZ,
-    user_id TEXT NOT NULL REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE,
+    user_id TEXT REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE,
     group_id TEXT REFERENCES groups ON DELETE SET NULL ON UPDATE CASCADE,
     publication_frequency_per_year INTEGER NOT NULL DEFAULT 0,
 

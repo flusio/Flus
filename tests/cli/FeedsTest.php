@@ -147,12 +147,11 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
 
     public function testAddFailsIfFeedAlreadyInDatabase(): void
     {
-        $support_user = models\User::supportUser();
         $url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         CollectionFactory::create([
             'type' => 'feed',
             'feed_url' => $url,
-            'user_id' => $support_user->id,
+            'user_id' => null,
         ]);
 
         $response = $this->appRun('CLI', '/feeds/add', [

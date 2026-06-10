@@ -123,13 +123,11 @@ class Feeds extends BaseController
      */
     public function whatIsNew(): Response
     {
-        $support_user = models\User::supportUser();
         $feed_url = \App\Configuration::$application['feed_what_is_new'];
 
         $feed = models\Collection::findBy([
             'type' => 'feed',
             'feed_url' => $feed_url,
-            'user_id' => $support_user->id,
         ]);
         if (!$feed) {
             $feed_fetcher_service = new services\FeedFetcher([
@@ -137,7 +135,7 @@ class Feeds extends BaseController
                 'ignore_rate_limit' => true,
             ]);
 
-            $feed = models\Collection::initFeed($support_user->id, $feed_url);
+            $feed = models\Collection::initFeed($feed_url);
             $feed_fetcher_service->fetch($feed);
         }
 

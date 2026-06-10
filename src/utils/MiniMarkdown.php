@@ -38,7 +38,7 @@ class MiniMarkdown extends \Parsedown
     ];
 
     public function __construct(
-        private models\User $context_user,
+        private ?models\User $context_user,
     ) {
         $this->setSafeMode(true);
         $this->setBreaksEnabled(true);
@@ -74,7 +74,7 @@ class MiniMarkdown extends \Parsedown
     {
         $result = preg_match(utils\Tag::TAG_REGEX, $excerpt['text'], $matches);
 
-        if ($result) {
+        if ($result && $this->context_user) {
             $tag = $matches['tag'];
             $tag_url = \Minz\Url::absoluteFor('profile links', [
                 'id' => $this->context_user->id,

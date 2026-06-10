@@ -44,11 +44,9 @@ class OpmlImportator
      */
     public function importForUser(models\User $user): void
     {
-        $support_user = models\User::supportUser();
-
         $feed_urls_by_groups = $this->loadUrlsFromOutlines($this->opml->outlines, '');
 
-        $collection_ids_by_feed_urls = models\Collection::listFeedUrlsToIdsByUserId($support_user->id);
+        $collection_ids_by_feed_urls = models\Collection::listFeedUrlsToIds();
         $collections_to_create = [];
         $followed_collections_to_create = [];
 
@@ -78,7 +76,7 @@ class OpmlImportator
                 if (isset($collection_ids_by_feed_urls[$feed_url])) {
                     $collection_id = $collection_ids_by_feed_urls[$feed_url];
                 } else {
-                    $collection = models\Collection::initFeed($support_user->id, $feed_url);
+                    $collection = models\Collection::initFeed($feed_url);
                     $collection->created_at = \Minz\Time::now();
 
                     $collections_to_create[] = $collection;

@@ -187,6 +187,39 @@ class NewsQueriesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($collection->id, $links[0]->source_id);
     }
 
+    public function testListFromFollowedCollectionsConsidersLinksFromFeeds(): void
+    {
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $published_at1 = \Minz\Time::ago(3, 'days');
+        $published_at2 = \Minz\Time::ago(1, 'days');
+        $link1 = LinkFactory::create([
+            'user_id' => null,
+            'is_hidden' => false,
+        ]);
+        $link2 = LinkFactory::create([
+            'user_id' => null,
+            'is_hidden' => false,
+        ]);
+        $collection = CollectionFactory::create([
+            'user_id' => null,
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link1->addCollection($collection, at: $published_at1);
+        $link2->addCollection($collection, at: $published_at2);
+        $this->user->follow($collection->id);
+
+        $links = models\Link::listFromFollowedCollections($this->user->id, max: 50);
+
+        $this->assertSame(2, count($links));
+        $this->assertSame($link2->id, $links[0]->id);
+        $this->assertSame($collection->id, $links[0]->source_id);
+        $this->assertSame($link1->id, $links[1]->id);
+        $this->assertSame($collection->id, $links[1]->source_id);
+    }
+
     public function testListFromFollowedCollectionsDoesNotPickFromFollowedIfTooOld(): void
     {
         /** @var \DateTimeImmutable */
@@ -533,6 +566,46 @@ class NewsQueriesTest extends \PHPUnit\Framework\TestCase
             'user_id' => $this->user->id,
             'collection_id' => $collection->id,
         ]);
+
+        $result = models\Link::anyFromFollowedCollections($this->user->id);
+
+        $this->assertFalse($result);
+    }
+
+    public function testAnyFromFollowedFeedsCanReturnTrue(): void
+    {
+        $published_at = \Minz\Time::ago(1, 'day');
+        $link = LinkFactory::create([
+            'user_id' => null,
+            'is_hidden' => false,
+        ]);
+        $collection = CollectionFactory::create([
+            'user_id' => null,
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link->addCollection($collection, at: $published_at);
+        $this->user->follow($collection->id);
+
+        $result = models\Link::anyFromFollowedCollections($this->user->id);
+
+        $this->assertTrue($result);
+    }
+
+    public function testAnyFromFollowedFeedsCanReturnFalse(): void
+    {
+        $published_at = \Minz\Time::ago(1, 'day');
+        $link = LinkFactory::create([
+            'user_id' => null,
+            'is_hidden' => true,
+        ]);
+        $collection = CollectionFactory::create([
+            'user_id' => null,
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link->addCollection($collection, at: $published_at);
+        $this->user->follow($collection->id);
 
         $result = models\Link::anyFromFollowedCollections($this->user->id);
 

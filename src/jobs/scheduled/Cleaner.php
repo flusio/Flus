@@ -38,8 +38,6 @@ class Cleaner extends \Minz\Job
         $http_cache = new http\Cache();
         $http_cache->clearExpiredItems();
 
-        $support_user = models\User::supportUser();
-
         http\FetchLog::deleteOlderThan(\Minz\Time::ago(3, 'days'));
         models\Token::deleteExpired();
         models\Session::deleteExpired();
@@ -48,13 +46,12 @@ class Cleaner extends \Minz\Job
             inactive_since: \Minz\Time::ago(12, 'months'),
             notified_since: \Minz\Time::ago(1, 'month'),
         );
-        models\Collection::deleteUnfollowedOlderThan($support_user->id, \Minz\Time::ago(7, 'days'));
-        models\Link::deleteNotStoredOlderThan($support_user->id, \Minz\Time::ago(7, 'days'));
+        models\Collection::deleteUnfollowedFeedsOlderThan(\Minz\Time::ago(7, 'days'));
+        models\Link::deleteDetachedOlderThan(\Minz\Time::ago(7, 'days'));
         $feeds_links_keep_period = \App\Configuration::$application['feeds_links_keep_period'];
         $feeds_links_keep_minimum = \App\Configuration::$application['feeds_links_keep_minimum'];
         $feeds_links_keep_maximum = \App\Configuration::$application['feeds_links_keep_maximum'];
         models\Link::deleteFromFeeds(
-            $support_user->id,
             $feeds_links_keep_period,
             $feeds_links_keep_minimum,
             $feeds_links_keep_maximum,
@@ -64,9 +61,6 @@ class Cleaner extends \Minz\Job
             // with these two delete, the other tables should be deleted in cascade
             models\Token::deleteAll();
             models\User::deleteAll();
-
-            // reinitialize the support user
-            models\User::supportUser();
 
             // Initialize a default user
             $user = models\User::demoUser();

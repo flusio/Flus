@@ -54,7 +54,6 @@ class Search extends Form
             $link = $this->link();
             $feeds = [];
 
-            $support_user = models\User::supportUser();
             $feed_fetcher_service = new services\FeedFetcher();
 
             foreach ($link->url_feeds as $feed_url) {

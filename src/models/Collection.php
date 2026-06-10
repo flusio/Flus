@@ -63,7 +63,7 @@ class Collection
     public ?\DateTimeImmutable $image_fetched_at = null;
 
     #[Database\Column]
-    public string $user_id;
+    public ?string $user_id = null;
 
     #[Database\Column]
     public ?string $group_id = null;
@@ -176,14 +176,13 @@ class Collection
         return $collection;
     }
 
-    public static function initFeed(string $user_id, string $feed_url): self
+    public static function initFeed(string $feed_url): self
     {
         $collection = new self();
 
         $collection->name = utils\Belt::cut($feed_url, self::NAME_MAX_LENGTH);
         $collection->feed_url = \SpiderBits\Url::sanitize($feed_url);
         $collection->type = 'feed';
-        $collection->user_id = $user_id;
         $collection->is_public = true;
 
         return $collection;
@@ -192,16 +191,14 @@ class Collection
     public static function findOrBuildFeed(string $feed_url): self
     {
         $feed_url = \SpiderBits\Url::sanitize($feed_url);
-        $support_user = User::supportUser();
 
         $feed = Collection::findBy([
             'type' => 'feed',
             'feed_url' => $feed_url,
-            'user_id' => $support_user->id,
         ]);
 
         if (!$feed) {
-            $feed = self::initFeed($support_user->id, $feed_url);
+            $feed = self::initFeed($feed_url);
         }
 
         return $feed;
@@ -239,15 +236,13 @@ class Collection
     /**
      * Return the owner of the collection.
      */
-    public function owner(): User
+    public function owner(): ?User
     {
-        $user = User::find($this->user_id);
-
-        if (!$user) {
-            throw new \Exception("Collection #{$this->id} has invalid user.");
+        if (!$this->user_id) {
+            return null;
         }
 
-        return $user;
+        return User::find($this->user_id);
     }
 
     /**
@@ -263,7 +258,10 @@ class Collection
         $publishers = array_map(function (CollectionShare $share): User {
             return $share->user();
         }, $shares);
-        array_unshift($publishers, $owner);
+
+        if ($owner) {
+            array_unshift($publishers, $owner);
+        }
 
         return $publishers;
     }

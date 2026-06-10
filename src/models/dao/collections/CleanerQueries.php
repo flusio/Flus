@@ -13,10 +13,9 @@ use Minz\Database;
 trait CleanerQueries
 {
     /**
-     * Delete not followed collections older than the given date for the given
-     * user.
+     * Delete not followed collections older than the given date.
      */
-    public static function deleteUnfollowedOlderThan(string $user_id, \DateTimeImmutable $date): bool
+    public static function deleteUnfollowedFeedsOlderThan(\DateTimeImmutable $date): bool
     {
         $sql = <<<SQL
             DELETE FROM collections
@@ -27,7 +26,7 @@ trait CleanerQueries
             ON c.id = fc.collection_id
 
             WHERE collections.id = c.id
-            AND c.user_id = :user_id
+            AND c.type = 'feed'
             AND c.created_at < :date
             AND fc.collection_id IS NULL;
         SQL;
@@ -36,7 +35,6 @@ trait CleanerQueries
         $statement = $database->prepare($sql);
 
         return $statement->execute([
-            ':user_id' => $user_id,
             ':date' => $date->format(Database\Column::DATETIME_FORMAT),
         ]);
     }

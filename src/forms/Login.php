@@ -61,15 +61,6 @@ class Login extends BaseForm
             );
             return;
         }
-
-        if ($user->isSupportUser()) {
-            $this->addError(
-                '@base',
-                'invalid_user',
-                _('What are you trying to do? You can’t login to the support account.')
-            );
-            return;
-        }
     }
 
     public function user(): models\User

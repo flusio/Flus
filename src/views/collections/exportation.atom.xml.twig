@@ -9,9 +9,12 @@
     <link href="{{ url_full('collection feed', { id: collection.id }) }}" rel="self" type="application/atom+xml" />
 
     <id>{{ collection.tagUri }}</id>
-    <author>
-        <name>{{ collection.owner.username }}</name>
-    </author>
+    {% set owner = collection.owner %}
+    {% if owner %}
+        <author>
+            <name>{{ owner.username }}</name>
+        </author>
+    {% endif %}
     <generator>{{ app.user_agent }}</generator>
 
     {% if links %}
@@ -30,8 +33,8 @@
         <category term="Flus:public" />
     {% endif %}
 
-    {% if collection.group_id %}
-        <category term="Flus:group" label="{{ collection.groupForUser(collection.user_id).name }}" />
+    {% if collection.group_id and owner %}
+        <category term="Flus:group" label="{{ collection.groupForUser(owner.id).name }}" />
     {% endif %}
 
     {% for link in links %}

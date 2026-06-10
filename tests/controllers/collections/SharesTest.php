@@ -335,31 +335,6 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($collection_share);
     }
 
-    public function testCreateFailsIfUserIdIsSupportUserId(): void
-    {
-        $user = $this->login();
-        $support_user = models\User::supportUser();
-        $collection = CollectionFactory::create([
-            'type' => 'collection',
-            'user_id' => $user->id,
-        ]);
-
-        $response = $this->appRun('POST', "/collections/{$collection->id}/share", [
-            'csrf_token' => $this->csrfToken(forms\collections\ShareCollection::class),
-            'user_id' => $support_user->id,
-            'type' => 'read',
-        ]);
-
-        $this->assertResponseCode($response, 400);
-        $this->assertResponseTemplateName($response, 'collections/shares/index.html.twig');
-        $this->assertResponseContains($response, 'This user doesn’t exist');
-        $collection_share = models\CollectionShare::findBy([
-            'collection_id' => $collection->id,
-            'user_id' => $support_user->id,
-        ]);
-        $this->assertNull($collection_share);
-    }
-
     public function testCreateFailsIfCollectionIsAlreadySharedWithUserId(): void
     {
         $user = $this->login();

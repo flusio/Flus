@@ -47,7 +47,6 @@ class SupportTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateSendsTwoEmails(): void
     {
-        $support_user = models\User::supportUser();
         /** @var string */
         $email = $this->fake('email');
         /** @var string */
@@ -70,7 +69,8 @@ class SupportTest extends \PHPUnit\Framework\TestCase
         $email_1 = \Minz\Tests\Mailer::take(0);
         $this->assertNotNull($email_1);
         $this->assertEmailSubject($email_1, "[Flus] Contact: {$subject}");
-        $this->assertEmailContainsTo($email_1, $support_user->email);
+        $support_email = \App\Configuration::$application['support_email'];
+        $this->assertEmailContainsTo($email_1, $support_email);
         $this->assertEmailContainsReplyTo($email_1, $email);
         $this->assertEmailContainsBody($email_1, $message);
         $email_2 = \Minz\Tests\Mailer::take(1);
@@ -85,7 +85,6 @@ class SupportTest extends \PHPUnit\Framework\TestCase
         $bileto_url = 'https://support.example.org';
         \App\Configuration::$application['bileto_url'] = $bileto_url;
         \App\Configuration::$application['bileto_api_token'] = 'some-token';
-        $support_user = models\User::supportUser();
         /** @var string */
         $email = $this->fake('email');
         /** @var string */
@@ -122,7 +121,6 @@ class SupportTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateRedirectsIfNotConnected(): void
     {
-        $support_user = models\User::supportUser();
         /** @var string */
         $email = $this->fake('email');
         /** @var string */
@@ -146,7 +144,6 @@ class SupportTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfCsrfIsInvalid(): void
     {
-        $support_user = models\User::supportUser();
         /** @var string */
         $email = $this->fake('email');
         /** @var string */
@@ -172,7 +169,6 @@ class SupportTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfSubjectIsEmpty(): void
     {
-        $support_user = models\User::supportUser();
         /** @var string */
         $email = $this->fake('email');
         $subject = '';
@@ -197,7 +193,6 @@ class SupportTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfMessageIsEmpty(): void
     {
-        $support_user = models\User::supportUser();
         /** @var string */
         $email = $this->fake('email');
         /** @var string */

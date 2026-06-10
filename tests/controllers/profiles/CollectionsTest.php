@@ -104,13 +104,4 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 404);
     }
-
-    public function testShowFailsIfUserIsSupportUser(): void
-    {
-        $support_user = models\User::supportUser();
-
-        $response = $this->appRun('GET', "/p/{$support_user->id}/collections");
-
-        $this->assertResponseCode($response, 404);
-    }
 }

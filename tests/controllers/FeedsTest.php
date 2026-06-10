@@ -270,10 +270,9 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
 
     public function testWhatIsNewRedirectsToCollection(): void
     {
-        $support_user = models\User::supportUser();
         $feed_url = 'https://github.com/flusio/Flus/releases.atom';
         $collection = CollectionFactory::create([
-            'user_id' => $support_user->id,
+            'user_id' => null,
             'type' => 'feed',
             'feed_url' => $feed_url,
         ]);
@@ -285,7 +284,6 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
 
     public function testWhatIsNewCreatesFeedIfItDoesNotExist(): void
     {
-        $support_user = models\User::supportUser();
         $feed_url = 'https://github.com/flusio/Flus/releases.atom';
         $this->mockHttpWithFixture(
             $feed_url,

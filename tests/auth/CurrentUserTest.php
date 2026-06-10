@@ -48,18 +48,6 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testCreateBrowserSessionFailsWithSupportUser(): void
-    {
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Cannot log in with the support user');
-
-        $user = UserFactory::create([
-            'email' => \App\Configuration::$application['support_email']
-        ]);
-
-        CurrentUser::createBrowserSession($user);
-    }
-
     public function testAuthenticate(): void
     {
         $user = UserFactory::create();
@@ -134,25 +122,5 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
 
         $current_user = CurrentUser::get();
         $this->assertNull($current_user);
-    }
-
-    public function testAuthenticateFailsWithSupportUser(): void
-    {
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Cannot log in with the support user');
-
-        $user = UserFactory::create([
-            'email' => \App\Configuration::$application['support_email']
-        ]);
-        $token = TokenFactory::create([
-            'expired_at' => \Minz\Time::fromNow(1, 'day'),
-        ]);
-        $session = SessionFactory::create([
-            'user_id' => $user->id,
-            'token' => $token->token,
-            'scope' => 'browser',
-        ]);
-
-        CurrentUser::authenticate($token->token, 'browser');
     }
 }

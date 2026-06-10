@@ -19,8 +19,6 @@ class Opml extends BaseController
      *
      * @request_param string id
      *
-     * @response 404
-     *    If the requested profile is associated to the support user.
      * @response 200
      *    On success.
      *
@@ -30,10 +28,6 @@ class Opml extends BaseController
     public function show(Request $request): Response
     {
         $user = models\User::requireFromRequest($request);
-
-        if ($user->isSupportUser()) {
-            return Response::notFound('errors/not_found.html.twig');
-        }
 
         utils\Locale::setCurrentLocale($user->locale);
         $collections = $user->collections([], [

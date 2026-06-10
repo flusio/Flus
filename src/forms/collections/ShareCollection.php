@@ -66,12 +66,8 @@ class ShareCollection extends BaseForm
     public function checkUserIdIsValid(): void
     {
         $collection = $this->optionAs('collection', models\Collection::class);
-        $support_user = models\User::supportUser();
 
-        if (
-            !models\User::exists($this->user_id) ||
-            $support_user->id === $this->user_id
-        ) {
+        if (!models\User::exists($this->user_id)) {
             $this->addError(
                 'user_id',
                 'user_id.unknown',

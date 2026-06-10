@@ -13,23 +13,20 @@ use Minz\Database;
 trait OpmlImportatorQueries
 {
     /**
-     * Return the list of ids indexed by feed urls for the given user.
+     * Return the list of ids indexed by feed urls.
      *
      * @return array<string, string>
      */
-    public static function listFeedUrlsToIdsByUserId(string $user_id): array
+    public static function listFeedUrlsToIds(): array
     {
         $sql = <<<SQL
             SELECT feed_url, id FROM collections
-            WHERE user_id = :user_id
-            AND type = 'feed'
+            WHERE type = 'feed'
         SQL;
 
         $database = Database::get();
         $statement = $database->prepare($sql);
-        $statement->execute([
-            ':user_id' => $user_id,
-        ]);
+        $statement->execute();
 
         return $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
     }

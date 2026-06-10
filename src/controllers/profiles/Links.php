@@ -19,8 +19,6 @@ class Links extends BaseController
      * @request_param string id
      * @request_param string tag
      *
-     * @response 404
-     *    If the requested profile is associated to the support user.
      * @response 200
      *    On success.
      *
@@ -30,10 +28,6 @@ class Links extends BaseController
     public function index(Request $request): Response
     {
         $user = models\User::requireFromRequest($request);
-
-        if ($user->isSupportUser()) {
-            return Response::notFound('errors/not_found.html.twig');
-        }
 
         $tag = $request->parameters->getString('tag', '');
         if (!utils\Tag::isValid("#{$tag}")) {

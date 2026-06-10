@@ -41,8 +41,7 @@ class NewFeed extends BaseForm
     #[Form\OnHandleRequest]
     public function setAutodiscovering(Request $request): void
     {
-        $support_user = models\User::supportUser();
-        $link = $support_user->findOrBuildLink($this->url);
+        $link = models\Link::findOrBuildByUrl($this->url);
 
         if (!$link->validate()) {
             return;

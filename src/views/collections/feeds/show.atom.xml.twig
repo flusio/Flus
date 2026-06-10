@@ -11,9 +11,12 @@
     <link href="{{ url_full('collection feed', { id: collection.id }) }}" rel="self" type="application/atom+xml" />
 
     <id>{{ collection.tagUri }}</id>
-    <author>
-        <name>{{ collection.owner.username }}</name>
-    </author>
+    {% set owner = collection.owner %}
+    {% if owner %}
+        <author>
+            <name>{{ owner.username }}</name>
+        </author>
+    {% endif %}
     <generator>{{ app.user_agent }}</generator>
 
     {% if links %}

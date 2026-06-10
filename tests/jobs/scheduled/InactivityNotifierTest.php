@@ -137,27 +137,4 @@ class InactivityNotifierTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($user->deletion_notified_at);
         $this->assertEmailsCount(0);
     }
-
-    public function testPerformIgnoresSupportUser(): void
-    {
-        $this->freeze();
-        $now = \Minz\Time::now();
-        $job = new InactivityNotifier();
-        $support_email = \App\Configuration::$application['support_email'];
-        $inactivity_months = 11;
-        $notified_at = null;
-        $validated_at = \Minz\Time::ago(1, 'year');
-        $user = UserFactory::create([
-            'email' => \Minz\Email::sanitize($support_email),
-            'last_activity_at' => \Minz\Time::ago($inactivity_months, 'months'),
-            'deletion_notified_at' => $notified_at,
-            'validated_at' => $validated_at,
-        ]);
-
-        $job->perform();
-
-        $user = $user->reload();
-        $this->assertNull($user->deletion_notified_at);
-        $this->assertEmailsCount(0);
-    }
 }

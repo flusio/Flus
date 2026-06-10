@@ -10,9 +10,12 @@
     {% endif %}
 
     <id>{{ link.tagUri }}</id>
-    <author>
-        <name>{{ link.owner.username }}</name>
-    </author>
+    {% set owner = link.owner %}
+    {% if owner %}
+        <author>
+            <name>{{ owner.username }}</name>
+        </author>
+    {% endif %}
     <generator>{{ app.user_agent }}</generator>
     {% if notes %}
         <updated>{{ notes[0].created_at.format(constant('DATE_ATOM')) }}</updated>

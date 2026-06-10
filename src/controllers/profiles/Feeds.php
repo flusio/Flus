@@ -23,8 +23,6 @@ class Feeds extends BaseController
      *     Indicate if <link rel=alternate> should point directly to the
      *     external websites (true) or not (false, default).
      *
-     * @response 404
-     *    If the requested profile is associated to the support user.
      * @response 200
      *    On success.
      *
@@ -36,10 +34,6 @@ class Feeds extends BaseController
         $direct = $request->parameters->getBoolean('direct');
 
         $user = models\User::requireFromRequest($request);
-
-        if ($user->isSupportUser()) {
-            return Response::notFound('errors/not_found.html.twig');
-        }
 
         utils\Locale::setCurrentLocale($user->locale);
         $links = $user->links(['published_at'], [

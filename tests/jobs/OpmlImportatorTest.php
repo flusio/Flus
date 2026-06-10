@@ -38,7 +38,6 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
         $opml_filepath = $this->tmpCopyFile($example_filepath);
         $importator = new OpmlImportator();
         $user = UserFactory::create();
-        $support_user = models\User::supportUser();
         $importation = ImportationFactory::create([
             'type' => 'opml',
             'user_id' => $user->id,
@@ -56,15 +55,15 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(3, models\Collection::count());
         $collection1 = models\Collection::take(0);
         $this->assertNotNull($collection1);
-        $this->assertSame($support_user->id, $collection1->user_id);
+        $this->assertNull($collection1->user_id);
         $this->assertSame('feed', $collection1->type);
         $collection2 = models\Collection::take(1);
         $this->assertNotNull($collection2);
-        $this->assertSame($support_user->id, $collection2->user_id);
+        $this->assertNull($collection2->user_id);
         $this->assertSame('feed', $collection2->type);
         $collection3 = models\Collection::take(2);
         $this->assertNotNull($collection3);
-        $this->assertSame($support_user->id, $collection3->user_id);
+        $this->assertNull($collection3->user_id);
         $this->assertSame('feed', $collection3->type);
         $this->assertSame(1, models\Group::count());
         $group = models\Group::take();
@@ -109,9 +108,8 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
         $opml_filepath = $this->tmpCopyFile($example_filepath);
         $importator = new OpmlImportator();
         $user = UserFactory::create();
-        $support_user = models\User::supportUser();
         $collection = CollectionFactory::create([
-            'user_id' => $support_user->id,
+            'user_id' => null,
             'type' => 'feed',
             'feed_url' => 'https://flus.fr/carnet/feeds/all.atom.xml',
         ]);
@@ -151,7 +149,6 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
         unlink($opml_filepath);
         $importator = new OpmlImportator();
         $user = UserFactory::create();
-        $support_user = models\User::supportUser();
         $importation = ImportationFactory::create([
             'type' => 'opml',
             'user_id' => $user->id,
@@ -174,7 +171,6 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
         file_put_contents($opml_filepath, 'not opml');
         $importator = new OpmlImportator();
         $user = UserFactory::create();
-        $support_user = models\User::supportUser();
         $importation = ImportationFactory::create([
             'type' => 'opml',
             'user_id' => $user->id,

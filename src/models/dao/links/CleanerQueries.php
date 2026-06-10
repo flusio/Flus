@@ -13,10 +13,10 @@ use Minz\Database;
 trait CleanerQueries
 {
     /**
-     * Delete links that are attached to no collections older than the given
-     * date for the given user.
+     * Delete links that are attached to no users and no collections older than
+     * the given date.
      */
-    public static function deleteNotStoredOlderThan(string $user_id, \DateTimeImmutable $date): bool
+    public static function deleteDetachedOlderThan(\DateTimeImmutable $date): bool
     {
         $sql = <<<SQL
             DELETE FROM links
@@ -27,7 +27,7 @@ trait CleanerQueries
             ON l.id = lc.link_id
 
             WHERE links.id = l.id
-            AND l.user_id = :user_id
+            AND l.user_id IS NULL
             AND l.created_at < :date
             AND lc.link_id IS NULL;
         SQL;
@@ -35,7 +35,6 @@ trait CleanerQueries
         $database = Database::get();
         $statement = $database->prepare($sql);
         return $statement->execute([
-            ':user_id' => $user_id,
             ':date' => $date->format(Database\Column::DATETIME_FORMAT),
         ]);
     }
@@ -54,7 +53,6 @@ trait CleanerQueries
      * happen otherwise and this method doesn't check the values.
      */
     public static function deleteFromFeeds(
-        string $user_id,
         int $keep_period,
         int $keep_minimum,
         int $keep_maximum
@@ -71,7 +69,6 @@ trait CleanerQueries
         // links to delete.
 
         $parameters = [
-            ':user_id' => $user_id,
         ];
 
         // The first sub-query is to select all the links ids with their
@@ -89,13 +86,10 @@ trait CleanerQueries
             FROM links_to_collections lc, collections c
 
             WHERE lc.collection_id = c.id
-
-            AND c.user_id = :user_id
             AND c.type = 'feed'
         SQL;
 
-        // The second subquery get the result of the first sub-query, and
-        // keep:
+        // The second subquery get the result of the first sub-query, and keep:
 
         // 1. the old enough ones IF their position is after the minimum limit
         $period_clause = '';

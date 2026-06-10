@@ -415,7 +415,7 @@ trait Link
             -- Select the links with the same URL but not owned by the current
             -- user, and not the current link.
             WHERE l.url_hash = :url_hash
-            AND l.user_id != :user_id
+            AND l.user_id IS DISTINCT FROM :user_id
             AND l.id != :link_id
 
             AND EXISTS (
@@ -574,7 +574,7 @@ trait Link
             AND lc.collection_id = :collection_id
 
             AND l.url_hash = :url_hash
-            AND l.user_id != :user_id
+            AND l.user_id IS DISTINCT FROM :user_id
         SQL;
 
         $database = Database::get();

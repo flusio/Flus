@@ -44,10 +44,7 @@ class Session extends Form
             return;
         }
 
-        if (
-            $user->isSupportUser() ||
-            !$user->verifyPassword($this->password)
-        ) {
+        if (!$user->verifyPassword($this->password)) {
             $this->addError('@base', 'invalid_credentials', 'The credentials are invalid.');
         }
     }

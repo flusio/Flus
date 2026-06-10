@@ -34,7 +34,7 @@
     {{ include('layouts/_opengraph.html.twig', {
         title: collection.name(),
         description: opengraph_description,
-        locale: owner.locale,
+        locale: owner?.locale ?? app.locale,
         url: url_full('collection', { id: collection.id }),
         image: url_media_full('covers', collection.image_filename, 'collection-card.png'),
     }) }}

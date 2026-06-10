@@ -293,27 +293,6 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Session::count());
     }
 
-    public function testCreateFailsIfEmailIsSupportUserEmail(): void
-    {
-        $email = \App\Configuration::$application['support_email'];
-        /** @var string */
-        $password = $this->fake('password');
-        $user = UserFactory::create([
-            'email' => $email,
-            'password_hash' => models\User::passwordHash($password),
-        ]);
-
-        $response = $this->appRun('POST', '/login', [
-            'csrf_token' => $this->csrfToken(forms\Login::class),
-            'email' => $email,
-            'password' => $password,
-        ]);
-
-        $this->assertResponseCode($response, 400);
-        $this->assertResponseContains($response, 'What are you trying to do? You can’t login to the support account.');
-        $this->assertSame(0, models\Session::count());
-    }
-
     public function testCreateFailsIfEmailIsInvalid(): void
     {
         /** @var string */

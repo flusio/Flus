@@ -13,7 +13,7 @@ use Minz\Mailer;
 class Support extends Mailer
 {
     /**
-     * Send an email to the support user.
+     * Send an email to the support email.
      */
     public function sendMessage(string $user_id, string $subject, string $message): ?Mailer\Email
     {
@@ -23,8 +23,7 @@ class Support extends Mailer
             return null;
         }
 
-        $support_user = models\User::supportUser();
-        utils\Locale::setCurrentLocale($support_user->locale);
+        $support_email = \App\Configuration::$application['support_email'];
 
         $email = new Mailer\Email();
 
@@ -39,7 +38,7 @@ class Support extends Mailer
         );
         $email->addReplyTo($user->email);
 
-        $this->send($email, to: $support_user->email);
+        $this->send($email, to: $support_email);
 
         return $email;
     }

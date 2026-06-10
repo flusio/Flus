@@ -274,37 +274,19 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\User::exists($user->id));
     }
 
-    public function testPerformKeepsSupportUser(): void
-    {
-        $this->freeze();
-        $cleaner_job = new Cleaner();
-        $support_email = \App\Configuration::$application['support_email'];
-        $inactivity_months = 12;
-        $notified_months = 1;
-        $user = UserFactory::create([
-            'last_activity_at' => \Minz\Time::ago($inactivity_months, 'months'),
-            'deletion_notified_at' => \Minz\Time::ago($notified_months, 'months'),
-            'email' => $support_email,
-        ]);
-
-        $cleaner_job->perform();
-
-        $this->assertTrue(models\User::exists($user->id));
-    }
-
     public function testPerformDeletesOldEnoughUnfollowedFeeds(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
         $this->freeze($now);
         $cleaner_job = new Cleaner();
-        $support_user = models\User::supportUser();
         /** @var int */
         $days = $this->fake('numberBetween', 8, 100);
         $created_at = \Minz\Time::ago($days, 'days');
         $collection = CollectionFactory::create([
             'created_at' => $created_at,
-            'user_id' => $support_user->id,
+            'type' => 'feed',
+            'user_id' => null,
         ]);
 
         $cleaner_job->perform();
@@ -318,14 +300,14 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         $cleaner_job = new Cleaner();
-        $support_user = models\User::supportUser();
         $user = UserFactory::create();
         /** @var int */
         $days = $this->fake('numberBetween', 8, 100);
         $created_at = \Minz\Time::ago($days, 'days');
         $collection = CollectionFactory::create([
             'created_at' => $created_at,
-            'user_id' => $support_user->id,
+            'type' => 'feed',
+            'user_id' => null,
         ]);
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
@@ -343,13 +325,13 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         $cleaner_job = new Cleaner();
-        $support_user = models\User::supportUser();
         /** @var int */
         $days = $this->fake('numberBetween', 0, 7);
         $created_at = \Minz\Time::ago($days, 'days');
         $collection = CollectionFactory::create([
             'created_at' => $created_at,
-            'user_id' => $support_user->id,
+            'type' => 'feed',
+            'user_id' => null,
         ]);
 
         $cleaner_job->perform();
@@ -363,13 +345,12 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         $cleaner_job = new Cleaner();
-        $support_user = models\User::supportUser();
         /** @var int */
         $days = $this->fake('numberBetween', 8, 100);
         $created_at = \Minz\Time::ago($days, 'days');
         $link = LinkFactory::create([
             'created_at' => $created_at,
-            'user_id' => $support_user->id,
+            'user_id' => null,
         ]);
 
         $cleaner_job->perform();
@@ -383,13 +364,12 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         $cleaner_job = new Cleaner();
-        $support_user = models\User::supportUser();
         /** @var int */
         $days = $this->fake('numberBetween', 8, 100);
         $created_at = \Minz\Time::ago($days, 'days');
         $link = LinkFactory::create([
             'created_at' => $created_at,
-            'user_id' => $support_user->id,
+            'user_id' => null,
         ]);
         $collection = CollectionFactory::create();
         LinkToCollectionFactory::create([
@@ -408,13 +388,12 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         $cleaner_job = new Cleaner();
-        $support_user = models\User::supportUser();
         /** @var int */
         $days = $this->fake('numberBetween', 0, 7);
         $created_at = \Minz\Time::ago($days, 'days');
         $link = LinkFactory::create([
             'created_at' => $created_at,
-            'user_id' => $support_user->id,
+            'user_id' => null,
         ]);
 
         $cleaner_job->perform();
@@ -422,7 +401,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Link::exists($link->id));
     }
 
-    public function testPerformKeepsOldEnoughNotStoredLinksIfNotOwnedBySupportUser(): void
+    public function testPerformKeepsOldEnoughNotStoredLinksIfOwnedByUser(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -449,18 +428,17 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         $cleaner_job = new Cleaner();
-        $support_user = models\User::supportUser();
         $published_at_1 = \Minz\Time::ago(1, 'months');
         $published_at_2 = \Minz\Time::ago(2, 'months');
         $link_1 = LinkFactory::create([
-            'user_id' => $support_user->id,
+            'user_id' => null,
         ]);
         $link_2 = LinkFactory::create([
-            'user_id' => $support_user->id,
+            'user_id' => null,
         ]);
         $collection = CollectionFactory::create([
             'type' => 'feed',
-            'user_id' => $support_user->id,
+            'user_id' => null,
         ]);
         LinkToCollectionFactory::create([
             'link_id' => $link_1->id,
@@ -492,16 +470,15 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         $cleaner_job = new Cleaner();
-        $support_user = models\User::supportUser();
         /** @var int */
         $months = $this->fake('numberBetween', 7, 100);
         $published_at = \Minz\Time::ago($months, 'months');
         $link = LinkFactory::create([
-            'user_id' => $support_user->id,
+            'user_id' => null,
         ]);
         $collection = CollectionFactory::create([
             'type' => 'feed',
-            'user_id' => $support_user->id,
+            'user_id' => null,
         ]);
         LinkToCollectionFactory::create([
             'link_id' => $link->id,
@@ -527,18 +504,17 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         $cleaner_job = new Cleaner();
-        $support_user = models\User::supportUser();
         $published_at_1 = \Minz\Time::ago(1, 'months');
         $published_at_2 = \Minz\Time::ago(2, 'months');
         $link_1 = LinkFactory::create([
-            'user_id' => $support_user->id,
+            'user_id' => null,
         ]);
         $link_2 = LinkFactory::create([
-            'user_id' => $support_user->id,
+            'user_id' => null,
         ]);
         $collection = CollectionFactory::create([
             'type' => 'feed',
-            'user_id' => $support_user->id,
+            'user_id' => null,
         ]);
         LinkToCollectionFactory::create([
             'link_id' => $link_1->id,
@@ -568,16 +544,15 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         $cleaner_job = new Cleaner();
-        $support_user = models\User::supportUser();
         /** @var int */
         $months = $this->fake('numberBetween', 0, 6);
         $published_at = \Minz\Time::ago($months, 'months');
         $link = LinkFactory::create([
-            'user_id' => $support_user->id,
+            'user_id' => null,
         ]);
         $collection = CollectionFactory::create([
             'type' => 'feed',
-            'user_id' => $support_user->id,
+            'user_id' => null,
         ]);
         LinkToCollectionFactory::create([
             'link_id' => $link->id,
@@ -604,27 +579,26 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         $cleaner_job = new Cleaner();
-        $support_user = models\User::supportUser();
         /** @var int */
         $months = $this->fake('numberBetween', 7, 100);
         $published_at_old = \Minz\Time::ago($months, 'months');
         $published_at_older = \Minz\Time::ago($months + 1, 'months');
         $link_1 = LinkFactory::create([
-            'user_id' => $support_user->id,
+            'user_id' => null,
         ]);
         $link_2 = LinkFactory::create([
-            'user_id' => $support_user->id,
+            'user_id' => null,
         ]);
         $link_3 = LinkFactory::create([
-            'user_id' => $support_user->id,
+            'user_id' => null,
         ]);
         $collection_1 = CollectionFactory::create([
             'type' => 'feed',
-            'user_id' => $support_user->id,
+            'user_id' => null,
         ]);
         $collection_2 = CollectionFactory::create([
             'type' => 'feed',
-            'user_id' => $support_user->id,
+            'user_id' => null,
         ]);
         LinkToCollectionFactory::create([
             'link_id' => $link_1->id,
@@ -686,11 +660,11 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
 
         \App\Configuration::$application['demo'] = false;
 
-        $this->assertSame(2, models\User::count()); // count the support and demo users
+        $this->assertSame(1, models\User::count()); // count the demo user
         $this->assertGreaterThan(0, models\Collection::count());
         $this->assertSame(0, models\Token::count());
         $this->assertSame(0, models\Link::count());
-        $demo_user = models\User::take(1);
+        $demo_user = models\User::take();
         $this->assertNotNull($demo_user);
         $this->assertNotSame($user->id, $demo_user->id);
         $this->assertSame(models\User::DEMO_EMAIL, $demo_user->email);
@@ -733,6 +707,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
+            'type' => 'collection',
         ]);
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -740,7 +715,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
 
         $cleaner_job->perform();
 
-        $this->assertSame(2, models\User::count()); // include the support user
+        $this->assertSame(1, models\User::count());
         $this->assertSame(1, models\Collection::count());
         $this->assertSame(1, models\Token::count());
         $this->assertSame(1, models\Link::count());

@@ -71,7 +71,7 @@ trait NewsQueries
                 AND lc_exclude.collection_id = c_exclude.id
             )
 
-            AND l.user_id != :user_id
+            AND l.user_id IS DISTINCT FROM :user_id
 
             AND lc.created_at >= :until_hard_limit
             AND (
@@ -149,7 +149,7 @@ trait NewsQueries
                     AND lc_exclude.collection_id = c_exclude.id
                 )
 
-                AND l.user_id != :user_id
+                AND l.user_id IS DISTINCT FROM :user_id
 
                 AND lc.created_at >= :until_hard_limit
                 AND (

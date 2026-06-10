@@ -58,8 +58,7 @@ trait User
     {
         $sql = <<<'SQL'
             SELECT to_char(created_at, 'YYYY-MM') AS date, COUNT(*) FROM users
-            WHERE id != :support_user_id
-            AND created_at >= :since
+            WHERE created_at >= :since
             AND created_at <= :until
             AND validated_at IS NOT NULL
             GROUP BY date
@@ -75,7 +74,6 @@ trait User
         $database = Database::get();
         $statement = $database->prepare($sql);
         $statement->execute([
-            ':support_user_id' => models\User::supportUser()->id,
             ':since' => $since->format(Database\Column::DATETIME_FORMAT),
             ':until' => $until->format(Database\Column::DATETIME_FORMAT),
         ]);
@@ -97,8 +95,7 @@ trait User
             SELECT to_char(created_at, 'YYYY-MM') AS date, COUNT(DISTINCT user_id) FROM links
             WHERE user_id IN (
                 SELECT id FROM users
-                WHERE id != :support_user_id
-                AND validated_at IS NOT NULL
+                WHERE validated_at IS NOT NULL
             )
             AND created_at >= :since
             AND created_at <= :until
@@ -115,7 +112,6 @@ trait User
         $database = Database::get();
         $statement = $database->prepare($sql);
         $statement->execute([
-            ':support_user_id' => models\User::supportUser()->id,
             ':since' => $since->format(Database\Column::DATETIME_FORMAT),
             ':until' => $until->format(Database\Column::DATETIME_FORMAT),
         ]);
@@ -132,14 +128,12 @@ trait User
             DELETE FROM users
             WHERE validated_at IS NULL
             AND created_at < :since
-            AND id != :support_user_id
         SQL;
 
         $database = Database::get();
         $statement = $database->prepare($sql);
         return $statement->execute([
             ':since' => $since->format(Database\Column::DATETIME_FORMAT),
-            ':support_user_id' => models\User::supportUser()->id,
         ]);
     }
 
@@ -154,7 +148,6 @@ trait User
             DELETE FROM users
             WHERE last_activity_at <= :inactive_since
             AND deletion_notified_at <= :notified_since
-            AND id != :support_user_id
         SQL;
 
         $database = Database::get();
@@ -162,7 +155,6 @@ trait User
         return $statement->execute([
             ':inactive_since' => $inactive_since->format(Database\Column::DATETIME_FORMAT),
             ':notified_since' => $notified_since->format(Database\Column::DATETIME_FORMAT),
-            ':support_user_id' => models\User::supportUser()->id,
         ]);
     }
 
@@ -200,14 +192,12 @@ trait User
             SELECT * FROM users
             WHERE last_activity_at <= :inactive_since
             AND deletion_notified_at IS NULL
-            AND id != :support_user_id
         SQL;
 
         $database = Database::get();
         $statement = $database->prepare($sql);
         $statement->execute([
             ':inactive_since' => $inactive_since->format(Database\Column::DATETIME_FORMAT),
-            ':support_user_id' => models\User::supportUser()->id,
         ]);
 
         return self::fromDatabaseRows($statement->fetchAll());

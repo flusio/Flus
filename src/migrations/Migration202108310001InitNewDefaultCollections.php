@@ -16,10 +16,6 @@ class Migration202108310001InitNewDefaultCollections
         $now = \Minz\Time::now();
 
         foreach ($users as $user) {
-            if ($user->isSupportUser()) {
-                continue;
-            }
-
             utils\Locale::setCurrentLocale($user->locale);
 
             $news = models\Collection::initNews($user->id);

@@ -49,8 +49,7 @@ class Feeds
     public function add(Request $request): Response
     {
         $feed_url = $request->parameters->getString('url', '');
-        $user = models\User::supportUser();
-        $collection = models\Collection::initFeed($user->id, $feed_url);
+        $collection = models\Collection::initFeed($feed_url);
 
         if (!$collection->validate()) {
             $errors = implode(' ', $collection->errors());
@@ -60,7 +59,6 @@ class Feeds
         $existing_feed = models\Collection::findBy([
             'type' => 'feed',
             'feed_url' => $collection->feed_url,
-            'user_id' => $user->id,
         ]);
         if ($existing_feed) {
             return Response::text(400, 'Feed collection already in database.');
