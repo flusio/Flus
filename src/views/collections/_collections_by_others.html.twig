@@ -1,4 +1,4 @@
-<ul class="list--collections-others list list--no-style">
+<ul class="list--collections-others list list--nostyle flow flow--smaller">
     {% for collection in collections %}
         {% set other_link = collection.linkNotOwnedByUrl(app.user.id, link.url_hash) %}
         {% set link_owner = other_link.owner %}
