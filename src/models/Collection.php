@@ -305,6 +305,43 @@ class Collection
     }
 
     /**
+     * Add the links to the collection.
+     *
+     * @param Link[] $links
+     */
+    public function addLinks(
+        array $links,
+        ?\DateTimeImmutable $at = null,
+        bool $sync_publication_frequency = true,
+    ): void {
+        $link_ids = array_column($links, 'id');
+        LinkToCollection::attach($link_ids, [$this->id], $at);
+
+        if ($sync_publication_frequency) {
+            $this->syncPublicationFrequencyPerYear();
+            $this->save();
+        }
+    }
+
+    /**
+     * Remove the links from the collection.
+     *
+     * @param Link[] $links
+     */
+    public function removeLinks(
+        array $links,
+        bool $sync_publication_frequency = true,
+    ): void {
+        $link_ids = array_column($links, 'id');
+        LinkToCollection::detach($link_ids, [$this->id]);
+
+        if ($sync_publication_frequency) {
+            $this->syncPublicationFrequencyPerYear();
+            $this->save();
+        }
+    }
+
+    /**
      * Return the group if any for a given user.
      *
      * If the collection is owned by the user, the group is the one directly

@@ -207,6 +207,20 @@ CREATE UNIQUE INDEX idx_links_to_collections ON links_to_collections(link_id, co
 CREATE INDEX idx_links_to_collections_collection_id ON links_to_collections(collection_id);
 CREATE INDEX idx_links_to_collections_created_at ON links_to_collections(created_at);
 
+CREATE TABLE url_statuses (
+    id BIGSERIAL PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL,
+
+    user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    url_hash TEXT NOT NULL,
+
+    read_at TIMESTAMPTZ DEFAULT NULL,
+    read_later_at TIMESTAMPTZ DEFAULT NULL,
+    dismissed_at TIMESTAMPTZ DEFAULT NULL
+);
+
+CREATE UNIQUE INDEX idx_url_statuses_user_id_url_hash ON url_statuses(user_id, url_hash);
+
 CREATE TABLE followed_collections (
     id BIGSERIAL PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,

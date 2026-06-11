@@ -639,6 +639,11 @@ class User
 
         $link_ids = array_column($links, 'id');
         LinkToCollection::markAsRead($this, $link_ids);
+
+        UrlStatus::markAsRead($this, $links);
+
+        $news = $this->news();
+        $news->removeLinks($links, sync_publication_frequency: false);
     }
 
     /**
@@ -654,6 +659,8 @@ class User
 
         $link_ids = array_column($links, 'id');
         LinkToCollection::markAsUnread($this, $link_ids);
+
+        UrlStatus::unmarkAsRead($this, $links);
     }
 
     /**
@@ -669,6 +676,11 @@ class User
 
         $link_ids = array_column($links, 'id');
         LinkToCollection::markToReadLater($this, $link_ids);
+
+        UrlStatus::markAsReadLater($this, $links);
+
+        $news = $this->news();
+        $news->removeLinks($links, sync_publication_frequency: false);
     }
 
     /**
@@ -684,6 +696,11 @@ class User
 
         $link_ids = array_column($links, 'id');
         LinkToCollection::markToNeverRead($this, $link_ids);
+
+        UrlStatus::markAsDismissed($this, $links);
+
+        $news = $this->news();
+        $news->removeLinks($links, sync_publication_frequency: false);
     }
 
     /**
