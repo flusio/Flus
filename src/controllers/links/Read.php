@@ -196,7 +196,7 @@ class Read extends BaseController
             return Response::found($from);
         }
 
-        models\LinkToCollection::markAsUnread($user, [$link->id]);
+        $user->unmarkAsRead($link);
 
         return Response::found($from);
     }
