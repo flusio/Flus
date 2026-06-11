@@ -549,7 +549,7 @@ class User
         // Complete the owned_links list with links owned by the user, from the
         // database.
         $urls = array_column($not_owned_links, 'url');
-        $urls_hashes = array_map(['\App\models\Link', 'hashUrl'], $urls);
+        $urls_hashes = array_map(['\App\utils\Belt', 'hashUrl'], $urls);
         $related_links = Link::listBy([
             'user_id' => $this->id,
             'url_hash' => $urls_hashes,

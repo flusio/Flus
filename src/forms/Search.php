@@ -45,7 +45,7 @@ class Search extends BaseForm
 
             return models\Link::findComputedBy([
                 'user_id' => $user->id,
-                'url_hash' => models\Link::hashUrl($this->url),
+                'url_hash' => utils\Belt::hashUrl($this->url),
             ], ['number_notes']);
         });
     }

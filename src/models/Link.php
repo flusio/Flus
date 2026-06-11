@@ -119,7 +119,7 @@ class Link
         $this->id = \Minz\Random::timebased();
         $this->title = $url;
         $this->url = $url;
-        $this->url_hash = self::hashUrl($url);
+        $this->url_hash = utils\Belt::hashUrl($url);
         $this->is_hidden = $is_hidden;
         $this->user_id = $user_id;
     }
@@ -140,7 +140,7 @@ class Link
 
         $link = self::findBy([
             'user_id' => $user_id,
-            'url_hash' => self::hashUrl($url),
+            'url_hash' => utils\Belt::hashUrl($url),
         ]);
 
         if (!$link) {
@@ -543,11 +543,6 @@ class Link
         $host = \App\Configuration::$url_options['host'];
         $date = $this->created_at->format('Y-m-d');
         return "tag:{$host},{$date}:links/{$this->id}";
-    }
-
-    public static function hashUrl(string $url): string
-    {
-        return hash('sha256', $url);
     }
 
     /**

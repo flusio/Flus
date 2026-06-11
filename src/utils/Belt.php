@@ -72,6 +72,15 @@ class Belt
     }
 
     /**
+     * Return the sha256 hash of the given url.
+     */
+    public static function hashUrl(string $url): string
+    {
+        $url = \SpiderBits\Url::sanitize($url);
+        return hash('sha256', $url);
+    }
+
+    /**
      * Return a subpath from a file name (used for media files).
      *
      * The name must contain at least 9 characters, excluding the dots. The

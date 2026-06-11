@@ -2,8 +2,9 @@
 
 namespace App\models\dao;
 
-use Minz\Database;
 use App\models;
+use App\utils;
+use Minz\Database;
 
 /**
  * Represent a link in database.
@@ -552,7 +553,7 @@ trait Link
         $statement = $database->prepare($sql);
         $statement->execute([
             ':collection_id' => $collection_id,
-            ':url_hash' => models\Link::hashUrl($url),
+            ':url_hash' => utils\Belt::hashUrl($url),
         ]);
 
         return (bool) $statement->fetchColumn();
