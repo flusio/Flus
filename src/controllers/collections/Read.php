@@ -155,7 +155,7 @@ class Read extends BaseController
 
         $links = $form->links();
 
-        $user->removeFromJournal($links);
+        $user->markAsDismissed($links);
 
         return Response::found($from);
     }

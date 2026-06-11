@@ -95,11 +95,11 @@ class Repairing extends BaseController
         }
 
         if ($link->url !== $form->url) {
-            // Add the old link to the never list. It avoids to a link coming from
-            // the news to reappear.
+            // Mark the old link as dismissed to avoid the link reappearing in
+            // the news.
             $old_link = models\Link::copy($link, $user->id);
             $old_link->save();
-            $user->removeFromJournal($old_link);
+            $user->markAsDismissed($old_link);
         }
 
         $link->url = $form->url;

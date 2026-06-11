@@ -672,11 +672,11 @@ class User
     }
 
     /**
-     * Remove the links from the journal of the user.
+     * Mark the links as dismissed and remove them from the journal of the user.
      *
      * @param Link|Link[] $links
      */
-    public function removeFromJournal(Link|array $links): void
+    public function markAsDismissed(Link|array $links): void
     {
         if ($links instanceof Link) {
             $links = [$links];

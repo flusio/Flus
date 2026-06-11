@@ -33,7 +33,7 @@ class Links extends BaseController
         $form->handleRequest($json_request);
 
         $links = $form->links();
-        $user->removeFromJournal($links);
+        $user->markAsDismissed($links);
 
         return Response::json(200, []);
     }
@@ -68,7 +68,7 @@ class Links extends BaseController
             ]);
         }
 
-        $user->removeFromJournal($link);
+        $user->markAsDismissed($link);
 
         return Response::json(200, []);
     }
