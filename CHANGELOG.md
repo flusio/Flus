@@ -4,11 +4,23 @@
 
 ### Migration notes
 
-The `source` field has been deprecated in the API.
-You must use the new `origin` field instead.
-
 You can enable Altcha to protect your registration page.
 Set the new `APP_REGISTRATION_CAPTCHA` environment variable to `true`.
+
+A migration isn't applied automatically but is optional to run this version of Flus.
+**It will be required to apply it before the next major version (3.0).**
+To apply this migration, run:
+
+```console
+flus# sudo -u www-data php cli migrations setup-url-statuses
+```
+
+This command takes two optional parameters:
+
+- `--batch-size=INT` to change the size of the batches (1000 by default)
+- `--dry-run` to not apply the migration immediately, but to get how many data will be migrated.
+
+This command can take a lot of time to execute with a lot of data.
 
 ## 2026-04-22 - v2.4.0
 
