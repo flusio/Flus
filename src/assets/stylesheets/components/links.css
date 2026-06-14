@@ -147,6 +147,7 @@
 
 .link__origin a {
     color: currentcolor;
+    text-decoration: none;
 }
 
 .link__notepad {
