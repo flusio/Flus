@@ -638,7 +638,7 @@ class User
     /**
      * Return whether the user wants to read the link later or not.
      */
-    public function wantsReadLater(Link $link): bool
+    public function hasReadLater(Link $link): bool
     {
         $bookmarks = $this->bookmarks();
         return Link::isUrlInCollectionId($bookmarks->id, $link->url);

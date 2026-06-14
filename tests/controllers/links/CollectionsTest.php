@@ -424,7 +424,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, "/links/{$link->id}/collections");
         $this->assertTrue($user->hasRead($link));
-        $this->assertFalse($user->wantsReadLater($link));
+        $this->assertFalse($user->hasReadLater($link));
         $this->assertFalse($news->hasLink($link));
     }
 

@@ -450,7 +450,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $link = models\Link::take();
         $this->assertNotNull($link);
-        $this->assertTrue($link->isInBookmarksOf($user));
+        $this->assertTrue($user->hasReadLater($link));
         $this->assertResponseCode($response, 302, "/links/{$link->id}");
     }
 

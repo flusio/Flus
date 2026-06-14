@@ -17,12 +17,12 @@ class LaterTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
 
-        $this->assertFalse($link->isInBookmarksOf($user));
+        $this->assertFalse($user->hasReadLater($link));
 
         $response = $this->apiRun('POST', "/api/v1/links/{$link->id}/later");
 
         $this->assertResponseCode($response, 200);
-        $this->assertTrue($link->isInBookmarksOf($user));
+        $this->assertTrue($user->hasReadLater($link));
     }
 
     public function testCreateFailsIfTheLinkIsNotOwned(): void
@@ -32,12 +32,12 @@ class LaterTest extends \PHPUnit\Framework\TestCase
             'user_id' => UserFactory::create()->id,
         ]);
 
-        $this->assertFalse($link->isInBookmarksOf($user));
+        $this->assertFalse($user->hasReadLater($link));
 
         $response = $this->apiRun('POST', "/api/v1/links/{$link->id}/later");
 
         $this->assertResponseCode($response, 403);
-        $this->assertFalse($link->isInBookmarksOf($user));
+        $this->assertFalse($user->hasReadLater($link));
         $this->assertApiResponse($response, [
             'error' => 'You cannot update the link.',
         ]);
@@ -62,12 +62,12 @@ class LaterTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
 
-        $this->assertFalse($link->isInBookmarksOf($user));
+        $this->assertFalse($user->hasReadLater($link));
 
         $response = $this->apiRun('POST', "/api/v1/links/{$link->id}/later");
 
         $this->assertResponseCode($response, 401);
-        $this->assertFalse($link->isInBookmarksOf($user));
+        $this->assertFalse($user->hasReadLater($link));
         $this->assertApiResponse($response, [
             'error' => 'The request is not authenticated.',
         ]);

@@ -17,12 +17,12 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
 
-        $this->assertFalse($link->isReadBy($user));
+        $this->assertFalse($user->hasRead($link));
 
         $response = $this->apiRun('POST', "/api/v1/links/{$link->id}/read");
 
         $this->assertResponseCode($response, 200);
-        $this->assertTrue($link->isReadBy($user));
+        $this->assertTrue($user->hasRead($link));
     }
 
     public function testCreateFailsIfTheLinkIsNotOwned(): void
@@ -32,12 +32,12 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => UserFactory::create()->id,
         ]);
 
-        $this->assertFalse($link->isReadBy($user));
+        $this->assertFalse($user->hasRead($link));
 
         $response = $this->apiRun('POST', "/api/v1/links/{$link->id}/read");
 
         $this->assertResponseCode($response, 403);
-        $this->assertFalse($link->isReadBy($user));
+        $this->assertFalse($user->hasRead($link));
         $this->assertApiResponse($response, [
             'error' => 'You cannot update the link.',
         ]);
@@ -62,12 +62,12 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
 
-        $this->assertFalse($link->isReadBy($user));
+        $this->assertFalse($user->hasRead($link));
 
         $response = $this->apiRun('POST', "/api/v1/links/{$link->id}/read");
 
         $this->assertResponseCode($response, 401);
-        $this->assertFalse($link->isReadBy($user));
+        $this->assertFalse($user->hasRead($link));
         $this->assertApiResponse($response, [
             'error' => 'The request is not authenticated.',
         ]);
@@ -81,12 +81,12 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
         $user->markAsRead($link);
 
-        $this->assertTrue($link->isReadBy($user));
+        $this->assertTrue($user->hasRead($link));
 
         $response = $this->apiRun('DELETE', "/api/v1/links/{$link->id}/read");
 
         $this->assertResponseCode($response, 200);
-        $this->assertFalse($link->isReadBy($user));
+        $this->assertFalse($user->hasRead($link));
     }
 
     public function testDeleteFailsIfTheLinkIsNotOwned(): void
@@ -124,12 +124,12 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
         $user->markAsRead($link);
 
-        $this->assertTrue($link->isReadBy($user));
+        $this->assertTrue($user->hasRead($link));
 
         $response = $this->apiRun('DELETE', "/api/v1/links/{$link->id}/read");
 
         $this->assertResponseCode($response, 401);
-        $this->assertTrue($link->isReadBy($user));
+        $this->assertTrue($user->hasRead($link));
         $this->assertApiResponse($response, [
             'error' => 'The request is not authenticated.',
         ]);

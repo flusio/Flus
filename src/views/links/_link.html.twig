@@ -22,14 +22,14 @@
 
 {% set number_collections = app.user ? link.numberCollectionsForUser(app.user) : 0 %}
 
-{% set in_bookmarks = link.isInBookmarksOf(app.user) %}
-{% if display_read_later === 'auto' and in_bookmarks %}
+{% set has_read_later = app.user and app.user.hasReadLater(link) %}
+{% if display_read_later === 'auto' and has_read_later %}
     {% set display_read_later = false %}
 {% elseif display_read_later === 'auto' %}
     {% set display_read_later = true %}
 {% endif %}
 
-{% set is_read = link.isReadBy(app.user) %}
+{% set is_read = app.user and app.user.hasRead(link) %}
 {% if display_mark_as_read === 'auto' and is_read %}
     {% set display_mark_as_read = false %}
 {% elseif display_mark_as_read === 'auto' %}
@@ -140,7 +140,7 @@
                     &nbsp;<span title="{{ t('You read this link.') }}">{{ icon('check') }}</span>
                 {% endif %}
 
-                {% if in_bookmarks %}
+                {% if has_read_later %}
                     &nbsp;<span title="{{ t('You marked this link to be read.') }}">{{ icon('bookmark') }}</span>
                 {% endif %}
             </p>

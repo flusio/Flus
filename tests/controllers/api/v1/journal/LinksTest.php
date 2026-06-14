@@ -24,14 +24,14 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $link1->addCollection($news);
         $link2->addCollection($news);
 
-        $this->assertFalse($link1->isInNeverList($user));
-        $this->assertFalse($link2->isInNeverList($user));
+        $this->assertFalse($user->hasDismissed($link1));
+        $this->assertFalse($user->hasDismissed($link2));
 
         $response = $this->apiRun('DELETE', '/api/v1/journal/links');
 
         $this->assertResponseCode($response, 200);
-        $this->assertTrue($link1->isInNeverList($user));
-        $this->assertTrue($link2->isInNeverList($user));
+        $this->assertTrue($user->hasDismissed($link1));
+        $this->assertTrue($user->hasDismissed($link2));
     }
 
     public function testDeleteAllCanRemoveLinksByDate(): void
@@ -47,16 +47,16 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $link1->addCollection($news, at: new \DateTimeImmutable('2025-08-22'));
         $link2->addCollection($news, at: new \DateTimeImmutable('2025-08-23'));
 
-        $this->assertFalse($link1->isInNeverList($user));
-        $this->assertFalse($link2->isInNeverList($user));
+        $this->assertFalse($user->hasDismissed($link1));
+        $this->assertFalse($user->hasDismissed($link2));
 
         $response = $this->apiRun('DELETE', '/api/v1/journal/links', [
             'date' => '2025-08-22'
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertTrue($link1->isInNeverList($user));
-        $this->assertFalse($link2->isInNeverList($user));
+        $this->assertTrue($user->hasDismissed($link1));
+        $this->assertFalse($user->hasDismissed($link2));
     }
 
     public function testDeleteAllCanRemoveLinksByOrigin(): void
@@ -74,16 +74,16 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $link1->addCollection($news);
         $link2->addCollection($news);
 
-        $this->assertFalse($link1->isInNeverList($user));
-        $this->assertFalse($link2->isInNeverList($user));
+        $this->assertFalse($user->hasDismissed($link1));
+        $this->assertFalse($user->hasDismissed($link2));
 
         $response = $this->apiRun('DELETE', '/api/v1/journal/links', [
             'source' => $collection->id,
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertTrue($link1->isInNeverList($user));
-        $this->assertFalse($link2->isInNeverList($user));
+        $this->assertTrue($user->hasDismissed($link1));
+        $this->assertFalse($user->hasDismissed($link2));
     }
 
     public function testDeleteAllFailsIfNotConnected(): void
@@ -99,14 +99,14 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $link1->addCollection($news);
         $link2->addCollection($news);
 
-        $this->assertFalse($link1->isInNeverList($user));
-        $this->assertFalse($link2->isInNeverList($user));
+        $this->assertFalse($user->hasDismissed($link1));
+        $this->assertFalse($user->hasDismissed($link2));
 
         $response = $this->apiRun('DELETE', '/api/v1/journal/links');
 
         $this->assertResponseCode($response, 401);
-        $this->assertFalse($link1->isInNeverList($user));
-        $this->assertFalse($link2->isInNeverList($user));
+        $this->assertFalse($user->hasDismissed($link1));
+        $this->assertFalse($user->hasDismissed($link2));
         $this->assertApiResponse($response, [
             'error' => 'The request is not authenticated.',
         ]);
@@ -119,12 +119,12 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
 
-        $this->assertFalse($link->isInNeverList($user));
+        $this->assertFalse($user->hasDismissed($link));
 
         $response = $this->apiRun('DELETE', "/api/v1/journal/links/{$link->id}");
 
         $this->assertResponseCode($response, 200);
-        $this->assertTrue($link->isInNeverList($user));
+        $this->assertTrue($user->hasDismissed($link));
     }
 
     public function testDeleteFailsIfTheLinkIsNotOwned(): void
@@ -134,7 +134,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'user_id' => UserFactory::create()->id,
         ]);
 
-        $this->assertFalse($link->isInNeverList($user));
+        $this->assertFalse($user->hasDismissed($link));
 
         $response = $this->apiRun('DELETE', "/api/v1/journal/links/{$link->id}");
 
@@ -142,7 +142,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertApiResponse($response, [
             'error' => 'You cannot update the link.',
         ]);
-        $this->assertFalse($link->isInNeverList($user));
+        $this->assertFalse($user->hasDismissed($link));
     }
 
     public function testDeleteFailsIfTheLinkDoesNotExist(): void
@@ -164,7 +164,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
 
-        $this->assertFalse($link->isInNeverList($user));
+        $this->assertFalse($user->hasDismissed($link));
 
         $response = $this->apiRun('DELETE', "/api/v1/journal/links/{$link->id}");
 
@@ -172,6 +172,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertApiResponse($response, [
             'error' => 'The request is not authenticated.',
         ]);
-        $this->assertFalse($link->isInNeverList($user));
+        $this->assertFalse($user->hasDismissed($link));
     }
 }

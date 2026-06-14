@@ -33,7 +33,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertFalse($user->wantsReadLater($link));
+        $this->assertFalse($user->hasReadLater($link));
         $this->assertTrue($user->hasRead($link));
         $this->assertFalse($news->hasLink($link));
     }
@@ -66,7 +66,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, $from);
         // The read status didn't changed for the other user who owns the link.
-        $this->assertTrue($other_user->wantsReadLater($link));
+        $this->assertTrue($other_user->hasReadLater($link));
         $this->assertFalse($other_user->hasRead($link));
         // But the logged user now has read the link and owns their own copy.
         $this->assertTrue($user->hasRead($link));
@@ -95,7 +95,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
-        $this->assertTrue($user->wantsReadLater($link));
+        $this->assertTrue($user->hasReadLater($link));
         $this->assertFalse($user->hasRead($link));
         $this->assertTrue($news->hasLink($link));
     }
@@ -117,7 +117,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
         $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
-        $this->assertTrue($user->wantsReadLater($link));
+        $this->assertTrue($user->hasReadLater($link));
         $this->assertFalse($user->hasRead($link));
         $this->assertTrue($news->hasLink($link));
     }
@@ -157,7 +157,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertTrue($user->wantsReadLater($link));
+        $this->assertTrue($user->hasReadLater($link));
         $this->assertFalse($news->hasLink($link));
     }
 
@@ -188,9 +188,9 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, $from);
         // The read status didn't changed for the other user who owns the link.
-        $this->assertFalse($other_user->wantsReadLater($link));
-        // But the logged user now wants to read the link later and owns their own copy.
-        $this->assertTrue($user->wantsReadLater($link));
+        $this->assertFalse($other_user->hasReadLater($link));
+        // But the logged user now has to read the link later and owns their own copy.
+        $this->assertTrue($user->hasReadLater($link));
         $new_link = models\Link::findBy([
             'user_id' => $user->id,
             'url' => $url,
@@ -214,7 +214,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
-        $this->assertFalse($user->wantsReadLater($link));
+        $this->assertFalse($user->hasReadLater($link));
         $this->assertTrue($news->hasLink($link));
     }
 
@@ -234,7 +234,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
         $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
-        $this->assertFalse($user->wantsReadLater($link));
+        $this->assertFalse($user->hasReadLater($link));
         $this->assertTrue($news->hasLink($link));
     }
 
@@ -252,7 +252,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 403);
-        $this->assertFalse($user->wantsReadLater($link));
+        $this->assertFalse($user->hasReadLater($link));
         $this->assertFalse(models\Link::existsBy([
             'user_id' => $user->id,
             'url' => $link->url,
@@ -275,7 +275,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/');
         $this->assertTrue($user->hasDismissed($link));
-        $this->assertFalse($user->wantsReadLater($link));
+        $this->assertFalse($user->hasReadLater($link));
         $this->assertFalse($news->hasLink($link));
     }
 
@@ -323,7 +323,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
         $this->assertFalse($user->hasDismissed($link));
-        $this->assertTrue($user->wantsReadLater($link));
+        $this->assertTrue($user->hasReadLater($link));
         $this->assertTrue($news->hasLink($link));
     }
 
@@ -345,7 +345,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
         $this->assertFalse($user->hasDismissed($link));
-        $this->assertTrue($user->wantsReadLater($link));
+        $this->assertTrue($user->hasReadLater($link));
         $this->assertTrue($news->hasLink($link));
     }
 
