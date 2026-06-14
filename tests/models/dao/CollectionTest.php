@@ -6,7 +6,6 @@ use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\FollowedCollectionFactory;
 use tests\factories\LinkFactory;
-use tests\factories\LinkToCollectionFactory;
 use tests\factories\UserFactory;
 
 class CollectionTest extends \PHPUnit\Framework\TestCase
@@ -67,10 +66,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        LinkToCollectionFactory::create([
-            'collection_id' => $collection->id,
-            'link_id' => $link->id,
-        ]);
+        $collection->addLinks([$link]);
 
         $collections = models\Collection::listComputedByUserId($user->id, ['number_links']);
 
@@ -90,10 +86,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'is_hidden' => true,
         ]);
-        LinkToCollectionFactory::create([
-            'collection_id' => $collection->id,
-            'link_id' => $link->id,
-        ]);
+        $collection->addLinks([$link]);
 
         $collections = models\Collection::listComputedByUserId($user->id, ['number_links'], [
             'count_hidden' => false,
@@ -132,10 +125,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'is_hidden' => true,
         ]);
-        LinkToCollectionFactory::create([
-            'collection_id' => $collection->id,
-            'link_id' => $link->id,
-        ]);
+        $collection->addLinks([$link]);
 
         $collections = models\Collection::listComputedByUserId($user->id, ['number_links'], [
             'private' => false,
@@ -201,10 +191,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'is_hidden' => false,
         ]);
-        LinkToCollectionFactory::create([
-            'collection_id' => $collection->id,
-            'link_id' => $link->id,
-        ]);
+        $collection->addLinks([$link]);
 
         $collections = models\Collection::listComputedFollowedByUserId($user->id, ['number_links']);
 
@@ -313,10 +300,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'is_hidden' => true,
         ]);
-        LinkToCollectionFactory::create([
-            'collection_id' => $collection->id,
-            'link_id' => $link->id,
-        ]);
+        $collection->addLinks([$link]);
 
         $collections = models\Collection::listComputedFollowedByUserId($user->id, ['number_links']);
 
@@ -347,10 +331,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'is_hidden' => true,
         ]);
-        LinkToCollectionFactory::create([
-            'collection_id' => $collection->id,
-            'link_id' => $link->id,
-        ]);
+        $collection->addLinks([$link]);
 
         $collections = models\Collection::listComputedFollowedByUserId($user->id, ['number_links'], [
             'type' => 'feed',

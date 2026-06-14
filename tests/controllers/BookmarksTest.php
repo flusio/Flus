@@ -4,7 +4,6 @@ namespace App\controllers;
 
 use App\models;
 use tests\factories\LinkFactory;
-use tests\factories\LinkToCollectionFactory;
 
 class BookmarksTest extends \PHPUnit\Framework\TestCase
 {
@@ -24,10 +23,7 @@ class BookmarksTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'title' => $link_title,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
+        $bookmarks->addLinks([$link]);
 
         $response = $this->appRun('GET', '/bookmarks');
 

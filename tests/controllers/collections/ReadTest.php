@@ -22,20 +22,20 @@ class ReadTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $news = $user->news();
-        $bookmarks = $user->bookmarks();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link->addCollections([$news, $bookmarks]);
+        $user->markAsReadLater($link);
+        $news->addLinks([$link]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsRead::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertTrue($link->isReadBy($user), 'The link should be in read list.');
-        $this->assertFalse($link->isInNewsOf($user), 'The link should not be in news.');
-        $this->assertFalse($link->isInBookmarksOf($user), 'The link should not be in bookmarks.');
+        $this->assertTrue($user->hasRead($link), 'The link should be read.');
+        $this->assertFalse($user->hasReadLater($link), 'The link should not be to read later.');
+        $this->assertFalse($news->hasLink($link), 'The link should not be in news.');
     }
 
     public function testCreateMarksLinksAsReadFromPublicCollection(): void
@@ -54,8 +54,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $public_link->addCollection($collection);
-        $hidden_link->addCollection($collection);
+        $collection->addLinks([$public_link, $hidden_link]);
         $referer = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/read", [
@@ -65,15 +64,15 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, $referer);
-        $this->assertSame(1, models\Link::countBy(['user_id' => $user->id]));
-        $new_link = models\Link::findBy([
+        $links = models\Link::listBy([
             'user_id' => $user->id,
         ]);
-        $this->assertNotNull($new_link);
+        $this->assertSame(1, count($links));
+        $new_link = $links[0];
         $this->assertSame($public_link->url, $new_link->url);
         $origin = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
         $this->assertSame($origin, $new_link->origin);
-        $this->assertTrue($new_link->isReadBy($user), 'The link should be in read list.');
+        $this->assertTrue($user->hasRead($new_link));
     }
 
     public function testCreateMarksHiddenLinksAsReadIfCollectionIsShared(): void
@@ -88,7 +87,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $link->addCollection($collection);
+        $collection->addLinks([$link]);
         $collection->shareWith($user, 'read');
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/read", [
@@ -96,12 +95,11 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $new_link = models\Link::findBy([
+        $this->assertTrue(models\Link::existsBy([
             'user_id' => $user->id,
             'url' => $link->url,
-        ]);
-        $this->assertNotNull($new_link);
-        $this->assertTrue($new_link->isReadBy($user), 'The link should be in read list.');
+        ]));
+        $this->assertTrue($user->hasRead($link), 'The link should be read.');
     }
 
     public function testCreateMarksLinksAsReadForSpecificDate(): void
@@ -114,8 +112,8 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link1->addCollection($news, at: new \DateTimeImmutable('2024-03-25'));
-        $link2->addCollection($news, at: new \DateTimeImmutable('2024-03-26'));
+        $news->addLinks([$link1], at: new \DateTimeImmutable('2024-03-25'));
+        $news->addLinks([$link2], at: new \DateTimeImmutable('2024-03-26'));
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsRead::class),
@@ -123,10 +121,10 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertTrue($link1->isReadBy($user), 'The link should be in read list.');
-        $this->assertFalse($link1->isInNewsOf($user), 'The link should not be in news.');
-        $this->assertFalse($link2->isReadBy($user), 'The link should not be in read list.');
-        $this->assertTrue($link2->isInNewsOf($user), 'The link should be in news.');
+        $this->assertTrue($user->hasRead($link1), 'The link should be read.');
+        $this->assertFalse($news->hasLink($link1), 'The link should not be in news.');
+        $this->assertFalse($user->hasRead($link2), 'The link should not be read.');
+        $this->assertTrue($news->hasLink($link2), 'The link should be in news.');
     }
 
     public function testCreateMarksLinksAsReadForSpecificOrigin(): void
@@ -143,8 +141,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'source_id' => $collection2->id,
         ]);
-        $link1->addCollection($news);
-        $link2->addCollection($news);
+        $news->addLinks([$link1, $link2]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsRead::class),
@@ -152,10 +149,10 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertTrue($link1->isReadBy($user), 'The link should be in read list.');
-        $this->assertFalse($link1->isInNewsOf($user), 'The link should not be in news.');
-        $this->assertFalse($link2->isReadBy($user), 'The link should not be in read list.');
-        $this->assertTrue($link2->isInNewsOf($user), 'The link should be in news.');
+        $this->assertTrue($user->hasRead($link1), 'The link should be read.');
+        $this->assertFalse($news->hasLink($link1), 'The link should not be in news.');
+        $this->assertFalse($user->hasRead($link2), 'The link should not be read.');
+        $this->assertTrue($news->hasLink($link2), 'The link should be in news.');
     }
 
     public function testCreateRedirectsToLoginIfNotConnected(): void
@@ -165,15 +162,15 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link->addCollection($news);
+        $news->addLinks([$link]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsRead::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
-        $this->assertFalse($link->isReadBy($user), 'The link should not be in read list.');
-        $this->assertTrue($link->isInNewsOf($user), 'The link should be in news.');
+        $this->assertFalse($user->hasRead($link), 'The link should not be read.');
+        $this->assertTrue($news->hasLink($link), 'The link should be in news.');
     }
 
     public function testCreateFailsIfCollectionIsInaccessible(): void
@@ -182,19 +179,20 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
+            'is_hidden' => false,
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
             'is_public' => false,
         ]);
-        $link->addCollection($collection);
+        $collection->addLinks([$link]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/read", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsRead::class),
         ]);
 
         $this->assertResponseCode($response, 403);
-        $this->assertFalse($link->isReadBy($user), 'The link should not be in read list.');
+        $this->assertFalse($user->hasRead($link), 'The link should not be read.');
     }
 
     public function testCreateFailsIfCsrfIsInvalid(): void
@@ -204,7 +202,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link->addCollection($news);
+        $news->addLinks([$link]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read", [
             'csrf_token' => 'not the token',
@@ -213,27 +211,26 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
         $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
-        $this->assertFalse($link->isReadBy($user), 'The link should not be in read list.');
-        $this->assertTrue($link->isInNewsOf($user), 'The link should be in news.');
+        $this->assertFalse($user->hasRead($link), 'The link should not be read.');
+        $this->assertTrue($news->hasLink($link), 'The link should be in news.');
     }
 
     public function testLaterMarksNewsLinksToReadLaterAndRedirects(): void
     {
         $user = $this->login();
-        $bookmarks = $user->bookmarks();
         $news = $user->news();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link->addCollection($news);
+        $news->addLinks([$link]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/later", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsReadLater::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertTrue($link->isInBookmarksOf($user), 'The link should be in bookmarks.');
-        $this->assertFalse($link->isInNewsOf($user), 'The link should not be in news.');
+        $this->assertTrue($user->hasReadLater($link), 'The link should be to read later.');
+        $this->assertFalse($news->hasLink($link), 'The link should not be in news.');
     }
 
     public function testLaterMarksLinksToReadLaterFromPublicCollection(): void
@@ -252,8 +249,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $public_link->addCollection($collection);
-        $hidden_link->addCollection($collection);
+        $collection->addLinks([$public_link, $hidden_link]);
         $referer = \Minz\Url::for('collection', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/read/later", [
@@ -263,14 +259,14 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, $referer);
-        $this->assertSame(1, models\Link::countBy(['user_id' => $user->id]));
-        $new_link = models\Link::findBy([
+        $links = models\Link::listBy([
             'user_id' => $user->id,
         ]);
-        $this->assertNotNull($new_link);
+        $this->assertSame(1, count($links));
+        $new_link = $links[0];
         $origin = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
         $this->assertSame($origin, $new_link->origin);
-        $this->assertTrue($new_link->isInBookmarksOf($user), 'The link should be in bookmarks.');
+        $this->assertTrue($user->hasReadLater($new_link), 'The link should be to read later.');
     }
 
     public function testLaterMarksHiddenLinksToReadLaterIfCollectionIsShared(): void
@@ -284,7 +280,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
         ]);
-        $link->addCollection($collection);
+        $collection->addLinks([$link]);
         $collection->shareWith($user, 'read');
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/read/later", [
@@ -292,12 +288,11 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $new_link = models\Link::findBy([
+        $this->assertTrue(models\Link::existsBy([
             'user_id' => $user->id,
             'url' => $link->url,
-        ]);
-        $this->assertNotNull($new_link);
-        $this->assertTrue($new_link->isInBookmarksOf($user), 'The link should be in bookmarks.');
+        ]));
+        $this->assertTrue($user->hasReadLater($link), 'The link should be to read later.');
     }
 
     public function testLaterMarksNewsLinksToReadLaterForSpecificDate(): void
@@ -310,8 +305,8 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link1->addCollection($news, at: new \DateTimeImmutable('2024-03-25'));
-        $link2->addCollection($news, at: new \DateTimeImmutable('2024-03-26'));
+        $news->addLinks([$link1], at: new \DateTimeImmutable('2024-03-25'));
+        $news->addLinks([$link2], at: new \DateTimeImmutable('2024-03-26'));
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/later", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsReadLater::class),
@@ -319,8 +314,10 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertTrue($link1->isInBookmarksOf($user), 'The link should be in bookmarks.');
-        $this->assertFalse($link2->isInBookmarksOf($user), 'The link should not be in bookmarks.');
+        $this->assertTrue($user->hasReadLater($link1), 'The link should be to read later.');
+        $this->assertFalse($news->hasLink($link1), 'The link should not be in news.');
+        $this->assertFalse($user->hasReadLater($link2), 'The link should not be to read later.');
+        $this->assertTrue($news->hasLink($link2), 'The link should be in news.');
     }
 
     public function testLaterMarksNewsLinksToReadLaterForSpecificOrigin(): void
@@ -338,8 +335,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'source_id' => $collection2->id,
         ]);
-        $link1->addCollection($news);
-        $link2->addCollection($news);
+        $news->addLinks([$link1, $link2]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/later", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsReadLater::class),
@@ -347,8 +343,10 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertTrue($link1->isInBookmarksOf($user), 'The link should be in bookmarks.');
-        $this->assertFalse($link2->isInBookmarksOf($user), 'The link should not be in bookmarks.');
+        $this->assertTrue($user->hasReadLater($link1), 'The link should be to read later.');
+        $this->assertFalse($news->hasLink($link1), 'The link should not be in news.');
+        $this->assertFalse($user->hasReadLater($link2), 'The link should not be to read later.');
+        $this->assertTrue($news->hasLink($link2), 'The link should be in news.');
     }
 
     public function testLaterRedirectsToLoginIfNotConnected(): void
@@ -358,15 +356,15 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link->addCollection($news);
+        $news->addLinks([$link]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/later", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsReadLater::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
-        $this->assertFalse($link->isInBookmarksOf($user), 'The link should not be in bookmarks.');
-        $this->assertTrue($link->isInNewsOf($user), 'The link should be in news.');
+        $this->assertFalse($user->hasReadLater($link), 'The link should not be to read later.');
+        $this->assertTrue($news->hasLink($link), 'The link should be in news.');
     }
 
     public function testLaterFailsIfCollectionIsInaccessible(): void
@@ -375,19 +373,20 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
+            'is_hidden' => false,
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
             'is_public' => false,
         ]);
-        $link->addCollection($collection);
+        $collection->addLinks([$link]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/read/later", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsReadLater::class),
         ]);
 
         $this->assertResponseCode($response, 403);
-        $this->assertFalse($link->isInBookmarksOf($user), 'The link should not be in bookmarks.');
+        $this->assertFalse($user->hasReadLater($link), 'The link should not be to read later.');
     }
 
     public function testLaterFailsIfCsrfIsInvalid(): void
@@ -397,7 +396,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link->addCollection($news);
+        $news->addLinks([$link]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/later", [
             'csrf_token' => 'not the token',
@@ -406,30 +405,31 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
         $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
-        $this->assertFalse($link->isInBookmarksOf($user), 'The link should not be in bookmarks.');
+        $this->assertFalse($user->hasReadLater($link), 'The link should not be to read later.');
+        $this->assertTrue($news->hasLink($link), 'The link should be in news.');
     }
 
-    public function testNeverMarksNewsLinksToNeverReadAndRedirects(): void
+    public function testNeverMarksNewsLinksToBeDismissedAndRedirects(): void
     {
         $user = $this->login();
-        $bookmarks = $user->bookmarks();
         $news = $user->news();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link->addCollections([$news, $bookmarks]);
+        $user->markAsReadLater($link);
+        $news->addLinks([$link]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/never", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsNever::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertTrue($link->isInNeverList($user), 'The link should be in never list.');
-        $this->assertFalse($link->isInNewsOf($user), 'The link should not be in news.');
-        $this->assertFalse($link->isInBookmarksOf($user), 'The link should not be in bookmarks.');
+        $this->assertTrue($user->hasDismissed($link), 'The link should be has been dismissed.');
+        $this->assertFalse($user->hasReadLater($link), 'The link should not be to read later.');
+        $this->assertFalse($news->hasLink($link), 'The link should not be in news.');
     }
 
-    public function testNeverMarksLinksToNeverReadFromPublicCollection(): void
+    public function testNeverMarksLinksToBeDismissedFromPublicCollection(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -445,24 +445,23 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $public_link->addCollection($collection);
-        $hidden_link->addCollection($collection);
+        $collection->addLinks([$public_link, $hidden_link]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/read/never", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsNever::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertSame(1, models\Link::countBy(['user_id' => $user->id]));
-        $new_link = models\Link::findBy([
+        $links = models\Link::listBy([
             'user_id' => $user->id,
         ]);
-        $this->assertNotNull($new_link);
+        $this->assertSame(1, count($links));
+        $new_link = $links[0];
         $this->assertSame($public_link->url, $new_link->url);
-        $this->assertTrue($new_link->isInNeverList($user), 'The link should be in never list.');
+        $this->assertTrue($user->hasDismissed($new_link), 'The link should has been dismissed.');
     }
 
-    public function testNeverMarksHiddenLinksToNeverReadIfCollectionIsShared(): void
+    public function testNeverMarksHiddenLinksToBeDismissedIfCollectionIsShared(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -474,7 +473,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $link->addCollection($collection);
+        $collection->addLinks([$link]);
         $collection->shareWith($user, 'read');
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/read/never", [
@@ -482,15 +481,14 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $new_link = models\Link::findBy([
+        $this->assertTrue(models\Link::existsBy([
             'user_id' => $user->id,
             'url' => $link->url,
-        ]);
-        $this->assertNotNull($new_link);
-        $this->assertTrue($new_link->isInNeverList($user), 'The link should be in never list.');
+        ]));
+        $this->assertTrue($user->hasDismissed($link), 'The link should has been dismissed.');
     }
 
-    public function testNeverMarksNewsLinksToNeverReadForSpecificDate(): void
+    public function testNeverMarksNewsLinksToBeDismissedForSpecificDate(): void
     {
         $user = $this->login();
         $news = $user->news();
@@ -500,8 +498,8 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link1->addCollection($news, at: new \DateTimeImmutable('2024-03-25'));
-        $link2->addCollection($news, at: new \DateTimeImmutable('2024-03-26'));
+        $news->addLinks([$link1], at: new \DateTimeImmutable('2024-03-25'));
+        $news->addLinks([$link2], at: new \DateTimeImmutable('2024-03-26'));
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/never", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsNever::class),
@@ -509,11 +507,13 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertTrue($link1->isInNeverList($user), 'The link should be in never list.');
-        $this->assertFalse($link2->isInNeverList($user), 'The link should not be in never list.');
+        $this->assertTrue($user->hasDismissed($link1), 'The link should has been dismissed.');
+        $this->assertFalse($news->hasLink($link1), 'The link should not be in news.');
+        $this->assertFalse($user->hasDismissed($link2), 'The link should not has been dismissed.');
+        $this->assertTrue($news->hasLink($link2), 'The link should be in news.');
     }
 
-    public function testNeverMarksNewsLinksToNeverReadForSpecificOrigin(): void
+    public function testNeverMarksNewsLinksToBeDismissedForSpecificOrigin(): void
     {
         $user = $this->login();
         $news = $user->news();
@@ -527,8 +527,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'source_id' => $collection2->id,
         ]);
-        $link1->addCollection($news);
-        $link2->addCollection($news);
+        $news->addLinks([$link1, $link2]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/never", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsNever::class),
@@ -536,8 +535,10 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertTrue($link1->isInNeverList($user), 'The link should be in never list.');
-        $this->assertFalse($link2->isInNeverList($user), 'The link should not be in never list.');
+        $this->assertTrue($user->hasDismissed($link1), 'The link should has been dismissed.');
+        $this->assertFalse($news->hasLink($link1), 'The link should not be in news.');
+        $this->assertFalse($user->hasDismissed($link2), 'The link should not has been dismissed.');
+        $this->assertTrue($news->hasLink($link2), 'The link should be in news.');
     }
 
     public function testNeverRedirectsToLoginIfNotConnected(): void
@@ -547,15 +548,15 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link->addCollection($news);
+        $news->addLinks([$link]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/never", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsNever::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
-        $this->assertFalse($link->isInNeverList($user), 'The link should not be in never list.');
-        $this->assertTrue($link->isInNewsOf($user), 'The link should be in news.');
+        $this->assertFalse($user->hasDismissed($link), 'The link should not has been dismissed.');
+        $this->assertTrue($news->hasLink($link), 'The link should be in news.');
     }
 
     public function testNeverFailsIfCollectionIsInaccessible(): void
@@ -564,19 +565,20 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
+            'is_hidden' => false,
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
             'is_public' => false,
         ]);
-        $link->addCollection($collection);
+        $collection->addLinks([$link]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/read/never", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsNever::class),
         ]);
 
         $this->assertResponseCode($response, 403);
-        $this->assertFalse($link->isInNeverList($user), 'The link should not be in never list.');
+        $this->assertFalse($user->hasDismissed($link), 'The link should not has been dismissed.');
     }
 
     public function testNeverFailsIfCsrfIsInvalid(): void
@@ -586,7 +588,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link->addCollection($news);
+        $news->addLinks([$link]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/never", [
             'csrf_token' => 'not the token',
@@ -595,7 +597,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
         $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
-        $this->assertFalse($link->isInNeverList($user), 'The link should not be in never list.');
-        $this->assertTrue($link->isInNewsOf($user), 'The link should be in news.');
+        $this->assertFalse($user->hasDismissed($link), 'The link should not has been dismissed.');
+        $this->assertTrue($news->hasLink($link), 'The link should be in news.');
     }
 }

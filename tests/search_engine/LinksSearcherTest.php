@@ -5,7 +5,6 @@ namespace App\search_engine;
 use App\models;
 use tests\factories\UserFactory;
 use tests\factories\LinkFactory;
-use tests\factories\LinkToCollectionFactory;
 
 class LinksSearcherTest extends \PHPUnit\Framework\TestCase
 {
@@ -215,20 +214,16 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_1->id, $links[1]->id);
     }
 
-    public function testGetLinksExcludesLinksOnlyInNeverCollection(): void
+    public function testGetLinksExcludesLinksOnlyDismissed(): void
     {
         /** @var string */
         $title = $this->fake('sentence', 10, false);
         $user = UserFactory::create();
-        $never_list = $user->neverList();
         $link = LinkFactory::create([
             'user_id' => $user->id,
             'title' => $title,
         ]);
-        LinkToCollectionFactory::create([
-            'collection_id' => $never_list->id,
-            'link_id' => $link->id,
-        ]);
+        $user->markAsDismissed($link);
         $query = Query::fromString($title);
 
         $links = LinksSearcher::getLinks($user, $query);
@@ -252,20 +247,16 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $count);
     }
 
-    public function testCountLinksExcludeLinksOnlyInNeverCollection(): void
+    public function testCountLinksExcludeLinksOnlyDismissed(): void
     {
         /** @var string */
         $title = $this->fake('sentence', 10, false);
         $user = UserFactory::create();
-        $never_list = $user->neverList();
         $link = LinkFactory::create([
             'user_id' => $user->id,
             'title' => $title,
         ]);
-        LinkToCollectionFactory::create([
-            'collection_id' => $never_list->id,
-            'link_id' => $link->id,
-        ]);
+        $user->markAsDismissed($link);
         $query = Query::fromString($title);
 
         $count = LinksSearcher::countLinks($user, $query);

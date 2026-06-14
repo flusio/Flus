@@ -48,10 +48,9 @@ class LinkToCollection
     {
         $read_list = $user->readList();
         $bookmarks = $user->bookmarks();
-        $news = $user->news();
 
         self::attach($link_ids, [$read_list->id]);
-        self::detach($link_ids, [$bookmarks->id, $news->id]);
+        self::detach($link_ids, [$bookmarks->id]);
     }
 
     /**
@@ -68,10 +67,8 @@ class LinkToCollection
     public static function markToReadLater(User $user, array $link_ids): void
     {
         $bookmarks = $user->bookmarks();
-        $news = $user->news();
 
         self::attach($link_ids, [$bookmarks->id]);
-        self::detach($link_ids, [$news->id]);
     }
 
     /**
@@ -88,11 +85,10 @@ class LinkToCollection
     public static function markToNeverRead(User $user, array $link_ids): void
     {
         $bookmarks = $user->bookmarks();
-        $news = $user->news();
         $never_list = $user->neverList();
 
         self::attach($link_ids, [$never_list->id]);
-        self::detach($link_ids, [$bookmarks->id, $news->id]);
+        self::detach($link_ids, [$bookmarks->id]);
     }
 
     /**

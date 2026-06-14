@@ -6,7 +6,6 @@ use App\forms;
 use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\LinkFactory;
-use tests\factories\LinkToCollectionFactory;
 
 class SearchesTest extends \PHPUnit\Framework\TestCase
 {

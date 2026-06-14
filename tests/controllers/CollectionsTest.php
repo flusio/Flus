@@ -9,7 +9,6 @@ use tests\factories\CollectionFactory;
 use tests\factories\CollectionShareFactory;
 use tests\factories\CollectionToTopicFactory;
 use tests\factories\LinkFactory;
-use tests\factories\LinkToCollectionFactory;
 use tests\factories\TopicFactory;
 use tests\factories\UserFactory;
 
@@ -220,10 +219,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'title' => $link_title,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
+        $collection->addLinks([$link]);
 
         $response = $this->appRun('GET', "/collections/{$collection->id}");
 
@@ -248,10 +244,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'title' => $link_title,
             'is_hidden' => false,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
+        $collection->addLinks([$link]);
 
         $response = $this->appRun('GET', "/collections/{$collection->id}");
 
@@ -276,10 +269,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'title' => $link_title,
             'is_hidden' => false,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
+        $collection->addLinks([$link]);
 
         $response = $this->appRun('GET', "/collections/{$collection->id}");
 
@@ -303,10 +293,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'title' => $link_title,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
+        $collection->addLinks([$link]);
         CollectionShareFactory::create([
             'collection_id' => $collection->id,
             'user_id' => $user->id,
@@ -335,10 +322,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'title' => $link_title,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
+        $collection->addLinks([$link]);
         CollectionShareFactory::create([
             'collection_id' => $collection->id,
             'user_id' => $user->id,
@@ -367,10 +351,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'title' => $link_title,
             'is_hidden' => true,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
+        $collection->addLinks([$link]);
 
         $response = $this->appRun('GET', "/collections/{$collection->id}");
 
@@ -405,10 +386,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'title' => $link_title,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
+        $collection->addLinks([$link]);
 
         $response = $this->appRun('GET', "/collections/{$collection->id}", [
             'page' => 0,
@@ -438,10 +416,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
+        $collection->addLinks([$link]);
 
         $response = $this->appRun('GET', "/collections/{$collection->id}");
 

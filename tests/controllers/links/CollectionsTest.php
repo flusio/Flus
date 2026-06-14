@@ -7,7 +7,6 @@ use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\CollectionShareFactory;
 use tests\factories\LinkFactory;
-use tests\factories\LinkToCollectionFactory;
 use tests\factories\UserFactory;
 
 class CollectionsTest extends \PHPUnit\Framework\TestCase
@@ -40,10 +39,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'name' => $collection_name,
             'type' => 'collection',
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection_1->id,
-        ]);
+        $collection_1->addLinks([$link]);
 
         $response = $this->appRun('GET', "/links/{$link->id}/collections");
 
@@ -92,14 +88,8 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'type' => 'collection',
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link_not_owned->id,
-            'collection_id' => $collection_not_owned->id,
-        ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link_owned->id,
-            'collection_id' => $collection_owned->id,
-        ]);
+        $collection_not_owned->addLinks([$link_not_owned]);
+        $collection_owned->addLinks([$link_owned]);
 
         $response = $this->appRun('GET', "/links/{$link_not_owned->id}/collections");
 
@@ -149,10 +139,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'url' => $url,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $other_link->id,
-            'collection_id' => $collection->id,
-        ]);
+        $collection->addLinks([$other_link]);
         CollectionShareFactory::create([
             'user_id' => $other_user->id,
             'collection_id' => $collection->id,
@@ -183,10 +170,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $owner->id,
             'url' => $url,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $owner_link->id,
-            'collection_id' => $collection->id,
-        ]);
+        $collection->addLinks([$owner_link]);
         CollectionShareFactory::create([
             'user_id' => $user->id,
             'collection_id' => $collection->id,
@@ -240,10 +224,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
             'name' => $collection_name,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
+        $collection->addLinks([$link]);
 
         $response = $this->appRun('GET', "/links/{$link->id}/collections");
 
@@ -332,10 +313,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'type' => 'collection',
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection_1->id,
-        ]);
+        $collection_1->addLinks([$link]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
@@ -344,26 +322,16 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, "/links/{$link->id}/collections");
-        $link_to_collection_1 = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $collection_1->id,
-        ]);
-        $link_to_collection_2 = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $collection_2->id,
-        ]);
-        $this->assertNull($link_to_collection_1);
-        $this->assertNotNull($link_to_collection_2);
+        $this->assertFalse($collection_1->hasLink($link));
+        $this->assertTrue($collection_2->hasLink($link));
         $link = $link->reload();
         $this->assertSame($is_hidden, $link->is_hidden);
     }
 
-    public function testUpdateDoesNotRemoveFromBookmarksNewsOrReadList(): void
+    public function testUpdateDoesNotRemoveFromNews(): void
     {
         $user = $this->login();
-        $bookmarks = $user->bookmarks();
         $news = $user->news();
-        $read_list = $user->readList();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
@@ -371,18 +339,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'type' => 'collection',
         ]);
-        $link_to_bookmarks = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
-        $link_to_read_list = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $read_list->id,
-        ]);
+        $news->addLinks([$link]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
@@ -390,14 +347,8 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, "/links/{$link->id}/collections");
-        $link_to_collection = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
-        $this->assertNotNull($link_to_collection);
-        $this->assertTrue(models\LinkToCollection::exists($link_to_bookmarks->id));
-        $this->assertTrue(models\LinkToCollection::exists($link_to_news->id));
-        $this->assertTrue(models\LinkToCollection::exists($link_to_read_list->id));
+        $this->assertTrue($collection->hasLink($link));
+        $this->assertTrue($news->hasLink($link));
     }
 
     public function testUpdateCreatesNote(): void
@@ -454,8 +405,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     public function testUpdateCanMarkAsRead(): void
     {
         $user = $this->login();
-        $read_list = $user->readList();
-        $bookmarks = $user->bookmarks();
         $news = $user->news();
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -464,14 +413,8 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'type' => 'collection',
         ]);
-        $link_to_bookmarks = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
+        $user->markAsReadLater($link);
+        $collection->addLinks([$link]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
@@ -480,15 +423,9 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, "/links/{$link->id}/collections");
-        $exists_in_bookmarks = models\LinkToCollection::exists($link_to_bookmarks->id);
-        $exists_in_news = models\LinkToCollection::exists($link_to_news->id);
-        $link_to_read_list = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $read_list->id,
-        ]);
-        $this->assertFalse($exists_in_bookmarks);
-        $this->assertFalse($exists_in_news);
-        $this->assertNotNull($link_to_read_list);
+        $this->assertTrue($user->hasRead($link));
+        $this->assertFalse($user->hasReadLater($link));
+        $this->assertFalse($news->hasLink($link));
     }
 
     public function testUpdateCopiesNotOwnedAndAccessibleLinks(): void
@@ -511,10 +448,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'type' => 'collection',
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $other_collection->id,
-        ]);
+        $other_collection->addLinks([$link]);
         $from = \Minz\Url::for('collection', ['id' => $other_collection->id]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
@@ -525,35 +459,19 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, $from);
-        // The initial link didn't change of collections
-        $link_to_other_collection = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $other_collection->id,
-        ]);
-        $link_to_owned_collection = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $owned_collection->id,
-        ]);
-        $this->assertNotNull($link_to_other_collection);
-        $this->assertNull($link_to_owned_collection);
+        // The initial link didn't change collections
+        $this->assertTrue($other_collection->hasLink($link));
+        $this->assertFalse($owned_collection->hasLink($link));
         // But a new link exists, attached to the owned collection
-        $new_link = models\Link::findBy([
-            'user_id' => $user->id,
-            'url' => $url,
-        ]);
-        $this->assertNotNull($new_link);
+        $collection_links = $owned_collection->links();
+        $this->assertSame(1, count($collection_links));
+        $new_link = $collection_links[0];
+        $this->assertSame($user->id, $new_link->user_id);
+        $this->assertSame($url, $new_link->url);
         $origin = \Minz\Url::absoluteFor('collection', ['id' => $other_collection->id]);
         $this->assertSame($origin, $new_link->origin);
-        $new_link_to_other_collection = models\LinkToCollection::findBy([
-            'link_id' => $new_link->id,
-            'collection_id' => $other_collection->id,
-        ]);
-        $new_link_to_owned_collection = models\LinkToCollection::findBy([
-            'link_id' => $new_link->id,
-            'collection_id' => $owned_collection->id,
-        ]);
-        $this->assertNull($new_link_to_other_collection);
-        $this->assertNotNull($new_link_to_owned_collection);
+        $this->assertFalse($other_collection->hasLink($new_link));
+        $this->assertTrue($owned_collection->hasLink($new_link));
     }
 
     public function testUpdateWorksIfCollectionIsSharedWithWriteAccess(): void
@@ -578,11 +496,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, "/links/{$link->id}/collections");
-        $link_to_collection = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
-        $this->assertNotNull($link_to_collection);
+        $this->assertTrue($collection->hasLink($link));
     }
 
     public function testUpdateCanCreateCollections(): void
@@ -627,10 +541,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'type' => 'collection',
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection_1->id,
-        ]);
+        $collection_1->addLinks([$link]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
@@ -638,16 +549,8 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, "/login?redirect_to=%2Flinks%2F{$link->id}%2Fcollections");
-        $link_to_collection_1 = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $collection_1->id,
-        ]);
-        $link_to_collection_2 = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $collection_2->id,
-        ]);
-        $this->assertNotNull($link_to_collection_1);
-        $this->assertNull($link_to_collection_2);
+        $this->assertTrue($collection_1->hasLink($link));
+        $this->assertFalse($collection_2->hasLink($link));
     }
 
     public function testUpdateFailsIfLinkIsNotAccessible(): void
@@ -666,10 +569,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'type' => 'collection',
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection_1->id,
-        ]);
+        $collection_1->addLinks([$link]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
@@ -677,16 +577,8 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 403);
-        $link_to_collection_1 = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $collection_1->id,
-        ]);
-        $link_to_collection_2 = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $collection_2->id,
-        ]);
-        $this->assertNotNull($link_to_collection_1);
-        $this->assertNull($link_to_collection_2);
+        $this->assertTrue($collection_1->hasLink($link));
+        $this->assertFalse($collection_2->hasLink($link));
     }
 
     public function testUpdateFailsIfCollectionIdsContainsNotOwnedId(): void
@@ -708,7 +600,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'One of the associated collection doesn’t exist.');
-        $this->assertSame(0, models\LinkToCollection::count());
+        $this->assertFalse($collection->hasLink($link));
     }
 
     public function testUpdateFailsIfCollectionIsNotShared(): void
@@ -729,7 +621,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'One of the associated collection doesn’t exist.');
-        $this->assertSame(0, models\LinkToCollection::count());
+        $this->assertFalse($collection->hasLink($link));
     }
 
     public function testUpdateFailsIfCollectionIsSharedWithReadAccess(): void
@@ -755,7 +647,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'One of the associated collection doesn’t exist.');
-        $this->assertSame(0, models\LinkToCollection::count());
+        $this->assertFalse($collection->hasLink($link));
     }
 
     public function testUpdateFailsIfNewCollectionNameIsInvalid(): void
@@ -776,7 +668,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The name must be less than 100 characters.');
-        $this->assertSame(0, models\LinkToCollection::count());
+        $this->assertSame(0, models\Collection::count());
     }
 
     public function testUpdateFailsIfCsrfIsInvalid(): void
@@ -797,6 +689,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'A security verification failed');
-        $this->assertSame(0, models\LinkToCollection::count());
+        $this->assertFalse($collection->hasLink($link));
     }
 }

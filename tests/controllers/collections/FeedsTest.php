@@ -4,7 +4,6 @@ namespace App\controllers\collections;
 
 use tests\factories\CollectionFactory;
 use tests\factories\LinkFactory;
-use tests\factories\LinkToCollectionFactory;
 
 class FeedsTest extends \PHPUnit\Framework\TestCase
 {
@@ -28,10 +27,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'url' => $link_url,
             'is_hidden' => false,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
+        $collection->addLinks([$link]);
 
         $response = $this->appRun('GET', "/collections/{$collection->id}/feed.atom.xml");
 
@@ -62,10 +58,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'url' => $link_url,
             'is_hidden' => false,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
+        $collection->addLinks([$link]);
 
         $response = $this->appRun('GET', "/collections/{$collection->id}/feed.atom.xml", [
             'direct' => true,
@@ -92,10 +85,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'title' => $link_title,
             'is_hidden' => true,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
+        $collection->addLinks([$link]);
 
         $response = $this->appRun('GET', "/collections/{$collection->id}/feed.atom.xml");
 
@@ -130,10 +120,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'title' => $link_title,
             'is_hidden' => false,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
+        $collection->addLinks([$link]);
 
         $response = $this->appRun('GET', "/collections/{$collection->id}/feed.atom.xml");
 

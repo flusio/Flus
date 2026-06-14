@@ -6,7 +6,6 @@ use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\CollectionShareFactory;
 use tests\factories\LinkFactory;
-use tests\factories\LinkToCollectionFactory;
 use tests\factories\NoteFactory;
 use tests\factories\UserFactory;
 
@@ -77,7 +76,7 @@ class LinkTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($published_at, $links[0]->published_at);
     }
 
-    public function testListComputedByUserIdConsidersLinkToCollectionPublishedAtWhenUnsharedIsFalse(): void
+    public function testListComputedByUserIdConsidersPublishedAtWhenUnsharedIsFalse(): void
     {
         $user = UserFactory::create();
         /** @var \DateTimeImmutable */
@@ -90,11 +89,7 @@ class LinkTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'is_public' => true,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-            'created_at' => $published_at,
-        ]);
+        $collection->addLinks([$link], at: $published_at);
 
         $links = models\Link::listComputedByUserId($user->id, ['published_at'], [
             'unshared' => false,
@@ -146,18 +141,9 @@ class LinkTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'is_public' => true,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $unshared_link_2->id,
-            'collection_id' => $public_collection->id,
-        ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $unshared_link_3->id,
-            'collection_id' => $private_collection->id,
-        ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $shared_link->id,
-            'collection_id' => $public_collection->id,
-        ]);
+        $public_collection->addLinks([$unshared_link_2]);
+        $private_collection->addLinks([$unshared_link_3]);
+        $public_collection->addLinks([$shared_link]);
 
         $links = models\Link::listComputedByUserId($user->id, [], [
             'unshared' => false,
@@ -234,16 +220,8 @@ class LinkTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'is_public' => true,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $public_collection_1->id,
-            'created_at' => $today,
-        ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $public_collection_2->id,
-            'created_at' => $yesterday,
-        ]);
+        $public_collection_1->addLinks([$link], at: $today);
+        $public_collection_2->addLinks([$link], at: $yesterday);
 
         $links = models\Link::listComputedByUserId($user->id, ['published_at'], [
             'unshared' => false,
@@ -280,26 +258,10 @@ class LinkTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'is_public' => true,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link_1->id,
-            'collection_id' => $public_collection_2->id,
-            'created_at' => $three_days_ago,
-        ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link_2->id,
-            'collection_id' => $public_collection_1->id,
-            'created_at' => $two_days_ago,
-        ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link_3->id,
-            'collection_id' => $public_collection_1->id,
-            'created_at' => $yesterday,
-        ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link_1->id,
-            'collection_id' => $public_collection_1->id,
-            'created_at' => $today,
-        ]);
+        $public_collection_2->addLinks([$link_1], at: $three_days_ago);
+        $public_collection_1->addLinks([$link_2], at: $two_days_ago);
+        $public_collection_1->addLinks([$link_3], at: $yesterday);
+        $public_collection_1->addLinks([$link_1], at: $today);
 
         $links = models\Link::listComputedByUserId($user->id, ['published_at'], [
             'unshared' => false,
@@ -331,10 +293,7 @@ class LinkTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $other_link->id,
-            'collection_id' => $collection->id,
-        ]);
+        $collection->addLinks([$other_link]);
 
         $links = models\Link::listSuggestedFor($user, $link);
 
@@ -362,10 +321,7 @@ class LinkTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $other_link->id,
-            'collection_id' => $collection->id,
-        ]);
+        $collection->addLinks([$other_link]);
         CollectionShareFactory::create([
             'user_id' => $user->id,
             'collection_id' => $collection->id,
@@ -416,10 +372,7 @@ class LinkTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $other_link->id,
-            'collection_id' => $collection->id,
-        ]);
+        $collection->addLinks([$other_link]);
 
         $links = models\Link::listSuggestedFor($user, $link);
 

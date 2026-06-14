@@ -9,7 +9,6 @@ use tests\factories\CollectionFactory;
 use tests\factories\CollectionShareFactory;
 use tests\factories\GroupFactory;
 use tests\factories\LinkFactory;
-use tests\factories\LinkToCollectionFactory;
 use tests\factories\NoteFactory;
 use tests\factories\UserFactory;
 
@@ -225,10 +224,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'user_id' => $current_user->id,
             'type' => 'collection',
         ]);
-        LinkToCollectionFactory::create([
-            'collection_id' => $collection->id,
-            'link_id' => $link->id,
-        ]);
+        $collection->addLinks([$link]);
 
         $response = $this->appRun('GET', "/links/{$link->id}");
 
@@ -253,10 +249,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'type' => 'collection',
         ]);
-        LinkToCollectionFactory::create([
-            'collection_id' => $collection->id,
-            'link_id' => $link->id,
-        ]);
+        $collection->addLinks([$link]);
         CollectionShareFactory::create([
             'collection_id' => $collection->id,
             'user_id' => $current_user->id,
@@ -401,7 +394,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
 
         $this->assertSame(0, models\Link::count());
-        $this->assertSame(0, models\LinkToCollection::count());
 
         $response = $this->appRun('POST', '/links/new', [
             'csrf_token' => $this->csrfToken(forms\links\NewLink::class),
@@ -410,7 +402,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertSame(1, models\Link::count());
-        $this->assertSame(1, models\LinkToCollection::count());
 
         $link = models\Link::take();
         $this->assertNotNull($link);
@@ -459,7 +450,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $link = models\Link::take();
         $this->assertNotNull($link);
-        $this->assertTrue($link->isInBookmarksOf($user));
+        $this->assertTrue($user->hasReadLater($link));
         $this->assertResponseCode($response, 302, "/links/{$link->id}");
     }
 
@@ -478,7 +469,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertSame(1, models\Link::count());
-        $this->assertSame(0, models\LinkToCollection::count());
 
         $response = $this->appRun('POST', '/links/new', [
             'csrf_token' => $this->csrfToken(forms\links\NewLink::class),
@@ -487,7 +477,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertSame(1, models\Link::count());
-        $this->assertSame(1, models\LinkToCollection::count());
 
         $link = $link->reload();
         $this->assertContains($collection->id, array_column($link->collections(), 'id'));
@@ -509,7 +498,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertSame(1, models\Link::count());
-        $this->assertSame(0, models\LinkToCollection::count());
 
         $response = $this->appRun('POST', '/links/new', [
             'csrf_token' => $this->csrfToken(forms\links\NewLink::class),
@@ -518,7 +506,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertSame(2, models\Link::count());
-        $this->assertSame(1, models\LinkToCollection::count());
 
         $link = models\Link::findBy(['user_id' => $user->id]);
         $this->assertNotNull($link);
@@ -542,13 +529,9 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'url' => $url,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection_1->id,
-        ]);
+        $collection_1->addLinks([$link]);
 
         $this->assertSame(1, models\Link::count());
-        $this->assertSame(1, models\LinkToCollection::count());
 
         $response = $this->appRun('POST', '/links/new', [
             'csrf_token' => $this->csrfToken(forms\links\NewLink::class),
@@ -557,7 +540,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertSame(1, models\Link::count());
-        $this->assertSame(2, models\LinkToCollection::count());
 
         $link = $link->reload();
         $collection_ids = array_column($link->collections(), 'id');
@@ -582,7 +564,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
 
         $this->assertSame(0, models\Link::count());
-        $this->assertSame(0, models\LinkToCollection::count());
 
         $response = $this->appRun('POST', '/links/new', [
             'csrf_token' => $this->csrfToken(forms\links\NewLink::class),
@@ -591,7 +572,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertSame(1, models\Link::count());
-        $this->assertSame(1, models\LinkToCollection::count());
 
         $link = models\Link::take();
         $this->assertNotNull($link);
@@ -617,7 +597,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, models\Link::count());
         $this->assertSame(1, models\Collection::count());
-        $this->assertSame(1, models\LinkToCollection::count());
 
         $link = models\Link::take();
         $this->assertNotNull($link);
@@ -734,7 +713,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'One of the associated collection doesn’t exist.');
         $this->assertSame(0, models\Link::count());
-        $this->assertSame(0, models\LinkToCollection::count());
     }
 
     public function testCreateFailsIfCollectionIsNotShared(): void
@@ -757,7 +735,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'One of the associated collection doesn’t exist.');
         $this->assertSame(0, models\Link::count());
-        $this->assertSame(0, models\LinkToCollection::count());
     }
 
     public function testCreateFailsIfNewCollectionNameIsInvalid(): void

@@ -130,7 +130,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
 
         $this->assertSame(0, models\Link::count());
-        $this->assertSame(0, models\LinkToCollection::count());
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/links/new", [
             'url' => $url,
@@ -138,7 +137,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertSame(1, models\Link::count());
-        $this->assertSame(1, models\LinkToCollection::count());
 
         $this->assertResponseCode($response, 302, "/collections/{$collection->id}/links/new");
         $link = models\Link::take();
@@ -220,7 +218,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
 
         $this->assertSame(1, models\Link::count());
-        $this->assertSame(0, models\LinkToCollection::count());
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/links/new", [
             'url' => $url,
@@ -228,7 +225,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertSame(1, models\Link::count());
-        $this->assertSame(1, models\LinkToCollection::count());
 
         $this->assertResponseCode($response, 302, "/collections/{$collection->id}/links/new");
         $this->assertContains($collection->id, array_column($link->collections(), 'id'));

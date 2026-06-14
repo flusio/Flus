@@ -24,14 +24,14 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link1->addCollection($news);
         $link2->addCollection($news);
 
-        $this->assertFalse($link1->isReadBy($user));
-        $this->assertFalse($link2->isReadBy($user));
+        $this->assertFalse($user->hasRead($link1));
+        $this->assertFalse($user->hasRead($link2));
 
         $response = $this->apiRun('POST', '/api/v1/journal/read');
 
         $this->assertResponseCode($response, 200);
-        $this->assertTrue($link1->isReadBy($user));
-        $this->assertTrue($link2->isReadBy($user));
+        $this->assertTrue($user->hasRead($link1));
+        $this->assertTrue($user->hasRead($link2));
     }
 
     public function testCreateCanMarkAsReadByDate(): void
@@ -47,16 +47,16 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link1->addCollection($news, at: new \DateTimeImmutable('2025-08-22'));
         $link2->addCollection($news, at: new \DateTimeImmutable('2025-08-23'));
 
-        $this->assertFalse($link1->isReadBy($user));
-        $this->assertFalse($link2->isReadBy($user));
+        $this->assertFalse($user->hasRead($link1));
+        $this->assertFalse($user->hasRead($link2));
 
         $response = $this->apiRun('POST', '/api/v1/journal/read', [
             'date' => '2025-08-22',
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertTrue($link1->isReadBy($user));
-        $this->assertFalse($link2->isReadBy($user));
+        $this->assertTrue($user->hasRead($link1));
+        $this->assertFalse($user->hasRead($link2));
     }
 
     public function testCreateCanMarkAsReadByOrigin(): void
@@ -74,16 +74,16 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link1->addCollection($news);
         $link2->addCollection($news);
 
-        $this->assertFalse($link1->isReadBy($user));
-        $this->assertFalse($link2->isReadBy($user));
+        $this->assertFalse($user->hasRead($link1));
+        $this->assertFalse($user->hasRead($link2));
 
         $response = $this->apiRun('POST', '/api/v1/journal/read', [
             'source' => $collection->id,
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertTrue($link1->isReadBy($user));
-        $this->assertFalse($link2->isReadBy($user));
+        $this->assertTrue($user->hasRead($link1));
+        $this->assertFalse($user->hasRead($link2));
     }
 
     public function testCreateFailsIfNotConnected(): void
@@ -99,14 +99,14 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link1->addCollection($news);
         $link2->addCollection($news);
 
-        $this->assertFalse($link1->isReadBy($user));
-        $this->assertFalse($link2->isReadBy($user));
+        $this->assertFalse($user->hasRead($link1));
+        $this->assertFalse($user->hasRead($link2));
 
         $response = $this->apiRun('POST', '/api/v1/journal/read');
 
         $this->assertResponseCode($response, 401);
-        $this->assertFalse($link1->isReadBy($user));
-        $this->assertFalse($link2->isReadBy($user));
+        $this->assertFalse($user->hasRead($link1));
+        $this->assertFalse($user->hasRead($link2));
         $this->assertApiResponse($response, [
             'error' => 'The request is not authenticated.',
         ]);

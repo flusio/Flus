@@ -1,8 +1,8 @@
 {% extends 'layouts/application.html.twig' %}
 
 {% set owner = link.owner %}
-{% set is_read = app.user and link.isReadBy(app.user) %}
-{% set in_bookmarks = app.user and link.isInBookmarksOf(app.user) %}
+{% set is_read = app.user and app.user.hasRead(link) %}
+{% set has_read_later = app.user and app.user.hasReadLater(link) %}
 {% set is_inaccessible = link.isInaccessible %}
 {% set trackers_detected = link.trackersDetected %}
 
@@ -103,7 +103,7 @@
                                     &nbsp;<span title="{{ t('You read this link.') }}">{{ icon('check') }}</span>
                                 {% endif %}
 
-                                {% if in_bookmarks %}
+                                {% if has_read_later %}
                                     &nbsp;<span title="{{ t('You marked this link to be read.') }}">{{ icon('bookmark') }}</span>
                                 {% endif %}
                             </p>
@@ -179,7 +179,7 @@
                 </a>
 
                 {% if app.user %}
-                    {% if not is_read or in_bookmarks %}
+                    {% if not is_read or has_read_later %}
                         <form data-turbo-preserve-scroll method="post" action="{{ url('mark link as read', { id: link.id }) }}">
                             <button>
                                 {{ icon('check') }}
@@ -190,7 +190,7 @@
                         </form>
                     {% endif %}
 
-                    {% if not in_bookmarks %}
+                    {% if not has_read_later %}
                         <form data-turbo-preserve-scroll method="post" action="{{ url('read link later', { id: link.id }) }}">
                             <button>
                                 {{ icon('bookmark') }}

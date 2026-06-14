@@ -4,7 +4,6 @@ namespace App\controllers;
 
 use App\models;
 use tests\factories\LinkFactory;
-use tests\factories\LinkToCollectionFactory;
 use tests\factories\UserFactory;
 
 class ReadTest extends \PHPUnit\Framework\TestCase
@@ -20,15 +19,11 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         /** @var string */
         $link_title = $this->fake('words', 3, true);
-        $read_list = $user->readList();
         $link = LinkFactory::create([
             'user_id' => $user->id,
             'title' => $link_title,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $read_list->id,
-        ]);
+        $user->markAsRead($link);
 
         $response = $this->appRun('GET', '/read');
 
@@ -40,14 +35,10 @@ class ReadTest extends \PHPUnit\Framework\TestCase
     public function testIndexRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create();
-        $read_list = $user->readList();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $read_list->id,
-        ]);
+        $user->markAsRead($link);
 
         $response = $this->appRun('GET', '/read');
 

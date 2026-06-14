@@ -8,7 +8,6 @@ use tests\factories\CollectionToTopicFactory;
 use tests\factories\FollowedCollectionFactory;
 use tests\factories\GroupFactory;
 use tests\factories\LinkFactory;
-use tests\factories\LinkToCollectionFactory;
 use tests\factories\NoteFactory;
 use tests\factories\TopicFactory;
 use tests\factories\UserFactory;
@@ -174,20 +173,13 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
     {
         $data_exporter = new DataExporter($this->exportations_path);
         $user = UserFactory::create();
-        $bookmarks = $user->bookmarks();
         /** @var string */
         $link_url = $this->fake('url');
-        /** @var \DateTimeImmutable */
-        $published_at = $this->fake('dateTime');
         $link = LinkFactory::create([
             'user_id' => $user->id,
             'url' => $link_url,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
-            'created_at' => $published_at,
-        ]);
+        $user->markAsReadLater($link);
 
         $filepath = $data_exporter->export($user->id);
 
@@ -198,7 +190,6 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, count($feed->entries));
         $entry = $feed->entries[0];
         $this->assertSame($link_url, $entry->link);
-        $this->assertEquals($published_at, $entry->published_at);
     }
 
     public function testExportCreatesNewsFile(): void
@@ -214,11 +205,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'url' => $link_url,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-            'created_at' => $published_at,
-        ]);
+        $news->addLinks([$link], at: $published_at);
 
         $filepath = $data_exporter->export($user->id);
 
@@ -236,20 +223,13 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
     {
         $data_exporter = new DataExporter($this->exportations_path);
         $user = UserFactory::create();
-        $read_list = $user->readList();
         /** @var string */
         $link_url = $this->fake('url');
-        /** @var \DateTimeImmutable */
-        $published_at = $this->fake('dateTime');
         $link = LinkFactory::create([
             'user_id' => $user->id,
             'url' => $link_url,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $read_list->id,
-            'created_at' => $published_at,
-        ]);
+        $user->markAsRead($link);
 
         $filepath = $data_exporter->export($user->id);
 
@@ -260,27 +240,19 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, count($feed->entries));
         $entry = $feed->entries[0];
         $this->assertSame($link_url, $entry->link);
-        $this->assertEquals($published_at, $entry->published_at);
     }
 
     public function testExportCreatesNeverFile(): void
     {
         $data_exporter = new DataExporter($this->exportations_path);
         $user = UserFactory::create();
-        $never_list = $user->neverList();
         /** @var string */
         $link_url = $this->fake('url');
-        /** @var \DateTimeImmutable */
-        $published_at = $this->fake('dateTime');
         $link = LinkFactory::create([
             'user_id' => $user->id,
             'url' => $link_url,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $never_list->id,
-            'created_at' => $published_at,
-        ]);
+        $user->markAsDismissed($link);
 
         $filepath = $data_exporter->export($user->id);
 
@@ -291,7 +263,6 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, count($feed->entries));
         $entry = $feed->entries[0];
         $this->assertSame($link_url, $entry->link);
-        $this->assertEquals($published_at, $entry->published_at);
     }
 
     public function testExportCreatesCollectionsFiles(): void
@@ -330,11 +301,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
             'url' => $link_url,
             'is_hidden' => true,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-            'created_at' => $published_at,
-        ]);
+        $collection->addLinks([$link], at: $published_at);
         CollectionToTopicFactory::create([
             'topic_id' => $topic->id,
             'collection_id' => $collection->id,

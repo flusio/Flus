@@ -627,6 +627,33 @@ class User
     }
 
     /**
+     * Return whether the user has read the link or not.
+     */
+    public function hasRead(Link $link): bool
+    {
+        $read_list = $this->readList();
+        return Link::isUrlInCollectionId($read_list->id, $link->url);
+    }
+
+    /**
+     * Return whether the user wants to read the link later or not.
+     */
+    public function hasReadLater(Link $link): bool
+    {
+        $bookmarks = $this->bookmarks();
+        return Link::isUrlInCollectionId($bookmarks->id, $link->url);
+    }
+
+    /**
+     * Return whether the user has dismissed the link or not.
+     */
+    public function hasDismissed(Link $link): bool
+    {
+        $never_list = $this->neverList();
+        return Link::isUrlInCollectionId($never_list->id, $link->url);
+    }
+
+    /**
      * Mark the links as read for the user.
      *
      * @param Link|Link[] $links
@@ -639,6 +666,11 @@ class User
 
         $link_ids = array_column($links, 'id');
         LinkToCollection::markAsRead($this, $link_ids);
+
+        UrlStatus::markAsRead($this, $links);
+
+        $news = $this->news();
+        $news->removeLinks($links, sync_publication_frequency: false);
     }
 
     /**
@@ -654,6 +686,8 @@ class User
 
         $link_ids = array_column($links, 'id');
         LinkToCollection::markAsUnread($this, $link_ids);
+
+        UrlStatus::unmarkAsRead($this, $links);
     }
 
     /**
@@ -669,6 +703,11 @@ class User
 
         $link_ids = array_column($links, 'id');
         LinkToCollection::markToReadLater($this, $link_ids);
+
+        UrlStatus::markAsReadLater($this, $links);
+
+        $news = $this->news();
+        $news->removeLinks($links, sync_publication_frequency: false);
     }
 
     /**
@@ -684,6 +723,11 @@ class User
 
         $link_ids = array_column($links, 'id');
         LinkToCollection::markToNeverRead($this, $link_ids);
+
+        UrlStatus::markAsDismissed($this, $links);
+
+        $news = $this->news();
+        $news->removeLinks($links, sync_publication_frequency: false);
     }
 
     /**

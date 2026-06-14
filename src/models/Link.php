@@ -394,58 +394,6 @@ class Link
     }
 
     /**
-     * Return whether or not the given user has the link URL in its news.
-     */
-    public function isInNewsOf(?User $user): bool
-    {
-        if (!$user) {
-            return false;
-        }
-
-        $news = $user->news();
-        return Link::isUrlInCollectionId($news->id, $this->url);
-    }
-
-    /**
-     * Return whether or not the given user has the link URL in its bookmarks.
-     */
-    public function isInBookmarksOf(?User $user): bool
-    {
-        if (!$user) {
-            return false;
-        }
-
-        $bookmarks = $user->bookmarks();
-        return Link::isUrlInCollectionId($bookmarks->id, $this->url);
-    }
-
-    /**
-     * Return whether or not the given user read the link URL.
-     */
-    public function isReadBy(?User $user): bool
-    {
-        if (!$user) {
-            return false;
-        }
-
-        $read_list = $user->readList();
-        return Link::isUrlInCollectionId($read_list->id, $this->url);
-    }
-
-    /**
-     * Return whether or not the the link URL is in the given collection.
-     */
-    public function isInNeverList(?User $user): bool
-    {
-        if (!$user) {
-            return false;
-        }
-
-        $never_list = $user->neverList();
-        return Link::isUrlInCollectionId($never_list->id, $this->url);
-    }
-
-    /**
      * Return whether the link is shared with the given user or not (i.e. it is
      * attached to a shared collection or to an owned collection).
      *
@@ -572,8 +520,8 @@ class Link
             'tags' => $this->tags,
             'source' => $this->source_id,
             'origin' => $origin,
-            'is_read' => $this->isReadBy($context_user),
-            'is_read_later' => $this->isInBookmarksOf($context_user),
+            'is_read' => $context_user->hasRead($this),
+            'is_read_later' => $context_user->hasReadLater($this),
             'collections' => array_column($this->collections(), 'id'),
             'published_at' => $this->published_at?->format(\DateTime::ATOM),
             'number_notes' => $this->numberNotes(),

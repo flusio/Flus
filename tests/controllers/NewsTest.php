@@ -8,7 +8,6 @@ use App\utils;
 use tests\factories\CollectionFactory;
 use tests\factories\FollowedCollectionFactory;
 use tests\factories\LinkFactory;
-use tests\factories\LinkToCollectionFactory;
 use tests\factories\UserFactory;
 
 class NewsTest extends \PHPUnit\Framework\TestCase
@@ -30,10 +29,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'title' => $title,
             'user_id' => $user->id,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
+        $news->addLinks([$link]);
 
         $response = $this->appRun('GET', '/news');
 
@@ -64,10 +60,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'origin' => $origin,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
+        $news->addLinks([$link]);
 
         $response = $this->appRun('GET', '/news');
 
@@ -98,10 +91,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'origin' => $origin,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
+        $news->addLinks([$link]);
 
         $response = $this->appRun('GET', '/news');
 
@@ -137,10 +127,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'title' => $title,
             'user_id' => $user->id,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
+        $news->addLinks([$link]);
 
         $response = $this->appRun('GET', '/news');
 
@@ -158,10 +145,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'title' => $title,
             'user_id' => $user->id,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
+        $news->addLinks([$link]);
 
         $response = $this->appRun('GET', '/news');
 
@@ -188,11 +172,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        LinkToCollectionFactory::create([
-            'created_at' => $created_at,
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
+        $collection->addLinks([$link], at: $created_at);
         FollowedCollectionFactory::create([
             'user_id' => $user->id,
             'collection_id' => $collection->id,
@@ -203,20 +183,15 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/news');
-        $news_link = models\Link::findBy([
-            'user_id' => $user->id,
-            'url' => $link_url,
-        ]);
-        $this->assertNotNull($news_link);
+        $news_links = $news->links();
+        $this->assertSame(1, count($news_links));
+        $news_link = $news_links[0];
+        $this->assertNotSame($link->id, $news_link->id);
         $this->assertSame($link->url, $news_link->url);
+        $this->assertSame($user->id, $news_link->user_id);
         $this->assertSame($link->title, $news_link->title);
         $origin = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
         $this->assertSame($origin, $news_link->origin);
-        $link_to_news = models\LinkToCollection::findBy([
-            'link_id' => $news_link->id,
-            'collection_id' => $news->id,
-        ]);
-        $this->assertNotNull($link_to_news);
     }
 
     public function testCreateGroupsLinksBySourcesGroups(): void
@@ -241,21 +216,8 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        LinkToCollectionFactory::create([
-            'created_at' => \Minz\Time::ago(1, 'day'),
-            'link_id' => $link1->id,
-            'collection_id' => $collection->id,
-        ]);
-        LinkToCollectionFactory::create([
-            'created_at' => \Minz\Time::ago(1, 'day'),
-            'link_id' => $link2->id,
-            'collection_id' => $collection->id,
-        ]);
-        LinkToCollectionFactory::create([
-            'created_at' => \Minz\Time::ago(2, 'days'),
-            'link_id' => $link3->id,
-            'collection_id' => $collection->id,
-        ]);
+        $collection->addLinks([$link1, $link2], at: \Minz\Time::ago(1, 'day'));
+        $collection->addLinks([$link3], at: \Minz\Time::ago(2, 'days'));
         FollowedCollectionFactory::create([
             'user_id' => $user->id,
             'collection_id' => $collection->id,
@@ -298,11 +260,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        LinkToCollectionFactory::create([
-            'created_at' => $created_at,
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
+        $collection->addLinks([$link], at: $created_at);
         FollowedCollectionFactory::create([
             'user_id' => $user->id,
             'collection_id' => $collection->id,
@@ -313,16 +271,12 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/news');
-        $news_link = models\Link::findBy([
-            'user_id' => $user->id,
-            'url' => $link_url,
-        ]);
-        $this->assertNotNull($news_link);
+        $news_links = $news->links();
+        $this->assertSame(1, count($news_links));
+        $news_link = $news_links[0];
         $this->assertSame($owned_link->id, $news_link->id);
-        $this->assertTrue(models\LinkToCollection::existsBy([
-            'link_id' => $owned_link->id,
-            'collection_id' => $news->id,
-        ]));
+        $this->assertSame($user->id, $news_link->user_id);
+        $this->assertSame($link_url, $news_link->url);
     }
 
     public function testCreateSetsFlashNoNewsIfNoSuggestions(): void
@@ -356,11 +310,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        LinkToCollectionFactory::create([
-            'created_at' => $created_at,
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
+        $collection->addLinks([$link], at: $created_at);
         FollowedCollectionFactory::create([
             'user_id' => $user->id,
             'collection_id' => $collection->id,
@@ -397,11 +347,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        LinkToCollectionFactory::create([
-            'created_at' => $created_at,
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
+        $collection->addLinks([$link], at: $created_at);
         FollowedCollectionFactory::create([
             'user_id' => $user->id,
             'collection_id' => $collection->id,
