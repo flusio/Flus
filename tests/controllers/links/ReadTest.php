@@ -5,8 +5,8 @@ namespace App\controllers\links;
 use App\forms;
 use App\models;
 use App\utils;
+use tests\factories\CollectionFactory;
 use tests\factories\LinkFactory;
-use tests\factories\LinkToCollectionFactory;
 use tests\factories\UserFactory;
 
 class ReadTest extends \PHPUnit\Framework\TestCase
@@ -21,65 +21,32 @@ class ReadTest extends \PHPUnit\Framework\TestCase
     public function testCreateMarksAsRead(): void
     {
         $user = $this->login();
-        $bookmarks = $user->bookmarks();
         $news = $user->news();
-        $read_list = $user->readList();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_to_bookmarks = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
+        $user->markAsReadLater($link);
+        $news->addLinks([$link]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsRead::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertFalse(models\LinkToCollection::exists($link_to_bookmarks->id));
-        $this->assertFalse(models\LinkToCollection::exists($link_to_news->id));
-        $link_to_read_list = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $read_list->id,
-        ]);
-        $this->assertNotNull($link_to_read_list);
-    }
-
-    public function testCreateWorksEvenIfNotInBookmarks(): void
-    {
-        $user = $this->login();
-        $bookmarks = $user->bookmarks();
-        $news = $user->news();
-        $read_list = $user->readList();
-        $link = LinkFactory::create([
-            'user_id' => $user->id,
-        ]);
-
-        $response = $this->appRun('POST', "/links/{$link->id}/read", [
-            'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsRead::class),
-        ]);
-
-        $this->assertResponseCode($response, 302, '/');
-        $this->assertSame(1, models\LinkToCollection::count());
-        $link_to_read_list = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $read_list->id,
-        ]);
-        $this->assertNotNull($link_to_read_list);
+        $this->assertFalse($user->wantsReadLater($link));
+        $this->assertTrue($user->hasRead($link));
+        $this->assertFalse($news->hasLink($link));
     }
 
     public function testCreateWorksIfNotOwnedAndNotHidden(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
-        $bookmarks = $other_user->bookmarks();
-        $news = $other_user->news();
-        $read_list = $user->readList();
+        $other_collection = CollectionFactory::create([
+            'type' => 'collection',
+            'user_id' => $other_user->id,
+            'is_public' => true,
+        ]);
         /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
@@ -87,15 +54,9 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_hidden' => false,
             'url' => $url,
         ]);
-        $link_to_bookmarks = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
-        $from = \Minz\Url::for('collection', ['id' => $news->id]);
+        $other_user->markAsReadLater($link);
+        $other_collection->addLinks([$link]);
+        $from = \Minz\Url::for('collection', ['id' => $other_collection->id]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsRead::class),
@@ -104,74 +65,50 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, $from);
-        // The initial link is not modified since it's not owned by the logged
-        // user.
-        $this->assertTrue(models\LinkToCollection::exists($link_to_bookmarks->id));
-        $this->assertTrue(models\LinkToCollection::exists($link_to_news->id));
-        // But the logged user now has a new link in its own read list
+        // The read status didn't changed for the other user who owns the link.
+        $this->assertTrue($other_user->wantsReadLater($link));
+        $this->assertFalse($other_user->hasRead($link));
+        // But the logged user now has read the link and owns their own copy.
+        $this->assertTrue($user->hasRead($link));
         $new_link = models\Link::findBy([
             'user_id' => $user->id,
             'url' => $url,
         ]);
         $this->assertNotNull($new_link);
-        $origin = \Minz\Url::absoluteFor('collection', ['id' => $news->id]);
+        $this->assertNotSame($link->id, $new_link->id);
+        $origin = \Minz\Url::absoluteFor('collection', ['id' => $other_collection->id]);
         $this->assertSame($origin, $new_link->origin);
-        $link_to_read_list = models\LinkToCollection::findBy([
-            'link_id' => $new_link->id,
-            'collection_id' => $read_list->id,
-        ]);
-        $this->assertNotNull($link_to_read_list);
     }
 
     public function testCreateRedirectsToLoginIfNotConnected(): void
     {
         $user = UserFactory::create();
-        $bookmarks = $user->bookmarks();
         $news = $user->news();
-        $read_list = $user->readList();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_to_bookmarks = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
+        $user->markAsReadLater($link);
+        $news->addLinks([$link]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsRead::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
-        $this->assertTrue(models\LinkToCollection::exists($link_to_bookmarks->id));
-        $this->assertTrue(models\LinkToCollection::exists($link_to_news->id));
-        $link_to_read_list = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $read_list->id,
-        ]);
-        $this->assertNull($link_to_read_list);
+        $this->assertTrue($user->wantsReadLater($link));
+        $this->assertFalse($user->hasRead($link));
+        $this->assertTrue($news->hasLink($link));
     }
 
     public function testCreateFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
-        $bookmarks = $user->bookmarks();
         $news = $user->news();
-        $read_list = $user->readList();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_to_bookmarks = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
+        $user->markAsReadLater($link);
+        $news->addLinks([$link]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read", [
             'csrf_token' => 'not the token',
@@ -180,33 +117,18 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
         $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
-        $this->assertTrue(models\LinkToCollection::exists($link_to_bookmarks->id));
-        $this->assertTrue(models\LinkToCollection::exists($link_to_news->id));
-        $link_to_read_list = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $read_list->id,
-        ]);
-        $this->assertNull($link_to_read_list);
+        $this->assertTrue($user->wantsReadLater($link));
+        $this->assertFalse($user->hasRead($link));
+        $this->assertTrue($news->hasLink($link));
     }
 
     public function testCreateFailsIfNotOwnedAndHidden(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
-        $bookmarks = $other_user->bookmarks();
-        $news = $other_user->news();
-        $read_list = $user->readList();
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
             'is_hidden' => true,
-        ]);
-        $link_to_bookmarks = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read", [
@@ -214,69 +136,40 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 403);
-        $this->assertTrue(models\LinkToCollection::exists($link_to_bookmarks->id));
-        $this->assertTrue(models\LinkToCollection::exists($link_to_news->id));
-        $link_to_read_list = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $read_list->id,
-        ]);
-        $this->assertNull($link_to_read_list);
+        $this->assertFalse($user->hasRead($link));
+        $this->assertFalse(models\Link::existsBy([
+            'user_id' => $user->id,
+            'url' => $link->url,
+        ]));
     }
 
     public function testLaterMarksToBeReadLater(): void
     {
         $user = $this->login();
         $news = $user->news();
-        $bookmarks = $user->bookmarks();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
+        $news->addLinks([$link]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/later", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsReadLater::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertFalse(models\LinkToCollection::exists($link_to_news->id));
-        $link_to_bookmarks = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
-        $this->assertNotNull($link_to_bookmarks);
-    }
-
-    public function testLaterWorksEvenIfNotInNews(): void
-    {
-        $user = $this->login();
-        $news = $user->news();
-        $bookmarks = $user->bookmarks();
-        $link = LinkFactory::create([
-            'user_id' => $user->id,
-        ]);
-
-        $response = $this->appRun('POST', "/links/{$link->id}/read/later", [
-            'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsReadLater::class),
-        ]);
-
-        $this->assertResponseCode($response, 302, '/');
-        $this->assertSame(1, models\LinkToCollection::count());
-        $link_to_bookmarks = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
-        $this->assertNotNull($link_to_bookmarks);
+        $this->assertTrue($user->wantsReadLater($link));
+        $this->assertFalse($news->hasLink($link));
     }
 
     public function testLaterWorksIfNotOwnedAndNotHidden(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
-        $news = $other_user->news();
-        $bookmarks = $user->bookmarks();
+        $other_collection = CollectionFactory::create([
+            'type' => 'collection',
+            'user_id' => $other_user->id,
+            'is_public' => true,
+        ]);
         /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
@@ -284,11 +177,8 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_hidden' => false,
             'url' => $url,
         ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
-        $from = \Minz\Url::for('collection', ['id' => $news->id]);
+        $other_collection->addLinks([$link]);
+        $from = \Minz\Url::for('collection', ['id' => $other_collection->id]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/later", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsReadLater::class),
@@ -297,62 +187,45 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, $from);
-        // The initial link is not modified since it's not owned by the logged
-        // user.
-        $this->assertTrue(models\LinkToCollection::exists($link_to_news->id));
-        // But the logged user now has a new link in its own bookmarks
+        // The read status didn't changed for the other user who owns the link.
+        $this->assertFalse($other_user->wantsReadLater($link));
+        // But the logged user now wants to read the link later and owns their own copy.
+        $this->assertTrue($user->wantsReadLater($link));
         $new_link = models\Link::findBy([
             'user_id' => $user->id,
             'url' => $url,
         ]);
         $this->assertNotNull($new_link);
-        $origin = \Minz\Url::absoluteFor('collection', ['id' => $news->id]);
+        $origin = \Minz\Url::absoluteFor('collection', ['id' => $other_collection->id]);
         $this->assertSame($origin, $new_link->origin);
-        $link_to_bookmarks = models\LinkToCollection::findBy([
-            'link_id' => $new_link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
-        $this->assertNotNull($link_to_bookmarks);
     }
 
     public function testLaterRedirectsToLoginIfNotConnected(): void
     {
         $user = UserFactory::create();
         $news = $user->news();
-        $bookmarks = $user->bookmarks();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
+        $news->addLinks([$link]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/later", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsReadLater::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
-        $this->assertTrue(models\LinkToCollection::exists($link_to_news->id));
-        $link_to_bookmarks = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
-        $this->assertNull($link_to_bookmarks);
+        $this->assertFalse($user->wantsReadLater($link));
+        $this->assertTrue($news->hasLink($link));
     }
 
     public function testLaterFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
         $news = $user->news();
-        $bookmarks = $user->bookmarks();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
+        $news->addLinks([$link]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/later", [
             'csrf_token' => 'not the token',
@@ -361,27 +234,17 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
         $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
-        $this->assertTrue(models\LinkToCollection::exists($link_to_news->id));
-        $link_to_bookmarks = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
-        $this->assertNull($link_to_bookmarks);
+        $this->assertFalse($user->wantsReadLater($link));
+        $this->assertTrue($news->hasLink($link));
     }
 
     public function testLaterFailsIfNotOwnedAndHidden(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
-        $news = $other_user->news();
-        $bookmarks = $user->bookmarks();
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
             'is_hidden' => true,
-        ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/later", [
@@ -389,67 +252,43 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 403);
-        $this->assertTrue(models\LinkToCollection::exists($link_to_news->id));
-        $link_to_bookmarks = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
-        $this->assertNull($link_to_bookmarks);
+        $this->assertFalse($user->wantsReadLater($link));
+        $this->assertFalse(models\Link::existsBy([
+            'user_id' => $user->id,
+            'url' => $link->url,
+        ]));
     }
 
     public function testNeverMarksToNeverRead(): void
     {
         $user = $this->login();
         $news = $user->news();
-        $bookmarks = $user->bookmarks();
-        $never_list = $user->neverList();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
-        $link_to_bookmarks = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
+        $user->markAsReadLater($link);
+        $news->addLinks([$link]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/never", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsNever::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertFalse(models\LinkToCollection::exists($link_to_news->id));
-        $this->assertFalse(models\LinkToCollection::exists($link_to_bookmarks->id));
-        $link_to_never_list = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $never_list->id,
-        ]);
-        $this->assertNotNull($link_to_never_list);
+        $this->assertTrue($user->hasDismissed($link));
+        $this->assertFalse($user->wantsReadLater($link));
+        $this->assertFalse($news->hasLink($link));
     }
 
     public function testNeverWorksIfNotOwnedAndNotHidden(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
-        $news = $other_user->news();
-        $bookmarks = $other_user->bookmarks();
-        $never_list = $user->neverList();
         /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
-            'is_hidden' => false,
             'url' => $url,
-        ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
-        $link_to_bookmarks = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
+            'is_hidden' => false,
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/never", [
@@ -457,73 +296,46 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        // The initial link is not modified since it's not owned by the logged
-        // user.
-        $this->assertTrue(models\LinkToCollection::exists($link_to_news->id));
-        $this->assertTrue(models\LinkToCollection::exists($link_to_bookmarks->id));
-
-        // But the logged user now has a new link in its own read list
+        // The read status didn't changed for the other user who owns the link.
+        $this->assertFalse($other_user->hasDismissed($link));
+        // But the logged user now dismissed the link and owns their own copy.
+        $this->assertTrue($user->hasDismissed($link));
         $new_link = models\Link::findBy([
             'user_id' => $user->id,
             'url' => $url,
         ]);
         $this->assertNotNull($new_link);
-        $link_to_never_list = models\LinkToCollection::findBy([
-            'link_id' => $new_link->id,
-            'collection_id' => $never_list->id,
-        ]);
-        $this->assertNotNull($link_to_never_list);
     }
 
     public function testNeverRedirectsToLoginIfNotConnected(): void
     {
         $user = UserFactory::create();
         $news = $user->news();
-        $bookmarks = $user->bookmarks();
-        $never_list = $user->neverList();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
-        $link_to_bookmarks = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
+        $user->markAsReadLater($link);
+        $news->addLinks([$link]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/never", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsNever::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
-        $this->assertTrue(models\LinkToCollection::exists($link_to_news->id));
-        $this->assertTrue(models\LinkToCollection::exists($link_to_bookmarks->id));
-        $link_to_never_list = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $never_list->id,
-        ]);
-        $this->assertNull($link_to_never_list);
+        $this->assertFalse($user->hasDismissed($link));
+        $this->assertTrue($user->wantsReadLater($link));
+        $this->assertTrue($news->hasLink($link));
     }
 
     public function testNeverFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
         $news = $user->news();
-        $bookmarks = $user->bookmarks();
-        $never_list = $user->neverList();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
-        $link_to_bookmarks = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
-        ]);
+        $user->markAsReadLater($link);
+        $news->addLinks([$link]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/never", [
             'csrf_token' => 'not the token',
@@ -532,33 +344,21 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
         $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
-        $this->assertTrue(models\LinkToCollection::exists($link_to_news->id));
-        $this->assertTrue(models\LinkToCollection::exists($link_to_bookmarks->id));
-        $link_to_never_list = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $never_list->id,
-        ]);
-        $this->assertNull($link_to_never_list);
+        $this->assertFalse($user->hasDismissed($link));
+        $this->assertTrue($user->wantsReadLater($link));
+        $this->assertTrue($news->hasLink($link));
     }
 
     public function testNeverFailsIfNotOwnedAndHidden(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
-        $news = $other_user->news();
-        $bookmarks = $other_user->bookmarks();
-        $never_list = $user->neverList();
+        /** @var string */
+        $url = $this->fake('url');
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
+            'url' => $url,
             'is_hidden' => true,
-        ]);
-        $link_to_news = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $news->id,
-        ]);
-        $link_to_bookmarks = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $bookmarks->id,
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/never", [
@@ -566,53 +366,63 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 403);
-        $this->assertTrue(models\LinkToCollection::exists($link_to_news->id));
-        $this->assertTrue(models\LinkToCollection::exists($link_to_bookmarks->id));
-        $link_to_never_list = models\LinkToCollection::findBy([
-            'link_id' => $link->id,
-            'collection_id' => $never_list->id,
-        ]);
-        $this->assertNull($link_to_never_list);
+        $this->assertFalse($user->hasDismissed($link));
+        $this->assertFalse(models\Link::existsBy([
+            'user_id' => $user->id,
+            'url' => $link->url,
+        ]));
     }
 
     public function testDeleteMarksAsUnread(): void
     {
         $user = $this->login();
-        $read_list = $user->readList();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_to_read = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $read_list->id,
-        ]);
+        $user->markAsRead($link);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/delete", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsUnread::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertFalse(models\LinkToCollection::exists($link_to_read->id));
+        $this->assertFalse($user->hasRead($link));
+    }
+
+    public function testDeleteDoesNotWorkWithNotOwnedLink(): void
+    {
+        // This is historical behaviour, but can be changed to work with
+        // accessible links now.
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $link = LinkFactory::create([
+            'user_id' => $other_user->id,
+            'is_hidden' => false,
+        ]);
+        $user->markAsRead($link);
+
+        $response = $this->appRun('POST', "/links/{$link->id}/read/delete", [
+            'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsUnread::class),
+        ]);
+
+        $this->assertResponseCode($response, 403);
+        $this->assertTrue($user->hasRead($link));
     }
 
     public function testDeleteRedirectsToLoginIfNotConnected(): void
     {
         $user = UserFactory::create();
-        $read_list = $user->readList();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_to_read = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $read_list->id,
-        ]);
+        $user->markAsRead($link);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/delete", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsUnread::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
-        $this->assertTrue(models\LinkToCollection::exists($link_to_read->id));
+        $this->assertTrue($user->hasRead($link));
     }
 
     public function testDeleteFailsIfCsrfIsInvalid(): void
@@ -622,10 +432,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_to_read = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $read_list->id,
-        ]);
+        $user->markAsRead($link);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/delete", [
             'csrf_token' => 'not the token',
@@ -634,27 +441,6 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
         $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
-        $this->assertTrue(models\LinkToCollection::exists($link_to_read->id));
-    }
-
-    public function testDeleteFailsIfNotOwned(): void
-    {
-        $user = $this->login();
-        $other_user = UserFactory::create();
-        $read_list = $other_user->readList();
-        $link = LinkFactory::create([
-            'user_id' => $other_user->id,
-        ]);
-        $link_to_read = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $read_list->id,
-        ]);
-
-        $response = $this->appRun('POST', "/links/{$link->id}/read/delete", [
-            'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsUnread::class),
-        ]);
-
-        $this->assertResponseCode($response, 403);
-        $this->assertTrue(models\LinkToCollection::exists($link_to_read->id));
+        $this->assertTrue($user->hasRead($link));
     }
 }

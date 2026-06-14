@@ -7,7 +7,6 @@ use tests\factories\CollectionFactory;
 use tests\factories\CollectionShareFactory;
 use tests\factories\FollowedCollectionFactory;
 use tests\factories\LinkFactory;
-use tests\factories\LinkToCollectionFactory;
 use tests\factories\UserFactory;
 
 class NewsQueriesTest extends \PHPUnit\Framework\TestCase
@@ -46,16 +45,8 @@ class NewsQueriesTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        LinkToCollectionFactory::create([
-            'created_at' => $published_at1,
-            'collection_id' => $collection->id,
-            'link_id' => $link1->id,
-        ]);
-        LinkToCollectionFactory::create([
-            'created_at' => $published_at2,
-            'collection_id' => $collection->id,
-            'link_id' => $link2->id,
-        ]);
+        $collection->addLinks([$link1], at: $published_at1);
+        $collection->addLinks([$link2], at: $published_at2);
         FollowedCollectionFactory::create([
             'user_id' => $this->user->id,
             'collection_id' => $collection->id,
@@ -87,11 +78,7 @@ class NewsQueriesTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        LinkToCollectionFactory::create([
-            'created_at' => $published_at,
-            'collection_id' => $collection->id,
-            'link_id' => $link->id,
-        ]);
+        $collection->addLinks([$link], at: $published_at);
         FollowedCollectionFactory::create([
             'user_id' => $this->user->id,
             'collection_id' => $collection->id,
@@ -125,11 +112,7 @@ class NewsQueriesTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => false,
         ]);
-        LinkToCollectionFactory::create([
-            'created_at' => $published_at,
-            'collection_id' => $collection->id,
-            'link_id' => $link->id,
-        ]);
+        $collection->addLinks([$link], at: $published_at);
         FollowedCollectionFactory::create([
             'user_id' => $this->user->id,
             'collection_id' => $collection->id,
@@ -168,11 +151,7 @@ class NewsQueriesTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        LinkToCollectionFactory::create([
-            'created_at' => $published_at,
-            'collection_id' => $collection->id,
-            'link_id' => $link->id,
-        ]);
+        $collection->addLinks([$link], at: $published_at);
         FollowedCollectionFactory::create([
             'created_at' => $followed_at,
             'user_id' => $this->user->id,
@@ -237,11 +216,7 @@ class NewsQueriesTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        LinkToCollectionFactory::create([
-            'created_at' => $published_at,
-            'collection_id' => $collection->id,
-            'link_id' => $link->id,
-        ]);
+        $collection->addLinks([$link], at: $published_at);
         FollowedCollectionFactory::create([
             'user_id' => $this->user->id,
             'collection_id' => $collection->id,
@@ -269,11 +244,7 @@ class NewsQueriesTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        LinkToCollectionFactory::create([
-            'created_at' => $published_at,
-            'collection_id' => $collection->id,
-            'link_id' => $link->id,
-        ]);
+        $collection->addLinks([$link], at: $published_at);
         FollowedCollectionFactory::create([
             'user_id' => $this->user->id,
             'collection_id' => $collection->id,
@@ -302,11 +273,7 @@ class NewsQueriesTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        LinkToCollectionFactory::create([
-            'created_at' => $published_at,
-            'collection_id' => $collection->id,
-            'link_id' => $link->id,
-        ]);
+        $collection->addLinks([$link], at: $published_at);
         FollowedCollectionFactory::create([
             'user_id' => $this->user->id,
             'collection_id' => $collection->id,
@@ -334,11 +301,7 @@ class NewsQueriesTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => false,
         ]);
-        LinkToCollectionFactory::create([
-            'created_at' => $published_at,
-            'collection_id' => $collection->id,
-            'link_id' => $link->id,
-        ]);
+        $collection->addLinks([$link], at: $published_at);
         FollowedCollectionFactory::create([
             'user_id' => $this->user->id,
             'collection_id' => $collection->id,
@@ -349,7 +312,7 @@ class NewsQueriesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, count($links));
     }
 
-    public function testListFromFollowedCollectionsDoesNotSelectFromFollowedIfUrlInBookmarks(): void
+    public function testListFromFollowedCollectionsDoesNotSelectFromFollowedIfUrlIsToReadLater(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -357,7 +320,6 @@ class NewsQueriesTest extends \PHPUnit\Framework\TestCase
         /** @var int */
         $days_ago = $this->fake('numberBetween', 0, 7);
         $published_at = \Minz\Time::ago($days_ago, 'days');
-        $bookmarks = $this->user->bookmarks();
         /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
@@ -365,24 +327,16 @@ class NewsQueriesTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
             'is_hidden' => false,
         ]);
-        $owner_link = LinkFactory::create([
-            'user_id' => $this->user->id,
-            'url' => $url,
-        ]);
         $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
             'type' => 'collection',
             'is_public' => true,
         ]);
-        LinkToCollectionFactory::create([
-            'created_at' => $published_at,
-            'collection_id' => $collection->id,
-            'link_id' => $link->id,
-        ]);
-        LinkToCollectionFactory::create([
-            'collection_id' => $bookmarks->id,
-            'link_id' => $owner_link->id,
-        ]);
+        $collection->addLinks([$link], at: $published_at);
+        // This is only required while "read later" is handled via collections.
+        $owned_link = $this->user->obtainLink($link);
+        $owned_link->save();
+        $this->user->markAsReadLater($owned_link);
         FollowedCollectionFactory::create([
             'user_id' => $this->user->id,
             'collection_id' => $collection->id,
@@ -393,7 +347,7 @@ class NewsQueriesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, count($links));
     }
 
-    public function testListFromFollowedCollectionsDoesNotSelectFromFollowedIfUrlInReadList(): void
+    public function testListFromFollowedCollectionsDoesNotSelectFromFollowedIfUrlIsRead(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -401,7 +355,6 @@ class NewsQueriesTest extends \PHPUnit\Framework\TestCase
         /** @var int */
         $days_ago = $this->fake('numberBetween', 0, 7);
         $published_at = \Minz\Time::ago($days_ago, 'days');
-        $read_list = $this->user->readList();
         /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
@@ -409,24 +362,16 @@ class NewsQueriesTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
             'is_hidden' => false,
         ]);
-        $owner_link = LinkFactory::create([
-            'user_id' => $this->user->id,
-            'url' => $url,
-        ]);
         $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
             'type' => 'collection',
             'is_public' => true,
         ]);
-        LinkToCollectionFactory::create([
-            'created_at' => $published_at,
-            'collection_id' => $collection->id,
-            'link_id' => $link->id,
-        ]);
-        LinkToCollectionFactory::create([
-            'collection_id' => $read_list->id,
-            'link_id' => $owner_link->id,
-        ]);
+        $collection->addLinks([$link], at: $published_at);
+        // This is only required while "read later" is handled via collections.
+        $owned_link = $this->user->obtainLink($link);
+        $owned_link->save();
+        $this->user->markAsRead($owned_link);
         FollowedCollectionFactory::create([
             'user_id' => $this->user->id,
             'collection_id' => $collection->id,
@@ -437,7 +382,7 @@ class NewsQueriesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, count($links));
     }
 
-    public function testListFromFollowedCollectionsDoesNotSelectFromFollowedIfUrlInNeverList(): void
+    public function testListFromFollowedCollectionsDoesNotSelectFromFollowedIfUrlIsDismissed(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -445,7 +390,6 @@ class NewsQueriesTest extends \PHPUnit\Framework\TestCase
         /** @var int */
         $days_ago = $this->fake('numberBetween', 0, 7);
         $published_at = \Minz\Time::ago($days_ago, 'days');
-        $never_list = $this->user->neverList();
         /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
@@ -453,24 +397,16 @@ class NewsQueriesTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
             'is_hidden' => false,
         ]);
-        $owner_link = LinkFactory::create([
-            'user_id' => $this->user->id,
-            'url' => $url,
-        ]);
         $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
             'type' => 'collection',
             'is_public' => true,
         ]);
-        LinkToCollectionFactory::create([
-            'created_at' => $published_at,
-            'collection_id' => $collection->id,
-            'link_id' => $link->id,
-        ]);
-        LinkToCollectionFactory::create([
-            'collection_id' => $never_list->id,
-            'link_id' => $owner_link->id,
-        ]);
+        $collection->addLinks([$link], at: $published_at);
+        // This is only required while "read later" is handled via collections.
+        $owned_link = $this->user->obtainLink($link);
+        $owned_link->save();
+        $this->user->markAsDismissed($owned_link);
         FollowedCollectionFactory::create([
             'user_id' => $this->user->id,
             'collection_id' => $collection->id,
@@ -503,11 +439,7 @@ class NewsQueriesTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        LinkToCollectionFactory::create([
-            'created_at' => $published_at,
-            'collection_id' => $collection->id,
-            'link_id' => $link->id,
-        ]);
+        $collection->addLinks([$link], at: $published_at);
         FollowedCollectionFactory::create([
             'user_id' => $this->user->id,
             'collection_id' => $collection->id,
@@ -530,11 +462,7 @@ class NewsQueriesTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        LinkToCollectionFactory::create([
-            'created_at' => $published_at,
-            'collection_id' => $collection->id,
-            'link_id' => $link->id,
-        ]);
+        $collection->addLinks([$link], at: $published_at);
         FollowedCollectionFactory::create([
             'user_id' => $this->user->id,
             'collection_id' => $collection->id,
@@ -557,11 +485,7 @@ class NewsQueriesTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        LinkToCollectionFactory::create([
-            'created_at' => $published_at,
-            'collection_id' => $collection->id,
-            'link_id' => $link->id,
-        ]);
+        $collection->addLinks([$link], at: $published_at);
         FollowedCollectionFactory::create([
             'user_id' => $this->user->id,
             'collection_id' => $collection->id,

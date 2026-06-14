@@ -7,7 +7,6 @@ use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\CollectionShareFactory;
 use tests\factories\LinkFactory;
-use tests\factories\LinkToCollectionFactory;
 use tests\factories\UserFactory;
 
 class NotesTest extends \PHPUnit\Framework\TestCase

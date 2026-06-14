@@ -181,7 +181,7 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($link->isInaccessible());
     }
 
-    public function testCreateAddsTheOldUrlToTheNeverList(): void
+    public function testCreateDismissesTheOldUrl(): void
     {
         $user = $this->login();
         /** @var string */
@@ -208,19 +208,10 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, "/links/{$link->id}/repair");
-        $link = models\Link::findBy([
-            'url' => $old_url,
-        ]);
-        $never_list = $user->neverList();
-        $this->assertNotNull($link);
-        $is_in_never_list = models\LinkToCollection::existsBy([
-            'link_id' => $link->id,
-            'collection_id' => $never_list->id,
-        ]);
-        $this->assertTrue($is_in_never_list);
+        $this->assertTrue($user->hasDismissed($link));
     }
 
-    public function testCreateDoesNotAddTheUrlToTheNeverListIfNotChanged(): void
+    public function testCreateDoesNotDismissTheUrlIfUnchanged(): void
     {
         $user = $this->login();
         /** @var string */
@@ -237,17 +228,7 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, "/links/{$link->id}/repair");
-        $count_links = models\Link::countBy([
-            'user_id' => $user->id,
-            'url' => $url,
-        ]);
-        $this->assertSame(1, $count_links);
-        $never_list = $user->neverList();
-        $is_in_never_list = models\LinkToCollection::existsBy([
-            'link_id' => $link->id,
-            'collection_id' => $never_list->id,
-        ]);
-        $this->assertFalse($is_in_never_list);
+        $this->assertFalse($user->hasDismissed($link));
     }
 
     public function testCreateRedirectsIfNotConnected(): void

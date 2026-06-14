@@ -8,7 +8,6 @@ use tests\factories\CollectionFactory;
 use tests\factories\FetchLogFactory;
 use tests\factories\FollowedCollectionFactory;
 use tests\factories\LinkFactory;
-use tests\factories\LinkToCollectionFactory;
 use tests\factories\SessionFactory;
 use tests\factories\TokenFactory;
 use tests\factories\UserFactory;
@@ -371,11 +370,10 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
             'created_at' => $created_at,
             'user_id' => null,
         ]);
-        $collection = CollectionFactory::create();
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
+        $collection = CollectionFactory::create([
+            'type' => 'collection',
         ]);
+        $collection->addLinks([$link]);
 
         $cleaner_job->perform();
 
@@ -440,16 +438,8 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'user_id' => null,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link_1->id,
-            'collection_id' => $collection->id,
-            'created_at' => $published_at_1,
-        ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link_2->id,
-            'collection_id' => $collection->id,
-            'created_at' => $published_at_2,
-        ]);
+        $collection->addLinks([$link_1], at: $published_at_1);
+        $collection->addLinks([$link_2], at: $published_at_2);
         // follow the feed, otherwise the cleaner may delete it
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
@@ -480,11 +470,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'user_id' => null,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-            'created_at' => $published_at,
-        ]);
+        $collection->addLinks([$link], at: $published_at);
         // follow the feed, otherwise the cleaner may delete it
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
@@ -516,16 +502,8 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'user_id' => null,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link_1->id,
-            'collection_id' => $collection->id,
-            'created_at' => $published_at_1,
-        ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link_2->id,
-            'collection_id' => $collection->id,
-            'created_at' => $published_at_2,
-        ]);
+        $collection->addLinks([$link_1], at: $published_at_1);
+        $collection->addLinks([$link_2], at: $published_at_2);
         // follow the feed, otherwise the cleaner may delete it
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
@@ -554,11 +532,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'user_id' => null,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-            'created_at' => $published_at,
-        ]);
+        $collection->addLinks([$link], at: $published_at);
         // follow the feed, otherwise the cleaner may delete it
         FollowedCollectionFactory::create([
             'collection_id' => $collection->id,
@@ -600,23 +574,11 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'user_id' => null,
         ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link_1->id,
-            'collection_id' => $collection_1->id,
-            'created_at' => $published_at_older,
-        ]);
-        LinkToCollectionFactory::create([
-            'link_id' => $link_2->id,
-            'collection_id' => $collection_1->id,
-            'created_at' => $published_at_old,
-        ]);
+        $collection_1->addLinks([$link_1], at: $published_at_older);
+        $collection_1->addLinks([$link_2], at: $published_at_old);
         // Attach the last link to another collection to check that the
         // deletion is done per feed and not globally.
-        LinkToCollectionFactory::create([
-            'link_id' => $link_3->id,
-            'collection_id' => $collection_2->id,
-            'created_at' => $published_at_older,
-        ]);
+        $collection_2->addLinks([$link_3], at: $published_at_older);
         // follow the feeds, otherwise the cleaner may delete them
         FollowedCollectionFactory::create([
             'collection_id' => $collection_1->id,

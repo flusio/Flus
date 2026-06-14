@@ -305,6 +305,17 @@ class Collection
     }
 
     /**
+     * Return whether the link is in the collection.
+     */
+    public function hasLink(Link $link): bool
+    {
+        return LinkToCollection::existsBy([
+            'link_id' => $link->id,
+            'collection_id' => $this->id,
+        ]);
+    }
+
+    /**
      * Add the links to the collection.
      *
      * @param Link[] $links

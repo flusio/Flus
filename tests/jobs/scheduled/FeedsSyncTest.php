@@ -8,7 +8,6 @@ use tests\factories\CollectionFactory;
 use tests\factories\FetchLogFactory;
 use tests\factories\FollowedCollectionFactory;
 use tests\factories\LinkFactory;
-use tests\factories\LinkToCollectionFactory;
 use tests\factories\UserFactory;
 
 class FeedsSyncTest extends \PHPUnit\Framework\TestCase
@@ -628,10 +627,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'feed_entry_id' => null,
             'created_at' => \Minz\Time::now(),
         ]);
-        LinkToCollectionFactory::create([
-            'collection_id' => $collection->id,
-            'link_id' => $link->id,
-        ]);
+        $collection->addLinks([$link]);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $this->cacheHttpResponse($feed_url, <<<TEXT
             HTTP/2 200 OK
@@ -971,10 +967,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'url' => $old_url,
             'feed_entry_id' => $entry_id,
         ]);
-        $link_to_collection = LinkToCollectionFactory::create([
-            'link_id' => $link->id,
-            'collection_id' => $collection->id,
-        ]);
+        $collection->addLinks([$link]);
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
         ]);
@@ -1013,7 +1006,11 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($new_url, $link->url);
         $this->assertSame($new_url, $link->title);
         $this->assertNull($link->fetched_at);
-        $link_to_collection = $link_to_collection->reload();
+        $link_to_collection = models\LinkToCollection::findBy([
+            'link_id' => $link->id,
+            'collection_id' => $collection->id,
+        ]);
+        $this->assertNotNull($link_to_collection);
         $this->assertSame(1617096360, $link_to_collection->created_at->getTimestamp());
     }
 

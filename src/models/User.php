@@ -627,6 +627,33 @@ class User
     }
 
     /**
+     * Return whether the user has read the link or not.
+     */
+    public function hasRead(Link $link): bool
+    {
+        $read_list = $this->readList();
+        return Link::isUrlInCollectionId($read_list->id, $link->url);
+    }
+
+    /**
+     * Return whether the user wants to read the link later or not.
+     */
+    public function wantsReadLater(Link $link): bool
+    {
+        $bookmarks = $this->bookmarks();
+        return Link::isUrlInCollectionId($bookmarks->id, $link->url);
+    }
+
+    /**
+     * Return whether the user has dismissed the link or not.
+     */
+    public function hasDismissed(Link $link): bool
+    {
+        $never_list = $this->neverList();
+        return Link::isUrlInCollectionId($never_list->id, $link->url);
+    }
+
+    /**
      * Mark the links as read for the user.
      *
      * @param Link|Link[] $links
