@@ -212,24 +212,6 @@ class User
     }
 
     /**
-     * Return the user' bookmarks collection
-     */
-    public function bookmarks(): Collection
-    {
-        $bookmarks = Collection::findBy([
-            'user_id' => $this->id,
-            'type' => 'bookmarks',
-        ]);
-
-        if (!$bookmarks) {
-            $bookmarks = Collection::initBookmarks($this->id);
-            $bookmarks->save();
-        }
-
-        return $bookmarks;
-    }
-
-    /**
      * Return the user' news collection
      */
     public function news(): Collection
@@ -245,42 +227,6 @@ class User
         }
 
         return $news;
-    }
-
-    /**
-     * Return the user' read list collection
-     */
-    public function readList(): Collection
-    {
-        $read_list = Collection::findBy([
-            'user_id' => $this->id,
-            'type' => 'read',
-        ]);
-
-        if (!$read_list) {
-            $read_list = Collection::initReadList($this->id);
-            $read_list->save();
-        }
-
-        return $read_list;
-    }
-
-    /**
-     * Return the user' never list collection
-     */
-    public function neverList(): Collection
-    {
-        $never_list = Collection::findBy([
-            'user_id' => $this->id,
-            'type' => 'never',
-        ]);
-
-        if (!$never_list) {
-            $never_list = Collection::initNeverList($this->id);
-            $never_list->save();
-        }
-
-        return $never_list;
     }
 
     public function initCollection(): Collection

@@ -632,26 +632,11 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(models\User::DEMO_EMAIL, $demo_user->email);
         $this->assertTrue($demo_user->verifyPassword(models\User::DEMO_PASSWORD));
         $this->assertFalse(models\Collection::exists($collection->id));
-        $bookmarks = models\Collection::findBy([
-            'user_id' => $demo_user->id,
-            'type' => 'bookmarks',
-        ]);
         $news = models\Collection::findBy([
             'user_id' => $demo_user->id,
             'type' => 'news',
         ]);
-        $read_list = models\Collection::findBy([
-            'user_id' => $demo_user->id,
-            'type' => 'read',
-        ]);
-        $never_list = models\Collection::findBy([
-            'user_id' => $demo_user->id,
-            'type' => 'never',
-        ]);
-        $this->assertNotNull($bookmarks);
         $this->assertNotNull($news);
-        $this->assertNotNull($read_list);
-        $this->assertNotNull($never_list);
     }
 
     public function testPerformKeepsDataIfDemoIsDisabled(): void
