@@ -7,7 +7,7 @@ use App\models;
 use tests\factories\LinkFactory;
 use tests\factories\UserFactory;
 
-class BookmarksTest extends \PHPUnit\Framework\TestCase
+class ReadLaterTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\CsrfHelper;
@@ -24,7 +24,7 @@ class BookmarksTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/read/later/new');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'bookmarks/new.html.twig');
+        $this->assertResponseTemplateName($response, 'read_later/new.html.twig');
         $this->assertResponseContains($response, 'New link');
     }
 
@@ -167,17 +167,26 @@ class BookmarksTest extends \PHPUnit\Framework\TestCase
         ]);
         $user->markAsReadLater($link);
 
-        $response = $this->appRun('GET', '/bookmarks');
+        $response = $this->appRun('GET', '/read/later');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'bookmarks/index.html.twig');
+        $this->assertResponseTemplateName($response, 'read_later/index.html.twig');
         $this->assertResponseContains($response, $link_title);
     }
 
     public function testIndexRedirectsIfNotConnected(): void
     {
+        $response = $this->appRun('GET', '/read/later');
+
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fread%2Flater');
+    }
+
+    public function testBookmarksRedirectsToReadLater(): void
+    {
+        $user = $this->login();
+
         $response = $this->appRun('GET', '/bookmarks');
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fbookmarks');
+        $this->assertResponseCode($response, 301, '/read/later');
     }
 }

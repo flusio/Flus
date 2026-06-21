@@ -169,7 +169,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($collection_3_url, $group_outlines[0]['htmlUrl']);
     }
 
-    public function testExportCreatesBookmarksFile(): void
+    public function testExportCreatesReadLaterFile(): void
     {
         $data_exporter = new DataExporter($this->exportations_path);
         $user = UserFactory::create();
@@ -183,7 +183,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
 
         $filepath = $data_exporter->export($user->id);
 
-        $feed_content = $this->zipGetContents($filepath, 'bookmarks.atom.xml');
+        $feed_content = $this->zipGetContents($filepath, 'read-later.atom.xml');
         $feed = \SpiderBits\feeds\Feed::fromText($feed_content);
         $this->assertSame(1, count($feed->entries));
         $entry = $feed->entries[0];

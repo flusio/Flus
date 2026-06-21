@@ -517,7 +517,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'bookmarks',
+            'type' => 'news',
         ]);
 
         $response = $this->appRun('GET', "/collections/{$collection->id}/edit");
@@ -866,7 +866,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $new_description = $this->fakeUnique('sentence');
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'bookmarks',
+            'type' => 'news',
             'name' => $old_name,
             'description' => $old_description,
         ]);
@@ -974,7 +974,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'bookmarks',
+            'type' => 'news',
         ]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/delete", [

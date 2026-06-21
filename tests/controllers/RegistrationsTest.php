@@ -207,13 +207,13 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($user->isFollowing($feed->id));
     }
 
-    public function testCreateImportsBookmarksIfDefaultBookmarksExist(): void
+    public function testCreateImportsReadLaterIfDefaultReadLaterExist(): void
     {
-        $default_bookmarks_path = \App\Configuration::$data_path . '/default-bookmarks.atom.xml';
-        file_put_contents($default_bookmarks_path, <<<TXT
+        $default_read_later_path = \App\Configuration::$data_path . '/default-read-later.atom.xml';
+        file_put_contents($default_read_later_path, <<<TXT
             <?xml version="1.0" encoding="UTF-8"?>
             <feed xmlns="http://www.w3.org/2005/Atom">
-              <title>Bookmarks</title>
+              <title>To read</title>
               <entry>
                 <title>Bilan 2021</title>
                 <id>tag:localhost,2022-01-28:links/1723190948473041017</id>
@@ -234,7 +234,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
             'password' => $this->fake('password'),
         ]);
 
-        @unlink($default_bookmarks_path);
+        @unlink($default_read_later_path);
         $this->assertResponseCode($response, 302, '/onboarding');
         $user = models\User::findBy(['email' => $email]);
         $this->assertNotNull($user);

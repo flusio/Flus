@@ -9,6 +9,10 @@
 
 ## 2026-06-23 - v2.5.0
 
+The file to import default "read later" links have been renamed into `default-read-later.atom.xml`.
+
+## unreleased
+
 ### Migration notes
 
 You can enable Altcha to protect your registration page.

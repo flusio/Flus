@@ -36,11 +36,10 @@ class LinkToCollection
     /**
      * Attach the collections to the given link and remove old ones if any.
      *
-     * This method detaches the link from only collections of type 'collections
-     * (i.e. not 'read', 'never', 'news' or 'bookmarks'), even if their ids are
-     * missing from $collection_ids. This is because these collections don't
-     * appear in the collections selector, when a user changes the collections
-     * of a link.
+     * This method detaches the link from only collections of type 'collection',
+     * even if their ids are missing from $collection_ids. This is because only
+     * these collections appear in the collections selector, when a user
+     * changes the collections of a link.
      *
      * @param string[] $collection_ids
      */

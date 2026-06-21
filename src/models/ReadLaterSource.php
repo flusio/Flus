@@ -27,7 +27,7 @@ class ReadLaterSource extends Source
 
     public function url(): string
     {
-        return \Minz\Url::absoluteFor('bookmarks');
+        return \Minz\Url::absoluteFor('read later');
     }
 
     public function owner(): User

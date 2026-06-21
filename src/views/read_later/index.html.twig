@@ -7,14 +7,14 @@
 {% endif %}
 
 {% block title %}{{ read_later_source.name }}{% endblock %}
-{% block canonical %}{{ url_full('bookmarks', current_url_params) }}{% endblock %}
+{% block canonical %}{{ url_full('read later', current_url_params) }}{% endblock %}
 
 {% block layout_header %}
-    {{ include('layouts/_header.html.twig', { page: 'bookmarks', tab: 'reading' }) }}
+    {{ include('layouts/_header.html.twig', { page: 'read later', tab: 'reading' }) }}
 {% endblock %}
 
 {% block layout_sidenav %}
-    {{ include('layouts/_sidenav.html.twig', { navigation: reading_navigation(current: 'bookmarks') }) }}
+    {{ include('layouts/_sidenav.html.twig', { navigation: reading_navigation(current: 'read later') }) }}
 {% endblock %}
 
 {% block back %}
@@ -60,7 +60,7 @@
                 {{ include('grids/_placeholder.html.twig', { count: links | length + 1 }) }}
             </div>
 
-            {{ include('layouts/_pagination.html.twig', { url: url('bookmarks') }) }}
+            {{ include('layouts/_pagination.html.twig', { url: url('read later') }) }}
         </div>
 
         <div class="text--center">
