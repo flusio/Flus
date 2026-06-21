@@ -65,20 +65,6 @@ class LinksSearcher
 
             {$query_statement}
 
-            -- Exclude the links that are ONLY in the "never" collection
-            AND NOT EXISTS (
-                SELECT 1
-                FROM links_to_collections lc, collections c
-
-                WHERE lc.link_id = l.id
-                AND lc.collection_id = c.id
-
-                AND c.user_id = :user_id
-
-                HAVING COUNT(CASE WHEN c.type='never' THEN 1 END) = 1
-                AND COUNT(c.*) = 1
-            )
-
             ORDER BY published_at DESC, l.id
             OFFSET :offset
             {$limit_statement}
@@ -113,20 +99,6 @@ class LinksSearcher
             WHERE l.user_id = :user_id
 
             {$query_statement}
-
-            -- Exclude the links that are ONLY in the "never" collection
-            AND NOT EXISTS (
-                SELECT 1
-                FROM links_to_collections lc, collections c
-
-                WHERE lc.link_id = l.id
-                AND lc.collection_id = c.id
-
-                AND c.user_id = :user_id
-
-                HAVING COUNT(CASE WHEN c.type='never' THEN 1 END) = 1
-                AND COUNT(c.*) = 1
-            )
         SQL;
 
         $database = Database::get();

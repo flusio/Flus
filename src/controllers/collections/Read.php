@@ -153,7 +153,7 @@ class Read extends BaseController
             return Response::found($from);
         }
 
-        $links = $form->links();
+        $links = $form->links(obtain_links: false);
 
         $user->markAsDismissed($links);
 

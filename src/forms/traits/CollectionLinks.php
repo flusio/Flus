@@ -25,7 +25,7 @@ trait CollectionLinks
     /**
      * @return models\Link[]
      */
-    public function links(): array
+    public function links(bool $obtain_links = true): array
     {
         $user = $this->optionAs('user', models\User::class);
         $collection = $this->optionAs('collection', models\Collection::class);
@@ -40,20 +40,23 @@ trait CollectionLinks
 
         $options['hidden'] = auth\Access::can($user, 'viewHiddenLinks', $collection);
 
-        $collection_links = $collection->links(options: $options);
-        $links = $user->obtainLinks($collection_links);
+        $links = $collection->links(options: $options);
 
-        $links_to_create = [];
+        if ($obtain_links) {
+            $links = $user->obtainLinks($links);
 
-        foreach ($links as $link) {
-            if (!$link->isPersisted()) {
-                $link->created_at = \Minz\Time::now();
-                $link->setOrigin($this->from);
-                $links_to_create[] = $link;
+            $links_to_create = [];
+
+            foreach ($links as $link) {
+                if (!$link->isPersisted()) {
+                    $link->created_at = \Minz\Time::now();
+                    $link->setOrigin($this->from);
+                    $links_to_create[] = $link;
+                }
             }
-        }
 
-        models\Link::bulkInsert($links_to_create);
+            models\Link::bulkInsert($links_to_create);
+        }
 
         return $links;
     }

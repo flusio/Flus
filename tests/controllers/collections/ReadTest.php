@@ -449,13 +449,11 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $links = models\Link::listBy([
+        $this->assertTrue($user->hasDismissed($public_link), 'The link should has been dismissed.');
+        $this->assertFalse($user->hasDismissed($hidden_link), 'The link should not has been dismissed.');
+        $this->assertSame(0, models\Link::countBy([
             'user_id' => $user->id,
-        ]);
-        $this->assertSame(1, count($links));
-        $new_link = $links[0];
-        $this->assertSame($public_link->url, $new_link->url);
-        $this->assertTrue($user->hasDismissed($new_link), 'The link should has been dismissed.');
+        ]));
     }
 
     public function testNeverMarksHiddenLinksToBeDismissedIfCollectionIsShared(): void
@@ -478,11 +476,12 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertTrue(models\Link::existsBy([
+        $this->assertTrue($user->hasDismissed($link), 'The link should has been dismissed.');
+        // Link is not copied in case of dismissing.
+        $this->assertFalse(models\Link::existsBy([
             'user_id' => $user->id,
             'url' => $link->url,
         ]));
-        $this->assertTrue($user->hasDismissed($link), 'The link should has been dismissed.');
     }
 
     public function testNeverMarksNewsLinksToBeDismissedForSpecificDate(): void
