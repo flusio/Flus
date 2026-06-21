@@ -32,19 +32,34 @@ class Links extends BaseController
     {
         $user = auth\CurrentUser::require();
 
-        $collection_id = $request->parameters->getString('collection');
+        $collection_id = $request->parameters->getString('collection', '');
         $pagination_page = $request->parameters->getInteger('page', 1);
         $pagination_per_page = $request->parameters->getInteger('per_page', 30);
         $pagination_per_page = min(100, max(1, $pagination_per_page));
 
-        $collection = null;
         if ($collection_id === 'to-read') {
-            $collection = $user->bookmarks();
+            return $this->indexSource($user->readLaterSource(), $pagination_page, $pagination_per_page);
         } elseif ($collection_id === 'read') {
-            $collection = $user->readList();
-        } elseif ($collection_id) {
-            $collection = models\Collection::find($collection_id);
+            return $this->indexSource($user->readSource(), $pagination_page, $pagination_per_page);
+        } else {
+            return $this->indexCollection($collection_id, $pagination_page, $pagination_per_page);
         }
+    }
+
+    /**
+     * @response 401
+     *     If the request is not correctly authenticated.
+     * @response 403
+     *     If the user cannot access the collection.
+     * @response 404
+     *     If the collection does not exist.
+     * @response 200
+     */
+    private function indexCollection(string $collection_id, int $pagination_page, int $pagination_per_page): Response
+    {
+        $user = auth\CurrentUser::require();
+
+        $collection = models\Collection::find($collection_id);
 
         if (!$collection) {
             return Response::json(404, [
@@ -73,6 +88,23 @@ class Links extends BaseController
                 'limit' => $pagination->numberPerPage(),
             ]
         );
+
+        return Response::json(200, array_map(function (models\Link $link) use ($user): array {
+            return $link->toJson(context_user: $user);
+        }, $links));
+    }
+
+    /**
+     * @response 200
+     */
+    private function indexSource(models\Source $source, int $pagination_page, int $pagination_per_page): Response
+    {
+        $user = auth\CurrentUser::require();
+
+        $number_links = $source->countLinks();
+        $pagination = new utils\Pagination($number_links, $pagination_per_page, $pagination_page);
+
+        $links = $source->links($pagination);
 
         return Response::json(200, array_map(function (models\Link $link) use ($user): array {
             return $link->toJson(context_user: $user);

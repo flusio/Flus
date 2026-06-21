@@ -43,6 +43,21 @@ class UrlStatus
         $this->url_hash = utils\Belt::hashUrl($url);
     }
 
+    public function isRead(): bool
+    {
+        return $this->read_at !== null;
+    }
+
+    public function isReadLater(): bool
+    {
+        return $this->read_later_at !== null;
+    }
+
+    public function isDismissed(): bool
+    {
+        return $this->dismissed_at !== null;
+    }
+
     /**
      * Mark the links as read for the user.
      *
@@ -246,6 +261,23 @@ class UrlStatus
         $database = Database::get();
         $statement = $database->prepare($sql);
         $statement->execute($values);
+    }
+
+    /**
+     * Return the existing UrlStatus for this user and url if any, or build one otherwise.
+     */
+    public static function findOrBuild(User $user, string $url): self
+    {
+        $url_status = self::findBy([
+            'user_id' => $user->id,
+            'url_hash' => utils\Belt::hashUrl($url),
+        ]);
+
+        if (!$url_status) {
+            $url_status = new self($user, $url);
+        }
+
+        return $url_status;
     }
 
     /**

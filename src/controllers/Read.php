@@ -30,24 +30,17 @@ class Read extends BaseController
     public function index(Request $request): Response
     {
         $user = auth\CurrentUser::require();
+        $read_source = $user->readSource();
 
-        $read_list = $user->readList();
         $page = $request->parameters->getInteger('page', 1);
 
-        $number_links = models\Link::countByCollectionId($read_list->id);
-
+        $number_links = $read_source->countLinks();
         $pagination = new utils\Pagination($number_links, 30, $page);
 
-        $links = $read_list->links(
-            ['published_at', 'number_notes'],
-            [
-                'offset' => $pagination->currentOffset(),
-                'limit' => $pagination->numberPerPage(),
-            ]
-        );
+        $links = $read_source->links($pagination);
 
         return Response::ok('read/index.html.twig', [
-            'collection' => $read_list,
+            'read_source' => $read_source,
             'links' => $links,
             'pagination' => $pagination,
         ]);

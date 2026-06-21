@@ -514,6 +514,128 @@ trait Link
         return intval($statement->fetchColumn());
     }
 
+    /**
+     * Return the list of read later links of the given user.
+     *
+     * @return models\Link[]
+     */
+    public static function listReadLater(models\User $user, ?utils\Pagination $pagination): array
+    {
+        $parameters = [
+            ':user_id' => $user->id,
+        ];
+
+        $pagination_clause = '';
+        if ($pagination) {
+            $pagination_clause = 'LIMIT :limit OFFSET :offset';
+            $parameters[':limit'] = $pagination->numberPerPage();
+            $parameters[':offset'] = $pagination->currentOffset();
+        }
+
+        $sql = <<<SQL
+            SELECT l.*, us.read_later_at AS published_at
+            FROM links l
+            INNER JOIN url_statuses us ON l.url_hash = us.url_hash
+
+            WHERE l.user_id = :user_id
+            AND us.read_later_at IS NOT NULL
+
+            ORDER BY published_at DESC, l.id
+
+            {$pagination_clause}
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute($parameters);
+
+        return self::fromDatabaseRows($statement->fetchAll());
+    }
+
+    /**
+     * Return the count of read later links of the given user.
+     */
+    public static function countReadLater(models\User $user): int
+    {
+        $sql = <<<SQL
+            SELECT COUNT(l.*)
+            FROM links l
+            INNER JOIN url_statuses us ON l.url_hash = us.url_hash
+
+            WHERE l.user_id = :user_id
+            AND us.read_later_at IS NOT NULL
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute([
+            ':user_id' => $user->id,
+        ]);
+
+        return intval($statement->fetchColumn());
+    }
+
+    /**
+     * Return the list of read links of the given user.
+     *
+     * @return models\Link[]
+     */
+    public static function listRead(models\User $user, ?utils\Pagination $pagination): array
+    {
+        $parameters = [
+            ':user_id' => $user->id,
+        ];
+
+        $pagination_clause = '';
+        if ($pagination) {
+            $pagination_clause = 'LIMIT :limit OFFSET :offset';
+            $parameters[':limit'] = $pagination->numberPerPage();
+            $parameters[':offset'] = $pagination->currentOffset();
+        }
+
+        $sql = <<<SQL
+            SELECT l.*, us.read_at AS published_at
+            FROM links l
+            INNER JOIN url_statuses us ON l.url_hash = us.url_hash
+
+            WHERE l.user_id = :user_id
+            AND us.read_at IS NOT NULL
+
+            ORDER BY published_at DESC, l.id
+
+            {$pagination_clause}
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute($parameters);
+
+        return self::fromDatabaseRows($statement->fetchAll());
+    }
+
+    /**
+     * Return the count of read links of the given user.
+     */
+    public static function countRead(models\User $user): int
+    {
+        $sql = <<<SQL
+            SELECT COUNT(l.*)
+            FROM links l
+            INNER JOIN url_statuses us ON l.url_hash = us.url_hash
+
+            WHERE l.user_id = :user_id
+            AND us.read_at IS NOT NULL
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute([
+            ':user_id' => $user->id,
+        ]);
+
+        return intval($statement->fetchColumn());
+    }
+
     public function numberCollectionsForUser(\App\models\User $user): int
     {
         $sql = <<<SQL
@@ -537,31 +659,6 @@ trait Link
         ]);
 
         return intval($statement->fetchColumn());
-    }
-
-    /**
-     * Return whether or not the given link URL is in the collection.
-     */
-    public static function isUrlInCollectionId(string $collection_id, string $url): bool
-    {
-        $sql = <<<'SQL'
-            SELECT 1
-            FROM links l, links_to_collections lc
-
-            WHERE l.url_hash = :url_hash
-
-            AND lc.link_id = l.id
-            AND lc.collection_id = :collection_id
-        SQL;
-
-        $database = Database::get();
-        $statement = $database->prepare($sql);
-        $statement->execute([
-            ':collection_id' => $collection_id,
-            ':url_hash' => utils\Belt::hashUrl($url),
-        ]);
-
-        return (bool) $statement->fetchColumn();
     }
 
     /**

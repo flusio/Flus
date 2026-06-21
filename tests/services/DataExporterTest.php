@@ -185,8 +185,6 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
 
         $feed_content = $this->zipGetContents($filepath, 'bookmarks.atom.xml');
         $feed = \SpiderBits\feeds\Feed::fromText($feed_content);
-        $this->assertSame(1, count($feed->categories));
-        $this->assertSame('Flus:type:bookmarks', $feed->categories['Flus:type:bookmarks']);
         $this->assertSame(1, count($feed->entries));
         $entry = $feed->entries[0];
         $this->assertSame($link_url, $entry->link);
@@ -235,31 +233,6 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
 
         $feed_content = $this->zipGetContents($filepath, 'read.atom.xml');
         $feed = \SpiderBits\feeds\Feed::fromText($feed_content);
-        $this->assertSame(1, count($feed->categories));
-        $this->assertSame('Flus:type:read', $feed->categories['Flus:type:read']);
-        $this->assertSame(1, count($feed->entries));
-        $entry = $feed->entries[0];
-        $this->assertSame($link_url, $entry->link);
-    }
-
-    public function testExportCreatesNeverFile(): void
-    {
-        $data_exporter = new DataExporter($this->exportations_path);
-        $user = UserFactory::create();
-        /** @var string */
-        $link_url = $this->fake('url');
-        $link = LinkFactory::create([
-            'user_id' => $user->id,
-            'url' => $link_url,
-        ]);
-        $user->markAsDismissed($link);
-
-        $filepath = $data_exporter->export($user->id);
-
-        $feed_content = $this->zipGetContents($filepath, 'never.atom.xml');
-        $feed = \SpiderBits\feeds\Feed::fromText($feed_content);
-        $this->assertSame(1, count($feed->categories));
-        $this->assertSame('Flus:type:never', $feed->categories['Flus:type:never']);
         $this->assertSame(1, count($feed->entries));
         $entry = $feed->entries[0];
         $this->assertSame($link_url, $entry->link);

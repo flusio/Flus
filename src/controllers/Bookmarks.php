@@ -99,23 +99,17 @@ class Bookmarks extends BaseController
     public function index(Request $request): Response
     {
         $user = auth\CurrentUser::require();
+        $read_later_source = $user->readLaterSource();
 
-        $bookmarks = $user->bookmarks();
         $page = $request->parameters->getInteger('page', 1);
 
-        $number_links = models\Link::countByCollectionId($bookmarks->id);
+        $number_links = $read_later_source->countLinks();
         $pagination = new utils\Pagination($number_links, 29, $page);
 
-        $links = $bookmarks->links(
-            ['published_at', 'number_notes'],
-            [
-                'offset' => $pagination->currentOffset(),
-                'limit' => $pagination->numberPerPage(),
-            ]
-        );
+        $links = $read_later_source->links($pagination);
 
         return Response::ok('bookmarks/index.html.twig', [
-            'collection' => $bookmarks,
+            'read_later_source' => $read_later_source,
             'links' => $links,
             'pagination' => $pagination,
         ]);

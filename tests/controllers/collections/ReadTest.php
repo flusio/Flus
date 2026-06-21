@@ -415,7 +415,6 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $user->markAsReadLater($link);
         $news->addLinks([$link]);
 
         $response = $this->appRun('POST', "/collections/{$news->id}/read/never", [
@@ -424,7 +423,6 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/');
         $this->assertTrue($user->hasDismissed($link), 'The link should be has been dismissed.');
-        $this->assertFalse($user->hasReadLater($link), 'The link should not be to read later.');
         $this->assertFalse($news->hasLink($link), 'The link should not be in news.');
     }
 
