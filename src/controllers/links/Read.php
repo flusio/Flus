@@ -17,7 +17,7 @@ use Minz\Response;
 class Read extends BaseController
 {
     /**
-     * Mark a link as read and remove it from bookmarks.
+     * Mark a link as read.
      *
      * @request_param string id
      * @request_param string csrf_token
@@ -66,7 +66,7 @@ class Read extends BaseController
     }
 
     /**
-     * Remove a link from news and add it to bookmarks.
+     * Mark a link to be read later.
      *
      * @request_param string id
      * @request_param string csrf_token
@@ -115,7 +115,7 @@ class Read extends BaseController
     }
 
     /**
-     * Remove a link from news and bookmarks and add it to the never list.
+     * Dismiss a link.
      *
      * @request_param string id
      * @request_param string csrf_token
@@ -161,7 +161,7 @@ class Read extends BaseController
     }
 
     /**
-     * Mark a link as unread by removing it from read list.
+     * Unmark a link as being read.
      *
      * @request_param string id
      * @request_param string csrf_token

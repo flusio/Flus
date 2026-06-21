@@ -309,7 +309,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testNewRendersCorrectly(): void
     {
         $user = $this->login();
-        $bookmarks = $user->bookmarks();
 
         $response = $this->appRun('GET', '/links/new');
 
@@ -321,10 +320,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testNewPrefillsUrl(): void
     {
         $user = $this->login();
-        CollectionFactory::create([
-            'user_id' => $user->id,
-            'type' => 'bookmarks',
-        ]);
         /** @var string */
         $url = $this->fake('url');
 
@@ -434,7 +429,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testCreateAllowsToAddToReadLater(): void
     {
         $user = $this->login();
-        $bookmarks = $user->bookmarks();
         $url = 'https://flus.fr/carnet/';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
 

@@ -45,8 +45,7 @@ class News extends BaseController
     }
 
     /**
-     * Fill the news page with links to read (from bookmarks and followed
-     * collections).
+     * Fill the news page with links to read from followed collections.
      *
      * @request_param string csrf_token
      *

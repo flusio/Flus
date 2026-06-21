@@ -28,13 +28,9 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection_1 = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'bookmarks',
-        ]);
-        $collection_2 = CollectionFactory::create([
-            'user_id' => $user->id,
             'type' => 'collection',
         ]);
-        $collection_3 = CollectionFactory::create([
+        $collection_2 = CollectionFactory::create([
             'user_id' => $user->id,
             'name' => $collection_name,
             'type' => 'collection',
@@ -267,10 +263,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        CollectionFactory::create([
-            'user_id' => $user->id,
-            'type' => 'bookmarks',
-        ]);
 
         $response = $this->appRun('GET', "/links/{$link->id}/collections");
 
@@ -286,10 +278,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
             'is_hidden' => true,
-        ]);
-        CollectionFactory::create([
-            'user_id' => $other_user->id,
-            'type' => 'bookmarks',
         ]);
 
         $response = $this->appRun('GET', "/links/{$link->id}/collections");
@@ -535,7 +523,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection_1 = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'bookmarks',
+            'type' => 'collection',
         ]);
         $collection_2 = CollectionFactory::create([
             'user_id' => $user->id,
@@ -563,7 +551,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection_1 = CollectionFactory::create([
             'user_id' => $other_user->id,
-            'type' => 'bookmarks',
+            'type' => 'collection',
         ]);
         $collection_2 = CollectionFactory::create([
             'user_id' => $other_user->id,

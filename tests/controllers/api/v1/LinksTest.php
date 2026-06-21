@@ -48,19 +48,18 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     {
         $this->freeze();
         $user = $this->login();
-        $collection = $user->readList();
         $link1 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link1->addCollection($collection, at: \Minz\Time::ago(5, 'minutes'));
+        $user->markAsRead($link1);
 
         $response = $this->apiRun('GET', "/api/v1/links?collection=read");
 
         $this->assertResponseCode($response, 200);
-        $link1->published_at = \Minz\Time::ago(5, 'minutes');
+        $link1->published_at = \Minz\Time::now();
         $this->assertApiResponse($response, [
             $link1->toJson($user),
         ]);
@@ -70,19 +69,18 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     {
         $this->freeze();
         $user = $this->login();
-        $collection = $user->bookmarks();
         $link1 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link1->addCollection($collection, at: \Minz\Time::ago(5, 'minutes'));
+        $user->markAsReadLater($link1);
 
         $response = $this->apiRun('GET', "/api/v1/links?collection=to-read");
 
         $this->assertResponseCode($response, 200);
-        $link1->published_at = \Minz\Time::ago(5, 'minutes');
+        $link1->published_at = \Minz\Time::now();
         $this->assertApiResponse($response, [
             $link1->toJson($user),
         ]);

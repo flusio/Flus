@@ -161,12 +161,11 @@ class BookmarksTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         /** @var string */
         $link_title = $this->fake('words', 3, true);
-        $bookmarks = $user->bookmarks();
         $link = LinkFactory::create([
             'user_id' => $user->id,
             'title' => $link_title,
         ]);
-        $bookmarks->addLinks([$link]);
+        $user->markAsReadLater($link);
 
         $response = $this->appRun('GET', '/bookmarks');
 

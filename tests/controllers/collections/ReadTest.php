@@ -323,7 +323,6 @@ class ReadTest extends \PHPUnit\Framework\TestCase
     public function testLaterMarksNewsLinksToReadLaterForSpecificOrigin(): void
     {
         $user = $this->login();
-        $bookmarks = $user->bookmarks();
         $news = $user->news();
         $collection1 = CollectionFactory::create();
         $collection2 = CollectionFactory::create();

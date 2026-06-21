@@ -65,9 +65,6 @@ class Links extends BaseController
                 'pagination' => $pagination,
             ]);
         } else {
-            $bookmarks = $user->bookmarks();
-            $read_list = $user->readList();
-
             $groups = models\Group::listBy(['user_id' => $user->id]);
             $groups = utils\Sorter::localeSort($groups, 'name');
 
@@ -81,8 +78,6 @@ class Links extends BaseController
             $shared_collections = utils\Sorter::localeSort($shared_collections, 'name');
 
             return Response::ok('links/index.html.twig', [
-                'bookmarks' => $bookmarks,
-                'read_list' => $read_list,
                 'groups' => $groups,
                 'groups_to_collections' => $groups_to_collections,
                 'shared_collections' => $shared_collections,

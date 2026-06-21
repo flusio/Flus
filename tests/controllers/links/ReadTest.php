@@ -259,7 +259,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]));
     }
 
-    public function testNeverMarksToNeverRead(): void
+    public function testNeverMarksToDismiss(): void
     {
         $user = $this->login();
         $news = $user->news();
@@ -428,7 +428,6 @@ class ReadTest extends \PHPUnit\Framework\TestCase
     public function testDeleteFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
-        $read_list = $user->readList();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);

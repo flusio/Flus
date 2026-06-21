@@ -17,7 +17,7 @@ use Minz\Response;
 class Read extends BaseController
 {
     /**
-     * Mark links of the collection as read and remove them from bookmarks.
+     * Mark links of the collection as read.
      *
      * @request_param string id
      * @request_param date date
@@ -65,7 +65,7 @@ class Read extends BaseController
     }
 
     /**
-     * Remove links of the collection from news and add them to bookmarks.
+     * Mark links of the collection to be read later.
      *
      * @request_param string id
      * @request_param date date
@@ -113,7 +113,7 @@ class Read extends BaseController
     }
 
     /**
-     * Remove links of the collection from news and bookmarks and add them to the never list.
+     * Dismiss the links of the collection.
      *
      * @request_param string id
      * @request_param date date
