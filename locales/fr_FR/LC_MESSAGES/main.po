@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-06-11 11:28+0200\n"
-"PO-Revision-Date: 2026-06-11 11:28+0200\n"
+"POT-Creation-Date: 2026-06-22 08:36+0200\n"
+"PO-Revision-Date: 2026-06-22 08:36+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -612,6 +612,12 @@ msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
 msgid "Add a link"
 msgstr "Ajouter un lien"
 
+#: views/bookmarks/new.html.twig:3 views/collections/links/new.html.twig:3
+#: views/links/new.html.twig:3 views/links/new.html.twig:11
+#: views/links/new.html.twig:15
+msgid "New link"
+msgstr "Nouveau lien"
+
 #: views/collections/_collection.html.twig:18
 #: views/collections/_collection_follow.html.twig:13
 #, php-format
@@ -697,10 +703,10 @@ msgstr "(max. %d caractères)"
 #: views/collections/groups/edit.html.twig:29
 #: views/collections/groups/edit.html.twig:65
 #: views/collections/images/edit.html.twig:26
-#: views/collections/links/new.html.twig:21
 #: views/collections/shares/index.html.twig:25
 #: views/collections/shares/index.html.twig:58 views/feeds/new.html.twig:17
 #: views/groups/edit.html.twig:20 views/importations/opml/show.html.twig:84
+#: views/links/_form_simple.html.twig:15
 #: views/links/collections/_new_note_form.html.twig:11
 #: views/links/edit.html.twig:26 views/links/edit.html.twig:71
 #: views/links/edit.html.twig:91 views/links/images/edit.html.twig:20
@@ -891,34 +897,6 @@ msgstr ""
 #, php-format
 msgid "The minimum recommended dimensions are %sx%spx."
 msgstr "Les dimensions minimales recommandées sont de %sx%spx."
-
-#: views/collections/links/new.html.twig:3 views/links/new.html.twig:3
-#: views/links/new.html.twig:11 views/links/new.html.twig:15
-msgid "New link"
-msgstr "Nouveau lien"
-
-#: views/collections/links/new.html.twig:16 views/links/new.html.twig:22
-#: views/links/repairing/new.html.twig:25
-msgid "What’s the address of the link?"
-msgstr "Quelle est l’adresse du lien ?"
-
-#: views/collections/links/new.html.twig:43 views/feeds/new.html.twig:39
-#: views/links/new.html.twig:49
-msgid ""
-"It can be copy-paste from the <abbr>URL</abbr> bar, at the top of your "
-"browser."
-msgstr ""
-"Elle peut être copiée-collée depuis la barre <abbr>URL</abbr>, en haut de "
-"votre navigateur."
-
-#: views/collections/links/new.html.twig:56
-#: views/links/collections/index.html.twig:44 views/links/new.html.twig:68
-msgid "Hide this link in public collections"
-msgstr "Masquer ce lien dans les collections publiques"
-
-#: views/collections/links/new.html.twig:62 views/links/new.html.twig:86
-msgid "Add the link"
-msgstr "Ajouter le lien"
 
 #: views/collections/new.html.twig:3
 msgid "New collection"
@@ -1249,6 +1227,15 @@ msgstr "Nouveau flux"
 msgid "What’s the address of the website or feed to follow?"
 msgstr "Quelle est l’adresse du site ou du flux à suivre ?"
 
+#: views/feeds/new.html.twig:39 views/links/_form_simple.html.twig:37
+#: views/links/new.html.twig:49
+msgid ""
+"It can be copy-paste from the <abbr>URL</abbr> bar, at the top of your "
+"browser."
+msgstr ""
+"Elle peut être copiée-collée depuis la barre <abbr>URL</abbr>, en haut de "
+"votre navigateur."
+
 #: views/feeds/new.html.twig:45
 msgid "Add the feed"
 msgstr "Ajouter le flux"
@@ -1449,6 +1436,20 @@ msgstr "Accéder au contenu principal"
 #, php-format
 msgid "About %s"
 msgstr "À propos de %s"
+
+#: views/links/_form_simple.html.twig:10 views/links/new.html.twig:22
+#: views/links/repairing/new.html.twig:25
+msgid "What’s the address of the link?"
+msgstr "Quelle est l’adresse du lien ?"
+
+#: views/links/_form_simple.html.twig:50
+#: views/links/collections/index.html.twig:44 views/links/new.html.twig:68
+msgid "Hide this link in public collections"
+msgstr "Masquer ce lien dans les collections publiques"
+
+#: views/links/_form_simple.html.twig:56 views/links/new.html.twig:86
+msgid "Add the link"
+msgstr "Ajouter le lien"
 
 #: views/links/_link.html.twig:64
 msgid "This link seems to be inaccessible, you should repair it."

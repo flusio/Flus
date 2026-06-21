@@ -147,8 +147,10 @@ class Router
         $router->addRoute('POST', '/collections/:id/share', 'collections/Shares#create', 'share collection');
         $router->addRoute('POST', '/collections/:id/unshare', 'collections/Shares#delete', 'unshare collection');
 
-        $router->addRoute('GET', '/bookmarks', 'Bookmarks#index', 'bookmarks');
         $router->addRoute('GET', '/read', 'Read#index', 'read list');
+        $router->addRoute('GET', '/bookmarks', 'Bookmarks#index', 'bookmarks');
+        $router->addRoute('GET', '/read/later/new', 'Bookmarks#new', 'new read later');
+        $router->addRoute('POST', '/read/later/new', 'Bookmarks#create', 'create read later');
 
         // Links
         $router->addRoute('GET', '/links', 'Links#index', 'links');
