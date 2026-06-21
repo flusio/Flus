@@ -14,7 +14,10 @@ trait BulkQueries
      * Insert in DB all the given objects.
      *
      * No validation are done on this insert, you must be sure they are valid
-     * values. Rows are not inserted (silently) on conflict.
+     * values.
+     *
+     * By default, rows are not inserted (silently) on conflict. You can change
+     * this by overidding the bulkInsertOnConflict method.
      *
      * @param object[] $models
      *
@@ -58,10 +61,12 @@ trait BulkQueries
 
         $table_name = self::tableName();
 
+        $on_conflict = self::bulkInsertOnConflict();
+
         $sql = <<<SQL
             INSERT INTO {$table_name} ({$columns_placeholder})
             VALUES {$rows_placeholder}
-            ON CONFLICT DO NOTHING;
+            {$on_conflict};
         SQL;
 
         $database = Database::get();
@@ -69,5 +74,17 @@ trait BulkQueries
         $statement->execute($models_values);
 
         return true;
+    }
+
+    /**
+     * Return the behaviour to have on conflict during a bulk insert.
+     *
+     * It returns 'ON CONFLICT DO NOTHING' by default.
+     *
+     * @return literal-string
+     */
+    public static function bulkInsertOnConflict(): string
+    {
+        return 'ON CONFLICT DO NOTHING';
     }
 }

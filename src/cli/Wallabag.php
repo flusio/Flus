@@ -103,6 +103,7 @@ class Wallabag
         // once (see calls to `bulkInsert` below).
         $links_to_create = [];
         $links_to_collections_to_create = [];
+        $urls_to_url_statuses_to_create = [];
         $notes = [];
 
         foreach ($items as $item) {
@@ -167,6 +168,21 @@ class Wallabag
                 $links_to_collections_to_create[] = $link_to_collection;
             }
 
+            if (isset($urls_to_url_statuses_to_create[$url])) {
+                $url_status = $urls_to_url_statuses_to_create[$url];
+            } else {
+                $url_status = new models\UrlStatus($user, $url);
+                $url_status->created_at = $published_at;
+            }
+
+            if ($item['is_archived']) {
+                $url_status->read_at = $published_at;
+                $urls_to_url_statuses_to_create[$url] = $url_status;
+            } elseif ($import_read_later) {
+                $url_status->read_later_at = $published_at;
+                $urls_to_url_statuses_to_create[$url] = $url_status;
+            }
+
             // We create a note containing the list of tags if any.
             if (count($tags) > 0) {
                 $formatted_tags = array_map(function (string $tag): string {
@@ -185,6 +201,7 @@ class Wallabag
         // Finally, let the big import (in DB) begin!
         models\Link::bulkInsert($links_to_create);
         models\LinkToCollection::bulkInsert($links_to_collections_to_create);
+        models\UrlStatus::bulkInsert($urls_to_url_statuses_to_create);
         models\Note::bulkInsert($notes);
 
         // Delete the collections if they are empty at the end of the

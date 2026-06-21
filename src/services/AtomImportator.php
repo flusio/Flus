@@ -38,7 +38,7 @@ class AtomImportator
     }
 
     /**
-     * Perform the importation.
+     * Import the feed into the collection.
      */
     public function importForCollection(models\Collection $collection): void
     {
@@ -90,5 +90,55 @@ class AtomImportator
 
         $collection->syncPublicationFrequencyPerYear();
         $collection->save();
+    }
+
+    /**
+     * Import the feed as read later links.
+     */
+    public function importReadLater(models\User $user): void
+    {
+        $links_to_create = [];
+        $urls_to_url_statuses_to_create = [];
+
+        foreach ($this->feed->entries as $entry) {
+            if (!$entry->link) {
+                continue;
+            }
+
+            $url = \SpiderBits\Url::sanitize($entry->link);
+
+            if ($entry->published_at) {
+                $published_at = $entry->published_at;
+            } else {
+                $published_at = \Minz\Time::now();
+            }
+
+            $link = $user->findOrBuildLink($url);
+
+            if (!$link->isPersisted()) {
+                // There is no link with the given URL in database yet and we
+                // want to create it.
+                $entry_title = trim($entry->title);
+                if ($entry_title) {
+                    $link->title = $entry_title;
+                }
+                $link->created_at = \Minz\Time::now();
+
+                $links_to_create[] = $link;
+            }
+
+            if (isset($urls_to_url_statuses_to_create[$url])) {
+                $url_status = $urls_to_url_statuses_to_create[$url];
+            } else {
+                $url_status = new models\UrlStatus($user, $url);
+                $url_status->created_at = $published_at;
+            }
+
+            $url_status->read_later_at = $published_at;
+            $urls_to_url_statuses_to_create[$url] = $url_status;
+        }
+
+        models\Link::bulkInsert($links_to_create);
+        models\UrlStatus::bulkInsert($urls_to_url_statuses_to_create);
     }
 }

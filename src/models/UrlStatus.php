@@ -13,6 +13,7 @@ use Minz\Database;
 class UrlStatus
 {
     use Database\Recordable;
+    use dao\BulkQueries;
 
     #[Database\Column]
     public int $id;
@@ -34,6 +35,13 @@ class UrlStatus
 
     #[Database\Column]
     public ?\DateTimeImmutable $dismissed_at = null;
+
+    public function __construct(User $user, string $url)
+    {
+        $url = \SpiderBits\Url::sanitize($url);
+        $this->user_id = $user->id;
+        $this->url_hash = utils\Belt::hashUrl($url);
+    }
 
     /**
      * Mark the links as read for the user.
@@ -203,5 +211,21 @@ class UrlStatus
         $database = Database::get();
         $statement = $database->prepare($sql);
         $statement->execute($values);
+    }
+
+    /**
+     * @see dao\BulkQueries::bulkInsertOnConflict
+     *
+     * @return literal-string
+     */
+    public static function bulkInsertOnConflict(): string
+    {
+        return <<<SQL
+            ON CONFLICT (user_id, url_hash) DO UPDATE SET
+                created_at = LEAST(url_statuses.created_at, excluded.created_at),
+                read_at = COALESCE(url_statuses.read_at, excluded.read_at),
+                read_later_at = COALESCE(url_statuses.read_later_at, excluded.read_later_at),
+                dismissed_at = COALESCE(url_statuses.dismissed_at, excluded.dismissed_at)
+        SQL;
     }
 }

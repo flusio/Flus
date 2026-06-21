@@ -47,6 +47,7 @@ class UserService
             try {
                 $atom_importator_service = new AtomImportator($default_bookmarks_filepath);
                 $atom_importator_service->importForCollection($bookmarks);
+                $atom_importator_service->importReadLater($user);
             } catch (AtomImportatorError $e) {
                 \Minz\Log::error("Error while importing default bookmarks for user {$user->id}: {$e->getMessage()}");
                 // Don't pass the error to the parent as it's a "minor" issue

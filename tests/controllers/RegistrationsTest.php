@@ -238,11 +238,13 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/onboarding');
         $user = models\User::findBy(['email' => $email]);
         $this->assertNotNull($user);
-        $bookmarks = $user->bookmarks();
-        $links = $bookmarks->links();
+        $links = models\Link::listBy([
+            'user_id' => $user->id,
+        ]);
         $this->assertSame(1, count($links));
         $this->assertSame('Bilan 2021', $links[0]->title);
         $this->assertSame('https://flus.fr/carnet/bilan-2021.html', $links[0]->url);
+        $this->assertTrue($user->hasReadLater($links[0]));
     }
 
     public function testCreateRedirectsToHomeIfConnected(): void
