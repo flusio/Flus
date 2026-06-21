@@ -199,8 +199,5 @@ class Pocket
             $pocket_collection->syncPublicationFrequencyPerYear();
             $pocket_collection->save();
         }
-
-        $bookmarks_collection->syncPublicationFrequencyPerYear();
-        $bookmarks_collection->save();
     }
 }

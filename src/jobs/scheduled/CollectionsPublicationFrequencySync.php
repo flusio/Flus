@@ -32,7 +32,11 @@ class CollectionsPublicationFrequencySync extends \Minz\Job
 
     public function perform(): void
     {
-        $collections = models\Collection::listToSyncPublicationFrequency();
+        // We only get collection type as feeds' publication frequency is
+        // already synchronized when fetching feeds.
+        $collections = models\Collection::listBy([
+            'type' => 'collection',
+        ]);
 
         foreach ($collections as $collection) {
             $collection->syncPublicationFrequencyPerYear();

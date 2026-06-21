@@ -213,8 +213,5 @@ class Wallabag
             $wallabag_collection->syncPublicationFrequencyPerYear();
             $wallabag_collection->save();
         }
-
-        $bookmarks_collection->syncPublicationFrequencyPerYear();
-        $bookmarks_collection->save();
     }
 }
