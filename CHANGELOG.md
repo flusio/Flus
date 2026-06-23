@@ -1,14 +1,14 @@
 # Changelog of Flus
 
-## unreleased
+## 2026-06-23 - v2.5.0
 
 ### Migration notes
 
 You can enable Altcha to protect your registration page.
 Set the new `APP_REGISTRATION_CAPTCHA` environment variable to `true`.
 
-A migration isn't applied automatically but is optional to run this version of Flus.
-**It will be required to apply it before the next major version (3.0).**
+A migration isn't applied automatically but is optional to run this specific version of Flus.
+**It will be required to apply it before the next patch version (2.5.1), so it must be applied now.**
 To apply this migration, run:
 
 ```console
@@ -20,7 +20,41 @@ This command takes two optional parameters:
 - `--batch-size=INT` to change the size of the batches (1000 by default)
 - `--dry-run` to not apply the migration immediately, but to get how many data will be migrated.
 
-This command can take a lot of time to execute with a lot of data.
+This command can take a lot of time to execute with a lot of data, so be patient.
+
+### Features
+
+- Enable interface customisation for everyone ([ea31089d](https://github.com/flusio/Flus/commit/ea31089d))
+- Allow to change font family to "system-ui" ([165fe96e](https://github.com/flusio/Flus/commit/165fe96e))
+- Allow to change and publish the link origin ([5f3994c9](https://github.com/flusio/Flus/commit/5f3994c9), [bb501d73](https://github.com/flusio/Flus/commit/bb501d73), [685855bd](https://github.com/flusio/Flus/commit/685855bd), [d64d679d](https://github.com/flusio/Flus/commit/d64d679d), [29b02432](https://github.com/flusio/Flus/commit/29b02432), [3a5adece](https://github.com/flusio/Flus/commit/3a5adece), [f51f56de](https://github.com/flusio/Flus/commit/f51f56de), [69c8f041](https://github.com/flusio/Flus/commit/69c8f041), [3ea1dd65](https://github.com/flusio/Flus/commit/3ea1dd65))
+- Allow to mark a link as accessible ([5f091a97](https://github.com/flusio/Flus/commit/5f091a97))
+- Allow to change the links' illustrations ([3bdbd8f3](https://github.com/flusio/Flus/commit/3bdbd8f3))
+- Improve duration detection using JSON+LD ([6728cb3d](https://github.com/flusio/Flus/commit/6728cb3d), [53596613](https://github.com/flusio/Flus/commit/53596613))
+- Allow to enable Altcha on the registration page ([afa530fc](https://github.com/flusio/Flus/commit/afa530fc), [01882da1](https://github.com/flusio/Flus/commit/01882da1))
+
+### Improvements
+
+- Remove the "accept contact" checkbox from the registration page ([c580245d](https://github.com/flusio/Flus/commit/c580245d))
+
+### Bug fixes
+
+- Don't duplicate link when repairing with the same URL ([32fc2a22](https://github.com/flusio/Flus/commit/32fc2a22))
+- Fix avatars' look in dark mode ([7786de8d](https://github.com/flusio/Flus/commit/7786de8d))
+- Fix the Mastodon "new message" zone in dark mode ([6a0d832e](https://github.com/flusio/Flus/commit/6a0d832e))
+- Fix look of collections if stored by someone else ([eb2ecd19](https://github.com/flusio/Flus/commit/eb2ecd19))
+
+### Maintenance
+
+- Add official support for PHP 8.5 ([a9cd3427](https://github.com/flusio/Flus/commit/a9cd3427))
+- Update the dependencies ([f907dd30](https://github.com/flusio/Flus/commit/f907dd30), [50e2ab30](https://github.com/flusio/Flus/commit/50e2ab30), [c8051bd3](https://github.com/flusio/Flus/commit/c8051bd3))
+
+### Developers
+
+- Handle read statuses through a `UrlStatus` model ([4e9c9eaa](https://github.com/flusio/Flus/commit/4e9c9eaa), [4bea9841](https://github.com/flusio/Flus/commit/4bea9841), [6d732b12](https://github.com/flusio/Flus/commit/6d732b12), [c06c379e](https://github.com/flusio/Flus/commit/c06c379e), [e4873a8c](https://github.com/flusio/Flus/commit/e4873a8c))
+- Drop the support user ([ed80c14d](https://github.com/flusio/Flus/commit/ed80c14d))
+- Clean code related to checkboxes ([fa84db8b](https://github.com/flusio/Flus/commit/fa84db8b))
+- Accept callable in `Sorter::localeSort` ([3c0276cb](https://github.com/flusio/Flus/commit/3c0276cb))
+- Move `hashUrl` to the `Belt` class ([909beb50](https://github.com/flusio/Flus/commit/909beb50))
 
 ## 2026-04-22 - v2.4.0
 
