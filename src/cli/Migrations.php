@@ -73,26 +73,37 @@ class Migrations extends \Minz\Migration\Controller
         }
 
         $total = 0;
-        $offset = 0;
+        $last_id = null;
 
         $database = \Minz\Database::get();
 
         while (true) {
+            $parameters = [
+                ':batch_size' => $batch_size,
+            ];
+
+            $pagination_clause = '';
+            if ($last_id) {
+                $pagination_clause = 'WHERE lc.id > :last_id';
+                $parameters[':last_id'] = $last_id;
+            }
+
             $statement = $database->prepare(<<<SQL
-                SELECT c.user_id, l.url_hash, c.type, lc.created_at
-                FROM links_to_collections lc
-                INNER JOIN collections c ON c.id = lc.collection_id
-                INNER JOIN links l ON l.id = lc.link_id
-                WHERE c.type IN ('read', 'bookmarks', 'never')
-                ORDER BY c.user_id, l.url_hash
-                LIMIT :batch_size
-                OFFSET :offset
+                WITH filtered_lc AS MATERIALIZED (
+                    SELECT lc.id, lc.link_id, lc.collection_id, lc.created_at
+                    FROM links_to_collections lc
+                    {$pagination_clause}
+                    ORDER BY lc.id
+                    LIMIT :batch_size
+                )
+
+                SELECT c.user_id, l.url_hash, c.type, lc.created_at, lc.id AS last_id
+                FROM filtered_lc lc
+                INNER JOIN collections c ON c.id = lc.collection_id AND c.type IN ('read', 'bookmarks', 'never')
+                INNER JOIN links l ON l.id = lc.link_id;
             SQL);
 
-            $statement->execute([
-                ':batch_size' => $batch_size,
-                ':offset' => $offset,
-            ]);
+            $statement->execute($parameters);
 
             $data = $statement->fetchAll();
             $data_size = count($data);
@@ -132,6 +143,8 @@ class Migrations extends \Minz\Migration\Controller
                 }
 
                 $processed_data[$key] = $processed_row;
+
+                $last_id = $row['last_id'];
             }
 
             if (!$dry_run) {
@@ -174,7 +187,6 @@ class Migrations extends \Minz\Migration\Controller
             }
 
             $total += $data_size;
-            $offset += $batch_size;
 
             yield Response::text(200, "{$total} statuses migrated…");
         }
