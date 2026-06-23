@@ -51,6 +51,18 @@ class JsonLd
             }
         }
 
+        foreach ($node as $child_node) {
+            if (!is_array($child_node)) {
+                continue;
+            }
+
+            $duration = $this->durationFromNode($child_node);
+
+            if ($duration) {
+                return $duration;
+            }
+        }
+
         return '';
     }
 

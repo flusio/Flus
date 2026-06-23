@@ -58,4 +58,22 @@ class JsonLdTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame('PT2520', $duration);
     }
+
+    public function testDurationInRootArray(): void
+    {
+        $json_ld_array = [
+            [
+                '@context' => 'http://schema.org',
+                '@type' => 'VideoObject',
+                'name' => 'My video',
+                'url' => 'https://videos.example.com/my-video',
+                'duration' => 'PT2520',
+            ]
+        ];
+        $json_ld = new JsonLd($json_ld_array);
+
+        $duration = $json_ld->duration();
+
+        $this->assertSame('PT2520', $duration);
+    }
 }
