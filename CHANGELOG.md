@@ -1,5 +1,12 @@
 # Changelog of Flus
 
+## 2026-06-23 - v2.5.1
+
+### Maintenance
+
+- Fix migration AddOriginToLinks to handle cases where `source_resource_id` is null ([aab2b7ed](https://github.com/flusio/Flus/commit/aab2b7ed))
+- Improve the performance of the setupUrlStatuses migration ([f7a73a73](https://github.com/flusio/Flus/commit/f7a73a73))
+
 ## 2026-06-23 - v2.5.0
 
 ### Migration notes
@@ -8,7 +15,7 @@ You can enable Altcha to protect your registration page.
 Set the new `APP_REGISTRATION_CAPTCHA` environment variable to `true`.
 
 A migration isn't applied automatically but is optional to run this specific version of Flus.
-**It will be required to apply it before the next patch version (2.5.1), so it must be applied now.**
+**It will be required in an upcoming patch version, so it must be applied now.**
 To apply this migration, run:
 
 ```console
