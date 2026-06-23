@@ -14,6 +14,7 @@
 {% block head_additional_tags %}
     {# Require a full reload of the page if Altcha is enabled as CSP headers are set. #}
     {% if form.mustCheckAltcha() %}
+        <script src="{{ url_asset('javascripts/altcha.js') }}" data-turbo-track="reload" defer></script>
         <meta name="turbo-visit-control" content="reload">
     {% endif %}
 {% endblock %}
