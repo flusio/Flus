@@ -17,10 +17,7 @@ class UserService
     public static function initializeData(models\User $user): void
     {
         // Init default collections
-        $bookmarks = $user->bookmarks();
         $user->news();
-        $user->readList();
-        $user->neverList();
 
         $favourites = models\Collection::init($user->id, _('My favourites'), '', false);
         $favourites->save();
@@ -41,15 +38,14 @@ class UserService
             }
         }
 
-        // Load default bookmarks
-        $default_bookmarks_filepath = \App\Configuration::$data_path . '/default-bookmarks.atom.xml';
-        if (file_exists($default_bookmarks_filepath)) {
+        // Load default read later links
+        $default_read_later_filepath = \App\Configuration::$data_path . '/default-read-later.atom.xml';
+        if (file_exists($default_read_later_filepath)) {
             try {
-                $atom_importator_service = new AtomImportator($default_bookmarks_filepath);
-                $atom_importator_service->importForCollection($bookmarks);
+                $atom_importator_service = new AtomImportator($default_read_later_filepath);
                 $atom_importator_service->importReadLater($user);
             } catch (AtomImportatorError $e) {
-                \Minz\Log::error("Error while importing default bookmarks for user {$user->id}: {$e->getMessage()}");
+                \Minz\Log::error("Error while importing default read later for user {$user->id}: {$e->getMessage()}");
                 // Don't pass the error to the parent as it's a "minor" issue
                 // (the user actually exists and is functional)
             }

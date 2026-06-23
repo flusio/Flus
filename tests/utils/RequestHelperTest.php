@@ -11,7 +11,7 @@ class RequestHelperTest extends \PHPUnit\Framework\TestCase
     public function testFromWithStandardGetRequest(): void
     {
         $self_uri = '/news';
-        $referer = '/bookmarks';
+        $referer = '/read/later';
         $request = new Request('GET', $self_uri, headers: [
             'Referer' => $referer,
         ]);
@@ -24,7 +24,7 @@ class RequestHelperTest extends \PHPUnit\Framework\TestCase
     public function testFromWithPostRequest(): void
     {
         $self_uri = '/news';
-        $referer = '/bookmarks';
+        $referer = '/read/later';
         $request = new Request('POST', $self_uri, headers: [
             'Referer' => $referer,
         ]);
@@ -37,7 +37,7 @@ class RequestHelperTest extends \PHPUnit\Framework\TestCase
     public function testFromWithRequestedModal(): void
     {
         $self_uri = '/news';
-        $referer = '/bookmarks';
+        $referer = '/read/later';
         $request = new Request('GET', $self_uri, headers: [
             'Referer' => $referer,
             'Turbo-Frame' => 'modal-content',
@@ -51,7 +51,7 @@ class RequestHelperTest extends \PHPUnit\Framework\TestCase
     public function testFromWithNoRefererButPreviousUrlInSession(): void
     {
         $self_uri = '/news';
-        $previous_url = '/bookmarks';
+        $previous_url = '/read/later';
         $_SESSION['_previous_url'] = $previous_url;
         $request = new Request('POST', $self_uri);
 

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>{{ source.name }}</title>
+    {% if source.description %}
+        <subtitle type="text"><![CDATA[{{ source.description }}]]></subtitle>
+    {% endif %}
+
+    <link href="{{ source.url }}" rel="alternate" type="text/html" />
+
+    <id>{{ source.tagUri }}</id>
+    <author>
+        <name>{{ source.owner.username }}</name>
+    </author>
+    <generator>{{ app.user_agent }}</generator>
+
+    {% if links %}
+        <updated>{{ links[0].published_at.format(constant('DATE_ATOM')) }}</updated>
+    {% else %}
+        <updated>{{ date().format(constant('DATE_ATOM')) }}</updated>
+    {% endif %}
+
+    {% for link in links %}
+        <entry>
+            <title>{{ link.title }}</title>
+            <id>{{ link.tagUri }}</id>
+
+            <link href="{{ link.url }}" rel="alternate" type="text/html" />
+            <link href="{{ url_full('link', { id: link.id }) }}" rel="replies" type="text/html" />
+
+            {% if link.is_hidden %}
+                <category term="Flus:hidden" />
+            {% endif %}
+
+            <published>{{ link.published_at.format(constant('DATE_ATOM')) }}</published>
+            <updated>{{ link.published_at.format(constant('DATE_ATOM')) }}</updated>
+
+            <content type="html"></content>
+        </entry>
+    {% endfor %}
+</feed>

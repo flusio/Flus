@@ -212,24 +212,6 @@ class User
     }
 
     /**
-     * Return the user' bookmarks collection
-     */
-    public function bookmarks(): Collection
-    {
-        $bookmarks = Collection::findBy([
-            'user_id' => $this->id,
-            'type' => 'bookmarks',
-        ]);
-
-        if (!$bookmarks) {
-            $bookmarks = Collection::initBookmarks($this->id);
-            $bookmarks->save();
-        }
-
-        return $bookmarks;
-    }
-
-    /**
      * Return the user' news collection
      */
     public function news(): Collection
@@ -245,42 +227,6 @@ class User
         }
 
         return $news;
-    }
-
-    /**
-     * Return the user' read list collection
-     */
-    public function readList(): Collection
-    {
-        $read_list = Collection::findBy([
-            'user_id' => $this->id,
-            'type' => 'read',
-        ]);
-
-        if (!$read_list) {
-            $read_list = Collection::initReadList($this->id);
-            $read_list->save();
-        }
-
-        return $read_list;
-    }
-
-    /**
-     * Return the user' never list collection
-     */
-    public function neverList(): Collection
-    {
-        $never_list = Collection::findBy([
-            'user_id' => $this->id,
-            'type' => 'never',
-        ]);
-
-        if (!$never_list) {
-            $never_list = Collection::initNeverList($this->id);
-            $never_list->save();
-        }
-
-        return $never_list;
     }
 
     public function initCollection(): Collection
@@ -627,12 +573,28 @@ class User
     }
 
     /**
+     * Return the source of read links for the current user.
+     */
+    public function readSource(): ReadSource
+    {
+        return new ReadSource($this);
+    }
+
+    /**
+     * Return the source of links to read later for the current user.
+     */
+    public function readLaterSource(): ReadLaterSource
+    {
+        return new ReadLaterSource($this);
+    }
+
+    /**
      * Return whether the user has read the link or not.
      */
     public function hasRead(Link $link): bool
     {
-        $read_list = $this->readList();
-        return Link::isUrlInCollectionId($read_list->id, $link->url);
+        $url_status = $this->urlStatusOfLink($link);
+        return $url_status->isRead();
     }
 
     /**
@@ -640,8 +602,8 @@ class User
      */
     public function hasReadLater(Link $link): bool
     {
-        $bookmarks = $this->bookmarks();
-        return Link::isUrlInCollectionId($bookmarks->id, $link->url);
+        $url_status = $this->urlStatusOfLink($link);
+        return $url_status->isReadLater();
     }
 
     /**
@@ -649,8 +611,8 @@ class User
      */
     public function hasDismissed(Link $link): bool
     {
-        $never_list = $this->neverList();
-        return Link::isUrlInCollectionId($never_list->id, $link->url);
+        $url_status = $this->urlStatusOfLink($link);
+        return $url_status->isDismissed();
     }
 
     /**
@@ -664,10 +626,8 @@ class User
             $links = [$links];
         }
 
-        $link_ids = array_column($links, 'id');
-        LinkToCollection::markAsRead($this, $link_ids);
-
         UrlStatus::markAsRead($this, $links);
+        $this->unmemoizeUrlStatusesOfLinks($links);
 
         $news = $this->news();
         $news->removeLinks($links, sync_publication_frequency: false);
@@ -684,10 +644,8 @@ class User
             $links = [$links];
         }
 
-        $link_ids = array_column($links, 'id');
-        LinkToCollection::markAsUnread($this, $link_ids);
-
         UrlStatus::unmarkAsRead($this, $links);
+        $this->unmemoizeUrlStatusesOfLinks($links);
     }
 
     /**
@@ -701,10 +659,8 @@ class User
             $links = [$links];
         }
 
-        $link_ids = array_column($links, 'id');
-        LinkToCollection::markToReadLater($this, $link_ids);
-
         UrlStatus::markAsReadLater($this, $links);
+        $this->unmemoizeUrlStatusesOfLinks($links);
 
         $news = $this->news();
         $news->removeLinks($links, sync_publication_frequency: false);
@@ -721,13 +677,36 @@ class User
             $links = [$links];
         }
 
-        $link_ids = array_column($links, 'id');
-        LinkToCollection::markToNeverRead($this, $link_ids);
-
         UrlStatus::markAsDismissed($this, $links);
+        $this->unmemoizeUrlStatusesOfLinks($links);
 
         $news = $this->news();
         $news->removeLinks($links, sync_publication_frequency: false);
+    }
+
+    /**
+     * Get the UrlStatus corresponding to this user and link.
+     *
+     * A UrlStatus is always returned. In case it is unknown to the user, a
+     * UserStatus is built (but not saved in database).
+     */
+    private function urlStatusOfLink(Link $link): UrlStatus
+    {
+        return $this->memoize("url_status_{$link->url}", function () use ($link): UrlStatus {
+            return UrlStatus::findOrBuild($this, $link->url);
+        });
+    }
+
+    /**
+     * Unmemoize statuses for the links' urls.
+     *
+     * @param Link[] $links
+     */
+    private function unmemoizeUrlStatusesOfLinks(array $links): void
+    {
+        foreach ($links as $link) {
+            $this->unmemoize("url_status_{$link->url}");
+        }
     }
 
     /**

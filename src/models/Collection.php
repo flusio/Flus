@@ -23,7 +23,7 @@ class Collection
     use Database\Resource;
     use Validable;
 
-    public const VALID_TYPES = ['bookmarks', 'news', 'read', 'never', 'collection', 'feed'];
+    public const VALID_TYPES = ['news', 'collection', 'feed'];
 
     public const NAME_MAX_LENGTH = 100;
 
@@ -132,39 +132,6 @@ class Collection
         return $collection;
     }
 
-    public static function initBookmarks(string $user_id): self
-    {
-        $collection = new self();
-
-        $collection->name = _('To read');
-        $collection->type = 'bookmarks';
-        $collection->user_id = $user_id;
-
-        return $collection;
-    }
-
-    public static function initReadList(string $user_id): self
-    {
-        $collection = new self();
-
-        $collection->name = _('Links read');
-        $collection->type = 'read';
-        $collection->user_id = $user_id;
-
-        return $collection;
-    }
-
-    public static function initNeverList(string $user_id): self
-    {
-        $collection = new self();
-
-        $collection->name = _('Links never to read');
-        $collection->type = 'never';
-        $collection->user_id = $user_id;
-
-        return $collection;
-    }
-
     public static function initNews(string $user_id): self
     {
         $collection = new self();
@@ -217,16 +184,11 @@ class Collection
     /**
      * Return the name of the collection.
      *
-     * If the collection is one of bookmarks, read or news types, the localized
-     * version is returned.
+     * If the collection is of news type, the localized version is returned.
      */
     public function name(): string
     {
-        if ($this->type === 'bookmarks') {
-            return _('To read');
-        } elseif ($this->type === 'read') {
-            return _('Links read');
-        } elseif ($this->type === 'news') {
+        if ($this->type === 'news') {
             return _('News');
         } else {
             return $this->name;

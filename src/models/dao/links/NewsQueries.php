@@ -36,11 +36,17 @@ trait NewsQueries
                 c.id AS source_id
             FROM collections c, links_to_collections lc, followed_collections fc, links l
 
+            LEFT JOIN url_statuses us ON us.user_id = :user_id AND us.url_hash = l.url_hash
+
             WHERE fc.user_id = :user_id
             AND fc.collection_id = lc.collection_id
 
             AND lc.link_id = l.id
             AND lc.collection_id = c.id
+
+            AND us.read_at IS NULL
+            AND us.read_later_at IS NULL
+            AND us.dismissed_at IS NULL
 
             AND (
                 (l.is_hidden = false AND c.is_public = true)
@@ -50,25 +56,6 @@ trait NewsQueries
                     WHERE cs.user_id = :user_id
                     AND cs.collection_id = c.id
                 )
-            )
-
-            AND NOT EXISTS (
-                SELECT 1
-                FROM links l_exclude, collections c_exclude, links_to_collections lc_exclude
-
-                WHERE c_exclude.user_id = :user_id
-                AND l_exclude.user_id = :user_id
-                AND l_exclude.url_hash = l.url_hash
-
-                AND (
-                    c_exclude.type = 'news'
-                    OR c_exclude.type = 'bookmarks'
-                    OR c_exclude.type = 'read'
-                    OR c_exclude.type = 'never'
-                )
-
-                AND lc_exclude.link_id = l_exclude.id
-                AND lc_exclude.collection_id = c_exclude.id
             )
 
             AND l.user_id IS DISTINCT FROM :user_id
@@ -114,11 +101,17 @@ trait NewsQueries
                 SELECT l.id
                 FROM collections c, links_to_collections lc, followed_collections fc, links l
 
+                LEFT JOIN url_statuses us ON us.user_id = :user_id AND us.url_hash = l.url_hash
+
                 WHERE fc.user_id = :user_id
                 AND fc.collection_id = lc.collection_id
 
                 AND lc.link_id = l.id
                 AND lc.collection_id = c.id
+
+                AND us.read_at IS NULL
+                AND us.read_later_at IS NULL
+                AND us.dismissed_at IS NULL
 
                 AND (
                     (l.is_hidden = false AND c.is_public = true)
@@ -128,25 +121,6 @@ trait NewsQueries
                         WHERE cs.user_id = :user_id
                         AND cs.collection_id = c.id
                     )
-                )
-
-                AND NOT EXISTS (
-                    SELECT 1
-                    FROM links l_exclude, collections c_exclude, links_to_collections lc_exclude
-
-                    WHERE c_exclude.user_id = :user_id
-                    AND l_exclude.user_id = :user_id
-                    AND l_exclude.url_hash = l.url_hash
-
-                    AND (
-                        c_exclude.type = 'news'
-                        OR c_exclude.type = 'bookmarks'
-                        OR c_exclude.type = 'read'
-                        OR c_exclude.type = 'never'
-                    )
-
-                    AND lc_exclude.link_id = l_exclude.id
-                    AND lc_exclude.collection_id = c_exclude.id
                 )
 
                 AND l.user_id IS DISTINCT FROM :user_id

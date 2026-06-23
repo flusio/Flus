@@ -255,17 +255,17 @@ If your instance is opened, you may want to ask your users to accept the terms o
 For this, you must create the `policies/terms.html` file which only accepts HTML.
 A checkbox should be added on the registration form then.
 
-## Optional: Declare default feeds and bookmarks
+## Optional: Declare default feeds and read later links
 
-When users register to the service, they can automatically subscribe to defaults feeds or get default bookmarks.
+When users register to the service, they can automatically subscribe to defaults feeds or get default read later links.
 
 Default feeds can be declared as an OPML file under the data folder: `data/defaut-feeds.opml.xml`.
 
-Default bookmarks can be declared as an Atom file under the data folder: `data/defaut-bookmarks.atom.xml`.
+Default read later links can be declared as an Atom file under the data folder: `data/defaut-read-later.atom.xml`.
 
-To generate these files, the easiest is to create a trash account, subscribe to the feeds and add bookmarks.
+To generate these files, the easiest is to create a trash account, subscribe to the feeds and mark links to read later.
 Then, export your data via “Account & data”, “Download your data”.
-You’ll find a `followed.opml.xml` and a `bookmarks.atom.xml` files in the archive: that's the ones you’re looking for.
+You’ll find a `followed.opml.xml` and a `read-later.atom.xml` files in the archive: that's the ones you’re looking for.
 
 ## Optional: Set a retention policy for the links in feeds
 

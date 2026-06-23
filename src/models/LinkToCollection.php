@@ -34,89 +34,12 @@ class LinkToCollection
     }
 
     /**
-     * Mark the links as read for the current user.
-     *
-     * When a link is marked as read, it is added to the user's read list, and
-     * removed from its bookmarks and news.
-     *
-     * You MUST be sure the links are owned by the user when you call this
-     * method.
-     *
-     * @param string[] $link_ids
-     */
-    public static function markAsRead(User $user, array $link_ids): void
-    {
-        $read_list = $user->readList();
-        $bookmarks = $user->bookmarks();
-
-        self::attach($link_ids, [$read_list->id]);
-        self::detach($link_ids, [$bookmarks->id]);
-    }
-
-    /**
-     * Mark the links to be read later for the current user.
-     *
-     * When a link is marked to be read later, it is added to the user's
-     * bookmarks, and removed from its news.
-     *
-     * You MUST be sure the links are owned by the user when you call this
-     * method.
-     *
-     * @param string[] $link_ids
-     */
-    public static function markToReadLater(User $user, array $link_ids): void
-    {
-        $bookmarks = $user->bookmarks();
-
-        self::attach($link_ids, [$bookmarks->id]);
-    }
-
-    /**
-     * Mark the links never to be read for the current user.
-     *
-     * When a link is marked never to be read, it is added to the user's never
-     * list and removed from its bookmarks and from its news.
-     *
-     * You MUST be sure the links are owned by the user when you call this
-     * method.
-     *
-     * @param string[] $link_ids
-     */
-    public static function markToNeverRead(User $user, array $link_ids): void
-    {
-        $bookmarks = $user->bookmarks();
-        $never_list = $user->neverList();
-
-        self::attach($link_ids, [$never_list->id]);
-        self::detach($link_ids, [$bookmarks->id]);
-    }
-
-    /**
-     * Mark the links as unread for the current user.
-     *
-     * When a link is marked as unread, it is removed from the user's read
-     * list.
-     *
-     * You MUST be sure the links are owned by the user when you call this
-     * method.
-     *
-     * @param string[] $link_ids
-     */
-    public static function markAsUnread(User $user, array $link_ids): void
-    {
-        $read_list = $user->readList();
-
-        self::detach($link_ids, [$read_list->id]);
-    }
-
-    /**
      * Attach the collections to the given link and remove old ones if any.
      *
-     * This method detaches the link from only collections of type 'collections
-     * (i.e. not 'read', 'never', 'news' or 'bookmarks'), even if their ids are
-     * missing from $collection_ids. This is because these collections don't
-     * appear in the collections selector, when a user changes the collections
-     * of a link.
+     * This method detaches the link from only collections of type 'collection',
+     * even if their ids are missing from $collection_ids. This is because only
+     * these collections appear in the collections selector, when a user
+     * changes the collections of a link.
      *
      * @param string[] $collection_ids
      */

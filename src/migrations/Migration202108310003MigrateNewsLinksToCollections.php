@@ -24,15 +24,14 @@ class Migration202108310003MigrateNewsLinksToCollections
             // Get user info (news and read list ids) and cache these info
             $user_id = $db_news_link['user_id'];
             if (isset($cache_users[$user_id])) {
-                list($read_list_id, $news_id) = $cache_users[$user_id];
+                list($news_id) = $cache_users[$user_id];
             } else {
                 $user = models\User::find($user_id);
 
                 assert($user !== null);
 
-                $read_list_id = $user->readList()->id;
                 $news_id = $user->news()->id;
-                $cache_users[$user_id] = [$read_list_id, $news_id];
+                $cache_users[$user_id] = [$news_id];
             }
 
             // Get a link with the same URL as the news link
@@ -56,27 +55,24 @@ class Migration202108310003MigrateNewsLinksToCollections
             // $link->via_resource_id = $resource_id;
             $link->save();
 
-            // And attach the link to the corresponding collection:
-            // - read list collection if the news link was read or removed
-            // - news collection if the news link was still in the news
-            // We also get the appropriate date to keep the history correct.
+            // And attach the link to the news collection if the news link is
+            // nor read or removed. We also get the appropriate date to keep
+            // the history correct.
             $removed_at = $db_news_link['removed_at'];
             $read_at = $db_news_link['read_at'];
             $published_at = $db_news_link['published_at'];
             $created_at = $db_news_link['created_at'];
 
-            if ($read_at) {
-                $at = $read_at;
-                $collection_id = $read_list_id;
-            } elseif ($removed_at) {
-                $at = $removed_at;
-                $collection_id = $read_list_id;
-            } elseif ($published_at) {
+            if ($read_at || $removed_at) {
+                continue;
+            }
+
+            $collection_id = $news_id;
+
+            if ($published_at) {
                 $at = $published_at;
-                $collection_id = $news_id;
             } else {
                 $at = $created_at;
-                $collection_id = $news_id;
             }
 
             $at = \DateTimeImmutable::createFromFormat(\Minz\Database\Column::DATETIME_FORMAT, $at);

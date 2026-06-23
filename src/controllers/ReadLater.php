@@ -14,7 +14,7 @@ use Minz\Response;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Bookmarks extends BaseController
+class ReadLater extends BaseController
 {
     /**
      * Show the page to mark a url to read later.
@@ -31,7 +31,7 @@ class Bookmarks extends BaseController
 
         $form = new forms\links\NewLinkSimple();
 
-        return Response::ok('bookmarks/new.html.twig', [
+        return Response::ok('read_later/new.html.twig', [
             'form' => $form,
         ]);
     }
@@ -63,7 +63,7 @@ class Bookmarks extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('bookmarks/new.html.twig', [
+            return Response::badRequest('read_later/new.html.twig', [
                 'form' => $form,
             ]);
         }
@@ -84,7 +84,7 @@ class Bookmarks extends BaseController
     }
 
     /**
-     * Show the bookmarks page.
+     * Show the read later links.
      *
      * @request_param integer page
      *
@@ -99,25 +99,30 @@ class Bookmarks extends BaseController
     public function index(Request $request): Response
     {
         $user = auth\CurrentUser::require();
+        $read_later_source = $user->readLaterSource();
 
-        $bookmarks = $user->bookmarks();
         $page = $request->parameters->getInteger('page', 1);
 
-        $number_links = models\Link::countByCollectionId($bookmarks->id);
+        $number_links = $read_later_source->countLinks();
         $pagination = new utils\Pagination($number_links, 29, $page);
 
-        $links = $bookmarks->links(
-            ['published_at', 'number_notes'],
-            [
-                'offset' => $pagination->currentOffset(),
-                'limit' => $pagination->numberPerPage(),
-            ]
-        );
+        $links = $read_later_source->links($pagination);
 
-        return Response::ok('bookmarks/index.html.twig', [
-            'collection' => $bookmarks,
+        return Response::ok('read_later/index.html.twig', [
+            'read_later_source' => $read_later_source,
             'links' => $links,
             'pagination' => $pagination,
         ]);
+    }
+
+    /**
+     * Handle old /bookmarks URL and redirect to /read/later
+     *
+     * @response 301 /read/later
+     */
+    public function bookmarks(Request $request): Response
+    {
+        $url = \Minz\Url::for('read later');
+        return Response::movedPermanently($url);
     }
 }

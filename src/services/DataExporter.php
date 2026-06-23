@@ -43,10 +43,9 @@ class DataExporter
         $files = [];
         $files['metadata.json'] = $this->generateMetadata();
         $files['followed.opml.xml'] = $this->generateOpml($user);
-        $files['bookmarks.atom.xml'] = $this->generateCollection($user->bookmarks());
         $files['news.atom.xml'] = $this->generateCollection($user->news());
-        $files['read.atom.xml'] = $this->generateCollection($user->readList());
-        $files['never.atom.xml'] = $this->generateCollection($user->neverList());
+        $files['read-later.atom.xml'] = $this->generateSource($user->readLaterSource());
+        $files['read.atom.xml'] = $this->generateSource($user->readSource());
 
         $collections = $user->collections();
         foreach ($collections as $collection) {
@@ -119,6 +118,19 @@ class DataExporter
             'collection' => $collection,
             'topics' => $collection->topics(),
             'links' => $collection->links(['published_at']),
+        ]);
+
+        return self::formatXML($view->render());
+    }
+
+    /**
+     * Return an Atom representation of the given source.
+     */
+    private function generateSource(models\Source $source): string
+    {
+        $view = new \Minz\Template\Twig('sources/exportation.atom.xml.twig', [
+            'source' => $source,
+            'links' => $source->links(),
         ]);
 
         return self::formatXML($view->render());

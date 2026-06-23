@@ -266,7 +266,6 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $user->markAsReadLater($link);
         $news->addLinks([$link]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/never", [
@@ -275,7 +274,6 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/');
         $this->assertTrue($user->hasDismissed($link));
-        $this->assertFalse($user->hasReadLater($link));
         $this->assertFalse($news->hasLink($link));
     }
 
@@ -298,13 +296,13 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
         // The read status didn't changed for the other user who owns the link.
         $this->assertFalse($other_user->hasDismissed($link));
-        // But the logged user now dismissed the link and owns their own copy.
+        // But the logged user now dismissed the link.
         $this->assertTrue($user->hasDismissed($link));
-        $new_link = models\Link::findBy([
+        // Link is not copied in case of dismissing.
+        $this->assertFalse(models\Link::existsBy([
             'user_id' => $user->id,
             'url' => $url,
-        ]);
-        $this->assertNotNull($new_link);
+        ]));
     }
 
     public function testNeverRedirectsToLoginIfNotConnected(): void
@@ -314,7 +312,6 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $user->markAsReadLater($link);
         $news->addLinks([$link]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/never", [
@@ -323,7 +320,6 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
         $this->assertFalse($user->hasDismissed($link));
-        $this->assertTrue($user->hasReadLater($link));
         $this->assertTrue($news->hasLink($link));
     }
 
@@ -334,7 +330,6 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $user->markAsReadLater($link);
         $news->addLinks([$link]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/never", [
@@ -345,7 +340,6 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
         $this->assertFalse($user->hasDismissed($link));
-        $this->assertTrue($user->hasReadLater($link));
         $this->assertTrue($news->hasLink($link));
     }
 

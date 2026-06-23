@@ -95,11 +95,9 @@ class Repairing extends BaseController
         }
 
         if ($link->url !== $form->url) {
-            // Mark the old link as dismissed to avoid the link reappearing in
-            // the news.
-            $old_link = models\Link::copy($link, $user->id);
-            $old_link->save();
-            $user->markAsDismissed($old_link);
+            // Mark the link as dismissed to avoid the link reappearing in
+            // the news. It must be done before changing its URL!
+            $user->markAsDismissed($link);
         }
 
         $link->url = $form->url;
