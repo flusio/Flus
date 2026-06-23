@@ -18,7 +18,8 @@ class Migration202605140003AddOriginToLinks
         $statement = $database->prepare(<<<'SQL'
             UPDATE links
             SET origin = :base_url || '/p/' || source_resource_id
-            WHERE source_type = 'user';
+            WHERE source_type = 'user'
+            AND source_resource_id IS NOT NULL;
         SQL);
 
         $statement->execute([
@@ -28,7 +29,8 @@ class Migration202605140003AddOriginToLinks
         $statement = $database->prepare(<<<'SQL'
             UPDATE links
             SET origin = :base_url || '/collections/' || source_resource_id
-            WHERE source_type = 'collection';
+            WHERE source_type = 'collection'
+            AND source_resource_id IS NOT NULL;
         SQL);
 
         $statement->execute([
