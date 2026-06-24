@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-06-22 08:36+0200\n"
-"PO-Revision-Date: 2026-06-22 08:36+0200\n"
+"POT-Creation-Date: 2026-06-26 10:35+0200\n"
+"PO-Revision-Date: 2026-06-26 10:35+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -320,21 +320,21 @@ msgstr "[%s] Réinitialisation de votre mot de passe"
 msgid "[%s] Your account will be deleted soon due to inactivity"
 msgstr "[%s] Votre compte sera bientôt supprimé pour cause d'inactivité"
 
-#: models/Collection.php:41 models/Group.php:30
+#: models/Collection.php:41 models/Group.php:30 models/Stream.php:32
 msgid "The name is required."
 msgstr "Le nom est obligatoire."
 
-#: models/Collection.php:45 models/Group.php:34
+#: models/Collection.php:45 models/Group.php:34 models/Stream.php:36
 msgid "The name must be less than {max} characters."
 msgstr "Le nom ne doit pas faire plus de {max} caractères."
 
 #: models/Collection.php:139 models/Collection.php:226
-#: navigations/ReadingNavigation.php:35
+#: models/ReadLaterSource.php:20 navigations/ReadingNavigation.php:32
 msgid "To read"
 msgstr "À lire"
 
-#: models/Collection.php:150 models/Collection.php:228
-#: navigations/ReadingNavigation.php:42
+#: models/Collection.php:150 models/Collection.php:228 models/ReadSource.php:20
+#: navigations/ReadingNavigation.php:39
 msgid "Links read"
 msgstr "Liens lus"
 
@@ -343,7 +343,7 @@ msgid "Links never to read"
 msgstr "Liens à ne jamais lire"
 
 #: models/Collection.php:172 models/Collection.php:230
-#: navigations/ReadingNavigation.php:28
+#: navigations/ReadingNavigation.php:25
 msgid "News"
 msgstr "Journal"
 
@@ -374,6 +374,14 @@ msgstr "L’origine ne doit pas faire plus de {max} caractères."
 #: models/Note.php:30
 msgid "The content is required."
 msgstr "Le contenu est obligatoire."
+
+#: models/ReadLaterSource.php:25
+msgid "Place here the links you want to consult later on."
+msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
+
+#: models/ReadSource.php:25
+msgid "Find here all the links you’ve marked as read."
+msgstr "Retrouvez ici tous les liens que vous avez marqués comme lu."
 
 #: models/Topic.php:31
 msgid "The label is required."
@@ -441,35 +449,35 @@ msgstr ""
 msgid "Account & data menu"
 msgstr "Menu compte & données"
 
-#: navigations/AccountNavigation.php:31
+#: navigations/AccountNavigation.php:28
 msgid "Overview"
 msgstr "Aperçu"
 
-#: navigations/AccountNavigation.php:39
+#: navigations/AccountNavigation.php:36
 msgid "Account validation"
 msgstr "Validation du compte"
 
-#: navigations/AccountNavigation.php:48
+#: navigations/AccountNavigation.php:45
 msgid "Mastodon"
 msgstr "Mastodon"
 
-#: navigations/AccountNavigation.php:57
+#: navigations/AccountNavigation.php:54
 msgid "OPML import"
 msgstr "Importation OPML"
 
-#: navigations/AccountNavigation.php:65
+#: navigations/AccountNavigation.php:62
 msgid "Data export"
 msgstr "Exportation des données"
 
-#: navigations/AccountNavigation.php:72
+#: navigations/AccountNavigation.php:69
 msgid "Credentials"
 msgstr "Identifiants"
 
-#: navigations/AccountNavigation.php:79
+#: navigations/AccountNavigation.php:76
 msgid "Sessions"
 msgstr "Sessions"
 
-#: navigations/AccountNavigation.php:86
+#: navigations/AccountNavigation.php:83
 msgid "Account deletion"
 msgstr "Suppression du compte"
 
@@ -489,9 +497,21 @@ msgstr "Sécurité"
 msgid "Reading menu"
 msgstr "Menu lecture"
 
-#: navigations/ReadingNavigation.php:51
+#: navigations/ReadingNavigation.php:48
 msgid "Explore"
 msgstr "Explorer"
+
+#: navigations/ReadingNavigation.php:57
+msgid "New stream"
+msgstr "Nouveau fil"
+
+#: navigations/ReadingNavigation.php:74
+msgid "Create a stream to get started."
+msgstr "Créez un fil pour commencer."
+
+#: navigations/ReadingNavigation.php:79
+msgid "Streams"
+msgstr "Fils"
 
 #: seeds.php:12
 msgid "Business"
@@ -604,10 +624,6 @@ msgstr "Info"
 msgid "Success"
 msgstr "Succès"
 
-#: views/bookmarks/index.html.twig:30
-msgid "Place here the links you want to consult later on."
-msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
-
 #: views/bookmarks/index.html.twig:45 views/collections/show.html.twig:309
 msgid "Add a link"
 msgstr "Ajouter un lien"
@@ -637,7 +653,7 @@ msgstr "aucun lien"
 #: views/collections/_collection.html.twig:26
 #: views/collections/_collection_follow.html.twig:18
 #: views/links/_pagination_count.html.twig:7 views/news/index.html.twig:26
-#: views/news/index.html.twig:132
+#: views/news/index.html.twig:132 views/streams/show.html.twig:101
 #, php-format
 msgid "%s link"
 msgid_plural "%s links"
@@ -657,7 +673,9 @@ msgstr "privée"
 
 #: views/collections/_collection.html.twig:52
 #: views/collections/_collection_follow.html.twig:24
-#: views/collections/show.html.twig:96
+#: views/collections/show.html.twig:96 views/streams/show.html.twig:34
+#: views/streams/sources/_source.html.twig:34
+#: views/streams/sources/edit.html.twig:48
 msgid "Publication frequency"
 msgstr "Fréquence de publication"
 
@@ -690,7 +708,7 @@ msgstr "Comment voulez-vous nommer cette collection ?"
 #: views/collections/_form.html.twig:14
 #: views/collections/_selector.html.twig:48
 #: views/collections/groups/edit.html.twig:23 views/groups/edit.html.twig:14
-#: views/mastodon/show.html.twig:56
+#: views/mastodon/show.html.twig:56 views/streams/_form.html.twig:14
 #, php-format
 msgid "(max. %d characters)"
 msgstr "(max. %d caractères)"
@@ -723,10 +741,11 @@ msgstr "(max. %d caractères)"
 #: views/my/security/confirmation.html.twig:40
 #: views/my/security/show.html.twig:31 views/my/security/show.html.twig:59
 #: views/notes/edit.html.twig:24 views/passwords/edit.html.twig:31
-#: views/passwords/forgot.html.twig:43 views/registrations/new.html.twig:51
-#: views/registrations/new.html.twig:79 views/registrations/new.html.twig:113
-#: views/registrations/new.html.twig:151 views/sessions/new.html.twig:32
-#: views/sessions/new.html.twig:67 views/support/show.html.twig:41
+#: views/passwords/forgot.html.twig:43 views/registrations/new.html.twig:52
+#: views/registrations/new.html.twig:80 views/registrations/new.html.twig:114
+#: views/registrations/new.html.twig:152 views/sessions/new.html.twig:32
+#: views/sessions/new.html.twig:67 views/streams/_form.html.twig:20
+#: views/streams/_form.html.twig:51 views/support/show.html.twig:41
 #: views/support/show.html.twig:67
 msgid "Error:"
 msgstr "Erreur :"
@@ -737,11 +756,11 @@ msgstr "Quelle est la raison d’être de cette collection ?"
 
 #: views/collections/_form.html.twig:45
 #: views/links/collections/_new_note_form.html.twig:5
-#: views/my/security/show.html.twig:53
+#: views/my/security/show.html.twig:53 views/streams/_form.html.twig:45
 msgid "(optional)"
 msgstr "(optionnel)"
 
-#: views/collections/_form.html.twig:69
+#: views/collections/_form.html.twig:69 views/streams/_form.html.twig:69
 msgid "You can format the description in Markdown."
 msgstr "Vous pouvez formater la description en Markdown."
 
@@ -1003,6 +1022,7 @@ msgid "Change the illustration"
 msgstr "Changer l’illustration"
 
 #: views/collections/show.html.twig:88
+#: views/streams/sources/_source.html.twig:18
 #, php-format
 msgid "Feed of %s website"
 msgstr "Flux du site %s"
@@ -2015,14 +2035,14 @@ msgstr ""
 "Vous êtes sur le point de supprimer votre compte : vos données seront alors "
 "perdues. Cette action ne peut pas être annulée !"
 
-#: views/my/account/deletion.html.twig:33 views/registrations/new.html.twig:105
+#: views/my/account/deletion.html.twig:33 views/registrations/new.html.twig:106
 msgid "Your password"
 msgstr "Votre mot de passe"
 
 #: views/my/account/deletion.html.twig:63
 #: views/my/security/confirmation.html.twig:65
 #: views/my/security/show.html.twig:84 views/passwords/edit.html.twig:56
-#: views/registrations/new.html.twig:139 views/sessions/new.html.twig:95
+#: views/registrations/new.html.twig:140 views/sessions/new.html.twig:95
 msgid ""
 "Show password as plain text. Note: this will visually expose your password."
 msgstr ""
@@ -2132,7 +2152,7 @@ msgstr ""
 msgid "Your name"
 msgstr "Votre nom"
 
-#: views/my/profile/edit.html.twig:14 views/registrations/new.html.twig:45
+#: views/my/profile/edit.html.twig:14 views/registrations/new.html.twig:46
 #, php-format
 msgid "(public, max. %d characters)"
 msgstr "(public, max. %d caractères)"
@@ -2174,7 +2194,7 @@ msgstr "Confirmer votre mot de passe"
 msgid "You can change your login details here."
 msgstr "Vous pouvez changer vos identifiants de connexion ici."
 
-#: views/my/security/show.html.twig:26 views/registrations/new.html.twig:74
+#: views/my/security/show.html.twig:26 views/registrations/new.html.twig:75
 msgid "Your email address"
 msgstr "Votre adresse courriel"
 
@@ -2715,7 +2735,7 @@ msgstr "Vous êtes en train de modifier le mot de passe de <strong>%s</strong>."
 msgid "Your new password"
 msgstr "Votre nouveau mot de passe"
 
-#: views/passwords/edit.html.twig:25 views/registrations/new.html.twig:107
+#: views/passwords/edit.html.twig:25 views/registrations/new.html.twig:108
 msgid "(recommended at least 8 characters)"
 msgstr "(recommandé au moins 8 caractères)"
 
@@ -2820,33 +2840,29 @@ msgstr "Vous n’avez encore partagé aucun lien."
 msgid "This user didn’t share any links yet."
 msgstr "Cet·te utilisateur·ice n’a pas encore partagé de lien."
 
-#: views/read/index.html.twig:30
-msgid "Find here all the links you’ve marked as read."
-msgstr "Retrouvez ici tous les liens que vous avez marqués comme lu."
-
 #: views/registrations/new.html.twig:3 views/registrations/new.html.twig:11
-#: views/registrations/new.html.twig:23
+#: views/registrations/new.html.twig:24
 msgid "Registration"
 msgstr "Inscription"
 
-#: views/registrations/new.html.twig:27
+#: views/registrations/new.html.twig:28
 #, php-format
 msgid "First month is free. <a href=\"%s\">Learn more about pricing.</a>"
 msgstr ""
 "Le premier mois est gratuit. <a href=\"%s\">En savoir plus sur les tarifs.</"
 "a>"
 
-#: views/registrations/new.html.twig:43
+#: views/registrations/new.html.twig:44
 msgid "What’s your name?"
 msgstr "Quel est votre nom ?"
 
-#: views/registrations/new.html.twig:99
+#: views/registrations/new.html.twig:100
 msgid "We only send emails necessary for the operation of the service."
 msgstr ""
 "Nous n’y enverrons que des courriels nécessaires au fonctionnement du "
 "service."
 
-#: views/registrations/new.html.twig:157
+#: views/registrations/new.html.twig:158
 #, php-format
 msgid ""
 "Please read <a href=\"%s\" target=\"_blank\">the general terms and "
@@ -2856,7 +2872,7 @@ msgstr ""
 "générales de services et d’utilisation</a> pour vous assurer que celles-ci "
 "vous conviennent."
 
-#: views/registrations/new.html.twig:173
+#: views/registrations/new.html.twig:174
 msgid ""
 "I acknowledge that I have read and accepted the general terms and conditions "
 "of service and use"
@@ -2864,11 +2880,11 @@ msgstr ""
 "Je reconnais avoir lu et accepté les conditions générales de services et "
 "d’utilisation"
 
-#: views/registrations/new.html.twig:185
+#: views/registrations/new.html.twig:186
 msgid "Sign up"
 msgstr "S’inscrire"
 
-#: views/registrations/new.html.twig:193
+#: views/registrations/new.html.twig:194
 msgid "Already an account?"
 msgstr "Déjà un compte ?"
 
@@ -2888,6 +2904,62 @@ msgstr "Mot de passe oublié ?"
 #: views/sessions/new.html.twig:115
 msgid "No account yet?"
 msgstr "Pas encore de compte ?"
+
+#: views/streams/_form.html.twig:12
+msgid "What’s the name of the stream?"
+msgstr "Quelle est le nom du fil ?"
+
+#: views/streams/_form.html.twig:43
+msgid "What’s the purpose of the stream?"
+msgstr "Quelle est la raison d’être du fil ?"
+
+#: views/streams/new.html.twig:9
+msgid "Create the stream"
+msgstr "Créer le fil"
+
+#: views/streams/show.html.twig:41 views/streams/sources/_source.html.twig:22
+msgid "By"
+msgstr "Par"
+
+#: views/streams/show.html.twig:59
+msgid "Manage sources"
+msgstr "Gérer les sources"
+
+#: views/streams/sources/_source.html.twig:45
+msgid "Add"
+msgstr "Ajouter"
+
+#: views/streams/sources/_source.html.twig:53
+msgid "Remove"
+msgstr "Retirer"
+
+#: views/streams/sources/edit.html.twig:3
+#, php-format
+msgid "Sources of %s"
+msgstr "Sources de %s"
+
+#: views/streams/sources/edit.html.twig:20
+msgid "Add or remove sources to customise your stream."
+msgstr "Ajoutez ou retirez des sources pour personnaliser votre fil."
+
+#: views/streams/sources/edit.html.twig:27
+msgid "Sources to add"
+msgstr "Sources à ajouter"
+
+#: views/streams/sources/edit.html.twig:41
+msgid "Sources of the stream"
+msgstr "Sources du fil"
+
+#: views/streams/sources/edit.html.twig:45
+#, php-format
+msgid "%d source"
+msgid_plural "%d sources"
+msgstr[0] "%d source"
+msgstr[1] "%d sources"
+
+#: views/streams/sources/edit.html.twig:67
+msgid "Continue to the stream"
+msgstr "Continuer vers le fil"
 
 #: views/support/show.html.twig:18
 msgid ""

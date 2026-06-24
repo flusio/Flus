@@ -1,0 +1,123 @@
+{% extends 'layouts/application.html.twig' %}
+
+{% set stream = stream_view.stream %}
+
+{% block title %}{{ stream.name }}{% endblock %}
+{% block canonical %}{{ url_full('stream', { id: stream.id }) }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'stream', tab: 'reading' }) }}
+{% endblock %}
+
+{% block layout_sidenav %}
+    {{ include('layouts/_sidenav.html.twig', { navigation: reading_navigation(current: stream.id) }) }}
+{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: stream.name, reset: true }) }}
+{% endblock %}
+
+{% block body %}
+    <div class="cols cols--gap-large">
+        <div class="col--size3 text--center">
+            <img
+                class="illustration"
+                alt=""
+                src="{{ url_media('covers', stream.image_filename, 'collection-card.png') }}"
+            >
+        </div>
+
+        <div class="col--extend flow">
+            <h1 class="text--break">{{ stream.name }}</h1>
+
+            <p class="stack stack--gap">
+                <span title="{{ t('Publication frequency') }}">
+                    {{ icon('frequency') }}
+                    {{ stream.publicationFrequencyPerYear | format_publication_frequency }}
+                </span>
+            </p>
+
+            <p>
+                {{ t('By') }}
+                <a class="username" href="{{ url('profile', { id: stream.owner.id }) }}">
+                    <img class="avatar avatar--mini" alt="" src="{{ url_avatar(stream.owner.avatar_filename) }}">
+                    {{- stream.owner.username -}}
+                </a>
+            </p>
+
+            {% if stream.description %}
+                <div class="text-container">
+                    {{ stream.descriptionAsHtml | raw }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if can(app.user, 'update', stream) %}
+        <div class="panel panel--rounded stack stack--gap-small">
+            <a class="button" href="{{ url('edit stream sources', { id: stream.id }) }}">
+                {{ t('Manage sources') }}
+            </a>
+        </div>
+    {% endif %}
+
+    {% set links_timeline = stream_view.linksTimeline(context_user: app.user) %}
+
+    {% if not links_timeline.empty %}
+        <div class="flow flow--large" data-controller="zindex-inverser">
+            {% for date_group in links_timeline.datesGroups %}
+                <section class="group flow">
+                    <header class="group__header" data-zindex-inverser-target="item">
+                        <h2 class="group__title">
+                            {{ d(date_group.date, 'dd MMMM') }}
+                        </h2>
+
+                        <div class="group__separator"></div>
+                    </header>
+
+                    <div class="group__body flow">
+                        {% set links = date_group.links %}
+
+                        {% if links %}
+                            <div class="grid">
+                                {% for link in date_group.links %}
+                                    {{ include('links/_link.html.twig', {
+                                        link: link,
+                                        display_read_later: 'auto',
+                                        display_mark_as_read: 'auto',
+                                        storing_must_mark_as_read: true,
+                                    })}}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        {% for source_group in date_group.sourceGroups %}
+                            <div class="source-group flow flow--small">
+                                <div class="source-group__header cols cols--always cols--gap cols--center">
+                                    <h3 class="source-group__title">
+                                        {{ source_group.source.name() }}
+                                    </h3>
+
+                                    <span class="col--noshrink text--secondary">
+                                        {{ t('%s link', '%s links', source_group.links | length, [source_group.links | length]) }}
+                                    </span>
+                                </div>
+
+                                <div class="source-group__body grid">
+                                    {% for link in source_group.links %}
+                                        {{ include('links/_link.html.twig', {
+                                            link: link,
+                                            display_read_later: 'auto',
+                                            display_mark_as_read: 'auto',
+                                            storing_must_mark_as_read: true,
+                                        }) }}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </section>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}

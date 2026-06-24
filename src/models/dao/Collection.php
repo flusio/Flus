@@ -2,6 +2,7 @@
 
 namespace App\models\dao;
 
+use App\models;
 use Minz\Database;
 
 /**
@@ -386,6 +387,33 @@ trait Collection
             AND cs.user_id = :to_user_id
 
             {$group_by_clause}
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute($parameters);
+
+        return self::fromDatabaseRows($statement->fetchAll());
+    }
+
+    /**
+     * List the collections present in the given stream.
+     *
+     * @return self[]
+     */
+    public static function listByStream(models\Stream $stream): array
+    {
+        $parameters = [
+            ':stream_id' => $stream->id,
+        ];
+
+        $sql = <<<SQL
+            SELECT c.*
+            FROM collections c, followed_collections fc, streams_to_follows sf
+
+            WHERE c.id = fc.collection_id
+            AND sf.follow_id = fc.id
+            AND sf.stream_id = :stream_id
         SQL;
 
         $database = Database::get();

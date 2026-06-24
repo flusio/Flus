@@ -636,6 +636,89 @@ trait Link
         return intval($statement->fetchColumn());
     }
 
+    /**
+     * Return the list of links of the given stream.
+     *
+     * @param array{
+     *     context_user?: ?models\User,
+     *     at?: \DateTimeImmutable,
+     *     days?: int,
+     * } $options
+     *
+     * @return models\Link[]
+     */
+    public static function listByStream(models\Stream $stream, array $options): array
+    {
+        $default_options = [
+            'context_user' => null,
+            'at' => \Minz\Time::now(),
+            'days' => 1,
+        ];
+        $options = array_merge($default_options, $options);
+
+        $parameters = [
+            ':stream_id' => $stream->id,
+        ];
+
+        // Calculate the time span interval to get the links.
+        $start = $options['at']->modify('00:00:00');
+        $end = $start->modify('23:59:59');
+
+        $days = min(7, max(1, $options['days']));
+        $days = $days - 1; // the actual interval is already of 1 day.
+        if ($days > 0) {
+            $start = $start->modify("-{$days} days");
+        }
+
+        $parameters[':at_start'] = $start->format(Database\Column::DATETIME_FORMAT);
+        $parameters[':at_end'] = $end->format(Database\Column::DATETIME_FORMAT);
+
+        // Create the visibility clause, adapted if a context user is passed.
+        $visibility_clause = 'AND (l.is_hidden = false AND c.is_public = true)';
+
+        if ($options['context_user']) {
+            $parameters[':user_id'] = $options['context_user']->id;
+
+            $visibility_clause = <<<SQL
+                AND (
+                    (l.is_hidden = false AND c.is_public = true)
+                    OR c.user_id = :user_id
+                    OR EXISTS (
+                        SELECT 1 FROM collection_shares cs
+                        WHERE cs.user_id = :user_id
+                        AND cs.collection_id = c.id
+                    )
+                )
+            SQL;
+        }
+
+        $sql = <<<SQL
+            SELECT l.*, lc.created_at AS published_at, lc.collection_id AS source_id, true AS group_by_source
+            FROM streams_to_follows sf, followed_collections fc, links_to_collections lc, collections c, links l
+
+            WHERE sf.stream_id = :stream_id
+
+            AND sf.follow_id = fc.id
+            AND fc.collection_id = c.id
+            AND fc.collection_id = lc.collection_id
+            AND lc.link_id = l.id
+
+            AND l.is_hidden = false
+
+            AND lc.created_at >= :at_start AND lc.created_at <= :at_end
+
+            {$visibility_clause}
+
+            ORDER BY published_at DESC, l.id
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute($parameters);
+
+        return self::fromDatabaseRows($statement->fetchAll());
+    }
+
     public function numberCollectionsForUser(\App\models\User $user): int
     {
         $sql = <<<SQL

@@ -51,4 +51,14 @@ class FollowedCollection
         $this->user_id = $user_id;
         $this->collection_id = $collection_id;
     }
+
+    public static function findOrCreate(User $user, Collection $collection): self
+    {
+        return self::findOrCreateBy([
+            'user_id' => $user->id,
+            'collection_id' => $collection->id,
+        ], [
+            'time_filter' => 'normal',
+        ]);
+    }
 }

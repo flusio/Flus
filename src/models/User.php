@@ -206,6 +206,11 @@ class User
         return FeatureFlag::isEnabled('beta', $this->id);
     }
 
+    public function isAlphaEnabled(): bool
+    {
+        return FeatureFlag::isEnabled('alpha', $this->id);
+    }
+
     public function isOwning(Link|Collection $object): bool
     {
         return $object->user_id === $this->id;
@@ -788,6 +793,27 @@ class User
         foreach ($links as $link) {
             $this->unmemoize("url_status_{$link->url}");
         }
+    }
+
+    public function initStream(): Stream
+    {
+        return new Stream($this);
+    }
+
+    /**
+     * Return the list of streams owned by the user.
+     *
+     * @return Stream[]
+     */
+    public function streams(): array
+    {
+        return $this->memoize('streams', function (): array {
+            $streams = Stream::listBy([
+                'user_id' => $this->id,
+            ]);
+
+            return utils\Sorter::localeSort($streams, 'name');
+        });
     }
 
     /**

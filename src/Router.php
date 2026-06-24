@@ -214,6 +214,24 @@ class Router
 
         $router->addRoute('GET', '/feeds.xsl', 'Feeds#xsl', 'feeds xsl');
 
+        // Streams
+        $router->addRoute('GET', '/streams/new', 'Streams#new', 'new stream');
+        $router->addRoute('POST', '/streams/new', 'Streams#create', 'create stream');
+        $router->addRoute('GET', '/streams/:id', 'Streams#show', 'stream');
+        $router->addRoute('GET', '/streams/:id/sources/edit', 'streams/Sources#edit', 'edit stream sources');
+        $router->addRoute(
+            'POST',
+            '/streams/:id/sources/:source_id/add',
+            'streams/Sources#add',
+            'add stream source',
+        );
+        $router->addRoute(
+            'POST',
+            '/streams/:id/sources/:source_id/remove',
+            'streams/Sources#remove',
+            'remove stream source',
+        );
+
         // Explore
         $router->addRoute('GET', '/explore', 'Explore#show', 'explore');
         $router->addRoute('GET', '/discovery', 'Explore#discovery', 'discovery');

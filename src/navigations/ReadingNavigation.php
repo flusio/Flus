@@ -52,6 +52,36 @@ class ReadingNavigation extends BaseNavigation
             );
         }
 
+        if ($current_user->isAlphaEnabled()) {
+            $new_stream_action = new ItemAction(
+                label: TwigExtension::translate('New stream'),
+                url: \Minz\Url::for('new stream'),
+                icon: 'plus',
+            );
+
+            $stream_items = [];
+
+            foreach ($current_user->streams() as $stream) {
+                $stream_items[] = new Item(
+                    label: $stream->name,
+                    key: $stream->id,
+                    url: \Minz\Url::for('stream', ['id' => $stream->id]),
+                );
+            }
+
+            if (count($stream_items) === 0) {
+                $stream_items[] = new ItemPlaceholder(
+                    TwigExtension::translate('Create a stream to get started.'),
+                );
+            }
+
+            $elements[] = new ItemGroup(
+                label: TwigExtension::translate('Streams'),
+                items: $stream_items,
+                action: $new_stream_action,
+            );
+        }
+
         return $elements;
     }
 }

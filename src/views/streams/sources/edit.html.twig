@@ -1,0 +1,72 @@
+{% extends 'layouts/application.html.twig' %}
+
+{% set title = t('Sources of %s', [stream.name]) %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block canonical %}{{ url_full('edit stream sources', { id: stream.id }) }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'stream sources', tab: 'reading' }) }}
+{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: title }) }}
+{% endblock %}
+
+{% block body %}
+    <h1 class="text--center">{{ title }}</h1>
+
+    <p class="text--center">
+        {{ t('Add or remove sources to customise your stream.') }}
+    </p>
+
+    <div class="sources flow">
+        <div class="cols cols--gap">
+            <section class="sources__selector col--size6 panel panel--border panel--rounded flow">
+                <div class="sources__selector-header">
+                    <h2 class="text--normal">{{ t('Sources to add') }}</h2>
+                </div>
+
+                <div class="sources__selector-container flow flow--small">
+                    {% for source in suggested_sources %}
+                        {{ include('streams/sources/_source.html.twig', { action: 'add' }) }}
+                    {% endfor %}
+                </div>
+            </section>
+
+            <section class="sources__selector col--size6 panel panel--border panel--rounded flow">
+                {% set sources = stream.sources %}
+
+                <div class="sources__selector-header cols cols--always cols--gap-small">
+                    <h2 class="col--extend text--normal">{{ t('Sources of the stream') }}</h2>
+
+                    <p class="stack stack--gap">
+                        <span>
+                            {{ t('%d source', '%d sources', sources | length, [sources | length]) }}
+                        </span>
+
+                        <span title="{{ t('Publication frequency') }}">
+                            {{ icon('frequency') }}
+                            {{ stream.publicationFrequencyPerYear | format_publication_frequency }}
+                        </span>
+                    </p>
+                </div>
+
+                {% if sources %}
+                    <div class="sources__selector-container flow flow--small">
+                        {% for source in sources %}
+                            {{ include('streams/sources/_source.html.twig', { action: 'remove' }) }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </section>
+        </div>
+
+        <p class="sources__submit">
+            <a class="button button--big button--primary button--animated" href="{{ url('stream', { id: stream.id }) }}">
+                {{ t('Continue to the stream') }}
+                {{ icon('arrow-right') }}
+            </a>
+        </p>
+    </div>
+{% endblock %}
