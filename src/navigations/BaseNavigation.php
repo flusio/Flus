@@ -27,7 +27,7 @@ abstract class BaseNavigation
         }
 
         foreach ($items as $item) {
-            if ($this->isCurrent($item)) {
+            if ($item instanceof Item && $this->isCurrent($item)) {
                 return $item->label;
             }
         }

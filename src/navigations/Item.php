@@ -9,10 +9,10 @@ namespace App\navigations;
 class Item extends Element
 {
     public function __construct(
+        public readonly string $label,
         public readonly string $key,
         public readonly string $url,
-        public readonly string $icon,
-        public readonly string $label,
+        public readonly string $icon = '',
     ) {
     }
 

@@ -6,18 +6,15 @@ namespace App\navigations;
  * @author Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class ItemGroup extends Element
+class ItemPlaceholder extends Element
 {
     public function __construct(
         public readonly string $label,
-        /** @var array<Item|ItemPlaceholder> */
-        public readonly array $items,
-        public readonly ?ItemAction $action = null,
     ) {
     }
 
     public function is(string $type): bool
     {
-        return $type === 'group';
+        return $type === 'placeholder';
     }
 }

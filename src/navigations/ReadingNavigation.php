@@ -22,33 +22,33 @@ class ReadingNavigation extends BaseNavigation
 
         $elements = [
             new Item(
-                'news',
-                \Minz\Url::for('news'),
-                'news',
-                TwigExtension::translate('News'),
+                label: TwigExtension::translate('News'),
+                key: 'news',
+                url: \Minz\Url::for('news'),
+                icon: 'news',
             ),
 
             new Item(
-                'bookmarks',
-                \Minz\Url::for('bookmarks'),
-                'bookmark',
-                TwigExtension::translate('To read'),
+                label: TwigExtension::translate('To read'),
+                key: 'bookmarks',
+                url: \Minz\Url::for('bookmarks'),
+                icon: 'bookmark',
             ),
 
             new Item(
-                'read',
-                \Minz\Url::for('read list'),
-                'check',
-                TwigExtension::translate('Links read'),
+                label: TwigExtension::translate('Links read'),
+                key: 'read',
+                url: \Minz\Url::for('read list'),
+                icon: 'check',
             ),
         ];
 
         if ($current_user->isBetaEnabled()) {
             $elements[] = new Item(
-                'explore',
-                \Minz\Url::for('explore'),
-                'compass',
-                TwigExtension::translate('Explore'),
+                label: TwigExtension::translate('Explore'),
+                key: 'explore',
+                url: \Minz\Url::for('explore'),
+                icon: 'compass',
             );
         }
 

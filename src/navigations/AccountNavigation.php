@@ -25,65 +25,65 @@ class AccountNavigation extends BaseNavigation
         $security_items = [];
 
         $account_items[] = new Item(
-            'account',
-            \Minz\Url::for('account'),
-            'cog',
-            TwigExtension::translate('Overview'),
+            label: TwigExtension::translate('Overview'),
+            key: 'account',
+            url: \Minz\Url::for('account'),
+            icon: 'cog',
         );
 
         if (!$current_user->isValidated()) {
             $account_items[] = new Item(
-                'account validation',
-                \Minz\Url::for('account validation'),
-                'check',
-                TwigExtension::translate('Account validation'),
+                label: TwigExtension::translate('Account validation'),
+                key: 'account validation',
+                url: \Minz\Url::for('account validation'),
+                icon: 'check',
             );
         }
 
         if (!$current_user->isBlocked()) {
             $account_items[] = new Item(
-                'mastodon',
-                \Minz\Url::for('mastodon'),
-                'mastodon',
-                TwigExtension::translate('Mastodon'),
+                label: TwigExtension::translate('Mastodon'),
+                key: 'mastodon',
+                url: \Minz\Url::for('mastodon'),
+                icon: 'mastodon',
             );
         }
 
         if (!$current_user->isBlocked()) {
             $data_items[] = new Item(
-                'opml',
-                \Minz\Url::for('opml'),
-                'upload',
-                TwigExtension::translate('OPML import'),
+                label: TwigExtension::translate('OPML import'),
+                key: 'opml',
+                url: \Minz\Url::for('opml'),
+                icon: 'upload',
             );
         }
 
         $data_items[] = new Item(
-            'exportation',
-            \Minz\Url::for('exportation'),
-            'cloud-download',
-            TwigExtension::translate('Data export'),
+            label: TwigExtension::translate('Data export'),
+            key: 'exportation',
+            url: \Minz\Url::for('exportation'),
+            icon: 'cloud-download',
         );
 
         $security_items[] = new Item(
-            'security',
-            \Minz\Url::for('security'),
-            'key',
-            TwigExtension::translate('Credentials'),
+            label: TwigExtension::translate('Credentials'),
+            key: 'security',
+            url: \Minz\Url::for('security'),
+            icon: 'key',
         );
 
         $security_items[] = new Item(
-            'sessions',
-            \Minz\Url::for('sessions'),
-            'session',
-            TwigExtension::translate('Sessions'),
+            label: TwigExtension::translate('Sessions'),
+            key: 'sessions',
+            url: \Minz\Url::for('sessions'),
+            icon: 'session',
         );
 
         $security_items[] = new Item(
-            'account deletion',
-            \Minz\Url::for('account deletion'),
-            'trash',
-            TwigExtension::translate('Account deletion'),
+            label: TwigExtension::translate('Account deletion'),
+            key: 'account deletion',
+            url: \Minz\Url::for('account deletion'),
+            icon: 'trash',
         );
 
         return [
