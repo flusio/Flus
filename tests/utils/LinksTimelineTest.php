@@ -15,7 +15,7 @@ class LinksTimelineTest extends \PHPUnit\Framework\TestCase
         $link2 = LinkFactory::create();
         $link2->published_at = new \DateTimeImmutable('2024-03-22 12:00');
         $link3 = LinkFactory::create();
-        $link3->published_at = new \DateTimeImmutable('2024-03-20 12:00');
+        $link3->published_at = new \DateTimeImmutable('2024-03-21 00:00+0200');
         $links = [$link1, $link2, $link3];
 
         $timeline = new LinksTimeline($links);
@@ -25,11 +25,11 @@ class LinksTimelineTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(2, count($dates_groups));
         $group1 = $dates_groups['2024-03-20'];
         $group2 = $dates_groups['2024-03-22'];
-        $this->assertEquals($link1->published_at, $group1->date);
+        $this->assertEquals($link1->published_at->modify('00:00:00'), $group1->date);
         $this->assertSame(2, count($group1->links));
         $this->assertSame($link1->id, $group1->links[0]->id);
         $this->assertSame($link3->id, $group1->links[1]->id);
-        $this->assertEquals($link2->published_at, $group2->date);
+        $this->assertEquals($link2->published_at->modify('00:00:00'), $group2->date);
         $this->assertSame(1, count($group2->links));
         $this->assertSame($link2->id, $group2->links[0]->id);
     }

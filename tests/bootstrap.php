@@ -12,6 +12,9 @@ date_default_timezone_set('UTC');
 
 \Minz\Engine::startSession();
 
+// Make sure to set the locale.
+\App\utils\Locale::setCurrentLocale('en_GB');
+
 \Minz\Database::reset();
 $schema = @file_get_contents(\App\Configuration::$schema_path);
 

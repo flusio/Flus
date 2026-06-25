@@ -353,8 +353,13 @@ trait Link
 
         $date_clause = '';
         if ($options['published_date'] !== null) {
-            $date_clause = "AND date_trunc('day', lc.created_at) = :published_date";
-            $parameters[':published_date'] = $options['published_date']->format('Y-m-d');
+            $date_clause = "AND lc.created_at >= :published_start AND lc.created_at <= :published_end";
+
+            $start = $options['published_date']->modify('00:00:00');
+            $end = $start->modify('23:59:59');
+
+            $parameters[':published_start'] = $start->format(Database\Column::DATETIME_FORMAT);
+            $parameters[':published_end'] = $end->format(Database\Column::DATETIME_FORMAT);
         }
 
         $source = $options['source'];
