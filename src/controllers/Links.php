@@ -331,6 +331,7 @@ class Links extends BaseController
             return Response::found($from);
         }
 
+        $user->unmark($link);
         $link->remove();
 
         return Response::found($from);

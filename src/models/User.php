@@ -731,6 +731,20 @@ class User
     }
 
     /**
+     * Unmark the links for the user (aka remove the corresponding URL statuses).
+     *
+     * @param Link|Link[] $links
+     */
+    public function unmark(Link|array $links): void
+    {
+        if ($links instanceof Link) {
+            $links = [$links];
+        }
+
+        UrlStatus::unmark($this, $links);
+    }
+
+    /**
      * Set the user password.
      */
     public function setPassword(string $password): void

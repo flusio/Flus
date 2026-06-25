@@ -956,6 +956,9 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
+        $user->markAsRead($link);
+
+        $this->assertTrue($user->hasRead($link));
 
         $response = $this->appRun('POST', "/links/{$link->id}/delete", [
             'csrf_token' => $this->csrfToken(forms\links\DeleteLink::class),
@@ -963,6 +966,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/');
         $this->assertFalse(models\Link::exists($link->id));
+        $this->assertFalse($user->hasRead($link));
     }
 
     public function testDeleteRedirectsIfNotConnected(): void

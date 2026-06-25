@@ -171,7 +171,7 @@ class UrlStatus
     }
 
     /**
-     * Mark the links as dismissed and remove them from the journal of the user.
+     * Mark the links as dismissed for the user.
      *
      * @param Link|Link[] $links
      */
@@ -206,6 +206,41 @@ class UrlStatus
             VALUES {$values_placeholder}
             ON CONFLICT (user_id, url_hash) DO UPDATE SET
                 dismissed_at = excluded.dismissed_at
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute($values);
+    }
+
+    /**
+     * Unmark the links for the user (aka remove the corresponding URL statuses).
+     *
+     * @param Link|Link[] $links
+     */
+    public static function unmark(User $user, Link|array $links): void
+    {
+        if ($links instanceof Link) {
+            $links = [$links];
+        }
+
+        if (!$links) {
+            return;
+        }
+
+        $values_as_question_marks = [];
+        $values = [$user->id];
+
+        foreach ($links as $link) {
+            $values_as_question_marks[] = '?';
+            $values[] = $link->url_hash;
+        }
+        $values_placeholder = implode(", ", $values_as_question_marks);
+
+        $sql = <<<SQL
+            DELETE FROM url_statuses
+            WHERE user_id = ?
+            AND url_hash IN ({$values_placeholder})
         SQL;
 
         $database = Database::get();
