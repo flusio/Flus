@@ -643,17 +643,29 @@ trait Link
      *     context_user?: ?models\User,
      *     at?: \DateTimeImmutable,
      *     days?: int,
+     *     status?: string,
      * } $options
      *
      * @return models\Link[]
      */
     public static function listByStream(models\Stream $stream, array $options): array
     {
+        $default_options = [
+            'context_user' => null,
+            'at' => \Minz\Time::now(),
+            'days' => 1,
+            'status' => 'all',
+        ];
+        $options = array_merge($default_options, $options);
+
+        $sql_join = self::buildStreamJoin($stream, $options);
         list($sql_where, $parameters) = self::buildStreamWhere($stream, $options);
 
         $sql = <<<SQL
             SELECT l.*, lc.created_at AS published_at, lc.collection_id AS source_id, true AS group_by_source
-            FROM streams_to_follows sf, followed_collections fc, links_to_collections lc, collections c, links l
+            FROM streams_to_follows sf
+
+            {$sql_join}
 
             {$sql_where}
 
@@ -674,15 +686,27 @@ trait Link
      *     context_user?: ?models\User,
      *     at?: \DateTimeImmutable,
      *     days?: int,
+     *     status?: string,
      * } $options
      */
     public static function countByStream(models\Stream $stream, array $options): int
     {
+        $default_options = [
+            'context_user' => null,
+            'at' => \Minz\Time::now(),
+            'days' => 1,
+            'status' => 'all',
+        ];
+        $options = array_merge($default_options, $options);
+
+        $sql_join = self::buildStreamJoin($stream, $options);
         list($sql_where, $parameters) = self::buildStreamWhere($stream, $options);
 
         $sql = <<<SQL
             SELECT COUNT(l.id)
-            FROM streams_to_follows sf, followed_collections fc, links_to_collections lc, collections c, links l
+            FROM streams_to_follows sf
+
+            {$sql_join}
 
             {$sql_where}
         SQL;
@@ -696,21 +720,44 @@ trait Link
 
     /**
      * @param array{
-     *     context_user?: ?models\User,
-     *     at?: \DateTimeImmutable,
-     *     days?: int,
+     *     context_user: ?models\User,
+     *     at: \DateTimeImmutable,
+     *     days: int,
+     *     status: string,
      * } $options
+     *
+     * @return literal-string
+     */
+    private static function buildStreamJoin(models\Stream $stream, array $options): string
+    {
+        $sql_join = <<<SQL
+            INNER JOIN followed_collections fc ON sf.follow_id = fc.id
+            INNER JOIN links_to_collections lc ON fc.collection_id = lc.collection_id
+            INNER JOIN collections c ON fc.collection_id = c.id
+            INNER JOIN links l ON lc.link_id = l.id
+        SQL;
+
+        if (isset($options['context_user']) && $options['status'] !== 'all') {
+            $sql_join .= <<<SQL
+                LEFT JOIN url_statuses us ON us.user_id = :user_id AND us.url_hash = l.url_hash
+            SQL;
+        }
+
+        return $sql_join;
+    }
+
+    /**
+     * @param array{
+     *     context_user: ?models\User,
+     *     at: \DateTimeImmutable,
+     *     days: int,
+     *     status: string,
+     * } $options
+     *
      * @return array{literal-string, array<string, mixed>}
      */
     private static function buildStreamWhere(models\Stream $stream, array $options): array
     {
-        $default_options = [
-            'context_user' => null,
-            'at' => \Minz\Time::now(),
-            'days' => 1,
-        ];
-        $options = array_merge($default_options, $options);
-
         $parameters = [
             ':stream_id' => $stream->id,
         ];
@@ -727,6 +774,24 @@ trait Link
 
         $parameters[':at_start'] = $start->format(Database\Column::DATETIME_FORMAT);
         $parameters[':at_end'] = $end->format(Database\Column::DATETIME_FORMAT);
+
+        // Create the status clause if status option is set.
+        $status_clause = '';
+        if ($options['context_user']) {
+            if ($options['status'] === 'unread') {
+                $status_clause = <<<SQL
+                    AND (
+                        us.read_at IS NULL
+                        AND us.read_later_at IS NULL
+                        AND us.dismissed_at IS NULL
+                    )
+                SQL;
+            } elseif ($options['status'] === 'read') {
+                $status_clause = 'AND us.read_at IS NOT NULL';
+            } elseif ($options['status'] === 'read-later') {
+                $status_clause = 'AND us.read_later_at IS NOT NULL';
+            }
+        }
 
         // Create the visibility clause, adapted if a context user is passed.
         $visibility_clause = 'AND (l.is_hidden = false AND c.is_public = true)';
@@ -749,16 +814,10 @@ trait Link
 
         $sql_where = <<<SQL
             WHERE sf.stream_id = :stream_id
-
-            AND sf.follow_id = fc.id
-            AND fc.collection_id = c.id
-            AND fc.collection_id = lc.collection_id
-            AND lc.link_id = l.id
-
             AND l.is_hidden = false
-
             AND lc.created_at >= :at_start AND lc.created_at <= :at_end
 
+            {$status_clause}
             {$visibility_clause}
         SQL;
 

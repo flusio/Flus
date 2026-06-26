@@ -15,6 +15,7 @@ class StreamView
         public readonly Stream $stream,
         public readonly \DateTimeImmutable $at,
         public readonly int $days = 1,
+        public readonly string $status = 'all',
     ) {
     }
 
@@ -23,13 +24,33 @@ class StreamView
         $today = \Minz\Time::now();
         $at = $request->parameters->getDatetime('at', $today, 'Y-m-d');
         $days = $request->parameters->getInteger('days', 1);
+        $status = $request->parameters->getString('status', 'all');
 
-        return new self($stream, $at, $days);
+        if (!in_array($status, ['all', 'unread', 'read', 'read-later'])) {
+            $status = 'all';
+        }
+
+        return new self($stream, $at, $days, $status);
     }
 
     public function isAt(\DateTimeImmutable $at): bool
     {
         return $this->at->format('Y-m-d') === $at->format('Y-m-d');
+    }
+
+    public function isStatusSelected(string $status): bool
+    {
+        return $this->status === $status;
+    }
+
+    public function urlStatus(string $status): string
+    {
+        return \Minz\Url::for('stream', [
+            'id' => $this->stream->id,
+            'at' => $this->at->format('Y-m-d'),
+            'days' => $this->days,
+            'status' => $status,
+        ]);
     }
 
     /**
@@ -56,6 +77,7 @@ class StreamView
             'context_user' => $context_user,
             'at' => $this->at,
             'days' => $this->days,
+            'status' => $this->status,
         ]);
 
         return new utils\LinksTimeline($links);

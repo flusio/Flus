@@ -113,6 +113,42 @@
                 </div>
             </form>
         </div>
+
+        <div class="filters__section">
+            <div class="stack stack--gap-smaller">
+                <a
+                    class="button"
+                    href="{{ stream_view.urlStatus('all') }}"
+                    {% if stream_view.isStatusSelected('all') %}aria-current="page"{% endif %}
+                >
+                    {{ t('All') }}
+                </a>
+
+                <a
+                    class="button"
+                    href="{{ stream_view.urlStatus('unread') }}"
+                    {% if stream_view.isStatusSelected('unread') %}aria-current="page"{% endif %}
+                >
+                    {{ t('Unread') }}
+                </a>
+
+                <a
+                    class="button"
+                    href="{{ stream_view.urlStatus('read-later') }}"
+                    {% if stream_view.isStatusSelected('read-later') %}aria-current="page"{% endif %}
+                >
+                    {{ t('To read') }}
+                </a>
+
+                <a
+                    class="button"
+                    href="{{ stream_view.urlStatus('read') }}"
+                    {% if stream_view.isStatusSelected('read') %}aria-current="page"{% endif %}
+                >
+                    {{ t('Links read') }}
+                </a>
+            </div>
+        </div>
     </section>
 
     {% set links_timeline = stream_view.linksTimeline(context_user: app.user) %}

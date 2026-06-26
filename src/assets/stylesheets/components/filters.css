@@ -7,3 +7,7 @@
 .filters__section {
     padding: var(--space-small);
 }
+
+.filters__section + .filters__section {
+    border-top: 1px solid var(--color-grey-line);
+}

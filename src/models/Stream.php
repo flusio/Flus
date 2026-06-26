@@ -134,6 +134,7 @@ class Stream
      *     context_user?: ?User,
      *     at?: \DateTimeImmutable,
      *     days?: int,
+     *     status?: string,
      * } $options
      *
      * @return Link[]
@@ -148,6 +149,7 @@ class Stream
      *     context_user?: ?User,
      *     at?: \DateTimeImmutable,
      *     days?: int,
+     *     status?: string,
      * } $options
      */
     public function countLinks(array $options = []): int
