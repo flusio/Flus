@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-06-26 15:25+0200\n"
-"PO-Revision-Date: 2026-06-26 15:25+0200\n"
+"POT-Creation-Date: 2026-06-26 16:40+0200\n"
+"PO-Revision-Date: 2026-06-26 16:42+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -653,7 +653,7 @@ msgstr "aucun lien"
 #: views/collections/_collection.html.twig:26
 #: views/collections/_collection_follow.html.twig:18
 #: views/links/_pagination_count.html.twig:7 views/news/index.html.twig:26
-#: views/news/index.html.twig:132 views/streams/show.html.twig:196
+#: views/news/index.html.twig:132 views/streams/show.html.twig:236
 #, php-format
 msgid "%s link"
 msgid_plural "%s links"
@@ -855,7 +855,7 @@ msgstr ""
 "Vous recevrez les liens publiés au cours de la semaine passée (recommandé "
 "pour la plupart des flux)."
 
-#: views/collections/filters/edit.html.twig:85 views/streams/show.html.twig:125
+#: views/collections/filters/edit.html.twig:85 views/streams/show.html.twig:168
 msgid "All"
 msgstr "Tout"
 
@@ -2934,7 +2934,23 @@ msgstr "Date"
 msgid "Number of days"
 msgstr "Nombre de jours"
 
+#: views/streams/show.html.twig:121
+#, php-format
+msgid "Sources (%d)"
+msgstr "Sources (%d)"
+
 #: views/streams/show.html.twig:134
+#, php-format
+msgid "%s : %d link"
+msgid_plural "%s : %d links"
+msgstr[0] "%s : %d lien"
+msgstr[1] "%s : %d liens"
+
+#: views/streams/show.html.twig:134
+msgid "(has unread)"
+msgstr "(contient des non lus)"
+
+#: views/streams/show.html.twig:176
 msgid "Unread"
 msgstr "Non lus"
 
