@@ -37,7 +37,6 @@
                 data-turbo-preserve-scroll
                 method="post"
                 action="{{ url('change locale') }}"
-                data-controller="autosubmit"
             >
                 {% for locale_value, locale_name in locale_form.localesValues %}
                     <button
