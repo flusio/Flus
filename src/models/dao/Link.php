@@ -643,6 +643,7 @@ trait Link
      *     context_user?: ?models\User,
      *     at?: \DateTimeImmutable,
      *     days?: int,
+     *     source?: ?models\Collection,
      *     status?: string,
      * } $options
      *
@@ -654,6 +655,7 @@ trait Link
             'context_user' => null,
             'at' => \Minz\Time::now(),
             'days' => 1,
+            'source' => null,
             'status' => 'all',
         ];
         $options = array_merge($default_options, $options);
@@ -686,6 +688,7 @@ trait Link
      *     context_user?: ?models\User,
      *     at?: \DateTimeImmutable,
      *     days?: int,
+     *     source?: ?models\Collection,
      *     status?: string,
      * } $options
      */
@@ -695,6 +698,7 @@ trait Link
             'context_user' => null,
             'at' => \Minz\Time::now(),
             'days' => 1,
+            'source' => null,
             'status' => 'all',
         ];
         $options = array_merge($default_options, $options);
@@ -723,6 +727,7 @@ trait Link
      *     context_user: ?models\User,
      *     at: \DateTimeImmutable,
      *     days: int,
+     *     source: ?models\Collection,
      *     status: string,
      * } $options
      *
@@ -746,6 +751,7 @@ trait Link
      *     context_user: ?models\User,
      *     at: \DateTimeImmutable,
      *     days: int,
+     *     source: ?models\Collection,
      *     status: string,
      * } $options
      *
@@ -796,6 +802,14 @@ trait Link
             }
         }
 
+        // Create the source clause to limit the links from the selected one.
+        $source_clause = '';
+        if ($options['source']) {
+            $parameters[':source_id'] = $options['source']->id;
+
+            $source_clause = 'AND c.id = :source_id';
+        }
+
         // Create the visibility clause, adapted if a context user is passed.
         $visibility_clause = 'AND (l.is_hidden = false AND c.is_public = true)';
 
@@ -827,6 +841,7 @@ trait Link
 
             AND lc.created_at >= :at_start AND lc.created_at <= :at_end
 
+            {$source_clause}
             {$status_clause}
             {$visibility_clause}
         SQL;

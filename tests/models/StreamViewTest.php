@@ -64,6 +64,30 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($is_at_date_2);
     }
 
+    public function testIsSourceSelected(): void
+    {
+        /** @var \DateTimeImmutable */
+        $date = $this->fake('dateTime');
+        $stream = StreamFactory::create();
+        $source_1 = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $source_2 = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $stream->addSource($source_1);
+        $stream->addSource($source_2);
+        $stream_view = new StreamView($stream, at: $date, source: $source_1);
+
+        $is_source_1_selected = $stream_view->isSourceSelected($source_1);
+        $is_source_2_selected = $stream_view->isSourceSelected($source_2);
+
+        $this->assertTrue($is_source_1_selected);
+        $this->assertFalse($is_source_2_selected);
+    }
+
     public function testIsStatusSelected(): void
     {
         /** @var \DateTimeImmutable */
@@ -80,22 +104,69 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($is_status_unread);
     }
 
+    public function testUrlSource(): void
+    {
+        /** @var \DateTimeImmutable */
+        $date = $this->fake('dateTime');
+        $days = 2;
+        $source_1 = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $source_2 = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $status = 'read';
+        $stream = StreamFactory::create();
+        $stream->addSource($source_1);
+        $stream->addSource($source_2);
+        $stream_view = new StreamView(
+            $stream,
+            at: $date,
+            days: $days,
+            source: $source_1,
+            status: $status,
+        );
+
+        $url = $stream_view->urlSource($source_2);
+
+        $expected_url = "/streams/{$stream->id}";
+        $expected_url .= "?at={$date->format('Y-m-d')}";
+        $expected_url .= "&days={$days}";
+        $expected_url .= "&source={$source_2->id}";
+        $this->assertSame($expected_url, $url);
+    }
+
     public function testUrlStatus(): void
     {
         /** @var \DateTimeImmutable */
         $date = $this->fake('dateTime');
         $days = 2;
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
         $status_unread = 'unread';
         $status_read = 'read';
         $stream = StreamFactory::create();
-        $stream_view = new StreamView($stream, at: $date, days: $days, status: $status_read);
+        $stream->addSource($source);
+        $stream_view = new StreamView(
+            $stream,
+            at: $date,
+            days: $days,
+            source: $source,
+            status: $status_read,
+        );
 
         $url = $stream_view->urlStatus($status_unread);
 
-        $this->assertSame(
-            "/streams/{$stream->id}?at={$date->format('Y-m-d')}&days={$days}&status={$status_unread}",
-            $url,
-        );
+        $expected_url = "/streams/{$stream->id}";
+        $expected_url .= "?at={$date->format('Y-m-d')}";
+        $expected_url .= "&days={$days}";
+        $expected_url .= "&source={$source->id}";
+        $expected_url .= "&status={$status_unread}";
+        $this->assertSame($expected_url, $url);
     }
 
     public function testPeriod(): void
@@ -216,6 +287,48 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($source->id, $source_group_2->source->id);
         $this->assertSame(1, count($source_group_2->links));
         $this->assertSame($link_2->id, $source_group_2->links[0]->id);
+    }
+
+    public function testLinksTimelineCanListLinksBySource(): void
+    {
+        /** @var \DateTimeImmutable */
+        $date = $this->fake('dateTime');
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source_1 = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $source_2 = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link_1 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $link_2 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source_1->addLinks([$link_1], at: $date);
+        $source_2->addLinks([$link_1], at: $date);
+        $stream->addSource($source_1);
+        $stream->addSource($source_2);
+        $stream_view = new StreamView($stream, at: $date, source: $source_1);
+
+        $links_timeline = $stream_view->linksTimeline($user);
+
+        $date_groups = $links_timeline->datesGroups();
+        $this->assertSame(1, count($date_groups));
+        $date_group = array_shift($date_groups);
+        $this->assertNotNull($date_group);
+        $source_groups = $date_group->sourceGroups();
+        $this->assertSame(1, count($source_groups));
+        $source_group = $source_groups[0];
+        $this->assertSame($source_1->id, $source_group->source->id);
+        $this->assertSame(1, count($source_group->links));
+        $this->assertSame($link_1->id, $source_group->links[0]->id);
     }
 
     public function testLinksTimelineCanListLinksByReadStatus(): void

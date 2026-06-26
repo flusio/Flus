@@ -114,6 +114,50 @@
             </form>
         </div>
 
+        <div class="filters__section flow">
+            {% set sources_and_counts = stream_view.countedSources(context_user: app.user) %}
+
+            <p class="text--bold">
+                {{ t('Sources (%d)', [sources_and_counts | length]) }}
+            </p>
+
+            <div class="stack stack--gap-small">
+                {% for source_and_count in sources_and_counts %}
+                    {% set source = source_and_count[0] %}
+                    {% set count_all_links = source_and_count[1] %}
+                    {% set count_unread_links = source_and_count[2] %}
+
+                    <a
+                        class="source source--button cols cols--always cols--center cols--gap"
+                        href="{{ stream_view.urlSource(source) }}"
+                        {% if stream_view.isSourceSelected(source) %}aria-current="page"{% endif %}
+                        title="{{ t('%s : %d link', '%s : %d links', count_all_links, [source.name, count_all_links]) }} {% if count_unread_links > 0 %}{{ t('(has unread)') }}{% endif %}"
+                    >
+                        <img
+                            class="source__image"
+                            alt=""
+                            src="{{ url_media('covers', source.image_filename, 'collection-card.png') }}"
+                        >
+
+                        <div class="col--extend flow flow--smaller">
+                            <div class="source__name">
+                                {{ source.name }}
+                            </div>
+
+                            <div class="text--secondary text--right">
+                                {% if count_unread_links > 0 %}
+                                    <span class="source__unread-dot">
+                                    </span>
+                                {% endif %}
+
+                                {{ count_all_links }}
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+
         <div class="filters__section">
             <div class="stack stack--gap-smaller">
                 <a

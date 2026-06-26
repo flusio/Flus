@@ -47,10 +47,45 @@
     border-radius: var(--border-radius);
 }
 
+.source--button {
+    max-width: 300px;
+    padding: var(--space-small);
+
+    text-decoration: none;
+}
+
+.source--button[aria-current="page"] {
+    background-color: var(--color-accent-base);
+    border-color: var(--color-accent-line);
+}
+
 .source__image {
     width: 64px;
     max-width: none;
 
     background-color: var(--color-base);
     border-radius: var(--border-radius);
+}
+
+.source__name {
+    overflow: hidden;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+
+    color: var(--color-text);
+    font-weight: 600;
+    text-overflow: ellipsis;
+}
+
+.source__unread-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+
+    vertical-align: middle;
+
+    background-color: var(--color-accent-solid);
+    border-radius: 50%;
 }

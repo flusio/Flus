@@ -134,6 +134,7 @@ class Stream
      *     context_user?: ?User,
      *     at?: \DateTimeImmutable,
      *     days?: int,
+     *     source?: ?Collection,
      *     status?: string,
      * } $options
      *
@@ -149,6 +150,7 @@ class Stream
      *     context_user?: ?User,
      *     at?: \DateTimeImmutable,
      *     days?: int,
+     *     source?: ?Collection,
      *     status?: string,
      * } $options
      */
