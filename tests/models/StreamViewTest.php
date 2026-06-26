@@ -12,6 +12,13 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\InitializerHelper;
     use \tests\FakerHelper;
 
+    #[\PHPUnit\Framework\Attributes\BeforeClass]
+    public static function setupRouter(): void
+    {
+        $router = \App\Router::load();
+        \Minz\Engine::init($router);
+    }
+
     public function testBuildFromRequestSetsOptionsFromRequestParameters(): void
     {
         /** @var string */
@@ -55,6 +62,40 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
 
         $this->assertTrue($is_at_date_1);
         $this->assertFalse($is_at_date_2);
+    }
+
+    public function testIsStatusSelected(): void
+    {
+        /** @var \DateTimeImmutable */
+        $date = $this->fake('dateTime');
+        $status_all = 'all';
+        $status_unread = 'unread';
+        $stream = StreamFactory::create();
+        $stream_view = new StreamView($stream, at: $date, status: $status_all);
+
+        $is_status_all = $stream_view->isStatusSelected($status_all);
+        $is_status_unread = $stream_view->isStatusSelected($status_unread);
+
+        $this->assertTrue($is_status_all);
+        $this->assertFalse($is_status_unread);
+    }
+
+    public function testUrlStatus(): void
+    {
+        /** @var \DateTimeImmutable */
+        $date = $this->fake('dateTime');
+        $days = 2;
+        $status_unread = 'unread';
+        $status_read = 'read';
+        $stream = StreamFactory::create();
+        $stream_view = new StreamView($stream, at: $date, days: $days, status: $status_read);
+
+        $url = $stream_view->urlStatus($status_unread);
+
+        $this->assertSame(
+            "/streams/{$stream->id}?at={$date->format('Y-m-d')}&days={$days}&status={$status_unread}",
+            $url,
+        );
     }
 
     public function testPeriod(): void
@@ -175,6 +216,129 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($source->id, $source_group_2->source->id);
         $this->assertSame(1, count($source_group_2->links));
         $this->assertSame($link_2->id, $source_group_2->links[0]->id);
+    }
+
+    public function testLinksTimelineCanListLinksByReadStatus(): void
+    {
+        /** @var \DateTimeImmutable */
+        $date = $this->fake('dateTime');
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link_1 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $link_2 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $link_3 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link_1, $link_2, $link_3], at: $date);
+        $stream->addSource($source);
+        $user->markAsRead($link_1);
+        $user->markAsReadLater($link_2);
+        $stream_view = new StreamView($stream, at: $date, status: 'read');
+
+        $links_timeline = $stream_view->linksTimeline($user);
+
+        $date_groups = $links_timeline->datesGroups();
+        $this->assertSame(1, count($date_groups));
+        $date_group = array_shift($date_groups);
+        $this->assertNotNull($date_group);
+        $source_groups = $date_group->sourceGroups();
+        $this->assertSame(1, count($source_groups));
+        $source_group = $source_groups[0];
+        $this->assertSame($source->id, $source_group->source->id);
+        $this->assertSame(1, count($source_group->links));
+        $this->assertSame($link_1->id, $source_group->links[0]->id);
+    }
+
+    public function testLinksTimelineCanListLinksByReadLaterStatus(): void
+    {
+        /** @var \DateTimeImmutable */
+        $date = $this->fake('dateTime');
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link_1 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $link_2 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $link_3 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link_1, $link_2, $link_3], at: $date);
+        $stream->addSource($source);
+        $user->markAsRead($link_1);
+        $user->markAsReadLater($link_2);
+        $stream_view = new StreamView($stream, at: $date, status: 'read-later');
+
+        $links_timeline = $stream_view->linksTimeline($user);
+
+        $date_groups = $links_timeline->datesGroups();
+        $this->assertSame(1, count($date_groups));
+        $date_group = array_shift($date_groups);
+        $this->assertNotNull($date_group);
+        $source_groups = $date_group->sourceGroups();
+        $this->assertSame(1, count($source_groups));
+        $source_group = $source_groups[0];
+        $this->assertSame($source->id, $source_group->source->id);
+        $this->assertSame(1, count($source_group->links));
+        $this->assertSame($link_2->id, $source_group->links[0]->id);
+    }
+
+    public function testLinksTimelineCanListLinksByUnreadStatus(): void
+    {
+        /** @var \DateTimeImmutable */
+        $date = $this->fake('dateTime');
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link_1 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $link_2 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $link_3 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link_1, $link_2, $link_3], at: $date);
+        $stream->addSource($source);
+        $user->markAsRead($link_1);
+        $user->markAsReadLater($link_2);
+        $stream_view = new StreamView($stream, at: $date, status: 'unread');
+
+        $links_timeline = $stream_view->linksTimeline($user);
+
+        $date_groups = $links_timeline->datesGroups();
+        $this->assertSame(1, count($date_groups));
+        $date_group = array_shift($date_groups);
+        $this->assertNotNull($date_group);
+        $source_groups = $date_group->sourceGroups();
+        $this->assertSame(1, count($source_groups));
+        $source_group = $source_groups[0];
+        $this->assertSame($source->id, $source_group->source->id);
+        $this->assertSame(1, count($source_group->links));
+        $this->assertSame($link_3->id, $source_group->links[0]->id);
     }
 
     public function testLinksTimelineCanListLinksFromPrivateSourceIfTheUserOwnsTheSource(): void

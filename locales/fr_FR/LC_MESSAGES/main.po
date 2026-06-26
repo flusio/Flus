@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-06-26 10:35+0200\n"
-"PO-Revision-Date: 2026-06-26 10:35+0200\n"
+"POT-Creation-Date: 2026-06-26 15:25+0200\n"
+"PO-Revision-Date: 2026-06-26 15:25+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -653,7 +653,7 @@ msgstr "aucun lien"
 #: views/collections/_collection.html.twig:26
 #: views/collections/_collection_follow.html.twig:18
 #: views/links/_pagination_count.html.twig:7 views/news/index.html.twig:26
-#: views/news/index.html.twig:132 views/streams/show.html.twig:101
+#: views/news/index.html.twig:132 views/streams/show.html.twig:196
 #, php-format
 msgid "%s link"
 msgid_plural "%s links"
@@ -855,7 +855,7 @@ msgstr ""
 "Vous recevrez les liens publiés au cours de la semaine passée (recommandé "
 "pour la plupart des flux)."
 
-#: views/collections/filters/edit.html.twig:85
+#: views/collections/filters/edit.html.twig:85 views/streams/show.html.twig:125
 msgid "All"
 msgstr "Tout"
 
@@ -1388,7 +1388,7 @@ msgstr "Se déconnecter"
 msgid "Language"
 msgstr "Langue"
 
-#: views/layouts/_header-disconnected.html.twig:60
+#: views/layouts/_header-disconnected.html.twig:59
 #: views/sessions/new.html.twig:104
 msgid "Login"
 msgstr "Se connecter"
@@ -1431,6 +1431,7 @@ msgid "Search links by words, URL or #tag"
 msgstr "Rechercher des liens par mots, URL ou #tag"
 
 #: views/layouts/_search.html.twig:15 views/links/searches/show.html.twig:64
+#: views/streams/show.html.twig:110
 msgid "Search"
 msgstr "Rechercher"
 
@@ -2924,6 +2925,18 @@ msgstr "Par"
 #: views/streams/show.html.twig:59
 msgid "Manage sources"
 msgstr "Gérer les sources"
+
+#: views/streams/show.html.twig:70
+msgid "Date"
+msgstr "Date"
+
+#: views/streams/show.html.twig:91
+msgid "Number of days"
+msgstr "Nombre de jours"
+
+#: views/streams/show.html.twig:134
+msgid "Unread"
+msgstr "Non lus"
 
 #: views/streams/sources/_source.html.twig:45
 msgid "Add"
