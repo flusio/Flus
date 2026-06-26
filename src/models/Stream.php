@@ -144,6 +144,18 @@ class Stream
     }
 
     /**
+     * @param array{
+     *     context_user?: ?User,
+     *     at?: \DateTimeImmutable,
+     *     days?: int,
+     * } $options
+     */
+    public function countLinks(array $options = []): int
+    {
+        return Link::countByStream($this, $options);
+    }
+
+    /**
      * Return a tag URI that can be used as Atom id
      *
      * @see https://www.rfc-editor.org/rfc/rfc4151.txt
