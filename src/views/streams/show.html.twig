@@ -61,6 +61,60 @@
         </div>
     {% endif %}
 
+    <section class="filters">
+        <div class="filters__section">
+            <form class="flow" method="get" action="">
+                <div class="cols cols--always cols--center cols--gap">
+                    <div class="col--size9 form-group">
+                        <label for="stream-at">
+                            {{ t('Date') }}
+                        </label>
+
+                        <select
+                            id="stream-at"
+                            name="at"
+                        >
+                            {% for day in stream_view.period %}
+                                <option
+                                    value="{{ day.format('Y-m-d') }}"
+                                    {{ stream_view.isAt(day) ? 'selected' : '' }}
+                                >
+                                    {{ d(day) }}
+                                    ({{ stream_view.countByDay(day, context_user: app.user) }})
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col--size3 form-group">
+                        <label for="stream-days">
+                            {{ t('Number of days') }}
+                        </label>
+
+                        <input
+                            type="number"
+                            id="stream-days"
+                            name="days"
+                            value="{{ stream_view.days }}"
+                            min="1"
+                            max="7"
+                        >
+                    </div>
+                </div>
+
+                <div class="text--right">
+                    <button
+                        type="submit"
+                        class="button--primary button--big button--animated"
+                    >
+                        {{ t('Search') }}
+                        {{ icon('arrow-right') }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
     {% set links_timeline = stream_view.linksTimeline(context_user: app.user) %}
 
     {% if not links_timeline.empty %}

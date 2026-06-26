@@ -1,0 +1,9 @@
+.filters {
+    background-color: var(--color-background);
+    border: 1px solid var(--color-grey-line);
+    border-radius: var(--border-radius);
+}
+
+.filters__section {
+    padding: var(--space-small);
+}

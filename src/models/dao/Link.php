@@ -649,6 +649,61 @@ trait Link
      */
     public static function listByStream(models\Stream $stream, array $options): array
     {
+        list($sql_where, $parameters) = self::buildStreamWhere($stream, $options);
+
+        $sql = <<<SQL
+            SELECT l.*, lc.created_at AS published_at, lc.collection_id AS source_id, true AS group_by_source
+            FROM streams_to_follows sf, followed_collections fc, links_to_collections lc, collections c, links l
+
+            {$sql_where}
+
+            ORDER BY published_at DESC, l.id
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute($parameters);
+
+        return self::fromDatabaseRows($statement->fetchAll());
+    }
+
+    /**
+     * Return the count of links of the given stream.
+     *
+     * @param array{
+     *     context_user?: ?models\User,
+     *     at?: \DateTimeImmutable,
+     *     days?: int,
+     * } $options
+     */
+    public static function countByStream(models\Stream $stream, array $options): int
+    {
+        list($sql_where, $parameters) = self::buildStreamWhere($stream, $options);
+
+        $sql = <<<SQL
+            SELECT COUNT(l.id)
+            FROM streams_to_follows sf, followed_collections fc, links_to_collections lc, collections c, links l
+
+            {$sql_where}
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute($parameters);
+
+        return intval($statement->fetchColumn());
+    }
+
+    /**
+     * @param array{
+     *     context_user?: ?models\User,
+     *     at?: \DateTimeImmutable,
+     *     days?: int,
+     * } $options
+     * @return array{literal-string, array<string, mixed>}
+     */
+    private static function buildStreamWhere(models\Stream $stream, array $options): array
+    {
         $default_options = [
             'context_user' => null,
             'at' => \Minz\Time::now(),
@@ -692,10 +747,7 @@ trait Link
             SQL;
         }
 
-        $sql = <<<SQL
-            SELECT l.*, lc.created_at AS published_at, lc.collection_id AS source_id, true AS group_by_source
-            FROM streams_to_follows sf, followed_collections fc, links_to_collections lc, collections c, links l
-
+        $sql_where = <<<SQL
             WHERE sf.stream_id = :stream_id
 
             AND sf.follow_id = fc.id
@@ -708,15 +760,9 @@ trait Link
             AND lc.created_at >= :at_start AND lc.created_at <= :at_end
 
             {$visibility_clause}
-
-            ORDER BY published_at DESC, l.id
         SQL;
 
-        $database = Database::get();
-        $statement = $database->prepare($sql);
-        $statement->execute($parameters);
-
-        return self::fromDatabaseRows($statement->fetchAll());
+        return [$sql_where, $parameters];
     }
 
     public function numberCollectionsForUser(\App\models\User $user): int
