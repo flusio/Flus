@@ -535,7 +535,7 @@ trait Link
         $sql = <<<SQL
             SELECT l.*, us.read_later_at AS published_at
             FROM links l
-            INNER JOIN url_statuses us ON l.url_hash = us.url_hash
+            INNER JOIN url_statuses us ON us.user_id = :user_id AND l.url_hash = us.url_hash
 
             WHERE l.user_id = :user_id
             AND us.read_later_at IS NOT NULL
@@ -560,7 +560,7 @@ trait Link
         $sql = <<<SQL
             SELECT COUNT(l.*)
             FROM links l
-            INNER JOIN url_statuses us ON l.url_hash = us.url_hash
+            INNER JOIN url_statuses us ON us.user_id = :user_id AND l.url_hash = us.url_hash
 
             WHERE l.user_id = :user_id
             AND us.read_later_at IS NOT NULL
@@ -596,7 +596,7 @@ trait Link
         $sql = <<<SQL
             SELECT l.*, us.read_at AS published_at
             FROM links l
-            INNER JOIN url_statuses us ON l.url_hash = us.url_hash
+            INNER JOIN url_statuses us ON us.user_id = :user_id AND l.url_hash = us.url_hash
 
             WHERE l.user_id = :user_id
             AND us.read_at IS NOT NULL
@@ -621,7 +621,7 @@ trait Link
         $sql = <<<SQL
             SELECT COUNT(l.*)
             FROM links l
-            INNER JOIN url_statuses us ON l.url_hash = us.url_hash
+            INNER JOIN url_statuses us ON us.user_id = :user_id AND l.url_hash = us.url_hash
 
             WHERE l.user_id = :user_id
             AND us.read_at IS NOT NULL
