@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-06-26 16:40+0200\n"
-"PO-Revision-Date: 2026-06-26 16:42+0200\n"
+"POT-Creation-Date: 2026-07-22 14:40+0200\n"
+"PO-Revision-Date: 2026-07-22 14:41+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -653,7 +653,7 @@ msgstr "aucun lien"
 #: views/collections/_collection.html.twig:26
 #: views/collections/_collection_follow.html.twig:18
 #: views/links/_pagination_count.html.twig:7 views/news/index.html.twig:26
-#: views/news/index.html.twig:132 views/streams/show.html.twig:236
+#: views/news/index.html.twig:132 views/streams/_timeline.html.twig:44
 #, php-format
 msgid "%s link"
 msgid_plural "%s links"
@@ -855,7 +855,8 @@ msgstr ""
 "Vous recevrez les liens publiés au cours de la semaine passée (recommandé "
 "pour la plupart des flux)."
 
-#: views/collections/filters/edit.html.twig:85 views/streams/show.html.twig:168
+#: views/collections/filters/edit.html.twig:85
+#: views/streams/_filters.html.twig:122
 msgid "All"
 msgstr "Tout"
 
@@ -1431,7 +1432,7 @@ msgid "Search links by words, URL or #tag"
 msgstr "Rechercher des liens par mots, URL ou #tag"
 
 #: views/layouts/_search.html.twig:15 views/links/searches/show.html.twig:64
-#: views/streams/show.html.twig:110
+#: views/streams/_filters.html.twig:53
 msgid "Search"
 msgstr "Rechercher"
 
@@ -2906,6 +2907,38 @@ msgstr "Mot de passe oublié ?"
 msgid "No account yet?"
 msgstr "Pas encore de compte ?"
 
+#: views/streams/_filters.html.twig:12
+msgid "Date"
+msgstr "Date"
+
+#: views/streams/_filters.html.twig:33
+msgid "Number of days"
+msgstr "Nombre de jours"
+
+#: views/streams/_filters.html.twig:63
+#, php-format
+msgid "Sources (%d)"
+msgstr "Sources (%d)"
+
+#: views/streams/_filters.html.twig:82
+#, php-format
+msgid "%s: %d link"
+msgid_plural "%s: %d links"
+msgstr[0] "%s : %d lien"
+msgstr[1] "%s : %d liens"
+
+#: views/streams/_filters.html.twig:82
+msgid "(has unread)"
+msgstr "(contient des non lus)"
+
+#: views/streams/_filters.html.twig:119
+msgid "Status of the links"
+msgstr "Statut des liens"
+
+#: views/streams/_filters.html.twig:123
+msgid "Unread"
+msgstr "Non lus"
+
 #: views/streams/_form.html.twig:12
 msgid "What’s the name of the stream?"
 msgstr "Quelle est le nom du fil ?"
@@ -2913,6 +2946,10 @@ msgstr "Quelle est le nom du fil ?"
 #: views/streams/_form.html.twig:43
 msgid "What’s the purpose of the stream?"
 msgstr "Quelle est la raison d’être du fil ?"
+
+#: views/streams/_timeline.html.twig:66
+msgid "There is no link matching your filters."
+msgstr "Il n’y a aucun lien qui correspond à vos filtres."
 
 #: views/streams/new.html.twig:9
 msgid "Create the stream"
@@ -2925,34 +2962,6 @@ msgstr "Par"
 #: views/streams/show.html.twig:59
 msgid "Manage sources"
 msgstr "Gérer les sources"
-
-#: views/streams/show.html.twig:70
-msgid "Date"
-msgstr "Date"
-
-#: views/streams/show.html.twig:91
-msgid "Number of days"
-msgstr "Nombre de jours"
-
-#: views/streams/show.html.twig:121
-#, php-format
-msgid "Sources (%d)"
-msgstr "Sources (%d)"
-
-#: views/streams/show.html.twig:134
-#, php-format
-msgid "%s : %d link"
-msgid_plural "%s : %d links"
-msgstr[0] "%s : %d lien"
-msgstr[1] "%s : %d liens"
-
-#: views/streams/show.html.twig:134
-msgid "(has unread)"
-msgstr "(contient des non lus)"
-
-#: views/streams/show.html.twig:176
-msgid "Unread"
-msgstr "Non lus"
 
 #: views/streams/sources/_source.html.twig:45
 msgid "Add"

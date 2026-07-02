@@ -85,7 +85,7 @@ class Streams extends BaseController
 
         auth\Access::require($user, 'view', $stream);
 
-        $stream_view = models\StreamView::buildFromRequest($stream, $request);
+        $stream_view = models\StreamView::buildFromRequest($stream, $user, $request);
 
         return Response::ok('streams/show.html.twig', [
             'stream_view' => $stream_view,

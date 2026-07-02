@@ -13,16 +13,56 @@ class StreamView
 {
     use utils\Memoizer;
 
+    public readonly Stream $stream;
+
+    public readonly ?User $context_user;
+
+    public readonly \DateTimeImmutable $at;
+
+    public readonly int $days;
+
+    public readonly ?Collection $source;
+
+    public readonly string $status;
+
     public function __construct(
-        public readonly Stream $stream,
-        public readonly \DateTimeImmutable $at,
-        public readonly int $days = 1,
-        public readonly ?Collection $source = null,
-        public readonly string $status = 'all',
+        Stream $stream,
+        ?User $context_user,
+        \DateTimeImmutable $at,
+        int $days = 1,
+        ?Collection $source = null,
+        string $status = 'all',
     ) {
+        $period = $this->period();
+        $period_end = $period[0];
+        $period_start = $period[count($period) - 1];
+        $at = min(max($at, $period_start), $period_end);
+
+        $days = min(max($days, 1), 7);
+
+        if (!in_array($status, ['all', 'unread', 'read', 'read-later'])) {
+            $status = 'all';
+        }
+
+        $this->stream = $stream;
+        $this->context_user = $context_user;
+        $this->at = $at;
+        $this->days = $days;
+        $this->status = $status;
+
+        // The source is checked last as isSourceCounted() requires the other
+        // properties to be set. A source can be selected while having no link
+        // over the period (e.g. after changing the date). It would then be
+        // filtered out of the sources list, with no way to unselect it: better
+        // forget about it.
+        if ($source && !$this->isSourceCounted($source)) {
+            $source = null;
+        }
+
+        $this->source = $source;
     }
 
-    public static function buildFromRequest(Stream $stream, Request $request): self
+    public static function buildFromRequest(Stream $stream, ?User $context_user, Request $request): self
     {
         $today = \Minz\Time::now();
         $at = $request->parameters->getDatetime('at', $today, 'Y-m-d');
@@ -30,15 +70,7 @@ class StreamView
         $status = $request->parameters->getString('status', 'all');
         $source = Collection::loadFromRequest($request, parameter: 'source');
 
-        if (!in_array($status, ['all', 'unread', 'read', 'read-later'])) {
-            $status = 'all';
-        }
-
-        if ($source && !$stream->hasSource($source)) {
-            $source = null;
-        }
-
-        return new self($stream, $at, $days, $source, $status);
+        return new self($stream, $context_user, $at, $days, $source, $status);
     }
 
     public function isAt(\DateTimeImmutable $at): bool
@@ -54,27 +86,6 @@ class StreamView
     public function isStatusSelected(string $status): bool
     {
         return $this->status === $status;
-    }
-
-    public function urlSource(?Collection $source = null): string
-    {
-        return \Minz\Url::for('stream', [
-            'id' => $this->stream->id,
-            'at' => $this->at->format('Y-m-d'),
-            'days' => $this->days,
-            'source' => $source?->id,
-        ]);
-    }
-
-    public function urlStatus(string $status): string
-    {
-        return \Minz\Url::for('stream', [
-            'id' => $this->stream->id,
-            'at' => $this->at->format('Y-m-d'),
-            'days' => $this->days,
-            'source' => $this->source?->id,
-            'status' => $status,
-        ]);
     }
 
     /**
@@ -95,10 +106,10 @@ class StreamView
         return $period;
     }
 
-    public function linksTimeline(?User $context_user = null): utils\LinksTimeline
+    public function linksTimeline(): utils\LinksTimeline
     {
         $links = $this->stream->links([
-            'context_user' => $context_user,
+            'context_user' => $this->context_user,
             'at' => $this->at,
             'days' => $this->days,
             'source' => $this->source,
@@ -111,22 +122,16 @@ class StreamView
     /**
      * @return list<array{Collection, int, int}>
      */
-    public function countedSources(?User $context_user): array
+    public function countedSources(): array
     {
-        if ($context_user) {
-            $key = "counted_sources_{$context_user->id}";
-        } else {
-            $key = 'counted_sources';
-        }
-
-        return $this->memoize($key, function () use ($context_user): array {
+        return $this->memoize('counted_sources', function (): array {
             $sources = $this->stream->sources();
 
             $sources_and_counts = [];
 
             foreach ($sources as $source) {
                 $count_all = $this->stream->countLinks([
-                    'context_user' => $context_user,
+                    'context_user' => $this->context_user,
                     'at' => $this->at,
                     'days' => $this->days,
                     'source' => $source,
@@ -136,9 +141,9 @@ class StreamView
                     continue;
                 }
 
-                if ($context_user) {
+                if ($this->context_user) {
                     $count_unread = $this->stream->countLinks([
-                        'context_user' => $context_user,
+                        'context_user' => $this->context_user,
                         'at' => $this->at,
                         'days' => $this->days,
                         'source' => $source,
@@ -162,10 +167,21 @@ class StreamView
         });
     }
 
-    public function countByDay(\DateTimeImmutable $day, ?User $context_user = null): int
+    private function isSourceCounted(Collection $source): bool
+    {
+        foreach ($this->countedSources() as $source_and_count) {
+            if ($source_and_count[0]->id === $source->id) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function countByDay(\DateTimeImmutable $day): int
     {
         return $this->stream->countLinks([
-            'context_user' => $context_user,
+            'context_user' => $this->context_user,
             'at' => $day,
         ]);
     }

@@ -1,0 +1,158 @@
+<form
+    method="get"
+    action=""
+    class="filters"
+    data-turbo-frame="stream-timeline"
+    data-stream-target="formFilters"
+>
+    <div class="filters__section flow">
+        <div class="cols cols--always cols--center cols--gap">
+            <div class="col--size9 form-group">
+                <label for="stream-at">
+                    {{ t('Date') }}
+                </label>
+
+                <select
+                    id="stream-at"
+                    name="at"
+                >
+                    {% for day in stream_view.period %}
+                        <option
+                            value="{{ day.format('Y-m-d') }}"
+                            {{ stream_view.isAt(day) ? 'selected' : '' }}
+                        >
+                            {{ d(day) }}
+                            ({{ stream_view.countByDay(day) }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col--size3 form-group">
+                <label for="stream-days">
+                    {{ t('Number of days') }}
+                </label>
+
+                <input
+                    type="number"
+                    id="stream-days"
+                    name="days"
+                    value="{{ stream_view.days }}"
+                    min="1"
+                    max="7"
+                >
+            </div>
+        </div>
+
+        <div class="text--right">
+            <button
+                type="submit"
+                class="button--primary button--big button--animated"
+                data-turbo-frame="_top"
+            >
+                {{ t('Search') }}
+                {{ icon('arrow-right') }}
+            </button>
+        </div>
+    </div>
+
+    <div class="filters__section flow">
+        {% set sources_and_counts = stream_view.countedSources() %}
+
+        <p class="text--bold" id="stream-filter-sources-label">
+            {{ t('Sources (%d)', [sources_and_counts | length]) }}
+        </p>
+
+        <div
+            class="stack stack--gap-small"
+            role="group"
+            aria-labelledby="stream-filter-sources-label"
+        >
+            {% for source_and_count in sources_and_counts %}
+                {% set source = source_and_count[0] %}
+                {% set count_all_links = source_and_count[1] %}
+                {% set count_unread_links = source_and_count[2] %}
+
+                <div class="filters__option">
+                    <button
+                        type="button"
+                        class="source source--button cols cols--always cols--center cols--gap"
+                        value="{{ source.id }}"
+                        aria-pressed="{{ stream_view.isSourceSelected(source) ? 'true' : 'false' }}"
+                        title="{{ t('%s: %d link', '%s: %d links', count_all_links, [source.name, count_all_links]) }} {% if count_unread_links > 0 %}{{ t('(has unread)') }}{% endif %}"
+                        data-stream-target="source"
+                        data-action="stream#selectSource"
+                    >
+                        <img
+                            class="source__image"
+                            alt=""
+                            src="{{ url_media('covers', source.image_filename, 'collection-card.png') }}"
+                        >
+
+                        <span class="source__body col--extend flow flow--smaller">
+                            <span class="source__name">
+                                {{ source.name }}
+                            </span>
+
+                            <span class="source__count">
+                                {% if count_unread_links > 0 %}
+                                    <span class="source__unread-dot"></span>
+                                {% endif %}
+
+                                {{ count_all_links }}
+                            </span>
+                        </span>
+
+                        <span class="filters__unselect">
+                            {{ icon('times') }}
+                        </span>
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="filters__section">
+        <div
+            class="stack stack--gap-smaller"
+            role="group"
+            aria-label="{{ t('Status of the links') }}"
+        >
+            {% for status, label in {
+                'all': t('All'),
+                'unread': t('Unread'),
+                'read-later': t('To read'),
+                'read': t('Links read'),
+            } %}
+                <div class="filters__option">
+                    <button
+                        type="button"
+                        value="{{ status }}"
+                        aria-pressed="{{ stream_view.isStatusSelected(status) ? 'true' : 'false' }}"
+                        data-stream-target="status"
+                        data-action="stream#selectStatus"
+                    >
+                        {{ label }}
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {# The sources and the statuses are toggle buttons: these inputs are what
+     # actually carry their state from a submission to the next one, as the
+     # filters are never re-rendered. #}
+    <input
+        type="hidden"
+        name="source"
+        value="{{ stream_view.source ? stream_view.source.id : '' }}"
+        data-stream-target="sourceInput"
+    >
+
+    <input
+        type="hidden"
+        name="status"
+        value="{{ stream_view.status }}"
+        data-stream-target="statusInput"
+    >
+</form>

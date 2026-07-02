@@ -21,6 +21,7 @@ import NewsRefresherController from './controllers/news_refresher_controller.js'
 import NotificationController from './controllers/notification_controller.js';
 import PopupController from './controllers/popup_controller.js';
 import SidenavController from './controllers/sidenav_controller.js';
+import StreamController from './controllers/stream_controller.js';
 import TextEditorController from './controllers/text_editor_controller.js';
 import ZindexInverserController from './controllers/zindex_inverser_controller.js';
 
@@ -47,6 +48,7 @@ application.register('news-refresher', NewsRefresherController);
 application.register('notification', NotificationController);
 application.register('popup', PopupController);
 application.register('sidenav', SidenavController);
+application.register('stream', StreamController);
 application.register('text-editor', TextEditorController);
 application.register('zindex-inverser', ZindexInverserController);
 

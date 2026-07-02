@@ -1,0 +1,7 @@
+#stream-timeline {
+    transition: opacity 0.2s ease-in-out;
+}
+
+#stream-timeline[aria-busy="true"] {
+    opacity: 0.6;
+}
