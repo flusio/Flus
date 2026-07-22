@@ -643,6 +643,8 @@ trait Link
      *     context_user?: ?models\User,
      *     at?: \DateTimeImmutable,
      *     days?: int,
+     *     source?: ?models\Collection,
+     *     status?: string,
      * } $options
      *
      * @return models\Link[]
@@ -653,9 +655,186 @@ trait Link
             'context_user' => null,
             'at' => \Minz\Time::now(),
             'days' => 1,
+            'source' => null,
+            'status' => 'all',
         ];
         $options = array_merge($default_options, $options);
 
+        $join_url_statuses = $options['context_user'] !== null && $options['status'] !== 'all';
+        $sql_join = self::buildStreamJoin($join_url_statuses);
+        list($sql_where, $parameters) = self::buildStreamWhere($stream, $options);
+
+        $sql = <<<SQL
+            SELECT l.*, lc.created_at AS published_at, lc.collection_id AS source_id, true AS group_by_source
+            FROM streams_to_follows sf
+
+            {$sql_join}
+
+            {$sql_where}
+
+            ORDER BY published_at DESC, l.id
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute($parameters);
+
+        return self::fromDatabaseRows($statement->fetchAll());
+    }
+
+    /**
+     * Return the counts of links of the given stream, per day.
+     *
+     * The days are formatted as "Y-m-d", in the timezone of the application.
+     * The days without links are not returned.
+     *
+     * @param array{
+     *     context_user?: ?models\User,
+     *     at?: \DateTimeImmutable,
+     *     days?: int,
+     * } $options
+     *
+     * @return array<string, int>
+     */
+    public static function countByStreamPerDay(models\Stream $stream, array $options): array
+    {
+        $default_options = [
+            'context_user' => null,
+            'at' => \Minz\Time::now(),
+            'days' => 1,
+        ];
+        $options = array_merge($default_options, $options);
+        $options['source'] = null;
+        $options['status'] = 'all';
+
+        $sql_join = self::buildStreamJoin(join_url_statuses: false);
+        list($sql_where, $parameters) = self::buildStreamWhere($stream, $options);
+
+        $parameters[':timezone'] = date_default_timezone_get();
+
+        $sql = <<<SQL
+            SELECT to_char(lc.created_at AT TIME ZONE :timezone, 'YYYY-MM-DD') AS day, COUNT(l.id) AS count
+            FROM streams_to_follows sf
+
+            {$sql_join}
+
+            {$sql_where}
+
+            GROUP BY day
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute($parameters);
+
+        $counts = [];
+
+        foreach ($statement->fetchAll() as $row) {
+            $counts[strval($row['day'])] = intval($row['count']);
+        }
+
+        return $counts;
+    }
+
+    /**
+     * Return the counts of links of the given stream, per source.
+     *
+     * The counts are given as a pair of the total number of links, and of the
+     * number of unread links (always 0 if no context user is given).
+     *
+     * @param array{
+     *     context_user?: ?models\User,
+     *     at?: \DateTimeImmutable,
+     *     days?: int,
+     * } $options
+     *
+     * @return array<string, array{int, int}>
+     */
+    public static function countByStreamPerSource(models\Stream $stream, array $options): array
+    {
+        $default_options = [
+            'context_user' => null,
+            'at' => \Minz\Time::now(),
+            'days' => 1,
+        ];
+        $options = array_merge($default_options, $options);
+        $options['source'] = null;
+        $options['status'] = 'all';
+
+        $join_url_statuses = $options['context_user'] !== null;
+        $sql_join = self::buildStreamJoin($join_url_statuses);
+        list($sql_where, $parameters) = self::buildStreamWhere($stream, $options);
+
+        if ($join_url_statuses) {
+            $sql_count_unread = <<<SQL
+                COUNT(l.id) FILTER (
+                    WHERE us.read_at IS NULL
+                    AND us.read_later_at IS NULL
+                    AND us.dismissed_at IS NULL
+                )
+            SQL;
+        } else {
+            $sql_count_unread = '0';
+        }
+
+        $sql = <<<SQL
+            SELECT c.id AS source_id, COUNT(l.id) AS count_all, {$sql_count_unread} AS count_unread
+            FROM streams_to_follows sf
+
+            {$sql_join}
+
+            {$sql_where}
+
+            GROUP BY c.id
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute($parameters);
+
+        $counts = [];
+
+        foreach ($statement->fetchAll() as $row) {
+            $counts[strval($row['source_id'])] = [intval($row['count_all']), intval($row['count_unread'])];
+        }
+
+        return $counts;
+    }
+
+    /**
+     * @return literal-string
+     */
+    private static function buildStreamJoin(bool $join_url_statuses): string
+    {
+        $sql_join = <<<SQL
+            INNER JOIN followed_collections fc ON sf.follow_id = fc.id
+            INNER JOIN links_to_collections lc ON fc.collection_id = lc.collection_id
+            INNER JOIN collections c ON fc.collection_id = c.id
+            INNER JOIN links l ON lc.link_id = l.id
+        SQL;
+
+        if ($join_url_statuses) {
+            $sql_join .= <<<SQL
+                LEFT JOIN url_statuses us ON us.user_id = :user_id AND us.url_hash = l.url_hash
+            SQL;
+        }
+
+        return $sql_join;
+    }
+
+    /**
+     * @param array{
+     *     context_user: ?models\User,
+     *     at: \DateTimeImmutable,
+     *     days: int,
+     *     source: ?models\Collection,
+     *     status: string,
+     * } $options
+     *
+     * @return array{literal-string, array<string, mixed>}
+     */
+    private static function buildStreamWhere(models\Stream $stream, array $options): array
+    {
         $parameters = [
             ':stream_id' => $stream->id,
         ];
@@ -664,7 +843,7 @@ trait Link
         $start = $options['at']->modify('00:00:00');
         $end = $start->modify('23:59:59');
 
-        $days = min(7, max(1, $options['days']));
+        $days = min(max($options['days'], 1), 30);
         $days = $days - 1; // the actual interval is already of 1 day.
         if ($days > 0) {
             $start = $start->modify("-{$days} days");
@@ -672,6 +851,32 @@ trait Link
 
         $parameters[':at_start'] = $start->format(Database\Column::DATETIME_FORMAT);
         $parameters[':at_end'] = $end->format(Database\Column::DATETIME_FORMAT);
+
+        // Create the status clause if status option is set.
+        $status_clause = '';
+        if ($options['context_user']) {
+            if ($options['status'] === 'unread') {
+                $status_clause = <<<SQL
+                    AND (
+                        us.read_at IS NULL
+                        AND us.read_later_at IS NULL
+                        AND us.dismissed_at IS NULL
+                    )
+                SQL;
+            } elseif ($options['status'] === 'read') {
+                $status_clause = 'AND us.read_at IS NOT NULL';
+            } elseif ($options['status'] === 'read-later') {
+                $status_clause = 'AND us.read_later_at IS NOT NULL';
+            }
+        }
+
+        // Create the source clause to limit the links from the selected one.
+        $source_clause = '';
+        if ($options['source']) {
+            $parameters[':source_id'] = $options['source']->id;
+
+            $source_clause = 'AND c.id = :source_id';
+        }
 
         // Create the visibility clause, adapted if a context user is passed.
         $visibility_clause = 'AND (l.is_hidden = false AND c.is_public = true)';
@@ -692,31 +897,17 @@ trait Link
             SQL;
         }
 
-        $sql = <<<SQL
-            SELECT l.*, lc.created_at AS published_at, lc.collection_id AS source_id, true AS group_by_source
-            FROM streams_to_follows sf, followed_collections fc, links_to_collections lc, collections c, links l
-
+        $sql_where = <<<SQL
             WHERE sf.stream_id = :stream_id
-
-            AND sf.follow_id = fc.id
-            AND fc.collection_id = c.id
-            AND fc.collection_id = lc.collection_id
-            AND lc.link_id = l.id
-
             AND l.is_hidden = false
-
             AND lc.created_at >= :at_start AND lc.created_at <= :at_end
 
+            {$source_clause}
+            {$status_clause}
             {$visibility_clause}
-
-            ORDER BY published_at DESC, l.id
         SQL;
 
-        $database = Database::get();
-        $statement = $database->prepare($sql);
-        $statement->execute($parameters);
-
-        return self::fromDatabaseRows($statement->fetchAll());
+        return [$sql_where, $parameters];
     }
 
     public function numberCollectionsForUser(\App\models\User $user): int

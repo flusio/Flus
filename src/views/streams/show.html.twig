@@ -61,63 +61,9 @@
         </div>
     {% endif %}
 
-    {% set links_timeline = stream_view.linksTimeline(context_user: app.user) %}
+    <div class="flow flow--large" data-controller="stream">
+        {{ include('streams/_filters.html.twig') }}
 
-    {% if not links_timeline.empty %}
-        <div class="flow flow--large" data-controller="zindex-inverser">
-            {% for date_group in links_timeline.datesGroups %}
-                <section class="group flow">
-                    <header class="group__header" data-zindex-inverser-target="item">
-                        <h2 class="group__title">
-                            {{ d(date_group.date, 'dd MMMM') }}
-                        </h2>
-
-                        <div class="group__separator"></div>
-                    </header>
-
-                    <div class="group__body flow">
-                        {% set links = date_group.links %}
-
-                        {% if links %}
-                            <div class="grid">
-                                {% for link in date_group.links %}
-                                    {{ include('links/_link.html.twig', {
-                                        link: link,
-                                        display_read_later: 'auto',
-                                        display_mark_as_read: 'auto',
-                                        storing_must_mark_as_read: true,
-                                    })}}
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-
-                        {% for source_group in date_group.sourceGroups %}
-                            <div class="source-group flow flow--small">
-                                <div class="source-group__header cols cols--always cols--gap cols--center">
-                                    <h3 class="source-group__title">
-                                        {{ source_group.source.name() }}
-                                    </h3>
-
-                                    <span class="col--noshrink text--secondary">
-                                        {{ t('%s link', '%s links', source_group.links | length, [source_group.links | length]) }}
-                                    </span>
-                                </div>
-
-                                <div class="source-group__body grid">
-                                    {% for link in source_group.links %}
-                                        {{ include('links/_link.html.twig', {
-                                            link: link,
-                                            display_read_later: 'auto',
-                                            display_mark_as_read: 'auto',
-                                            storing_must_mark_as_read: true,
-                                        }) }}
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </section>
-            {% endfor %}
-        </div>
-    {% endif %}
+        {{ include('streams/_timeline.html.twig') }}
+    </div>
 {% endblock %}

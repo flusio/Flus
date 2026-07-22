@@ -7,6 +7,7 @@
 @import url('./components/badges.css');
 @import url('./components/buttons.css');
 @import url('./components/collections.css');
+@import url('./components/filters.css');
 @import url('./components/groups.css');
 @import url('./components/images.css');
 @import url('./components/links.css');
@@ -14,6 +15,7 @@
 @import url('./components/shares.css');
 @import url('./components/sources.css');
 @import url('./components/threads.css');
+@import url('./components/timelines.css');
 @import url('./components/topics.css');
 @import url('./components/turbo.css');
 @import url('./components/usernames.css');

@@ -134,6 +134,8 @@ class Stream
      *     context_user?: ?User,
      *     at?: \DateTimeImmutable,
      *     days?: int,
+     *     source?: ?Collection,
+     *     status?: string,
      * } $options
      *
      * @return Link[]
@@ -141,6 +143,34 @@ class Stream
     public function links(array $options = []): array
     {
         return Link::listByStream($this, $options);
+    }
+
+    /**
+     * @param array{
+     *     context_user?: ?User,
+     *     at?: \DateTimeImmutable,
+     *     days?: int,
+     * } $options
+     *
+     * @return array<string, int>
+     */
+    public function countLinksPerDay(array $options = []): array
+    {
+        return Link::countByStreamPerDay($this, $options);
+    }
+
+    /**
+     * @param array{
+     *     context_user?: ?User,
+     *     at?: \DateTimeImmutable,
+     *     days?: int,
+     * } $options
+     *
+     * @return array<string, array{int, int}>
+     */
+    public function countLinksPerSource(array $options = []): array
+    {
+        return Link::countByStreamPerSource($this, $options);
     }
 
     /**
