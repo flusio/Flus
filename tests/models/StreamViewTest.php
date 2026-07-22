@@ -804,6 +804,40 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(2, $count_day_2);
     }
 
+    public function testCountByDayGroupsLinksInTheTimezoneOfTheApplication(): void
+    {
+        // The database groups the dates in its own timezone (UTC), so a link
+        // published just after midnight locally would be counted on the
+        // previous day if the timezone was not taken into account. The
+        // timezone of the tests being UTC, it has to be changed to make this
+        // case reachable.
+        $initial_timezone = date_default_timezone_get();
+        date_default_timezone_set('Europe/Paris');
+
+        try {
+            $date = $this->fakeDateInPeriod()->modify('00:30:00');
+            $stream = StreamFactory::create();
+            $source = CollectionFactory::create([
+                'type' => 'feed',
+                'is_public' => true,
+            ]);
+            $link = LinkFactory::create([
+                'is_hidden' => false,
+            ]);
+            $source->addLinks([$link], at: $date);
+            $stream->addSource($source);
+            $stream_view = new StreamView($stream, null, at: $date);
+
+            $count_day = $stream_view->countByDay($date);
+            $count_previous_day = $stream_view->countByDay($date->modify('-1 day'));
+
+            $this->assertSame(1, $count_day);
+            $this->assertSame(0, $count_previous_day);
+        } finally {
+            date_default_timezone_set($initial_timezone);
+        }
+    }
+
     public function testCountByDayExcludesHiddenLinks(): void
     {
         $date = $this->fakeDateInPeriod();

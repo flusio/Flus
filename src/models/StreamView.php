@@ -125,33 +125,23 @@ class StreamView
     public function countedSources(): array
     {
         return $this->memoize('counted_sources', function (): array {
+            $counts_per_source = $this->stream->countLinksPerSource([
+                'context_user' => $this->context_user,
+                'at' => $this->at,
+                'days' => $this->days,
+            ]);
+
             $sources = $this->stream->sources();
 
             $sources_and_counts = [];
 
             foreach ($sources as $source) {
-                $count_all = $this->stream->countLinks([
-                    'context_user' => $this->context_user,
-                    'at' => $this->at,
-                    'days' => $this->days,
-                    'source' => $source,
-                ]);
-
-                if ($count_all === 0) {
+                // The sources without links over the period are not counted.
+                if (!isset($counts_per_source[$source->id])) {
                     continue;
                 }
 
-                if ($this->context_user) {
-                    $count_unread = $this->stream->countLinks([
-                        'context_user' => $this->context_user,
-                        'at' => $this->at,
-                        'days' => $this->days,
-                        'source' => $source,
-                        'status' => 'unread',
-                    ]);
-                } else {
-                    $count_unread = 0;
-                }
+                list($count_all, $count_unread) = $counts_per_source[$source->id];
 
                 $sources_and_counts[] = [$source, $count_all, $count_unread];
             }
@@ -180,9 +170,18 @@ class StreamView
 
     public function countByDay(\DateTimeImmutable $day): int
     {
-        return $this->stream->countLinks([
-            'context_user' => $this->context_user,
-            'at' => $day,
-        ]);
+        // The counts of the whole period are loaded at once: countByDay() is
+        // called for each day displayed by the filters.
+        $counts_per_day = $this->memoize('counts_per_day', function (): array {
+            $period = $this->period();
+
+            return $this->stream->countLinksPerDay([
+                'context_user' => $this->context_user,
+                'at' => $period[0],
+                'days' => count($period),
+            ]);
+        });
+
+        return $counts_per_day[$day->format('Y-m-d')] ?? 0;
     }
 }
