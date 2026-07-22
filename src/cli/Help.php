@@ -64,6 +64,8 @@ class Help
         $usage .= "  migrations               List the migrations\n";
         $usage .= "  migrations setup         Initialize or migrate the application\n";
         $usage .= "      [--seed=BOOL]        Whether you want to seed the application or not (default: false)\n";
+        $usage .= "  migrations setup-streams Setup streams from existing groups of followed collections\n";
+        $usage .= "      --user=ID            ID of the user to migrate\n";
         $usage .= "  migrations setup-url-statuses Apply url_statuses database migration (TO APPLY BEFORE 3.0)\n";
         $usage .= "      [--batch-size=INT]   Size of batches (default to 1000)\n";
         $usage .= "      [--dry-run=BOOL]     Don’t apply the migration but get data volume (default: false)\n";

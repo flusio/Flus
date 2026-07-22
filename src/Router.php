@@ -302,6 +302,7 @@ class Router
         $router->addRoute('CLI', '/migrations/create', 'Migrations#create');
         $router->addRoute('CLI', '/migrations/reset', 'Migrations#reset');
         $router->addRoute('CLI', '/migrations/setup-url-statuses', 'Migrations#setupUrlStatuses');
+        $router->addRoute('CLI', '/migrations/setup-streams', 'Migrations#setupStreams');
 
         $router->addRoute('CLI', '/media/clean', 'Media#clean');
 

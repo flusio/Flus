@@ -3,6 +3,9 @@
 namespace App\cli;
 
 use App\models;
+use tests\factories\CollectionFactory;
+use tests\factories\FollowedCollectionFactory;
+use tests\factories\GroupFactory;
 use tests\factories\LinkFactory;
 use tests\factories\LinkToCollectionFactory;
 use tests\factories\UserFactory;
@@ -267,5 +270,93 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
             $link_dismissed_at->getTimestamp(),
             $status_link->dismissed_at?->getTimestamp()
         );
+    }
+
+    public function testSetupStreams(): void
+    {
+        self::recreateDatabase();
+
+        $user = UserFactory::create();
+        $group = GroupFactory::create([
+            'user_id' => $user->id,
+            'name' => 'My group',
+        ]);
+        $collection_1 = CollectionFactory::create();
+        $collection_2 = CollectionFactory::create();
+        $collection_3 = CollectionFactory::create();
+        FollowedCollectionFactory::create([
+            'user_id' => $user->id,
+            'collection_id' => $collection_1->id,
+            'group_id' => $group->id,
+        ]);
+        FollowedCollectionFactory::create([
+            'user_id' => $user->id,
+            'collection_id' => $collection_2->id,
+            'group_id' => $group->id,
+        ]);
+        FollowedCollectionFactory::create([
+            'user_id' => $user->id,
+            'collection_id' => $collection_3->id,
+            'group_id' => null,
+        ]);
+
+        $response = $this->appRun('CLI', '/migrations/setup-streams', [
+            'user' => $user->id,
+        ]);
+
+        $this->assertResponseCode($response, 200);
+        $streams = models\Stream::listBy(['user_id' => $user->id]);
+        $this->assertSame(1, count($streams));
+        $stream = $streams[0];
+        $this->assertSame('My group', $stream->name);
+        $sources_ids = array_column($stream->sources(), 'id');
+        sort($sources_ids);
+        $expected_sources_ids = [$collection_1->id, $collection_2->id];
+        sort($expected_sources_ids);
+        $this->assertSame($expected_sources_ids, $sources_ids);
+    }
+
+    public function testSetupStreamsCanBeExecutedTwice(): void
+    {
+        self::recreateDatabase();
+
+        $user = UserFactory::create();
+        $group = GroupFactory::create([
+            'user_id' => $user->id,
+            'name' => 'My group',
+        ]);
+        $collection = CollectionFactory::create();
+        FollowedCollectionFactory::create([
+            'user_id' => $user->id,
+            'collection_id' => $collection->id,
+            'group_id' => $group->id,
+        ]);
+
+        $response = $this->appRun('CLI', '/migrations/setup-streams', [
+            'user' => $user->id,
+        ]);
+        $this->assertResponseCode($response, 200);
+
+        $response = $this->appRun('CLI', '/migrations/setup-streams', [
+            'user' => $user->id,
+        ]);
+
+        $this->assertResponseCode($response, 200);
+        $streams = models\Stream::listBy(['user_id' => $user->id]);
+        $this->assertSame(1, count($streams));
+        $stream = $streams[0];
+        $this->assertSame([$collection->id], array_column($stream->sources(), 'id'));
+    }
+
+    public function testSetupStreamsFailsIfUserDoesNotExist(): void
+    {
+        self::recreateDatabase();
+
+        $response = $this->appRun('CLI', '/migrations/setup-streams', [
+            'user' => 'not-an-id',
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseEquals($response, 'User does not exist.');
     }
 }

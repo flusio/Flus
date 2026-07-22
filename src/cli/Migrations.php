@@ -2,6 +2,7 @@
 
 namespace App\cli;
 
+use App\models;
 use Minz\Request;
 use Minz\Response;
 
@@ -192,5 +193,79 @@ class Migrations extends \Minz\Migration\Controller
         }
 
         yield Response::text(200, "Finished: {$total} statuses migrated.");
+    }
+
+    /**
+     * Apply migration to setup Streams from existing groups of followed collections.
+     *
+     * The command can be executed several times: streams are matched to groups
+     * by their name, and existing sources are not duplicated.
+     *
+     * @request_param string user
+     *     The id of the user for whom to migrate the groups.
+     *
+     * @response 400
+     *     If the user doesn't exist.
+     * @response 200
+     *     On success.
+     */
+    public function setupStreams(Request $request): Response
+    {
+        $user_id = $request->parameters->getString('user', '');
+        $user = models\User::find($user_id);
+
+        if (!$user) {
+            return Response::text(400, 'User does not exist.');
+        }
+
+        $followed_collections = models\FollowedCollection::listBy([
+            'user_id' => $user->id,
+        ]);
+
+        $groups_by_ids = [];
+        $collections_by_group_ids = [];
+
+        foreach ($followed_collections as $followed_collection) {
+            if (!$followed_collection->group_id) {
+                continue;
+            }
+
+            if (isset($groups_by_ids[$followed_collection->group_id])) {
+                $group = $groups_by_ids[$followed_collection->group_id];
+            } else {
+                $group = models\Group::require($followed_collection->group_id);
+                $groups_by_ids[$group->id] = $group;
+            }
+
+            $collection = models\Collection::require($followed_collection->collection_id);
+
+            if (!isset($collections_by_group_ids[$group->id])) {
+                $collections_by_group_ids[$group->id] = [];
+            }
+
+            $collections_by_group_ids[$group->id][] = $collection;
+        }
+
+        foreach ($groups_by_ids as $group) {
+            $stream = models\Stream::findBy([
+                'user_id' => $user->id,
+                'name' => $group->name,
+            ]);
+
+            if (!$stream) {
+                $stream = $user->initStream();
+                $stream->name = $group->name;
+                $stream->save();
+            }
+
+            foreach ($collections_by_group_ids[$group->id] as $collection) {
+                $stream->addSource($collection);
+            }
+        }
+
+        return Response::text(
+            200,
+            "Followed collections groups migrated to streams successfully for user {$user->email}.",
+        );
     }
 }
