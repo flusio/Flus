@@ -205,7 +205,7 @@
                     </button>
                 {% endif %}
 
-                {% if can_update or is_following %}
+                {% if can_update or (is_following and not app.user.isAlphaEnabled) %}
                     <button
                         class="popup__item"
                         data-controller="modal-opener"
