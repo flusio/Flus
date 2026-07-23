@@ -11,24 +11,26 @@
     </button>
 
     <div class="sidenav__container" data-action="click->sidenav#closeOnMask">
-        <nav class="sidenav__menu flow flow--smaller">
-            <div class="text--right">
-                <button
-                    type="button"
-                    class="sidenav__close-button button--icon"
-                    data-action="sidenav#close"
-                    data-sidenav-target="closer"
-                >
-                    {{ icon('times') }}
-                    <span class="sr-only">
-                        {{ t('Close') }}
-                    </span>
-                </button>
-            </div>
+        <nav class="sidenav__menu">
+            <div class="sidenav__inner flow flow--smaller">
+                <div class="text--right">
+                    <button
+                        type="button"
+                        class="sidenav__close-button button--icon"
+                        data-action="sidenav#close"
+                        data-sidenav-target="closer"
+                    >
+                        {{ icon('times') }}
+                        <span class="sr-only">
+                            {{ t('Close') }}
+                        </span>
+                    </button>
+                </div>
 
-            {% for element in navigation.elements %}
-                {{ include('layouts/_sidenav_element.html.twig') }}
-            {% endfor %}
+                {% for element in navigation.elements %}
+                    {{ include('layouts/_sidenav_element.html.twig') }}
+                {% endfor %}
+            </div>
         </nav>
     </div>
 </div>

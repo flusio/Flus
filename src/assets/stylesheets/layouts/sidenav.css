@@ -20,8 +20,6 @@
         z-index: 50;
 
         visibility: hidden;
-
-        transition: visibility 0s linear 0.2s;
     }
 
     .sidenav__container::before {
@@ -34,24 +32,23 @@
 
         opacity: 0;
         background-color: var(--color-box-shadow);
-
-        transition: opacity 0.2s ease-in-out;
     }
 
     .sidenav__container .sidenav__menu {
-        overflow: hidden;
+        overflow: hidden auto;
 
         width: 0;
-        max-width: 90%;
+        max-width: 90vw;
         height: 100%;
-        padding: var(--space-small);
-
-        white-space: nowrap;
 
         background-color: var(--color-background);
         box-shadow: 0 0 10px rgb(0 0 0 / 50%);
+    }
 
-        transition: width 0.2s ease-in-out;
+    .sidenav__container .sidenav__inner {
+        width: var(--sidenav-width);
+        max-width: 90vw;
+        padding: var(--space-small);
     }
 
     .sidenav__close-button {
@@ -60,16 +57,18 @@
 
     .sidenav__open-button[aria-expanded="true"] + .sidenav__container {
         visibility: visible;
-
-        transition: visibility 0s linear 0s;
     }
 
     .sidenav__open-button[aria-expanded="true"] + .sidenav__container::before {
         opacity: 1;
+
+        transition: opacity 0.2s ease-in-out;
     }
 
     .sidenav__open-button[aria-expanded="true"] + .sidenav__container .sidenav__menu {
         width: var(--sidenav-width);
+
+        transition: width 0.2s ease-in-out;
     }
 }
 
@@ -81,6 +80,8 @@
 }
 
 .sidenav__menu-item {
+    overflow-wrap: anywhere;
+
     display: block;
     width: 100%;
     padding: var(--space-small);
