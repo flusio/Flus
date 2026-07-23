@@ -12,7 +12,7 @@
 
     <div class="sidenav__container" data-action="click->sidenav#closeOnMask">
         <nav class="sidenav__menu">
-            <div class="sidenav__inner flow flow--smaller">
+            <div class="sidenav__inner">
                 <div class="text--right">
                     <button
                         type="button"
@@ -27,9 +27,11 @@
                     </button>
                 </div>
 
-                {% for element in navigation.elements %}
-                    {{ include('layouts/_sidenav_element.html.twig') }}
-                {% endfor %}
+                <div class="flow flow--smaller">
+                    {% for element in navigation.elements %}
+                        {{ include('layouts/_sidenav_element.html.twig') }}
+                    {% endfor %}
+                </div>
             </div>
         </nav>
     </div>
