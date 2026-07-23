@@ -221,6 +221,8 @@ class Router
         $router->addRoute('GET', '/streams/:id/edit', 'Streams#edit', 'edit stream');
         $router->addRoute('POST', '/streams/:id/edit', 'Streams#update', 'update stream');
         $router->addRoute('POST', '/streams/:id/delete', 'Streams#delete', 'delete stream');
+        $router->addRoute('GET', '/streams/:id/image', 'streams/Images#edit', 'edit image stream');
+        $router->addRoute('POST', '/streams/:id/image', 'streams/Images#update', 'update image stream');
         $router->addRoute('GET', '/streams/:id/sources/edit', 'streams/Sources#edit', 'edit stream sources');
         $router->addRoute(
             'POST',

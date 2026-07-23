@@ -6,6 +6,7 @@ use App\services;
 use App\utils;
 use tests\factories\CollectionFactory;
 use tests\factories\LinkFactory;
+use tests\factories\StreamFactory;
 use tests\factories\TopicFactory;
 
 class MediaTest extends \PHPUnit\Framework\TestCase
@@ -127,6 +128,45 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $image_filename = $image_service->generatePreviews($image_url);
         $subdir_name = substr($image_filename, 0, 3);
         CollectionFactory::create([
+            'image_filename' => $image_filename,
+        ]);
+
+        $this->assertNotEmpty($image_filename);
+        $media_path = \App\Configuration::$application['media_path'];
+        $subpath = utils\Belt::filenameToSubpath($image_filename);
+        $cover_filepath = "{$media_path}/covers/{$subpath}/{$image_filename}";
+        $this->assertTrue(file_exists($cover_filepath));
+
+        $response = $this->appRun('CLI', '/media/clean');
+
+        $this->assertInstanceOf(\Generator::class, $response);
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseEquals($response, 'Scanning the media directories...');
+        $response->next();
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, " sub-directories found.");
+        $response->next();
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseEquals($response, "Removing files under {$subdir_name}/... (0%)");
+        $response->next();
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseEquals($response, "Nothing to delete under {$subdir_name}/.");
+        $response->next();
+        $response->next();
+        $response->next();
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseEquals($response, 'No files deleted.');
+        $this->assertTrue(file_exists($cover_filepath));
+    }
+
+    public function testCleanKeepsFilesUsedByStreams(): void
+    {
+        $image_service = new services\Image();
+        $image_url = 'https://flus.fr/carnet/card.png';
+        $this->mockHttpWithFile($image_url, 'public/static/og-card.png');
+        $image_filename = $image_service->generatePreviews($image_url);
+        $subdir_name = substr($image_filename, 0, 3);
+        StreamFactory::create([
             'image_filename' => $image_filename,
         ]);
 

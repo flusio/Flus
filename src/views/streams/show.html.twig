@@ -20,11 +20,33 @@
 {% block body %}
     <div class="cols cols--gap-large">
         <div class="col--size3 text--center">
-            <img
-                class="illustration"
-                alt=""
-                src="{{ url_media('covers', stream.image_filename, 'collection-card.png') }}"
-            >
+            {% if can(app.user, 'update', stream) %}
+                <button
+                    class="button--edit-image"
+                    data-controller="modal-opener"
+                    data-action="modal-opener#fetch"
+                    data-modal-opener-href-value="{{ url('edit image stream', { id: stream.id }) }}"
+                    aria-haspopup="dialog"
+                    aria-controls="modal"
+                    title="{{ t('Change the illustration') }}"
+                >
+                    <img
+                        class="illustration"
+                        alt=""
+                        src="{{ url_media('covers', stream.image_filename, 'collection-card.png') }}"
+                    >
+
+                    <span class="sr-only">
+                        {{ t('Change the illustration') }}
+                    </span>
+                </button>
+            {% else %}
+                <img
+                    class="illustration"
+                    alt=""
+                    src="{{ url_media('covers', stream.image_filename, 'collection-card.png') }}"
+                >
+            {% endif %}
         </div>
 
         <div class="col--extend flow">

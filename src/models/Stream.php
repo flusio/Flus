@@ -17,6 +17,7 @@ class Stream
     use Database\Recordable;
     use Database\Resource;
     use Validable;
+    use dao\MediaQueries;
     use utils\Memoizer;
 
     public const NAME_MAX_LENGTH = 100;

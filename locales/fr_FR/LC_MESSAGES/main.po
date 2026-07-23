@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-07-23 08:32+0200\n"
-"PO-Revision-Date: 2026-07-23 08:33+0200\n"
+"POT-Creation-Date: 2026-07-23 10:48+0200\n"
+"PO-Revision-Date: 2026-07-23 10:48+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -147,25 +147,25 @@ msgstr "L’une des thématiques associées n’existe pas."
 
 #: forms/collections/EditCollectionImage.php:25
 #: forms/importations/OpmlImportation.php:27 forms/links/EditLinkImage.php:25
-#: forms/users/EditAvatar.php:25
+#: forms/streams/EditStreamImage.php:25 forms/users/EditAvatar.php:25
 msgid "The file is required."
 msgstr "Le fichier est obligatoire."
 
 #: forms/collections/EditCollectionImage.php:29
 #: forms/importations/OpmlImportation.php:31 forms/links/EditLinkImage.php:29
-#: forms/users/EditAvatar.php:29
+#: forms/streams/EditStreamImage.php:29 forms/users/EditAvatar.php:29
 msgid "The file type must be one of the following: {types}."
 msgstr "Le type de fichier doit être l’un des suivants : {types}."
 
 #: forms/collections/EditCollectionImage.php:30
 #: forms/importations/OpmlImportation.php:32 forms/links/EditLinkImage.php:30
-#: forms/users/EditAvatar.php:30
+#: forms/streams/EditStreamImage.php:30 forms/users/EditAvatar.php:30
 msgid "This file is too large (max allowed: {max_size})."
 msgstr "Ce fichier est trop gros (max autorisé : {max_size})."
 
 #: forms/collections/EditCollectionImage.php:31
 #: forms/importations/OpmlImportation.php:33 forms/links/EditLinkImage.php:31
-#: forms/users/EditAvatar.php:31
+#: forms/streams/EditStreamImage.php:31 forms/users/EditAvatar.php:31
 msgid "This file cannot be uploaded (error {code})."
 msgstr "Ce fichier ne peut pas être téléversé (erreur {code})."
 
@@ -677,7 +677,7 @@ msgstr "privée"
 
 #: views/collections/_collection.html.twig:52
 #: views/collections/_collection_follow.html.twig:24
-#: views/collections/show.html.twig:96 views/streams/show.html.twig:34
+#: views/collections/show.html.twig:96 views/streams/show.html.twig:56
 #: views/streams/sources/_source.html.twig:34
 #: views/streams/sources/edit.html.twig:48
 msgid "Publication frequency"
@@ -749,8 +749,8 @@ msgstr "(max. %d caractères)"
 #: views/registrations/new.html.twig:80 views/registrations/new.html.twig:114
 #: views/registrations/new.html.twig:152 views/sessions/new.html.twig:32
 #: views/sessions/new.html.twig:67 views/streams/_form.html.twig:20
-#: views/streams/_form.html.twig:51 views/support/show.html.twig:41
-#: views/support/show.html.twig:67
+#: views/streams/_form.html.twig:51 views/streams/images/edit.html.twig:26
+#: views/support/show.html.twig:41 views/support/show.html.twig:67
 msgid "Error:"
 msgstr "Erreur :"
 
@@ -919,18 +919,20 @@ msgstr ""
 "Les illustrations aident à distinguer votre collection parmi les autres."
 
 #: views/collections/images/edit.html.twig:53
-#: views/links/images/edit.html.twig:47
+#: views/links/images/edit.html.twig:47 views/streams/images/edit.html.twig:53
 msgid "Upload an image"
 msgstr "Téléverser une image"
 
 #: views/collections/images/edit.html.twig:58
 #: views/links/images/edit.html.twig:52 views/my/avatar/edit.html.twig:48
+#: views/streams/images/edit.html.twig:58
 msgid "<abbr>PNG</abbr>, <abbr>JPG</abbr> and <abbr>WEBP</abbr> images only."
 msgstr ""
 "Images <abbr>PNG</abbr>, <abbr>JPG</abbr> ou <abbr>WEBP</abbr> seulement."
 
 #: views/collections/images/edit.html.twig:59
 #: views/links/images/edit.html.twig:53 views/my/avatar/edit.html.twig:49
+#: views/streams/images/edit.html.twig:59
 #, php-format
 msgid "The minimum recommended dimensions are %sx%spx."
 msgstr "Les dimensions minimales recommandées sont de %sx%spx."
@@ -1035,7 +1037,8 @@ msgstr "Flux de syndication de %s"
 
 #: views/collections/show.html.twig:62 views/collections/show.html.twig:71
 #: views/links/_link.html.twig:281 views/links/show.html.twig:47
-#: views/links/show.html.twig:56
+#: views/links/show.html.twig:56 views/streams/show.html.twig:31
+#: views/streams/show.html.twig:40
 msgid "Change the illustration"
 msgstr "Changer l’illustration"
 
@@ -1058,7 +1061,7 @@ msgstr[1] "Thématiques :"
 #: views/collections/show.html.twig:165 views/groups/_group.html.twig:20
 #: views/links/_link.html.twig:269 views/links/show.html.twig:300
 #: views/notes/_notepad.html.twig:48 views/profiles/layout.html.twig:81
-#: views/streams/show.html.twig:70
+#: views/streams/show.html.twig:92
 msgid "Edit"
 msgstr "Modifier"
 
@@ -1071,7 +1074,7 @@ msgstr "Accès"
 #: views/links/show.html.twig:244 views/news/index.html.twig:55
 #: views/news/index.html.twig:145 views/news/index.html.twig:228
 #: views/notes/_notepad.html.twig:29 views/notes/_notepad.html.twig:33
-#: views/profiles/layout.html.twig:93 views/streams/show.html.twig:82
+#: views/profiles/layout.html.twig:93 views/streams/show.html.twig:104
 msgid "Actions"
 msgstr "Actions"
 
@@ -1112,7 +1115,7 @@ msgstr ""
 
 #: views/collections/show.html.twig:285 views/links/_link.html.twig:313
 #: views/links/show.html.twig:329 views/notes/_notepad.html.twig:61
-#: views/streams/show.html.twig:97
+#: views/streams/show.html.twig:119
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -2974,19 +2977,27 @@ msgstr "Il n’y a aucun lien qui correspond à vos filtres."
 msgid "Stream edition"
 msgstr "Modification d'un fil"
 
+#: views/streams/images/edit.html.twig:3
+msgid "Stream illustration"
+msgstr "Illustration du fil"
+
+#: views/streams/images/edit.html.twig:11
+msgid "Illustrations help to distinguish your stream among the others."
+msgstr "Les illustrations aident à distinguer votre fil parmi les autres."
+
 #: views/streams/new.html.twig:9
 msgid "Create the stream"
 msgstr "Créer le fil"
 
-#: views/streams/show.html.twig:41 views/streams/sources/_source.html.twig:22
+#: views/streams/show.html.twig:63 views/streams/sources/_source.html.twig:22
 msgid "By"
 msgstr "Par"
 
-#: views/streams/show.html.twig:59
+#: views/streams/show.html.twig:81
 msgid "Manage sources"
 msgstr "Gérer les sources"
 
-#: views/streams/show.html.twig:90
+#: views/streams/show.html.twig:112
 msgid "Are you sure that you want to delete this stream?"
 msgstr "Êtes-vous sur·e de vouloir supprimer ce fil ?"
 
