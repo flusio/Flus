@@ -110,6 +110,16 @@
     margin-right: var(--space-smaller);
 }
 
+.sidenav__menu-item .sidenav__menu-image {
+    width: 1.5em;
+    height: 1.5em;
+    margin-right: var(--space-smaller);
+
+    vertical-align: top;
+
+    border-radius: var(--border-radius-small);
+}
+
 .sidenav__menu-title {
     font-size: var(--font-size-normal);
     font-weight: 600;

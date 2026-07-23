@@ -35,7 +35,13 @@
         href="{{ element.url }}"
         {{ navigation.isCurrent(element) ? 'aria-current="page"' : '' }}
     >
-        {% if element.icon %}
+        {% if element.image_filename %}
+            <img
+                class="sidenav__menu-image"
+                alt=""
+                src="{{ url_media('covers', element.image_filename) }}"
+            >
+        {% elseif element.icon %}
             {{ icon(element.icon) }}
         {% endif %}
 

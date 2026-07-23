@@ -13,6 +13,7 @@ class Item extends Element
         public readonly string $key,
         public readonly string $url,
         public readonly string $icon = '',
+        public readonly string $image_filename = '',
     ) {
     }
 

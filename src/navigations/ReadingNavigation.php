@@ -66,6 +66,7 @@ class ReadingNavigation extends BaseNavigation
                     label: $stream->name,
                     key: $stream->id,
                     url: \Minz\Url::for('stream', ['id' => $stream->id]),
+                    image_filename: $stream->image_filename ?? '',
                 );
             }
 
