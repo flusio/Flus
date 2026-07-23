@@ -62,12 +62,15 @@ class UrlStatus
      * Mark the links as read for the user.
      *
      * @param Link|Link[] $links
+     * @param positive-int $chunk_size
      */
-    public static function markAsRead(User $user, Link|array $links): void
+    public static function markAsRead(User $user, Link|array $links, int $chunk_size = 500): void
     {
         if ($links instanceof Link) {
             $links = [$links];
         }
+
+        $links = self::deduplicateByUrlHash($links);
 
         if (!$links) {
             return;
@@ -75,83 +78,91 @@ class UrlStatus
 
         $now = \Minz\Time::now();
 
-        $values_as_question_marks = [];
-        $values = [];
+        foreach (array_chunk($links, $chunk_size) as $chunk_links) {
+            $values_as_question_marks = [];
+            $values = [];
 
-        foreach ($links as $link) {
-            $values_as_question_marks[] = '(?, ?, ?, ?)';
-            $values = array_merge($values, [
-                $now->format(Database\Column::DATETIME_FORMAT),
-                $user->id,
-                $link->url_hash,
-                $now->format(Database\Column::DATETIME_FORMAT),
-            ]);
+            foreach ($chunk_links as $link) {
+                $values_as_question_marks[] = '(?, ?, ?, ?)';
+                $values = array_merge($values, [
+                    $now->format(Database\Column::DATETIME_FORMAT),
+                    $user->id,
+                    $link->url_hash,
+                    $now->format(Database\Column::DATETIME_FORMAT),
+                ]);
+            }
+            $values_placeholder = implode(", ", $values_as_question_marks);
+
+            $sql = <<<SQL
+                INSERT INTO url_statuses (created_at, user_id, url_hash, read_at)
+                VALUES {$values_placeholder}
+                ON CONFLICT (user_id, url_hash) DO UPDATE SET
+                    read_at = excluded.read_at,
+                    read_later_at = NULL
+            SQL;
+
+            $database = Database::get();
+            $statement = $database->prepare($sql);
+            $statement->execute($values);
         }
-        $values_placeholder = implode(", ", $values_as_question_marks);
-
-        $sql = <<<SQL
-            INSERT INTO url_statuses (created_at, user_id, url_hash, read_at)
-            VALUES {$values_placeholder}
-            ON CONFLICT (user_id, url_hash) DO UPDATE SET
-                read_at = excluded.read_at,
-                read_later_at = NULL
-        SQL;
-
-        $database = Database::get();
-        $statement = $database->prepare($sql);
-        $statement->execute($values);
     }
 
     /**
      * Unmark the links as read for the user.
      *
      * @param Link|Link[] $links
+     * @param positive-int $chunk_size
      */
-    public static function unmarkAsRead(User $user, Link|array $links): void
+    public static function unmarkAsRead(User $user, Link|array $links, int $chunk_size = 500): void
     {
         if ($links instanceof Link) {
             $links = [$links];
         }
 
+        $links = self::deduplicateByUrlHash($links);
+
         if (!$links) {
             return;
         }
 
-        $now = \Minz\Time::now();
+        foreach (array_chunk($links, $chunk_size) as $chunk_links) {
+            $values = [
+                $user->id,
+            ];
+            $hashes_as_question_marks = [];
 
-        $values = [
-            $user->id,
-        ];
-        $hashes_as_question_marks = [];
+            foreach ($chunk_links as $link) {
+                $hashes_as_question_marks[] = '?';
+                $values[] = $link->url_hash;
+            }
+            $hashes_placeholder = implode(", ", $hashes_as_question_marks);
 
-        foreach ($links as $link) {
-            $hashes_as_question_marks[] = '?';
-            $values[] = $link->url_hash;
+            $sql = <<<SQL
+                UPDATE url_statuses
+                SET read_at = NULL
+                WHERE user_id = ?
+                AND url_hash IN ({$hashes_placeholder})
+            SQL;
+
+            $database = Database::get();
+            $statement = $database->prepare($sql);
+            $statement->execute($values);
         }
-        $hashes_placeholder = implode(", ", $hashes_as_question_marks);
-
-        $sql = <<<SQL
-            UPDATE url_statuses
-            SET read_at = NULL
-            WHERE user_id = ?
-            AND url_hash IN ({$hashes_placeholder})
-        SQL;
-
-        $database = Database::get();
-        $statement = $database->prepare($sql);
-        $statement->execute($values);
     }
 
     /**
      * Mark the links to read later for the user.
      *
      * @param Link|Link[] $links
+     * @param positive-int $chunk_size
      */
-    public static function markAsReadLater(User $user, Link|array $links): void
+    public static function markAsReadLater(User $user, Link|array $links, int $chunk_size = 500): void
     {
         if ($links instanceof Link) {
             $links = [$links];
         }
+
+        $links = self::deduplicateByUrlHash($links);
 
         if (!$links) {
             return;
@@ -159,42 +170,47 @@ class UrlStatus
 
         $now = \Minz\Time::now();
 
-        $values_as_question_marks = [];
-        $values = [];
+        foreach (array_chunk($links, $chunk_size) as $chunk_links) {
+            $values_as_question_marks = [];
+            $values = [];
 
-        foreach ($links as $link) {
-            $values_as_question_marks[] = '(?, ?, ?, ?)';
-            $values = array_merge($values, [
-                $now->format(Database\Column::DATETIME_FORMAT),
-                $user->id,
-                $link->url_hash,
-                $now->format(Database\Column::DATETIME_FORMAT),
-            ]);
+            foreach ($chunk_links as $link) {
+                $values_as_question_marks[] = '(?, ?, ?, ?)';
+                $values = array_merge($values, [
+                    $now->format(Database\Column::DATETIME_FORMAT),
+                    $user->id,
+                    $link->url_hash,
+                    $now->format(Database\Column::DATETIME_FORMAT),
+                ]);
+            }
+            $values_placeholder = implode(", ", $values_as_question_marks);
+
+            $sql = <<<SQL
+                INSERT INTO url_statuses (created_at, user_id, url_hash, read_later_at)
+                VALUES {$values_placeholder}
+                ON CONFLICT (user_id, url_hash) DO UPDATE SET
+                    read_later_at = excluded.read_later_at
+            SQL;
+
+            $database = Database::get();
+            $statement = $database->prepare($sql);
+            $statement->execute($values);
         }
-        $values_placeholder = implode(", ", $values_as_question_marks);
-
-        $sql = <<<SQL
-            INSERT INTO url_statuses (created_at, user_id, url_hash, read_later_at)
-            VALUES {$values_placeholder}
-            ON CONFLICT (user_id, url_hash) DO UPDATE SET
-                read_later_at = excluded.read_later_at
-        SQL;
-
-        $database = Database::get();
-        $statement = $database->prepare($sql);
-        $statement->execute($values);
     }
 
     /**
      * Mark the links as dismissed for the user.
      *
      * @param Link|Link[] $links
+     * @param positive-int $chunk_size
      */
-    public static function markAsDismissed(User $user, Link|array $links): void
+    public static function markAsDismissed(User $user, Link|array $links, int $chunk_size = 500): void
     {
         if ($links instanceof Link) {
             $links = [$links];
         }
+
+        $links = self::deduplicateByUrlHash($links);
 
         if (!$links) {
             return;
@@ -202,65 +218,88 @@ class UrlStatus
 
         $now = \Minz\Time::now();
 
-        $values_as_question_marks = [];
-        $values = [];
+        foreach (array_chunk($links, $chunk_size) as $chunk_links) {
+            $values_as_question_marks = [];
+            $values = [];
 
-        foreach ($links as $link) {
-            $values_as_question_marks[] = '(?, ?, ?, ?)';
-            $values = array_merge($values, [
-                $now->format(Database\Column::DATETIME_FORMAT),
-                $user->id,
-                $link->url_hash,
-                $now->format(Database\Column::DATETIME_FORMAT),
-            ]);
+            foreach ($chunk_links as $link) {
+                $values_as_question_marks[] = '(?, ?, ?, ?)';
+                $values = array_merge($values, [
+                    $now->format(Database\Column::DATETIME_FORMAT),
+                    $user->id,
+                    $link->url_hash,
+                    $now->format(Database\Column::DATETIME_FORMAT),
+                ]);
+            }
+            $values_placeholder = implode(", ", $values_as_question_marks);
+
+            $sql = <<<SQL
+                INSERT INTO url_statuses (created_at, user_id, url_hash, dismissed_at)
+                VALUES {$values_placeholder}
+                ON CONFLICT (user_id, url_hash) DO UPDATE SET
+                    dismissed_at = excluded.dismissed_at
+            SQL;
+
+            $database = Database::get();
+            $statement = $database->prepare($sql);
+            $statement->execute($values);
         }
-        $values_placeholder = implode(", ", $values_as_question_marks);
-
-        $sql = <<<SQL
-            INSERT INTO url_statuses (created_at, user_id, url_hash, dismissed_at)
-            VALUES {$values_placeholder}
-            ON CONFLICT (user_id, url_hash) DO UPDATE SET
-                dismissed_at = excluded.dismissed_at
-        SQL;
-
-        $database = Database::get();
-        $statement = $database->prepare($sql);
-        $statement->execute($values);
     }
 
     /**
      * Unmark the links for the user (aka remove the corresponding URL statuses).
      *
      * @param Link|Link[] $links
+     * @param positive-int $chunk_size
      */
-    public static function unmark(User $user, Link|array $links): void
+    public static function unmark(User $user, Link|array $links, int $chunk_size = 500): void
     {
         if ($links instanceof Link) {
             $links = [$links];
         }
 
+        $links = self::deduplicateByUrlHash($links);
+
         if (!$links) {
             return;
         }
 
-        $values_as_question_marks = [];
-        $values = [$user->id];
+        foreach (array_chunk($links, $chunk_size) as $chunk_links) {
+            $values_as_question_marks = [];
+            $values = [$user->id];
 
-        foreach ($links as $link) {
-            $values_as_question_marks[] = '?';
-            $values[] = $link->url_hash;
+            foreach ($chunk_links as $link) {
+                $values_as_question_marks[] = '?';
+                $values[] = $link->url_hash;
+            }
+            $values_placeholder = implode(", ", $values_as_question_marks);
+
+            $sql = <<<SQL
+                DELETE FROM url_statuses
+                WHERE user_id = ?
+                AND url_hash IN ({$values_placeholder})
+            SQL;
+
+            $database = Database::get();
+            $statement = $database->prepare($sql);
+            $statement->execute($values);
         }
-        $values_placeholder = implode(", ", $values_as_question_marks);
+    }
 
-        $sql = <<<SQL
-            DELETE FROM url_statuses
-            WHERE user_id = ?
-            AND url_hash IN ({$values_placeholder})
-        SQL;
-
-        $database = Database::get();
-        $statement = $database->prepare($sql);
-        $statement->execute($values);
+    /**
+     * Deduplicate the given links based on their url_hash.
+     *
+     * Different links can share the same URL (e.g. two feeds publishing the
+     * same link). Passing them twice to a same "ON CONFLICT DO UPDATE" query
+     * would fail with a PostgreSQL "cannot affect row a second time" error.
+     *
+     * @param Link[] $links
+     *
+     * @return Link[]
+     */
+    private static function deduplicateByUrlHash(array $links): array
+    {
+        return array_values(array_column($links, null, 'url_hash'));
     }
 
     /**

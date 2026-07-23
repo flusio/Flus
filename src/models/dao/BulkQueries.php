@@ -17,19 +17,35 @@ trait BulkQueries
      * values.
      *
      * By default, rows are not inserted (silently) on conflict. You can change
-     * this by overidding the bulkInsertOnConflict method.
+     * this by overriding the bulkInsertOnConflict method.
+     *
+     * The objects are inserted by chunks of $chunk_size rows, to keep the
+     * number of parameters of the prepared statements under the PostgreSQL
+     * limit (65535), even for tables with many columns.
+     *
+     * @param object[] $models
+     * @param positive-int $chunk_size
+     *
+     * @throws \PDOException if an error occurs during the insertion
+     */
+    public static function bulkInsert(array $models, int $chunk_size = 500): bool
+    {
+        foreach (array_chunk($models, $chunk_size) as $chunk) {
+            self::bulkInsertChunk($chunk);
+        }
+
+        return true;
+    }
+
+    /**
+     * Insert in DB the given chunk of objects.
      *
      * @param object[] $models
      *
      * @throws \PDOException if an error occurs during the insertion
      */
-    public static function bulkInsert(array $models): bool
+    private static function bulkInsertChunk(array $models): void
     {
-        if (empty($models)) {
-            // nothing to insert
-            return true;
-        }
-
         $models_columns = [];
         $models_values = [];
         foreach ($models as $model) {
@@ -47,6 +63,11 @@ trait BulkQueries
             if (!$models_columns) {
                 $models_columns = array_keys($model_values);
             }
+        }
+
+        if (!$models_columns) {
+            // nothing to insert
+            return;
         }
 
         $number_rows = count($models_values) / count($models_columns);
@@ -72,8 +93,6 @@ trait BulkQueries
         $database = Database::get();
         $statement = $database->prepare($sql);
         $statement->execute($models_values);
-
-        return true;
     }
 
     /**
