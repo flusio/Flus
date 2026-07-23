@@ -89,6 +89,23 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($is_at_date_2);
     }
 
+    public function testIsInRange(): void
+    {
+        $date = $this->fakeDateInPeriod();
+        $stream = StreamFactory::create();
+        $stream_view = new StreamView($stream, null, at: $date, days: 2);
+
+        $is_in_range_at = $stream_view->isInRange($date);
+        $is_in_range_day_before = $stream_view->isInRange($date->modify('-1 day'));
+        $is_in_range_two_days_before = $stream_view->isInRange($date->modify('-2 days'));
+        $is_in_range_day_after = $stream_view->isInRange($date->modify('+1 day'));
+
+        $this->assertTrue($is_in_range_at);
+        $this->assertTrue($is_in_range_day_before);
+        $this->assertFalse($is_in_range_two_days_before);
+        $this->assertFalse($is_in_range_day_after);
+    }
+
     public function testIsSourceSelected(): void
     {
         $date = $this->fakeDateInPeriod();
@@ -802,6 +819,87 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, $count_day_1);
         $this->assertSame(2, $count_day_2);
+    }
+
+    public function testCountUnreadByDayReturnsNumberOfUnreadLinksOnGivenDay(): void
+    {
+        $date = $this->fakeDateInPeriod();
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link_1 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $link_2 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $link_3 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link_1, $link_2, $link_3], at: $date);
+        $stream->addSource($source);
+        $user->markAsRead($link_1);
+        $stream_view = new StreamView($stream, $user, at: $date);
+
+        $count_unread = $stream_view->countUnreadByDay($date);
+
+        $this->assertSame(2, $count_unread);
+    }
+
+    public function testCountUnreadByDayDoesNotCountUnreadLinksIfNoContextUser(): void
+    {
+        $date = $this->fakeDateInPeriod();
+        $stream = StreamFactory::create();
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link], at: $date);
+        $stream->addSource($source);
+        $stream_view = new StreamView($stream, null, at: $date);
+
+        $count_unread = $stream_view->countUnreadByDay($date);
+
+        $this->assertSame(0, $count_unread);
+    }
+
+    public function testMaxCountPerDayReturnsTheMaxOfTheCountsByDay(): void
+    {
+        $date_1 = $this->fakeDateInPeriod();
+        $date_2 = $date_1->modify('-1 day');
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link_1 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $link_2 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $link_3 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link_1], at: $date_1);
+        $source->addLinks([$link_2, $link_3], at: $date_2);
+        $stream->addSource($source);
+        $stream_view = new StreamView($stream, null, at: $date_1);
+
+        $max_count = $stream_view->maxCountPerDay();
+
+        $this->assertSame(2, $max_count);
     }
 
     public function testCountByDayGroupsLinksInTheTimezoneOfTheApplication(): void

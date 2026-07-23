@@ -86,6 +86,21 @@ class StreamView
         return $this->at->format('Y-m-d') === $at->format('Y-m-d');
     }
 
+    /**
+     * Return whether the given day is part of the displayed period, i.e.
+     * between "at - (days - 1)" and "at".
+     */
+    public function isInRange(\DateTimeImmutable $day): bool
+    {
+        $start = $this->at->modify('-' . ($this->days - 1) . ' days');
+        $start = $start->format('Y-m-d');
+        $end = $this->at->format('Y-m-d');
+
+        $day = $day->format('Y-m-d');
+
+        return $start <= $day && $day <= $end;
+    }
+
     public function isSourceSelected(Collection $source): bool
     {
         return $this->source?->id === $source->id;
@@ -178,9 +193,26 @@ class StreamView
 
     public function countByDay(\DateTimeImmutable $day): int
     {
-        // The counts of the whole period are loaded at once: countByDay() is
-        // called for each day displayed by the filters.
-        $counts_per_day = $this->memoize('counts_per_day', function (): array {
+        $counts = $this->countsPerDay()[$day->format('Y-m-d')] ?? [0, 0];
+
+        return $counts[0];
+    }
+
+    public function countUnreadByDay(\DateTimeImmutable $day): int
+    {
+        $counts = $this->countsPerDay()[$day->format('Y-m-d')] ?? [0, 0];
+
+        return $counts[1];
+    }
+
+    /**
+     * @return array<string, array{int, int}>
+     */
+    private function countsPerDay(): array
+    {
+        // The counts of the whole period are loaded at once: countByDay() and
+        // countUnreadByDay() are called for each day displayed by the filters.
+        return $this->memoize('counts_per_day', function (): array {
             $period = $this->period();
 
             return $this->stream->countLinksPerDay([
@@ -189,7 +221,16 @@ class StreamView
                 'days' => count($period),
             ]);
         });
+    }
 
-        return $counts_per_day[$day->format('Y-m-d')] ?? 0;
+    public function maxCountPerDay(): int
+    {
+        $max_count = 0;
+
+        foreach ($this->period() as $day) {
+            $max_count = max($max_count, $this->countByDay($day));
+        }
+
+        return $max_count;
     }
 }

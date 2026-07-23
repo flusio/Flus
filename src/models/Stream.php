@@ -154,7 +154,7 @@ class Stream
      *     days?: int,
      * } $options
      *
-     * @return array<string, int>
+     * @return array<string, array{int, int}>
      */
     public function countLinksPerDay(array $options = []): array
     {

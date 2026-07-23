@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-07-23 17:06+0200\n"
-"PO-Revision-Date: 2026-07-23 17:07+0200\n"
+"POT-Creation-Date: 2026-07-24 10:52+0200\n"
+"PO-Revision-Date: 2026-07-24 10:52+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -657,7 +657,7 @@ msgstr "aucun lien"
 #: views/collections/_collection.html.twig:26
 #: views/collections/_collection_follow.html.twig:18
 #: views/links/_pagination_count.html.twig:7 views/news/index.html.twig:26
-#: views/news/index.html.twig:132 views/streams/_timeline.html.twig:114
+#: views/news/index.html.twig:132 views/streams/_timeline.html.twig:112
 #, php-format
 msgid "%s link"
 msgid_plural "%s links"
@@ -677,7 +677,7 @@ msgstr "privée"
 
 #: views/collections/_collection.html.twig:52
 #: views/collections/_collection_follow.html.twig:24
-#: views/collections/show.html.twig:96 views/streams/show.html.twig:56
+#: views/collections/show.html.twig:96 views/streams/show.html.twig:64
 #: views/streams/sources/_source.html.twig:34
 #: views/streams/sources/edit.html.twig:48
 msgid "Publication frequency"
@@ -873,7 +873,7 @@ msgstr ""
 "pour la plupart des flux)."
 
 #: views/collections/filters/edit.html.twig:110
-#: views/streams/_filters.html.twig:122
+#: views/streams/_filters.html.twig:168
 msgid "All"
 msgstr "Tout"
 
@@ -1037,8 +1037,8 @@ msgstr "Flux de syndication de %s"
 
 #: views/collections/show.html.twig:62 views/collections/show.html.twig:71
 #: views/links/_link.html.twig:281 views/links/show.html.twig:47
-#: views/links/show.html.twig:56 views/streams/show.html.twig:31
-#: views/streams/show.html.twig:40
+#: views/links/show.html.twig:56 views/streams/show.html.twig:39
+#: views/streams/show.html.twig:48
 msgid "Change the illustration"
 msgstr "Changer l’illustration"
 
@@ -1061,7 +1061,7 @@ msgstr[1] "Thématiques :"
 #: views/collections/show.html.twig:165 views/groups/_group.html.twig:20
 #: views/links/_link.html.twig:269 views/links/show.html.twig:300
 #: views/notes/_notepad.html.twig:48 views/profiles/layout.html.twig:81
-#: views/streams/show.html.twig:92
+#: views/streams/show.html.twig:100
 msgid "Edit"
 msgstr "Modifier"
 
@@ -1074,9 +1074,9 @@ msgstr "Accès"
 #: views/links/show.html.twig:244 views/news/index.html.twig:55
 #: views/news/index.html.twig:145 views/news/index.html.twig:228
 #: views/notes/_notepad.html.twig:29 views/notes/_notepad.html.twig:33
-#: views/profiles/layout.html.twig:93 views/streams/_timeline.html.twig:30
-#: views/streams/_timeline.html.twig:127 views/streams/_timeline.html.twig:214
-#: views/streams/show.html.twig:104
+#: views/profiles/layout.html.twig:93 views/streams/_timeline.html.twig:28
+#: views/streams/_timeline.html.twig:125 views/streams/_timeline.html.twig:212
+#: views/streams/show.html.twig:112
 msgid "Actions"
 msgstr "Actions"
 
@@ -1099,8 +1099,8 @@ msgstr "Copier le lien du flux Web"
 
 #: views/collections/show.html.twig:256 views/news/index.html.twig:66
 #: views/news/index.html.twig:156 views/news/index.html.twig:238
-#: views/streams/_timeline.html.twig:41 views/streams/_timeline.html.twig:138
-#: views/streams/_timeline.html.twig:224
+#: views/streams/_timeline.html.twig:39 views/streams/_timeline.html.twig:136
+#: views/streams/_timeline.html.twig:222
 msgid "Mark all as read"
 msgstr "Tout marquer comme lu"
 
@@ -1119,7 +1119,7 @@ msgstr ""
 
 #: views/collections/show.html.twig:285 views/links/_link.html.twig:313
 #: views/links/show.html.twig:329 views/notes/_notepad.html.twig:61
-#: views/streams/show.html.twig:119
+#: views/streams/show.html.twig:127
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -1458,7 +1458,6 @@ msgid "Search links by words, URL or #tag"
 msgstr "Rechercher des liens par mots, URL ou #tag"
 
 #: views/layouts/_search.html.twig:15 views/links/searches/show.html.twig:64
-#: views/streams/_filters.html.twig:53
 msgid "Search"
 msgstr "Rechercher"
 
@@ -2314,13 +2313,13 @@ msgstr "aujourd’hui"
 msgid "yesterday"
 msgstr "hier"
 
-#: views/news/index.html.twig:61 views/streams/_timeline.html.twig:36
+#: views/news/index.html.twig:61 views/streams/_timeline.html.twig:34
 msgid "Actions on the day"
 msgstr "Actions pour la journée"
 
 #: views/news/index.html.twig:76 views/news/index.html.twig:167
-#: views/news/index.html.twig:247 views/streams/_timeline.html.twig:55
-#: views/streams/_timeline.html.twig:152 views/streams/_timeline.html.twig:238
+#: views/news/index.html.twig:247 views/streams/_timeline.html.twig:53
+#: views/streams/_timeline.html.twig:150 views/streams/_timeline.html.twig:236
 msgid "Read the links later"
 msgstr "Lire les liens plus tard"
 
@@ -2333,7 +2332,7 @@ msgstr ""
 "Vous allez retirer tous les liens du journal, cette action ne peut pas être "
 "annulée. Confirmez-vous ?"
 
-#: views/news/index.html.twig:151 views/streams/_timeline.html.twig:133
+#: views/news/index.html.twig:151 views/streams/_timeline.html.twig:131
 msgid "Actions on the feed"
 msgstr "Actions pour le flux"
 
@@ -2934,35 +2933,49 @@ msgstr "Mot de passe oublié ?"
 msgid "No account yet?"
 msgstr "Pas encore de compte ?"
 
-#: views/streams/_filters.html.twig:12
+#: views/streams/_filters.html.twig:14
 msgid "Date"
 msgstr "Date"
 
-#: views/streams/_filters.html.twig:33
-msgid "Number of days"
-msgstr "Nombre de jours"
-
-#: views/streams/_filters.html.twig:63
-#, php-format
-msgid "Sources (%d)"
-msgstr "Sources (%d)"
-
-#: views/streams/_filters.html.twig:82
+#: views/streams/_filters.html.twig:27 views/streams/_filters.html.twig:128
 #, php-format
 msgid "%s: %d link"
 msgid_plural "%s: %d links"
 msgstr[0] "%s : %d lien"
 msgstr[1] "%s : %d liens"
 
-#: views/streams/_filters.html.twig:82
+#: views/streams/_filters.html.twig:29
+#, php-format
+msgid "(%d unread)"
+msgid_plural "(%d unread)"
+msgstr[0] "(%d non lu)"
+msgstr[1] "(%d non lus)"
+
+#: views/streams/_filters.html.twig:80
+msgid "Display:"
+msgstr "Afficher :"
+
+#: views/streams/_filters.html.twig:97
+#, php-format
+msgid "%d day"
+msgid_plural "%d days"
+msgstr[0] "%d jour"
+msgstr[1] "%d jours"
+
+#: views/streams/_filters.html.twig:109
+#, php-format
+msgid "Sources (%d)"
+msgstr "Sources (%d)"
+
+#: views/streams/_filters.html.twig:128
 msgid "(has unread)"
 msgstr "(contient des non lus)"
 
-#: views/streams/_filters.html.twig:119
+#: views/streams/_filters.html.twig:165
 msgid "Status of the links"
 msgstr "Statut des liens"
 
-#: views/streams/_filters.html.twig:123
+#: views/streams/_filters.html.twig:169
 msgid "Unread"
 msgstr "Non lus"
 
@@ -2974,8 +2987,8 @@ msgstr "Quelle est le nom du fil ?"
 msgid "What’s the purpose of the stream?"
 msgstr "Quelle est la raison d’être du fil ?"
 
-#: views/streams/_timeline.html.twig:71 views/streams/_timeline.html.twig:169
-#: views/streams/_timeline.html.twig:254
+#: views/streams/_timeline.html.twig:69 views/streams/_timeline.html.twig:167
+#: views/streams/_timeline.html.twig:252
 msgid ""
 "The links will no longer be counted as unread and won’t be suggested in your "
 "news. Are you sure?"
@@ -2983,16 +2996,16 @@ msgstr ""
 "Les liens ne seront plus considérés comme non lus et ne seront plus suggérés "
 "dans le journal. Êtes vous sur·es ?"
 
-#: views/streams/_timeline.html.twig:76 views/streams/_timeline.html.twig:174
-#: views/streams/_timeline.html.twig:259
+#: views/streams/_timeline.html.twig:74 views/streams/_timeline.html.twig:172
+#: views/streams/_timeline.html.twig:257
 msgid "Ignore the links"
 msgstr "Ignorer les liens"
 
-#: views/streams/_timeline.html.twig:219
+#: views/streams/_timeline.html.twig:217
 msgid "Actions on the links"
 msgstr "Actions sur les liens"
 
-#: views/streams/_timeline.html.twig:275
+#: views/streams/_timeline.html.twig:273
 msgid "There is no link matching your filters."
 msgstr "Il n’y a aucun lien qui correspond à vos filtres."
 
@@ -3012,15 +3025,15 @@ msgstr "Les illustrations aident à distinguer votre fil parmi les autres."
 msgid "Create the stream"
 msgstr "Créer le fil"
 
-#: views/streams/show.html.twig:63 views/streams/sources/_source.html.twig:22
+#: views/streams/show.html.twig:71 views/streams/sources/_source.html.twig:22
 msgid "By"
 msgstr "Par"
 
-#: views/streams/show.html.twig:81
+#: views/streams/show.html.twig:89
 msgid "Manage sources"
 msgstr "Gérer les sources"
 
-#: views/streams/show.html.twig:112
+#: views/streams/show.html.twig:120
 msgid "Are you sure that you want to delete this stream?"
 msgstr "Êtes-vous sur·e de vouloir supprimer ce fil ?"
 

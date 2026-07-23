@@ -1,0 +1,57 @@
+.scroller {
+    position: relative;
+}
+
+/* The shadows overlay the edges of the strip to indicate that it can be
+ * scrolled in that direction (cf. refresh() in the scroller controller). */
+.scroller::before,
+.scroller::after {
+    content: '';
+
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    bottom: 0;
+
+    width: 1rem;
+
+    opacity: 0;
+
+    transition: opacity 0.2s ease-in-out;
+
+    pointer-events: none;
+}
+
+.scroller::before {
+    left: 0;
+
+    background: linear-gradient(to right, var(--color-box-shadow), transparent);
+}
+
+.scroller::after {
+    right: 0;
+
+    background: linear-gradient(to left, var(--color-box-shadow), transparent);
+}
+
+.scroller--overflow-left::before,
+.scroller--overflow-right::after {
+    opacity: 0.5;
+}
+
+.scroller__strip {
+    position: relative;
+
+    overflow-x: auto;
+
+    display: flex;
+    padding: var(--scroller-strip-padding, var(--space-smaller));
+
+    scroll-snap-type: x proximity;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .scroller__strip {
+        scroll-behavior: smooth;
+    }
+}

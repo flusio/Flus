@@ -1,0 +1,212 @@
+.day-picker {
+    --day-width: 2.7rem;
+
+    /* The top padding reserves the band in which the month labels float. */
+    --scroller-strip-padding: calc(var(--space-smaller) + 1.25rem) var(--space-smaller) var(--space-smaller);
+}
+
+.day-picker__day {
+    --button-padding-x: var(--space-smaller);
+    --button-padding: var(--space-smaller) var(--button-padding-x);
+    --button-background-color: transparent;
+    --button-border-color: transparent;
+
+    position: relative;
+
+    display: flex;
+
+    flex: 1 0 var(--day-width);
+    flex-direction: column;
+    align-items: center;
+
+    font-weight: normal;
+
+    border-radius: var(--border-radius-small);
+
+    scroll-snap-align: center;
+    gap: 2px;
+}
+
+.day-picker__day[aria-pressed="true"],
+.day-picker__day[aria-pressed="true"]:hover:not(:disabled) {
+    --button-background-color: var(--color-accent-bg-active);
+}
+
+.day-picker__day--in-range,
+.day-picker__day--in-range:hover:not(:disabled) {
+    --button-background-color: var(--color-accent-bg-subtle);
+}
+
+/* Raise the focused day so its outline is not partially covered by the
+ * background of the next cell. */
+.day-picker__day:focus {
+    z-index: 1;
+}
+
+/* The month + year label, rendered on the first day of each month group and
+ * floating in the top band reserved by the strip padding.
+ *
+ * The zero-width flex anchor is placed right before the first day button of the
+ * month. It is used to position the label at the correct position.
+ *
+ * Its max-width is set inline to the group's width (day count x day width) so
+ * it is truncated rather than overflowing onto the next month's label. It should
+ * not happen though as the format is abbreviated according to the number of
+ * displayed days.
+ */
+.day-picker__month-anchor {
+    position: relative;
+
+    flex: 0 0 0;
+}
+
+.day-picker__month {
+    position: absolute;
+    bottom: 100%;
+    left: var(--space-smaller);
+
+    overflow: hidden;
+
+    margin-bottom: var(--space-smaller);
+
+    color: var(--color-grey-text);
+    font-size: var(--font-size-smaller);
+    font-weight: bold;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* The separator is centered in the space that the margin creates between the
+ * two months. */
+.day-picker__day--month-start {
+    margin-right: var(--space-small);
+}
+
+.day-picker__day--month-start::after {
+    content: '';
+
+    position: absolute;
+    top: 0;
+    right: calc(-1 * (var(--space-small) / 2) - 1px);
+    bottom: 0;
+
+    width: 2px;
+
+    background-color: var(--color-grey-line);
+}
+
+.day-picker__day--month-start:last-child::after {
+    display: none;
+}
+
+/* Consecutive days of the selected range form one continuous block: their
+ * facing corners are squared, except on both sides of the month separator
+ * where the space justifies keeping the border-radius. */
+.day-picker__day--in-range:not(.day-picker__day--month-start):has(+ .day-picker__day--in-range) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.day-picker__day--in-range:not(.day-picker__day--month-start) + .day-picker__day--in-range {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.day-picker__count {
+    visibility: hidden;
+
+    color: var(--color-grey-text);
+    font-size: var(--font-size-smaller);
+    font-variant-numeric: tabular-nums;
+}
+
+.day-picker__day--in-range .day-picker__count,
+.day-picker__day[aria-pressed="true"] .day-picker__count,
+.day-picker__day:hover .day-picker__count,
+.day-picker__day:focus-visible .day-picker__count {
+    visibility: visible;
+}
+
+.day-picker__day[aria-pressed="true"] .day-picker__count {
+    color: var(--color-accent-text);
+    font-weight: bold;
+}
+
+.day-picker__chart {
+    position: relative;
+
+    display: flex;
+
+    width: 100%;
+    height: 3rem;
+
+    align-items: flex-end;
+    justify-content: center;
+}
+
+/* The baseline under the bars. Each cell draws its own segment, bleeding on
+ * the sides by compensating the button padding + 1px of border so it reaches
+ * exactly the edges of its cell. As the cells touch each other, the segments
+ * join into one continuous line across the strip. */
+.day-picker__chart::after {
+    content: '';
+
+    position: absolute;
+    right: calc(-1 * (var(--button-padding-x) + 1px));
+    bottom: -1px;
+    left: calc(-1 * (var(--button-padding-x) + 1px));
+
+    height: 1px;
+
+    background-color: var(--color-grey-line);
+
+    transition: background-color 0.2s ease-in-out;
+}
+
+.day-picker__day--in-range .day-picker__chart::after,
+.day-picker__day[aria-pressed="true"] .day-picker__chart::after {
+    background-color: var(--color-accent-border);
+}
+
+.day-picker__bar {
+    position: relative;
+
+    overflow: hidden;
+
+    width: 0.5rem;
+    height: max(calc(var(--total-ratio, 0) * 100%), 2px);
+
+    background-color: var(--color-grey-solid);
+    border-radius: var(--border-radius-small) var(--border-radius-small) 0 0;
+}
+
+.day-picker__bar--empty {
+    display: none;
+}
+
+/* Same color as the unread dot of the sources. */
+.day-picker__bar-unread {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    height: max(calc(var(--unread-ratio, 0) * 100%), 2px);
+
+    background-color: var(--color-accent-solid);
+}
+
+.day-picker__weekday {
+    color: var(--color-grey-text);
+    font-size: var(--font-size-smaller);
+    white-space: nowrap;
+}
+
+.day-picker__number {
+    font-size: var(--font-size-small);
+    font-variant-numeric: tabular-nums;
+}
+
+.day-picker__day[aria-pressed="true"] .day-picker__number {
+    font-weight: bold;
+}

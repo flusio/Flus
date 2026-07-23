@@ -690,13 +690,16 @@ trait Link
      * The days are formatted as "Y-m-d", in the timezone of the application.
      * The days without links are not returned.
      *
+     * The counts are given as a pair of the total number of links, and of the
+     * number of unread links (always 0 if no context user is given).
+     *
      * @param array{
      *     context_user?: ?models\User,
      *     at?: \DateTimeImmutable,
      *     days?: int,
      * } $options
      *
-     * @return array<string, int>
+     * @return array<string, array{int, int}>
      */
     public static function countByStreamPerDay(models\Stream $stream, array $options): array
     {
@@ -710,13 +713,29 @@ trait Link
         $options['status'] = 'all';
         $options['created_before'] = null;
 
-        $sql_join = self::buildStreamJoin(join_url_statuses: false);
+        $join_url_statuses = $options['context_user'] !== null;
+        $sql_join = self::buildStreamJoin($join_url_statuses);
         list($sql_where, $parameters) = self::buildStreamWhere($stream, $options);
 
         $parameters[':timezone'] = date_default_timezone_get();
 
+        if ($join_url_statuses) {
+            $sql_count_unread = <<<SQL
+                COUNT(l.id) FILTER (
+                    WHERE us.read_at IS NULL
+                    AND us.read_later_at IS NULL
+                    AND us.dismissed_at IS NULL
+                )
+            SQL;
+        } else {
+            $sql_count_unread = '0';
+        }
+
         $sql = <<<SQL
-            SELECT to_char(lc.created_at AT TIME ZONE :timezone, 'YYYY-MM-DD') AS day, COUNT(l.id) AS count
+            SELECT
+                to_char(lc.created_at AT TIME ZONE :timezone, 'YYYY-MM-DD') AS day,
+                COUNT(l.id) AS count_all,
+                {$sql_count_unread} AS count_unread
             FROM streams_to_follows sf
 
             {$sql_join}
@@ -733,7 +752,7 @@ trait Link
         $counts = [];
 
         foreach ($statement->fetchAll() as $row) {
-            $counts[strval($row['day'])] = intval($row['count']);
+            $counts[strval($row['day'])] = [intval($row['count_all']), intval($row['count_unread'])];
         }
 
         return $counts;

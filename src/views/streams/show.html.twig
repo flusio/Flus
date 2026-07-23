@@ -5,6 +5,13 @@
 {% block title %}{{ stream.name }}{% endblock %}
 {% block canonical %}{{ url_full('stream', { id: stream.id }) }}{% endblock %}
 
+{% block head_additional_tags %}
+    {# Changing the filters refreshes the whole page. Morphing preserves the
+     # focus and the scroll positions across these refreshes. #}
+    <meta name="turbo-refresh-method" content="morph">
+    <meta name="turbo-refresh-scroll" content="preserve">
+{% endblock %}
+
 {% block layout_header %}
     {{ include('layouts/_header.html.twig', { page: 'stream', tab: 'reading' }) }}
 {% endblock %}

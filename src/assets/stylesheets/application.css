@@ -7,11 +7,13 @@
 @import url('./components/badges.css');
 @import url('./components/buttons.css');
 @import url('./components/collections.css');
+@import url('./components/day-picker.css');
 @import url('./components/filters.css');
 @import url('./components/groups.css');
 @import url('./components/images.css');
 @import url('./components/links.css');
 @import url('./components/notepads.css');
+@import url('./components/scroller.css');
 @import url('./components/shares.css');
 @import url('./components/sources.css');
 @import url('./components/threads.css');
