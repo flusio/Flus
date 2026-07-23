@@ -25,6 +25,13 @@ class StreamView
 
     public readonly string $status;
 
+    /**
+     * The date at which the view is rendered. It is passed to the "mark as
+     * read" forms so that the links added in background after the rendering
+     * are not marked.
+     */
+    public readonly \DateTimeImmutable $rendered_at;
+
     public function __construct(
         Stream $stream,
         ?User $context_user,
@@ -49,6 +56,7 @@ class StreamView
         $this->at = $at;
         $this->days = $days;
         $this->status = $status;
+        $this->rendered_at = \Minz\Time::now();
 
         // The source is checked last as isSourceCounted() requires the other
         // properties to be set. A source can be selected while having no link
