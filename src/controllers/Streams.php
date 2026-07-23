@@ -5,6 +5,7 @@ namespace App\controllers;
 use App\auth;
 use App\forms;
 use App\models;
+use App\utils;
 use Minz\Request;
 use Minz\Response;
 
@@ -90,5 +91,117 @@ class Streams extends BaseController
         return Response::ok('streams/show.html.twig', [
             'stream_view' => $stream_view,
         ]);
+    }
+
+    /**
+     * @request_param string id
+     *
+     * @response 200
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the stream doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot update the stream.
+     */
+    public function edit(Request $request): Response
+    {
+        $user = auth\CurrentUser::require();
+        $stream = models\Stream::requireFromRequest($request);
+
+        auth\Access::require($user, 'update', $stream);
+
+        $form = new forms\streams\Stream(model: $stream);
+
+        return Response::ok('streams/edit.html.twig', [
+            'stream' => $stream,
+            'form' => $form,
+        ]);
+    }
+
+    /**
+     * @request_param string id
+     * @request_param string name
+     * @request_param string description
+     * @request_param string csrf_token
+     *
+     * @response 400
+     *     If at least one of the parameters is invalid.
+     * @response 302 :from
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the stream doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot update the stream.
+     */
+    public function update(Request $request): Response
+    {
+        $user = auth\CurrentUser::require();
+        $stream = models\Stream::requireFromRequest($request);
+
+        auth\Access::require($user, 'update', $stream);
+
+        $form = new forms\streams\Stream(model: $stream);
+
+        $form->handleRequest($request);
+
+        if (!$form->validate()) {
+            return Response::badRequest('streams/edit.html.twig', [
+                'stream' => $stream,
+                'form' => $form,
+            ]);
+        }
+
+        $stream = $form->model();
+        $stream->save();
+
+        return Response::found(utils\RequestHelper::from($request));
+    }
+
+    /**
+     * @request_param string id
+     * @request_param string csrf_token
+     *
+     * @response 302 :from
+     * @flash notification.error
+     *     If the CSRF token is invalid.
+     * @response 302 /news
+     * @flash notification.success
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the stream doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot delete the stream.
+     */
+    public function delete(Request $request): Response
+    {
+        $user = auth\CurrentUser::require();
+        $stream = models\Stream::requireFromRequest($request);
+
+        auth\Access::require($user, 'delete', $stream);
+
+        $from = utils\RequestHelper::from($request);
+
+        $form = new forms\streams\DeleteStream();
+        $form->handleRequest($request);
+
+        if (!$form->validate()) {
+            utils\Notification::error($form->error('@base'));
+            return Response::found($from);
+        }
+
+        $stream->remove();
+
+        utils\Notification::success(_('The stream has been deleted.'));
+
+        return Response::redirect('news');
     }
 }

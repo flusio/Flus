@@ -1,0 +1,11 @@
+{% extends 'layouts/modal.html.twig' %}
+
+{% block title %}{{ t('Stream edition') }}{% endblock %}
+
+{% block body %}
+    {{ include('streams/_form.html.twig', {
+        form: form,
+        action: url('update stream', { id: stream.id }),
+        submit_label: t('Save changes'),
+    }) }}
+{% endblock %}

@@ -58,6 +58,50 @@
             <a class="button" href="{{ url('edit stream sources', { id: stream.id }) }}">
                 {{ t('Manage sources') }}
             </a>
+
+            <button
+                data-controller="modal-opener"
+                data-action="modal-opener#fetch"
+                data-modal-opener-href-value="{{ url('edit stream', { id: stream.id }) }}"
+                aria-haspopup="dialog"
+                aria-controls="modal"
+            >
+                {{ icon('pencil') }}
+                {{ t('Edit') }}
+            </button>
+
+            {% if can(app.user, 'delete', stream) %}
+                <details
+                    class="popup"
+                    data-controller="popup"
+                    data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
+                >
+                    <summary class="popup__opener">
+                        <span class="button">
+                            {{ icon('menu') }}
+                            {{ t('Actions') }}
+                        </span>
+                    </summary>
+
+                    <nav class="popup__container popup__container--center">
+                        <form
+                            method="post"
+                            action="{{ url('delete stream', { id: stream.id }) }}"
+                            data-turbo-confirm="{{ t('Are you sure that you want to delete this stream?') }}"
+                        >
+                            <button
+                                type="submit"
+                                class="popup__item"
+                            >
+                                {{ icon('trash') }}
+                                {{ t('Delete') }}
+                            </button>
+
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token('streams\\DeleteStream') }}">
+                        </form>
+                    </nav>
+                </details>
+            {% endif %}
         </div>
     {% endif %}
 

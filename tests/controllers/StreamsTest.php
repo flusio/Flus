@@ -193,4 +193,228 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 404);
     }
+
+    public function testEditRendersCorrectly(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->appRun('GET', "/streams/{$stream->id}/edit");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Stream edition');
+        $this->assertResponseTemplateName($response, 'streams/edit.html.twig');
+    }
+
+    public function testEditRedirectsIfNotConnected(): void
+    {
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->appRun('GET', "/streams/{$stream->id}/edit");
+
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Fstreams%2F{$stream->id}%2Fedit");
+    }
+
+    public function testEditFailsIfStreamDoesNotExist(): void
+    {
+        $this->login();
+
+        $response = $this->appRun('GET', '/streams/unknown/edit');
+
+        $this->assertResponseCode($response, 404);
+    }
+
+    public function testEditFailsIfUserDoesNotOwnTheStream(): void
+    {
+        $this->login();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+        ]);
+
+        $response = $this->appRun('GET', "/streams/{$stream->id}/edit");
+
+        $this->assertResponseCode($response, 403);
+    }
+
+    public function testUpdateUpdatesStreamAndRedirects(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+            'name' => 'Old name',
+            'description' => 'Old description',
+        ]);
+        /** @var string */
+        $new_name = $this->fake('words', 3, true);
+        /** @var string */
+        $new_description = $this->fake('sentence');
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/edit", [
+            'csrf_token' => $this->csrfToken(forms\streams\Stream::class),
+            'name' => $new_name,
+            'description' => $new_description,
+        ]);
+
+        $this->assertResponseCode($response, 302, "/streams/{$stream->id}/edit");
+        $stream = $stream->reload();
+        $this->assertSame($new_name, $stream->name);
+        $this->assertSame($new_description, $stream->description);
+    }
+
+    public function testUpdateRedirectsIfNotConnected(): void
+    {
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+            'name' => 'Old name',
+        ]);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/edit", [
+            'csrf_token' => $this->csrfToken(forms\streams\Stream::class),
+            'name' => 'New name',
+        ]);
+
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Fstreams%2F{$stream->id}%2Fedit");
+        $stream = $stream->reload();
+        $this->assertSame('Old name', $stream->name);
+    }
+
+    public function testUpdateFailsIfCsrfIsInvalid(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+            'name' => 'Old name',
+        ]);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/edit", [
+            'csrf_token' => 'not the token',
+            'name' => 'New name',
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'A security verification failed');
+        $stream = $stream->reload();
+        $this->assertSame('Old name', $stream->name);
+    }
+
+    public function testUpdateFailsIfNameIsMissing(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+            'name' => 'Old name',
+        ]);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/edit", [
+            'csrf_token' => $this->csrfToken(forms\streams\Stream::class),
+            'name' => '',
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The name is required');
+        $stream = $stream->reload();
+        $this->assertSame('Old name', $stream->name);
+    }
+
+    public function testUpdateFailsIfUserDoesNotOwnTheStream(): void
+    {
+        $this->login();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+            'name' => 'Old name',
+        ]);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/edit", [
+            'csrf_token' => $this->csrfToken(forms\streams\Stream::class),
+            'name' => 'New name',
+        ]);
+
+        $this->assertResponseCode($response, 403);
+        $stream = $stream->reload();
+        $this->assertSame('Old name', $stream->name);
+    }
+
+    public function testDeleteDeletesStreamAndRedirects(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/delete", [
+            'csrf_token' => $this->csrfToken(forms\streams\DeleteStream::class),
+        ]);
+
+        $this->assertResponseCode($response, 302, '/news');
+        $this->assertFalse(models\Stream::exists($stream->id));
+        $success = utils\Notification::popSuccess();
+        $this->assertStringContainsString('The stream has been deleted.', $success);
+    }
+
+    public function testDeleteRedirectsIfNotConnected(): void
+    {
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/delete", [
+            'csrf_token' => $this->csrfToken(forms\streams\DeleteStream::class),
+        ]);
+
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
+        $this->assertTrue(models\Stream::exists($stream->id));
+    }
+
+    public function testDeleteFailsIfStreamDoesNotExist(): void
+    {
+        $this->login();
+
+        $response = $this->appRun('POST', '/streams/unknown/delete', [
+            'csrf_token' => $this->csrfToken(forms\streams\DeleteStream::class),
+        ]);
+
+        $this->assertResponseCode($response, 404);
+    }
+
+    public function testDeleteFailsIfUserDoesNotOwnTheStream(): void
+    {
+        $this->login();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+        ]);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/delete", [
+            'csrf_token' => $this->csrfToken(forms\streams\DeleteStream::class),
+        ]);
+
+        $this->assertResponseCode($response, 403);
+        $this->assertTrue(models\Stream::exists($stream->id));
+    }
+
+    public function testDeleteFailsIfCsrfIsInvalid(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/delete", [
+            'csrf_token' => 'not the token',
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertTrue(models\Stream::exists($stream->id));
+        $error = utils\Notification::popError();
+        $this->assertStringContainsString('A security verification failed', $error);
+    }
 }
