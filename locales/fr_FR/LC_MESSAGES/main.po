@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-07-22 14:40+0200\n"
-"PO-Revision-Date: 2026-07-22 14:41+0200\n"
+"POT-Creation-Date: 2026-07-23 07:51+0200\n"
+"PO-Revision-Date: 2026-07-23 07:51+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -809,7 +809,7 @@ msgid "Collection edition"
 msgstr "Modification d'une collection"
 
 #: views/collections/edit.html.twig:9
-#: views/collections/filters/edit.html.twig:96
+#: views/collections/filters/edit.html.twig:119
 #: views/collections/groups/edit.html.twig:99 views/groups/edit.html.twig:43
 #: views/links/edit.html.twig:126 views/mastodon/show.html.twig:96
 #: views/my/preferences/edit.html.twig:202 views/my/profile/edit.html.twig:74
@@ -832,10 +832,22 @@ msgid "How to filter the links from this feed in the news?"
 msgstr "Comment filtrer les liens de ce flux dans le journal ?"
 
 #: views/collections/filters/edit.html.twig:39
+msgid "None"
+msgstr "Aucun"
+
+#: views/collections/filters/edit.html.twig:43
+msgid ""
+"You’ll receive no links in the news (recommended for very high-traffic "
+"feeds)."
+msgstr ""
+"Vous ne recevrez aucun lien dans le journal (recommandé pour les flux à très "
+"fort trafic)."
+
+#: views/collections/filters/edit.html.twig:62
 msgid "Strict"
 msgstr "Strict"
 
-#: views/collections/filters/edit.html.twig:43
+#: views/collections/filters/edit.html.twig:66
 msgid ""
 "You’ll receive the links published during the last 24 hours (recommended for "
 "high-traffic feeds)."
@@ -843,11 +855,11 @@ msgstr ""
 "Vous recevrez les liens publiés durant les 24 dernières heures (recommandé "
 "pour les flux à fort trafic)."
 
-#: views/collections/filters/edit.html.twig:62
+#: views/collections/filters/edit.html.twig:85
 msgid "Normal"
 msgstr "Normal"
 
-#: views/collections/filters/edit.html.twig:66
+#: views/collections/filters/edit.html.twig:89
 msgid ""
 "You’ll receive the links published over the past week (recommended for most "
 "of the feeds)."
@@ -855,12 +867,12 @@ msgstr ""
 "Vous recevrez les liens publiés au cours de la semaine passée (recommandé "
 "pour la plupart des flux)."
 
-#: views/collections/filters/edit.html.twig:85
+#: views/collections/filters/edit.html.twig:108
 #: views/streams/_filters.html.twig:122
 msgid "All"
 msgstr "Tout"
 
-#: views/collections/filters/edit.html.twig:89
+#: views/collections/filters/edit.html.twig:112
 msgid ""
 "You’ll receive all the published links (recommended if you don’t want to "
 "miss anything)."

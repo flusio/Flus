@@ -256,6 +256,34 @@ class NewsQueriesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, count($links));
     }
 
+    public function testListFromFollowedCollectionsDoesNotSelectFromFollowedIfTimeFilterNone(): void
+    {
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        // The link is recent enough to be selected with any other time filter.
+        $published_at = \Minz\Time::ago(1, 'hour');
+        $link = LinkFactory::create([
+            'user_id' => $this->other_user->id,
+            'is_hidden' => false,
+        ]);
+        $collection = CollectionFactory::create([
+            'user_id' => $this->other_user->id,
+            'type' => 'collection',
+            'is_public' => true,
+        ]);
+        $collection->addLinks([$link], at: $published_at);
+        FollowedCollectionFactory::create([
+            'user_id' => $this->user->id,
+            'collection_id' => $collection->id,
+            'time_filter' => 'none',
+        ]);
+
+        $links = models\Link::listFromFollowedCollections($this->user->id, max: 50);
+
+        $this->assertSame(0, count($links));
+    }
+
     public function testListFromFollowedCollectionsDoesNotSelectFromFollowedIfLinkIsHidden(): void
     {
         /** @var \DateTimeImmutable */
@@ -489,6 +517,30 @@ class NewsQueriesTest extends \PHPUnit\Framework\TestCase
         FollowedCollectionFactory::create([
             'user_id' => $this->user->id,
             'collection_id' => $collection->id,
+        ]);
+
+        $result = models\Link::anyFromFollowedCollections($this->user->id);
+
+        $this->assertFalse($result);
+    }
+
+    public function testAnyFromFollowedCollectionsCanReturnFalseIfTimeFilterNone(): void
+    {
+        $published_at = \Minz\Time::ago(1, 'day');
+        $link = LinkFactory::create([
+            'user_id' => $this->other_user->id,
+            'is_hidden' => false,
+        ]);
+        $collection = CollectionFactory::create([
+            'user_id' => $this->other_user->id,
+            'type' => 'collection',
+            'is_public' => true,
+        ]);
+        $collection->addLinks([$link], at: $published_at);
+        FollowedCollectionFactory::create([
+            'user_id' => $this->user->id,
+            'collection_id' => $collection->id,
+            'time_filter' => 'none',
         ]);
 
         $result = models\Link::anyFromFollowedCollections($this->user->id);

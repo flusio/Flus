@@ -21,6 +21,31 @@
                     </p>
                 {% endif %}
 
+                {% if app.user.isAlphaEnabled %}
+                    <div class="form-group">
+                        <input
+                            type="radio"
+                            id="time-filter-none"
+                            name="time_filter"
+                            value="none"
+                            {{ form.time_filter === 'none' ? 'checked' : '' }}
+                            aria-describedby="time-filter-none-caption"
+                            {% if form.isInvalid('time_filter') %}
+                                aria-errormessage="time-filter-error"
+                                aria-invalid="true"
+                            {% endif %}
+                        />
+
+                        <label class="label--radio" for="time-filter-none">
+                            {{ t('None') }}
+                        </label>
+
+                        <p class="form-group__caption form-group__caption--alt" id="time-filter-none-caption">
+                            {{ t('You’ll receive no links in the news (recommended for very high-traffic feeds).') }}
+                        </p>
+                    </div>
+                {% endif %}
+
                 <div class="form-group">
                     <input
                         type="radio"

@@ -61,6 +61,7 @@ trait NewsQueries
             AND l.user_id IS DISTINCT FROM :user_id
 
             AND lc.created_at >= :until_hard_limit
+            AND fc.time_filter != 'none'
             AND (
                 (fc.time_filter = 'strict' AND lc.created_at >= :until_strict) OR
                 (fc.time_filter = 'normal' AND lc.created_at >= :until_normal) OR
@@ -126,6 +127,7 @@ trait NewsQueries
                 AND l.user_id IS DISTINCT FROM :user_id
 
                 AND lc.created_at >= :until_hard_limit
+                AND fc.time_filter != 'none'
                 AND (
                     (fc.time_filter = 'strict' AND lc.created_at >= :until_strict) OR
                     (fc.time_filter = 'normal' AND lc.created_at >= :until_normal) OR

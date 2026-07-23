@@ -18,7 +18,7 @@ class FollowedCollection
     use Database\Recordable;
     use Validable;
 
-    public const VALID_TIME_FILTERS = ['strict', 'normal', 'all'];
+    public const VALID_TIME_FILTERS = ['none', 'strict', 'normal', 'all'];
 
     #[Database\Column]
     public int $id;
