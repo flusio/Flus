@@ -645,6 +645,7 @@ trait Link
      *     days?: int,
      *     source?: ?models\Collection,
      *     status?: string,
+     *     created_before?: ?\DateTimeImmutable,
      * } $options
      *
      * @return models\Link[]
@@ -657,6 +658,7 @@ trait Link
             'days' => 1,
             'source' => null,
             'status' => 'all',
+            'created_before' => null,
         ];
         $options = array_merge($default_options, $options);
 
@@ -706,6 +708,7 @@ trait Link
         $options = array_merge($default_options, $options);
         $options['source'] = null;
         $options['status'] = 'all';
+        $options['created_before'] = null;
 
         $sql_join = self::buildStreamJoin(join_url_statuses: false);
         list($sql_where, $parameters) = self::buildStreamWhere($stream, $options);
@@ -760,6 +763,7 @@ trait Link
         $options = array_merge($default_options, $options);
         $options['source'] = null;
         $options['status'] = 'all';
+        $options['created_before'] = null;
 
         $join_url_statuses = $options['context_user'] !== null;
         $sql_join = self::buildStreamJoin($join_url_statuses);
@@ -829,6 +833,7 @@ trait Link
      *     days: int,
      *     source: ?models\Collection,
      *     status: string,
+     *     created_before: ?\DateTimeImmutable,
      * } $options
      *
      * @return array{literal-string, array<string, mixed>}
@@ -878,6 +883,16 @@ trait Link
             $source_clause = 'AND c.id = :source_id';
         }
 
+        // Create the created_before clause to exclude the links added to the
+        // database after the given date (i.e. links fetched in background
+        // after the page was rendered).
+        $created_before_clause = '';
+        if ($options['created_before']) {
+            $parameters[':created_before'] = $options['created_before']->format(Database\Column::DATETIME_FORMAT);
+
+            $created_before_clause = 'AND l.created_at <= :created_before';
+        }
+
         // Create the visibility clause, adapted if a context user is passed.
         $visibility_clause = 'AND (l.is_hidden = false AND c.is_public = true)';
 
@@ -904,6 +919,7 @@ trait Link
 
             {$source_clause}
             {$status_clause}
+            {$created_before_clause}
             {$visibility_clause}
         SQL;
 

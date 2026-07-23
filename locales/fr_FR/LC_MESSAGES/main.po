@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-07-23 11:17+0200\n"
-"PO-Revision-Date: 2026-07-23 11:17+0200\n"
+"POT-Creation-Date: 2026-07-23 17:06+0200\n"
+"PO-Revision-Date: 2026-07-23 17:07+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -324,11 +324,11 @@ msgstr "[%s] Réinitialisation de votre mot de passe"
 msgid "[%s] Your account will be deleted soon due to inactivity"
 msgstr "[%s] Votre compte sera bientôt supprimé pour cause d'inactivité"
 
-#: models/Collection.php:41 models/Group.php:30 models/Stream.php:32
+#: models/Collection.php:41 models/Group.php:30 models/Stream.php:33
 msgid "The name is required."
 msgstr "Le nom est obligatoire."
 
-#: models/Collection.php:45 models/Group.php:34 models/Stream.php:36
+#: models/Collection.php:45 models/Group.php:34 models/Stream.php:37
 msgid "The name must be less than {max} characters."
 msgstr "Le nom ne doit pas faire plus de {max} caractères."
 
@@ -657,7 +657,7 @@ msgstr "aucun lien"
 #: views/collections/_collection.html.twig:26
 #: views/collections/_collection_follow.html.twig:18
 #: views/links/_pagination_count.html.twig:7 views/news/index.html.twig:26
-#: views/news/index.html.twig:132 views/streams/_timeline.html.twig:44
+#: views/news/index.html.twig:132 views/streams/_timeline.html.twig:114
 #, php-format
 msgid "%s link"
 msgid_plural "%s links"
@@ -1074,7 +1074,9 @@ msgstr "Accès"
 #: views/links/show.html.twig:244 views/news/index.html.twig:55
 #: views/news/index.html.twig:145 views/news/index.html.twig:228
 #: views/notes/_notepad.html.twig:29 views/notes/_notepad.html.twig:33
-#: views/profiles/layout.html.twig:93 views/streams/show.html.twig:104
+#: views/profiles/layout.html.twig:93 views/streams/_timeline.html.twig:30
+#: views/streams/_timeline.html.twig:127 views/streams/_timeline.html.twig:214
+#: views/streams/show.html.twig:104
 msgid "Actions"
 msgstr "Actions"
 
@@ -1097,6 +1099,8 @@ msgstr "Copier le lien du flux Web"
 
 #: views/collections/show.html.twig:256 views/news/index.html.twig:66
 #: views/news/index.html.twig:156 views/news/index.html.twig:238
+#: views/streams/_timeline.html.twig:41 views/streams/_timeline.html.twig:138
+#: views/streams/_timeline.html.twig:224
 msgid "Mark all as read"
 msgstr "Tout marquer comme lu"
 
@@ -1416,7 +1420,7 @@ msgstr "Langue"
 msgid "Login"
 msgstr "Se connecter"
 
-#: views/layouts/_modal_dialog.html.twig:22 views/layouts/_sidenav.html.twig:24
+#: views/layouts/_modal_dialog.html.twig:22 views/layouts/_sidenav.html.twig:25
 msgid "Close"
 msgstr "Fermer"
 
@@ -2310,12 +2314,13 @@ msgstr "aujourd’hui"
 msgid "yesterday"
 msgstr "hier"
 
-#: views/news/index.html.twig:61
+#: views/news/index.html.twig:61 views/streams/_timeline.html.twig:36
 msgid "Actions on the day"
 msgstr "Actions pour la journée"
 
 #: views/news/index.html.twig:76 views/news/index.html.twig:167
-#: views/news/index.html.twig:247
+#: views/news/index.html.twig:247 views/streams/_timeline.html.twig:55
+#: views/streams/_timeline.html.twig:152 views/streams/_timeline.html.twig:238
 msgid "Read the links later"
 msgstr "Lire les liens plus tard"
 
@@ -2328,7 +2333,7 @@ msgstr ""
 "Vous allez retirer tous les liens du journal, cette action ne peut pas être "
 "annulée. Confirmez-vous ?"
 
-#: views/news/index.html.twig:151
+#: views/news/index.html.twig:151 views/streams/_timeline.html.twig:133
 msgid "Actions on the feed"
 msgstr "Actions pour le flux"
 
@@ -2969,7 +2974,25 @@ msgstr "Quelle est le nom du fil ?"
 msgid "What’s the purpose of the stream?"
 msgstr "Quelle est la raison d’être du fil ?"
 
-#: views/streams/_timeline.html.twig:66
+#: views/streams/_timeline.html.twig:71 views/streams/_timeline.html.twig:169
+#: views/streams/_timeline.html.twig:254
+msgid ""
+"The links will no longer be counted as unread and won’t be suggested in your "
+"news. Are you sure?"
+msgstr ""
+"Les liens ne seront plus considérés comme non lus et ne seront plus suggérés "
+"dans le journal. Êtes vous sur·es ?"
+
+#: views/streams/_timeline.html.twig:76 views/streams/_timeline.html.twig:174
+#: views/streams/_timeline.html.twig:259
+msgid "Ignore the links"
+msgstr "Ignorer les liens"
+
+#: views/streams/_timeline.html.twig:219
+msgid "Actions on the links"
+msgstr "Actions sur les liens"
+
+#: views/streams/_timeline.html.twig:275
 msgid "There is no link matching your filters."
 msgstr "Il n’y a aucun lien qui correspond à vos filtres."
 

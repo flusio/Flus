@@ -137,6 +137,7 @@ class Stream
      *     days?: int,
      *     source?: ?Collection,
      *     status?: string,
+     *     created_before?: ?\DateTimeImmutable,
      * } $options
      *
      * @return Link[]

@@ -896,6 +896,62 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $count_day);
     }
 
+    public function testStreamLinksCanExcludeLinksCreatedAfterAGivenDate(): void
+    {
+        $published_at = $this->fakeDateInPeriod();
+        $before = \Minz\Time::now();
+        $stream = StreamFactory::create();
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link_created_before = LinkFactory::create([
+            'is_hidden' => false,
+            'created_at' => \Minz\Time::ago(1, 'hour'),
+        ]);
+        $link_created_after = LinkFactory::create([
+            'is_hidden' => false,
+            'created_at' => \Minz\Time::fromNow(1, 'hour'),
+        ]);
+        $source->addLinks([$link_created_before, $link_created_after], at: $published_at);
+        $stream->addSource($source);
+
+        $links = $stream->links([
+            'at' => $published_at,
+            'created_before' => $before,
+        ]);
+
+        $this->assertSame(1, count($links));
+        $this->assertSame($link_created_before->id, $links[0]->id);
+    }
+
+    public function testStreamLinksDoesNotExcludeLinksIfCreatedBeforeIsNull(): void
+    {
+        $published_at = $this->fakeDateInPeriod();
+        $stream = StreamFactory::create();
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link_created_before = LinkFactory::create([
+            'is_hidden' => false,
+            'created_at' => \Minz\Time::ago(1, 'hour'),
+        ]);
+        $link_created_after = LinkFactory::create([
+            'is_hidden' => false,
+            'created_at' => \Minz\Time::fromNow(1, 'hour'),
+        ]);
+        $source->addLinks([$link_created_before, $link_created_after], at: $published_at);
+        $stream->addSource($source);
+
+        $links = $stream->links([
+            'at' => $published_at,
+            'created_before' => null,
+        ]);
+
+        $this->assertSame(2, count($links));
+    }
+
     /**
      * Return a random date over the period covered by a StreamView, with
      * enough room to look for links on the previous days.
