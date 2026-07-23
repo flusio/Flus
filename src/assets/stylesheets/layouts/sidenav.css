@@ -1,18 +1,22 @@
-:root {
-    --sidenav-width: 17rem;
+.sidenav__menu {
+    width: var(--sidenav-width);
 }
 
-@media (min-width: 800px) and (max-width: 1300px) {
+:root {
+    --sidenav-width: 15rem;
+}
+
+@media (min-width: 800px) and (max-width: 1299px) {
     :root {
         --sidenav-width: 11rem;
     }
 }
 
-.sidenav__menu {
-    width: var(--sidenav-width);
-}
-
 @media (max-width: 799px) {
+    :root {
+        --sidenav-width: 18rem;
+    }
+
     .sidenav__container {
         position: fixed;
         inset: 0 0 var(--layout-header-height) 0;
