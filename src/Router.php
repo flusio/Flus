@@ -223,6 +223,9 @@ class Router
         $router->addRoute('POST', '/streams/:id/delete', 'Streams#delete', 'delete stream');
         $router->addRoute('GET', '/streams/:id/image', 'streams/Images#edit', 'edit image stream');
         $router->addRoute('POST', '/streams/:id/image', 'streams/Images#update', 'update image stream');
+        $router->addRoute('POST', '/streams/:id/read', 'streams/Read#create', 'mark stream as read');
+        $router->addRoute('POST', '/streams/:id/read/later', 'streams/Read#later', 'read stream later');
+        $router->addRoute('POST', '/streams/:id/dismiss', 'streams/Read#dismiss', 'dismiss stream');
         $router->addRoute('GET', '/streams/:id/sources/edit', 'streams/Sources#edit', 'edit stream sources');
         $router->addRoute(
             'POST',
