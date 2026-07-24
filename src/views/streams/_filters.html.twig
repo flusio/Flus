@@ -149,38 +149,41 @@
                 {% set source = source_and_count[0] %}
                 {% set count_all_links = source_and_count[1] %}
                 {% set count_unread_links = source_and_count[2] %}
+                {% set source_title = t('%s: %d link', '%s: %d links', count_all_links, [source.name, count_all_links]) %}
+                {% if count_unread_links > 0 %}
+                    {% set source_title = source_title ~ ' ' ~ t('(%d unread)', '(%d unread)', count_unread_links, [count_unread_links]) %}
+                {% endif %}
 
-                <div class="filters__option">
+                <div class="filters__option filters__option--light">
                     <button
                         type="button"
-                        class="source source--button cols cols--always cols--center cols--gap"
+                        class="cols cols--always cols--center cols--gap-small"
+                        id="stream-source-{{ source.id }}"
                         value="{{ source.id }}"
                         aria-pressed="{{ stream_view.isSourceSelected(source) ? 'true' : 'false' }}"
-                        title="{{ t('%s: %d link', '%s: %d links', count_all_links, [source.name, count_all_links]) }} {% if count_unread_links > 0 %}{{ t('(has unread)') }}{% endif %}"
+                        title="{{ source_title }}"
                         data-stream-target="source"
                         data-action="stream#selectSource"
                     >
                         <img
-                            class="source__image"
+                            class="filters__option-image"
                             alt=""
                             src="{{ url_media('covers', source.image_filename, 'collection-card.png') }}"
                         >
 
-                        <span class="source__body col--extend flow flow--smaller">
-                            <span class="source__name">
-                                {{ source.name }}
-                            </span>
-
-                            <span class="source__count">
-                                {% if count_unread_links > 0 %}
-                                    <span class="source__unread-dot"></span>
-                                {% endif %}
-
-                                {{ count_all_links }}
-                            </span>
+                        <span class="filters__option-label">
+                            {{ source.name }}
                         </span>
 
-                        <span class="filters__unselect">
+                        <span class="filters__option-count">
+                            {% if count_unread_links > 0 %}
+                                <span class="filters__option-unread-dot"></span>
+                            {% endif %}
+
+                            {{ count_all_links }}
+                        </span>
+
+                        <span class="filters__option-unselect">
                             {{ icon('times') }}
                         </span>
                     </button>

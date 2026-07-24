@@ -22,23 +22,54 @@
     --button-border-color: var(--color-accent-border);
 }
 
-.filters__option .source--button[aria-pressed="true"] {
-    background-color: var(--color-accent-bg-subtle);
-    border-color: var(--color-accent-border);
+.filters__option--light button[aria-pressed="true"] {
+    --button-background-color: var(--color-accent-bg-subtle);
 }
 
-.filters__option .filters__unselect {
+.filters__option-image {
+    width: 24px;
+    max-width: none;
+
+    background-color: var(--color-base);
+    border-radius: var(--border-radius-small);
+}
+
+.filters__option-label {
+    overflow: hidden;
+
+    max-width: 15rem;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.filters__option-count {
+    color: var(--color-grey-text);
+}
+
+.filters__option-unread-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+
+    vertical-align: middle;
+
+    background-color: var(--color-accent-solid);
+    border-radius: 50%;
+}
+
+.filters__option-unselect {
     display: none;
 }
 
-.filters__option [aria-pressed="true"] .filters__unselect {
+[aria-pressed="true"] .filters__option-unselect {
     position: absolute;
     z-index: 1;
-    top: calc(-1 * var(--space-smaller));
-    right: calc(-1 * var(--space-smaller));
+    top: calc(-1 * var(--space-small));
+    right: calc(-1 * var(--space-small));
 
     display: block;
-    padding: 2px;
+    padding: 1px;
 
     font-size: var(--font-size-smaller);
 
