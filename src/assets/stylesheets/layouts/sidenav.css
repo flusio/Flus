@@ -84,11 +84,11 @@
 }
 
 .sidenav__menu-item {
-    overflow-wrap: anywhere;
-
-    display: block;
+    display: flex;
     width: 100%;
     padding: var(--space-small);
+
+    align-items: flex-start;
 
     color: var(--color-text);
     line-height: 1.5;
@@ -97,6 +97,8 @@
     border-radius: var(--border-radius);
 
     transition: background-color 0.2s ease-in-out;
+    overflow-wrap: anywhere;
+    gap: var(--space-small);
 }
 
 .sidenav__menu-item:hover,
@@ -112,17 +114,20 @@
 }
 
 .sidenav__menu-item .icon {
-    margin-right: var(--space-smaller);
+    flex-shrink: 0;
 }
 
 .sidenav__menu-item .sidenav__menu-image {
     width: 1.5em;
     height: 1.5em;
-    margin-right: var(--space-smaller);
 
-    vertical-align: top;
+    flex-shrink: 0;
 
     border-radius: var(--border-radius-small);
+}
+
+.sidenav__menu-label {
+    flex: 1;
 }
 
 .sidenav__menu-title {
