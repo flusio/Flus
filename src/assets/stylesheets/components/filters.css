@@ -16,6 +16,11 @@
     position: relative;
 }
 
+.filters__option--light button {
+    --button-background-color: var(--color-base);
+    --button-border-color: var(--color-grey-border);
+}
+
 .filters__option button[aria-pressed="true"] {
     --button-color: var(--color-accent-text-contrast);
     --button-background-color: var(--color-accent-bg-active);
@@ -27,11 +32,11 @@
 }
 
 .filters__option-image {
-    width: 24px;
+    width: 2rem;
     max-width: none;
 
     background-color: var(--color-base);
-    border-radius: var(--border-radius-small);
+    border-radius: var(--border-radius);
 }
 
 .filters__option-label {
