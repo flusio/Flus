@@ -1,5 +1,36 @@
 # Changelog of Flus
 
+## 2026-07-24 - v2.5.2
+
+### Migration notes
+
+This version fixes an XSS issue which was mitigated by CSP headers.
+Update is recommended.
+
+### Security
+
+- Sanitize links and media URLs in the HtmlSanitizer ([c38209b5](https://github.com/flusio/Flus/commit/c38209b5))
+
+### Bug fixes
+
+- Fix offset of the first sidenav element on big screens ([68e1a995](https://github.com/flusio/Flus/commit/68e1a995))
+- Adapt the width of the sidenav ([a019cabd](https://github.com/flusio/Flus/commit/a019cabd))
+- Fix issues with long menu navigation labels ([108492dc](https://github.com/flusio/Flus/commit/108492dc), [33ca6001](https://github.com/flusio/Flus/commit/33ca6001))
+- Decrease contrast of active sidenav element ([801797b6](https://github.com/flusio/Flus/commit/801797b6))
+- Fix grouping links by dates ([5de22461](https://github.com/flusio/Flus/commit/5de22461))
+- Forget URL status when deleting a link ([64c56402](https://github.com/flusio/Flus/commit/64c56402))
+
+### Maintenance
+
+- Change the source of read/read later/dismissed links ([39e1776f](https://github.com/flusio/Flus/commit/39e1776f), [70b933f4](https://github.com/flusio/Flus/commit/70b933f4))
+- Apply bulk DB operations by chunks ([37dc4ac7](https://github.com/flusio/Flus/commit/37dc4ac7))
+- Update the dependencies ([a6750539](https://github.com/flusio/Flus/commit/a6750539))
+- Remove useless autosubmit on header locale form ([5618895a](https://github.com/flusio/Flus/commit/5618895a))
+
+### Alpha
+
+- Provide the initial "Stream" feature in alpha ([a255df50](https://github.com/flusio/Flus/commit/a255df50), [61793ea0](https://github.com/flusio/Flus/commit/61793ea0), [b8e8332f](https://github.com/flusio/Flus/commit/b8e8332f), [675815d6](https://github.com/flusio/Flus/commit/675815d6), [5f4993a3](https://github.com/flusio/Flus/commit/5f4993a3), [ff2f4810](https://github.com/flusio/Flus/commit/ff2f4810), [4e6ba6ee](https://github.com/flusio/Flus/commit/4e6ba6ee), [8a8f0291](https://github.com/flusio/Flus/commit/8a8f0291), [196e5009](https://github.com/flusio/Flus/commit/196e5009), [37283a6c](https://github.com/flusio/Flus/commit/37283a6c), [a01d96a0](https://github.com/flusio/Flus/commit/a01d96a0), [793a265d](https://github.com/flusio/Flus/commit/793a265d), [212a9abc](https://github.com/flusio/Flus/commit/212a9abc), [7c014fcb](https://github.com/flusio/Flus/commit/7c014fcb))
+
 ## 2026-06-23 - v2.5.1
 
 ### Maintenance
