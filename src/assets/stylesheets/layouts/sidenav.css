@@ -110,7 +110,7 @@
     color: var(--color-accent-text-contrast);
     font-weight: 700;
 
-    background-color: var(--color-accent-bg-active);
+    background-color: var(--color-accent-bg);
 }
 
 .sidenav__menu-item .icon {
