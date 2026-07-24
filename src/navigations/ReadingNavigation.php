@@ -3,6 +3,7 @@
 namespace App\navigations;
 
 use App\auth;
+use App\twig;
 use Minz\Template\TwigExtension;
 
 /**
@@ -66,7 +67,7 @@ class ReadingNavigation extends BaseNavigation
                     label: $stream->name,
                     key: $stream->id,
                     url: \Minz\Url::for('stream', ['id' => $stream->id]),
-                    image_filename: $stream->image_filename ?? '',
+                    image_filename: twig\UrlExtension::urlMedia('covers', $stream->image_filename, 'stream-card.png'),
                 );
             }
 

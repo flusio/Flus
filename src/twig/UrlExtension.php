@@ -27,7 +27,7 @@ class UrlExtension
     }
 
     /**
-     * @param 'cards'|'large'|'avatars' $type
+     * @param 'covers'|'avatars' $type
      */
     #[AsTwigFunction('url_media')]
     public static function urlMedia(string $type, ?string $filename, string $default = 'default-card.png'): string
@@ -49,7 +49,7 @@ class UrlExtension
     }
 
     /**
-     * @param 'cards'|'large'|'avatars' $type
+     * @param 'covers'|'avatars' $type
      */
     #[AsTwigFunction('url_media_full')]
     public static function urlMediaFull(string $type, ?string $filename, string $default = 'default-card.png'): string
