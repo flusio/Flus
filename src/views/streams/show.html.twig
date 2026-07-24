@@ -26,7 +26,7 @@
 
 {% block body %}
     <div class="cols cols--gap-large">
-        <div class="col--size3 text--center">
+        <div class="col--size2 text--center">
             {% if can(app.user, 'update', stream) %}
                 <button
                     class="button--edit-image"
@@ -38,7 +38,7 @@
                     title="{{ t('Change the illustration') }}"
                 >
                     <img
-                        class="illustration"
+                        class="illustration illustration--alt"
                         alt=""
                         src="{{ url_media('covers', stream.image_filename, 'stream-card.png') }}"
                     >
@@ -49,7 +49,7 @@
                 </button>
             {% else %}
                 <img
-                    class="illustration"
+                    class="illustration illustration--alt"
                     alt=""
                     src="{{ url_media('covers', stream.image_filename, 'stream-card.png') }}"
                 >
