@@ -36,7 +36,7 @@ class Sources extends BaseController
 
         auth\Access::require($user, 'update', $stream);
 
-        $suggested_sources = $user->followedCollections(['number_links']);
+        $suggested_sources = $user->followedCollections();
         $suggested_sources = utils\Sorter::localeSort($suggested_sources, 'name');
 
         $existing_sources = $stream->sources();
