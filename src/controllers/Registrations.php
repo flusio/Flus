@@ -116,14 +116,19 @@ class Registrations extends BaseController
         return $response;
     }
 
+    /**
+     * Set the CSP headers required by the Altcha widget.
+     *
+     * Altcha runs its proof of work in workers created from blobs.
+     *
+     * The <style> element that Altcha injects doesn't need a dedicated
+     * directive: it is allowed by the style-src set in the Application, which
+     * permits 'unsafe-inline'.
+     */
     public function setAltchaCSPHeaders(Response $response): void
     {
         if (\App\Configuration::$application['registration_captcha']) {
             $response->setContentSecurityPolicy('worker-src', "'self' blob:");
-            $response->setContentSecurityPolicy(
-                'style-src-elem',
-                "'self' 'sha256-egofkfASsSTkzuyfBiXWBobV9ZDK4UIMKiNlvLr9nNE=' 'unsafe-hashes'"
-            );
         }
     }
 }

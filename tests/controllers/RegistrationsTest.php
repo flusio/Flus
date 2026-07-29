@@ -34,6 +34,34 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
     }
 
+    public function testNewSetsTheAltchaCSPHeadersIfCaptchaIsEnabled(): void
+    {
+        \App\Configuration::$application['registration_captcha'] = true;
+
+        $response = $this->appRun('GET', '/registration');
+
+        \App\Configuration::$application['registration_captcha'] = false;
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseHeaders($response, [
+            'Content-Security-Policy' => [
+                'default-src' => "'self'",
+                'worker-src' => "'self' blob:",
+                'style-src' => "'self' 'unsafe-inline'",
+            ],
+        ]);
+    }
+
+    public function testNewDoesNotSetTheAltchaCSPHeadersIfCaptchaIsDisabled(): void
+    {
+        $response = $this->appRun('GET', '/registration');
+
+        $this->assertResponseCode($response, 200);
+        $this->assertInstanceOf(\Minz\Response::class, $response);
+        $csp = $response->headers(true)['Content-Security-Policy'];
+        $this->assertIsArray($csp);
+        $this->assertArrayNotHasKey('worker-src', $csp);
+    }
+
     public function testNewRedirectsToLoginIfRegistrationsAreClosed(): void
     {
         \App\Configuration::$application['registrations_opened'] = false;
@@ -452,5 +480,29 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\User::count());
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'You must accept the terms of service');
+    }
+
+    public function testCreateFailsAndSetsTheAltchaCSPHeadersIfCaptchaIsEnabled(): void
+    {
+        \App\Configuration::$application['registration_captcha'] = true;
+
+        $response = $this->appRun('POST', '/registration', [
+            'csrf_token' => $this->csrfToken(forms\Registration::class),
+            'username' => $this->fake('name'),
+            'email' => $this->fake('email'),
+            'password' => $this->fake('password'),
+        ]);
+
+        \App\Configuration::$application['registration_captcha'] = false;
+        $this->assertSame(0, models\User::count());
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The captcha has not been completed');
+        $this->assertResponseHeaders($response, [
+            'Content-Security-Policy' => [
+                'default-src' => "'self'",
+                'worker-src' => "'self' blob:",
+                'style-src' => "'self' 'unsafe-inline'",
+            ],
+        ]);
     }
 }
