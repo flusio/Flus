@@ -48,5 +48,13 @@
         <span class="sidenav__menu-label">
             {{ element.label }}
         </span>
+
+        {% if element.dot_label %}
+            <span class="sidenav__menu-dot" title="{{ element.dot_label }}">
+                <span class="sr-only">
+                    {{ element.dot_label }}
+                </span>
+            </span>
+        {% endif %}
     </a>
 {% endif %}

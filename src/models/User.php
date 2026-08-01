@@ -853,9 +853,7 @@ class User
     public function streams(): array
     {
         return $this->memoize('streams', function (): array {
-            $streams = Stream::listBy([
-                'user_id' => $this->id,
-            ]);
+            $streams = Stream::listByUser($this);
 
             return utils\Sorter::localeSort($streams, 'name');
         });

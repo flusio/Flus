@@ -130,6 +130,21 @@
     flex: 1;
 }
 
+.sidenav__menu-dot {
+    width: 0.6rem;
+    height: 0.6rem;
+
+    flex-shrink: 0;
+    align-self: center;
+
+    background-color: var(--color-accent-solid);
+    border-radius: 50%;
+}
+
+.sidenav__menu-item[aria-current="page"] .sidenav__menu-dot {
+    background-color: var(--color-accent-solid-hover);
+}
+
 .sidenav__menu-title {
     font-size: var(--font-size-normal);
     font-weight: 600;

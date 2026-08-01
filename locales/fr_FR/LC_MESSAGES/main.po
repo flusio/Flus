@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-08-01 21:09+0200\n"
-"PO-Revision-Date: 2026-08-01 21:09+0200\n"
+"POT-Creation-Date: 2026-08-01 22:28+0200\n"
+"PO-Revision-Date: 2026-08-01 22:28+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -509,11 +509,15 @@ msgstr "Explorer"
 msgid "New stream"
 msgstr "Nouveau fil"
 
-#: navigations/ReadingNavigation.php:76
+#: navigations/ReadingNavigation.php:65
+msgid "Has unread links from the past week"
+msgstr "Contient des liens non lus datant de la semaine passée"
+
+#: navigations/ReadingNavigation.php:79
 msgid "Create a stream to get started."
 msgstr "Créez un fil pour commencer."
 
-#: navigations/ReadingNavigation.php:81
+#: navigations/ReadingNavigation.php:84
 msgid "Streams"
 msgstr "Fils"
 

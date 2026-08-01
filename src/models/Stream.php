@@ -50,6 +50,9 @@ class Stream
     #[Database\Column]
     public string $user_id;
 
+    #[Database\Column(computed: true)]
+    public ?bool $has_unread_links = null;
+
     public function __construct(User $user)
     {
         $this->id = \Minz\Random::timebased();
@@ -203,6 +206,69 @@ class Stream
     public function countLinksPerSource(array $options = []): array
     {
         return Link::countByStreamPerSource($this, $options);
+    }
+
+    /**
+     * List the streams owned by the given user.
+     *
+     * The has_unread_links property is always computed: it indicates whether
+     * the stream contains unread links published during the past week.
+     *
+     * The joins and the clauses of the subquery must be kept in sync with the
+     * ones of dao\Link::buildStreamJoin() and dao\Link::buildStreamWhere().
+     *
+     * @return self[]
+     */
+    public static function listByUser(User $user): array
+    {
+        $unread_start = \Minz\Time::ago(6, 'days')->modify('00:00:00');
+        $unread_end = \Minz\Time::now()->modify('23:59:59');
+
+        $sql = <<<SQL
+            SELECT s.*, EXISTS (
+                SELECT 1
+                FROM streams_to_follows sf
+
+                INNER JOIN followed_collections fc ON sf.follow_id = fc.id
+                INNER JOIN links_to_collections lc ON fc.collection_id = lc.collection_id
+                INNER JOIN collections c ON fc.collection_id = c.id
+                INNER JOIN links l ON lc.link_id = l.id
+                LEFT JOIN url_statuses us ON us.user_id = :user_id AND us.url_hash = l.url_hash
+
+                WHERE sf.stream_id = s.id
+                AND l.is_hidden = false
+                AND lc.created_at >= :unread_start AND lc.created_at <= :unread_end
+
+                AND (
+                    us.read_at IS NULL
+                    AND us.read_later_at IS NULL
+                    AND us.dismissed_at IS NULL
+                )
+
+                AND (
+                    (l.is_hidden = false AND c.is_public = true)
+                    OR c.user_id = :user_id
+                    OR EXISTS (
+                        SELECT 1 FROM collection_shares cs
+                        WHERE cs.user_id = :user_id
+                        AND cs.collection_id = c.id
+                    )
+                )
+            ) AS has_unread_links
+            FROM streams s
+
+            WHERE s.user_id = :user_id
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute([
+            ':user_id' => $user->id,
+            ':unread_start' => $unread_start->format(Database\Column::DATETIME_FORMAT),
+            ':unread_end' => $unread_end->format(Database\Column::DATETIME_FORMAT),
+        ]);
+
+        return self::fromDatabaseRows($statement->fetchAll());
     }
 
     /**

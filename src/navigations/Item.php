@@ -14,6 +14,7 @@ class Item extends Element
         public readonly string $url,
         public readonly string $icon = '',
         public readonly string $image_filename = '',
+        public readonly string $dot_label = '',
     ) {
     }
 

@@ -62,12 +62,15 @@ class ReadingNavigation extends BaseNavigation
 
             $stream_items = [];
 
+            $unread_links_label = TwigExtension::translate('Has unread links from the past week');
+
             foreach ($current_user->streams() as $stream) {
                 $stream_items[] = new Item(
                     label: $stream->name,
                     key: $stream->id,
                     url: \Minz\Url::for('stream', ['id' => $stream->id]),
                     image_filename: twig\UrlExtension::urlMedia('covers', $stream->image_filename, 'stream-card.png'),
+                    dot_label: $stream->has_unread_links ? $unread_links_label : '',
                 );
             }
 
