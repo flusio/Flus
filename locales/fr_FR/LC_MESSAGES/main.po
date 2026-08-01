@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-08-01 17:42+0200\n"
-"PO-Revision-Date: 2026-08-01 17:42+0200\n"
+"POT-Creation-Date: 2026-08-01 18:02+0200\n"
+"PO-Revision-Date: 2026-08-01 18:02+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -1103,8 +1103,9 @@ msgid "Mark all as read"
 msgstr "Tout marquer comme lu"
 
 #: views/collections/show.html.twig:231 views/news/_popup_actions.html.twig:41
-msgid "Remove the links from the news"
-msgstr "Retirer les liens du journal"
+#: views/streams/_popup_actions.html.twig:46
+msgid "Ignore the links"
+msgstr "Ignorer les liens"
 
 #: views/collections/show.html.twig:242 views/links/_link.html.twig:272
 #: views/links/show.html.twig:285 views/notes/_notepad.html.twig:50
@@ -1554,8 +1555,8 @@ msgid "hidden"
 msgstr "masqué"
 
 #: views/links/_link.html.twig:219
-msgid "Remove from the news"
-msgstr "Retirer du journal"
+msgid "Ignore the link"
+msgstr "Ignorer le lien"
 
 #: views/links/_link.html.twig:230
 msgid "Copy the external link"
@@ -2308,12 +2309,13 @@ msgid "Read the links later"
 msgstr "Lire les liens plus tard"
 
 #: views/news/_popup_actions.html.twig:46
+#: views/streams/_popup_actions.html.twig:51
 msgid ""
-"You’ll remove all the news links, this action cannot be canceled. Are you "
-"sure?"
+"The links will no longer be counted as unread and won’t be suggested in your "
+"news. Are you sure?"
 msgstr ""
-"Vous allez retirer tous les liens du journal, cette action ne peut pas être "
-"annulée. Confirmez-vous ?"
+"Les liens ne seront plus considérés comme non lus et ne seront plus suggérés "
+"dans le journal. Êtes vous sur·es ?"
 
 #: views/news/index.html.twig:37
 msgid "today"
@@ -2977,18 +2979,6 @@ msgstr "Quelle est le nom du fil ?"
 #: views/streams/_form.html.twig:43
 msgid "What’s the purpose of the stream?"
 msgstr "Quelle est la raison d’être du fil ?"
-
-#: views/streams/_popup_actions.html.twig:46
-msgid "Ignore the links"
-msgstr "Ignorer les liens"
-
-#: views/streams/_popup_actions.html.twig:51
-msgid ""
-"The links will no longer be counted as unread and won’t be suggested in your "
-"news. Are you sure?"
-msgstr ""
-"Les liens ne seront plus considérés comme non lus et ne seront plus suggérés "
-"dans le journal. Êtes vous sur·es ?"
 
 #: views/streams/_timeline.html.twig:124
 msgid "Actions on the links"

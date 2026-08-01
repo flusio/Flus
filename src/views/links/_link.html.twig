@@ -216,7 +216,7 @@
                 {% if display_never %}
                     {{ item.action(
                         url: url('mark link to never read', { id: link.id }),
-                        label: t('Remove from the news'),
+                        label: t('Ignore the link'),
                         icon: 'times',
                         csrf: 'links\\MarkLinkAsNever',
                         preserve_scroll: true,

@@ -38,10 +38,10 @@
 
 {{ item.action(
     url: url('never read collection', { id: news.id }),
-    label: t('Remove the links from the news'),
+    label: t('Ignore the links'),
     icon: 'times',
     csrf: 'collections\\MarkCollectionAsNever',
     params: params,
     preserve_scroll: preserve_scroll,
-    confirm: t('You’ll remove all the news links, this action cannot be canceled. Are you sure?'),
+    confirm: t('The links will no longer be counted as unread and won’t be suggested in your news. Are you sure?'),
 ) }}
