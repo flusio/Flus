@@ -99,6 +99,9 @@ class Collection
     public ?int $number_links = null;
 
     #[Database\Column(computed: true)]
+    public ?int $number_streams = null;
+
+    #[Database\Column(computed: true)]
     public ?string $time_filter = null;
 
     public function __construct()

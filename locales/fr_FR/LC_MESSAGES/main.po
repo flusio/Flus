@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-08-01 18:02+0200\n"
-"PO-Revision-Date: 2026-08-01 18:02+0200\n"
+"POT-Creation-Date: 2026-08-01 18:58+0200\n"
+"PO-Revision-Date: 2026-08-01 18:58+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -332,21 +332,21 @@ msgstr "Le nom est obligatoire."
 msgid "The name must be less than {max} characters."
 msgstr "Le nom ne doit pas faire plus de {max} caractères."
 
-#: models/Collection.php:139 models/Collection.php:226
+#: models/Collection.php:142 models/Collection.php:229
 #: models/ReadLaterSource.php:20 navigations/ReadingNavigation.php:33
 msgid "To read"
 msgstr "À lire"
 
-#: models/Collection.php:150 models/Collection.php:228 models/ReadSource.php:20
+#: models/Collection.php:153 models/Collection.php:231 models/ReadSource.php:20
 #: navigations/ReadingNavigation.php:40
 msgid "Links read"
 msgstr "Liens lus"
 
-#: models/Collection.php:161
+#: models/Collection.php:164
 msgid "Links never to read"
 msgstr "Liens à ne jamais lire"
 
-#: models/Collection.php:172 models/Collection.php:230
+#: models/Collection.php:175 models/Collection.php:233
 #: navigations/ReadingNavigation.php:26
 msgid "News"
 msgstr "Journal"
@@ -657,7 +657,7 @@ msgstr "aucun lien"
 #: views/collections/_collection.html.twig:26
 #: views/collections/_collection_follow.html.twig:18
 #: views/links/_pagination_count.html.twig:7 views/news/index.html.twig:26
-#: views/news/index.html.twig:95 views/streams/_timeline.html.twig:67
+#: views/news/index.html.twig:95 views/streams/_timeline.html.twig:68
 #, php-format
 msgid "%s link"
 msgid_plural "%s links"
@@ -678,7 +678,7 @@ msgstr "privée"
 #: views/collections/_collection.html.twig:52
 #: views/collections/_collection_follow.html.twig:24
 #: views/collections/show.html.twig:96 views/streams/show.html.twig:63
-#: views/streams/sources/_source.html.twig:34
+#: views/streams/sources/_source.html.twig:42
 #: views/streams/sources/edit.html.twig:48
 msgid "Publication frequency"
 msgstr "Fréquence de publication"
@@ -1036,7 +1036,7 @@ msgid "Syndication feed of %s"
 msgstr "Flux de syndication de %s"
 
 #: views/collections/show.html.twig:62 views/collections/show.html.twig:71
-#: views/links/_link.html.twig:254 views/links/show.html.twig:47
+#: views/links/_link.html.twig:261 views/links/show.html.twig:47
 #: views/links/show.html.twig:56 views/streams/show.html.twig:38
 #: views/streams/show.html.twig:47
 msgid "Change the illustration"
@@ -1059,7 +1059,7 @@ msgstr[0] "Thématique :"
 msgstr[1] "Thématiques :"
 
 #: views/collections/show.html.twig:165 views/groups/_group.html.twig:20
-#: views/links/_link.html.twig:248 views/links/show.html.twig:269
+#: views/links/_link.html.twig:255 views/links/show.html.twig:269
 #: views/notes/_notepad.html.twig:42 views/profiles/layout.html.twig:81
 #: views/streams/show.html.twig:99
 msgid "Edit"
@@ -1069,13 +1069,13 @@ msgstr "Modifier"
 msgid "Access"
 msgstr "Accès"
 
-#: views/collections/show.html.twig:184 views/links/_link.html.twig:203
-#: views/links/_link.html.twig:209 views/links/show.html.twig:237
+#: views/collections/show.html.twig:184 views/links/_link.html.twig:210
+#: views/links/_link.html.twig:216 views/links/show.html.twig:237
 #: views/links/show.html.twig:241 views/news/index.html.twig:53
 #: views/news/index.html.twig:105 views/news/index.html.twig:150
 #: views/notes/_notepad.html.twig:27 views/notes/_notepad.html.twig:33
 #: views/profiles/layout.html.twig:88 views/streams/_timeline.html.twig:26
-#: views/streams/_timeline.html.twig:77 views/streams/_timeline.html.twig:119
+#: views/streams/_timeline.html.twig:78 views/streams/_timeline.html.twig:121
 #: views/streams/show.html.twig:106
 msgid "Actions"
 msgstr "Actions"
@@ -1107,7 +1107,7 @@ msgstr "Tout marquer comme lu"
 msgid "Ignore the links"
 msgstr "Ignorer les liens"
 
-#: views/collections/show.html.twig:242 views/links/_link.html.twig:272
+#: views/collections/show.html.twig:242 views/links/_link.html.twig:279
 #: views/links/show.html.twig:285 views/notes/_notepad.html.twig:50
 #: views/streams/show.html.twig:114
 msgid "Delete"
@@ -1496,32 +1496,32 @@ msgstr "Masquer ce lien dans les collections publiques"
 msgid "Add the link"
 msgstr "Ajouter le lien"
 
-#: views/links/_link.html.twig:64
+#: views/links/_link.html.twig:71
 msgid "This link seems to be inaccessible, you should repair it."
 msgstr "Ce lien semble inaccessible, vous devriez le réparer."
 
-#: views/links/_link.html.twig:65 views/links/_link.html.twig:83
+#: views/links/_link.html.twig:72 views/links/_link.html.twig:90
 #: views/links/show.html.twig:74
 msgid "inaccessible"
 msgstr "inaccessible"
 
-#: views/links/_link.html.twig:74
+#: views/links/_link.html.twig:81
 msgid "Trackers have been detected in this link, you should repair it."
 msgstr "Des pisteurs ont été détectés dans ce lien, vous devriez le réparer."
 
-#: views/links/_link.html.twig:75 views/links/_link.html.twig:93
+#: views/links/_link.html.twig:82 views/links/_link.html.twig:100
 #: views/links/show.html.twig:80
 msgid "trackers"
 msgstr "pisteurs"
 
-#: views/links/_link.html.twig:82 views/links/show.html.twig:73
+#: views/links/_link.html.twig:89 views/links/show.html.twig:73
 msgid ""
 "This link seems to be inaccessible, you may have difficulties to access it."
 msgstr ""
 "Ce lien semble inaccessible, vous pourriez rencontrer des difficultés pour y "
 "accéder."
 
-#: views/links/_link.html.twig:92 views/links/show.html.twig:79
+#: views/links/_link.html.twig:99 views/links/show.html.twig:79
 msgid ""
 "Trackers have been detected in this link, your privacy might not be "
 "respected if you click on it."
@@ -1529,71 +1529,71 @@ msgstr ""
 "Des pisteurs ont été détectés dans ce lien, votre vie privée pourrait ne pas "
 "être respectée si vous cliquez dessus."
 
-#: views/links/_link.html.twig:140 views/links/show.html.twig:103
+#: views/links/_link.html.twig:147 views/links/show.html.twig:103
 msgid "You read this link."
 msgstr "Vous avez lu ce lien."
 
-#: views/links/_link.html.twig:144 views/links/show.html.twig:107
+#: views/links/_link.html.twig:151 views/links/show.html.twig:107
 msgid "You marked this link to be read."
 msgstr "Vous avez marqué ce lien à lire."
 
-#: views/links/_link.html.twig:151 views/links/show.html.twig:125
+#: views/links/_link.html.twig:158 views/links/show.html.twig:125
 msgid "ongoing synchronisation…"
 msgstr "synchronisation en cours…"
 
-#: views/links/_link.html.twig:182
+#: views/links/_link.html.twig:189
 #, php-format
 msgid "Notepad (%s)"
 msgstr "Bloc-note (%s)"
 
-#: views/links/_link.html.twig:184 views/links/show.html.twig:300
+#: views/links/_link.html.twig:191 views/links/show.html.twig:300
 msgid "Notepad"
 msgstr "Bloc-note"
 
-#: views/links/_link.html.twig:191
+#: views/links/_link.html.twig:198
 msgid "hidden"
 msgstr "masqué"
 
-#: views/links/_link.html.twig:219
+#: views/links/_link.html.twig:226
 msgid "Ignore the link"
 msgstr "Ignorer le lien"
 
-#: views/links/_link.html.twig:230
+#: views/links/_link.html.twig:237
 msgid "Copy the external link"
 msgstr "Copier le lien externe"
 
-#: views/links/_link.html.twig:236 views/links/show.html.twig:228
+#: views/links/_link.html.twig:243 views/links/show.html.twig:228
 msgid "Share on Mastodon"
 msgstr "Partager vers Mastodon"
 
-#: views/links/_link.html.twig:262 views/links/show.html.twig:275
+#: views/links/_link.html.twig:269 views/links/show.html.twig:275
 msgid "Repair"
 msgstr "Réparer"
 
-#: views/links/_link.html.twig:275 views/links/show.html.twig:288
+#: views/links/_link.html.twig:282 views/links/show.html.twig:288
 msgid "Are you sure that you want to delete this link?"
 msgstr "Êtes-vous sur·e de vouloir supprimer ce lien ?"
 
-#: views/links/_link.html.twig:285 views/links/_link.html.twig:288
+#: views/links/_link.html.twig:292 views/links/_link.html.twig:295
 #: views/links/show.html.twig:186
 msgid "Mark as read"
 msgstr "Marquer comme lu"
 
-#: views/links/_link.html.twig:298 views/links/_link.html.twig:301
+#: views/links/_link.html.twig:305 views/links/_link.html.twig:308
 msgid "Remove from read list"
 msgstr "Retirer des liens lus"
 
-#: views/links/_link.html.twig:311 views/links/_link.html.twig:314
+#: views/links/_link.html.twig:318 views/links/_link.html.twig:321
 #: views/links/show.html.twig:197
 msgid "Read later"
 msgstr "Lire plus tard"
 
-#: views/links/_link.html.twig:330 views/links/_link.html.twig:334
+#: views/links/_link.html.twig:337 views/links/_link.html.twig:341
 #: views/links/collections/index.html.twig:69
 msgid "Store the link"
 msgstr "Ranger le lien"
 
-#: views/links/_link.html.twig:340
+#: views/links/_link.html.twig:347
 #, php-format
 msgid "In %d collection"
 msgid_plural "In %d collections"
@@ -2329,7 +2329,7 @@ msgstr "hier"
 msgid "Actions on the day"
 msgstr "Actions pour la journée"
 
-#: views/news/index.html.twig:111 views/streams/_timeline.html.twig:83
+#: views/news/index.html.twig:111 views/streams/_timeline.html.twig:84
 msgid "Actions on the feed"
 msgstr "Actions pour le flux"
 
@@ -2980,11 +2980,11 @@ msgstr "Quelle est le nom du fil ?"
 msgid "What’s the purpose of the stream?"
 msgstr "Quelle est la raison d’être du fil ?"
 
-#: views/streams/_timeline.html.twig:124
+#: views/streams/_timeline.html.twig:126
 msgid "Actions on the links"
 msgstr "Actions sur les liens"
 
-#: views/streams/_timeline.html.twig:137
+#: views/streams/_timeline.html.twig:139
 msgid "There is no link matching your filters."
 msgstr "Il n’y a aucun lien qui correspond à vos filtres."
 
@@ -3016,11 +3016,22 @@ msgstr "Gérer les sources"
 msgid "Are you sure that you want to delete this stream?"
 msgstr "Êtes-vous sur·e de vouloir supprimer ce fil ?"
 
-#: views/streams/sources/_source.html.twig:45
+#: views/streams/sources/_source.html.twig:36
+#, php-format
+msgid "In %d stream"
+msgid_plural "In %d streams"
+msgstr[0] "Dans %d fil"
+msgstr[1] "Dans %d fils"
+
+#: views/streams/sources/_source.html.twig:38
+msgid "No stream"
+msgstr "Aucun fil"
+
+#: views/streams/sources/_source.html.twig:53
 msgid "Add"
 msgstr "Ajouter"
 
-#: views/streams/sources/_source.html.twig:53
+#: views/streams/sources/_source.html.twig:61
 msgid "Remove"
 msgstr "Retirer"
 

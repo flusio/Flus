@@ -384,6 +384,8 @@ class User
     /**
      * Return the collections followed by the user.
      *
+     * @deprecated Use followedSources() instead.
+     *
      * @see Collection::listComputedFollowedByUserId
      *
      * @param string[] $selected_computed_props
@@ -400,6 +402,22 @@ class User
             $selected_computed_props,
             $options
         );
+    }
+
+    /**
+     * Return the sources followed by the user.
+     *
+     * The sources are sorted by name.
+     *
+     * @see Collection::listSourcesByUser
+     *
+     * @return Collection[]
+     */
+    public function followedSources(): array
+    {
+        $sources = Collection::listSourcesByUser($this);
+
+        return utils\Sorter::localeSort($sources, 'name');
     }
 
     /**

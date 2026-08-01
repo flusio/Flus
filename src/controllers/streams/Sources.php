@@ -36,13 +36,11 @@ class Sources extends BaseController
 
         auth\Access::require($user, 'update', $stream);
 
-        $suggested_sources = $user->followedCollections();
-        $suggested_sources = utils\Sorter::localeSort($suggested_sources, 'name');
-
+        $followed_sources = $user->followedSources();
         $existing_sources = $stream->sources();
 
         $suggested_sources = array_udiff(
-            $suggested_sources,
+            $followed_sources,
             $existing_sources,
             function (models\Collection $source1, models\Collection $source2): int {
                 return $source1->id <=> $source2->id;

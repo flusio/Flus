@@ -30,7 +30,15 @@
                 {% endif %}
             </p>
 
-            <p class="text--secondary">
+            <p class="text--secondary stack stack--gap">
+                <span>
+                    {% if source.number_streams %}
+                        {{ t('In %d stream', 'In %d streams', source.number_streams, [source.number_streams]) }}
+                    {% else %}
+                        {{ t('No stream') }}
+                    {% endif %}
+                </span>
+
                 <span title="{{ t('Publication frequency') }}">
                     {{ icon('frequency') }}
                     {{ source.publication_frequency_per_year | format_publication_frequency }}

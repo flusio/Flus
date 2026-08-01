@@ -397,7 +397,52 @@ trait Collection
     }
 
     /**
+     * List the sources followed by the given user.
+     *
+     * The number_streams property is always computed: it counts the streams of
+     * the user in which each source is present.
+     *
+     * @return self[]
+     */
+    public static function listSourcesByUser(models\User $user): array
+    {
+        $parameters = [
+            ':user_id' => $user->id,
+        ];
+
+        $sql = <<<SQL
+            SELECT c.*, (
+                SELECT COUNT(*) FROM streams_to_follows sf
+                WHERE sf.follow_id = fc.id
+            ) AS number_streams
+            FROM collections c, followed_collections fc
+
+            WHERE fc.collection_id = c.id
+            AND fc.user_id = :user_id
+
+            AND (
+                c.is_public = true
+                OR c.user_id = :user_id
+                OR EXISTS (
+                    SELECT 1 FROM collection_shares cs
+                    WHERE cs.user_id = :user_id
+                    AND cs.collection_id = c.id
+                )
+            )
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute($parameters);
+
+        return self::fromDatabaseRows($statement->fetchAll());
+    }
+
+    /**
      * List the collections present in the given stream.
+     *
+     * The number_streams property is always computed: it counts the streams of
+     * the stream's owner in which each source is present.
      *
      * @return self[]
      */
@@ -408,7 +453,10 @@ trait Collection
         ];
 
         $sql = <<<SQL
-            SELECT c.*
+            SELECT c.*, (
+                SELECT COUNT(*) FROM streams_to_follows sf2
+                WHERE sf2.follow_id = fc.id
+            ) AS number_streams
             FROM collections c, followed_collections fc, streams_to_follows sf
 
             WHERE c.id = fc.collection_id
