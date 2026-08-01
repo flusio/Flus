@@ -94,12 +94,31 @@ class Stream
     }
 
     /**
+     * Return the sources of the stream.
+     *
+     * Only the sources that the context user can view are returned, or only
+     * the public ones if no context user is given.
+     *
+     * @param array{
+     *     context_user?: ?User,
+     * } $options
+     *
      * @return Collection[]
      */
-    public function sources(): array
+    public function sources(array $options = []): array
     {
-        return $this->memoize('sources', function (): array {
-            $collections = Collection::listByStream($this);
+        $context_user = $options['context_user'] ?? null;
+
+        if ($context_user) {
+            $memoize_key = "sources_{$context_user->id}";
+        } else {
+            $memoize_key = 'sources_anonymous';
+        }
+
+        return $this->memoize($memoize_key, function () use ($context_user): array {
+            $collections = Collection::listByStream($this, [
+                'context_user' => $context_user,
+            ]);
             return utils\Sorter::localeSort($collections, 'name');
         });
     }
@@ -112,7 +131,7 @@ class Stream
     public function addSource(Collection $source): void
     {
         StreamToFollow::findOrCreate($this, $source);
-        $this->unmemoize('sources');
+        $this->unmemoizePrefixed('sources_');
     }
 
     public function removeSource(Collection $source): void
@@ -121,12 +140,22 @@ class Stream
         if ($stream_to_follow) {
             $stream_to_follow->remove();
         }
-        $this->unmemoize('sources');
+        $this->unmemoizePrefixed('sources_');
     }
 
-    public function publicationFrequencyPerYear(): int
+    /**
+     * Return the sum of the publication frequencies of the sources.
+     *
+     * Only the sources that the context user can view are taken into account,
+     * or only the public ones if no context user is given.
+     *
+     * @param array{
+     *     context_user?: ?User,
+     * } $options
+     */
+    public function publicationFrequencyPerYear(array $options = []): int
     {
-        $sources = $this->sources();
+        $sources = $this->sources($options);
         return array_sum(array_column($sources, 'publication_frequency_per_year'));
     }
 

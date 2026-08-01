@@ -4,6 +4,7 @@ namespace App\cli;
 
 use App\models;
 use tests\factories\CollectionFactory;
+use tests\factories\CollectionShareFactory;
 use tests\factories\FollowedCollectionFactory;
 use tests\factories\GroupFactory;
 use tests\factories\LinkFactory;
@@ -277,13 +278,26 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
         self::recreateDatabase();
 
         $user = UserFactory::create();
+        $other_user = UserFactory::create();
         $group = GroupFactory::create([
             'user_id' => $user->id,
             'name' => 'My group',
         ]);
-        $collection_1 = CollectionFactory::create();
-        $collection_2 = CollectionFactory::create();
-        $collection_3 = CollectionFactory::create();
+        $collection_1 = CollectionFactory::create([
+            'is_public' => true,
+        ]);
+        // The private collections shared with the user must be migrated as well.
+        $collection_2 = CollectionFactory::create([
+            'user_id' => $other_user->id,
+            'is_public' => false,
+        ]);
+        CollectionShareFactory::create([
+            'user_id' => $user->id,
+            'collection_id' => $collection_2->id,
+        ]);
+        $collection_3 = CollectionFactory::create([
+            'is_public' => true,
+        ]);
         FollowedCollectionFactory::create([
             'user_id' => $user->id,
             'collection_id' => $collection_1->id,
@@ -309,7 +323,8 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, count($streams));
         $stream = $streams[0];
         $this->assertSame('My group', $stream->name);
-        $sources_ids = array_column($stream->sources(), 'id');
+        $sources = $stream->sources(['context_user' => $user]);
+        $sources_ids = array_column($sources, 'id');
         sort($sources_ids);
         $expected_sources_ids = [$collection_1->id, $collection_2->id];
         sort($expected_sources_ids);
@@ -325,7 +340,9 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'name' => 'My group',
         ]);
-        $collection = CollectionFactory::create();
+        $collection = CollectionFactory::create([
+            'is_public' => true,
+        ]);
         FollowedCollectionFactory::create([
             'user_id' => $user->id,
             'collection_id' => $collection->id,
@@ -345,7 +362,9 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
         $streams = models\Stream::listBy(['user_id' => $user->id]);
         $this->assertSame(1, count($streams));
         $stream = $streams[0];
-        $this->assertSame([$collection->id], array_column($stream->sources(), 'id'));
+        $sources = $stream->sources(['context_user' => $user]);
+        $sources_ids = array_column($sources, 'id');
+        $this->assertSame([$collection->id], $sources_ids);
     }
 
     public function testSetupStreamsFailsIfUserDoesNotExist(): void

@@ -35,7 +35,7 @@
             </section>
 
             <section class="sources__selector col--size6 panel panel--border panel--rounded flow">
-                {% set sources = stream.sources %}
+                {% set sources = stream.sources({ context_user: app.user }) %}
 
                 <div class="sources__selector-header cols cols--always cols--gap-small">
                     <h2 class="col--extend text--normal">{{ t('Sources of the stream') }}</h2>
@@ -47,7 +47,7 @@
 
                         <span title="{{ t('Publication frequency') }}">
                             {{ icon('frequency') }}
-                            {{ stream.publicationFrequencyPerYear | format_publication_frequency }}
+                            {{ stream.publicationFrequencyPerYear({ context_user: app.user }) | format_publication_frequency }}
                         </span>
                     </p>
                 </div>

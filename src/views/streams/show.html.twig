@@ -62,8 +62,14 @@
             <p class="stack stack--gap">
                 <span title="{{ t('Publication frequency') }}">
                     {{ icon('frequency') }}
-                    {{ stream.publicationFrequencyPerYear | format_publication_frequency }}
+                    {{ stream.publicationFrequencyPerYear({ context_user: app.user }) | format_publication_frequency }}
                 </span>
+
+                {% set sources = stream.sources({ context_user: app.user }) %}
+
+                <a href="{{ url('stream sources', { id: stream.id }) }}">
+                    {{ t('%d source', '%d sources', sources | length, [sources | length]) }}
+                </a>
             </p>
 
             <p>

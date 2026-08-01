@@ -157,6 +157,8 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $link_title);
+        $this->assertResponseContains($response, "/streams/{$stream->id}/sources");
+        $this->assertResponseContains($response, '1 source');
         $this->assertResponseTemplateName($response, 'streams/show.html.twig');
     }
 

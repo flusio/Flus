@@ -72,6 +72,18 @@ trait Memoizer
     }
 
     /**
+     * Remove all the results whose keys start with the given prefix.
+     */
+    protected function unmemoizePrefixed(string $prefix): void
+    {
+        foreach (array_keys($this->memoizer_cache) as $key) {
+            if (str_starts_with($key, $prefix)) {
+                unset($this->memoizer_cache[$key]);
+            }
+        }
+    }
+
+    /**
      * Return true if the key exists in the cache, false otherwise.
      */
     protected function isMemoized(string $key): bool

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-08-01 18:58+0200\n"
-"PO-Revision-Date: 2026-08-01 18:58+0200\n"
+"POT-Creation-Date: 2026-08-01 21:09+0200\n"
+"PO-Revision-Date: 2026-08-01 21:09+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -678,8 +678,9 @@ msgstr "privée"
 #: views/collections/_collection.html.twig:52
 #: views/collections/_collection_follow.html.twig:24
 #: views/collections/show.html.twig:96 views/streams/show.html.twig:63
-#: views/streams/sources/_source.html.twig:42
+#: views/streams/sources/_source.html.twig:46
 #: views/streams/sources/edit.html.twig:48
+#: views/streams/sources/index.html.twig:29
 msgid "Publication frequency"
 msgstr "Fréquence de publication"
 
@@ -1043,7 +1044,7 @@ msgid "Change the illustration"
 msgstr "Changer l’illustration"
 
 #: views/collections/show.html.twig:88
-#: views/streams/sources/_source.html.twig:18
+#: views/streams/sources/_source.html.twig:20
 #, php-format
 msgid "Feed of %s website"
 msgstr "Flux du site %s"
@@ -1061,7 +1062,7 @@ msgstr[1] "Thématiques :"
 #: views/collections/show.html.twig:165 views/groups/_group.html.twig:20
 #: views/links/_link.html.twig:255 views/links/show.html.twig:269
 #: views/notes/_notepad.html.twig:42 views/profiles/layout.html.twig:81
-#: views/streams/show.html.twig:99
+#: views/streams/show.html.twig:105
 msgid "Edit"
 msgstr "Modifier"
 
@@ -1076,7 +1077,7 @@ msgstr "Accès"
 #: views/notes/_notepad.html.twig:27 views/notes/_notepad.html.twig:33
 #: views/profiles/layout.html.twig:88 views/streams/_timeline.html.twig:26
 #: views/streams/_timeline.html.twig:78 views/streams/_timeline.html.twig:121
-#: views/streams/show.html.twig:106
+#: views/streams/show.html.twig:112
 msgid "Actions"
 msgstr "Actions"
 
@@ -1109,7 +1110,7 @@ msgstr "Ignorer les liens"
 
 #: views/collections/show.html.twig:242 views/links/_link.html.twig:279
 #: views/links/show.html.twig:285 views/notes/_notepad.html.twig:50
-#: views/streams/show.html.twig:114
+#: views/streams/show.html.twig:120
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -3004,38 +3005,47 @@ msgstr "Les illustrations aident à distinguer votre fil parmi les autres."
 msgid "Create the stream"
 msgstr "Créer le fil"
 
-#: views/streams/show.html.twig:70 views/streams/sources/_source.html.twig:22
+#: views/streams/show.html.twig:71 views/streams/sources/edit.html.twig:45
+#: views/streams/sources/index.html.twig:26
+#, php-format
+msgid "%d source"
+msgid_plural "%d sources"
+msgstr[0] "%d source"
+msgstr[1] "%d sources"
+
+#: views/streams/show.html.twig:76 views/streams/sources/_source.html.twig:24
 msgid "By"
 msgstr "Par"
 
-#: views/streams/show.html.twig:88
+#: views/streams/show.html.twig:94 views/streams/sources/index.html.twig:37
 msgid "Manage sources"
 msgstr "Gérer les sources"
 
-#: views/streams/show.html.twig:117
+#: views/streams/show.html.twig:123
 msgid "Are you sure that you want to delete this stream?"
 msgstr "Êtes-vous sur·e de vouloir supprimer ce fil ?"
 
-#: views/streams/sources/_source.html.twig:36
+#: views/streams/sources/_source.html.twig:39
 #, php-format
 msgid "In %d stream"
 msgid_plural "In %d streams"
 msgstr[0] "Dans %d fil"
 msgstr[1] "Dans %d fils"
 
-#: views/streams/sources/_source.html.twig:38
+#: views/streams/sources/_source.html.twig:41
 msgid "No stream"
 msgstr "Aucun fil"
 
-#: views/streams/sources/_source.html.twig:53
+#: views/streams/sources/_source.html.twig:57
 msgid "Add"
 msgstr "Ajouter"
 
-#: views/streams/sources/_source.html.twig:61
+#: views/streams/sources/_source.html.twig:65
 msgid "Remove"
 msgstr "Retirer"
 
 #: views/streams/sources/edit.html.twig:3
+#: views/streams/sources/index.html.twig:3
 #, php-format
 msgid "Sources of %s"
 msgstr "Sources de %s"
@@ -3052,14 +3062,8 @@ msgstr "Sources à ajouter"
 msgid "Sources of the stream"
 msgstr "Sources du fil"
 
-#: views/streams/sources/edit.html.twig:45
-#, php-format
-msgid "%d source"
-msgid_plural "%d sources"
-msgstr[0] "%d source"
-msgstr[1] "%d sources"
-
 #: views/streams/sources/edit.html.twig:67
+#: views/streams/sources/index.html.twig:53
 msgid "Continue to the stream"
 msgstr "Continuer vers le fil"
 

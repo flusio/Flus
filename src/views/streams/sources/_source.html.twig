@@ -1,3 +1,5 @@
+{% set action = action | default(null) %}
+
 <article class="source cols cols--center cols--gap">
     <div class="col--extend cols cols--always cols--center cols--gap">
         <img
@@ -31,13 +33,15 @@
             </p>
 
             <p class="text--secondary stack stack--gap">
-                <span>
-                    {% if source.number_streams %}
-                        {{ t('In %d stream', 'In %d streams', source.number_streams, [source.number_streams]) }}
-                    {% else %}
-                        {{ t('No stream') }}
-                    {% endif %}
-                </span>
+                {% if can(app.user, 'update', stream) %}
+                    <span>
+                        {% if source.number_streams %}
+                            {{ t('In %d stream', 'In %d streams', source.number_streams, [source.number_streams]) }}
+                        {% else %}
+                            {{ t('No stream') }}
+                        {% endif %}
+                    </span>
+                {% endif %}
 
                 <span title="{{ t('Publication frequency') }}">
                     {{ icon('frequency') }}

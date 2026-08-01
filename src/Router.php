@@ -226,6 +226,7 @@ class Router
         $router->addRoute('POST', '/streams/:id/read', 'streams/Read#create', 'mark stream as read');
         $router->addRoute('POST', '/streams/:id/read/later', 'streams/Read#later', 'read stream later');
         $router->addRoute('POST', '/streams/:id/dismiss', 'streams/Read#dismiss', 'dismiss stream');
+        $router->addRoute('GET', '/streams/:id/sources', 'streams/Sources#index', 'stream sources');
         $router->addRoute('GET', '/streams/:id/sources/edit', 'streams/Sources#edit', 'edit stream sources');
         $router->addRoute(
             'POST',

@@ -1,0 +1,58 @@
+{% extends 'layouts/application.html.twig' %}
+
+{% set title = t('Sources of %s', [stream.name]) %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block canonical %}{{ url_full('stream sources', { id: stream.id }) }}{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'stream sources', tab: 'reading' }) }}
+{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: title }) }}
+{% endblock %}
+
+{% block body %}
+    <h1 class="text--center">{{ title }}</h1>
+
+    {% set sources = stream.sources({ context_user: app.user }) %}
+
+    <div class="sources flow">
+        <section class="panel panel--border panel--rounded flow">
+            <div class="cols cols--always cols--center cols--gap-small">
+                <p class="col--extend stack stack--gap">
+                    <span>
+                        {{ t('%d source', '%d sources', sources | length, [sources | length]) }}
+                    </span>
+
+                    <span title="{{ t('Publication frequency') }}">
+                        {{ icon('frequency') }}
+                        {{ stream.publicationFrequencyPerYear({ context_user: app.user }) | format_publication_frequency }}
+                    </span>
+                </p>
+
+                {% if can(app.user, 'update', stream) %}
+                    <a class="button" href="{{ url('edit stream sources', { id: stream.id }) }}">
+                        {{ t('Manage sources') }}
+                    </a>
+                {% endif %}
+            </div>
+
+            {% if sources %}
+                <div class="flow flow--small">
+                    {% for source in sources %}
+                        {{ include('streams/sources/_source.html.twig') }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </section>
+
+        <p class="sources__submit">
+            <a class="button button--big button--primary button--animated" href="{{ url('stream', { id: stream.id }) }}">
+                {{ t('Continue to the stream') }}
+                {{ icon('arrow-right') }}
+            </a>
+        </p>
+    </div>
+{% endblock %}

@@ -155,7 +155,9 @@ class StreamView
                 'status' => $this->status,
             ]);
 
-            $sources = $this->stream->sources();
+            $sources = $this->stream->sources([
+                'context_user' => $this->context_user,
+            ]);
 
             $sources_and_counts = [];
 

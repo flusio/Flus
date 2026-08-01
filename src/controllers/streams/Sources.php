@@ -27,6 +27,31 @@ class Sources extends BaseController
      * @throws \Minz\Errors\MissingRecordError
      *     If the stream doesn't exist.
      * @throws auth\AccessDeniedError
+     *     If the user cannot view the stream.
+     */
+    public function index(Request $request): Response
+    {
+        $user = auth\CurrentUser::require();
+        $stream = models\Stream::requireFromRequest($request);
+
+        auth\Access::require($user, 'view', $stream);
+
+        return Response::ok('streams/sources/index.html.twig', [
+            'stream' => $stream,
+        ]);
+    }
+
+    /**
+     * @request_param string id
+     *
+     * @response 200
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the stream doesn't exist.
+     * @throws auth\AccessDeniedError
      *     If the user cannot update the stream.
      */
     public function edit(Request $request): Response
@@ -37,7 +62,9 @@ class Sources extends BaseController
         auth\Access::require($user, 'update', $stream);
 
         $followed_sources = $user->followedSources();
-        $existing_sources = $stream->sources();
+        $existing_sources = $stream->sources([
+            'context_user' => $user,
+        ]);
 
         $suggested_sources = array_udiff(
             $followed_sources,

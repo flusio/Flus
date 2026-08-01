@@ -19,6 +19,107 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
     use \tests\FakerHelper;
     use \tests\LoginHelper;
 
+    public function testIndexRendersCorrectly(): void
+    {
+        $user = $this->login();
+        /** @var string */
+        $stream_name = $this->fake('words', 3, true);
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+            'name' => $stream_name,
+        ]);
+        /** @var string */
+        $source_name = $this->fake('words', 3, true);
+        /** @var string */
+        $feed_url = $this->fake('url');
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'name' => $source_name,
+            'feed_site_url' => $feed_url,
+            'is_public' => true,
+        ]);
+        $stream->addSource($source);
+
+        $response = $this->appRun('GET', "/streams/{$stream->id}/sources");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, "Sources of {$stream_name}");
+        $this->assertResponseContains($response, $source_name);
+        $this->assertResponseTemplateName($response, 'streams/sources/index.html.twig');
+    }
+
+    public function testIndexDoesNotListTheSourcesTheUserCannotView(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        /** @var string */
+        $public_source_name = $this->fake('words', 3, true);
+        $public_source = CollectionFactory::create([
+            'type' => 'collection',
+            'name' => $public_source_name,
+            'is_public' => true,
+            'publication_frequency_per_year' => 52,
+        ]);
+        /** @var string */
+        $private_source_name = $this->fake('words', 3, true);
+        $private_source = CollectionFactory::create([
+            'type' => 'collection',
+            'name' => $private_source_name,
+            'is_public' => false,
+            'user_id' => $other_user->id,
+            'publication_frequency_per_year' => 730,
+        ]);
+        $stream->addSource($public_source);
+        $stream->addSource($private_source);
+
+        $response = $this->appRun('GET', "/streams/{$stream->id}/sources");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $public_source_name);
+        $this->assertResponseNotContains($response, $private_source_name);
+        $this->assertResponseContains($response, '1 source');
+        // The publication frequency only sums the sources that are listed.
+        $this->assertResponseContains($response, '1 link per week');
+        $this->assertResponseNotContains($response, 'per day');
+    }
+
+    public function testIndexRedirectsIfNotConnected(): void
+    {
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->appRun('GET', "/streams/{$stream->id}/sources");
+
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Fstreams%2F{$stream->id}%2Fsources");
+    }
+
+    public function testIndexFailsIfTheStreamDoesNotExist(): void
+    {
+        $user = $this->login();
+
+        $response = $this->appRun('GET', '/streams/unknown/sources');
+
+        $this->assertResponseCode($response, 404);
+    }
+
+    public function testIndexFailsIfTheUserCannotViewTheStream(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+        ]);
+
+        $response = $this->appRun('GET', "/streams/{$stream->id}/sources");
+
+        $this->assertResponseCode($response, 403);
+    }
+
     public function testEditRendersCorrectly(): void
     {
         $user = $this->login();

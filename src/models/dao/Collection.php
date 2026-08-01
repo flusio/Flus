@@ -410,6 +410,8 @@ trait Collection
             ':user_id' => $user->id,
         ];
 
+        $visibility_clause = self::buildVisibilityClause($user);
+
         $sql = <<<SQL
             SELECT c.*, (
                 SELECT COUNT(*) FROM streams_to_follows sf
@@ -420,15 +422,7 @@ trait Collection
             WHERE fc.collection_id = c.id
             AND fc.user_id = :user_id
 
-            AND (
-                c.is_public = true
-                OR c.user_id = :user_id
-                OR EXISTS (
-                    SELECT 1 FROM collection_shares cs
-                    WHERE cs.user_id = :user_id
-                    AND cs.collection_id = c.id
-                )
-            )
+            {$visibility_clause}
         SQL;
 
         $database = Database::get();
@@ -441,16 +435,31 @@ trait Collection
     /**
      * List the collections present in the given stream.
      *
+     * Only the collections that the context user can view are returned, or
+     * only the public ones if no context user is given.
+     *
      * The number_streams property is always computed: it counts the streams of
      * the stream's owner in which each source is present.
      *
+     * @param array{
+     *     context_user?: ?models\User,
+     * } $options
+     *
      * @return self[]
      */
-    public static function listByStream(models\Stream $stream): array
+    public static function listByStream(models\Stream $stream, array $options = []): array
     {
+        $context_user = $options['context_user'] ?? null;
+
         $parameters = [
             ':stream_id' => $stream->id,
         ];
+
+        if ($context_user) {
+            $parameters[':user_id'] = $context_user->id;
+        }
+
+        $visibility_clause = self::buildVisibilityClause($context_user);
 
         $sql = <<<SQL
             SELECT c.*, (
@@ -462,6 +471,8 @@ trait Collection
             WHERE c.id = fc.collection_id
             AND sf.follow_id = fc.id
             AND sf.stream_id = :stream_id
+
+            {$visibility_clause}
         SQL;
 
         $database = Database::get();
@@ -469,6 +480,33 @@ trait Collection
         $statement->execute($parameters);
 
         return self::fromDatabaseRows($statement->fetchAll());
+    }
+
+    /**
+     * Return the clause limiting the collections (aliased as "c") to those
+     * that the given user can view, or to the public ones if no user is given.
+     *
+     * The :user_id parameter must be bound when a user is given.
+     *
+     * @see \App\auth\CollectionsAccess::canView
+     */
+    private static function buildVisibilityClause(?models\User $user): string
+    {
+        if (!$user) {
+            return 'AND c.is_public = true';
+        }
+
+        return <<<SQL
+            AND (
+                c.is_public = true
+                OR c.user_id = :user_id
+                OR EXISTS (
+                    SELECT 1 FROM collection_shares cs
+                    WHERE cs.user_id = :user_id
+                    AND cs.collection_id = c.id
+                )
+            )
+        SQL;
     }
 
     /**
