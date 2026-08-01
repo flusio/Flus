@@ -23,11 +23,6 @@ export default class extends Controller {
     }
 
     connect () {
-        // Set the id of the content turbo-frame. It must not be set directly
-        // in the HTML, or Turbo will try to load its content when a form in
-        // the modal redirects to a new page (instead of showing the full HTML).
-        this.contentTarget.setAttribute('id', 'modal-content');
-
         this.element.addEventListener('open-modal', this.open.bind(this));
 
         // handle modal shortcuts
@@ -107,7 +102,12 @@ export default class extends Controller {
         layout.setAttribute('aria-hidden', true);
         document.body.classList.add('modal-opened');
 
-        // load the modal content via turbo-frame
+        // Load the modal content via turbo-frame. The id of the frame is set
+        // here and not in the HTML, or Turbo would try to load its content
+        // when a form in the modal redirects to a new page (instead of
+        // showing the full HTML). It's not set in connect() either, as a
+        // morphing refresh would remove it (the server never renders it).
+        this.contentTarget.setAttribute('id', 'modal-content');
         this.contentTarget.setAttribute('src', event.detail.href);
 
         // remember the current element to give it the focus back on close
@@ -134,7 +134,8 @@ export default class extends Controller {
         // unload the turbo-frame with a timeout to wait for the modal close
         // animation
         setTimeout(() => {
-            this.contentTarget.setAttribute('src', '');
+            this.contentTarget.removeAttribute('src');
+            this.contentTarget.removeAttribute('id');
             this.contentTarget.innerHTML = '<div class="spinner"></div>';
         }, 300);
 
