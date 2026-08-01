@@ -100,36 +100,24 @@
             </button>
 
             {% if can(app.user, 'delete', stream) %}
-                <details
-                    class="popup"
-                    data-controller="popup"
-                    data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
-                >
-                    <summary class="popup__opener">
-                        <span class="button">
-                            {{ icon('menu') }}
-                            {{ t('Actions') }}
-                        </span>
-                    </summary>
+                {% embed 'components/popup.html.twig' %}
+                    {% block opener %}
+                        {{ icon('menu') }}
+                        {{ t('Actions') }}
+                    {% endblock %}
 
-                    <nav class="popup__container popup__container--center">
-                        <form
-                            method="post"
-                            action="{{ url('delete stream', { id: stream.id }) }}"
-                            data-turbo-confirm="{{ t('Are you sure that you want to delete this stream?') }}"
-                        >
-                            <button
-                                type="submit"
-                                class="popup__item"
-                            >
-                                {{ icon('trash') }}
-                                {{ t('Delete') }}
-                            </button>
+                    {% block items %}
+                        {% import _self as item %}
 
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token('streams\\DeleteStream') }}">
-                        </form>
-                    </nav>
-                </details>
+                        {{ item.action(
+                            url: url('delete stream', { id: stream.id }),
+                            label: t('Delete'),
+                            icon: 'trash',
+                            csrf: 'streams\\DeleteStream',
+                            confirm: t('Are you sure that you want to delete this stream?'),
+                        ) }}
+                    {% endblock %}
+                {% endembed %}
             {% endif %}
         </div>
     {% endif %}

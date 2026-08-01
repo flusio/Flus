@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-07-24 15:16+0200\n"
-"PO-Revision-Date: 2026-07-24 15:16+0200\n"
+"POT-Creation-Date: 2026-08-01 16:46+0200\n"
+"PO-Revision-Date: 2026-08-01 16:46+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -333,12 +333,12 @@ msgid "The name must be less than {max} characters."
 msgstr "Le nom ne doit pas faire plus de {max} caractères."
 
 #: models/Collection.php:139 models/Collection.php:226
-#: models/ReadLaterSource.php:20 navigations/ReadingNavigation.php:32
+#: models/ReadLaterSource.php:20 navigations/ReadingNavigation.php:33
 msgid "To read"
 msgstr "À lire"
 
 #: models/Collection.php:150 models/Collection.php:228 models/ReadSource.php:20
-#: navigations/ReadingNavigation.php:39
+#: navigations/ReadingNavigation.php:40
 msgid "Links read"
 msgstr "Liens lus"
 
@@ -347,7 +347,7 @@ msgid "Links never to read"
 msgstr "Liens à ne jamais lire"
 
 #: models/Collection.php:172 models/Collection.php:230
-#: navigations/ReadingNavigation.php:25
+#: navigations/ReadingNavigation.php:26
 msgid "News"
 msgstr "Journal"
 
@@ -497,23 +497,23 @@ msgstr "Données"
 msgid "Security"
 msgstr "Sécurité"
 
-#: navigations/ReadingNavigation.php:16
+#: navigations/ReadingNavigation.php:17
 msgid "Reading menu"
 msgstr "Menu lecture"
 
-#: navigations/ReadingNavigation.php:48
+#: navigations/ReadingNavigation.php:49
 msgid "Explore"
 msgstr "Explorer"
 
-#: navigations/ReadingNavigation.php:57
+#: navigations/ReadingNavigation.php:58
 msgid "New stream"
 msgstr "Nouveau fil"
 
-#: navigations/ReadingNavigation.php:75
+#: navigations/ReadingNavigation.php:76
 msgid "Create a stream to get started."
 msgstr "Créez un fil pour commencer."
 
-#: navigations/ReadingNavigation.php:80
+#: navigations/ReadingNavigation.php:81
 msgid "Streams"
 msgstr "Fils"
 
@@ -628,7 +628,7 @@ msgstr "Info"
 msgid "Success"
 msgstr "Succès"
 
-#: views/bookmarks/index.html.twig:45 views/collections/show.html.twig:309
+#: views/bookmarks/index.html.twig:45 views/collections/show.html.twig:266
 msgid "Add a link"
 msgstr "Ajouter un lien"
 
@@ -657,7 +657,7 @@ msgstr "aucun lien"
 #: views/collections/_collection.html.twig:26
 #: views/collections/_collection_follow.html.twig:18
 #: views/links/_pagination_count.html.twig:7 views/news/index.html.twig:26
-#: views/news/index.html.twig:132 views/streams/_timeline.html.twig:112
+#: views/news/index.html.twig:95 views/streams/_timeline.html.twig:67
 #, php-format
 msgid "%s link"
 msgid_plural "%s links"
@@ -734,7 +734,7 @@ msgstr "(max. %d caractères)"
 #: views/links/edit.html.twig:91 views/links/images/edit.html.twig:20
 #: views/links/mastodon_threads/new.html.twig:17 views/links/new.html.twig:27
 #: views/links/repairing/new.html.twig:30
-#: views/links/searches/show.html.twig:39 views/links/show.html.twig:378
+#: views/links/searches/show.html.twig:39 views/links/show.html.twig:334
 #: views/mastodon/show.html.twig:62 views/mastodon/show.html.twig:139
 #: views/my/account/deletion.html.twig:38 views/my/avatar/edit.html.twig:20
 #: views/my/preferences/edit.html.twig:35
@@ -1036,7 +1036,7 @@ msgid "Syndication feed of %s"
 msgstr "Flux de syndication de %s"
 
 #: views/collections/show.html.twig:62 views/collections/show.html.twig:71
-#: views/links/_link.html.twig:281 views/links/show.html.twig:47
+#: views/links/_link.html.twig:254 views/links/show.html.twig:47
 #: views/links/show.html.twig:56 views/streams/show.html.twig:38
 #: views/streams/show.html.twig:47
 msgid "Change the illustration"
@@ -1059,8 +1059,8 @@ msgstr[0] "Thématique :"
 msgstr[1] "Thématiques :"
 
 #: views/collections/show.html.twig:165 views/groups/_group.html.twig:20
-#: views/links/_link.html.twig:269 views/links/show.html.twig:300
-#: views/notes/_notepad.html.twig:48 views/profiles/layout.html.twig:81
+#: views/links/_link.html.twig:248 views/links/show.html.twig:269
+#: views/notes/_notepad.html.twig:42 views/profiles/layout.html.twig:81
 #: views/streams/show.html.twig:99
 msgid "Edit"
 msgstr "Modifier"
@@ -1069,47 +1069,50 @@ msgstr "Modifier"
 msgid "Access"
 msgstr "Accès"
 
-#: views/collections/show.html.twig:189 views/links/_link.html.twig:205
-#: views/links/_link.html.twig:209 views/links/show.html.twig:241
-#: views/links/show.html.twig:244 views/news/index.html.twig:55
-#: views/news/index.html.twig:145 views/news/index.html.twig:228
-#: views/notes/_notepad.html.twig:29 views/notes/_notepad.html.twig:33
-#: views/profiles/layout.html.twig:93 views/streams/_timeline.html.twig:28
-#: views/streams/_timeline.html.twig:125 views/streams/_timeline.html.twig:212
-#: views/streams/show.html.twig:111
+#: views/collections/show.html.twig:184 views/links/_link.html.twig:203
+#: views/links/_link.html.twig:209 views/links/show.html.twig:237
+#: views/links/show.html.twig:241 views/news/index.html.twig:53
+#: views/news/index.html.twig:105 views/news/index.html.twig:150
+#: views/notes/_notepad.html.twig:27 views/notes/_notepad.html.twig:33
+#: views/profiles/layout.html.twig:88 views/streams/_timeline.html.twig:26
+#: views/streams/_timeline.html.twig:77 views/streams/_timeline.html.twig:119
+#: views/streams/show.html.twig:106
 msgid "Actions"
 msgstr "Actions"
 
-#: views/collections/show.html.twig:204
+#: views/collections/show.html.twig:193
 msgid "Adjust for the news"
 msgstr "Régler pour le journal"
 
-#: views/collections/show.html.twig:218
+#: views/collections/show.html.twig:201
 msgid "Put in a group"
 msgstr "Placer dans un groupe"
 
-#: views/collections/show.html.twig:233
+#: views/collections/show.html.twig:210
 msgid "Copy link to collection"
 msgstr "Copier le lien de la collection"
 
-#: views/collections/show.html.twig:246 views/links/show.html.twig:284
-#: views/profiles/layout.html.twig:120
+#: views/collections/show.html.twig:215 views/links/show.html.twig:260
+#: views/profiles/layout.html.twig:101
 msgid "Copy link to Web feed"
 msgstr "Copier le lien du flux Web"
 
-#: views/collections/show.html.twig:256 views/news/index.html.twig:66
-#: views/news/index.html.twig:156 views/news/index.html.twig:238
-#: views/streams/_timeline.html.twig:39 views/streams/_timeline.html.twig:136
-#: views/streams/_timeline.html.twig:222
+#: views/collections/show.html.twig:224 views/news/_popup_actions.html.twig:21
+#: views/streams/_popup_actions.html.twig:26
 msgid "Mark all as read"
 msgstr "Tout marquer comme lu"
 
-#: views/collections/show.html.twig:265 views/news/index.html.twig:93
-#: views/news/index.html.twig:186 views/news/index.html.twig:263
+#: views/collections/show.html.twig:231 views/news/_popup_actions.html.twig:41
 msgid "Remove the links from the news"
 msgstr "Retirer les liens du journal"
 
-#: views/collections/show.html.twig:278
+#: views/collections/show.html.twig:242 views/links/_link.html.twig:272
+#: views/links/show.html.twig:285 views/notes/_notepad.html.twig:50
+#: views/streams/show.html.twig:114
+msgid "Delete"
+msgstr "Supprimer"
+
+#: views/collections/show.html.twig:245
 msgid ""
 "Are you sure that you want to delete this collection? You may lose the links "
 "that are attached only to this collection."
@@ -1117,13 +1120,7 @@ msgstr ""
 "Êtes-vous sur·e de vouloir supprimer cette collection ? Vous pourriez perdre "
 "les liens qui lui sont attachés."
 
-#: views/collections/show.html.twig:285 views/links/_link.html.twig:313
-#: views/links/show.html.twig:329 views/notes/_notepad.html.twig:61
-#: views/streams/show.html.twig:126
-msgid "Delete"
-msgstr "Supprimer"
-
-#: views/collections/show.html.twig:333
+#: views/collections/show.html.twig:290
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 
@@ -1376,8 +1373,8 @@ msgstr "Lecture"
 msgid "My links"
 msgstr "Mes liens"
 
-#: views/layouts/_header-connected.html.twig:91
-#: views/layouts/_header-connected.html.twig:94
+#: views/layouts/_header-connected.html.twig:90
+#: views/layouts/_header-connected.html.twig:96
 #, php-format
 msgid "Menu of %s"
 msgstr "Menu de %s"
@@ -1387,35 +1384,35 @@ msgstr "Menu de %s"
 msgid "Profile"
 msgstr "Profil"
 
-#: views/layouts/_header-connected.html.twig:118
+#: views/layouts/_header-connected.html.twig:116
 #: views/my/preferences/edit.html.twig:3 views/my/preferences/edit.html.twig:11
 #: views/my/preferences/edit.html.twig:15
 msgid "Preferences"
 msgstr "Préférences"
 
-#: views/layouts/_header-connected.html.twig:127
+#: views/layouts/_header-connected.html.twig:123
 msgid "Account & data"
 msgstr "Compte & données"
 
-#: views/layouts/_header-connected.html.twig:138 views/pages/addons.html.twig:3
+#: views/layouts/_header-connected.html.twig:132 views/pages/addons.html.twig:3
 #: views/pages/addons.html.twig:11 views/pages/addons.html.twig:15
 msgid "Add-ons"
 msgstr "Extensions"
 
-#: views/layouts/_header-connected.html.twig:147 views/support/show.html.twig:3
+#: views/layouts/_header-connected.html.twig:139 views/support/show.html.twig:3
 #: views/support/show.html.twig:11 views/support/show.html.twig:15
 msgid "Help & support"
 msgstr "Aide & support"
 
-#: views/layouts/_header-connected.html.twig:155
+#: views/layouts/_header-connected.html.twig:148
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: views/layouts/_header-disconnected.html.twig:29
+#: views/layouts/_header-disconnected.html.twig:26
 msgid "Language"
 msgstr "Langue"
 
-#: views/layouts/_header-disconnected.html.twig:59
+#: views/layouts/_header-disconnected.html.twig:57
 #: views/sessions/new.html.twig:104
 msgid "Login"
 msgstr "Se connecter"
@@ -1428,7 +1425,7 @@ msgstr "Fermer"
 msgid "Close this window"
 msgstr "Fermer cette fenêtre"
 
-#: views/layouts/_modal_dialog.html.twig:33
+#: views/layouts/_modal_dialog.html.twig:36
 msgid "Loading…"
 msgstr "Chargement…"
 
@@ -1548,7 +1545,7 @@ msgstr "synchronisation en cours…"
 msgid "Notepad (%s)"
 msgstr "Bloc-note (%s)"
 
-#: views/links/_link.html.twig:184 views/links/show.html.twig:344
+#: views/links/_link.html.twig:184 views/links/show.html.twig:300
 msgid "Notepad"
 msgstr "Bloc-note"
 
@@ -1560,42 +1557,42 @@ msgstr "masqué"
 msgid "Remove from the news"
 msgstr "Retirer du journal"
 
-#: views/links/_link.html.twig:237
+#: views/links/_link.html.twig:230
 msgid "Copy the external link"
 msgstr "Copier le lien externe"
 
-#: views/links/_link.html.twig:251 views/links/show.html.twig:228
+#: views/links/_link.html.twig:236 views/links/show.html.twig:228
 msgid "Share on Mastodon"
 msgstr "Partager vers Mastodon"
 
-#: views/links/_link.html.twig:295 views/links/show.html.twig:312
+#: views/links/_link.html.twig:262 views/links/show.html.twig:275
 msgid "Repair"
 msgstr "Réparer"
 
-#: views/links/_link.html.twig:306 views/links/show.html.twig:322
+#: views/links/_link.html.twig:275 views/links/show.html.twig:288
 msgid "Are you sure that you want to delete this link?"
 msgstr "Êtes-vous sur·e de vouloir supprimer ce lien ?"
 
-#: views/links/_link.html.twig:325 views/links/_link.html.twig:328
+#: views/links/_link.html.twig:285 views/links/_link.html.twig:288
 #: views/links/show.html.twig:186
 msgid "Mark as read"
 msgstr "Marquer comme lu"
 
-#: views/links/_link.html.twig:338 views/links/_link.html.twig:341
+#: views/links/_link.html.twig:298 views/links/_link.html.twig:301
 msgid "Remove from read list"
 msgstr "Retirer des liens lus"
 
-#: views/links/_link.html.twig:351 views/links/_link.html.twig:354
+#: views/links/_link.html.twig:311 views/links/_link.html.twig:314
 #: views/links/show.html.twig:197
 msgid "Read later"
 msgstr "Lire plus tard"
 
-#: views/links/_link.html.twig:370 views/links/_link.html.twig:374
+#: views/links/_link.html.twig:330 views/links/_link.html.twig:334
 #: views/links/collections/index.html.twig:69
 msgid "Store the link"
 msgstr "Ranger le lien"
 
-#: views/links/_link.html.twig:380
+#: views/links/_link.html.twig:340
 #, php-format
 msgid "In %d collection"
 msgid_plural "In %d collections"
@@ -1618,12 +1615,12 @@ msgid "%s of %s links"
 msgstr "%s sur %s liens"
 
 #: views/links/collections/_new_note_form.html.twig:3
-#: views/links/show.html.twig:373
+#: views/links/show.html.twig:329
 msgid "What do you retain from this content?"
 msgstr "Que retenez-vous de ce contenu ?"
 
 #: views/links/collections/_new_note_form.html.twig:29
-#: views/links/show.html.twig:397 views/notes/edit.html.twig:43
+#: views/links/show.html.twig:353 views/notes/edit.html.twig:43
 msgid "You can format the content in Markdown and use #tags."
 msgstr "Vous pouvez formater le contenu en Markdown et utiliser des #tags."
 
@@ -1852,23 +1849,23 @@ msgid_plural "%d collections"
 msgstr[0] "%d collection"
 msgstr[1] "%d collections"
 
-#: views/links/show.html.twig:258
+#: views/links/show.html.twig:249
 msgid "Copy link"
 msgstr "Copier le lien"
 
-#: views/links/show.html.twig:271
+#: views/links/show.html.twig:254
 msgid "Copy external link"
 msgstr "Copier le lien externe"
 
-#: views/links/show.html.twig:348
+#: views/links/show.html.twig:304
 msgid "This link being hidden, the notes are private."
 msgstr "Ce lien étant masqué, les notes sont privées."
 
-#: views/links/show.html.twig:356
+#: views/links/show.html.twig:312
 msgid "No notes have yet been taken."
 msgstr "Aucune note n’a encore été prise."
 
-#: views/links/show.html.twig:403
+#: views/links/show.html.twig:359
 msgid "Add a note"
 msgstr "Ajouter une note"
 
@@ -2305,6 +2302,19 @@ msgstr "Toujours rien ? Avez-vous vérifié votre spam ?"
 msgid "Didn’t receive the email? Resend it"
 msgstr "Courriel non reçu ? Renvoyer"
 
+#: views/news/_popup_actions.html.twig:30
+#: views/streams/_popup_actions.html.twig:35
+msgid "Read the links later"
+msgstr "Lire les liens plus tard"
+
+#: views/news/_popup_actions.html.twig:46
+msgid ""
+"You’ll remove all the news links, this action cannot be canceled. Are you "
+"sure?"
+msgstr ""
+"Vous allez retirer tous les liens du journal, cette action ne peut pas être "
+"annulée. Confirmez-vous ?"
+
 #: views/news/index.html.twig:37
 msgid "today"
 msgstr "aujourd’hui"
@@ -2313,34 +2323,19 @@ msgstr "aujourd’hui"
 msgid "yesterday"
 msgstr "hier"
 
-#: views/news/index.html.twig:61 views/streams/_timeline.html.twig:34
+#: views/news/index.html.twig:59 views/streams/_timeline.html.twig:32
 msgid "Actions on the day"
 msgstr "Actions pour la journée"
 
-#: views/news/index.html.twig:76 views/news/index.html.twig:167
-#: views/news/index.html.twig:247 views/streams/_timeline.html.twig:53
-#: views/streams/_timeline.html.twig:150 views/streams/_timeline.html.twig:236
-msgid "Read the links later"
-msgstr "Lire les liens plus tard"
-
-#: views/news/index.html.twig:88 views/news/index.html.twig:181
-#: views/news/index.html.twig:258
-msgid ""
-"You’ll remove all the news links, this action cannot be canceled. Are you "
-"sure?"
-msgstr ""
-"Vous allez retirer tous les liens du journal, cette action ne peut pas être "
-"annulée. Confirmez-vous ?"
-
-#: views/news/index.html.twig:151 views/streams/_timeline.html.twig:131
+#: views/news/index.html.twig:111 views/streams/_timeline.html.twig:83
 msgid "Actions on the feed"
 msgstr "Actions pour le flux"
 
-#: views/news/index.html.twig:233
+#: views/news/index.html.twig:155
 msgid "Empty the news"
 msgstr "Vider le journal"
 
-#: views/news/index.html.twig:272
+#: views/news/index.html.twig:161
 msgid ""
 "Note: you will need to clear the news before you can refresh it. Mark the "
 "links as read, to be read later, or remove them with the appropriate actions."
@@ -2349,21 +2344,21 @@ msgstr ""
 "Marquez les liens comme lus, à lire plus tard, ou retirez-les avec les "
 "actions adéquats."
 
-#: views/news/index.html.twig:277
+#: views/news/index.html.twig:166
 msgid ""
 "Fill your news feed with the content published by the feeds that you follow."
 msgstr ""
 "Remplissez votre journal avec le contenu publié par les flux que vous suivez."
 
-#: views/news/index.html.twig:283
+#: views/news/index.html.twig:172
 msgid "There are no relevant links to suggest at this time."
 msgstr "Il n'y a aucun lien pertinent à vous proposer pour le moment."
 
-#: views/news/index.html.twig:302
+#: views/news/index.html.twig:191
 msgid "Refresh the news"
 msgstr "Rafraichir le journal"
 
-#: views/notes/_notepad.html.twig:57
+#: views/notes/_notepad.html.twig:53
 msgid "Are you sure that you want to delete this note?"
 msgstr "Êtes-vous sur·e de vouloir supprimer cette note ?"
 
@@ -2837,7 +2832,7 @@ msgstr "Modifier votre photo de profil"
 msgid "This is your public profile!"
 msgstr "Voici votre profil public !"
 
-#: views/profiles/layout.html.twig:107
+#: views/profiles/layout.html.twig:96
 msgid "Copy link to profile"
 msgstr "Copier le lien du profil"
 
@@ -2983,8 +2978,11 @@ msgstr "Quelle est le nom du fil ?"
 msgid "What’s the purpose of the stream?"
 msgstr "Quelle est la raison d’être du fil ?"
 
-#: views/streams/_timeline.html.twig:69 views/streams/_timeline.html.twig:167
-#: views/streams/_timeline.html.twig:252
+#: views/streams/_popup_actions.html.twig:46
+msgid "Ignore the links"
+msgstr "Ignorer les liens"
+
+#: views/streams/_popup_actions.html.twig:51
 msgid ""
 "The links will no longer be counted as unread and won’t be suggested in your "
 "news. Are you sure?"
@@ -2992,16 +2990,11 @@ msgstr ""
 "Les liens ne seront plus considérés comme non lus et ne seront plus suggérés "
 "dans le journal. Êtes vous sur·es ?"
 
-#: views/streams/_timeline.html.twig:74 views/streams/_timeline.html.twig:172
-#: views/streams/_timeline.html.twig:257
-msgid "Ignore the links"
-msgstr "Ignorer les liens"
-
-#: views/streams/_timeline.html.twig:217
+#: views/streams/_timeline.html.twig:124
 msgid "Actions on the links"
 msgstr "Actions sur les liens"
 
-#: views/streams/_timeline.html.twig:273
+#: views/streams/_timeline.html.twig:137
 msgid "There is no link matching your filters."
 msgstr "Il n’y a aucun lien qui correspond à vos filtres."
 
@@ -3029,7 +3022,7 @@ msgstr "Par"
 msgid "Manage sources"
 msgstr "Gérer les sources"
 
-#: views/streams/show.html.twig:119
+#: views/streams/show.html.twig:117
 msgid "Are you sure that you want to delete this stream?"
 msgstr "Êtes-vous sur·e de vouloir supprimer ce fil ?"
 

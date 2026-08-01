@@ -197,127 +197,87 @@
     </div>
 
     <div class="link__actions">
-        <details
-            class="popup"
-            data-controller="popup"
-            data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
-        >
-            <summary class="popup__opener" title="{{ t('Actions') }}">
-                <span class="button button--icon button--ghost">
-                    {{ icon('menu') }}
-                    <span class="sr-only">
-                        {{ t('Actions') }}
-                    </span>
+        {% embed 'components/popup.html.twig' with {
+            opener_class: 'button button--icon button--ghost',
+            position: 'over',
+            tooltip: t('Actions'),
+        } %}
+            {% block opener %}
+                {{ icon('menu') }}
+
+                <span class="sr-only">
+                    {{ t('Actions') }}
                 </span>
-            </summary>
+            {% endblock %}
 
-            <nav class="popup__container popup__container--over">
+            {% block items %}
+                {% import _self as item %}
+
                 {% if display_never %}
-                    <form data-turbo-preserve-scroll method="post" action="{{ url('mark link to never read', { id: link.id }) }}">
-                        <button class="popup__item">
-                            {{ icon('times') }}
-                            {{ t('Remove from the news') }}
-                        </button>
+                    {{ item.action(
+                        url: url('mark link to never read', { id: link.id }),
+                        label: t('Remove from the news'),
+                        icon: 'times',
+                        csrf: 'links\\MarkLinkAsNever',
+                        preserve_scroll: true,
+                    ) }}
 
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token('links\\MarkLinkAsNever') }}" />
-                    </form>
-
-                    <div class="popup__separator"></div>
+                    {{ item.separator() }}
                 {% endif %}
 
-                <div data-controller="copy-to-clipboard">
-                    <input type="hidden" value="{{ link.url }}" data-copy-to-clipboard-target="copyable" />
-
-                    <button
-                        class="popup__item"
-                        data-action="copy-to-clipboard#copy"
-                        data-copy-to-clipboard-target="feedback"
-                    >
-                        {{ icon('copy-to-clipboard') }}
-                        {{ t('Copy the external link') }}
-                    </button>
-                </div>
+                {{ item.clipboard(
+                    value: link.url,
+                    label: t('Copy the external link'),
+                ) }}
 
                 {% if display_share_on_mastodon %}
-                    <button
-                        class="popup__item"
-                        data-controller="modal-opener"
-                        data-action="modal-opener#fetch"
-                        data-modal-opener-href-value="{{ url('new link mastodon thread', { id: link.id }) }}"
-                        aria-haspopup="dialog"
-                        aria-controls="modal"
-                    >
-                        {{ icon('mastodon') }}
-                        {{ t('Share on Mastodon') }}
-                    </button>
+                    {{ item.modal(
+                        url: url('new link mastodon thread', { id: link.id }),
+                        label: t('Share on Mastodon'),
+                        icon: 'mastodon',
+                    ) }}
                 {% endif %}
 
                 {% if display_edit or display_repair %}
-                    <div class="popup__separator"></div>
+                    {{ item.separator() }}
                 {% endif %}
 
                 {% if display_edit %}
-                    <button
-                        class="popup__item"
-                        data-controller="modal-opener"
-                        data-action="modal-opener#fetch"
-                        data-modal-opener-href-value="{{ url('edit link', { id: link.id }) }}"
-                        aria-haspopup="dialog"
-                        aria-controls="modal"
-                    >
-                        {{ icon('pencil') }}
-                        {{ t('Edit') }}
-                    </button>
+                    {{ item.modal(
+                        url: url('edit link', { id: link.id }),
+                        label: t('Edit'),
+                        icon: 'pencil',
+                    ) }}
 
-                    <button
-                        class="popup__item"
-                        data-controller="modal-opener"
-                        data-action="modal-opener#fetch"
-                        data-modal-opener-href-value="{{ url('edit image link', { id: link.id }) }}"
-                        aria-haspopup="dialog"
-                        aria-controls="modal"
-                    >
-                        {{ icon('image-up') }}
-                        {{ t('Change the illustration') }}
-                    </button>
+                    {{ item.modal(
+                        url: url('edit image link', { id: link.id }),
+                        label: t('Change the illustration'),
+                        icon: 'image-up',
+                    ) }}
                 {% endif %}
 
                 {% if display_repair %}
-                    <button
-                        class="popup__item"
-                        data-controller="modal-opener"
-                        data-action="modal-opener#fetch"
-                        data-modal-opener-href-value="{{ url('repairing link', { id: link.id }) }}"
-                        aria-haspopup="dialog"
-                        aria-controls="modal"
-                    >
-                        {{ icon('wrench') }}
-                        {{ t('Repair') }}
-                    </button>
+                    {{ item.modal(
+                        url: url('repairing link', { id: link.id }),
+                        label: t('Repair'),
+                        icon: 'wrench',
+                    ) }}
                 {% endif %}
 
                 {% if display_delete %}
-                    <div class="popup__separator"></div>
+                    {{ item.separator() }}
 
-                    <form
-                        data-turbo-preserve-scroll
-                        method="post"
-                        action="{{ url('delete link', { id: link.id }) }}"
-                        data-turbo-confirm="{{ t('Are you sure that you want to delete this link?') }}"
-                    >
-                        <button
-                            type="submit"
-                            class="popup__item"
-                        >
-                            {{ icon('trash') }}
-                            {{ t('Delete') }}
-                        </button>
-
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token('links\\DeleteLink') }}" />
-                    </form>
+                    {{ item.action(
+                        url: url('delete link', { id: link.id }),
+                        label: t('Delete'),
+                        icon: 'trash',
+                        csrf: 'links\\DeleteLink',
+                        confirm: t('Are you sure that you want to delete this link?'),
+                        preserve_scroll: true,
+                    ) }}
                 {% endif %}
-            </nav>
-        </details>
+            {% endblock %}
+        {% endembed %}
 
         <div class="link__actions-group">
             {% if display_mark_as_read %}

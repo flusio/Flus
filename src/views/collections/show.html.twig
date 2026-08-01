@@ -178,118 +178,75 @@
             {% endif %}
         {% endif %}
 
-        <details
-            class="popup"
-            data-controller="popup"
-            data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
-        >
-            <summary class="popup__opener">
-                <span class="button">
-                    {{ icon('menu') }}
-                    {{ t('Actions') }}
-                </span>
-            </summary>
+        {% embed 'components/popup.html.twig' %}
+            {% block opener %}
+                {{ icon('menu') }}
+                {{ t('Actions') }}
+            {% endblock %}
 
-            <nav class="popup__container popup__container--center">
+            {% block items %}
+                {% import _self as item %}
+
                 {% if is_following %}
-                    <button
-                        class="popup__item"
-                        data-controller="modal-opener"
-                        data-action="modal-opener#fetch"
-                        data-modal-opener-href-value="{{ url('edit collection filter', { id: collection.id }) }}"
-                        aria-haspopup="dialog"
-                        aria-controls="modal"
-                    >
-                        {{ icon('slider') }}
-                        {{ t('Adjust for the news') }}
-                    </button>
+                    {{ item.modal(
+                        url: url('edit collection filter', { id: collection.id }),
+                        label: t('Adjust for the news'),
+                        icon: 'slider',
+                    ) }}
                 {% endif %}
 
                 {% if can_update or (is_following and not app.user.isAlphaEnabled) %}
-                    <button
-                        class="popup__item"
-                        data-controller="modal-opener"
-                        data-action="modal-opener#fetch"
-                        data-modal-opener-href-value="{{ url('edit group collection', { id: collection.id }) }}"
-                        aria-haspopup="dialog"
-                        aria-controls="modal"
-                    >
-                        {{ icon('directory') }}
-                        {{ t('Put in a group') }}
-                    </button>
+                    {{ item.modal(
+                        url: url('edit group collection', { id: collection.id }),
+                        label: t('Put in a group'),
+                        icon: 'directory',
+                    ) }}
 
-                    <div class="popup__separator"></div>
+                    {{ item.separator() }}
                 {% endif %}
 
-                <div data-controller="copy-to-clipboard">
-                    <input type="hidden" value="{{ url_full('collection', { id: collection.id }) }}" data-copy-to-clipboard-target="copyable">
+                {{ item.clipboard(
+                    value: url_full('collection', { id: collection.id }),
+                    label: t('Copy link to collection'),
+                ) }}
 
-                    <button
-                        class="popup__item"
-                        data-action="copy-to-clipboard#copy"
-                        data-copy-to-clipboard-target="feedback"
-                    >
-                        {{ icon('copy-to-clipboard') }}
-                        {{ t('Copy link to collection') }}
-                    </button>
-                </div>
-
-                <div data-controller="copy-to-clipboard">
-                    <input type="hidden" value="{{ url_full('collection feed', { id: collection.id }) }}" data-copy-to-clipboard-target="copyable">
-
-                    <button
-                        class="popup__item"
-                        data-action="copy-to-clipboard#copy"
-                        data-copy-to-clipboard-target="feedback"
-                    >
-                        {{ icon('feed') }}
-                        {{ t('Copy link to Web feed') }}
-                    </button>
-                </div>
+                {{ item.clipboard(
+                    value: url_full('collection feed', { id: collection.id }),
+                    label: t('Copy link to Web feed'),
+                    icon: 'feed',
+                ) }}
 
                 {% if is_following %}
-                    <div class="popup__separator"></div>
+                    {{ item.separator() }}
 
-                    <form method="post" action="{{ url('mark collection as read', { id: collection.id }) }}">
-                        <button class="popup__item">
-                            {{ icon('check') }}
-                            {{ t('Mark all as read') }}
-                        </button>
+                    {{ item.action(
+                        url: url('mark collection as read', { id: collection.id }),
+                        label: t('Mark all as read'),
+                        icon: 'check',
+                        csrf: 'collections\\MarkCollectionAsRead',
+                    ) }}
 
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\MarkCollectionAsRead') }}">
-                    </form>
-
-                    <form method="post" action="{{ url('never read collection', { id: collection.id }) }}">
-                        <button class="popup__item">
-                            {{ icon('times') }}
-                            {{ t('Remove the links from the news') }}
-                        </button>
-
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\MarkCollectionAsNever') }}">
-                    </form>
+                    {{ item.action(
+                        url: url('never read collection', { id: collection.id }),
+                        label: t('Remove the links from the news'),
+                        icon: 'times',
+                        csrf: 'collections\\MarkCollectionAsNever',
+                    ) }}
                 {% endif %}
 
                 {% if can_delete %}
-                    <div class="popup__separator"></div>
+                    {{ item.separator() }}
 
-                    <form
-                        method="post"
-                        action="{{ url('delete collection', { id: collection.id }) }}"
-                        data-turbo-confirm="{{ t('Are you sure that you want to delete this collection? You may lose the links that are attached only to this collection.') }}"
-                    >
-                        <button
-                            type="submit"
-                            class="popup__item"
-                        >
-                            {{ icon('trash') }}
-                            {{ t('Delete') }}
-                        </button>
-
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\DeleteCollection') }}">
-                    </form>
+                    {{ item.action(
+                        url: url('delete collection', { id: collection.id }),
+                        label: t('Delete'),
+                        icon: 'trash',
+                        csrf: 'collections\\DeleteCollection',
+                        confirm: t('Are you sure that you want to delete this collection? You may lose the links that are attached only to this collection.'),
+                    ) }}
                 {% endif %}
-            </nav>
-        </details>
+            {% endblock %}
+        {% endembed %}
     </div>
 
     {{ include('links/_pagination_count.html.twig') }}

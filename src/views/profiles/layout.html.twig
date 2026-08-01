@@ -82,46 +82,27 @@
             </button>
         {% endif %}
 
-        <details
-            class="popup"
-            data-controller="popup"
-            data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
-        >
-            <summary class="popup__opener">
-                <span class="button">
-                    {{ icon('menu') }}
-                    {{ t('Actions') }}
-                </span>
-            </summary>
+        {% embed 'components/popup.html.twig' %}
+            {% block opener %}
+                {{ icon('menu') }}
+                {{ t('Actions') }}
+            {% endblock %}
 
-            <nav class="popup__container popup__container--center">
-                <div data-controller="copy-to-clipboard">
-                    <input type="hidden" value="{{ url_full('profile', { id: user.id }) }}" data-copy-to-clipboard-target="copyable">
+            {% block items %}
+                {% import _self as item %}
 
-                    <button
-                        class="popup__item"
-                        data-action="copy-to-clipboard#copy"
-                        data-copy-to-clipboard-target="feedback"
-                    >
-                        {{ icon('copy-to-clipboard') }}
-                        {{ t('Copy link to profile') }}
-                    </button>
-                </div>
+                {{ item.clipboard(
+                    value: url_full('profile', { id: user.id }),
+                    label: t('Copy link to profile'),
+                ) }}
 
-                <div data-controller="copy-to-clipboard">
-                    <input type="hidden" value="{{ url_full('profile feed', { id: user.id }) }}" data-copy-to-clipboard-target="copyable">
-
-                    <button
-                        class="popup__item"
-                        data-action="copy-to-clipboard#copy"
-                        data-copy-to-clipboard-target="feedback"
-                    >
-                        {{ icon('feed') }}
-                        {{ t('Copy link to Web feed') }}
-                    </button>
-                </div>
-            </nav>
-        </details>
+                {{ item.clipboard(
+                    value: url_full('profile feed', { id: user.id }),
+                    label: t('Copy link to Web feed'),
+                    icon: 'feed',
+                ) }}
+            {% endblock %}
+        {% endembed %}
     </div>
 
     {% block profile_navigation %}

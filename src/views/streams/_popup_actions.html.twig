@@ -1,0 +1,52 @@
+{#
+ # The actions on the stream links, to be included in the `items` block of a
+ # popup. `params` restricts the actions to a subset of the timeline: it is
+ # merged with the filters common to the whole page, then added as hidden
+ # inputs to each form.
+ #}
+{% import 'components/popup.html.twig' as item %}
+
+{% types {
+    heading: 'string',
+    params: 'array',
+    preserve_scroll: 'boolean',
+} %}
+
+{% set default_params = {
+    status: stream_view.status,
+    before: stream_view.rendered_at.format('Y-m-d H:i:sP'),
+} %}
+{% set params = default_params | merge(params ?? {}) %}
+{% set preserve_scroll = preserve_scroll ?? false %}
+
+{{ item.heading(heading) }}
+
+{{ item.action(
+    url: url('mark stream as read', { id: stream.id }),
+    label: t('Mark all as read'),
+    icon: 'check',
+    csrf: 'streams\\MarkStreamAsRead',
+    params: params,
+    preserve_scroll: preserve_scroll,
+) }}
+
+{{ item.action(
+    url: url('read stream later', { id: stream.id }),
+    label: t('Read the links later'),
+    icon: 'bookmark',
+    csrf: 'streams\\MarkStreamAsReadLater',
+    params: params,
+    preserve_scroll: preserve_scroll,
+) }}
+
+{{ item.separator() }}
+
+{{ item.action(
+    url: url('dismiss stream', { id: stream.id }),
+    label: t('Ignore the links'),
+    icon: 'times',
+    csrf: 'streams\\MarkStreamAsDismissed',
+    params: params,
+    preserve_scroll: preserve_scroll,
+    confirm: t('The links will no longer be counted as unread and won’t be suggested in your news. Are you sure?'),
+) }}

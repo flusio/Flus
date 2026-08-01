@@ -42,62 +42,25 @@
 
                                 <div class="group__separator"></div>
 
-                                <details
-                                    class="popup"
-                                    data-controller="popup"
-                                    data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
-                                >
-                                    <summary class="popup__opener">
-                                        <span class="button button--icon-mobile">
-                                            {{ icon('menu') }}
+                                {% embed 'components/popup.html.twig' with {
+                                    opener_class: 'button button--icon-mobile',
+                                    position: 'right',
+                                } %}
+                                    {% block opener %}
+                                        {{ icon('menu') }}
 
-                                            <span class="no-mobile">
-                                                {{ t('Actions') }}
-                                            </span>
+                                        <span class="no-mobile">
+                                            {{ t('Actions') }}
                                         </span>
-                                    </summary>
+                                    {% endblock %}
 
-                                    <nav class="popup__container popup__container--right" role="menu">
-                                        <div class="popup__title">{{ t('Actions on the day') }}</div>
-
-                                        <form method="post" action="{{ url('mark collection as read', { id: news.id }) }}" role="menuitem">
-                                            <button class="popup__item popup__item--button">
-                                                {{ icon('check') }}
-                                                {{ t('Mark all as read') }}
-                                            </button>
-
-                                            <input type="hidden" name="date" value="{{ date_group.date.format('Y-m-d') }}">
-                                            <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\MarkCollectionAsRead') }}">
-                                        </form>
-
-                                        <form method="post" action="{{ url('read collection later', { id: news.id }) }}" role="menuitem">
-                                            <button class="popup__item popup__item--button">
-                                                {{ icon('bookmark') }}
-                                                {{ t('Read the links later') }}
-                                            </button>
-
-                                            <input type="hidden" name="date" value="{{ date_group.date.format('Y-m-d') }}">
-                                            <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\MarkCollectionAsReadLater') }}">
-                                        </form>
-
-                                        <div class="popup__separator"></div>
-
-                                        <form
-                                            method="post"
-                                            action="{{ url('never read collection', { id: news.id }) }}"
-                                            data-turbo-confirm="{{ t('You’ll remove all the news links, this action cannot be canceled. Are you sure?') }}"
-                                            role="menuitem"
-                                        >
-                                            <button class="popup__item popup__item--button">
-                                                {{ icon('times') }}
-                                                {{ t('Remove the links from the news') }}
-                                            </button>
-
-                                            <input type="hidden" name="date" value="{{ date_group.date.format('Y-m-d') }}">
-                                            <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\MarkCollectionAsNever') }}">
-                                        </form>
-                                    </nav>
-                                </details>
+                                    {% block items %}
+                                        {{ include('news/_popup_actions.html.twig', {
+                                            heading: t('Actions on the day'),
+                                            params: { date: date_group.date.format('Y-m-d') },
+                                        }) }}
+                                    {% endblock %}
+                                {% endembed %}
                             </header>
 
                             <div class="group__body flow">
@@ -132,66 +95,28 @@
                                                 {{ t('%s link', '%s links', source_group.links | length, [source_group.links | length]) }}
                                             </span>
 
-                                            <details
-                                                class="popup"
-                                                data-controller="popup"
-                                                data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
-                                            >
-                                                <summary class="popup__opener">
-                                                    <span class="button button--icon button-ghost">
-                                                        {{ icon('menu') }}
+                                            {% embed 'components/popup.html.twig' with {
+                                                opener_class: 'button button--icon button--ghost',
+                                            } %}
+                                                {% block opener %}
+                                                    {{ icon('menu') }}
 
-                                                        <span class="sr-only">
-                                                            {{ t('Actions') }}
-                                                        </span>
+                                                    <span class="sr-only">
+                                                        {{ t('Actions') }}
                                                     </span>
-                                                </summary>
+                                                {% endblock %}
 
-                                                <nav class="popup__container popup__container--center" role="menu">
-                                                    <div class="popup__title">{{ t('Actions on the feed') }}</div>
-
-                                                    <form data-turbo-preserve-scroll method="post" action="{{ url('mark collection as read', { id: news.id }) }}" role="menuitem">
-                                                        <button class="popup__item popup__item--button">
-                                                            {{ icon('check') }}
-                                                            {{ t('Mark all as read') }}
-                                                        </button>
-
-                                                        <input type="hidden" name="date" value="{{ date_group.date.format('Y-m-d') }}">
-                                                        <input type="hidden" name="source" value="{{ source_group.source.id }}">
-                                                        <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\MarkCollectionAsRead') }}">
-                                                    </form>
-
-                                                    <form data-turbo-preserve-scroll method="post" action="{{ url('read collection later', { id: news.id }) }}" role="menuitem">
-                                                        <button class="popup__item popup__item--button">
-                                                            {{ icon('bookmark') }}
-                                                            {{ t('Read the links later') }}
-                                                        </button>
-
-                                                        <input type="hidden" name="date" value="{{ date_group.date.format('Y-m-d') }}">
-                                                        <input type="hidden" name="source" value="{{ source_group.source.id }}">
-                                                        <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\MarkCollectionAsReadLater') }}">
-                                                    </form>
-
-                                                    <div class="popup__separator"></div>
-
-                                                    <form
-                                                        data-turbo-preserve-scroll
-                                                        method="post"
-                                                        action="{{ url('never read collection', { id: news.id }) }}"
-                                                        data-turbo-confirm="{{ t('You’ll remove all the news links, this action cannot be canceled. Are you sure?') }}"
-                                                        role="menuitem"
-                                                    >
-                                                        <button class="popup__item popup__item--button">
-                                                            {{ icon('times') }}
-                                                            {{ t('Remove the links from the news') }}
-                                                        </button>
-
-                                                        <input type="hidden" name="date" value="{{ date_group.date.format('Y-m-d') }}">
-                                                        <input type="hidden" name="source" value="{{ source_group.source.id }}">
-                                                        <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\MarkCollectionAsNever') }}">
-                                                    </form>
-                                                </nav>
-                                            </details>
+                                                {% block items %}
+                                                    {{ include('news/_popup_actions.html.twig', {
+                                                        heading: t('Actions on the feed'),
+                                                        params: {
+                                                            date: date_group.date.format('Y-m-d'),
+                                                            source: source_group.source.id,
+                                                        },
+                                                        preserve_scroll: true,
+                                                    }) }}
+                                                {% endblock %}
+                                            {% endembed %}
                                         </div>
 
                                         <div class="source-group__body grid">
@@ -217,56 +142,20 @@
                 </div>
 
                 <div class="news__postpone text--center flow">
-                    <details
-                        class="popup news__postpone-popup"
-                        data-controller="popup"
-                        data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
-                    >
-                        <summary class="popup__opener">
-                            <span class="button button--primary button--big news__postpone-button">
-                                {{ icon('menu') }}
-                                {{ t('Actions') }}
-                            </span>
-                        </summary>
+                    {% embed 'components/popup.html.twig' with {
+                        opener_class: 'button button--primary button--big',
+                    } %}
+                        {% block opener %}
+                            {{ icon('menu') }}
+                            {{ t('Actions') }}
+                        {% endblock %}
 
-                        <nav class="popup__container popup__container--center" role="menu">
-                            <div class="popup__title">{{ t('Empty the news') }}</div>
-
-                            <form method="post" action="{{ url('mark collection as read', { id: news.id }) }}" role="menuitem">
-                                <button class="popup__item popup__item--button">
-                                    {{ icon('check') }}
-                                    {{ t('Mark all as read') }}
-                                </button>
-
-                                <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\MarkCollectionAsRead') }}">
-                            </form>
-
-                            <form method="post" action="{{ url('read collection later', { id: news.id }) }}" role="menuitem">
-                                <button class="popup__item popup__item--button">
-                                    {{ icon('bookmark') }}
-                                    {{ t('Read the links later') }}
-                                </button>
-
-                                <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\MarkCollectionAsReadLater') }}">
-                            </form>
-
-                            <div class="popup__separator"></div>
-
-                            <form
-                                method="post"
-                                action="{{ url('never read collection', { id: news.id }) }}"
-                                data-turbo-confirm="{{ t('You’ll remove all the news links, this action cannot be canceled. Are you sure?') }}"
-                                role="menuitem"
-                            >
-                                <button class="popup__item popup__item--button">
-                                    {{ icon('times') }}
-                                    {{ t('Remove the links from the news') }}
-                                </button>
-
-                                <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\MarkCollectionAsNever') }}">
-                            </form>
-                        </nav>
-                    </details>
+                        {% block items %}
+                            {{ include('news/_popup_actions.html.twig', {
+                                heading: t('Empty the news'),
+                            }) }}
+                        {% endblock %}
+                    {% endembed %}
 
                     <p class="wrapper wrapper--small wrapper--center text--secondary">
                         {{ t('Note: you will need to clear the news before you can refresh it. Mark the links as read, to be read later, or remove them with the appropriate actions.') }}

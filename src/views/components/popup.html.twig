@@ -1,0 +1,198 @@
+{#
+ # A popup menu, to be used with {% embed %}:
+ #
+ #     {% embed 'components/popup.html.twig' with {
+ #         opener_class: 'button button--ghost button--icon',
+ #         position: 'right',
+ #         tooltip: t('Actions'),
+ #     } %}
+ #         {% block opener %}
+ #             {{ icon('menu') }}
+ #
+ #             <span class="sr-only">{{ t('Actions') }}</span>
+ #         {% endblock %}
+ #
+ #         {% block items %}
+ #             {% import _self as item %}
+ #
+ #             {{ item.modal(
+ #                 url: url('edit note', { id: note.id }),
+ #                 label: t('Edit'),
+ #                 icon: 'pencil',
+ #             ) }}
+ #
+ #             {{ item.separator() }}
+ #
+ #             {{ item.action(
+ #                 url: url('delete note', { id: note.id }),
+ #                 label: t('Delete'),
+ #                 icon: 'trash',
+ #                 csrf: 'notes\\DeleteNote',
+ #             ) }}
+ #         {% endblock %}
+ #     {% endembed %}
+ #
+ # The `opener` block is wrapped in a span classed with `opener_class`, `button`
+ # by default. An empty `opener_class` renders the block without any wrapper.
+ #
+ # The items are rendered by the macros declared at the end of this file.
+ #}
+{% types {
+    class: 'string',
+    opener_class: 'string',
+    position: 'string',
+    drop_up: 'boolean',
+    tooltip: 'string',
+} %}
+
+{% set class = class ?? '' %}
+{% set opener_class = opener_class ?? 'button' %}
+{% set position = position ?? 'center' %}
+{% set drop_up = drop_up ?? false %}
+{% set tooltip = tooltip ?? '' %}
+
+<details
+    class="popup{% if class %} {{ class }}{% endif %}"
+    data-controller="popup"
+    data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
+>
+    <summary
+        class="popup__opener"
+        aria-haspopup="menu"
+        aria-expanded="false"
+        {% if tooltip %}title="{{ tooltip }}"{% endif %}
+    >
+        {% if opener_class %}
+            <span class="{{ opener_class }}">
+                {% block opener %}{% endblock %}
+            </span>
+        {% else %}
+            {{ block('opener') }}
+        {% endif %}
+    </summary>
+
+    <nav
+        class="popup__container popup__container--{{ position }}{{ drop_up ? ' popup__container--top' }}"
+        role="menu"
+    >
+        {% block items %}{% endblock %}
+    </nav>
+</details>
+
+{#
+# A title, to introduce a section of the menu.
+#}
+{% macro heading(label) %}
+    <div class="popup__title">{{ label }}</div>
+{% endmacro %}
+
+{#
+ # A link to another page.
+ #}
+{% macro link(url, label, icon = '', current = false) %}
+    <a
+        class="popup__item"
+        role="menuitem"
+        href="{{ url }}"
+        {% if current %}aria-current="page"{% endif %}
+    >
+        {% if icon %}
+            {{ icon(icon) }}
+        {% endif %}
+
+        {{ label }}
+    </a>
+{% endmacro %}
+
+{#
+ # A button submitting a POST form. `csrf` is passed to the csrf_token()
+ # function, and `params` is rendered as a list of hidden inputs.
+ #}
+{% macro action(url, label, csrf, icon = '', params = {}, confirm = '', preserve_scroll = false) %}
+    <form
+        role="none"
+        method="post"
+        action="{{ url }}"
+        {% if confirm %}data-turbo-confirm="{{ confirm }}"{% endif %}
+        {% if preserve_scroll %}data-turbo-preserve-scroll{% endif %}
+    >
+        <button type="submit" class="popup__item" role="menuitem">
+            {% if icon %}
+                {{ icon(icon) }}
+            {% endif %}
+
+            {{ label }}
+        </button>
+
+        {% for param_name, param_value in params %}
+            <input type="hidden" name="{{ param_name }}" value="{{ param_value }}">
+        {% endfor %}
+
+        <input type="hidden" name="csrf_token" value="{{ csrf_token(csrf) }}">
+    </form>
+{% endmacro %}
+
+{#
+ # A button opening the modal on the given URL.
+ #}
+{% macro modal(url, label, icon = '') %}
+    <button
+        type="button"
+        class="popup__item"
+        role="menuitem"
+        data-controller="modal-opener"
+        data-action="modal-opener#fetch"
+        data-modal-opener-href-value="{{ url }}"
+        aria-haspopup="dialog"
+        aria-controls="modal"
+    >
+        {% if icon %}
+            {{ icon(icon) }}
+        {% endif %}
+
+        {{ label }}
+    </button>
+{% endmacro %}
+
+{#
+ # A button copying the given value to the clipboard.
+ #}
+{% macro clipboard(value, label, icon = 'copy-to-clipboard') %}
+    <div role="none" data-controller="copy-to-clipboard">
+        <button
+            type="button"
+            class="popup__item"
+            role="menuitem"
+            data-action="copy-to-clipboard#copy"
+            data-copy-to-clipboard-target="feedback"
+        >
+            {{ icon(icon) }}
+            {{ label }}
+        </button>
+
+        <input type="hidden" value="{{ value }}" data-copy-to-clipboard-target="copyable">
+    </div>
+{% endmacro %}
+
+{#
+ # One choice among several, to be placed in a form provided by the caller.
+ #}
+{% macro option(name, value, label, current = false) %}
+    <button
+        type="submit"
+        class="popup__item popup__item--selectable"
+        role="menuitem"
+        name="{{ name }}"
+        value="{{ value }}"
+        {% if current %}aria-current="true"{% endif %}
+    >
+        {{ label }}
+    </button>
+{% endmacro %}
+
+{#
+ # A horizontal rule between two sections of the menu.
+ #}
+{% macro separator() %}
+    <div class="popup__separator" role="separator"></div>
+{% endmacro %}

@@ -2,22 +2,6 @@ import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
     connect () {
-        const openerElement = this.element.querySelector('.popup__opener');
-        if (openerElement) {
-            openerElement.setAttribute('aria-haspopup', 'menu');
-            openerElement.setAttribute('aria-expanded', this.element.open);
-        }
-
-        const containerElement = this.element.querySelector('.popup__container');
-        if (containerElement) {
-            containerElement.setAttribute('role', 'menu');
-        }
-
-        const itemsElements = this.element.querySelectorAll('.popup__item');
-        itemsElements.forEach((element) => {
-            element.setAttribute('role', 'menuitem');
-        });
-
         this.element.addEventListener('keydown', this.closeOnEscape.bind(this));
         this.element.addEventListener('keydown', this.toggleMenuOnKeydown.bind(this));
         this.element.addEventListener('keydown', this.navigateInMenuOnArrow.bind(this));

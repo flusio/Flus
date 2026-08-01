@@ -15,74 +15,29 @@
 
                             <div class="group__separator"></div>
 
-                            <details
-                                class="popup"
-                                data-controller="popup"
-                                data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
-                            >
-                                <summary class="popup__opener">
-                                    <span class="button button--icon-mobile">
-                                        {{ icon('menu') }}
+                            {% embed 'components/popup.html.twig' with {
+                                opener_class: 'button button--icon-mobile',
+                                position: 'right',
+                            } %}
+                                {% block opener %}
+                                    {{ icon('menu') }}
 
-                                        <span class="no-mobile">
-                                            {{ t('Actions') }}
-                                        </span>
+                                    <span class="no-mobile">
+                                        {{ t('Actions') }}
                                     </span>
-                                </summary>
+                                {% endblock %}
 
-                                <nav class="popup__container popup__container--right" role="menu">
-                                    <div class="popup__title">{{ t('Actions on the day') }}</div>
-
-                                    <form method="post" action="{{ url('mark stream as read', { id: stream.id }) }}" role="menuitem">
-                                        <button class="popup__item popup__item--button">
-                                            {{ icon('check') }}
-                                            {{ t('Mark all as read') }}
-                                        </button>
-
-                                        <input type="hidden" name="at" value="{{ date_group.date.format('Y-m-d') }}">
-                                        <input type="hidden" name="days" value="1">
-                                        <input type="hidden" name="source" value="{{ stream_view.source ? stream_view.source.id : '' }}">
-                                        <input type="hidden" name="status" value="{{ stream_view.status }}">
-                                        <input type="hidden" name="before" value="{{ stream_view.rendered_at.format('Y-m-d H:i:sP') }}">
-                                        <input type="hidden" name="csrf_token" value="{{ csrf_token('streams\\MarkStreamAsRead') }}">
-                                    </form>
-
-                                    <form method="post" action="{{ url('read stream later', { id: stream.id }) }}" role="menuitem">
-                                        <button class="popup__item popup__item--button">
-                                            {{ icon('bookmark') }}
-                                            {{ t('Read the links later') }}
-                                        </button>
-
-                                        <input type="hidden" name="at" value="{{ date_group.date.format('Y-m-d') }}">
-                                        <input type="hidden" name="days" value="1">
-                                        <input type="hidden" name="source" value="{{ stream_view.source ? stream_view.source.id : '' }}">
-                                        <input type="hidden" name="status" value="{{ stream_view.status }}">
-                                        <input type="hidden" name="before" value="{{ stream_view.rendered_at.format('Y-m-d H:i:sP') }}">
-                                        <input type="hidden" name="csrf_token" value="{{ csrf_token('streams\\MarkStreamAsReadLater') }}">
-                                    </form>
-
-                                    <div class="popup__separator"></div>
-
-                                    <form
-                                        method="post"
-                                        action="{{ url('dismiss stream', { id: stream.id }) }}"
-                                        data-turbo-confirm="{{ t('The links will no longer be counted as unread and won’t be suggested in your news. Are you sure?') }}"
-                                        role="menuitem"
-                                    >
-                                        <button class="popup__item popup__item--button">
-                                            {{ icon('times') }}
-                                            {{ t('Ignore the links') }}
-                                        </button>
-
-                                        <input type="hidden" name="at" value="{{ date_group.date.format('Y-m-d') }}">
-                                        <input type="hidden" name="days" value="1">
-                                        <input type="hidden" name="source" value="{{ stream_view.source ? stream_view.source.id : '' }}">
-                                        <input type="hidden" name="status" value="{{ stream_view.status }}">
-                                        <input type="hidden" name="before" value="{{ stream_view.rendered_at.format('Y-m-d H:i:sP') }}">
-                                        <input type="hidden" name="csrf_token" value="{{ csrf_token('streams\\MarkStreamAsDismissed') }}">
-                                    </form>
-                                </nav>
-                            </details>
+                                {% block items %}
+                                    {{ include('streams/_popup_actions.html.twig', {
+                                        heading: t('Actions on the day'),
+                                        params: {
+                                            at: date_group.date.format('Y-m-d'),
+                                            days: 1,
+                                            source: stream_view.source ? stream_view.source.id : '',
+                                        },
+                                    }) }}
+                                {% endblock %}
+                            {% endembed %}
                         </header>
 
                         <div class="group__body flow">
@@ -112,75 +67,29 @@
                                             {{ t('%s link', '%s links', source_group.links | length, [source_group.links | length]) }}
                                         </span>
 
-                                        <details
-                                            class="popup"
-                                            data-controller="popup"
-                                            data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
-                                        >
-                                            <summary class="popup__opener">
-                                                <span class="button button--icon button-ghost">
-                                                    {{ icon('menu') }}
+                                        {% embed 'components/popup.html.twig' with {
+                                            opener_class: 'button button--icon button--ghost',
+                                        } %}
+                                            {% block opener %}
+                                                {{ icon('menu') }}
 
-                                                    <span class="sr-only">
-                                                        {{ t('Actions') }}
-                                                    </span>
+                                                <span class="sr-only">
+                                                    {{ t('Actions') }}
                                                 </span>
-                                            </summary>
+                                            {% endblock %}
 
-                                            <nav class="popup__container popup__container--center" role="menu">
-                                                <div class="popup__title">{{ t('Actions on the feed') }}</div>
-
-                                                <form data-turbo-preserve-scroll method="post" action="{{ url('mark stream as read', { id: stream.id }) }}" role="menuitem">
-                                                    <button class="popup__item popup__item--button">
-                                                        {{ icon('check') }}
-                                                        {{ t('Mark all as read') }}
-                                                    </button>
-
-                                                    <input type="hidden" name="at" value="{{ date_group.date.format('Y-m-d') }}">
-                                                    <input type="hidden" name="days" value="1">
-                                                    <input type="hidden" name="source" value="{{ source_group.source.id }}">
-                                                    <input type="hidden" name="status" value="{{ stream_view.status }}">
-                                                    <input type="hidden" name="before" value="{{ stream_view.rendered_at.format('Y-m-d H:i:sP') }}">
-                                                    <input type="hidden" name="csrf_token" value="{{ csrf_token('streams\\MarkStreamAsRead') }}">
-                                                </form>
-
-                                                <form data-turbo-preserve-scroll method="post" action="{{ url('read stream later', { id: stream.id }) }}" role="menuitem">
-                                                    <button class="popup__item popup__item--button">
-                                                        {{ icon('bookmark') }}
-                                                        {{ t('Read the links later') }}
-                                                    </button>
-
-                                                    <input type="hidden" name="at" value="{{ date_group.date.format('Y-m-d') }}">
-                                                    <input type="hidden" name="days" value="1">
-                                                    <input type="hidden" name="source" value="{{ source_group.source.id }}">
-                                                    <input type="hidden" name="status" value="{{ stream_view.status }}">
-                                                    <input type="hidden" name="before" value="{{ stream_view.rendered_at.format('Y-m-d H:i:sP') }}">
-                                                    <input type="hidden" name="csrf_token" value="{{ csrf_token('streams\\MarkStreamAsReadLater') }}">
-                                                </form>
-
-                                                <div class="popup__separator"></div>
-
-                                                <form
-                                                    data-turbo-preserve-scroll
-                                                    method="post"
-                                                    action="{{ url('dismiss stream', { id: stream.id }) }}"
-                                                    data-turbo-confirm="{{ t('The links will no longer be counted as unread and won’t be suggested in your news. Are you sure?') }}"
-                                                    role="menuitem"
-                                                >
-                                                    <button class="popup__item popup__item--button">
-                                                        {{ icon('times') }}
-                                                        {{ t('Ignore the links') }}
-                                                    </button>
-
-                                                    <input type="hidden" name="at" value="{{ date_group.date.format('Y-m-d') }}">
-                                                    <input type="hidden" name="days" value="1">
-                                                    <input type="hidden" name="source" value="{{ source_group.source.id }}">
-                                                    <input type="hidden" name="status" value="{{ stream_view.status }}">
-                                                    <input type="hidden" name="before" value="{{ stream_view.rendered_at.format('Y-m-d H:i:sP') }}">
-                                                    <input type="hidden" name="csrf_token" value="{{ csrf_token('streams\\MarkStreamAsDismissed') }}">
-                                                </form>
-                                            </nav>
-                                        </details>
+                                            {% block items %}
+                                                {{ include('streams/_popup_actions.html.twig', {
+                                                    heading: t('Actions on the feed'),
+                                                    params: {
+                                                        at: date_group.date.format('Y-m-d'),
+                                                        days: 1,
+                                                        source: source_group.source.id,
+                                                    },
+                                                    preserve_scroll: true,
+                                                }) }}
+                                            {% endblock %}
+                                        {% endembed %}
                                     </div>
 
                                     <div class="source-group__body grid">
@@ -201,71 +110,26 @@
             </div>
 
             <div class="text--center">
-                <details
-                    class="popup"
-                    data-controller="popup"
-                    data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
-                >
-                    <summary class="popup__opener">
-                        <span class="button button--primary button--big">
-                            {{ icon('menu') }}
-                            {{ t('Actions') }}
-                        </span>
-                    </summary>
+                {% embed 'components/popup.html.twig' with {
+                    opener_class: 'button button--primary button--big',
+                    drop_up: true,
+                } %}
+                    {% block opener %}
+                        {{ icon('menu') }}
+                        {{ t('Actions') }}
+                    {% endblock %}
 
-                    <nav class="popup__container popup__container--center popup__container--top" role="menu">
-                        <div class="popup__title">{{ t('Actions on the links') }}</div>
-
-                        <form method="post" action="{{ url('mark stream as read', { id: stream.id }) }}" role="menuitem">
-                            <button class="popup__item popup__item--button">
-                                {{ icon('check') }}
-                                {{ t('Mark all as read') }}
-                            </button>
-
-                            <input type="hidden" name="at" value="{{ stream_view.at.format('Y-m-d') }}">
-                            <input type="hidden" name="days" value="{{ stream_view.days }}">
-                            <input type="hidden" name="source" value="{{ stream_view.source ? stream_view.source.id : '' }}">
-                            <input type="hidden" name="status" value="{{ stream_view.status }}">
-                            <input type="hidden" name="before" value="{{ stream_view.rendered_at.format('Y-m-d H:i:sP') }}">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token('streams\\MarkStreamAsRead') }}">
-                        </form>
-
-                        <form method="post" action="{{ url('read stream later', { id: stream.id }) }}" role="menuitem">
-                            <button class="popup__item popup__item--button">
-                                {{ icon('bookmark') }}
-                                {{ t('Read the links later') }}
-                            </button>
-
-                            <input type="hidden" name="at" value="{{ stream_view.at.format('Y-m-d') }}">
-                            <input type="hidden" name="days" value="{{ stream_view.days }}">
-                            <input type="hidden" name="source" value="{{ stream_view.source ? stream_view.source.id : '' }}">
-                            <input type="hidden" name="status" value="{{ stream_view.status }}">
-                            <input type="hidden" name="before" value="{{ stream_view.rendered_at.format('Y-m-d H:i:sP') }}">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token('streams\\MarkStreamAsReadLater') }}">
-                        </form>
-
-                        <div class="popup__separator"></div>
-
-                        <form
-                            method="post"
-                            action="{{ url('dismiss stream', { id: stream.id }) }}"
-                            data-turbo-confirm="{{ t('The links will no longer be counted as unread and won’t be suggested in your news. Are you sure?') }}"
-                            role="menuitem"
-                        >
-                            <button class="popup__item popup__item--button">
-                                {{ icon('times') }}
-                                {{ t('Ignore the links') }}
-                            </button>
-
-                            <input type="hidden" name="at" value="{{ stream_view.at.format('Y-m-d') }}">
-                            <input type="hidden" name="days" value="{{ stream_view.days }}">
-                            <input type="hidden" name="source" value="{{ stream_view.source ? stream_view.source.id : '' }}">
-                            <input type="hidden" name="status" value="{{ stream_view.status }}">
-                            <input type="hidden" name="before" value="{{ stream_view.rendered_at.format('Y-m-d H:i:sP') }}">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token('streams\\MarkStreamAsDismissed') }}">
-                        </form>
-                    </nav>
-                </details>
+                    {% block items %}
+                        {{ include('streams/_popup_actions.html.twig', {
+                            heading: t('Actions on the links'),
+                            params: {
+                                at: stream_view.at.format('Y-m-d'),
+                                days: stream_view.days,
+                                source: stream_view.source ? stream_view.source.id : '',
+                            },
+                        }) }}
+                    {% endblock %}
+                {% endembed %}
             </div>
         </div>
     {% else %}

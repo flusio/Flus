@@ -18,41 +18,39 @@
         </a>
     </div>
 
-    <details
-        class="popup"
-        data-controller="popup"
-        data-action="toggle->popup#update click@window->popup#closeOnClickOutside"
-    >
-        <summary class="popup__opener">
-            <span class="button button--ghost">
-                {{ icon('language') }}
-                {{ t('Language') }}
-                {{ icon('angle-down') }}
-            </span>
-        </summary>
+    {% embed 'components/popup.html.twig' with {
+        opener_class: 'button button--ghost',
+    } %}
+        {% block opener %}
+            {{ icon('language') }}
+            {{ t('Language') }}
+            {{ icon('angle-down') }}
+        {% endblock %}
 
-        <nav class="popup__container popup__container--center">
+        {% block items %}
+            {% import _self as item %}
+
             {% set locale_form = locale_form() %}
+
             <form
+                role="none"
                 data-turbo-preserve-scroll
                 method="post"
                 action="{{ url('change locale') }}"
             >
                 {% for locale_value, locale_name in locale_form.localesValues %}
-                    <button
-                        class="popup__item popup__item--selectable"
-                        name="locale"
-                        value="{{ locale_value }}"
-                        {{ locale_form.locale === locale_value ? 'aria-current="true"' }}
-                    >
-                        {{ locale_name }}
-                    </button>
+                    {{ item.option(
+                        name: 'locale',
+                        value: locale_value,
+                        label: locale_name,
+                        current: locale_form.locale === locale_value,
+                    ) }}
                 {% endfor %}
 
                 <input type="hidden" name="csrf_token" value="{{ csrf_token(locale_form) }}">
             </form>
-        </nav>
-    </details>
+        {% endblock %}
+    {% endembed %}
 
     <div class="no-mobile">
         <a class="button" href="{{ url('login') }}">
