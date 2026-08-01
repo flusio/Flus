@@ -27,7 +27,10 @@
         </header>
 
         <div data-modal-target="body" class="modal__body">
-            <turbo-frame data-modal-target="content">
+            <turbo-frame
+                data-modal-target="content"
+                data-action="turbo:frame-render->modal#focusContent"
+            >
                 <div class="flow text--center">
                     <p class="text--bold">
                         {{ t('Loading…') }}

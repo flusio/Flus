@@ -29,14 +29,6 @@ export default class extends Controller {
         this.element.addEventListener('keydown', this.trapEscape.bind(this));
         this.element.addEventListener('keydown', this.trapFocus.bind(this));
 
-        // set focus elements when the modal is loaded
-        document.documentElement.addEventListener('turbo:frame-render', (event) => {
-            if (event.target === this.contentTarget) {
-                this.setFocus();
-                this.boxTarget.scrollIntoView(true);
-            }
-        });
-
         if (this.autoloadValue) {
             const openModalEvent = new CustomEvent('open-modal', {
                 detail: {
@@ -46,6 +38,12 @@ export default class extends Controller {
             });
             this.element.dispatchEvent(openModalEvent);
         }
+    }
+
+    // Set the focus elements when the modal content is loaded.
+    focusContent () {
+        this.setFocus();
+        this.boxTarget.scrollIntoView(true);
     }
 
     setFocus () {
