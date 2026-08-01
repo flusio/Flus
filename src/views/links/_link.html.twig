@@ -36,6 +36,13 @@
     {% set display_mark_as_read = true %}
 {% endif %}
 
+{% set is_dismissed = app.user and app.user.hasDismissed(link) %}
+{% if display_never === 'auto' and is_dismissed %}
+    {% set display_never = false %}
+{% elseif display_never === 'auto' %}
+    {% set display_never = true %}
+{% endif %}
+
 {% set origin = link.origin %}
 {% if display_origin and not origin %}
     {% set display_origin = false %}
