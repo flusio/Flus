@@ -1,9 +1,3 @@
-/* When combined, the design system rules for --center and --top conflict on
- * the ::before transform: --top loses the horizontal centering of the arrow. */
-.popup__container--center.popup__container--top::before {
-    transform: translateX(-50%) rotate(225deg);
-}
-
 @media (max-width: 799px) {
     .popup__container {
         position: fixed;
