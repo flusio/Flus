@@ -19,6 +19,10 @@
         transform: none;
     }
 
+    .popup__container--top {
+        margin-bottom: 0;
+    }
+
     .layout--connected .popup__container {
         bottom: var(--layout-header-height);
     }
