@@ -761,16 +761,17 @@ trait Link
     /**
      * Return the counts of links of the given stream, per source.
      *
-     * The counts are given as a pair of the total number of links, and of the
-     * number of unread links (always 0 if no context user is given).
+     * The counts are the numbers of links matching the given dates and status
+     * (the status is ignored if no context user is given).
      *
      * @param array{
      *     context_user?: ?models\User,
      *     at?: \DateTimeImmutable,
      *     days?: int,
+     *     status?: string,
      * } $options
      *
-     * @return array<string, array{int, int}>
+     * @return array<string, int>
      */
     public static function countByStreamPerSource(models\Stream $stream, array $options): array
     {
@@ -778,30 +779,18 @@ trait Link
             'context_user' => null,
             'at' => \Minz\Time::now(),
             'days' => 1,
+            'status' => 'all',
         ];
         $options = array_merge($default_options, $options);
         $options['source'] = null;
-        $options['status'] = 'all';
         $options['created_before'] = null;
 
-        $join_url_statuses = $options['context_user'] !== null;
+        $join_url_statuses = $options['context_user'] !== null && $options['status'] !== 'all';
         $sql_join = self::buildStreamJoin($join_url_statuses);
         list($sql_where, $parameters) = self::buildStreamWhere($stream, $options);
 
-        if ($join_url_statuses) {
-            $sql_count_unread = <<<SQL
-                COUNT(l.id) FILTER (
-                    WHERE us.read_at IS NULL
-                    AND us.read_later_at IS NULL
-                    AND us.dismissed_at IS NULL
-                )
-            SQL;
-        } else {
-            $sql_count_unread = '0';
-        }
-
         $sql = <<<SQL
-            SELECT c.id AS source_id, COUNT(l.id) AS count_all, {$sql_count_unread} AS count_unread
+            SELECT c.id AS source_id, COUNT(l.id) AS count_all
             FROM streams_to_follows sf
 
             {$sql_join}
@@ -818,7 +807,7 @@ trait Link
         $counts = [];
 
         foreach ($statement->fetchAll() as $row) {
-            $counts[strval($row['source_id'])] = [intval($row['count_all']), intval($row['count_unread'])];
+            $counts[strval($row['source_id'])] = intval($row['count_all']);
         }
 
         return $counts;

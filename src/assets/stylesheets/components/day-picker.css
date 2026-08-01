@@ -184,7 +184,6 @@
     display: none;
 }
 
-/* Same color as the unread dot of the sources. */
 .day-picker__bar-unread {
     position: absolute;
     right: 0;

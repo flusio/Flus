@@ -133,6 +133,33 @@
         </div>
     </div>
 
+    <div class="filters__section">
+        <div
+            class="stack stack--gap-smaller"
+            role="group"
+            aria-label="{{ t('Status of the links') }}"
+        >
+            {% for status, label in {
+                'all': t('All'),
+                'unread': t('Unread'),
+                'read-later': t('To read'),
+                'read': t('Links read'),
+            } %}
+                <div class="filters__option">
+                    <button
+                        type="button"
+                        value="{{ status }}"
+                        aria-pressed="{{ stream_view.isStatusSelected(status) ? 'true' : 'false' }}"
+                        data-stream-target="status"
+                        data-action="stream#selectStatus"
+                    >
+                        {{ label }}
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
     <div class="filters__section flow">
         {% set sources_and_counts = stream_view.countedSources() %}
 
@@ -147,12 +174,8 @@
         >
             {% for source_and_count in sources_and_counts %}
                 {% set source = source_and_count[0] %}
-                {% set count_all_links = source_and_count[1] %}
-                {% set count_unread_links = source_and_count[2] %}
-                {% set source_title = t('%s: %d link', '%s: %d links', count_all_links, [source.name, count_all_links]) %}
-                {% if count_unread_links > 0 %}
-                    {% set source_title = source_title ~ ' ' ~ t('(%d unread)', '(%d unread)', count_unread_links, [count_unread_links]) %}
-                {% endif %}
+                {% set count_links = source_and_count[1] %}
+                {% set source_title = t('%s: %d link', '%s: %d links', count_links, [source.name, count_links]) %}
 
                 <div class="filters__option filters__option--light">
                     <button
@@ -176,43 +199,12 @@
                         </span>
 
                         <span class="filters__option-count">
-                            {% if count_unread_links > 0 %}
-                                <span class="filters__option-unread-dot"></span>
-                            {% endif %}
-
-                            {{ count_all_links }}
+                            {{ count_links }}
                         </span>
 
                         <span class="filters__option-unselect">
                             {{ icon('times') }}
                         </span>
-                    </button>
-                </div>
-            {% endfor %}
-        </div>
-    </div>
-
-    <div class="filters__section">
-        <div
-            class="stack stack--gap-smaller"
-            role="group"
-            aria-label="{{ t('Status of the links') }}"
-        >
-            {% for status, label in {
-                'all': t('All'),
-                'unread': t('Unread'),
-                'read-later': t('To read'),
-                'read': t('Links read'),
-            } %}
-                <div class="filters__option">
-                    <button
-                        type="button"
-                        value="{{ status }}"
-                        aria-pressed="{{ stream_view.isStatusSelected(status) ? 'true' : 'false' }}"
-                        data-stream-target="status"
-                        data-action="stream#selectStatus"
-                    >
-                        {{ label }}
                     </button>
                 </div>
             {% endfor %}

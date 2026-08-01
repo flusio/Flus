@@ -166,9 +166,10 @@ class Stream
      *     context_user?: ?User,
      *     at?: \DateTimeImmutable,
      *     days?: int,
+     *     status?: string,
      * } $options
      *
-     * @return array<string, array{int, int}>
+     * @return array<string, int>
      */
     public function countLinksPerSource(array $options = []): array
     {

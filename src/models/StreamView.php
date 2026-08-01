@@ -60,9 +60,9 @@ class StreamView
 
         // The source is checked last as isSourceCounted() requires the other
         // properties to be set. A source can be selected while having no link
-        // over the period (e.g. after changing the date). It would then be
-        // filtered out of the sources list, with no way to unselect it: better
-        // forget about it.
+        // to count (e.g. after changing the date or the status). It would then
+        // be filtered out of the sources list, with no way to unselect it:
+        // better forget about it.
         if ($source && !$this->isSourceCounted($source)) {
             $source = null;
         }
@@ -143,7 +143,7 @@ class StreamView
     }
 
     /**
-     * @return list<array{Collection, int, int}>
+     * @return list<array{Collection, int}>
      */
     public function countedSources(): array
     {
@@ -152,6 +152,7 @@ class StreamView
                 'context_user' => $this->context_user,
                 'at' => $this->at,
                 'days' => $this->days,
+                'status' => $this->status,
             ]);
 
             $sources = $this->stream->sources();
@@ -164,17 +165,8 @@ class StreamView
                     continue;
                 }
 
-                list($count_all, $count_unread) = $counts_per_source[$source->id];
-
-                $sources_and_counts[] = [$source, $count_all, $count_unread];
+                $sources_and_counts[] = [$source, $counts_per_source[$source->id]];
             }
-
-            usort($sources_and_counts, function (array $source_and_count_1, array $source_and_count_2): int {
-                // Sort on the number of total links so the first sources are the
-                // ones with the fewest links. This is intended as users may
-                // prefer to treat sources with the fewest links first.
-                return $source_and_count_1[1] <=> $source_and_count_2[1];
-            });
 
             return $sources_and_counts;
         });

@@ -159,6 +159,31 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($stream_view->source);
     }
 
+    public function testIsSourceSelectedIfSourceHasNoLinkMatchingTheStatus(): void
+    {
+        $date = $this->fakeDateInPeriod();
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link], at: $date);
+        $stream->addSource($source);
+        $user->markAsRead($link);
+        $stream_view = new StreamView($stream, $user, at: $date, source: $source, status: 'unread');
+
+        $is_source_selected = $stream_view->isSourceSelected($source);
+
+        $this->assertFalse($is_source_selected);
+        $this->assertNull($stream_view->source);
+    }
+
     public function testIsStatusSelected(): void
     {
         $date = $this->fakeDateInPeriod();
@@ -658,13 +683,86 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $sources_and_counts = $stream_view->countedSources();
 
         $this->assertSame(1, count($sources_and_counts));
-        list($counted_source, $count_all, $count_unread) = $sources_and_counts[0];
+        list($counted_source, $count) = $sources_and_counts[0];
         $this->assertSame($source->id, $counted_source->id);
-        $this->assertSame(2, $count_all);
-        $this->assertSame(1, $count_unread);
+        $this->assertSame(2, $count);
     }
 
-    public function testCountedSourcesDoesNotCountUnreadLinksIfNoContextUser(): void
+    public function testCountedSourcesCountsOnlyLinksMatchingTheStatus(): void
+    {
+        $date = $this->fakeDateInPeriod();
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link_1 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $link_2 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $link_3 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link_1, $link_2, $link_3], at: $date);
+        $stream->addSource($source);
+        $user->markAsRead($link_1);
+        $user->markAsReadLater($link_2);
+        $stream_view_unread = new StreamView($stream, $user, at: $date, status: 'unread');
+        $stream_view_read = new StreamView($stream, $user, at: $date, status: 'read');
+        $stream_view_read_later = new StreamView($stream, $user, at: $date, status: 'read-later');
+
+        $sources_and_counts_unread = $stream_view_unread->countedSources();
+        $sources_and_counts_read = $stream_view_read->countedSources();
+        $sources_and_counts_read_later = $stream_view_read_later->countedSources();
+
+        $this->assertSame(1, count($sources_and_counts_unread));
+        $this->assertSame(1, $sources_and_counts_unread[0][1]);
+        $this->assertSame(1, count($sources_and_counts_read));
+        $this->assertSame(1, $sources_and_counts_read[0][1]);
+        $this->assertSame(1, count($sources_and_counts_read_later));
+        $this->assertSame(1, $sources_and_counts_read_later[0][1]);
+    }
+
+    public function testCountedSourcesExcludesSourcesWithoutLinksMatchingTheStatus(): void
+    {
+        $date = $this->fakeDateInPeriod();
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source_1 = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $source_2 = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link_1 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $link_2 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source_1->addLinks([$link_1], at: $date);
+        $source_2->addLinks([$link_2], at: $date);
+        $stream->addSource($source_1);
+        $stream->addSource($source_2);
+        $user->markAsRead($link_2);
+        $stream_view = new StreamView($stream, $user, at: $date, status: 'unread');
+
+        $sources_and_counts = $stream_view->countedSources();
+
+        $this->assertSame(1, count($sources_and_counts));
+        $this->assertSame($source_1->id, $sources_and_counts[0][0]->id);
+    }
+
+    public function testCountedSourcesIgnoresTheStatusIfNoContextUser(): void
     {
         $date = $this->fakeDateInPeriod();
         $stream = StreamFactory::create();
@@ -677,15 +775,14 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         ]);
         $source->addLinks([$link], at: $date);
         $stream->addSource($source);
-        $stream_view = new StreamView($stream, null, at: $date);
+        $stream_view = new StreamView($stream, null, at: $date, status: 'read');
 
         $sources_and_counts = $stream_view->countedSources();
 
         $this->assertSame(1, count($sources_and_counts));
-        list($counted_source, $count_all, $count_unread) = $sources_and_counts[0];
+        list($counted_source, $count) = $sources_and_counts[0];
         $this->assertSame($source->id, $counted_source->id);
-        $this->assertSame(1, $count_all);
-        $this->assertSame(0, $count_unread);
+        $this->assertSame(1, $count);
     }
 
     public function testCountedSourcesExcludesSourcesWithoutLinksOverThePeriod(): void
@@ -719,17 +816,19 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($source_1->id, $sources_and_counts[0][0]->id);
     }
 
-    public function testCountedSourcesSortsSourcesByCount(): void
+    public function testCountedSourcesSortsSourcesByName(): void
     {
         $date = $this->fakeDateInPeriod();
         $stream = StreamFactory::create();
         $source_1 = CollectionFactory::create([
             'type' => 'feed',
             'is_public' => true,
+            'name' => 'Feed A',
         ]);
         $source_2 = CollectionFactory::create([
             'type' => 'feed',
             'is_public' => true,
+            'name' => 'Feed B',
         ]);
         $link_1 = LinkFactory::create([
             'is_hidden' => false,
@@ -749,10 +848,10 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $sources_and_counts = $stream_view->countedSources();
 
         $this->assertSame(2, count($sources_and_counts));
-        $this->assertSame($source_2->id, $sources_and_counts[0][0]->id);
-        $this->assertSame(1, $sources_and_counts[0][1]);
-        $this->assertSame($source_1->id, $sources_and_counts[1][0]->id);
-        $this->assertSame(2, $sources_and_counts[1][1]);
+        $this->assertSame($source_1->id, $sources_and_counts[0][0]->id);
+        $this->assertSame(2, $sources_and_counts[0][1]);
+        $this->assertSame($source_2->id, $sources_and_counts[1][0]->id);
+        $this->assertSame(1, $sources_and_counts[1][1]);
     }
 
     public function testCountedSourcesExcludesPrivateSources(): void
