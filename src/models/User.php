@@ -771,6 +771,33 @@ class User
     }
 
     /**
+     * Transfer the URL status from a Link to another one.
+     *
+     * The status of the old Link URL is deleted and its states are copied to
+     * the status of the new Link URL. The existing states of the new URL are
+     * preserved.
+     */
+    public function transferUrlStatus(Link $old_link, Link $new_link): void
+    {
+        $old_url_status = UrlStatus::findOrBuild($this, $old_link->url);
+
+        if (!$old_url_status->isPersisted()) {
+            return;
+        }
+
+        $new_url_status = UrlStatus::findOrBuild($this, $new_link->url);
+        $new_url_status->created_at ??= $old_url_status->created_at;
+        $new_url_status->read_at ??= $old_url_status->read_at;
+        $new_url_status->read_later_at ??= $old_url_status->read_later_at;
+        $new_url_status->dismissed_at ??= $old_url_status->dismissed_at;
+        $new_url_status->save();
+
+        $old_url_status->remove();
+
+        $this->unmemoizeUrlStatusesOfLinks([$old_link, $new_link]);
+    }
+
+    /**
      * Get the UrlStatus corresponding to this user and link.
      *
      * A UrlStatus is always returned. In case it is unknown to the user, a

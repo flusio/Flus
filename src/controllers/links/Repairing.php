@@ -95,14 +95,20 @@ class Repairing extends BaseController
         }
 
         if ($link->url !== $form->url) {
-            // Mark the old link as dismissed to avoid the link reappearing in
-            // the news.
             $old_link = models\Link::copy($link, $user->id);
             $old_link->save();
+
+            $link->url = $form->url;
+            $link->save();
+
+            // Transfer the URL status so the link stays in the "read" and "to
+            // read later" lists after its URL changed.
+            $user->transferUrlStatus($old_link, $link);
+
+            // Mark the old link as dismissed to avoid the link reappearing in
+            // the news.
             $user->markAsDismissed($old_link);
         }
-
-        $link->url = $form->url;
 
         $link_fetcher_service = new services\LinkFetcher([
             'http_timeout' => 10,

@@ -211,6 +211,92 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($user->hasDismissed($link));
     }
 
+    public function testCreateTransfersTheReadLaterStatusToTheNewUrl(): void
+    {
+        $user = $this->login();
+        /** @var string */
+        $old_url = $this->fakeUnique('url');
+        $new_url = 'https://flus.fr/carnet/index.html';
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'url' => $old_url,
+        ]);
+        $user->markAsReadLater($link);
+        $this->mockHttpWithFixture($new_url, 'responses/flus.fr_carnet_index.html');
+
+        $response = $this->appRun('POST', "/links/{$link->id}/repair", [
+            'url' => $new_url,
+            'force_sync' => false,
+            'csrf_token' => $this->csrfToken(forms\links\RepairLink::class),
+        ]);
+
+        $this->assertResponseCode($response, 302, "/links/{$link->id}/repair");
+        $read_later_source = $user->readLaterSource();
+        $read_later_links = $read_later_source->links();
+        $this->assertSame(1, count($read_later_links));
+        $this->assertSame($link->id, $read_later_links[0]->id);
+        $this->assertSame($new_url, $read_later_links[0]->url);
+        $this->assertFalse($user->hasReadLater($link));
+    }
+
+    public function testCreateTransfersTheReadStatusToTheNewUrl(): void
+    {
+        $user = $this->login();
+        /** @var string */
+        $old_url = $this->fakeUnique('url');
+        $new_url = 'https://flus.fr/carnet/index.html';
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'url' => $old_url,
+        ]);
+        $user->markAsRead($link);
+        $this->mockHttpWithFixture($new_url, 'responses/flus.fr_carnet_index.html');
+
+        $response = $this->appRun('POST', "/links/{$link->id}/repair", [
+            'url' => $new_url,
+            'force_sync' => false,
+            'csrf_token' => $this->csrfToken(forms\links\RepairLink::class),
+        ]);
+
+        $this->assertResponseCode($response, 302, "/links/{$link->id}/repair");
+        $read_source = $user->readSource();
+        $read_links = $read_source->links();
+        $this->assertSame(1, count($read_links));
+        $this->assertSame($link->id, $read_links[0]->id);
+        $this->assertSame($new_url, $read_links[0]->url);
+        $this->assertFalse($user->hasRead($link));
+    }
+
+    public function testCreateKeepsTheExistingStatusOfTheNewUrl(): void
+    {
+        $user = $this->login();
+        /** @var string */
+        $old_url = $this->fakeUnique('url');
+        $new_url = 'https://flus.fr/carnet/index.html';
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'url' => $old_url,
+        ]);
+        $other_link = LinkFactory::create([
+            'user_id' => $user->id,
+            'url' => $new_url,
+        ]);
+        $user->markAsReadLater($link);
+        $user->markAsRead($other_link);
+        $this->mockHttpWithFixture($new_url, 'responses/flus.fr_carnet_index.html');
+
+        $response = $this->appRun('POST', "/links/{$link->id}/repair", [
+            'url' => $new_url,
+            'force_sync' => false,
+            'csrf_token' => $this->csrfToken(forms\links\RepairLink::class),
+        ]);
+
+        $this->assertResponseCode($response, 302, "/links/{$link->id}/repair");
+        $link = $link->reload();
+        $this->assertTrue($user->hasRead($link));
+        $this->assertTrue($user->hasReadLater($link));
+    }
+
     public function testCreateDoesNotDismissTheUrlIfUnchanged(): void
     {
         $user = $this->login();
