@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-08-03 13:48+0200\n"
-"PO-Revision-Date: 2026-08-03 13:48+0200\n"
+"POT-Creation-Date: 2026-08-03 14:50+0200\n"
+"PO-Revision-Date: 2026-08-03 14:50+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -73,7 +73,7 @@ msgstr "Le serveur Mastodon a renvoyé une erreur, veuillez essayer plus tard."
 msgid "Your changes have been successfully saved."
 msgstr "Vos changements ont été sauvegardés avec succès."
 
-#: controllers/Streams.php:203
+#: controllers/Streams.php:205
 msgid "The stream has been deleted."
 msgstr "Le fil a été supprimé."
 
@@ -510,8 +510,8 @@ msgid "New stream"
 msgstr "Nouveau fil"
 
 #: navigations/ReadingNavigation.php:65
-msgid "Has unread links from the past week"
-msgstr "Contient des liens non lus datant de la semaine passée"
+msgid "Has unread links from the last seven days"
+msgstr "Contient des liens non lus datant des sept derniers jours"
 
 #: navigations/ReadingNavigation.php:79
 msgid "Create a stream to get started."
@@ -878,7 +878,7 @@ msgstr ""
 "pour la plupart des flux)."
 
 #: views/collections/filters/edit.html.twig:110
-#: views/streams/_filters.html.twig:195
+#: views/streams/_filters.html.twig:196
 msgid "All"
 msgstr "Tout"
 
@@ -2943,7 +2943,7 @@ msgstr "Afficher les jours précédents"
 msgid "Date"
 msgstr "Date"
 
-#: views/streams/_filters.html.twig:57 views/streams/_filters.html.twig:231
+#: views/streams/_filters.html.twig:57 views/streams/_filters.html.twig:232
 #, php-format
 msgid "%s: %d link"
 msgid_plural "%s: %d links"
@@ -2976,19 +2976,19 @@ msgstr[1] "%d jours"
 msgid "Search:"
 msgstr "Recherche :"
 
-#: views/streams/_filters.html.twig:175
+#: views/streams/_filters.html.twig:176
 msgid "Words or URL"
 msgstr "Mots ou URL"
 
-#: views/streams/_filters.html.twig:186
+#: views/streams/_filters.html.twig:187
 msgid "Reading status:"
 msgstr "Statut de lecture :"
 
-#: views/streams/_filters.html.twig:196
+#: views/streams/_filters.html.twig:197
 msgid "Unread"
 msgstr "Non lus"
 
-#: views/streams/_filters.html.twig:219
+#: views/streams/_filters.html.twig:220
 #, php-format
 msgid "Sources (%d)"
 msgstr "Sources (%d)"
@@ -3000,6 +3000,18 @@ msgstr "Quelle est le nom du fil ?"
 #: views/streams/_form.html.twig:43
 msgid "What’s the purpose of the stream?"
 msgstr "Quelle est la raison d’être du fil ?"
+
+#: views/streams/_form.html.twig:83
+msgid "Flag unread links in the reading menu"
+msgstr "Signaler les liens non lus dans le menu lecture"
+
+#: views/streams/_form.html.twig:87
+msgid ""
+"A dot is displayed next to the stream when it contains unread links from the "
+"last seven days."
+msgstr ""
+"Un point s’affiche à côté du fil lorsqu’il contient des liens non lus datant "
+"des sept derniers jours."
 
 #: views/streams/_timeline.html.twig:128
 msgid "Actions on the links"

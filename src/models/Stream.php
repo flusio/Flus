@@ -46,6 +46,9 @@ class Stream
     public bool $is_public = false;
 
     #[Database\Column]
+    public bool $display_unread_in_sidenav = true;
+
+    #[Database\Column]
     public ?string $image_filename = null;
 
     #[Database\Column]
@@ -212,10 +215,20 @@ class Stream
     }
 
     /**
+     * Return whether the unread links must be indicated in the sidenav.
+     *
+     * The has_unread_links property must have been computed (see listByUser()).
+     */
+    public function displaysUnreadInSidenav(): bool
+    {
+        return $this->display_unread_in_sidenav && $this->has_unread_links === true;
+    }
+
+    /**
      * List the streams owned by the given user.
      *
      * The has_unread_links property is always computed: it indicates whether
-     * the stream contains unread links published during the past week.
+     * the stream contains unread links published during the last seven days.
      *
      * The joins and the clauses of the subquery must be kept in sync with the
      * ones of dao\Link::buildStreamJoin() and dao\Link::buildStreamWhere().

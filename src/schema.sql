@@ -239,6 +239,7 @@ CREATE TABLE streams (
     name TEXT NOT NULL,
     description TEXT NOT NULL DEFAULT '',
     is_public BOOLEAN NOT NULL DEFAULT false,
+    display_unread_in_sidenav BOOLEAN NOT NULL DEFAULT true,
     image_filename TEXT,
 
     user_id TEXT REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE

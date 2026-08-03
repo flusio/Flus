@@ -35,6 +35,7 @@ class Streams extends BaseController
     /**
      * @request_param string name
      * @request_param string description
+     * @request_param bool display_unread_in_sidenav
      * @request_param string csrf_token
      *
      * @response 400
@@ -125,6 +126,7 @@ class Streams extends BaseController
      * @request_param string id
      * @request_param string name
      * @request_param string description
+     * @request_param bool display_unread_in_sidenav
      * @request_param string csrf_token
      *
      * @response 400

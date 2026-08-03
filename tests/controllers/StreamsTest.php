@@ -51,6 +51,7 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
             'csrf_token' => $this->csrfToken(forms\streams\Stream::class),
             'name' => $name,
             'description' => $description,
+            'display_unread_in_sidenav' => true,
         ]);
 
         $this->assertSame(1, models\Stream::count());
@@ -60,6 +61,7 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($name, $stream->name);
         $this->assertSame($description, $stream->description);
         $this->assertFalse($stream->is_public);
+        $this->assertTrue($stream->display_unread_in_sidenav);
     }
 
     public function testCreateRedirectsIfNotConnected(): void
@@ -267,6 +269,45 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
         $stream = $stream->reload();
         $this->assertSame($new_name, $stream->name);
         $this->assertSame($new_description, $stream->description);
+    }
+
+    public function testUpdateDisablesDisplayUnreadInSidenav(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+            'display_unread_in_sidenav' => true,
+        ]);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/edit", [
+            'csrf_token' => $this->csrfToken(forms\streams\Stream::class),
+            'name' => $stream->name,
+            'description' => $stream->description,
+        ]);
+
+        $this->assertResponseCode($response, 302, "/streams/{$stream->id}/edit");
+        $stream = $stream->reload();
+        $this->assertFalse($stream->display_unread_in_sidenav);
+    }
+
+    public function testUpdateEnablesDisplayUnreadInSidenav(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+            'display_unread_in_sidenav' => false,
+        ]);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/edit", [
+            'csrf_token' => $this->csrfToken(forms\streams\Stream::class),
+            'name' => $stream->name,
+            'description' => $stream->description,
+            'display_unread_in_sidenav' => true,
+        ]);
+
+        $this->assertResponseCode($response, 302, "/streams/{$stream->id}/edit");
+        $stream = $stream->reload();
+        $this->assertTrue($stream->display_unread_in_sidenav);
     }
 
     public function testUpdateRedirectsIfNotConnected(): void

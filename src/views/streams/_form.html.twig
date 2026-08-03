@@ -70,6 +70,24 @@
         </p>
     </div>
 
+    <div>
+        <input
+            type="checkbox"
+            id="display-unread-in-sidenav"
+            name="display_unread_in_sidenav"
+            aria-describedby="display-unread-in-sidenav-caption"
+            {{ form.display_unread_in_sidenav ? 'checked' : '' }}
+        >
+
+        <label for="display-unread-in-sidenav">
+            {{ t('Flag unread links in the reading menu') }}
+        </label>
+
+        <p class="form-group__caption" id="display-unread-in-sidenav-caption">
+            {{ t('A dot is displayed next to the stream when it contains unread links from the last seven days.') }}
+        </p>
+    </div>
+
     <div class="text--center">
         <button type="submit" class="button--primary button--big">
             {{ submit_label }}

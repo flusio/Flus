@@ -22,5 +22,8 @@ class Stream extends BaseForm
     #[Form\Field(transform: 'trim')]
     public string $description = '';
 
+    #[Form\Field]
+    public bool $display_unread_in_sidenav = true;
+
     public int $stream_name_max_length = models\Stream::NAME_MAX_LENGTH;
 }
