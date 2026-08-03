@@ -227,6 +227,41 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($user->hasRead($link2), 'The link should not be read.');
     }
 
+    public function testCreateMarksLinksAsReadForSpecificQuery(): void
+    {
+        $date = new \DateTimeImmutable('2024-03-25');
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link1 = LinkFactory::create([
+            'title' => 'Why streams are better than foos?',
+            'url' => 'https://example.com/article',
+            'is_hidden' => false,
+        ]);
+        $link2 = LinkFactory::create([
+            'title' => 'Another subject',
+            'url' => 'https://example.com/other',
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link1, $link2], at: $date);
+        $stream->addSource($source);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/read", [
+            'csrf_token' => $this->csrfToken(forms\streams\MarkStreamAsRead::class),
+            'at' => $date->format('Y-m-d'),
+            'q' => 'foos',
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertTrue($user->hasRead($link1), 'The link should be read.');
+        $this->assertFalse($user->hasRead($link2), 'The link should not be read.');
+    }
+
     public function testCreateDoesNotMarkLinksCreatedAfterBefore(): void
     {
         $date = new \DateTimeImmutable('2024-03-25');

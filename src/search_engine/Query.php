@@ -38,11 +38,34 @@ class Query
         });
     }
 
+    /**
+     * Return a Query from the given string, or fail if the string is empty or
+     * cannot be parsed.
+     *
+     * @throws \LogicException
+     */
     public static function fromString(string $queryString): Query
     {
         $tokenizer = new Query\Tokenizer();
         $parser = new Query\Parser();
         $tokens = $tokenizer->tokenize($queryString);
         return $parser->parse($tokens);
+    }
+
+    /**
+     * Return a Query from the given string, or null if the string is empty or
+     * cannot be parsed.
+     */
+    public static function fromStringOrNull(string $queryString): ?Query
+    {
+        if (trim($queryString) === '') {
+            return null;
+        }
+
+        try {
+            return self::fromString($queryString);
+        } catch (\LogicException) {
+            return null;
+        }
     }
 }

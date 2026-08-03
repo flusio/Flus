@@ -3,6 +3,7 @@
 namespace App\models\dao;
 
 use App\models;
+use App\search_engine;
 use App\utils;
 use Minz\Database;
 
@@ -645,6 +646,7 @@ trait Link
      *     days?: int,
      *     source?: ?models\Collection,
      *     status?: string,
+     *     query?: ?search_engine\Query,
      *     created_before?: ?\DateTimeImmutable,
      * } $options
      *
@@ -658,6 +660,7 @@ trait Link
             'days' => 1,
             'source' => null,
             'status' => 'all',
+            'query' => null,
             'created_before' => null,
         ];
         $options = array_merge($default_options, $options);
@@ -709,8 +712,11 @@ trait Link
             'days' => 1,
         ];
         $options = array_merge($default_options, $options);
+        // The counts per day are the ones of the whole activity of the stream:
+        // they must not depend on the other filters.
         $options['source'] = null;
         $options['status'] = 'all';
+        $options['query'] = null;
         $options['created_before'] = null;
 
         $join_url_statuses = $options['context_user'] !== null;
@@ -761,14 +767,15 @@ trait Link
     /**
      * Return the counts of links of the given stream, per source.
      *
-     * The counts are the numbers of links matching the given dates and status
-     * (the status is ignored if no context user is given).
+     * The counts are the numbers of links matching the given dates, status and
+     * query (the status is ignored if no context user is given).
      *
      * @param array{
      *     context_user?: ?models\User,
      *     at?: \DateTimeImmutable,
      *     days?: int,
      *     status?: string,
+     *     query?: ?search_engine\Query,
      * } $options
      *
      * @return array<string, int>
@@ -780,6 +787,7 @@ trait Link
             'at' => \Minz\Time::now(),
             'days' => 1,
             'status' => 'all',
+            'query' => null,
         ];
         $options = array_merge($default_options, $options);
         $options['source'] = null;
@@ -841,6 +849,7 @@ trait Link
      *     days: int,
      *     source: ?models\Collection,
      *     status: string,
+     *     query: ?search_engine\Query,
      *     created_before: ?\DateTimeImmutable,
      * } $options
      *
@@ -891,6 +900,16 @@ trait Link
             $source_clause = 'AND c.id = :source_id';
         }
 
+        // Create the search clause to limit the links matching the query.
+        $search_clause = '';
+        if ($options['query']) {
+            list($search_clause, $search_parameters) = search_engine\LinksSearcher::buildWhereQuery(
+                $options['query'],
+            );
+
+            $parameters = array_merge($parameters, $search_parameters);
+        }
+
         // Create the created_before clause to exclude the links added to the
         // database after the given date (i.e. links fetched in background
         // after the page was rendered).
@@ -927,6 +946,7 @@ trait Link
 
             {$source_clause}
             {$status_clause}
+            {$search_clause}
             {$created_before_clause}
             {$visibility_clause}
         SQL;

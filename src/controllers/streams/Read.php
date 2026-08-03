@@ -24,6 +24,7 @@ class Read extends BaseController
      * @request_param integer days
      * @request_param string source
      * @request_param string status
+     * @request_param string q
      * @request_param datetime before
      * @request_param string csrf_token
      *
@@ -75,6 +76,7 @@ class Read extends BaseController
      * @request_param integer days
      * @request_param string source
      * @request_param string status
+     * @request_param string q
      * @request_param datetime before
      * @request_param string csrf_token
      *
@@ -126,6 +128,7 @@ class Read extends BaseController
      * @request_param integer days
      * @request_param string source
      * @request_param string status
+     * @request_param string q
      * @request_param datetime before
      * @request_param string csrf_token
      *

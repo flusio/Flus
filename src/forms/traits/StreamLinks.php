@@ -3,6 +3,7 @@
 namespace App\forms\traits;
 
 use App\models;
+use App\search_engine;
 use Minz\Form;
 
 /**
@@ -22,6 +23,9 @@ trait StreamLinks
 
     #[Form\Field]
     public string $status = 'all';
+
+    #[Form\Field(transform: 'trim')]
+    public string $q = '';
 
     #[Form\Field(format: 'Y-m-d H:i:sP')]
     public ?\DateTimeImmutable $before = null;
@@ -49,12 +53,15 @@ trait StreamLinks
             $status = 'all';
         }
 
+        $search_query = search_engine\Query::fromStringOrNull($this->q);
+
         $stream_links = $stream->links([
             'context_user' => $user,
             'at' => $this->at ?? \Minz\Time::now(),
             'days' => $this->days,
             'source' => $source,
             'status' => $status,
+            'query' => $search_query,
             'created_before' => $this->before ?? \Minz\Time::now(),
         ]);
 

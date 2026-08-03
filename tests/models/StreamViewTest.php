@@ -46,6 +46,35 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame($now->format('Y-m-d'), $stream_view->at->format('Y-m-d'));
         $this->assertSame(1, $stream_view->days);
+        $this->assertSame('', $stream_view->query);
+        $this->assertNull($stream_view->search_query);
+    }
+
+    public function testBuildFromRequestSetsQueryFromRequestParameters(): void
+    {
+        $request = new \Minz\Request('GET', '/stream', [
+            'q' => '  word  ',
+        ]);
+        $stream = StreamFactory::create();
+
+        $stream_view = StreamView::buildFromRequest($stream, null, $request);
+
+        $this->assertSame('word', $stream_view->query);
+        $this->assertNotNull($stream_view->search_query);
+    }
+
+    public function testBuildFromRequestIgnoresMalformedQuery(): void
+    {
+        $request = new \Minz\Request('GET', '/stream', [
+            'q' => '""',
+        ]);
+        $stream = StreamFactory::create();
+
+        $stream_view = StreamView::buildFromRequest($stream, null, $request);
+
+        // The query is kept as it is typed, but it is not applied to the links.
+        $this->assertSame('""', $stream_view->query);
+        $this->assertNull($stream_view->search_query);
     }
 
     #[\PHPUnit\Framework\Attributes\DataProvider('atOutOfPeriodProvider')]
@@ -177,6 +206,32 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $stream->addSource($source);
         $user->markAsRead($link);
         $stream_view = new StreamView($stream, $user, at: $date, source: $source, status: 'unread');
+
+        $is_source_selected = $stream_view->isSourceSelected($source);
+
+        $this->assertFalse($is_source_selected);
+        $this->assertNull($stream_view->source);
+    }
+
+    public function testIsSourceSelectedIfSourceHasNoLinkMatchingTheQuery(): void
+    {
+        $date = $this->fakeDateInPeriod();
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link = LinkFactory::create([
+            'title' => 'Another subject',
+            'url' => 'https://example.com/other',
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link], at: $date);
+        $stream->addSource($source);
+        $stream_view = new StreamView($stream, $user, at: $date, source: $source, query: 'foos');
 
         $is_source_selected = $stream_view->isSourceSelected($source);
 
@@ -477,6 +532,155 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_3->id, $source_group->links[0]->id);
     }
 
+    public function testLinksTimelineCanListLinksByQuery(): void
+    {
+        $date = $this->fakeDateInPeriod();
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link_1 = LinkFactory::create([
+            'title' => 'Why streams are better than foos?',
+            'url' => 'https://example.com/article',
+            'is_hidden' => false,
+        ]);
+        $link_2 = LinkFactory::create([
+            'title' => 'Another subject',
+            'url' => 'https://example.com/other',
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link_1, $link_2], at: $date);
+        $stream->addSource($source);
+        $stream_view = new StreamView($stream, $user, at: $date, query: 'foos');
+
+        $links_timeline = $stream_view->linksTimeline();
+
+        $links = $this->linksOfTimeline($links_timeline);
+        $this->assertSame(1, count($links));
+        $this->assertSame($link_1->id, $links[0]->id);
+    }
+
+    public function testLinksTimelineCanListLinksByQueryOnUrl(): void
+    {
+        $date = $this->fakeDateInPeriod();
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link_1 = LinkFactory::create([
+            'title' => 'Why streams are better than foos?',
+            'url' => 'https://example.com/article',
+            'is_hidden' => false,
+        ]);
+        $link_2 = LinkFactory::create([
+            'title' => 'Another subject',
+            'url' => 'https://example.org/article',
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link_1, $link_2], at: $date);
+        $stream->addSource($source);
+        $stream_view = new StreamView($stream, $user, at: $date, query: 'url:example.com');
+
+        $links_timeline = $stream_view->linksTimeline();
+
+        $links = $this->linksOfTimeline($links_timeline);
+        $this->assertSame(1, count($links));
+        $this->assertSame($link_1->id, $links[0]->id);
+    }
+
+    public function testLinksTimelineCanListLinksByQueryOnTag(): void
+    {
+        $date = $this->fakeDateInPeriod();
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link_1 = LinkFactory::create([
+            'is_hidden' => false,
+            'tags' => ['foo'],
+        ]);
+        $link_2 = LinkFactory::create([
+            'is_hidden' => false,
+            'tags' => ['bar'],
+        ]);
+        $source->addLinks([$link_1, $link_2], at: $date);
+        $stream->addSource($source);
+        $stream_view = new StreamView($stream, $user, at: $date, query: '#foo');
+
+        $links_timeline = $stream_view->linksTimeline();
+
+        $links = $this->linksOfTimeline($links_timeline);
+        $this->assertSame(1, count($links));
+        $this->assertSame($link_1->id, $links[0]->id);
+    }
+
+    public function testLinksTimelineCanExcludeLinksByQueryOnTag(): void
+    {
+        $date = $this->fakeDateInPeriod();
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link_1 = LinkFactory::create([
+            'is_hidden' => false,
+            'tags' => ['foo'],
+        ]);
+        $link_2 = LinkFactory::create([
+            'is_hidden' => false,
+            'tags' => ['bar'],
+        ]);
+        $source->addLinks([$link_1, $link_2], at: $date);
+        $stream->addSource($source);
+        $stream_view = new StreamView($stream, $user, at: $date, query: '-#bar');
+
+        $links_timeline = $stream_view->linksTimeline();
+
+        $links = $this->linksOfTimeline($links_timeline);
+        $this->assertSame(1, count($links));
+        $this->assertSame($link_1->id, $links[0]->id);
+    }
+
+    public function testLinksTimelineIgnoresMalformedQuery(): void
+    {
+        $date = $this->fakeDateInPeriod();
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link], at: $date);
+        $stream->addSource($source);
+        $stream_view = new StreamView($stream, $user, at: $date, query: '""');
+
+        $links_timeline = $stream_view->linksTimeline();
+
+        $links = $this->linksOfTimeline($links_timeline);
+        $this->assertSame(1, count($links));
+        $this->assertSame($link->id, $links[0]->id);
+    }
+
     public function testLinksTimelineCanListLinksFromPrivateSourceIfTheUserOwnsTheSource(): void
     {
         $date = $this->fakeDateInPeriod();
@@ -728,6 +932,39 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $sources_and_counts_read_later[0][1]);
     }
 
+    public function testCountedSourcesCountsOnlyLinksMatchingTheQuery(): void
+    {
+        $date = $this->fakeDateInPeriod();
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link_1 = LinkFactory::create([
+            'title' => 'Why streams are better than foos?',
+            'url' => 'https://example.com/article',
+            'is_hidden' => false,
+        ]);
+        $link_2 = LinkFactory::create([
+            'title' => 'Another subject',
+            'url' => 'https://example.com/other',
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link_1, $link_2], at: $date);
+        $stream->addSource($source);
+        $stream_view = new StreamView($stream, $user, at: $date, query: 'foos');
+
+        $sources_and_counts = $stream_view->countedSources();
+
+        $this->assertSame(1, count($sources_and_counts));
+        list($counted_source, $count) = $sources_and_counts[0];
+        $this->assertSame($source->id, $counted_source->id);
+        $this->assertSame(1, $count);
+    }
+
     public function testCountedSourcesExcludesSourcesWithoutLinksMatchingTheStatus(): void
     {
         $date = $this->fakeDateInPeriod();
@@ -918,6 +1155,38 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, $count_day_1);
         $this->assertSame(2, $count_day_2);
+    }
+
+    public function testCountByDayIgnoresTheQuery(): void
+    {
+        // The day picker displays the whole activity of the stream: its counts
+        // must not depend on the search.
+        $date = $this->fakeDateInPeriod();
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link_1 = LinkFactory::create([
+            'title' => 'Why streams are better than foos?',
+            'url' => 'https://example.com/article',
+            'is_hidden' => false,
+        ]);
+        $link_2 = LinkFactory::create([
+            'title' => 'Another subject',
+            'url' => 'https://example.com/other',
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link_1, $link_2], at: $date);
+        $stream->addSource($source);
+        $stream_view = new StreamView($stream, $user, at: $date, query: 'foos');
+
+        $count = $stream_view->countByDay($date);
+
+        $this->assertSame(2, $count);
     }
 
     public function testCountUnreadByDayReturnsNumberOfUnreadLinksOnGivenDay(): void
@@ -1147,6 +1416,24 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertSame(2, count($links));
+    }
+
+    /**
+     * Return the links of a timeline, without their groups.
+     *
+     * @return Link[]
+     */
+    private function linksOfTimeline(\App\utils\LinksTimeline $links_timeline): array
+    {
+        $links = [];
+
+        foreach ($links_timeline->datesGroups() as $date_group) {
+            foreach ($date_group->sourceGroups() as $source_group) {
+                $links = array_merge($links, $source_group->links);
+            }
+        }
+
+        return $links;
     }
 
     /**

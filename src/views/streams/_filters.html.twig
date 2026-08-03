@@ -3,6 +3,7 @@
     action=""
     class="filters"
     data-stream-target="formFilters"
+    data-action="submit->stream#submitForm"
 >
     <div
         class="filters__section flow"
@@ -159,6 +160,26 @@
                 {% endfor %}
             </div>
         </div>
+    </div>
+
+    <div class="filters__section cols cols--gap-small cols--center">
+        <label for="stream-filter-query">
+            {{ t('Search:') }}
+        </label>
+
+        <input
+            id="stream-filter-query"
+            type="search"
+            name="q"
+            value="{{ stream_view.query }}"
+            autocomplete="off"
+            placeholder="{{ t('Words or URL') }}"
+            data-action="
+                input->stream#searchQuery
+                search->stream#submitForm
+                turbo:before-morph-attribute->stream#preserveTypedValue
+            "
+        >
     </div>
 
     <div class="filters__section stack stack--gap-small">
