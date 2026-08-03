@@ -1,6 +1,10 @@
 import { Controller } from '@hotwired/stimulus';
 import * as Turbo from '@hotwired/turbo';
 
+// Delay before submitting the "query" search, so we don't submit the form on
+// each keystroke.
+const SEARCH_DELAY = 500;
+
 export default class extends Controller {
     static targets = [
         'formFilters',
@@ -14,6 +18,10 @@ export default class extends Controller {
         'status',
         'statusInput',
     ];
+
+    disconnect () {
+        clearTimeout(this.searchTimeout);
+    }
 
     selectAt (event) {
         const button = event.currentTarget;
@@ -67,6 +75,26 @@ export default class extends Controller {
         this.submit();
     }
 
+    searchQuery () {
+        clearTimeout(this.searchTimeout);
+
+        this.searchTimeout = setTimeout(() => this.submit(), SEARCH_DELAY);
+    }
+
+    preserveTypedValue (event) {
+        // The visits are rendered with morphing, which overwrites the value of
+        // the inputs with the one rendered by the server. The user keeps
+        // typing while a visit is in flight: the characters typed meanwhile
+        // would be lost. Keep the value of the input being typed in.
+        if (event.detail.attributeName !== 'value') {
+            return;
+        }
+
+        if (event.target === document.activeElement) {
+            event.preventDefault();
+        }
+    }
+
     press (buttons, pressedButton) {
         buttons.forEach((button) => {
             button.setAttribute('aria-pressed', button === pressedButton ? 'true' : 'false');
@@ -74,6 +102,8 @@ export default class extends Controller {
     }
 
     submit () {
+        clearTimeout(this.searchTimeout);
+
         // The form is a GET form, so submitting it is equivalent to visiting
         // its URL. The "replace" action makes Turbo render the visit with
         // morphing (cf. the meta tags in the show view), preserving the focus
@@ -87,5 +117,13 @@ export default class extends Controller {
         this.timelineTarget.setAttribute('aria-busy', 'true');
 
         Turbo.visit(url.toString(), { action: 'replace' });
+    }
+
+    submitForm (event) {
+        // The form is never submitted by the browser: submit() handles the
+        // visit itself so it can be rendered with morphing.
+        event.preventDefault();
+
+        this.submit();
     }
 };
