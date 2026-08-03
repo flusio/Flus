@@ -42,22 +42,25 @@ class Links extends BaseController
         $pagination_page = $request->parameters->getInteger('page', 1);
 
         if ($query) {
-            $search_query = search_engine\Query::fromString($query);
-
-            $number_links = search_engine\LinksSearcher::countLinks($user, $search_query);
-
             $number_per_page = 30;
 
-            $pagination = new utils\Pagination($number_links, $number_per_page, $pagination_page);
+            $search_query = search_engine\Query::fromStringOrNull($query);
 
-            $links = search_engine\LinksSearcher::getLinks(
-                $user,
-                $search_query,
-                pagination: [
-                    'offset' => $pagination->currentOffset(),
-                    'limit' => $pagination->numberPerPage(),
-                ]
-            );
+            if ($search_query) {
+                $number_links = search_engine\LinksSearcher::countLinks($user, $search_query);
+                $pagination = new utils\Pagination($number_links, $number_per_page, $pagination_page);
+                $links = search_engine\LinksSearcher::getLinks(
+                    $user,
+                    $search_query,
+                    pagination: [
+                        'offset' => $pagination->currentOffset(),
+                        'limit' => $pagination->numberPerPage(),
+                    ]
+                );
+            } else {
+                $pagination = new utils\Pagination(0, $number_per_page, $pagination_page);
+                $links = [];
+            }
 
             models\links\Preloader::for($links)
                 ->originsFor($user)

@@ -82,6 +82,24 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $title_2);
     }
 
+    public function testIndexRendersNoResultWhenQueryIsMalformed(): void
+    {
+        $user = $this->login();
+        /** @var string */
+        $title = $this->fakeUnique('words', 3, true);
+        LinkFactory::create([
+            'title' => $title,
+        ]);
+
+        $response = $this->appRun('GET', '/links', [
+            'q' => '""',
+        ]);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseTemplateName($response, 'links/search.html.twig');
+        $this->assertResponseNotContains($response, $title);
+    }
+
     public function testIndexRendersCollectionsSharedWithWriteAccess(): void
     {
         $user = $this->login();
