@@ -2,6 +2,7 @@
 
 namespace App\models;
 
+use App\search_engine;
 use App\utils;
 use Minz\Database;
 use Minz\Translatable;
@@ -169,6 +170,7 @@ class Stream
      *     days?: int,
      *     source?: ?Collection,
      *     status?: string,
+     *     query?: ?search_engine\Query,
      *     created_before?: ?\DateTimeImmutable,
      * } $options
      *
@@ -199,6 +201,7 @@ class Stream
      *     at?: \DateTimeImmutable,
      *     days?: int,
      *     status?: string,
+     *     query?: ?search_engine\Query,
      * } $options
      *
      * @return array<string, int>

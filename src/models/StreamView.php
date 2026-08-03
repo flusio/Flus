@@ -2,6 +2,7 @@
 
 namespace App\models;
 
+use App\search_engine;
 use App\utils;
 use Minz\Request;
 
@@ -26,6 +27,17 @@ class StreamView
     public readonly string $status;
 
     /**
+     * The search as typed by the user, kept to display it back in the filters.
+     */
+    public readonly string $query;
+
+    /**
+     * The parsed version of the query, or null if the query is empty or
+     * cannot be parsed.
+     */
+    public readonly ?search_engine\Query $search_query;
+
+    /**
      * The date at which the view is rendered. It is passed to the "mark as
      * read" forms so that the links added in background after the rendering
      * are not marked.
@@ -39,6 +51,7 @@ class StreamView
         int $days = 1,
         ?Collection $source = null,
         string $status = 'all',
+        string $query = '',
     ) {
         $period = $this->period();
         $period_end = $period[0];
@@ -51,11 +64,25 @@ class StreamView
             $status = 'all';
         }
 
+        $query = trim($query);
+        $search_query = null;
+
+        if ($query !== '') {
+            try {
+                $search_query = search_engine\Query::fromString($query);
+            } catch (\LogicException) {
+                // The query is malformed (e.g. "#"): better ignore it than
+                // failing to render the page.
+            }
+        }
+
         $this->stream = $stream;
         $this->context_user = $context_user;
         $this->at = $at;
         $this->days = $days;
         $this->status = $status;
+        $this->query = $query;
+        $this->search_query = $search_query;
         $this->rendered_at = \Minz\Time::now();
 
         // The source is checked last as isSourceCounted() requires the other
@@ -77,8 +104,9 @@ class StreamView
         $days = $request->parameters->getInteger('days', 1);
         $status = $request->parameters->getString('status', 'all');
         $source = Collection::loadFromRequest($request, parameter: 'source');
+        $query = $request->parameters->getString('q', '');
 
-        return new self($stream, $context_user, $at, $days, $source, $status);
+        return new self($stream, $context_user, $at, $days, $source, $status, $query);
     }
 
     public function isAt(\DateTimeImmutable $at): bool
@@ -137,6 +165,7 @@ class StreamView
             'days' => $this->days,
             'source' => $this->source,
             'status' => $this->status,
+            'query' => $this->search_query,
         ]);
 
         return new utils\LinksTimeline($links);
@@ -153,6 +182,7 @@ class StreamView
                 'at' => $this->at,
                 'days' => $this->days,
                 'status' => $this->status,
+                'query' => $this->search_query,
             ]);
 
             $sources = $this->stream->sources([
