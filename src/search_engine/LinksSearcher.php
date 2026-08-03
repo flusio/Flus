@@ -36,12 +36,6 @@ class LinksSearcher
             ':offset' => $pagination['offset'],
         ];
 
-        $from_statement = 'links l';
-        if (self::includeTextCondition($query)) {
-            $from_statement .= ", plainto_tsquery('french', :query) AS query";
-            $parameters[':query'] = '';
-        }
-
         $limit_statement = '';
         if ($pagination['limit'] !== 'ALL') {
             $limit_statement = 'LIMIT :limit';
@@ -59,7 +53,7 @@ class LinksSearcher
                     SELECT COUNT(*) FROM notes n
                     WHERE n.link_id = l.id
                 ) AS number_notes
-            FROM {$from_statement}
+            FROM links l
 
             WHERE l.user_id = :user_id
 
@@ -97,18 +91,12 @@ class LinksSearcher
             ':user_id' => $user->id,
         ];
 
-        $from_statement = 'links l';
-        if (self::includeTextCondition($query)) {
-            $from_statement .= ", plainto_tsquery('french', :query) AS query";
-            $parameters[':query'] = '';
-        }
-
         list($query_statement, $query_parameters) = self::buildWhereQuery($query);
         $parameters = array_merge($parameters, $query_parameters);
 
         $sql = <<<SQL
             SELECT COUNT(l.id)
-            FROM {$from_statement}
+            FROM links l
 
             WHERE l.user_id = :user_id
 
@@ -137,9 +125,17 @@ class LinksSearcher
     }
 
     /**
-     * @return array{string, array<string, mixed>}
+     * Return the SQL conditions matching the given query, to be appended to
+     * the WHERE clause of a request on the links table.
+     *
+     * The conditions all start with " AND ". `$alias` is the alias given to
+     * the links table in the request.
+     *
+     * @param literal-string $alias
+     *
+     * @return array{literal-string, array<string, mixed>}
      */
-    private static function buildWhereQuery(Query $query): array
+    public static function buildWhereQuery(Query $query, string $alias = 'l'): array
     {
         $where_sql = '';
         $parameters = [];
@@ -151,7 +147,7 @@ class LinksSearcher
         $textQuery = implode(' ', $textValues);
 
         if ($textQuery !== '') {
-            $where_sql .= ' AND search_index @@ query';
+            $where_sql .= " AND {$alias}.search_index @@ plainto_tsquery('french', :query)";
             $parameters[':query'] = $textQuery;
         }
 
@@ -162,11 +158,9 @@ class LinksSearcher
             if ($qualifier === 'url') {
                 $value = $condition->getValue();
 
-                $parameter_name = ':url' . (count($parameters) + 1);
+                $parameter_name = self::registerParameter($parameters, "%{$value}%");
 
-                $where_sql .= " AND l.url ILIKE {$parameter_name}";
-
-                $parameters[$parameter_name] = "%{$value}%";
+                $where_sql .= " AND {$alias}.url ILIKE {$parameter_name}";
             }
         }
 
@@ -178,9 +172,7 @@ class LinksSearcher
         foreach ($tagConditions as $condition) {
             $value = $condition->getValue();
 
-            $parameter_name = ':tag' . (count($parameters) + 1);
-
-            $parameters[$parameter_name] = mb_strtolower($value);
+            $parameter_name = self::registerParameter($parameters, mb_strtolower($value));
 
             if ($condition->not()) {
                 $not_tags_parameters[] = $parameter_name;
@@ -191,20 +183,36 @@ class LinksSearcher
 
         if ($tags_parameters) {
             $tags_statement = implode(',', $tags_parameters);
-            $where_sql .= " AND l.tags ??& array[{$tags_statement}]";
+            $where_sql .= " AND {$alias}.tags ??& array[{$tags_statement}]";
         }
 
         if ($not_tags_parameters) {
             $not_tags_statement = implode(',', $not_tags_parameters);
-            $where_sql .= " AND NOT (l.tags ??| array[{$not_tags_statement}])";
+            $where_sql .= " AND NOT ({$alias}.tags ??| array[{$not_tags_statement}])";
         }
 
         return [$where_sql, $parameters];
     }
 
-    private static function includeTextCondition(Query $query): bool
+    /**
+     * Add a value to the list of the parameters and return the name under
+     * which it is registered.
+     *
+     * The name is numbered so it doesn't conflict with the other parameters.
+     *
+     * @param array<string, mixed> $parameters
+     *
+     * @return literal-string
+     */
+    private static function registerParameter(array &$parameters, mixed $value): string
     {
-        $textConditions = $query->getConditions('text');
-        return count($textConditions) > 0;
+        $parameter_name = ':search_param' . (count($parameters) + 1);
+
+        $parameters[$parameter_name] = $value;
+
+        // The name is built from a literal prefix and a counter: it never
+        // contains anything coming from the query, but PHPStan cannot infer it.
+        /** @phpstan-ignore return.type */
+        return $parameter_name;
     }
 }
