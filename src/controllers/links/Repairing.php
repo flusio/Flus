@@ -95,7 +95,7 @@ class Repairing extends BaseController
         }
 
         if ($link->url !== $form->url) {
-            $old_link = models\Link::copy($link, $user->id);
+            $old_link = models\Link::copy($link, $user);
             $old_link->save();
 
             $link->url = $form->url;

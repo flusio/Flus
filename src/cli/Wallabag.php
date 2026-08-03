@@ -95,7 +95,7 @@ class Wallabag
         ]);
 
         // This will be used to check if URL has already been added by the user
-        $link_ids_by_urls = models\Link::listUrlsToIdsByUserId($user->id);
+        $link_ids_by_urls = models\Link::listUrlsToIdsByUser($user);
 
         // This will store the items that we effectively need to create. We
         // don't create links, collections and their relation on the fly because
@@ -133,7 +133,7 @@ class Wallabag
             } else {
                 // The user didn't added this link yet, so we'll need to create
                 // it. First, initiate a new model
-                $link = new models\Link($url, $user->id, is_hidden: !$item['is_public']);
+                $link = new models\Link($url, $user, is_hidden: !$item['is_public']);
 
                 if ($item['title']) {
                     $link->title = $item['title'];
@@ -206,7 +206,7 @@ class Wallabag
 
         // Delete the collections if they are empty at the end of the
         // importation.
-        $count_wallabag_links = models\Link::countByCollectionId($wallabag_collection->id);
+        $count_wallabag_links = models\Link::countByCollection($wallabag_collection);
         if ($count_wallabag_links === 0) {
             $wallabag_collection->remove();
         } else {

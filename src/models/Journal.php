@@ -25,7 +25,7 @@ class Journal
             return count($links);
         }
 
-        $links = Link::listFromFollowedCollections($this->user->id, $max);
+        $links = Link::listFromFollowedCollections($this->user, $max);
 
         foreach ($links as $news_link) {
             $link = $this->user->obtainLink($news_link);
@@ -54,7 +54,7 @@ class Journal
             );
         }
 
-        Link::groupLinksBySources($news->id);
+        Link::groupLinksBySources($news);
 
         return count($links);
     }

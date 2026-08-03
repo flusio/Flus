@@ -82,7 +82,7 @@ class Pocket
         ]);
 
         // This will be used to check if URL has already been added by the user
-        $link_ids_by_urls = models\Link::listUrlsToIdsByUserId($user->id);
+        $link_ids_by_urls = models\Link::listUrlsToIdsByUser($user);
 
         // This will store the items that we effectively need to create. We
         // don't create links, collections and their relation on the fly because
@@ -119,7 +119,7 @@ class Pocket
             } else {
                 // The user didn't added this link yet, so we'll need to create
                 // it. First, initiate a new model
-                $link = new models\Link($url, $user->id, false);
+                $link = new models\Link($url, $user, false);
 
                 if ($item['title']) {
                     $link->title = $item['title'];
@@ -192,7 +192,7 @@ class Pocket
 
         // Delete the collections if they are empty at the end of the
         // importation.
-        $count_pocket_links = models\Link::countByCollectionId($pocket_collection->id);
+        $count_pocket_links = models\Link::countByCollection($pocket_collection);
         if ($count_pocket_links === 0) {
             $pocket_collection->remove();
         } else {

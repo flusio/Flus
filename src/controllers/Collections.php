@@ -125,7 +125,7 @@ class Collections extends BaseController
         $can_update = auth\Access::can($user, 'update', $collection);
 
         $access_is_shared = $user && $collection->sharedWith($user);
-        $number_links = models\Link::countByCollectionId($collection->id, [
+        $number_links = models\Link::countByCollection($collection, [
             'hidden' => $can_update || $access_is_shared,
         ]);
         $number_per_page = $can_update ? 29 : 30; // the button to add a link counts for 1!

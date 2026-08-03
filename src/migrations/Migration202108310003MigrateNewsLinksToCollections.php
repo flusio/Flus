@@ -24,7 +24,7 @@ class Migration202108310003MigrateNewsLinksToCollections
             // Get user info (news and read list ids) and cache these info
             $user_id = $db_news_link['user_id'];
             if (isset($cache_users[$user_id])) {
-                list($read_list_id, $news_id) = $cache_users[$user_id];
+                list($user, $read_list_id, $news_id) = $cache_users[$user_id];
             } else {
                 $user = models\User::find($user_id);
 
@@ -32,7 +32,7 @@ class Migration202108310003MigrateNewsLinksToCollections
 
                 $read_list_id = $user->readList()->id;
                 $news_id = $user->news()->id;
-                $cache_users[$user_id] = [$read_list_id, $news_id];
+                $cache_users[$user_id] = [$user, $read_list_id, $news_id];
             }
 
             // Get a link with the same URL as the news link
@@ -44,7 +44,7 @@ class Migration202108310003MigrateNewsLinksToCollections
             if ($existing_link) {
                 $link = $existing_link;
             } else {
-                $link = new models\Link($url, $user_id, false);
+                $link = new models\Link($url, $user, false);
             }
 
             // Update the new "via_*" info of the link

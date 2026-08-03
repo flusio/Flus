@@ -52,7 +52,7 @@ class DataExporter
             $files["collections/{$collection->id}.atom.xml"] = $this->generateCollection($collection);
         }
 
-        $links = models\Link::listByUserIdWithNotes($user->id);
+        $links = models\Link::listByUserWithNotes($user);
         foreach ($links as $link) {
             $files["notes/{$link->id}.atom.xml"] = $this->generateLink($link);
         }

@@ -320,7 +320,7 @@ class User
     /**
      * Return the links of the user.
      *
-     * @see Link::listComputedByUserId
+     * @see Link::listComputedByUser
      *
      * @param string[] $selected_computed_props
      * @param array{
@@ -334,8 +334,8 @@ class User
      */
     public function links(array $selected_computed_props = [], array $options = []): array
     {
-        return Link::listComputedByUserId(
-            $this->id,
+        return Link::listComputedByUser(
+            $this,
             $selected_computed_props,
             $options
         );
@@ -344,7 +344,7 @@ class User
     /**
      * Return the number of links of the user.
      *
-     * @see Link::countByUserId
+     * @see Link::countByUser
      *
      * @param array{
      *     'unshared'?: bool,
@@ -353,8 +353,8 @@ class User
      */
     public function countLinks(array $options = []): int
     {
-        return Link::countByUserId(
-            $this->id,
+        return Link::countByUser(
+            $this,
             $options
         );
     }
@@ -590,7 +590,7 @@ class User
         $related_urls = array_column($related_links, 'url');
         foreach ($not_owned_links as $link) {
             if (!in_array($link->url, $related_urls)) {
-                $new_links[] = Link::copy($link, $this->id);
+                $new_links[] = Link::copy($link, $this);
             }
         }
 

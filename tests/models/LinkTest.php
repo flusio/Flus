@@ -9,7 +9,7 @@ class LinkTest extends \PHPUnit\Framework\TestCase
     public function testFetchWithSuccess(): void
     {
         $this->freeze();
-        $link = new Link('https://example.com', 'foo', true);
+        $link = new Link('https://example.com', is_hidden: true);
 
         $link->fetch(code: 200);
 
@@ -23,7 +23,7 @@ class LinkTest extends \PHPUnit\Framework\TestCase
     public function testFetchWithNotFound(): void
     {
         $this->freeze();
-        $link = new Link('https://example.com', 'foo', true);
+        $link = new Link('https://example.com', is_hidden: true);
 
         $link->fetch(code: 404, error: 'Page not found');
 
@@ -37,7 +37,7 @@ class LinkTest extends \PHPUnit\Framework\TestCase
     public function testFetchWithRetryCodeError(): void
     {
         $this->freeze();
-        $link = new Link('https://example.com', 'foo', true);
+        $link = new Link('https://example.com', is_hidden: true);
 
         $link->fetch(code: 500, error: 'Internal server error');
 
@@ -51,7 +51,7 @@ class LinkTest extends \PHPUnit\Framework\TestCase
     public function testFetchWithRetryCodeErrorAndAlreadyFetched(): void
     {
         $this->freeze();
-        $link = new Link('https://example.com', 'foo', true);
+        $link = new Link('https://example.com', is_hidden: true);
         $link->fetched_count = 1;
 
         $link->fetch(code: 500, error: 'Internal server error');
@@ -66,7 +66,7 @@ class LinkTest extends \PHPUnit\Framework\TestCase
     public function testFetchWithRetryCodeErrorAndRetryAfterLimit(): void
     {
         $this->freeze();
-        $link = new Link('https://example.com', 'foo', true);
+        $link = new Link('https://example.com', is_hidden: true);
 
         $link->fetch(
             code: 500,
@@ -84,7 +84,7 @@ class LinkTest extends \PHPUnit\Framework\TestCase
     public function testFetchWithRetryCodeErrorAndFetchAgainAfterRetryAfter(): void
     {
         $this->freeze();
-        $link = new Link('https://example.com', 'foo', true);
+        $link = new Link('https://example.com', is_hidden: true);
 
         $link->fetch(
             code: 500,
@@ -102,7 +102,7 @@ class LinkTest extends \PHPUnit\Framework\TestCase
     public function testFetchWithSuccessWithPreviouslyLinkInError(): void
     {
         $this->freeze();
-        $link = new Link('https://example.com', 'foo', true);
+        $link = new Link('https://example.com', is_hidden: true);
         $link->fetched_code = 500;
         $link->fetched_error = 'Internal server error';
         $link->fetched_retry_at = \Minz\Time::now();
@@ -120,7 +120,7 @@ class LinkTest extends \PHPUnit\Framework\TestCase
     public function testFetchWithRetryCodeErrorAndMaxRetriesReached(): void
     {
         $this->freeze();
-        $link = new Link('https://example.com', 'foo', true);
+        $link = new Link('https://example.com', is_hidden: true);
         $link->fetched_count = Link::FETCHED_RETRIES_MAX_TRIES - 1;
 
         $link->fetch(code: 500, error: 'Internal server error');

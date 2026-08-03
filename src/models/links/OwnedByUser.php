@@ -40,7 +40,7 @@ trait OwnedByUser
         ]);
 
         if (!$link) {
-            $link = new self($url, $user_id, is_hidden: false);
+            $link = new self($url, $user, is_hidden: false);
         }
 
         return $link;
@@ -49,9 +49,9 @@ trait OwnedByUser
     /**
      * Copy a Link to the given user.
      */
-    public static function copy(self $link, string $user_id): self
+    public static function copy(self $link, User $user): self
     {
-        $link_copied = new self($link->url, $user_id, false);
+        $link_copied = new self($link->url, $user, false);
 
         $link_copied->title = $link->title;
         $link_copied->url_feeds = $link->url_feeds;
@@ -79,6 +79,18 @@ trait OwnedByUser
     }
 
     /**
+     * Set the owner of the link.
+     *
+     * The owner is memoized so it doesn't have to be loaded from the database
+     * by owner().
+     */
+    public function setOwner(?User $user): void
+    {
+        $this->user_id = $user?->id;
+        $this->memoizeValue('owner', $user);
+    }
+
+    /**
      * Return links of the given user with its computed properties.
      *
      * Links are sorted by published_at if the property is included, or by
@@ -96,8 +108,6 @@ trait OwnedByUser
      * price to pay to return not duplicated and ordered links with their
      * computed properties.
      *
-     * @param string $user_id
-     *     The user id the links must match.
      * @param string[] $selected_computed_props
      *     The list of computed properties to return. It is mandatory to
      *     select specific properties to avoid computing dispensable
@@ -120,8 +130,8 @@ trait OwnedByUser
      *
      * @return self[]
      */
-    public static function listComputedByUserId(
-        string $user_id,
+    public static function listComputedByUser(
+        User $user,
         array $selected_computed_props,
         array $options = [],
     ): array {
@@ -134,7 +144,7 @@ trait OwnedByUser
         $options = array_merge($default_options, $options);
 
         $parameters = [
-            ':user_id' => $user_id,
+            ':user_id' => $user->id,
             ':offset' => $options['offset'],
         ];
 
@@ -218,8 +228,6 @@ trait OwnedByUser
     /**
      * Count links of the given user.
      *
-     * @param string $user_id
-     *     The user id the links must match.
      * @param array{
      *     'unshared'?: bool,
      *     'tag'?: string,
@@ -232,8 +240,8 @@ trait OwnedByUser
      *   collection at least.
      * - tag, to filter links by the given tag.
      */
-    public static function countByUserId(
-        string $user_id,
+    public static function countByUser(
+        User $user,
         array $options = [],
     ): int {
         $default_options = [
@@ -243,7 +251,7 @@ trait OwnedByUser
         $options = array_merge($default_options, $options);
 
         $parameters = [
-            ':user_id' => $user_id,
+            ':user_id' => $user->id,
         ];
 
         $visibility_clause = '';
@@ -367,7 +375,7 @@ trait OwnedByUser
      *
      * @return self[]
      */
-    public static function listByUserIdWithNotes(string $user_id): array
+    public static function listByUserWithNotes(User $user): array
     {
         $sql = <<<SQL
             SELECT l.*
@@ -382,7 +390,7 @@ trait OwnedByUser
         $database = Database::get();
         $statement = $database->prepare($sql);
         $statement->execute([
-            ':user_id' => $user_id,
+            ':user_id' => $user->id,
         ]);
 
         return self::fromDatabaseRows($statement->fetchAll());
@@ -393,7 +401,7 @@ trait OwnedByUser
      *
      * @return array<string, string>
      */
-    public static function listUrlsToIdsByUserId(string $user_id): array
+    public static function listUrlsToIdsByUser(User $user): array
     {
         $sql = <<<SQL
             SELECT url, id FROM links
@@ -403,7 +411,7 @@ trait OwnedByUser
         $database = Database::get();
         $statement = $database->prepare($sql);
         $statement->execute([
-            ':user_id' => $user_id,
+            ':user_id' => $user->id,
         ]);
 
         return $statement->fetchAll(\PDO::FETCH_KEY_PAIR);

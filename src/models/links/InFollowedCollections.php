@@ -2,6 +2,7 @@
 
 namespace App\models\links;
 
+use App\models\User;
 use Minz\Database;
 
 /**
@@ -23,10 +24,10 @@ trait InFollowedCollections
      *
      * @return self[]
      */
-    public static function listFromFollowedCollections(string $user_id, int $max): array
+    public static function listFromFollowedCollections(User $user, int $max): array
     {
         $values = [
-            ':user_id' => $user_id,
+            ':user_id' => $user->id,
             ':until_hard_limit' => \Minz\Time::ago(1, 'year')->format(Database\Column::DATETIME_FORMAT),
             ':until_strict' => \Minz\Time::ago(1, 'day')->format(Database\Column::DATETIME_FORMAT),
             ':until_normal' => \Minz\Time::ago(1, 'week')->format(Database\Column::DATETIME_FORMAT),
@@ -92,10 +93,10 @@ trait InFollowedCollections
      * Return whether there are any public links listed in followed collections
      * of the given user.
      */
-    public static function anyFromFollowedCollections(string $user_id): bool
+    public static function anyFromFollowedCollections(User $user): bool
     {
         $values = [
-            ':user_id' => $user_id,
+            ':user_id' => $user->id,
             ':until_hard_limit' => \Minz\Time::ago(1, 'year')->format(Database\Column::DATETIME_FORMAT),
             ':until_strict' => \Minz\Time::ago(1, 'day')->format(Database\Column::DATETIME_FORMAT),
             ':until_normal' => \Minz\Time::ago(1, 'week')->format(Database\Column::DATETIME_FORMAT),

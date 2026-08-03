@@ -147,8 +147,6 @@ trait InCollections
      * Links are sorted by published_at if the property is included, or by
      * created_at otherwise.
      *
-     * @param string $collection_id
-     *     The collection id the links must match.
      * @param string[] $selected_computed_props
      *     The list of computed properties to return. It is mandatory to
      *     select specific properties to avoid computing dispensable
@@ -171,8 +169,8 @@ trait InCollections
      *
      * @return self[]
      */
-    public static function listComputedByCollectionId(
-        string $collection_id,
+    public static function listComputedByCollection(
+        Collection $collection,
         array $selected_computed_props,
         array $options = [],
     ): array {
@@ -186,7 +184,7 @@ trait InCollections
         $options = array_merge($default_options, $options);
 
         $parameters = [
-            ':collection_id' => $collection_id,
+            ':collection_id' => $collection->id,
             ':offset' => $options['offset'],
         ];
 
@@ -264,8 +262,6 @@ trait InCollections
     /**
      * Count links of the given collection.
      *
-     * @param string $collection_id
-     *     The collection id the links must match.
      * @param array{
      *     'hidden'?: bool,
      *     'since'?: \DateTimeImmutable,
@@ -277,7 +273,7 @@ trait InCollections
      * - since (default to null), counts links that have been added since the
      *   given date only
      */
-    public static function countByCollectionId(string $collection_id, array $options = []): int
+    public static function countByCollection(Collection $collection, array $options = []): int
     {
         $default_options = [
             'hidden' => true,
@@ -286,7 +282,7 @@ trait InCollections
         $options = array_merge($default_options, $options);
 
         $parameters = [
-            ':collection_id' => $collection_id,
+            ':collection_id' => $collection->id,
         ];
 
         $visibility_clause = '';
@@ -320,11 +316,11 @@ trait InCollections
     }
 
     /**
-     * Find a link by its URL and collection id but not owned by the given user.
+     * Find a link by its URL and collection but not owned by the given user.
      */
-    public static function findNotOwnedByCollectionIdAndUrl(
-        string $user_id,
-        string $collection_id,
+    public static function findNotOwnedByCollectionAndUrl(
+        User $user,
+        Collection $collection,
         string $url_hash,
     ): ?self {
         $sql = <<<SQL
@@ -341,8 +337,8 @@ trait InCollections
         $database = Database::get();
         $statement = $database->prepare($sql);
         $statement->execute([
-            ':user_id' => $user_id,
-            ':collection_id' => $collection_id,
+            ':user_id' => $user->id,
+            ':collection_id' => $collection->id,
             ':url_hash' => $url_hash,
         ]);
 
@@ -358,7 +354,7 @@ trait InCollections
      * Return the oldest publication date in the collection since the given date.
      */
     public static function getOldestPublicationDateSince(
-        string $collection_id,
+        Collection $collection,
         \DateTimeImmutable $since
     ): ?\DateTimeImmutable {
         $sql = <<<SQL
@@ -375,7 +371,7 @@ trait InCollections
         $database = Database::get();
         $statement = $database->prepare($sql);
         $statement->execute([
-            ':collection_id' => $collection_id,
+            ':collection_id' => $collection->id,
             ':since' => $since->format(Database\Column::DATETIME_FORMAT),
         ]);
 
@@ -400,11 +396,9 @@ trait InCollections
     /**
      * Return the list of url ids indexed by urls for the given collection.
      *
-     * @param string $collection_id
-     *
      * @return array<string, string>
      */
-    public static function listUrlsToIdsByCollectionId(string $collection_id): array
+    public static function listUrlsToIdsByCollection(Collection $collection): array
     {
         $sql = <<<SQL
             SELECT l.url, l.id FROM links l, links_to_collections lc
@@ -415,7 +409,7 @@ trait InCollections
         $database = Database::get();
         $statement = $database->prepare($sql);
         $statement->execute([
-            ':collection_id' => $collection_id,
+            ':collection_id' => $collection->id,
         ]);
 
         return $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
@@ -429,7 +423,7 @@ trait InCollections
      *     'url': string,
      * }>
      */
-    public static function listEntryIdsToUrlsByCollectionId(string $collection_id): array
+    public static function listEntryIdsToUrlsByCollection(Collection $collection): array
     {
         $sql = <<<SQL
             SELECT l.feed_entry_id, l.id, l.url
@@ -445,7 +439,7 @@ trait InCollections
         $database = Database::get();
         $statement = $database->prepare($sql);
         $statement->execute([
-            ':collection_id' => $collection_id,
+            ':collection_id' => $collection->id,
         ]);
 
         return $statement->fetchAll(\PDO::FETCH_UNIQUE);
@@ -461,7 +455,7 @@ trait InCollections
      * now, it's passed this way to improve performance and to simplify a bit
      * the SQL request.
      */
-    public static function groupLinksBySources(string $collection_id): bool
+    public static function groupLinksBySources(Collection $collection): bool
     {
         $sql = <<<SQL
             UPDATE links
@@ -496,7 +490,7 @@ trait InCollections
         SQL;
 
         $parameters = [
-            ':collection_id' => $collection_id,
+            ':collection_id' => $collection->id,
         ];
 
         $database = Database::get();

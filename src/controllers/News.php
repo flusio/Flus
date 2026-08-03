@@ -97,7 +97,7 @@ class News extends BaseController
         $user = auth\CurrentUser::require();
 
         return Response::json(200, [
-            'available' => models\Link::anyFromFollowedCollections($user->id),
+            'available' => models\Link::anyFromFollowedCollections($user),
         ]);
     }
 }

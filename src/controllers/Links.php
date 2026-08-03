@@ -146,7 +146,7 @@ class Links extends BaseController
             $default_collection_ids[] = $default_collection_id;
         }
 
-        $link = new models\Link($default_url, $user->id);
+        $link = new models\Link($default_url, $user);
         $form = new forms\links\NewLink([
             'collection_ids' => $default_collection_ids,
         ], $link, [

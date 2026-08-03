@@ -111,9 +111,10 @@ class FeedFetcher
 
         $collection->save();
 
-        $link_ids_by_urls = models\Link::listUrlsToIdsByCollectionId($collection->id);
-        $link_urls_by_entry_ids = models\Link::listEntryIdsToUrlsByCollectionId($collection->id);
+        $link_ids_by_urls = models\Link::listUrlsToIdsByCollection($collection);
+        $link_urls_by_entry_ids = models\Link::listEntryIdsToUrlsByCollection($collection);
         $initial_links_count = count($link_ids_by_urls);
+        $owner = $collection->owner();
 
         $links_to_create = [];
         $links_to_collections_to_create = [];
@@ -184,7 +185,7 @@ class FeedFetcher
             } else {
                 // The URL is not associated to the collection in database yet,
                 // so we create a new link.
-                $link = new models\Link($url, $collection->user_id, false);
+                $link = new models\Link($url, $owner, false);
                 $entry_title = trim($entry->title);
                 if ($entry_title) {
                     $link->title = $entry_title;

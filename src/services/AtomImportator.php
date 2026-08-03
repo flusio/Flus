@@ -42,7 +42,8 @@ class AtomImportator
      */
     public function importForCollection(models\Collection $collection): void
     {
-        $link_ids_by_urls = models\Link::listUrlsToIdsByCollectionId($collection->id);
+        $link_ids_by_urls = models\Link::listUrlsToIdsByCollection($collection);
+        $owner = $collection->owner();
 
         $links_to_create = [];
         $links_to_collections_to_create = [];
@@ -68,7 +69,7 @@ class AtomImportator
 
             // The URL is not associated to the collection in database yet,
             // so we create a new link.
-            $link = new models\Link($url, $collection->user_id, false);
+            $link = new models\Link($url, $owner, false);
             $entry_title = trim($entry->title);
             if ($entry_title) {
                 $link->title = $entry_title;

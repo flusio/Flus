@@ -272,7 +272,7 @@ class Collection
     /**
      * Return links of the current collection.
      *
-     * @see Link::listComputedByCollectionId
+     * @see Link::listComputedByCollection
      *
      * @param string[] $selected_computed_props
      * @param array{
@@ -287,8 +287,8 @@ class Collection
      */
     public function links(array $selected_computed_props = [], array $options = []): array
     {
-        return Link::listComputedByCollectionId(
-            $this->id,
+        return Link::listComputedByCollection(
+            $this,
             $selected_computed_props,
             $options
         );
@@ -298,11 +298,11 @@ class Collection
      * Return a link from this collection with the given URL and not owned by
      * the given user.
      */
-    public function linkNotOwnedByUrl(string $user_id, string $url_hash): ?Link
+    public function linkNotOwnedByUrl(User $user, string $url_hash): ?Link
     {
-        return Link::findNotOwnedByCollectionIdAndUrl(
-            $user_id,
-            $this->id,
+        return Link::findNotOwnedByCollectionAndUrl(
+            $user,
+            $this,
             $url_hash,
         );
     }
@@ -536,7 +536,7 @@ class Collection
         $today = \Minz\Time::now();
         $one_year_ago = \Minz\Time::ago(1, 'year');
 
-        $count_links = Link::countByCollectionId($this->id, [
+        $count_links = Link::countByCollection($this, [
             'since' => $one_year_ago,
         ]);
 
@@ -545,7 +545,7 @@ class Collection
             return;
         }
 
-        $oldest_published_at = Link::getOldestPublicationDateSince($this->id, $one_year_ago);
+        $oldest_published_at = Link::getOldestPublicationDateSince($this, $one_year_ago);
 
         if ($oldest_published_at === null) {
             $this->publication_frequency_per_year = 0;

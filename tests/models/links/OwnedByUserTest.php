@@ -23,9 +23,9 @@ class OwnedByUserTest extends \PHPUnit\Framework\TestCase
         $link_url_2 = $this->fake('url');
         /** @var string */
         $link_url_3 = $this->fake('url');
-        $link_1 = new models\Link($link_url_1, $user->id, true);
-        $link_2 = new models\Link($link_url_2, $user->id, true);
-        $link_3 = new models\Link($link_url_3, $user->id, false);
+        $link_1 = new models\Link($link_url_1, $user, true);
+        $link_2 = new models\Link($link_url_2, $user, true);
+        $link_3 = new models\Link($link_url_3, $user, false);
         /** @var \DateTimeImmutable */
         $created_at = $this->fake('dateTime');
         $link_1->created_at = $created_at;
@@ -47,20 +47,20 @@ class OwnedByUserTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Link::exists($link_3->id));
     }
 
-    public function testListComputedByUserId(): void
+    public function testListComputedByUser(): void
     {
         $user = UserFactory::create();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
 
-        $links = models\Link::listComputedByUserId($user->id, []);
+        $links = models\Link::listComputedByUser($user, []);
 
         $this->assertSame(1, count($links));
         $this->assertSame($link->id, $links[0]->id);
     }
 
-    public function testListComputedByUserIdCanReturnPublishedAt(): void
+    public function testListComputedByUserCanReturnPublishedAt(): void
     {
         $user = UserFactory::create();
         /** @var \DateTimeImmutable */
@@ -70,13 +70,13 @@ class OwnedByUserTest extends \PHPUnit\Framework\TestCase
             'created_at' => $published_at,
         ]);
 
-        $links = models\Link::listComputedByUserId($user->id, ['published_at']);
+        $links = models\Link::listComputedByUser($user, ['published_at']);
 
         $this->assertSame(1, count($links));
         $this->assertEquals($published_at, $links[0]->published_at);
     }
 
-    public function testListComputedByUserIdConsidersPublishedAtWhenUnsharedIsFalse(): void
+    public function testListComputedByUserConsidersPublishedAtWhenUnsharedIsFalse(): void
     {
         $user = UserFactory::create();
         /** @var \DateTimeImmutable */
@@ -91,7 +91,7 @@ class OwnedByUserTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection->addLinks([$link], at: $published_at);
 
-        $links = models\Link::listComputedByUserId($user->id, ['published_at'], [
+        $links = models\Link::listComputedByUser($user, ['published_at'], [
             'unshared' => false,
         ]);
 
@@ -99,7 +99,7 @@ class OwnedByUserTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($published_at, $links[0]->published_at);
     }
 
-    public function testListComputedByUserIdCanReturnNumberNotes(): void
+    public function testListComputedByUserCanReturnNumberNotes(): void
     {
         $user = UserFactory::create();
         $link = LinkFactory::create([
@@ -109,12 +109,12 @@ class OwnedByUserTest extends \PHPUnit\Framework\TestCase
             'link_id' => $link->id,
         ]);
 
-        $links = models\Link::listComputedByUserId($user->id, ['number_notes']);
+        $links = models\Link::listComputedByUser($user, ['number_notes']);
 
         $this->assertSame(1, $links[0]->number_notes);
     }
 
-    public function testListComputedByUserIdCanListSharedOnly(): void
+    public function testListComputedByUserCanListSharedOnly(): void
     {
         $user = UserFactory::create();
         $unshared_link_1 = LinkFactory::create([
@@ -145,7 +145,7 @@ class OwnedByUserTest extends \PHPUnit\Framework\TestCase
         $private_collection->addLinks([$unshared_link_3]);
         $public_collection->addLinks([$shared_link]);
 
-        $links = models\Link::listComputedByUserId($user->id, [], [
+        $links = models\Link::listComputedByUser($user, [], [
             'unshared' => false,
         ]);
 
@@ -153,7 +153,7 @@ class OwnedByUserTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($shared_link->id, $links[0]->id);
     }
 
-    public function testListComputedByUserIdCanLimitResults(): void
+    public function testListComputedByUserCanLimitResults(): void
     {
         $user = UserFactory::create();
         $link_1 = LinkFactory::create([
@@ -169,7 +169,7 @@ class OwnedByUserTest extends \PHPUnit\Framework\TestCase
             'created_at' => \Minz\Time::ago(1, 'days'),
         ]);
 
-        $links = models\Link::listComputedByUserId($user->id, [], [
+        $links = models\Link::listComputedByUser($user, [], [
             'limit' => 2,
         ]);
 
@@ -178,7 +178,7 @@ class OwnedByUserTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_2->id, $links[1]->id);
     }
 
-    public function testListComputedByUserIdCanOffsetResults(): void
+    public function testListComputedByUserCanOffsetResults(): void
     {
         $user = UserFactory::create();
         $link_1 = LinkFactory::create([
@@ -194,7 +194,7 @@ class OwnedByUserTest extends \PHPUnit\Framework\TestCase
             'created_at' => \Minz\Time::ago(1, 'days'),
         ]);
 
-        $links = models\Link::listComputedByUserId($user->id, [], [
+        $links = models\Link::listComputedByUser($user, [], [
             'offset' => 1,
         ]);
 
@@ -203,7 +203,7 @@ class OwnedByUserTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_1->id, $links[1]->id);
     }
 
-    public function testListComputedByUserIdDoesNotDuplicateLinks(): void
+    public function testListComputedByUserDoesNotDuplicateLinks(): void
     {
         $user = UserFactory::create();
         $today = \Minz\Time::relative('today');
@@ -223,7 +223,7 @@ class OwnedByUserTest extends \PHPUnit\Framework\TestCase
         $public_collection_1->addLinks([$link], at: $today);
         $public_collection_2->addLinks([$link], at: $yesterday);
 
-        $links = models\Link::listComputedByUserId($user->id, ['published_at'], [
+        $links = models\Link::listComputedByUser($user, ['published_at'], [
             'unshared' => false,
         ]);
 
@@ -231,7 +231,7 @@ class OwnedByUserTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($today, $links[0]->published_at);
     }
 
-    public function testListComputedByUserIdLimitsResultsAfterDeduplication(): void
+    public function testListComputedByUserLimitsResultsAfterDeduplication(): void
     {
         $user = UserFactory::create();
         $today = \Minz\Time::relative('today');
@@ -263,7 +263,7 @@ class OwnedByUserTest extends \PHPUnit\Framework\TestCase
         $public_collection_1->addLinks([$link_3], at: $yesterday);
         $public_collection_1->addLinks([$link_1], at: $today);
 
-        $links = models\Link::listComputedByUserId($user->id, ['published_at'], [
+        $links = models\Link::listComputedByUser($user, ['published_at'], [
             'unshared' => false,
             'limit' => 2,
         ]);

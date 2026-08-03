@@ -52,7 +52,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
 
-        $links = models\Link::listFromFollowedCollections($this->user->id, max: 50);
+        $links = models\Link::listFromFollowedCollections($this->user, max: 50);
 
         $this->assertSame(2, count($links));
         $this->assertSame($link2->id, $links[0]->id);
@@ -88,7 +88,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
 
-        $links = models\Link::listFromFollowedCollections($this->user->id, max: 50);
+        $links = models\Link::listFromFollowedCollections($this->user, max: 50);
 
         $this->assertSame(1, count($links));
         $this->assertSame($link->id, $links[0]->id);
@@ -122,7 +122,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
 
-        $links = models\Link::listFromFollowedCollections($this->user->id, max: 50);
+        $links = models\Link::listFromFollowedCollections($this->user, max: 50);
 
         $this->assertSame(1, count($links));
         $this->assertSame($link->id, $links[0]->id);
@@ -159,7 +159,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'time_filter' => 'all',
         ]);
 
-        $links = models\Link::listFromFollowedCollections($this->user->id, max: 50);
+        $links = models\Link::listFromFollowedCollections($this->user, max: 50);
 
         $this->assertSame(1, count($links));
         $this->assertSame($link->id, $links[0]->id);
@@ -190,7 +190,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
         $link2->addCollection($collection, at: $published_at2);
         $this->user->follow($collection->id);
 
-        $links = models\Link::listFromFollowedCollections($this->user->id, max: 50);
+        $links = models\Link::listFromFollowedCollections($this->user, max: 50);
 
         $this->assertSame(2, count($links));
         $this->assertSame($link2->id, $links[0]->id);
@@ -222,7 +222,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
 
-        $links = models\Link::listFromFollowedCollections($this->user->id, max: 50);
+        $links = models\Link::listFromFollowedCollections($this->user, max: 50);
 
         $this->assertSame(0, count($links));
     }
@@ -251,7 +251,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'time_filter' => 'strict',
         ]);
 
-        $links = models\Link::listFromFollowedCollections($this->user->id, max: 50);
+        $links = models\Link::listFromFollowedCollections($this->user, max: 50);
 
         $this->assertSame(0, count($links));
     }
@@ -279,7 +279,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'time_filter' => 'none',
         ]);
 
-        $links = models\Link::listFromFollowedCollections($this->user->id, max: 50);
+        $links = models\Link::listFromFollowedCollections($this->user, max: 50);
 
         $this->assertSame(0, count($links));
     }
@@ -307,7 +307,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
 
-        $links = models\Link::listFromFollowedCollections($this->user->id, max: 50);
+        $links = models\Link::listFromFollowedCollections($this->user, max: 50);
 
         $this->assertSame(0, count($links));
     }
@@ -335,7 +335,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
 
-        $links = models\Link::listFromFollowedCollections($this->user->id, max: 50);
+        $links = models\Link::listFromFollowedCollections($this->user, max: 50);
 
         $this->assertSame(0, count($links));
     }
@@ -370,7 +370,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
 
-        $links = models\Link::listFromFollowedCollections($this->user->id, max: 50);
+        $links = models\Link::listFromFollowedCollections($this->user, max: 50);
 
         $this->assertSame(0, count($links));
     }
@@ -405,7 +405,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
 
-        $links = models\Link::listFromFollowedCollections($this->user->id, max: 50);
+        $links = models\Link::listFromFollowedCollections($this->user, max: 50);
 
         $this->assertSame(0, count($links));
     }
@@ -440,7 +440,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
 
-        $links = models\Link::listFromFollowedCollections($this->user->id, max: 50);
+        $links = models\Link::listFromFollowedCollections($this->user, max: 50);
 
         $this->assertSame(0, count($links));
     }
@@ -473,7 +473,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
 
-        $links = models\Link::listFromFollowedCollections($this->user->id, max: 50);
+        $links = models\Link::listFromFollowedCollections($this->user, max: 50);
 
         $this->assertSame(0, count($links));
     }
@@ -496,7 +496,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
 
-        $result = models\Link::anyFromFollowedCollections($this->user->id);
+        $result = models\Link::anyFromFollowedCollections($this->user);
 
         $this->assertTrue($result);
     }
@@ -519,7 +519,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
 
-        $result = models\Link::anyFromFollowedCollections($this->user->id);
+        $result = models\Link::anyFromFollowedCollections($this->user);
 
         $this->assertFalse($result);
     }
@@ -543,7 +543,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'time_filter' => 'none',
         ]);
 
-        $result = models\Link::anyFromFollowedCollections($this->user->id);
+        $result = models\Link::anyFromFollowedCollections($this->user);
 
         $this->assertFalse($result);
     }
@@ -563,7 +563,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
         $link->addCollection($collection, at: $published_at);
         $this->user->follow($collection->id);
 
-        $result = models\Link::anyFromFollowedCollections($this->user->id);
+        $result = models\Link::anyFromFollowedCollections($this->user);
 
         $this->assertTrue($result);
     }
@@ -583,7 +583,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
         $link->addCollection($collection, at: $published_at);
         $this->user->follow($collection->id);
 
-        $result = models\Link::anyFromFollowedCollections($this->user->id);
+        $result = models\Link::anyFromFollowedCollections($this->user);
 
         $this->assertFalse($result);
     }

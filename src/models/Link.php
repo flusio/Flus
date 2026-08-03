@@ -111,7 +111,7 @@ class Link
     #[Database\Column(computed: true)]
     public string $url_hash;
 
-    public function __construct(string $url, ?string $user_id = null, bool $is_hidden = false)
+    public function __construct(string $url, ?User $user = null, bool $is_hidden = false)
     {
         $url = \SpiderBits\Url::sanitize($url);
 
@@ -120,7 +120,7 @@ class Link
         $this->url = $url;
         $this->url_hash = utils\Belt::hashUrl($url);
         $this->is_hidden = $is_hidden;
-        $this->user_id = $user_id;
+        $this->setOwner($user);
     }
 
     /**
