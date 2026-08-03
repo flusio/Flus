@@ -39,6 +39,31 @@
     opacity: 0.5;
 }
 
+/* The buttons scrolling the strip by one page. They overlay its edges, on top
+ * of the shadows. They are centered on the strip, with an optional offset for
+ * the strips whose content is not centered in their box. */
+.scroller__button {
+    --button-background-color: var(--color-base);
+
+    position: absolute;
+    z-index: 3;
+    top: calc(50% + var(--scroller-button-offset, 0px));
+
+    transform: translateY(-50%);
+}
+
+.scroller__button:disabled {
+    display: none;
+}
+
+.scroller__button--previous {
+    left: var(--space-smaller);
+}
+
+.scroller__button--next {
+    right: var(--space-smaller);
+}
+
 .scroller__strip {
     position: relative;
 

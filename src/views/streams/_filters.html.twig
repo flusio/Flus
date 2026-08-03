@@ -24,6 +24,20 @@
         {% endfor %}
 
         <div class="scroller" data-scroller-target="viewport">
+            <button
+                type="button"
+                class="button--icon scroller__button scroller__button--previous"
+                title="{{ t('Display the previous days') }}"
+                data-scroller-target="previous"
+                data-action="scroller#previous"
+            >
+                {{ icon('arrow-left') }}
+
+                <span class="sr-only">
+                    {{ t('Display the previous days') }}
+                </span>
+            </button>
+
             <div
                 class="scroller__strip day-picker"
                 role="group"
@@ -104,6 +118,20 @@
                     </button>
                 {% endfor %}
             </div>
+
+            <button
+                    type="button"
+                    class="button--icon scroller__button scroller__button--next"
+                    title="{{ t('Display the next days') }}"
+                    data-scroller-target="next"
+                    data-action="scroller#next"
+            >
+                {{ icon('arrow-right') }}
+
+                <span class="sr-only">
+                    {{ t('Display the next days') }}
+                </span>
+            </button>
         </div>
 
         <div class="stack stack--gap-small">

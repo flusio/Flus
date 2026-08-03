@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-08-03 06:22+0200\n"
-"PO-Revision-Date: 2026-08-03 06:22+0200\n"
+"POT-Creation-Date: 2026-08-03 07:08+0200\n"
+"PO-Revision-Date: 2026-08-03 07:08+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -878,7 +878,7 @@ msgstr ""
 "pour la plupart des flux)."
 
 #: views/collections/filters/edit.html.twig:110
-#: views/streams/_filters.html.twig:147
+#: views/streams/_filters.html.twig:175
 msgid "All"
 msgstr "Tout"
 
@@ -2935,44 +2935,52 @@ msgstr "Mot de passe oublié ?"
 msgid "No account yet?"
 msgstr "Pas encore de compte ?"
 
-#: views/streams/_filters.html.twig:30
+#: views/streams/_filters.html.twig:30 views/streams/_filters.html.twig:37
+msgid "Display the previous days"
+msgstr "Afficher les jours précédents"
+
+#: views/streams/_filters.html.twig:44
 msgid "Date"
 msgstr "Date"
 
-#: views/streams/_filters.html.twig:42 views/streams/_filters.html.twig:183
+#: views/streams/_filters.html.twig:56 views/streams/_filters.html.twig:211
 #, php-format
 msgid "%s: %d link"
 msgid_plural "%s: %d links"
 msgstr[0] "%s : %d lien"
 msgstr[1] "%s : %d liens"
 
-#: views/streams/_filters.html.twig:44
+#: views/streams/_filters.html.twig:58
 #, php-format
 msgid "(%d unread)"
 msgid_plural "(%d unread)"
 msgstr[0] "(%d non lu)"
 msgstr[1] "(%d non lus)"
 
-#: views/streams/_filters.html.twig:111
+#: views/streams/_filters.html.twig:125 views/streams/_filters.html.twig:132
+msgid "Display the next days"
+msgstr "Afficher les jours suivants"
+
+#: views/streams/_filters.html.twig:139
 msgid "Display:"
 msgstr "Afficher :"
 
-#: views/streams/_filters.html.twig:128
+#: views/streams/_filters.html.twig:156
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d jour"
 msgstr[1] "%d jours"
 
-#: views/streams/_filters.html.twig:138
+#: views/streams/_filters.html.twig:166
 msgid "Reading status:"
 msgstr "Statut de lecture :"
 
-#: views/streams/_filters.html.twig:148
+#: views/streams/_filters.html.twig:176
 msgid "Unread"
 msgstr "Non lus"
 
-#: views/streams/_filters.html.twig:171
+#: views/streams/_filters.html.twig:199
 #, php-format
 msgid "Sources (%d)"
 msgstr "Sources (%d)"
