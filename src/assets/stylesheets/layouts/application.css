@@ -18,6 +18,12 @@
     }
 }
 
+.layout__column {
+    min-width: 0;
+
+    flex: 1;
+}
+
 .layout__content--application:has(.sidenav) {
     /* Extend the max-width so it can contain the content + 2 sidebars. This
      * allows to center the content on the page when the screen is large
