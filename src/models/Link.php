@@ -9,16 +9,29 @@ use Minz\Translatable;
 use Minz\Validable;
 
 /**
+ * @phpstan-import-type DatabaseCriteria from Database\Recordable
+ *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
 #[Database\Table(name: 'links')]
 class Link
 {
-    use dao\Link;
+    use dao\BulkQueries;
+    use dao\MediaQueries;
     use Database\Recordable;
     use Database\Resource;
     use Fetchable;
+    use links\Annotable;
+    use links\InCollections;
+    use links\InFollowedCollections;
+    use links\InStreams;
+    use links\OwnedByUser;
+    use links\Prunable;
+    use links\Reachable;
+    use links\Readable;
+    use links\Statistics;
+    use links\Taggable;
     use Validable;
 
     public const ORIGIN_MAX_LENGTH = 2000;
@@ -75,13 +88,6 @@ class Link
     public bool $origin_is_public = false;
 
     #[Database\Column]
-    public ?string $user_id = null;
-
-    /** @var 'unset'|'ok' */
-    #[Database\Column]
-    public string $user_fetched_status = 'unset';
-
-    #[Database\Column]
     public ?string $feed_entry_id = null;
 
     #[Database\Column]
@@ -96,15 +102,8 @@ class Link
     #[Database\Column]
     public bool $group_by_source = false;
 
-    /** @var string[] */
-    #[Database\Column]
-    public array $tags = [];
-
     #[Database\Column(computed: true)]
     public ?\DateTimeImmutable $published_at = null;
-
-    #[Database\Column(computed: true)]
-    public ?int $number_notes = null;
 
     #[Database\Column(computed: true)]
     public string $search_index;
@@ -125,236 +124,55 @@ class Link
     }
 
     /**
-     * Return a link with the given URL owned by the user. Any matching link
-     * that already exists in the database is returned.
+     * Return a link with its computed properties.
      *
-     * If no users are passed, the method looks for a link without any owner.
-     *
-     * The URL is sanitized before being searched, so you don't have to do it
-     * yourself.
+     * @param DatabaseCriteria $criteria
+     *     The conditions the link must match.
+     * @param string[] $selected_computed_props
+     *     The list of computed properties to return. It is mandatory to
+     *     select specific properties to avoid computing dispensable
+     *     properties.
      */
-    public static function findOrBuildByUrl(string $url, ?User $user = null): Link
+    public static function findComputedBy(array $criteria, array $selected_computed_props): ?self
     {
-        $url = \SpiderBits\Url::sanitize($url);
-        $user_id = $user?->id;
-
-        $link = self::findBy([
-            'user_id' => $user_id,
-            'url_hash' => utils\Belt::hashUrl($url),
-        ]);
-
-        if (!$link) {
-            $link = new Link($url, $user_id, is_hidden: false);
+        // Note that publication date is usually computed by considering the
+        // date of association with a collection. Without collection, we
+        // consider its date of insertion in the database.
+        $published_at_clause = '';
+        if (in_array('published_at', $selected_computed_props)) {
+            $published_at_clause = ', l.created_at AS published_at';
         }
 
-        return $link;
-    }
-
-    public function refreshTags(): void
-    {
-        $tags = [];
-
-        foreach ($this->notes() as $note) {
-            $tags = array_merge($tags, $note->tags());
+        $number_notes_clause = '';
+        if (in_array('number_notes', $selected_computed_props)) {
+            $number_notes_clause = <<<'SQL'
+                , (
+                    SELECT COUNT(*) FROM notes m
+                    WHERE m.link_id = l.id
+                ) AS number_notes
+            SQL;
         }
 
-        $this->setTags($tags);
-        $this->save();
-    }
+        list($where_statement, $parameters) = Database\Helper::buildWhere($criteria);
 
-    /**
-     * @param string[] $tags
-     */
-    public function setTags(array $tags): void
-    {
-        $sanitized_tags = [];
+        $sql = <<<SQL
+            SELECT
+                l.*
+                {$published_at_clause}
+                {$number_notes_clause}
+            FROM links l
+            WHERE {$where_statement}
+        SQL;
 
-        foreach ($tags as $tag) {
-            $lower_tag = mb_strtolower($tag);
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute($parameters);
 
-            if (!isset($sanitized_tags[$lower_tag])) {
-                $sanitized_tags[$lower_tag] = $tag;
-            }
-        }
-
-        $this->tags = $sanitized_tags;
-    }
-
-    /**
-     * Copy a Link to the given user.
-     */
-    public static function copy(self $link, string $user_id): self
-    {
-        $link_copied = new self($link->url, $user_id, false);
-
-        $link_copied->title = $link->title;
-        $link_copied->url_feeds = $link->url_feeds;
-        $link_copied->url_replies = $link->url_replies;
-        $link_copied->image_filename = $link->image_filename;
-        $link_copied->reading_time = $link->reading_time;
-        $link_copied->fetched_at = $link->fetched_at;
-        $link_copied->fetched_code = $link->fetched_code;
-        $link_copied->fetched_count = $link->fetched_count;
-        $link_copied->fetched_retry_at = $link->fetched_retry_at;
-
-        return $link_copied;
-    }
-
-    /**
-     * Return the owner of the link if any.
-     */
-    public function owner(): ?User
-    {
-        if (!$this->user_id) {
-            return null;
-        }
-
-        return User::find($this->user_id);
-    }
-
-    /**
-     * Return the collections attached to the current link
-     *
-     * @return Collection[]
-     */
-    public function collections(): array
-    {
-        return Collection::listByLinkId($this->id);
-    }
-
-    /**
-     * Set the link's collections.
-     *
-     * @param Collection[] $collections
-     */
-    public function setCollections(
-        array $collections,
-        ?\DateTimeImmutable $at = null,
-        bool $sync_publication_frequency = true,
-    ): void {
-        $collection_ids = array_column($collections, 'id');
-        LinkToCollection::setCollections($this->id, $collection_ids, $at);
-
-        if ($sync_publication_frequency) {
-            foreach ($collections as $collection) {
-                $collection->syncPublicationFrequencyPerYear();
-                $collection->save();
-            }
-        }
-    }
-
-    /**
-     * Add the link to the collections.
-     *
-     * @param Collection[] $collections
-     */
-    public function addCollections(
-        array $collections,
-        ?\DateTimeImmutable $at = null,
-        bool $sync_publication_frequency = true,
-    ): void {
-        $collection_ids = array_column($collections, 'id');
-        LinkToCollection::attach([$this->id], $collection_ids, $at);
-
-        if ($sync_publication_frequency) {
-            foreach ($collections as $collection) {
-                $collection->syncPublicationFrequencyPerYear();
-                $collection->save();
-            }
-        }
-    }
-
-    /**
-     * Add the link to a collection.
-     */
-    public function addCollection(
-        Collection $collection,
-        ?\DateTimeImmutable $at = null,
-        bool $sync_publication_frequency = true,
-    ): void {
-        $this->addCollections([$collection], $at, $sync_publication_frequency);
-    }
-
-    /**
-     * Remove the link from the collections.
-     *
-     * @param Collection[] $collections
-     */
-    public function removeCollections(
-        array $collections,
-        bool $sync_publication_frequency = true,
-    ): void {
-        $collection_ids = array_column($collections, 'id');
-        LinkToCollection::detach([$this->id], $collection_ids);
-
-        if ($sync_publication_frequency) {
-            foreach ($collections as $collection) {
-                $collection->syncPublicationFrequencyPerYear();
-                $collection->save();
-            }
-        }
-    }
-
-    /**
-     * Remove the link from a collection.
-     */
-    public function removeCollection(
-        Collection $collection,
-        bool $sync_publication_frequency = true,
-    ): void {
-        $this->removeCollections([$collection], $sync_publication_frequency);
-    }
-
-    /**
-     * Return the notes attached to the current link
-     *
-     * @return Note[]
-     */
-    public function notes(): array
-    {
-        return Note::listByLink($this);
-    }
-
-    /**
-     * Return the notepad, containing the notes grouped by dates
-     *
-     * @return array<string, Note[]>
-     */
-    public function notepad(): array
-    {
-        $notepad = [];
-
-        foreach ($this->notes() as $note) {
-            $date_iso = $note->created_at->format('Y-m-d');
-            $notepad[$date_iso][] = $note;
-        }
-
-        return $notepad;
-    }
-
-    /**
-     * Return a new note.
-     *
-     * It is initialized with this link and the link's user. The note is not
-     * saved in database yet.
-     */
-    public function initNote(): Note
-    {
-        if (!$this->user_id) {
-            throw new \Exception("Cannot initialize a note for link #{$this->id} as user is null.");
-        }
-
-        return new Note($this->user_id, $this->id);
-    }
-
-    public function numberNotes(): int
-    {
-        if ($this->number_notes !== null) {
-            return $this->number_notes;
+        $result = $statement->fetch();
+        if (is_array($result)) {
+            return self::fromDatabaseRow($result);
         } else {
-            return Note::countBy([
-                'link_id' => $this->id,
-            ]);
+            return null;
         }
     }
 
@@ -383,38 +201,6 @@ class Link
     }
 
     /**
-     * Return the source of the link.
-     */
-    public function source(): ?Collection
-    {
-        if (!$this->source_id) {
-            return null;
-        }
-        return Collection::find($this->source_id);
-    }
-
-    /**
-     * Return whether the link is shared with the given user or not (i.e. it is
-     * attached to a shared collection or to an owned collection).
-     *
-     * If $access_type is 'any' or 'read', the method returns true just if a
-     * collection_share exists for this collection and user.
-     *
-     * If $access_type is 'write', the method will check that the collection
-     * share has a 'write' type.
-     *
-     * $access_type has no effect if a link is in an owned collection (i.e. it
-     * implies the user has write effect over it).
-     */
-    public function sharedWith(User $user, string $access_type = 'any'): bool
-    {
-        return (
-            Collection::existsForUserIdAndLinkId($user->id, $this->id) ||
-            CollectionShare::existsForUserIdAndLinkId($user->id, $this->id, $access_type)
-        );
-    }
-
-    /**
      * Return whether the link URL is a feed URL.
      */
     public function isFeedUrl(): bool
@@ -425,51 +211,6 @@ class Link
     public function host(): string
     {
         return utils\Belt::host($this->url);
-    }
-
-    /**
-     * Mark the link as accessible to the user.
-     */
-    public function markAsAccessibleToUser(): void
-    {
-        $this->user_fetched_status = 'ok';
-    }
-
-    /**
-     * Reset information that the link is accessible to the user.
-     */
-    public function resetIsAccessibleToUser(): void
-    {
-        $this->user_fetched_status = 'unset';
-    }
-
-    /**
-     * Return whether the link is inaccessible or not.
-     *
-     * It returns false if the link is inaccessible to the server, but that
-     * the user indicated it is accessible to them.
-     */
-    public function isInaccessible(): bool
-    {
-        return $this->isInaccessibleToServer() && !$this->isAccessibleToUser();
-    }
-
-    /**
-     * Return whether the link is inaccessible or not to the server.
-     */
-    public function isInaccessibleToServer(): bool
-    {
-        $is_fetched = $this->fetched_at !== null;
-        $is_error_code = $this->fetched_code < 200 || $this->fetched_code >= 400;
-        return $is_fetched && $is_error_code;
-    }
-
-    /**
-     * Return whether the link is explicitely marked as accessible to the user.
-     */
-    public function isAccessibleToUser(): bool
-    {
-        return $this->user_fetched_status === 'ok';
     }
 
     /**

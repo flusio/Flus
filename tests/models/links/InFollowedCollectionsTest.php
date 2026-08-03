@@ -1,6 +1,6 @@
 <?php
 
-namespace App\models\dao\links;
+namespace App\models\links;
 
 use App\models;
 use tests\factories\CollectionFactory;
@@ -9,7 +9,7 @@ use tests\factories\FollowedCollectionFactory;
 use tests\factories\LinkFactory;
 use tests\factories\UserFactory;
 
-class NewsQueriesTest extends \PHPUnit\Framework\TestCase
+class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\TimeHelper;

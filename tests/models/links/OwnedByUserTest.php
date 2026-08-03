@@ -1,6 +1,6 @@
 <?php
 
-namespace App\models\dao;
+namespace App\models\links;
 
 use App\models;
 use tests\factories\CollectionFactory;
@@ -9,7 +9,7 @@ use tests\factories\LinkFactory;
 use tests\factories\NoteFactory;
 use tests\factories\UserFactory;
 
-class LinkTest extends \PHPUnit\Framework\TestCase
+class OwnedByUserTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\InitializerHelper;
     use \tests\FakerHelper;

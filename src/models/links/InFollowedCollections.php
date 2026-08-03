@@ -1,16 +1,21 @@
 <?php
 
-namespace App\models\dao\links;
+namespace App\models\links;
 
 use Minz\Database;
 
 /**
- * Add methods providing SQL queries specific to the News.
+ * Add methods to list the links published in the collections that a user
+ * follows.
+ *
+ * These links are the ones that feed the journal of the user. A link is only
+ * considered if the user can see it: the collection must be public, owned by
+ * the user or shared with them.
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-trait NewsQueries
+trait InFollowedCollections
 {
     /**
      * Return public links listed in followed collections of the given user,
@@ -141,58 +146,5 @@ trait NewsQueries
         $statement->execute($values);
 
         return $statement->fetch() !== false;
-    }
-
-    /**
-     * Mark the relevant links to be grouped by sources in the given collection.
-     *
-     * Links are grouped if there are several links in the given collection
-     * corresponding to the same source and the same day.
-     *
-     * The passed collection_id must correspond to a "news" collection. For
-     * now, it's passed this way to improve performance and to simplify a bit
-     * the SQL request.
-     */
-    public static function groupLinksBySources(string $collection_id): bool
-    {
-        $sql = <<<SQL
-            UPDATE links
-            SET group_by_source = true
-            WHERE links.id IN (
-                -- Create a "temporary table" to select the available sources
-                -- from the given collection (e.g. sources that are referenced
-                -- by more than 1 link).
-                WITH sources AS (
-                    SELECT date_trunc('day', slc.created_at) AS published_day,
-                           sl.source_id
-                    FROM links sl, links_to_collections slc
-
-                    WHERE sl.id = slc.link_id
-                    AND slc.collection_id = :collection_id
-
-                    GROUP BY published_day, sl.source_id
-                    HAVING COUNT(sl.id) > 1
-                )
-
-                -- Select the ids of links which have a source corresponding to
-                -- one of the selected sources.
-                SELECT l.id
-                FROM links l, links_to_collections lc, sources s
-
-                WHERE l.id = lc.link_id
-                AND lc.collection_id = :collection_id
-
-                AND l.source_id = s.source_id
-                AND date_trunc('day', lc.created_at) = s.published_day
-            );
-        SQL;
-
-        $parameters = [
-            ':collection_id' => $collection_id,
-        ];
-
-        $database = Database::get();
-        $statement = $database->prepare($sql);
-        return $statement->execute($parameters);
     }
 }

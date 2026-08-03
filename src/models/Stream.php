@@ -231,7 +231,8 @@ class Stream
      * the stream contains unread links published during the last seven days.
      *
      * The joins and the clauses of the subquery must be kept in sync with the
-     * ones of dao\Link::buildStreamJoin() and dao\Link::buildStreamWhere().
+     * ones of links\InStreams::buildStreamJoin() and
+     * links\InStreams::buildStreamWhere().
      *
      * @return self[]
      */

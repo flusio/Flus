@@ -1,16 +1,16 @@
 <?php
 
-namespace App\models\dao\links;
+namespace App\models\links;
 
 use Minz\Database;
 
 /**
- * Add methods providing SQL queries specific to the Cleaner.
+ * Add methods to delete the links that don't have to be kept anymore.
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-trait CleanerQueries
+trait Prunable
 {
     /**
      * Delete links that are attached to no users and no collections older than
