@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-08-01 22:28+0200\n"
-"PO-Revision-Date: 2026-08-01 22:28+0200\n"
+"POT-Creation-Date: 2026-08-03 06:22+0200\n"
+"PO-Revision-Date: 2026-08-03 06:22+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -878,7 +878,7 @@ msgstr ""
 "pour la plupart des flux)."
 
 #: views/collections/filters/edit.html.twig:110
-#: views/streams/_filters.html.twig:143
+#: views/streams/_filters.html.twig:147
 msgid "All"
 msgstr "Tout"
 
@@ -2939,7 +2939,7 @@ msgstr "Pas encore de compte ?"
 msgid "Date"
 msgstr "Date"
 
-#: views/streams/_filters.html.twig:42 views/streams/_filters.html.twig:178
+#: views/streams/_filters.html.twig:42 views/streams/_filters.html.twig:183
 #, php-format
 msgid "%s: %d link"
 msgid_plural "%s: %d links"
@@ -2964,15 +2964,15 @@ msgid_plural "%d days"
 msgstr[0] "%d jour"
 msgstr[1] "%d jours"
 
-#: views/streams/_filters.html.twig:140
-msgid "Status of the links"
-msgstr "Statut des liens"
+#: views/streams/_filters.html.twig:138
+msgid "Reading status:"
+msgstr "Statut de lecture :"
 
-#: views/streams/_filters.html.twig:144
+#: views/streams/_filters.html.twig:148
 msgid "Unread"
 msgstr "Non lus"
 
-#: views/streams/_filters.html.twig:167
+#: views/streams/_filters.html.twig:171
 #, php-format
 msgid "Sources (%d)"
 msgstr "Sources (%d)"

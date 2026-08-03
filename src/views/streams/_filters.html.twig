@@ -106,13 +106,13 @@
             </div>
         </div>
 
-        <div class="cols cols--center cols--gap-smaller">
+        <div class="stack stack--gap-small">
             <p class="text--bold" id="stream-days-label">
                 {{ t('Display:') }}
             </p>
 
             <div
-                class="col--extend cols cols--always cols--gap-smaller"
+                class="stack stack--gap-small"
                 role="group"
                 aria-labelledby="stream-days-label"
             >
@@ -133,11 +133,15 @@
         </div>
     </div>
 
-    <div class="filters__section">
+    <div class="filters__section stack stack--gap-small">
+        <p class="text--bold" id="stream-filter-status-label">
+            {{ t('Reading status:') }}
+        </p>
+
         <div
-            class="stack stack--gap-smaller"
+            class="stack stack--gap-small"
             role="group"
-            aria-label="{{ t('Status of the links') }}"
+            aria-labelledby="stream-filter-status-label"
         >
             {% for status, label in {
                 'all': t('All'),
@@ -160,55 +164,57 @@
         </div>
     </div>
 
-    <div class="filters__section flow">
+    <div class="filters__section flow flow--small">
         {% set sources_and_counts = stream_view.countedSources() %}
 
         <p class="text--bold" id="stream-filter-sources-label">
             {{ t('Sources (%d)', [sources_and_counts | length]) }}
         </p>
 
-        <div
-            class="stack stack--gap-small"
-            role="group"
-            aria-labelledby="stream-filter-sources-label"
-        >
-            {% for source_and_count in sources_and_counts %}
-                {% set source = source_and_count[0] %}
-                {% set count_links = source_and_count[1] %}
-                {% set source_title = t('%s: %d link', '%s: %d links', count_links, [source.name, count_links]) %}
+        {% if sources_and_counts %}
+            <div
+                class="stack stack--gap-small"
+                role="group"
+                aria-labelledby="stream-filter-sources-label"
+            >
+                {% for source_and_count in sources_and_counts %}
+                    {% set source = source_and_count[0] %}
+                    {% set count_links = source_and_count[1] %}
+                    {% set source_title = t('%s: %d link', '%s: %d links', count_links, [source.name, count_links]) %}
 
-                <div class="filters__option filters__option--light">
-                    <button
-                        type="button"
-                        class="cols cols--always cols--center cols--gap-small"
-                        id="stream-source-{{ source.id }}"
-                        value="{{ source.id }}"
-                        aria-pressed="{{ stream_view.isSourceSelected(source) ? 'true' : 'false' }}"
-                        title="{{ source_title }}"
-                        data-stream-target="source"
-                        data-action="stream#selectSource"
-                    >
-                        <img
-                            class="filters__option-image"
-                            alt=""
-                            src="{{ url_media('covers', source.image_filename, 'collection-card.png') }}"
+                    <div class="filters__option filters__option--light">
+                        <button
+                            type="button"
+                            class="cols cols--always cols--center cols--gap-small"
+                            id="stream-source-{{ source.id }}"
+                            value="{{ source.id }}"
+                            aria-pressed="{{ stream_view.isSourceSelected(source) ? 'true' : 'false' }}"
+                            title="{{ source_title }}"
+                            data-stream-target="source"
+                            data-action="stream#selectSource"
                         >
+                            <img
+                                class="filters__option-image"
+                                alt=""
+                                src="{{ url_media('covers', source.image_filename, 'collection-card.png') }}"
+                            >
 
-                        <span class="filters__option-label">
-                            {{ source.name }}
-                        </span>
+                            <span class="filters__option-label">
+                                {{ source.name }}
+                            </span>
 
-                        <span class="filters__option-count">
-                            {{ count_links }}
-                        </span>
+                            <span class="filters__option-count">
+                                {{ count_links }}
+                            </span>
 
-                        <span class="filters__option-unselect">
-                            {{ icon('times') }}
-                        </span>
-                    </button>
-                </div>
-            {% endfor %}
-        </div>
+                            <span class="filters__option-unselect">
+                                {{ icon('times') }}
+                            </span>
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
     </div>
 
     {# The dates, days, sources and statuses are toggle buttons: these inputs

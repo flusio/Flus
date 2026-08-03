@@ -5,7 +5,7 @@
 }
 
 .filters__section {
-    padding: var(--space-small);
+    padding: var(--space-medium);
 }
 
 .filters__section + .filters__section {
