@@ -53,15 +53,7 @@ trait StreamLinks
             $status = 'all';
         }
 
-        $search_query = null;
-        if ($this->q !== '') {
-            try {
-                $search_query = search_engine\Query::fromString($this->q);
-            } catch (\LogicException) {
-                // The query is malformed: it is ignored, exactly as the
-                // StreamView does when rendering the timeline.
-            }
-        }
+        $search_query = search_engine\Query::fromStringOrNull($this->q);
 
         $stream_links = $stream->links([
             'context_user' => $user,

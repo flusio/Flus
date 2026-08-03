@@ -32,7 +32,12 @@ class Parser
     /** @var Token[] */
     private array $tokens;
 
-    /** @param Token[] $tokens */
+    /**
+     * @throws \LogicException
+     *     Raised if the list of tokens is empty or if the sequence is invalid.
+     *
+     * @param Token[] $tokens
+     */
     public function parse(array $tokens): Query
     {
         if (empty($tokens)) {

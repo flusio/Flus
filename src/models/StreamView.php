@@ -65,16 +65,6 @@ class StreamView
         }
 
         $query = trim($query);
-        $search_query = null;
-
-        if ($query !== '') {
-            try {
-                $search_query = search_engine\Query::fromString($query);
-            } catch (\LogicException) {
-                // The query is malformed (e.g. "#"): better ignore it than
-                // failing to render the page.
-            }
-        }
 
         $this->stream = $stream;
         $this->context_user = $context_user;
@@ -82,7 +72,7 @@ class StreamView
         $this->days = $days;
         $this->status = $status;
         $this->query = $query;
-        $this->search_query = $search_query;
+        $this->search_query = search_engine\Query::fromStringOrNull($query);
         $this->rendered_at = \Minz\Time::now();
 
         // The source is checked last as isSourceCounted() requires the other
