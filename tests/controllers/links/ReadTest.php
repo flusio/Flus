@@ -7,6 +7,7 @@ use App\models;
 use App\utils;
 use tests\factories\CollectionFactory;
 use tests\factories\LinkFactory;
+use tests\factories\StreamFactory;
 use tests\factories\UserFactory;
 
 class ReadTest extends \PHPUnit\Framework\TestCase
@@ -78,6 +79,77 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertNotSame($link->id, $new_link->id);
         $origin = \Minz\Url::absoluteFor('collection', ['id' => $other_collection->id]);
         $this->assertSame($origin, $new_link->origin);
+    }
+
+    public function testCreateSetsOriginFromTheSource(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        /** @var string */
+        $url = $this->fake('url');
+        $link = LinkFactory::create([
+            'is_hidden' => false,
+            'url' => $url,
+        ]);
+        $source->addLinks([$link]);
+        $stream->addSource($source);
+        $from = \Minz\Url::for('stream', ['id' => $stream->id]);
+
+        $response = $this->appRun('POST', "/links/{$link->id}/read", [
+            'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsRead::class),
+            'source' => $source->id,
+        ], headers: [
+            'Referer' => $from,
+        ]);
+
+        $this->assertResponseCode($response, 302, $from);
+        $new_link = models\Link::findBy([
+            'user_id' => $user->id,
+            'url' => $url,
+        ]);
+        $this->assertNotNull($new_link);
+        $this->assertSame($source->id, $new_link->source_id);
+        $origin = \Minz\Url::absoluteFor('collection', ['id' => $source->id]);
+        $this->assertSame($origin, $new_link->origin);
+    }
+
+    public function testCreateSetsOriginFromTheRefererIfSourceIsNotViewable(): void
+    {
+        $user = $this->login();
+        $source = CollectionFactory::create([
+            'type' => 'collection',
+            'is_public' => false,
+        ]);
+        /** @var string */
+        $url = $this->fake('url');
+        $link = LinkFactory::create([
+            'is_hidden' => false,
+            'url' => $url,
+        ]);
+        $source->addLinks([$link]);
+        $from = \Minz\Url::absoluteFor('news');
+
+        $response = $this->appRun('POST', "/links/{$link->id}/read", [
+            'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsRead::class),
+            'source' => $source->id,
+        ], headers: [
+            'Referer' => $from,
+        ]);
+
+        $this->assertResponseCode($response, 302, $from);
+        $new_link = models\Link::findBy([
+            'user_id' => $user->id,
+            'url' => $url,
+        ]);
+        $this->assertNotNull($new_link);
+        $this->assertNull($new_link->source_id);
+        $this->assertSame($from, $new_link->origin);
     }
 
     public function testCreateRedirectsToLoginIfNotConnected(): void
@@ -197,6 +269,44 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
         $this->assertNotNull($new_link);
         $origin = \Minz\Url::absoluteFor('collection', ['id' => $other_collection->id]);
+        $this->assertSame($origin, $new_link->origin);
+    }
+
+    public function testLaterSetsOriginFromTheSource(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        /** @var string */
+        $url = $this->fake('url');
+        $link = LinkFactory::create([
+            'is_hidden' => false,
+            'url' => $url,
+        ]);
+        $source->addLinks([$link]);
+        $stream->addSource($source);
+        $from = \Minz\Url::for('stream', ['id' => $stream->id]);
+
+        $response = $this->appRun('POST', "/links/{$link->id}/read/later", [
+            'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsReadLater::class),
+            'source' => $source->id,
+        ], headers: [
+            'Referer' => $from,
+        ]);
+
+        $this->assertResponseCode($response, 302, $from);
+        $new_link = models\Link::findBy([
+            'user_id' => $user->id,
+            'url' => $url,
+        ]);
+        $this->assertNotNull($new_link);
+        $this->assertSame($source->id, $new_link->source_id);
+        $origin = \Minz\Url::absoluteFor('collection', ['id' => $source->id]);
         $this->assertSame($origin, $new_link->origin);
     }
 

@@ -7,6 +7,7 @@ use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\CollectionShareFactory;
 use tests\factories\LinkFactory;
+use tests\factories\StreamFactory;
 use tests\factories\UserFactory;
 
 class CollectionsTest extends \PHPUnit\Framework\TestCase
@@ -460,6 +461,91 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($origin, $new_link->origin);
         $this->assertFalse($other_collection->hasLink($new_link));
         $this->assertTrue($owned_collection->hasLink($new_link));
+    }
+
+    public function testUpdateSetsOriginFromTheSource(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        /** @var string */
+        $url = $this->fake('url');
+        $link = LinkFactory::create([
+            'url' => $url,
+            'is_hidden' => false,
+        ]);
+        $owned_collection = CollectionFactory::create([
+            'user_id' => $user->id,
+            'type' => 'collection',
+        ]);
+        $source->addLinks([$link]);
+        $stream->addSource($source);
+        $from = \Minz\Url::for('stream', ['id' => $stream->id]);
+
+        $response = $this->appRun('POST', "/links/{$link->id}/collections", [
+            'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
+            'collection_ids' => [$owned_collection->id],
+            'source' => $source->id,
+        ], headers: [
+            'Referer' => $from,
+        ]);
+
+        $this->assertResponseCode($response, 302, $from);
+        $collection_links = $owned_collection->links();
+        $this->assertSame(1, count($collection_links));
+        $new_link = $collection_links[0];
+        $this->assertSame($user->id, $new_link->user_id);
+        $this->assertSame($url, $new_link->url);
+        $this->assertSame($source->id, $new_link->source_id);
+        $origin = \Minz\Url::absoluteFor('collection', ['id' => $source->id]);
+        $this->assertSame($origin, $new_link->origin);
+    }
+
+    public function testUpdateKeepsTheOriginOfAnAlreadyOwnedLink(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        /** @var string */
+        $url = $this->fake('url');
+        $link = LinkFactory::create([
+            'user_id' => $other_user->id,
+            'url' => $url,
+            'is_hidden' => false,
+        ]);
+        $other_collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
+            'type' => 'collection',
+            'is_public' => true,
+        ]);
+        $origin = 'https://example.com';
+        $owned_link = LinkFactory::create([
+            'user_id' => $user->id,
+            'url' => $url,
+            'origin' => $origin,
+        ]);
+        $owned_collection = CollectionFactory::create([
+            'user_id' => $user->id,
+            'type' => 'collection',
+        ]);
+        $other_collection->addLinks([$link]);
+        $from = \Minz\Url::for('collection', ['id' => $other_collection->id]);
+
+        $response = $this->appRun('POST', "/links/{$link->id}/collections", [
+            'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
+            'collection_ids' => [$owned_collection->id],
+        ], headers: [
+            'Referer' => $from,
+        ]);
+
+        $this->assertResponseCode($response, 302, $from);
+        $owned_link = $owned_link->reload();
+        $this->assertSame($origin, $owned_link->origin);
+        $this->assertTrue($owned_collection->hasLink($owned_link));
     }
 
     public function testUpdateWorksIfCollectionIsSharedWithWriteAccess(): void

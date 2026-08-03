@@ -16,6 +16,7 @@ use Minz\Form;
 class EditLinkCollections extends BaseForm
 {
     use traits\CollectionsSelector;
+    use traits\LinkSource;
 
     #[Form\Field]
     public bool $is_hidden = false;

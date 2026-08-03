@@ -48,6 +48,7 @@
                                     {% for link in date_group.links %}
                                         {{ include('links/_link.html.twig', {
                                             link: link,
+                                            source: link.source_id,
                                             display_read_later: 'auto',
                                             display_mark_as_read: 'auto',
                                             display_never: 'auto',
@@ -97,6 +98,7 @@
                                         {% for link in source_group.links %}
                                             {{ include('links/_link.html.twig', {
                                                 link: link,
+                                                source: link.source_id,
                                                 display_read_later: 'auto',
                                                 display_mark_as_read: 'auto',
                                                 display_never: 'auto',

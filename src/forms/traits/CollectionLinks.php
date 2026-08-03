@@ -4,9 +4,7 @@ namespace App\forms\traits;
 
 use App\auth;
 use App\models;
-use App\utils;
 use Minz\Form;
-use Minz\Request;
 
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
@@ -14,13 +12,13 @@ use Minz\Request;
  */
 trait CollectionLinks
 {
+    use FromAware;
+
     #[Form\Field(format: 'Y-m-d')]
     public ?\DateTimeImmutable $date = null;
 
     #[Form\Field]
     public string $source = '';
-
-    private string $from = '';
 
     /**
      * @return models\Link[]
@@ -56,13 +54,5 @@ trait CollectionLinks
         models\Link::bulkInsert($links_to_create);
 
         return $links;
-    }
-
-    #[Form\OnHandleRequest]
-    public function setFrom(Request $request): void
-    {
-        $from = utils\RequestHelper::from($request);
-        $from = \SpiderBits\Url::absolutize($from, \Minz\Url::baseUrl());
-        $this->from = $from;
     }
 }

@@ -23,6 +23,7 @@ class Collections extends BaseController
      *
      * @request_param string id
      * @request_param boolean mark_as_read
+     * @request_param string source
      *
      * @response 200
      *     On success.
@@ -57,10 +58,12 @@ class Collections extends BaseController
         }
 
         $mark_as_read = $request->parameters->getBoolean('mark_as_read');
+        $source = $request->parameters->getString('source', '');
 
         $form = new forms\links\EditLinkCollections([
             'collection_ids' => $collection_ids,
             'mark_as_read' => $mark_as_read,
+            'source' => $source,
         ], $link, [
             'user' => $user,
         ]);
@@ -81,6 +84,7 @@ class Collections extends BaseController
      * @request_param boolean mark_as_read
      * @request_param string content
      * @request_param string share_on_mastodon
+     * @request_param string source
      * @request_param string csrf_token
      *
      * @response 400
@@ -104,10 +108,13 @@ class Collections extends BaseController
 
         $from = utils\RequestHelper::from($request);
 
+        $link_is_new = false;
+
         if (!auth\LinksAccess::canUpdate($user, $link)) {
             $link = $user->obtainLink($link);
-            $origin = \SpiderBits\Url::absolutize($from, \Minz\Url::baseUrl());
-            $link->setOrigin($origin);
+            // The origin is only set on links that the user doesn't own yet:
+            // if they already have a copy of the link, it keeps its origin.
+            $link_is_new = !$link->isPersisted();
         }
 
         $form = new forms\links\EditLinkCollections(model: $link, options: [
@@ -123,6 +130,11 @@ class Collections extends BaseController
         }
 
         $link = $form->model();
+
+        if ($link_is_new) {
+            $form->setLinkOrigin($link);
+        }
+
         $link->save();
 
         $link_collections = $form->selectedCollections();

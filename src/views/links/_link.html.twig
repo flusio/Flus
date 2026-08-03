@@ -14,6 +14,12 @@
 {% set display_origin = display_origin ?? false %}
 {% set storing_must_mark_as_read = storing_must_mark_as_read ?? false %}
 
+{# The id of the collection from which the link is displayed. It is passed to
+ # the actions that can copy the link to the user, so they can set its origin.
+ # It must only be set when the collection is the one from which the user
+ # discovers the link (e.g. a source in a stream). #}
+{% set source = source ?? '' %}
+
 {% set tag_filter_mode = tag_filter_mode ?? 'profile filter' %}
 
 {% set is_current_user_owner = app.user and app.user.id === link.user_id %}
@@ -296,6 +302,10 @@
                         </span>
                     </button>
 
+                    {% if source %}
+                        <input type="hidden" name="source" value="{{ source }}" />
+                    {% endif %}
+
                     <input type="hidden" name="csrf_token" value="{{ csrf_token('links\\MarkLinkAsRead') }}" />
                 </form>
             {% endif %}
@@ -322,16 +332,25 @@
                         </span>
                     </button>
 
+                    {% if source %}
+                        <input type="hidden" name="source" value="{{ source }}" />
+                    {% endif %}
+
                     <input type="hidden" name="csrf_token" value="{{ csrf_token('links\\MarkLinkAsReadLater') }}" />
                 </form>
             {% endif %}
 
             {% if display_collections %}
+                {% set collections_params = { id: link.id, mark_as_read: storing_must_mark_as_read } %}
+                {% if source %}
+                    {% set collections_params = collections_params | merge({ source: source }) %}
+                {% endif %}
+
                 <button
                     class="link__collections-button button--icon button--ghost"
                     data-controller="modal-opener"
                     data-action="modal-opener#fetch"
-                    data-modal-opener-href-value="{{ url('link collections', { id: link.id, mark_as_read: storing_must_mark_as_read }) }}"
+                    data-modal-opener-href-value="{{ url('link collections', collections_params) }}"
                     aria-haspopup="dialog"
                     aria-controls="modal"
                     title="{{ t('Store the link') }}"

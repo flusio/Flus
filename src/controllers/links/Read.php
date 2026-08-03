@@ -20,6 +20,7 @@ class Read extends BaseController
      * Mark a link as read.
      *
      * @request_param string id
+     * @request_param string source
      * @request_param string csrf_token
      *
      * @response 302 :from
@@ -44,7 +45,7 @@ class Read extends BaseController
 
         $from = utils\RequestHelper::from($request);
 
-        $form = new forms\links\MarkLinkAsRead();
+        $form = new forms\links\MarkLinkAsRead(options: ['user' => $user]);
         $form->handleRequest($request);
 
         if (!$form->validate()) {
@@ -55,8 +56,7 @@ class Read extends BaseController
         $link = $user->obtainLink($link);
 
         if (!$link->isPersisted()) {
-            $origin = \SpiderBits\Url::absolutize($from, \Minz\Url::baseUrl());
-            $link->setOrigin($origin);
+            $form->setLinkOrigin($link);
             $link->save();
         }
 
@@ -69,6 +69,7 @@ class Read extends BaseController
      * Mark a link to be read later.
      *
      * @request_param string id
+     * @request_param string source
      * @request_param string csrf_token
      *
      * @response 302 :from
@@ -93,7 +94,7 @@ class Read extends BaseController
 
         $from = utils\RequestHelper::from($request);
 
-        $form = new forms\links\MarkLinkAsReadLater();
+        $form = new forms\links\MarkLinkAsReadLater(options: ['user' => $user]);
         $form->handleRequest($request);
 
         if (!$form->validate()) {
@@ -104,8 +105,7 @@ class Read extends BaseController
         $link = $user->obtainLink($link);
 
         if (!$link->isPersisted()) {
-            $origin = \SpiderBits\Url::absolutize($from, \Minz\Url::baseUrl());
-            $link->setOrigin($origin);
+            $form->setLinkOrigin($link);
             $link->save();
         }
 

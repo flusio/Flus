@@ -3,6 +3,7 @@
 namespace App\forms\links;
 
 use App\forms\BaseForm;
+use App\forms\traits;
 use Minz\Form;
 
 /**
@@ -11,4 +12,5 @@ use Minz\Form;
  */
 class MarkLinkAsReadLater extends BaseForm
 {
+    use traits\LinkSource;
 }
