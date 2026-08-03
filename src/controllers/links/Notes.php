@@ -55,7 +55,7 @@ class Notes extends BaseController
 
         auth\Access::require($user, 'update', $link);
 
-        $note = $link->initNote();
+        $note = new models\Note($user);
         $form = new forms\notes\NewNote(model: $note);
 
         $form->handleRequest($request);
@@ -68,9 +68,7 @@ class Notes extends BaseController
         }
 
         $note = $form->model();
-        $note->save();
-
-        $link->refreshTags();
+        $link->addNote($note);
 
         return Response::redirect('link', ['id' => $link->id]);
     }

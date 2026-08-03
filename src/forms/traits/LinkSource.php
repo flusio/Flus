@@ -29,7 +29,7 @@ trait LinkSource
         $source = $this->sourceCollection();
 
         if ($source) {
-            $link->source_id = $source->id;
+            $link->setSource($source);
             $link->setOrigin(\Minz\Url::absoluteFor('collection', ['id' => $source->id]));
         } else {
             $link->setOrigin($this->from);

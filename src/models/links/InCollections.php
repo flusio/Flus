@@ -11,6 +11,8 @@ use Minz\Database;
 /**
  * Add the relation between a link and the collections that contain it.
  *
+ * This trait requires utils\Memoizer.
+ *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
@@ -23,7 +25,9 @@ trait InCollections
      */
     public function collections(): array
     {
-        return Collection::listByLinkId($this->id);
+        return $this->memoize('collections', function (): array {
+            return Collection::listByLinkId($this->id);
+        });
     }
 
     /**
@@ -38,6 +42,8 @@ trait InCollections
     ): void {
         $collection_ids = array_column($collections, 'id');
         LinkToCollection::setCollections($this->id, $collection_ids, $at);
+
+        $this->unmemoizeCollections();
 
         if ($sync_publication_frequency) {
             foreach ($collections as $collection) {
@@ -59,6 +65,8 @@ trait InCollections
     ): void {
         $collection_ids = array_column($collections, 'id');
         LinkToCollection::attach([$this->id], $collection_ids, $at);
+
+        $this->unmemoizeCollections();
 
         if ($sync_publication_frequency) {
             foreach ($collections as $collection) {
@@ -91,6 +99,8 @@ trait InCollections
         $collection_ids = array_column($collections, 'id');
         LinkToCollection::detach([$this->id], $collection_ids);
 
+        $this->unmemoizeCollections();
+
         if ($sync_publication_frequency) {
             foreach ($collections as $collection) {
                 $collection->syncPublicationFrequencyPerYear();
@@ -110,14 +120,49 @@ trait InCollections
     }
 
     /**
+     * Forget the memoized values that depend on the collections of the link.
+     */
+    private function unmemoizeCollections(): void
+    {
+        $this->unmemoize('collections');
+        $this->unmemoizePrefixed('number_collections_');
+        $this->unmemoizePrefixed('shared_with_');
+    }
+
+    /**
      * Return the source of the link.
      */
     public function source(): ?Collection
     {
-        if (!$this->source_id) {
-            return null;
-        }
-        return Collection::find($this->source_id);
+        return $this->memoize('source', function (): ?Collection {
+            if (!$this->source_id) {
+                return null;
+            }
+            return Collection::find($this->source_id);
+        });
+    }
+
+    /**
+     * Set the source of the link.
+     *
+     * The source is memoized so it doesn't have to be loaded from the database
+     * by source().
+     */
+    public function setSource(?Collection $source): void
+    {
+        $this->setSourceId($source?->id);
+        $this->memoizeValue('source', $source);
+    }
+
+    /**
+     * Set the source of the link, by its id.
+     *
+     * Prefer setSource() if you already have the collection at hand.
+     */
+    public function setSourceId(?string $source_id): void
+    {
+        $this->source_id = $source_id;
+        $this->unmemoize('source');
     }
 
     /**
@@ -135,10 +180,14 @@ trait InCollections
      */
     public function sharedWith(User $user, string $access_type = 'any'): bool
     {
-        return (
-            Collection::existsForUserIdAndLinkId($user->id, $this->id) ||
-            CollectionShare::existsForUserIdAndLinkId($user->id, $this->id, $access_type)
-        );
+        $key = "shared_with_{$user->id}_{$access_type}";
+
+        return $this->memoize($key, function () use ($user, $access_type): bool {
+            return (
+                Collection::existsForUserIdAndLinkId($user->id, $this->id) ||
+                CollectionShare::existsForUserIdAndLinkId($user->id, $this->id, $access_type)
+            );
+        });
     }
 
     /**

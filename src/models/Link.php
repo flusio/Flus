@@ -32,6 +32,7 @@ class Link
     use links\Readable;
     use links\Statistics;
     use links\Taggable;
+    use utils\Memoizer;
     use Validable;
 
     public const ORIGIN_MAX_LENGTH = 2000;

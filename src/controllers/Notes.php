@@ -84,9 +84,9 @@ class Notes extends BaseController
         }
 
         $note = $form->model();
-        $note->save();
 
-        $note->link()->refreshTags();
+        $link = $note->link();
+        $link->updateNote($note);
 
         return Response::found(utils\RequestHelper::from($request));
     }
@@ -119,10 +119,7 @@ class Notes extends BaseController
         }
 
         $link = $note->link();
-
-        $note->remove();
-
-        $link->refreshTags();
+        $link->removeNote($note);
 
         return Response::found($from);
     }

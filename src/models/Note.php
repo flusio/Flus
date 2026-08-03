@@ -37,12 +37,11 @@ class Note
     #[Database\Column]
     public string $user_id;
 
-    public function __construct(string $user_id, string $link_id, string $content = '')
+    public function __construct(User $user, string $content = '')
     {
         $this->id = \Minz\Random::hex(32);
         $this->content = trim($content);
-        $this->link_id = $link_id;
-        $this->user_id = $user_id;
+        $this->user_id = $user->id;
     }
 
     /**

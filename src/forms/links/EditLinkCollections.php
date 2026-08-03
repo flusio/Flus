@@ -34,6 +34,6 @@ class EditLinkCollections extends BaseForm
         }
 
         $user = $this->optionAs('user', models\User::class);
-        return new models\Note($user->id, $this->model()->id, $this->content);
+        return new models\Note($user, $this->content);
     }
 }

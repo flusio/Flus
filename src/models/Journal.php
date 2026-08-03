@@ -29,7 +29,7 @@ class Journal
 
         foreach ($links as $news_link) {
             $link = $this->user->obtainLink($news_link);
-            $link->source_id = $news_link->source_id;
+            $link->setSourceId($news_link->source_id);
 
             // If the link has already an origin info, we want to keep it.
             // Otherwise, we use the initial source URL.

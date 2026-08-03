@@ -12,6 +12,8 @@ use Minz\Database;
  * A link can have no owner: it is then a link that the server knows about, but
  * that nobody added to their own links.
  *
+ * This trait requires utils\Memoizer.
+ *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
@@ -71,11 +73,13 @@ trait OwnedByUser
      */
     public function owner(): ?User
     {
-        if (!$this->user_id) {
-            return null;
-        }
+        return $this->memoize('owner', function (): ?User {
+            if (!$this->user_id) {
+                return null;
+            }
 
-        return User::find($this->user_id);
+            return User::find($this->user_id);
+        });
     }
 
     /**
@@ -347,27 +351,29 @@ trait OwnedByUser
 
     public function numberCollectionsForUser(User $user): int
     {
-        $sql = <<<SQL
-            SELECT COUNT(c.*)
-            FROM collections c, links_to_collections lc, links l
+        return $this->memoize("number_collections_{$user->id}", function () use ($user): int {
+            $sql = <<<SQL
+                SELECT COUNT(c.*)
+                FROM collections c, links_to_collections lc, links l
 
-            WHERE l.url_hash = :link_url_hash
-            AND l.user_id = :user_id
+                WHERE l.url_hash = :link_url_hash
+                AND l.user_id = :user_id
 
-            AND lc.link_id = l.id
-            AND lc.collection_id = c.id
+                AND lc.link_id = l.id
+                AND lc.collection_id = c.id
 
-            AND c.type = 'collection'
-        SQL;
+                AND c.type = 'collection'
+            SQL;
 
-        $database = Database::get();
-        $statement = $database->prepare($sql);
-        $statement->execute([
-            ':link_url_hash' => $this->url_hash,
-            ':user_id' => $user->id,
-        ]);
+            $database = Database::get();
+            $statement = $database->prepare($sql);
+            $statement->execute([
+                ':link_url_hash' => $this->url_hash,
+                ':user_id' => $user->id,
+            ]);
 
-        return intval($statement->fetchColumn());
+            return intval($statement->fetchColumn());
+        });
     }
 
     /**

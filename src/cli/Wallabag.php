@@ -191,7 +191,8 @@ class Wallabag
 
                 $content = implode(' ', $formatted_tags);
 
-                $note = new models\Note($user->id, $link_id, $content);
+                $note = new models\Note($user, $content);
+                $note->link_id = $link_id;
                 $note->created_at = $published_at;
 
                 $notes[] = $note;

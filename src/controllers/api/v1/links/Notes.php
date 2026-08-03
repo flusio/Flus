@@ -85,7 +85,7 @@ class Notes extends BaseController
 
         $json_request = $this->toJsonRequest($request);
 
-        $note = new models\Note($user->id, $link->id);
+        $note = new models\Note($user);
         $form = new forms\Note(model: $note);
         $form->handleRequest($json_request);
 
@@ -94,8 +94,7 @@ class Notes extends BaseController
         }
 
         $note = $form->model();
-        $note->save();
-        $link->refreshTags();
+        $link->addNote($note);
 
         return Response::json(200, $note->toJson());
     }

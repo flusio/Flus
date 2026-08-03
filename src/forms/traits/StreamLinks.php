@@ -88,7 +88,7 @@ trait StreamLinks
 
                 $source_id = $source_ids_by_url_hash[$link->url_hash] ?? null;
                 if ($source_id) {
-                    $link->source_id = $source_id;
+                    $link->setSourceId($source_id);
                     $link->setOrigin(\Minz\Url::absoluteFor('collection', ['id' => $source_id]));
                 }
 

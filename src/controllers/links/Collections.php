@@ -147,10 +147,8 @@ class Collections extends BaseController
 
         $note = $form->note();
         if ($note) {
-            $note->save();
+            $link->addNote($note);
         }
-
-        $link->refreshTags();
 
         if ($form->mark_as_read) {
             $user->markAsRead($link);
