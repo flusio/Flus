@@ -14,6 +14,7 @@
 
 {% set default_params = {
     status: stream_view.status,
+    q: stream_view.query,
     before: stream_view.rendered_at.format('Y-m-d H:i:sP'),
 } %}
 {% set params = default_params | merge(params ?? {}) %}
