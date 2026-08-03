@@ -59,6 +59,10 @@ class Links extends BaseController
                 ]
             );
 
+            models\links\Preloader::for($links)
+                ->urlStatusesFor($user)
+                ->numberCollectionsFor($user);
+
             return Response::ok('links/search.html.twig', [
                 'links' => $links,
                 'query' => $query,

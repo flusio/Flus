@@ -320,6 +320,44 @@ class UrlStatus
     }
 
     /**
+     * Return the statuses of the given user for the given links, indexed by
+     * the URL hashes of these links.
+     *
+     * The links unknown to the user have a new and unsaved status, as
+     * findOrBuild would do.
+     *
+     * @param Link[] $links
+     * @param positive-int $chunk_size
+     *
+     * @return array<string, self>
+     */
+    public static function listOrBuildByLinks(User $user, array $links, int $chunk_size = 1000): array
+    {
+        $links = self::deduplicateByUrlHash($links);
+
+        $url_statuses_by_hashes = [];
+
+        foreach (array_chunk($links, $chunk_size) as $chunk_links) {
+            $url_statuses = self::listBy([
+                'user_id' => $user->id,
+                'url_hash' => array_column($chunk_links, 'url_hash'),
+            ]);
+
+            foreach ($url_statuses as $url_status) {
+                $url_statuses_by_hashes[$url_status->url_hash] = $url_status;
+            }
+        }
+
+        foreach ($links as $link) {
+            if (!isset($url_statuses_by_hashes[$link->url_hash])) {
+                $url_statuses_by_hashes[$link->url_hash] = new self($user, $link->url);
+            }
+        }
+
+        return $url_statuses_by_hashes;
+    }
+
+    /**
      * @see dao\BulkQueries::bulkInsertOnConflict
      *
      * @return literal-string

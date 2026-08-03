@@ -135,17 +135,23 @@ class Collections extends BaseController
         $topics = $collection->topics();
         $topics = utils\Sorter::localeSort($topics, 'label');
 
+        $links = $collection->links(
+            ['published_at', 'number_notes'],
+            [
+                'hidden' => $can_update || $access_is_shared,
+                'offset' => $pagination->currentOffset(),
+                'limit' => $pagination->numberPerPage(),
+            ]
+        );
+
+        models\links\Preloader::for($links)
+            ->urlStatusesFor($user)
+            ->numberCollectionsFor($user);
+
         return Response::ok('collections/show.html.twig', [
             'collection' => $collection,
             'topics' => $topics,
-            'links' => $collection->links(
-                ['published_at', 'number_notes'],
-                [
-                    'hidden' => $can_update || $access_is_shared,
-                    'offset' => $pagination->currentOffset(),
-                    'limit' => $pagination->numberPerPage(),
-                ]
-            ),
+            'links' => $links,
             'pagination' => $pagination,
         ]);
     }

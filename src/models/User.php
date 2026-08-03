@@ -823,9 +823,23 @@ class User
      */
     private function urlStatusOfLink(Link $link): UrlStatus
     {
-        return $this->memoize("url_status_{$link->url}", function () use ($link): UrlStatus {
+        return $this->memoize("url_status_{$link->url_hash}", function () use ($link): UrlStatus {
             return UrlStatus::findOrBuild($this, $link->url);
         });
+    }
+
+    /**
+     * Set the URL statuses of the user without querying the database.
+     *
+     * @see links\Preloader
+     *
+     * @param UrlStatus[] $url_statuses
+     */
+    public function preloadUrlStatuses(array $url_statuses): void
+    {
+        foreach ($url_statuses as $url_status) {
+            $this->memoizeValue("url_status_{$url_status->url_hash}", $url_status);
+        }
     }
 
     /**
@@ -836,7 +850,7 @@ class User
     private function unmemoizeUrlStatusesOfLinks(array $links): void
     {
         foreach ($links as $link) {
-            $this->unmemoize("url_status_{$link->url}");
+            $this->unmemoize("url_status_{$link->url_hash}");
         }
     }
 

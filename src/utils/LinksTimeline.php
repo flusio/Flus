@@ -16,6 +16,11 @@ class LinksTimeline
     private array $dates_groups = [];
 
     /**
+     * The links are grouped by their source, so their sources are expected to
+     * have been preloaded by the caller.
+     *
+     * @see models\links\Preloader::sources
+     *
      * @param models\Link[] $links
      */
     public function __construct(array $links)

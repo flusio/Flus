@@ -26,28 +26,98 @@ trait Collection
     /**
      * Return the list of collections attached to the given link.
      *
-     * @param string $link_id
-     *
      * @return self[]
      */
-    public static function listByLinkId(string $link_id): array
+    public static function listByLink(models\Link $link): array
     {
-        $sql = <<<'SQL'
-            SELECT c.*
-            FROM collections c, links_to_collections lc
+        return self::listByLinks([$link])[$link->id] ?? [];
+    }
 
-            WHERE lc.collection_id = c.id
-            AND lc.link_id = :link_id
-            AND c.type = 'collection'
-        SQL;
+    /**
+     * Return the list of collections attached to the given links, indexed by
+     * the link ids.
+     *
+     * The links without any collection are absent from the returned array. A
+     * collection attached to several links is represented by a single object,
+     * shared by these links.
+     *
+     * @param models\Link[] $links
+     * @param positive-int $chunk_size
+     *
+     * @return array<string, self[]>
+     */
+    public static function listByLinks(array $links, int $chunk_size = 1000): array
+    {
+        $link_ids = array_column($links, 'id');
+        $link_ids = array_unique($link_ids);
+        $link_ids = array_values($link_ids);
 
-        $database = Database::get();
-        $statement = $database->prepare($sql);
-        $statement->execute([
-            ':link_id' => $link_id,
-        ]);
+        $collections_by_ids = [];
+        $collections_by_link_ids = [];
 
-        return self::fromDatabaseRows($statement->fetchAll());
+        foreach (array_chunk($link_ids, $chunk_size) as $chunk_link_ids) {
+            $ids_as_question_marks = array_fill(0, count($chunk_link_ids), '?');
+            $ids_where_statement = implode(', ', $ids_as_question_marks);
+
+            $sql = <<<SQL
+                SELECT lc.link_id, c.*
+                FROM collections c, links_to_collections lc
+
+                WHERE lc.collection_id = c.id
+                AND lc.link_id IN ({$ids_where_statement})
+                AND c.type = 'collection'
+            SQL;
+
+            $database = Database::get();
+            $statement = $database->prepare($sql);
+            $statement->execute($chunk_link_ids);
+
+            foreach ($statement->fetchAll() as $row) {
+                // link_id is not a column of Collection: it must be removed
+                // from the row before the model is built from it.
+                $link_id = strval($row['link_id']);
+                unset($row['link_id']);
+
+                $collection_id = strval($row['id']);
+                $collection = $collections_by_ids[$collection_id] ?? self::fromDatabaseRow($row);
+                $collections_by_ids[$collection_id] = $collection;
+
+                $collections_by_link_ids[$link_id][] = $collection;
+            }
+        }
+
+        return $collections_by_link_ids;
+    }
+
+    /**
+     * Return the sources of the given links, indexed by their ids.
+     *
+     * The links without any source, and the sources that don't exist anymore,
+     * are absent from the returned array.
+     *
+     * @param models\Link[] $links
+     * @param positive-int $chunk_size
+     *
+     * @return array<string, self>
+     */
+    public static function listSourcesByLinks(array $links, int $chunk_size = 1000): array
+    {
+        $source_ids = array_column($links, 'source_id');
+        $source_ids = array_filter($source_ids);
+        $source_ids = array_unique($source_ids);
+        $source_ids = array_values($source_ids);
+
+        $sources_by_ids = [];
+
+        foreach (array_chunk($source_ids, $chunk_size) as $chunk_source_ids) {
+            $sources = self::listBy(['id' => $chunk_source_ids]);
+
+            foreach ($sources as $source) {
+                $sources_by_ids[$source->id] = $source;
+            }
+        }
+
+        return $sources_by_ids;
     }
 
     /**

@@ -50,6 +50,10 @@ class Links extends BaseController
             'limit' => $pagination->numberPerPage(),
         ]);
 
+        models\links\Preloader::for($links)
+            ->urlStatusesFor($current_user)
+            ->numberCollectionsFor($current_user);
+
         return Response::ok('profiles/links/index.html.twig', [
             'user' => $user,
             'tag' => $tag,

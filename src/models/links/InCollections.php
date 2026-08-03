@@ -26,7 +26,7 @@ trait InCollections
     public function collections(): array
     {
         return $this->memoize('collections', function (): array {
-            return Collection::listByLinkId($this->id);
+            return Collection::listByLink($this);
         });
     }
 
@@ -163,6 +163,28 @@ trait InCollections
     {
         $this->source_id = $source_id;
         $this->unmemoize('source');
+    }
+
+    /**
+     * Set the source of the link without querying the database.
+     *
+     * @see Preloader
+     */
+    public function preloadSource(?Collection $source): void
+    {
+        $this->memoizeValue('source', $source);
+    }
+
+    /**
+     * Set the collections of the link without querying the database.
+     *
+     * @see Preloader
+     *
+     * @param Collection[] $collections
+     */
+    public function preloadCollections(array $collections): void
+    {
+        $this->memoizeValue('collections', $collections);
     }
 
     /**

@@ -26,6 +26,10 @@ class Journal extends BaseController
         $news = $user->news();
         $links = $news->links(['published_at', 'number_notes']);
 
+        models\links\Preloader::for($links)
+            ->collections()
+            ->urlStatusesFor($user);
+
         return Response::json(200, array_map(function (models\Link $link) use ($user): array {
             return $link->toJson(context_user: $user);
         }, $links));

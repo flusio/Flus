@@ -352,28 +352,75 @@ trait OwnedByUser
     public function numberCollectionsForUser(User $user): int
     {
         return $this->memoize("number_collections_{$user->id}", function () use ($user): int {
+            $numbers = self::countCollectionsForUserByLinks($user, [$this]);
+            return $numbers[$this->url_hash] ?? 0;
+        });
+    }
+
+    /**
+     * Set the number of collections of a user without querying the database.
+     *
+     * @see Preloader
+     */
+    public function preloadNumberCollectionsForUser(User $user, int $number): void
+    {
+        $this->memoizeValue("number_collections_{$user->id}", $number);
+    }
+
+    /**
+     * Return the numbers of collections of the given user containing the given
+     * links, indexed by the URL hashes of these links.
+     *
+     * The links without any collection are absent from the returned array.
+     *
+     * @param self[] $links
+     * @param positive-int $chunk_size
+     *
+     * @return array<string, int>
+     */
+    public static function countCollectionsForUserByLinks(
+        User $user,
+        array $links,
+        int $chunk_size = 1000,
+    ): array {
+        $url_hashes = array_column($links, 'url_hash');
+        $url_hashes = array_unique($url_hashes);
+        $url_hashes = array_values($url_hashes);
+
+        $numbers = [];
+
+        foreach (array_chunk($url_hashes, $chunk_size) as $chunk_url_hashes) {
+            $hashes_as_question_marks = array_fill(0, count($chunk_url_hashes), '?');
+            $hashes_where_statement = implode(', ', $hashes_as_question_marks);
+
+            $parameters = $chunk_url_hashes;
+            $parameters[] = $user->id;
+
             $sql = <<<SQL
-                SELECT COUNT(c.*)
+                SELECT l.url_hash, COUNT(c.*) AS number_collections
                 FROM collections c, links_to_collections lc, links l
 
-                WHERE l.url_hash = :link_url_hash
-                AND l.user_id = :user_id
+                WHERE l.url_hash IN ({$hashes_where_statement})
+                AND l.user_id = ?
 
                 AND lc.link_id = l.id
                 AND lc.collection_id = c.id
 
                 AND c.type = 'collection'
+
+                GROUP BY l.url_hash
             SQL;
 
             $database = Database::get();
             $statement = $database->prepare($sql);
-            $statement->execute([
-                ':link_url_hash' => $this->url_hash,
-                ':user_id' => $user->id,
-            ]);
+            $statement->execute($parameters);
 
-            return intval($statement->fetchColumn());
-        });
+            foreach ($statement->fetchAll() as $row) {
+                $numbers[strval($row['url_hash'])] = intval($row['number_collections']);
+            }
+        }
+
+        return $numbers;
     }
 
     /**

@@ -39,6 +39,10 @@ class Read extends BaseController
 
         $links = $read_source->links($pagination);
 
+        models\links\Preloader::for($links)
+            ->urlStatusesFor($user)
+            ->numberCollectionsFor($user);
+
         return Response::ok('read/index.html.twig', [
             'read_source' => $read_source,
             'links' => $links,

@@ -158,6 +158,11 @@ class StreamView
             'query' => $this->search_query,
         ]);
 
+        links\Preloader::for($links)
+            ->sources()
+            ->urlStatusesFor($this->context_user)
+            ->numberCollectionsFor($this->context_user);
+
         return new utils\LinksTimeline($links);
     }
 

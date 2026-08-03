@@ -2,7 +2,6 @@
 
 namespace App\utils\LinksTimeline;
 
-use App\auth;
 use App\models;
 use App\utils;
 
@@ -23,7 +22,6 @@ class DateGroup
     public function __construct(\DateTimeImmutable $date)
     {
         $this->date = $date;
-        $current_user = auth\CurrentUser::get();
     }
 
     public function addLink(models\Link $link): void
