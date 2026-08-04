@@ -18,6 +18,7 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
     use \tests\LoginHelper;
+    use \tests\SqlQueriesHelper;
 
     public function testNewRendersCorrectly(): void
     {
@@ -162,6 +163,49 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, "/streams/{$stream->id}/sources");
         $this->assertResponseContains($response, '1 source');
         $this->assertResponseTemplateName($response, 'streams/show.html.twig');
+    }
+
+    public function testShowExecutesAConstantNumberOfQueries(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+
+        foreach (range(1, 3) as $index_source) {
+            $feed = CollectionFactory::create([
+                'type' => 'feed',
+                'is_public' => true,
+            ]);
+            $links = [];
+
+            foreach (range(1, 10) as $index_link) {
+                $links[] = LinkFactory::create([
+                    'user_id' => $feed->user_id,
+                    'is_hidden' => false,
+                ]);
+            }
+
+            $feed->addLinks($links, at: \Minz\Time::now());
+            $stream->addSource($feed);
+        }
+
+        list($response, $count_queries) = $this->countSqlQueries(function () use ($stream): \Minz\Response {
+            $response = $this->appRun('GET', "/streams/{$stream->id}");
+
+            // The templates are rendered lazily, so the response must be
+            // rendered here for the queries of the views to be counted.
+            $this->assertInstanceOf(\Minz\Response::class, $response);
+            $response->render();
+
+            return $response;
+        });
+
+        $this->assertResponseCode($response, 200);
+        // The number of queries must not grow with the number of links: the
+        // data that the links need is loaded in batch by models\links\Preloader
+        // (see models\StreamView::linksTimeline()).
+        $this->assertLessThanOrEqual(20, $count_queries);
     }
 
     public function testShowHidesHiddenLinksInPublicCollections(): void
