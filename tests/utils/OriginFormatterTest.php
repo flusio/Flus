@@ -115,6 +115,64 @@ class OriginFormatterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('The Internet', $label);
     }
 
+    public function testOwnerFromOriginWithCollectionUrl(): void
+    {
+        $user = UserFactory::create();
+        $owner = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $owner->id,
+            'type' => 'collection',
+            'is_public' => true,
+        ]);
+        $formatter = new OriginFormatter($user);
+        $origin = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
+
+        $collection_owner = $formatter->ownerFromOrigin($origin);
+
+        $this->assertSame($owner->id, $collection_owner?->id);
+    }
+
+    public function testOwnerFromOriginWithInaccessibleCollectionUrl(): void
+    {
+        $user = UserFactory::create();
+        $owner = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $owner->id,
+            'type' => 'collection',
+            'is_public' => false,
+        ]);
+        $formatter = new OriginFormatter($user);
+        $origin = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
+
+        $collection_owner = $formatter->ownerFromOrigin($origin);
+
+        $this->assertNull($collection_owner);
+    }
+
+    public function testOwnerFromOriginWithProfileUrl(): void
+    {
+        // The label of a profile origin is already the username of its owner.
+        $user = UserFactory::create();
+        $other_user = UserFactory::create();
+        $formatter = new OriginFormatter($user);
+        $origin = \Minz\Url::absoluteFor('profile', ['id' => $other_user->id]);
+
+        $collection_owner = $formatter->ownerFromOrigin($origin);
+
+        $this->assertNull($collection_owner);
+    }
+
+    public function testOwnerFromOriginWithNonUrl(): void
+    {
+        $user = UserFactory::create();
+        $formatter = new OriginFormatter($user);
+        $origin = 'The Internet';
+
+        $collection_owner = $formatter->ownerFromOrigin($origin);
+
+        $this->assertNull($collection_owner);
+    }
+
     public function testUrlFromOriginWithUrl(): void
     {
         $user = UserFactory::create();

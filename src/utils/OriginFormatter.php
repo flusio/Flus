@@ -48,6 +48,20 @@ class OriginFormatter
     }
 
     /**
+     * Return the owner of the origin, if the origin is a collection.
+     */
+    public function ownerFromOrigin(string $origin): ?models\User
+    {
+        $model = $this->modelFromOrigin($origin);
+
+        if (!($model instanceof models\Collection) || !$model->isCollection()) {
+            return null;
+        }
+
+        return $model->owner();
+    }
+
+    /**
      * Return the origin if the origin is a valid URL.
      */
     public function urlFromOrigin(string $origin): string

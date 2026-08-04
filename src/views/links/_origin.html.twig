@@ -1,6 +1,8 @@
 {% if origin %}
     {% set origin_url = origin | format_origin_url %}
     {% set origin_label = origin | format_origin_label %}
+    {% set origin_owner = origin | origin_owner %}
+
     {% if origin_url %}
         {{ t('via <strong><a href="%s">%s</a></strong>', [
             origin_url | escape,
@@ -10,5 +12,13 @@
         {{ t('via <strong>%s</strong>', [
             origin_label | escape,
         ]) | raw }}
+    {% endif %}
+
+    {% if origin_owner %}
+        {{ t('by') }}
+        <a class="username" href="{{ url('profile', { id: origin_owner.id }) }}">
+            <img class="avatar avatar--mini" alt="" src="{{ url_avatar(origin_owner.avatar_filename) }}">
+            {{- origin_owner.username -}}
+        </a>
     {% endif %}
 {% endif %}

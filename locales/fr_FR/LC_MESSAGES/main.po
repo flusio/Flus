@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-08-03 14:50+0200\n"
-"PO-Revision-Date: 2026-08-03 14:50+0200\n"
+"POT-Creation-Date: 2026-08-04 09:17+0200\n"
+"PO-Revision-Date: 2026-08-04 09:17+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -124,12 +124,12 @@ msgid "You must accept the terms of service."
 msgstr "Vous devez accepter les conditions générales d’utilisation."
 
 #: forms/Search.php:22 forms/collections/NewFeed.php:21
-#: forms/links/RepairLink.php:22 models/Link.php:40
+#: forms/links/RepairLink.php:22 models/Link.php:54
 msgid "The link is required."
 msgstr "Le lien est obligatoire."
 
 #: forms/Search.php:25 forms/collections/NewFeed.php:24
-#: forms/links/RepairLink.php:25 models/Link.php:43
+#: forms/links/RepairLink.php:25 models/Link.php:57
 msgid "The link is invalid."
 msgstr "Le lien est invalide."
 
@@ -363,15 +363,15 @@ msgstr "Le filtre est invalide."
 msgid "You already have a group with this name."
 msgstr "Vous avez déjà un groupe portant le même nom."
 
-#: models/Link.php:34
+#: models/Link.php:48
 msgid "The title is required."
 msgstr "Le titre est obligatoire."
 
-#: models/Link.php:60
+#: models/Link.php:74
 msgid "The reading time must be greater or equal to 0."
 msgstr "Le temps de lecture doit être supérieur ou égal à 0."
 
-#: models/Link.php:70
+#: models/Link.php:84
 msgid "The origin must be less than {max} characters."
 msgstr "L’origine ne doit pas faire plus de {max} caractères."
 
@@ -1605,15 +1605,19 @@ msgid_plural "In %d collections"
 msgstr[0] "Dans %d collection"
 msgstr[1] "Dans %d collections"
 
-#: views/links/_origin.html.twig:5
+#: views/links/_origin.html.twig:7
 #, php-format
 msgid "via <strong><a href=\"%s\">%s</a></strong>"
 msgstr "via <strong><a href=\"%s\">%s</a></strong>"
 
-#: views/links/_origin.html.twig:10
+#: views/links/_origin.html.twig:12
 #, php-format
 msgid "via <strong>%s</strong>"
 msgstr "via <strong>%s</strong>"
+
+#: views/links/_origin.html.twig:18
+msgid "by"
+msgstr "par"
 
 #: views/links/_pagination_count.html.twig:9
 #, php-format

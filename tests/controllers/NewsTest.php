@@ -68,6 +68,9 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $collection_url = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
         $collection_anchor = "<a href=\"{$collection_url}\">{$collection_name}</a>";
         $this->assertResponseContains($response, "via <strong>{$collection_anchor}</strong>");
+        $profile_url = \Minz\Url::for('profile', ['id' => $other_user->id]);
+        $this->assertResponseContains($response, "href=\"{$profile_url}\"");
+        $this->assertResponseContains($response, $username);
     }
 
     public function testIndexRendersIfViaCustomOrigin(): void

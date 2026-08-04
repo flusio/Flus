@@ -3,6 +3,7 @@
 namespace App\twig;
 
 use App\auth;
+use App\models;
 use App\utils;
 use Twig\Attribute\AsTwigFilter;
 
@@ -24,6 +25,12 @@ class OriginFormatterExtension
     public static function formatOriginLabel(string $origin): string
     {
         return self::getFormatter()->labelFromOrigin($origin);
+    }
+
+    #[AsTwigFilter('origin_owner')]
+    public static function originOwner(string $origin): ?models\User
+    {
+        return self::getFormatter()->ownerFromOrigin($origin);
     }
 
     private static function getFormatter(): utils\OriginFormatter
