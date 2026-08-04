@@ -862,6 +862,33 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_1->id, $source_group->links[0]->id);
     }
 
+    public function testLinksTimelineIsEmptyIfStreamHasNoVisibleSource(): void
+    {
+        $date = $this->fakeDateInPeriod();
+        $request = new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'days' => 1,
+        ]);
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'collection',
+            'is_public' => false,
+        ]);
+        $link = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link], at: $date);
+        $stream->addSource($source);
+        $stream_view = StreamView::buildFromRequest($stream, null, $request);
+
+        $links_timeline = $stream_view->linksTimeline();
+
+        $this->assertTrue($links_timeline->empty());
+    }
+
     public function testCountedSourcesReturnsSourcesWithTheirCounts(): void
     {
         $date = $this->fakeDateInPeriod();

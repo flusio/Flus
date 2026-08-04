@@ -13,9 +13,6 @@ use Minz\Database;
  * Add methods to list the links published in the collections that a stream
  * contains.
  *
- * A stream is a selection of followed collections: the queries below depend on
- * the followed_collections table.
- *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
@@ -49,13 +46,20 @@ trait InStreams
         ];
         $options = array_merge($default_options, $options);
 
-        $join_url_statuses = $options['context_user'] !== null && $options['status'] !== 'all';
-        $sql_join = self::buildStreamJoin($join_url_statuses);
-        list($sql_where, $parameters) = self::buildStreamWhere($stream, $options);
+        $sources = self::listStreamSources($stream, $options);
+
+        if (!$sources) {
+            return [];
+        }
+
+        $user_of_statuses = $options['status'] !== 'all' ? $options['context_user'] : null;
+        list($sql_join, $parameters) = self::buildStreamJoin($user_of_statuses);
+        list($sql_where, $where_parameters) = self::buildStreamWhere($sources, $options);
+        $parameters = array_merge($parameters, $where_parameters);
 
         $sql = <<<SQL
             SELECT l.*, lc.created_at AS published_at, lc.collection_id AS source_id, true AS group_by_source
-            FROM streams_to_follows sf
+            FROM links_to_collections lc
 
             {$sql_join}
 
@@ -103,13 +107,20 @@ trait InStreams
         $options['query'] = null;
         $options['created_before'] = null;
 
-        $join_url_statuses = $options['context_user'] !== null;
-        $sql_join = self::buildStreamJoin($join_url_statuses);
-        list($sql_where, $parameters) = self::buildStreamWhere($stream, $options);
+        $sources = self::listStreamSources($stream, $options);
+
+        if (!$sources) {
+            return [];
+        }
+
+        $user_of_statuses = $options['context_user'];
+        list($sql_join, $parameters) = self::buildStreamJoin($user_of_statuses);
+        list($sql_where, $where_parameters) = self::buildStreamWhere($sources, $options);
+        $parameters = array_merge($parameters, $where_parameters);
 
         $parameters[':timezone'] = date_default_timezone_get();
 
-        if ($join_url_statuses) {
+        if ($user_of_statuses) {
             $sql_count_unread = <<<SQL
                 COUNT(l.id) FILTER (
                     WHERE us.read_at IS NULL
@@ -126,7 +137,7 @@ trait InStreams
                 to_char(lc.created_at AT TIME ZONE :timezone, 'YYYY-MM-DD') AS day,
                 COUNT(l.id) AS count_all,
                 {$sql_count_unread} AS count_unread
-            FROM streams_to_follows sf
+            FROM links_to_collections lc
 
             {$sql_join}
 
@@ -177,19 +188,26 @@ trait InStreams
         $options['source'] = null;
         $options['created_before'] = null;
 
-        $join_url_statuses = $options['context_user'] !== null && $options['status'] !== 'all';
-        $sql_join = self::buildStreamJoin($join_url_statuses);
-        list($sql_where, $parameters) = self::buildStreamWhere($stream, $options);
+        $sources = self::listStreamSources($stream, $options);
+
+        if (!$sources) {
+            return [];
+        }
+
+        $user_of_statuses = $options['status'] !== 'all' ? $options['context_user'] : null;
+        list($sql_join, $parameters) = self::buildStreamJoin($user_of_statuses);
+        list($sql_where, $where_parameters) = self::buildStreamWhere($sources, $options);
+        $parameters = array_merge($parameters, $where_parameters);
 
         $sql = <<<SQL
-            SELECT c.id AS source_id, COUNT(l.id) AS count_all
-            FROM streams_to_follows sf
+            SELECT lc.collection_id AS source_id, COUNT(l.id) AS count_all
+            FROM links_to_collections lc
 
             {$sql_join}
 
             {$sql_where}
 
-            GROUP BY c.id
+            GROUP BY lc.collection_id
         SQL;
 
         $database = Database::get();
@@ -206,32 +224,82 @@ trait InStreams
     }
 
     /**
-     * @return literal-string
+     * Return the sources of the stream to consider, i.e. the collections that
+     * the context user can view, limited to the selected source if there is
+     * one.
+     *
+     * The sources are memoized by the Stream model: the different queries of a
+     * same page share a single request to the database.
+     *
+     * @param array{
+     *     context_user: ?User,
+     *     source: ?Collection,
+     * } $options
+     *
+     * @return Collection[]
      */
-    private static function buildStreamJoin(bool $join_url_statuses): string
+    private static function listStreamSources(Stream $stream, array $options): array
     {
+        $sources = $stream->sources([
+            'context_user' => $options['context_user'],
+        ]);
+
+        $selected_source = $options['source'];
+
+        if ($selected_source) {
+            // The selected source can come straight from a request parameter,
+            // without being checked (see forms\traits\StreamLinks::links()):
+            // it must be one of the sources that the user can view.
+            $source_ids = array_column($sources, 'id');
+            if (!in_array($selected_source->id, $source_ids, strict: true)) {
+                return [];
+            }
+
+            return [$selected_source];
+        }
+
+        return $sources;
+    }
+
+    /**
+     * Return the joins to add to the queries over the links of a stream.
+     *
+     * The url_statuses are joined only if a user is given. The :user_id
+     * parameter is then returned along the statement.
+     *
+     * @return array{literal-string, array<string, mixed>}
+     */
+    private static function buildStreamJoin(?User $user_of_statuses): array
+    {
+        $parameters = [];
+
         $sql_join = <<<SQL
-            INNER JOIN followed_collections fc ON sf.follow_id = fc.id
-            INNER JOIN links_to_collections lc ON fc.collection_id = lc.collection_id
-            INNER JOIN collections c ON fc.collection_id = c.id
             INNER JOIN links l ON lc.link_id = l.id
         SQL;
 
-        if ($join_url_statuses) {
+        if ($user_of_statuses) {
+            $parameters[':user_id'] = $user_of_statuses->id;
+
             $sql_join .= <<<SQL
                 LEFT JOIN url_statuses us ON us.user_id = :user_id AND us.url_hash = l.url_hash
             SQL;
         }
 
-        return $sql_join;
+        return [$sql_join, $parameters];
     }
 
     /**
+     * Return the where clause to limit the links to the ones of a stream.
+     *
+     * The visibility of the sources is not checked here: it is already handled
+     * by listStreamSources(), which only returns the collections that the
+     * context user can view.
+     *
+     * @param Collection[] $sources
      * @param array{
      *     context_user: ?User,
      *     at: \DateTimeImmutable,
      *     days: int,
-     *     source: ?Collection,
      *     status: string,
      *     query: ?Query,
      *     created_before: ?\DateTimeImmutable,
@@ -239,11 +307,21 @@ trait InStreams
      *
      * @return array{literal-string, array<string, mixed>}
      */
-    private static function buildStreamWhere(Stream $stream, array $options): array
+    private static function buildStreamWhere(array $sources, array $options): array
     {
-        $parameters = [
-            ':stream_id' => $stream->id,
-        ];
+        $parameters = [];
+
+        // Create the clause limiting the links to the sources of the stream.
+        $source_ids_placeholders = [];
+
+        foreach (array_values($sources) as $index => $source) {
+            $placeholder = ":source_id_{$index}";
+            $source_ids_placeholders[] = $placeholder;
+            $parameters[$placeholder] = $source->id;
+        }
+
+        /** @var literal-string */
+        $source_ids_statement = implode(', ', $source_ids_placeholders);
 
         // Calculate the time span interval to get the links.
         $start = $options['at']->modify('00:00:00');
@@ -276,14 +354,6 @@ trait InStreams
             }
         }
 
-        // Create the source clause to limit the links from the selected one.
-        $source_clause = '';
-        if ($options['source']) {
-            $parameters[':source_id'] = $options['source']->id;
-
-            $source_clause = 'AND c.id = :source_id';
-        }
-
         // Create the search clause to limit the links matching the query.
         $search_clause = '';
         if ($options['query']) {
@@ -304,35 +374,14 @@ trait InStreams
             $created_before_clause = 'AND l.created_at <= :created_before';
         }
 
-        // Create the visibility clause, adapted if a context user is passed.
-        $visibility_clause = 'AND (l.is_hidden = false AND c.is_public = true)';
-
-        if ($options['context_user']) {
-            $parameters[':user_id'] = $options['context_user']->id;
-
-            $visibility_clause = <<<SQL
-                AND (
-                    (l.is_hidden = false AND c.is_public = true)
-                    OR c.user_id = :user_id
-                    OR EXISTS (
-                        SELECT 1 FROM collection_shares cs
-                        WHERE cs.user_id = :user_id
-                        AND cs.collection_id = c.id
-                    )
-                )
-            SQL;
-        }
-
         $sql_where = <<<SQL
-            WHERE sf.stream_id = :stream_id
+            WHERE lc.collection_id IN ({$source_ids_statement})
             AND l.is_hidden = false
             AND lc.created_at >= :at_start AND lc.created_at <= :at_end
 
-            {$source_clause}
             {$status_clause}
             {$search_clause}
             {$created_before_clause}
-            {$visibility_clause}
         SQL;
 
         return [$sql_where, $parameters];

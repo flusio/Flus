@@ -195,6 +195,36 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($user->hasRead($link2), 'The link should not be read.');
     }
 
+    public function testCreateDoesNotMarkLinksIfSourceIsNotAViewableSourceOfTheStream(): void
+    {
+        $date = new \DateTimeImmutable('2024-03-25');
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        // The source is neither in the stream, nor viewable by the user, but
+        // its id is passed directly as a parameter of the request.
+        $source = CollectionFactory::create([
+            'type' => 'collection',
+            'user_id' => $other_user->id,
+            'is_public' => false,
+        ]);
+        $link = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link], at: $date);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/read", [
+            'csrf_token' => $this->csrfToken(forms\streams\MarkStreamAsRead::class),
+            'at' => $date->format('Y-m-d'),
+            'source' => $source->id,
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertFalse($user->hasRead($link), 'The link should not be read.');
+    }
+
     public function testCreateMarksLinksAsReadForSpecificStatus(): void
     {
         $date = new \DateTimeImmutable('2024-03-25');
