@@ -553,6 +553,79 @@ trait Collection
     }
 
     /**
+     * Return the sources of the given streams, indexed by stream id.
+     *
+     * Only the sources that the given user can view are returned. The streams
+     * without viewable source are absent from the result.
+     *
+     * Contrary to listByStream(), the number_streams property is NOT computed:
+     * this method is called on every page (see models\Stream::listByUser()) and
+     * only needs to know which sources belong to which stream. Its results must
+     * not be used where the property is expected, nor be injected in the
+     * "sources" memoization of the Stream model.
+     *
+     * @param models\Stream[] $streams
+     * @param array{
+     *     context_user?: ?models\User,
+     * } $options
+     *
+     * @return array<string, self[]>
+     */
+    public static function listByStreams(array $streams, array $options): array
+    {
+        if (!$streams) {
+            return [];
+        }
+
+        $user = $options['context_user'] ?? null;
+
+        $parameters = [];
+
+        if ($user) {
+            $parameters[':user_id'] = $user->id;
+        }
+
+        $stream_ids_placeholders = [];
+
+        foreach (array_values($streams) as $index => $stream) {
+            $placeholder = ":stream_id_{$index}";
+            $stream_ids_placeholders[] = $placeholder;
+            $parameters[$placeholder] = $stream->id;
+        }
+
+        /** @var literal-string */
+        $stream_ids_statement = implode(', ', $stream_ids_placeholders);
+
+        $visibility_clause = self::buildVisibilityClause($user);
+
+        $sql = <<<SQL
+            SELECT c.*, sf.stream_id
+            FROM collections c, followed_collections fc, streams_to_follows sf
+
+            WHERE c.id = fc.collection_id
+            AND sf.follow_id = fc.id
+            AND sf.stream_id IN ({$stream_ids_statement})
+
+            {$visibility_clause}
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute($parameters);
+
+        $sources_by_stream_ids = [];
+
+        foreach ($statement->fetchAll() as $row) {
+            $stream_id = strval($row['stream_id']);
+            unset($row['stream_id']);
+
+            $sources_by_stream_ids[$stream_id][] = self::fromDatabaseRow($row);
+        }
+
+        return $sources_by_stream_ids;
+    }
+
+    /**
      * Return the clause limiting the collections (aliased as "c") to those
      * that the given user can view, or to the public ones if no user is given.
      *

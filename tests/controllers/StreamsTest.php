@@ -168,6 +168,7 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
     public function testShowExecutesAConstantNumberOfQueries(): void
     {
         $user = $this->login();
+        models\FeatureFlag::enable('alpha', $user->id);
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);

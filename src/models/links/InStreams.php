@@ -224,6 +224,64 @@ trait InStreams
     }
 
     /**
+     * Filter the given sources that published unread links over the period.
+     *
+     * This method takes and returns collections rather than links, and takes no
+     * stream: it lives here because it reuses buildStreamJoin() and
+     * buildStreamWhere(), so that the "unread" logic is defined at a single
+     * place. It is called by models\Stream::listByUser() to compute the unread
+     * dots of the sidenav.
+     *
+     * @param Collection[] $sources
+     * @param array{
+     *     at?: \DateTimeImmutable,
+     *     days?: int,
+     * } $options
+     *
+     * @return Collection[]
+     */
+    public static function filterSourcesWithUnreadLinks(User $user, array $sources, array $options = []): array
+    {
+        if (!$sources) {
+            return [];
+        }
+
+        $where_options = [
+            'context_user' => $user,
+            'at' => $options['at'] ?? \Minz\Time::now(),
+            'days' => $options['days'] ?? 1,
+            'status' => 'unread',
+            'query' => null,
+            'created_before' => null,
+        ];
+
+        list($sql_join, $parameters) = self::buildStreamJoin($user);
+        list($sql_where, $where_parameters) = self::buildStreamWhere($sources, $where_options);
+        $parameters = array_merge($parameters, $where_parameters);
+
+        $sql = <<<SQL
+            SELECT DISTINCT lc.collection_id AS source_id
+            FROM links_to_collections lc
+
+            {$sql_join}
+
+            {$sql_where}
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute($parameters);
+
+        $source_ids_with_unread = array_column($statement->fetchAll(), 'source_id');
+
+        $sources = array_filter($sources, function (Collection $source) use ($source_ids_with_unread): bool {
+            return in_array($source->id, $source_ids_with_unread, strict: true);
+        });
+
+        return array_values($sources);
+    }
+
+    /**
      * Return the sources of the stream to consider, i.e. the collections that
      * the context user can view, limited to the selected source if there is
      * one.
