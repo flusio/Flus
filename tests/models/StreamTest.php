@@ -52,6 +52,29 @@ class StreamTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($streams[0]->has_unread_links);
     }
 
+    public function testListByUserForcesHasUnreadLinksToFalseIfStreamDoesNotDisplayUnreadInSidenav(): void
+    {
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+            'display_unread_in_sidenav' => false,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link], at: \Minz\Time::now());
+        $stream->addSource($source);
+
+        $streams = Stream::listByUser($user);
+
+        $this->assertSame(1, count($streams));
+        $this->assertFalse($streams[0]->has_unread_links);
+    }
+
     public function testListByUserDoesNotSetHasUnreadLinksIfStreamHasNoSource(): void
     {
         $user = UserFactory::create();

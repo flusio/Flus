@@ -227,8 +227,12 @@ class Stream
     /**
      * List the streams owned by the given user.
      *
-     * The has_unread_links property is always computed: it indicates whether
-     * the stream contains unread links published during the last seven days.
+     * The has_unread_links property is always set: it indicates whether the
+     * stream contains unread links published during the last seven days.
+     *
+     * It is only computed for the streams displaying the unread links in the
+     * sidenav, and set to false for the others: the subquery is expensive and
+     * displaysUnreadInSidenav() would discard its result anyway.
      *
      * The joins and the clauses of the subquery must be kept in sync with the
      * ones of links\InStreams::buildStreamJoin() and
@@ -242,7 +246,7 @@ class Stream
         $unread_end = \Minz\Time::now()->modify('23:59:59');
 
         $sql = <<<SQL
-            SELECT s.*, EXISTS (
+            SELECT s.*, CASE WHEN s.display_unread_in_sidenav THEN EXISTS (
                 SELECT 1
                 FROM streams_to_follows sf
 
@@ -271,7 +275,7 @@ class Stream
                         AND cs.collection_id = c.id
                     )
                 )
-            ) AS has_unread_links
+            ) ELSE false END AS has_unread_links
             FROM streams s
 
             WHERE s.user_id = :user_id
