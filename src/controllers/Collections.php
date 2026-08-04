@@ -145,6 +145,7 @@ class Collections extends BaseController
         );
 
         models\links\Preloader::for($links)
+            ->originsFor($user)
             ->urlStatusesFor($user)
             ->numberCollectionsFor($user);
 

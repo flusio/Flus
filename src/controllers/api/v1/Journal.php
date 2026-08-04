@@ -28,6 +28,7 @@ class Journal extends BaseController
 
         models\links\Preloader::for($links)
             ->collections()
+            ->originsFor($user)
             ->urlStatusesFor($user);
 
         return Response::json(200, array_map(function (models\Link $link) use ($user): array {

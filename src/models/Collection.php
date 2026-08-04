@@ -21,6 +21,7 @@ class Collection
     use dao\Collection;
     use Database\Recordable;
     use Database\Resource;
+    use utils\Memoizer;
     use Validable;
 
     public const VALID_TYPES = ['bookmarks', 'news', 'read', 'never', 'collection', 'feed'];
@@ -241,11 +242,23 @@ class Collection
      */
     public function owner(): ?User
     {
-        if (!$this->user_id) {
-            return null;
-        }
+        return $this->memoize('owner', function (): ?User {
+            if (!$this->user_id) {
+                return null;
+            }
 
-        return User::find($this->user_id);
+            return User::find($this->user_id);
+        });
+    }
+
+    /**
+     * Set the owner of the collection without querying the database.
+     *
+     * @see utils\OriginFormatter::preloadOrigins
+     */
+    public function preloadOwner(?User $owner): void
+    {
+        $this->memoizeValue('owner', $owner);
     }
 
     /**

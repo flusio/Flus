@@ -39,6 +39,39 @@ class JournalTest extends \PHPUnit\Framework\TestCase
         ]);
     }
 
+    public function testIndexReturnsTheOriginsOfTheLinks(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $news = $user->news();
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
+            'name' => 'My collection',
+            'type' => 'collection',
+            'is_public' => true,
+        ]);
+        $origin = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'origin' => $origin,
+        ]);
+        $link->addCollection($news);
+
+        $response = $this->apiRun('GET', '/api/v1/journal');
+
+        $this->assertResponseCode($response, 200);
+        // The origin is asserted literally: comparing to toJson() would reuse
+        // the values that the controller memoized in the shared
+        // OriginFormatter, and so would hide a broken preloading.
+        $expected_origin = json_encode([
+            'value' => $origin,
+            'label' => 'My collection',
+            'url' => $origin,
+        ]);
+        $this->assertNotFalse($expected_origin);
+        $this->assertResponseContains($response, $expected_origin);
+    }
+
     public function testIndexFailsIfNotConnected(): void
     {
         $user = UserFactory::create();

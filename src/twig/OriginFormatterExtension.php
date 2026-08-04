@@ -13,8 +13,6 @@ use Twig\Attribute\AsTwigFilter;
  */
 class OriginFormatterExtension
 {
-    private static ?utils\OriginFormatter $origin_formatter = null;
-
     #[AsTwigFilter('format_origin_url')]
     public static function formatOriginUrl(string $origin): string
     {
@@ -35,11 +33,6 @@ class OriginFormatterExtension
 
     private static function getFormatter(): utils\OriginFormatter
     {
-        if (!self::$origin_formatter) {
-            $context_user = auth\CurrentUser::get();
-            self::$origin_formatter = new utils\OriginFormatter($context_user);
-        }
-
-        return self::$origin_formatter;
+        return utils\OriginFormatter::instance(auth\CurrentUser::get());
     }
 }

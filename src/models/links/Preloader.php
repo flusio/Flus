@@ -6,6 +6,7 @@ use App\models\Collection;
 use App\models\Link;
 use App\models\UrlStatus;
 use App\models\User;
+use App\utils\OriginFormatter;
 
 /**
  * Load in batch the data that a list of links would otherwise load one by one.
@@ -71,6 +72,20 @@ class Preloader
         foreach ($this->links as $link) {
             $link->preloadCollections($collections_by_link_ids[$link->id] ?? []);
         }
+
+        return $this;
+    }
+
+    /**
+     * Preload the models designated by the origins of the links, as the given
+     * user can view them.
+     *
+     * Contrary to the other values, the origins are memoized by the shared
+     * OriginFormatter, which the views and Link::toJson() go through.
+     */
+    public function originsFor(?User $user): self
+    {
+        OriginFormatter::instance($user)->preloadOrigins($this->links);
 
         return $this;
     }

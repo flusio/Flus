@@ -17,6 +17,12 @@ class OriginFormatterTest extends \PHPUnit\Framework\TestCase
         \Minz\Engine::init($router);
     }
 
+    #[\PHPUnit\Framework\Attributes\Before]
+    public function resetOriginFormatter(): void
+    {
+        OriginFormatter::resetInstance();
+    }
+
     public function testLabelFromOriginWithCollectionUrl(): void
     {
         $user = UserFactory::create();
@@ -193,5 +199,124 @@ class OriginFormatterTest extends \PHPUnit\Framework\TestCase
         $url = $formatter->urlFromOrigin($origin);
 
         $this->assertSame('', $url);
+    }
+
+    /**
+     * The preloaded values are indistinguishable from the ones loaded on the
+     * fly: that is the point of the preloading. So, to prove that a value
+     * really comes from the memoizer cache, the tests below delete the data
+     * from the database after the preloading.
+     */
+    public function testPreloadOriginsLoadsTheLabelsAndTheOwners(): void
+    {
+        $user = UserFactory::create();
+        $owner = UserFactory::create(['username' => 'Alix']);
+        $collection = CollectionFactory::create([
+            'user_id' => $owner->id,
+            'name' => 'My collection',
+            'type' => 'collection',
+            'is_public' => true,
+        ]);
+        $origin = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
+        // Two links share the same origin: it must be loaded once for both.
+        $link_1 = LinkFactory::create(['origin' => $origin]);
+        $link_2 = LinkFactory::create(['origin' => $origin]);
+        $formatter = new OriginFormatter($user);
+
+        $formatter->preloadOrigins([$link_1, $link_2]);
+
+        // Without the preloading, the label would fall back to the host and
+        // the owner would be null.
+        $collection->remove();
+        $owner->remove();
+
+        $this->assertSame('My collection', $formatter->labelFromOrigin($origin));
+        $this->assertSame('Alix', $formatter->ownerFromOrigin($origin)?->username);
+    }
+
+    public function testPreloadOriginsLoadsTheOtherKindsOfOrigins(): void
+    {
+        $user = UserFactory::create();
+        $other_user = UserFactory::create(['username' => 'Alix']);
+        $link = LinkFactory::create([
+            'title' => 'My link',
+            'is_hidden' => false,
+        ]);
+        $link_origin = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
+        $profile_origin = \Minz\Url::absoluteFor('profile', ['id' => $other_user->id]);
+        $link_via_link = LinkFactory::create(['origin' => $link_origin]);
+        $link_via_profile = LinkFactory::create(['origin' => $profile_origin]);
+        $link_via_website = LinkFactory::create(['origin' => 'https://example.org']);
+        $link_via_words = LinkFactory::create(['origin' => 'The Internet']);
+        $formatter = new OriginFormatter($user);
+
+        $formatter->preloadOrigins([
+            $link_via_link,
+            $link_via_profile,
+            $link_via_website,
+            $link_via_words,
+        ]);
+
+        $link->remove();
+        $other_user->remove();
+
+        $this->assertSame('My link', $formatter->labelFromOrigin($link_origin));
+        $this->assertSame('Alix', $formatter->labelFromOrigin($profile_origin));
+        $this->assertSame('example.org', $formatter->labelFromOrigin('https://example.org'));
+        $this->assertSame('The Internet', $formatter->labelFromOrigin('The Internet'));
+    }
+
+    public function testPreloadOriginsIgnoresInaccessibleOrigins(): void
+    {
+        $user = UserFactory::create();
+        $owner = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $owner->id,
+            'name' => 'My collection',
+            'type' => 'collection',
+            'is_public' => false,
+        ]);
+        $origin = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
+        $link = LinkFactory::create(['origin' => $origin]);
+        $formatter = new OriginFormatter($user);
+
+        $formatter->preloadOrigins([$link]);
+
+        // The collection is not preloaded, so the label falls back to the host
+        // even though the collection still exists.
+        $this->assertSame('test.flus.io', $formatter->labelFromOrigin($origin));
+        $this->assertNull($formatter->ownerFromOrigin($origin));
+    }
+
+    public function testInstanceReturnsTheSameFormatterForTheSameUser(): void
+    {
+        $user = UserFactory::create();
+
+        $formatter = OriginFormatter::instance($user);
+
+        $this->assertSame($formatter, OriginFormatter::instance($user));
+    }
+
+    public function testInstanceReturnsANewFormatterWhenTheUserChanges(): void
+    {
+        $user = UserFactory::create();
+        $other_user = UserFactory::create();
+
+        $other_formatter = OriginFormatter::instance($other_user);
+        $formatter = OriginFormatter::instance($user);
+        $null_formatter = OriginFormatter::instance(null);
+
+        $this->assertNotSame($formatter, $other_formatter);
+        $this->assertNotSame($formatter, $null_formatter);
+    }
+
+    public function testResetForgetsTheSharedFormatter(): void
+    {
+        $user = UserFactory::create();
+        $formatter = OriginFormatter::instance($user);
+
+        OriginFormatter::resetInstance();
+
+        $this->assertNotSame($formatter, OriginFormatter::instance($user));
     }
 }

@@ -11,7 +11,8 @@ use App\models;
 class OriginHelper
 {
     /**
-     * Return the origin type and origin id from a URL or a path.
+     * Return the origin type and origin id from a URL or a path, if the
+     * corresponding model exists in database.
      *
      * For instance:
      *
@@ -25,10 +26,43 @@ class OriginHelper
      *
      * The method also handles URLs starting with the base URL of the application.
      *
+     * Prefer parseFromPath() if the model is loaded afterwards: it doesn't
+     * query the database.
+     *
      * @return array{'collection'|'link'|'user', string}|array{'', null}
      * }
      */
     public static function extractFromPath(string $url_or_path): array
+    {
+        list($origin_type, $origin_id) = self::parseFromPath($url_or_path);
+
+        if (!$origin_type || !$origin_id) {
+            return ['', null];
+        }
+
+        $exists = match ($origin_type) {
+            'collection' => models\Collection::exists($origin_id),
+            'link' => models\Link::exists($origin_id),
+            'user' => models\User::exists($origin_id),
+        };
+
+        if (!$exists) {
+            return ['', null];
+        }
+
+        return [$origin_type, $origin_id];
+    }
+
+    /**
+     * Return the origin type and origin id from a URL or a path.
+     *
+     * Contrary to extractFromPath(), the existence of the corresponding model
+     * is not verified: no query is executed.
+     *
+     * @return array{'collection'|'link'|'user', string}|array{'', null}
+     * }
+     */
+    public static function parseFromPath(string $url_or_path): array
     {
         $base_url = \Minz\Url::baseUrl();
 
@@ -45,37 +79,19 @@ class OriginHelper
 
         $matches = [];
 
-        $result = preg_match('#^/collections/(?P<id>\d+)$#', $path, $matches);
+        preg_match('#^/collections/(?P<id>\d+)$#', $path, $matches);
         if (isset($matches['id'])) {
-            $collection_id = $matches['id'];
-
-            if (!models\Collection::exists($collection_id)) {
-                return ['', null];
-            }
-
-            return ['collection', $collection_id];
+            return ['collection', $matches['id']];
         }
 
-        $result = preg_match('#^/links/(?P<id>\d+)$#', $path, $matches);
+        preg_match('#^/links/(?P<id>\d+)$#', $path, $matches);
         if (isset($matches['id'])) {
-            $link_id = $matches['id'];
-
-            if (!models\Link::exists($link_id)) {
-                return ['', null];
-            }
-
-            return ['link', $link_id];
+            return ['link', $matches['id']];
         }
 
-        $result = preg_match('#^/p/(?P<id>\d+)/?#', $path, $matches);
+        preg_match('#^/p/(?P<id>\d+)/?#', $path, $matches);
         if (isset($matches['id'])) {
-            $user_id = $matches['id'];
-
-            if (!models\User::exists($user_id)) {
-                return ['', null];
-            }
-
-            return ['user', $user_id];
+            return ['user', $matches['id']];
         }
 
         return ['', null];

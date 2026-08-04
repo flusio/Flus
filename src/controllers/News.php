@@ -35,6 +35,7 @@ class News extends BaseController
 
         models\links\Preloader::for($links)
             ->sources()
+            ->originsFor($user)
             ->urlStatusesFor($user)
             ->numberCollectionsFor($user);
 

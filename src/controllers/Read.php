@@ -40,6 +40,7 @@ class Read extends BaseController
         $links = $read_source->links($pagination);
 
         models\links\Preloader::for($links)
+            ->originsFor($user)
             ->urlStatusesFor($user)
             ->numberCollectionsFor($user);
 

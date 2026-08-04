@@ -109,6 +109,7 @@ class Bookmarks extends BaseController
         $links = $read_later_source->links($pagination);
 
         models\links\Preloader::for($links)
+            ->originsFor($user)
             ->urlStatusesFor($user)
             ->numberCollectionsFor($user);
 

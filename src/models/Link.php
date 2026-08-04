@@ -243,7 +243,7 @@ class Link
         $origin = null;
 
         if ($this->origin && auth\Access::can($context_user, 'viewOrigin', $this)) {
-            $origin_formatter = new utils\OriginFormatter($context_user);
+            $origin_formatter = utils\OriginFormatter::instance($context_user);
 
             $origin = [
                 'value' => $this->origin,

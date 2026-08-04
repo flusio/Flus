@@ -60,6 +60,7 @@ class Links extends BaseController
             );
 
             models\links\Preloader::for($links)
+                ->originsFor($user)
                 ->urlStatusesFor($user)
                 ->numberCollectionsFor($user);
 
