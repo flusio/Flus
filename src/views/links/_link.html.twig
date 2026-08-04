@@ -26,8 +26,6 @@
 {% set is_inaccessible = link.isInaccessible %}
 {% set trackers_detected = link.trackersDetected %}
 
-{% set number_collections = app.user ? link.numberCollectionsForUser(app.user) : 0 %}
-
 {% set has_read_later = app.user and app.user.hasReadLater(link) %}
 {% if display_read_later === 'auto' and has_read_later %}
     {% set display_read_later = false %}
@@ -342,34 +340,11 @@
             {% endif %}
 
             {% if display_collections %}
-                {% set collections_params = { id: link.id, mark_as_read: storing_must_mark_as_read } %}
-                {% if source %}
-                    {% set collections_params = collections_params | merge({ source: source }) %}
-                {% endif %}
-
-                <button
-                    class="link__collections-button button--icon button--ghost"
-                    data-controller="modal-opener"
-                    data-action="modal-opener#fetch"
-                    data-modal-opener-href-value="{{ url('link collections', collections_params) }}"
-                    aria-haspopup="dialog"
-                    aria-controls="modal"
-                    title="{{ t('Store the link') }}"
-                >
-                    {{ icon('collection') }}
-                    <span class="sr-only">
-                        {{ t('Store the link') }}
-                    </span>
-
-                    {% if number_collections > 0 %}
-                        <span
-                            class="link__number-collections"
-                            aria-label="{{ t('In %d collection', 'In %d collections', number_collections, [number_collections]) }}"
-                        >
-                            {{ number_collections }}
-                        </span>
-                    {% endif %}
-                </button>
+                {{ include('links/_collections_button.html.twig', {
+                    link: link,
+                    source: source,
+                    mark_as_read: storing_must_mark_as_read,
+                }) }}
             {% endif %}
         </div>
     </div>

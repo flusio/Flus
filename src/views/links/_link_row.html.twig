@@ -1,0 +1,177 @@
+{# A compact representation of a link, displayed as a row.
+ #
+ # The `source` is the id of the collection from which the link is displayed.
+ # It is passed to the actions that can copy the link to the user, so they can
+ # set its origin.
+ #
+ # The `heading_level` must match the level of the headings surrounding the
+ # row.
+ #
+ # `storing_must_mark_as_read` tells the collections modal to mark the link as
+ # read once it is stored. #}
+{% set source = source ?? '' %}
+{% set heading_level = heading_level ?? 3 %}
+{% set storing_must_mark_as_read = storing_must_mark_as_read ?? false %}
+
+{% set is_inaccessible = link.isInaccessible %}
+{% set trackers_detected = link.trackersDetected %}
+
+{% set is_read = app.user and app.user.hasRead(link) %}
+{% set has_read_later = app.user and app.user.hasReadLater(link) %}
+{% set is_dismissed = app.user and app.user.hasDismissed(link) %}
+
+{% set display_mark_as_read = app.user and (not is_read or has_read_later) %}
+{% set display_read_later = app.user and not has_read_later %}
+{% set display_dismiss = app.user and not is_dismissed %}
+{% set display_collections = app.user != null %}
+{% set display_share_on_mastodon = can(app.user, 'shareOnMastodon', link) %}
+
+<article class="link-row cols cols--center cols--gap-small">
+    <div class="cols cols--always cols--center cols--gap-small col--extend">
+        <a
+            class="link-row__image-container col--noshrink"
+            target="_blank"
+            rel="noopener noreferrer"
+            tabindex="-1"
+            href="{{ link.url }}"
+        >
+            <img class="link-row__image" alt="" src="{{ url_media('covers', link.image_filename) }}" loading="lazy" />
+        </a>
+
+        <div class="link-row__content col--extend flow flow--smaller">
+            <div class="stack stack--gap-smaller">
+                <h{{ heading_level }} class="link-row__title">
+                    <a
+                        class="anchor--nostyle"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href="{{ link.url }}"
+                    >
+                        {{ link.title }}
+                    </a>
+                </h{{ heading_level }}>
+
+                {% if is_inaccessible %}
+                    <span class="badge badge--warning" title="{{ t('This link seems to be inaccessible, you may have difficulties to access it.') }}">
+                        {{ icon('disconnect') }} {{ t('inaccessible') }}
+                    </span>
+                {% endif %}
+
+                {% if trackers_detected %}
+                    <span class="badge badge--warning" title="{{ t('Trackers have been detected in this link, your privacy might not be respected if you click on it.') }}">
+                        {{ icon('eye') }} {{ t('trackers') }}
+                    </span>
+                {% endif %}
+            </div>
+
+            <p class="link__text text--oneline">
+                <span class="text--ellipsis">{{ link.host }}</span>&nbsp;·&nbsp;{{ link.reading_time | format_reading_time }}
+
+                {% if is_read %}
+                    &nbsp;<span title="{{ t('You read this link.') }}">{{ icon('check') }}</span>
+                {% endif %}
+
+                {% if has_read_later %}
+                    &nbsp;<span title="{{ t('You marked this link to be read.') }}">{{ icon('bookmark') }}</span>
+                {% endif %}
+            </p>
+
+            {% if not link.fetched_at %}
+                <p class="link__text">
+                    {{ icon('sync', 'spin') }}
+                    {{ t('ongoing synchronisation…') }}
+                </p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="cols cols--always cols--center cols--gap-smaller">
+        <div class="col--extend"></div>
+
+        {% embed 'components/popup.html.twig' with {
+            opener_class: 'button button--icon button--ghost',
+            position: 'right',
+            over: true,
+            tooltip: t('Actions'),
+        } %}
+            {% block opener %}
+                {{ icon('menu') }}
+
+                <span class="sr-only">
+                    {{ t('Actions') }}
+                </span>
+            {% endblock %}
+
+            {% block items %}
+                {% import _self as item %}
+
+                {% if display_dismiss %}
+                    {{ item.action(
+                        url: url('mark link to never read', { id: link.id }),
+                        label: t('Ignore the link'),
+                        icon: 'times',
+                        csrf: 'links\\MarkLinkAsNever',
+                        preserve_scroll: true,
+                    ) }}
+
+                    {{ item.separator() }}
+                {% endif %}
+
+                {{ item.clipboard(
+                    value: link.url,
+                    label: t('Copy the external link'),
+                ) }}
+
+                {% if display_share_on_mastodon %}
+                    {{ item.modal(
+                        url: url('new link mastodon thread', { id: link.id }),
+                        label: t('Share on Mastodon'),
+                        icon: 'mastodon',
+                    ) }}
+                {% endif %}
+            {% endblock %}
+        {% endembed %}
+
+        {% if display_mark_as_read %}
+            <form data-turbo-preserve-scroll method="post" action="{{ url('mark link as read', { id: link.id }) }}">
+                <button class="button--icon button--ghost" title="{{ t('Mark as read') }}">
+                    {{ icon('check') }}
+                    <span class="sr-only">
+                        {{ t('Mark as read') }}
+                    </span>
+                </button>
+
+                {% if source %}
+                    <input type="hidden" name="source" value="{{ source }}" />
+                {% endif %}
+
+                <input type="hidden" name="csrf_token" value="{{ csrf_token('links\\MarkLinkAsRead') }}" />
+            </form>
+        {% endif %}
+
+        {% if display_read_later %}
+            <form data-turbo-preserve-scroll method="post" action="{{ url('read link later', { id: link.id }) }}">
+                <button class="button--icon button--ghost" title="{{ t('Read later') }}">
+                    {{ icon('bookmark') }}
+                    <span class="sr-only">
+                        {{ t('Read later') }}
+                    </span>
+                </button>
+
+                {% if source %}
+                    <input type="hidden" name="source" value="{{ source }}" />
+                {% endif %}
+
+                <input type="hidden" name="csrf_token" value="{{ csrf_token('links\\MarkLinkAsReadLater') }}" />
+            </form>
+        {% endif %}
+
+        {% if display_collections %}
+            {{ include('links/_collections_button.html.twig', {
+                link: link,
+                source: source,
+                mark_as_read: storing_must_mark_as_read,
+            }) }}
+        {% endif %}
+    </div>
+</article>

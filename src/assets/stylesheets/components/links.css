@@ -205,3 +205,54 @@
     background-color: var(--color-accent-bg);
     border-radius: 50%;
 }
+
+/* The rows are a compact alternative to the cards above. */
+.link-row {
+    position: relative;
+
+    padding: var(--space-small);
+
+    background-color: var(--color-base);
+    border: 1px solid var(--color-grey-bg);
+    border-radius: var(--border-radius);
+
+    transition: box-shadow 0.5s ease-in-out;
+}
+
+[data-color-scheme="dark"] .link-row {
+    border-color: var(--color-grey-base);
+}
+
+.link-row:focus-within {
+    box-shadow: 0 0 3px var(--color-box-shadow);
+}
+
+.link-row__image-container {
+    overflow: hidden;
+
+    width: 3rem;
+    height: 3rem;
+
+    border-radius: var(--border-radius-small);
+}
+
+.link-row__image {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.link-row__title {
+    margin-top: 0;
+    margin-bottom: 0;
+
+    font-size: var(--font-size-normal);
+    font-weight: 600;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+}
+
+.link-row__title a {
+    display: block;
+}

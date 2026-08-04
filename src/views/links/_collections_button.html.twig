@@ -1,0 +1,40 @@
+{# The button opening the modal to store a link in the collections of the
+ # current user. It displays the number of collections in which the link
+ # already is. It expects a connected user.
+ #
+ # `source` is the id of the collection from which the link is displayed, so
+ # the modal can set the origin of the stored link. `mark_as_read` tells the
+ # modal to mark the link as read once it is stored. #}
+{% set source = source ?? '' %}
+{% set mark_as_read = mark_as_read ?? false %}
+
+{% set number_collections = link.numberCollectionsForUser(app.user) %}
+
+{% set params = { id: link.id, mark_as_read: mark_as_read } %}
+{% if source %}
+    {% set params = params | merge({ source: source }) %}
+{% endif %}
+
+<button
+    class="link__collections-button button--icon button--ghost"
+    data-controller="modal-opener"
+    data-action="modal-opener#fetch"
+    data-modal-opener-href-value="{{ url('link collections', params) }}"
+    aria-haspopup="dialog"
+    aria-controls="modal"
+    title="{{ t('Store the link') }}"
+>
+    {{ icon('collection') }}
+    <span class="sr-only">
+        {{ t('Store the link') }}
+    </span>
+
+    {% if number_collections > 0 %}
+        <span
+            class="link__number-collections"
+            aria-label="{{ t('In %d collection', 'In %d collections', number_collections, [number_collections]) }}"
+        >
+            {{ number_collections }}
+        </span>
+    {% endif %}
+</button>

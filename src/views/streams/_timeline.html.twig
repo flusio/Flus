@@ -44,14 +44,12 @@
                             {% set links = date_group.links %}
 
                             {% if links %}
-                                <div class="grid">
+                                <div class="flow flow--smaller">
                                     {% for link in date_group.links %}
-                                        {{ include('links/_link.html.twig', {
+                                        {{ include('links/_link_row.html.twig', {
                                             link: link,
                                             source: link.source_id,
-                                            display_read_later: 'auto',
-                                            display_mark_as_read: 'auto',
-                                            display_never: 'auto',
+                                            heading_level: 3,
                                             storing_must_mark_as_read: true,
                                         })}}
                                     {% endfor %}
@@ -94,14 +92,12 @@
                                         {% endembed %}
                                     </div>
 
-                                    <div class="source-group__body grid">
+                                    <div class="source-group__body flow flow--smaller">
                                         {% for link in source_group.links %}
-                                            {{ include('links/_link.html.twig', {
+                                            {{ include('links/_link_row.html.twig', {
                                                 link: link,
                                                 source: link.source_id,
-                                                display_read_later: 'auto',
-                                                display_mark_as_read: 'auto',
-                                                display_never: 'auto',
+                                                heading_level: 4,
                                                 storing_must_mark_as_read: true,
                                             }) }}
                                         {% endfor %}
