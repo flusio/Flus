@@ -5,10 +5,10 @@
 <div id="stream-timeline" data-stream-target="timeline">
     {% if not links_timeline.empty %}
         <div class="flow flow--large">
-            <div class="flow flow--large" data-controller="zindex-inverser">
+            <div class="flow flow--large">
                 {% for date_group in links_timeline.datesGroups %}
                     <section class="group flow">
-                        <header class="group__header" data-zindex-inverser-target="item">
+                        <header class="group__header">
                             <h2 class="group__title">
                                 {{ d(date_group.date, 'dd MMMM') }}
                             </h2>

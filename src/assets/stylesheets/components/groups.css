@@ -13,6 +13,12 @@
     box-shadow: 0 2px 2px var(--color-base);
 }
 
+/* The sticky header creates a stacking context, which traps its popup below
+ * the headers of the next groups. Raise the header while its popup is open. */
+.group__header:has(.popup[open]) {
+    z-index: 2;
+}
+
 .group__title {
     overflow: hidden;
 

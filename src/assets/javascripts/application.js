@@ -24,7 +24,6 @@ import ScrollerController from './controllers/scroller_controller.js';
 import SidenavController from './controllers/sidenav_controller.js';
 import StreamController from './controllers/stream_controller.js';
 import TextEditorController from './controllers/text_editor_controller.js';
-import ZindexInverserController from './controllers/zindex_inverser_controller.js';
 
 window.jsConfiguration = JSON.parse(document.getElementById('javascript-configuration').innerHTML);
 
@@ -52,7 +51,6 @@ application.register('scroller', ScrollerController);
 application.register('sidenav', SidenavController);
 application.register('stream', StreamController);
 application.register('text-editor', TextEditorController);
-application.register('zindex-inverser', ZindexInverserController);
 
 function adaptLayoutContentBorderRadius () {
     const layoutContentNode = document.querySelector('.layout__content');
