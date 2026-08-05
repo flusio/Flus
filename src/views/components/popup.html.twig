@@ -35,6 +35,10 @@
  # The `opener` block is wrapped in a span classed with `opener_class`, `button`
  # by default. An empty `opener_class` renders the block without any wrapper.
  #
+ # `position` aligns the popup horizontally on its opener: `center` (default),
+ # `right` or `left`. `drop_up` opens it above the opener instead of below.
+ # `over` moves the popup so it covers its opener.
+ #
  # The items are rendered by the macros declared at the end of this file.
  #}
 {% types {
@@ -42,6 +46,7 @@
     opener_class: 'string',
     position: 'string',
     drop_up: 'boolean',
+    over: 'boolean',
     tooltip: 'string',
 } %}
 
@@ -49,6 +54,7 @@
 {% set opener_class = opener_class ?? 'button' %}
 {% set position = position ?? 'center' %}
 {% set drop_up = drop_up ?? false %}
+{% set over = over ?? false %}
 {% set tooltip = tooltip ?? '' %}
 
 <details
@@ -72,7 +78,7 @@
     </summary>
 
     <nav
-        class="popup__container popup__container--{{ position }}{{ drop_up ? ' popup__container--top' }}"
+        class="popup__container popup__container--{{ position }}{{ drop_up ? ' popup__container--top' }}{{ over ? ' popup__container--over' }}"
         role="menu"
     >
         {% block items %}{% endblock %}

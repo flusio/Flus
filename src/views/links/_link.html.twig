@@ -212,7 +212,8 @@
     <div class="link__actions">
         {% embed 'components/popup.html.twig' with {
             opener_class: 'button button--icon button--ghost',
-            position: 'over',
+            position: 'left',
+            over: true,
             tooltip: t('Actions'),
         } %}
             {% block opener %}

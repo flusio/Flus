@@ -17,6 +17,12 @@
         margin-bottom: 0;
     }
 
+    .popup__container--over {
+        top: auto;
+
+        margin: 0;
+    }
+
     .layout--connected .popup__container {
         bottom: var(--layout-header-height);
     }
