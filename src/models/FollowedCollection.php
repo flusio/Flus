@@ -17,6 +17,7 @@ class FollowedCollection
     use dao\BulkQueries;
     use Database\Recordable;
     use Validable;
+    use utils\Memoizer;
 
     public const VALID_TIME_FILTERS = ['none', 'strict', 'normal', 'all'];
 
@@ -60,5 +61,33 @@ class FollowedCollection
         ], [
             'time_filter' => 'normal',
         ]);
+    }
+
+    /**
+     * Return the streams in which the followed collection is a source.
+     *
+     * The streams are sorted by name.
+     *
+     * @return Stream[]
+     */
+    public function streams(): array
+    {
+        return $this->memoize('streams', function (): array {
+            $streams = Stream::listByFollow($this);
+            return utils\Sorter::localeSort($streams, 'name');
+        });
+    }
+
+    /**
+     * Set the streams in which the followed collection is a source.
+     *
+     * The streams that are not in the given list are detached.
+     *
+     * @param Stream[] $streams
+     */
+    public function setStreams(array $streams): void
+    {
+        StreamToFollow::setStreams($this, $streams);
+        $this->unmemoize('streams');
     }
 }

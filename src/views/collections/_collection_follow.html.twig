@@ -30,13 +30,10 @@
 
     <div class="collection__footer">
         {% if app.user.isFollowing(collection.id) %}
-            <form data-turbo-preserve-scroll method="post" action="{{ url('unfollow collection', { id: collection.id }) }}">
-                <button class="button--big">
-                    {{ t('Unfollow') }}
-                </button>
-
-                <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\UnfollowCollection') }}" />
-            </form>
+            {{ include('collections/_unfollow_form.html.twig', {
+                button_class: 'button--big',
+                preserve_scroll: true,
+            }) }}
         {% else %}
             <form data-turbo-preserve-scroll method="post" action="{{ url('follow collection', { id: collection.id }) }}">
                 <button class="button--big">

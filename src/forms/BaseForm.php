@@ -6,6 +6,8 @@ use App\auth;
 use Minz\Form;
 
 /**
+ * @phpstan-import-type ValidableError from \Minz\Validable
+ *
  * @template T of object = \stdClass
  *
  * @phpstan-extends Form<T>
@@ -55,5 +57,22 @@ class BaseForm extends Form
         }
 
         return $value;
+    }
+
+    /**
+     * Copy the errors of a model which is not bound to the form.
+     *
+     * The errors are attached to the field of the same name, unless a field is
+     * given: they are then all attached to it.
+     *
+     * @param array<string, ValidableError[]> $errors
+     */
+    public function addErrors(array $errors, ?string $field = null): void
+    {
+        foreach ($errors as $field_name => $field_errors) {
+            foreach ($field_errors as $field_error) {
+                $this->addError($field ?? $field_name, $field_error[0], $field_error[1]);
+            }
+        }
     }
 }

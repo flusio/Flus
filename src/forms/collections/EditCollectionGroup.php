@@ -83,12 +83,6 @@ class EditCollectionGroup extends BaseForm
             return;
         }
 
-        $group_errors = $group->errors(format: false);
-
-        foreach ($group_errors as $field_name => $field_errors) {
-            foreach ($field_errors as $field_error) {
-                $this->addError($field_name, $field_error[0], $field_error[1]);
-            }
-        }
+        $this->addErrors($group->errors(format: false));
     }
 }

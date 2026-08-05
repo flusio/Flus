@@ -134,6 +134,18 @@ class Router
         $router->addRoute('POST', '/collections/:id/delete', 'Collections#delete', 'delete collection');
         $router->addRoute('POST', '/collections/:id/follow', 'collections/Followers#create', 'follow collection');
         $router->addRoute('POST', '/collections/:id/unfollow', 'collections/Followers#delete', 'unfollow collection');
+        $router->addRoute(
+            'GET',
+            '/collections/:id/follow/edit',
+            'collections/Followers#edit',
+            'edit collection follow'
+        );
+        $router->addRoute(
+            'POST',
+            '/collections/:id/follow/edit',
+            'collections/Followers#update',
+            'update collection follow'
+        );
         $router->addRoute('GET', '/collections/:id/filter', 'collections/Filters#edit', 'edit collection filter');
         $router->addRoute('POST', '/collections/:id/filter', 'collections/Filters#update', 'update collection filter');
         $router->addRoute('GET', '/collections/:id/group', 'collections/Groups#edit', 'edit group collection');

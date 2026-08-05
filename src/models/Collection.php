@@ -393,6 +393,20 @@ class Collection
     }
 
     /**
+     * Return the number of streams of the given user in which this collection
+     * is a source.
+     *
+     * This is the same information as the number_streams computed property,
+     * for a collection that has been loaded on its own.
+     */
+    public function countStreamsByUser(User $user): int
+    {
+        return $this->memoize("count_streams_{$user->id}", function () use ($user): int {
+            return StreamToFollow::countByUserAndSource($user, $this);
+        });
+    }
+
+    /**
      * Return the topics attached to the current collection.
      *
      * @return Topic[]
@@ -569,6 +583,37 @@ class Collection
         $number_of_days = intval($diff_since_oldest_link->format('%a')) + 1;
 
         $this->publication_frequency_per_year = (int) round($count_links / $number_of_days * 365);
+    }
+
+    /**
+     * Return the time filter suggested to receive the links of this collection
+     * in the news.
+     *
+     * With the "normal" filter, a collection publishing more than one link a
+     * day would flood the news, while a collection publishing less than one
+     * link a week would often bring nothing.
+     *
+     * Above a few links a day, no filter can keep the news readable: the
+     * collection is better followed in a stream, so "none" is suggested.
+     */
+    public function suggestedTimeFilter(): string
+    {
+        if ($this->publication_frequency_per_year >= 5 * 365) {
+            // At least five links per day.
+            return 'none';
+        }
+
+        if ($this->publication_frequency_per_year >= 365) {
+            // At least one link per day.
+            return 'strict';
+        }
+
+        if ($this->publication_frequency_per_year >= 52) {
+            // At least one link per week.
+            return 'normal';
+        }
+
+        return 'all';
     }
 
     /**

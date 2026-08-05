@@ -65,4 +65,96 @@ class StreamToFollow
             'follow_id' => $follow->id,
         ]);
     }
+
+    /**
+     * Return the number of streams of the given user in which the source is
+     * attached.
+     */
+    public static function countByUserAndSource(User $user, Collection $source): int
+    {
+        $sql = <<<SQL
+            SELECT COUNT(*)
+            FROM streams_to_follows sf, followed_collections fc
+
+            WHERE sf.follow_id = fc.id
+            AND fc.user_id = :user_id
+            AND fc.collection_id = :source_id
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute([
+            'user_id' => $user->id,
+            'source_id' => $source->id,
+        ]);
+
+        return intval($statement->fetchColumn());
+    }
+
+    /**
+     * Attach the follow to the given streams, and detach it from the others.
+     *
+     * @param Stream[] $streams
+     */
+    public static function setStreams(FollowedCollection $follow, array $streams): void
+    {
+        // Make sure that the ids are unique to avoid trying to insert the same
+        // values twice.
+        $stream_ids = array_column($streams, 'id');
+        $stream_ids = array_unique($stream_ids);
+        $stream_ids = array_values($stream_ids);
+
+        $database = Database::get();
+        $database->beginTransaction();
+
+        if ($stream_ids) {
+            // First, delete all the streams_to_follow which aren't in the
+            // given list of ids.
+            $ids_as_question_marks = array_fill(0, count($stream_ids), '?');
+            $ids_as_question_marks = implode(', ', $ids_as_question_marks);
+
+            $sql = <<<SQL
+                DELETE FROM streams_to_follows
+                WHERE follow_id = ?
+                AND stream_id NOT IN ({$ids_as_question_marks})
+            SQL;
+
+            $statement = $database->prepare($sql);
+            $statement->execute([$follow->id, ...$stream_ids]);
+
+            // Then, insert the ids in the database. The unique index on
+            // (stream_id, follow_id) allows to insert the streams without
+            // checking first which ones are already attached.
+            $created_at = \Minz\Time::now()->format(Database\Column::DATETIME_FORMAT);
+            $values_as_question_marks = [];
+            $values = [];
+
+            foreach ($stream_ids as $stream_id) {
+                $values_as_question_marks[] = '(?, ?, ?)';
+                $values = array_merge($values, [$created_at, $stream_id, $follow->id]);
+            }
+
+            $values_placeholder = implode(', ', $values_as_question_marks);
+
+            $sql = <<<SQL
+                INSERT INTO streams_to_follows (created_at, stream_id, follow_id)
+                VALUES {$values_placeholder}
+                ON CONFLICT DO NOTHING
+            SQL;
+
+            $statement = $database->prepare($sql);
+            $statement->execute($values);
+        } else {
+            // No ids? Then just delete all the rows associated to the follow.
+            $sql = <<<SQL
+                DELETE FROM streams_to_follows
+                WHERE follow_id = ?
+            SQL;
+
+            $statement = $database->prepare($sql);
+            $statement->execute([$follow->id]);
+        }
+
+        $database->commit();
+    }
 }

@@ -1,0 +1,61 @@
+.streams-selector__search {
+    margin-bottom: var(--space-small);
+}
+
+.streams-selector__options {
+    max-height: 15rem;
+}
+
+/* Keep the (visually hidden) checkbox anchored in its option, so it doesn't
+ * offset the scroll of the container when focused. */
+.streams-selector__option {
+    position: relative;
+}
+
+.streams-selector__option input[type="checkbox"] + label {
+    padding: var(--space-smaller) var(--space-small);
+
+    background-color: var(--color-base);
+    border: 1px solid var(--color-grey-border);
+    border-radius: var(--border-radius);
+
+    transition:
+        background-color 0.2s ease-in-out,
+        border-color 0.2s ease-in-out;
+
+    cursor: pointer;
+    gap: var(--space-small);
+}
+
+.streams-selector__option input[type="checkbox"]:checked + label {
+    color: var(--color-accent-text-contrast);
+
+    background-color: var(--color-accent-bg-active);
+    border-color: transparent;
+}
+
+.streams-selector__option input[type="checkbox"] + label::before {
+    margin-right: 0;
+}
+
+.streams-selector__option input[type="checkbox"]:checked + label::before {
+    --checkbox-background-color: transparent;
+    --checkbox-border-color: transparent;
+}
+
+.streams-selector__image {
+    width: 2rem;
+    max-width: none;
+
+    background-color: var(--color-base);
+    border-radius: var(--border-radius);
+}
+
+.streams-selector__label {
+    overflow: hidden;
+
+    max-width: 15rem;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

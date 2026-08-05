@@ -74,4 +74,38 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(0, $collection->publication_frequency_per_year);
     }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('suggestedTimeFiltersProvider')]
+    public function testSuggestedTimeFilter(int $frequency_per_year, string $expected_time_filter): void
+    {
+        $collection = CollectionFactory::create([
+            'publication_frequency_per_year' => $frequency_per_year,
+        ]);
+
+        $time_filter = $collection->suggestedTimeFilter();
+
+        $this->assertSame($expected_time_filter, $time_filter);
+    }
+
+    /**
+     * @return array<array{int, string}>
+     */
+    public static function suggestedTimeFiltersProvider(): array
+    {
+        return [
+            // At least five links per day.
+            [18250, 'none'],
+            [1825, 'none'],
+            // At least one link per day, but less than five.
+            [1824, 'strict'],
+            [365, 'strict'],
+            // At least one link per week, but less than one per day.
+            [364, 'normal'],
+            [52, 'normal'],
+            // Less than one link per week.
+            [51, 'all'],
+            [1, 'all'],
+            [0, 'all'],
+        ];
+    }
 }

@@ -227,6 +227,30 @@ class Stream
     }
 
     /**
+     * List the streams in which the followed collection is a source.
+     *
+     * @return self[]
+     */
+    public static function listByFollow(FollowedCollection $follow): array
+    {
+        $sql = <<<SQL
+            SELECT s.*
+            FROM streams s, streams_to_follows sf
+
+            WHERE s.id = sf.stream_id
+            AND sf.follow_id = :follow_id
+        SQL;
+
+        $database = \Minz\Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute([
+            'follow_id' => $follow->id,
+        ]);
+
+        return self::fromDatabaseRows($statement->fetchAll());
+    }
+
+    /**
      * List the streams owned by the given user.
      *
      * The has_unread_links property is always set: it indicates whether the

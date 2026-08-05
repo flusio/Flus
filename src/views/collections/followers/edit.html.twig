@@ -1,0 +1,229 @@
+{% extends 'layouts/modal.html.twig' %}
+
+{% block title %}{{ t('Manage the subscription') }}{% endblock %}
+
+{% block body %}
+    <div class="wrapper wrapper--small wrapper--center flow flow--large">
+        <p class="text--center text--bold">
+            {{ collection.name() }}
+        </p>
+
+        <form method="post" action="{{ url('update collection follow', { id: collection.id }) }}" class="flow">
+            {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+            <div class="form-group">
+                <label for="time-filter">
+                    {{ t('Which links to receive in the news?') }}
+                </label>
+
+                {% if form.isInvalid('time_filter') %}
+                    <p id="time-filter-error" class="form-group__error">
+                        {{ t('Error:') }}
+                        {{ form.error('time_filter') }}
+                    </p>
+                {% endif %}
+
+                {% set time_filter_labels = {
+                    'none': t('No link'),
+                    'strict': t('The links published during the last 24 hours'),
+                    'normal': t('The links published during the last 7 days'),
+                    'all': t('All the published links'),
+                } %}
+                {% set suggested_time_filter = collection.suggestedTimeFilter %}
+
+                <select
+                    id="time-filter"
+                    name="time_filter"
+                    aria-describedby="time-filter-caption"
+                    {% if form.isInvalid('time_filter') %}
+                        aria-errormessage="time-filter-error"
+                        aria-invalid="true"
+                    {% endif %}
+                >
+                    {% for time_filter, label in time_filter_labels %}
+                        <option value="{{ time_filter }}" {{ form.time_filter === time_filter ? 'selected' : '' }}>
+                            {% if time_filter == suggested_time_filter %}
+                                {{ t('%s (recommended)', [label]) }}
+                            {% else %}
+                                {{ label }}
+                            {% endif %}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <p class="form-group__caption" id="time-filter-caption">
+                    {% if collection.publication_frequency_per_year == 0 %}
+                        {{ t('This source published nothing over the past year: you’ll receive its links if it starts publishing again.') }}
+                    {% else %}
+                        {{ t('The recommendation is based on the publication rate of this source (%s).', [
+                            collection.publication_frequency_per_year | format_publication_frequency
+                        ]) }}
+                    {% endif %}
+
+                    {% if suggested_time_filter == 'none' %}
+                        {{ t('It publishes too many links for the news: add it to a stream to keep up with it.') }}
+                    {% endif %}
+                </p>
+            </div>
+
+            <fieldset>
+                <legend>{{ t('In which streams to display this source?') }}</legend>
+
+                <div class="flow">
+                    {% if form.isInvalid('stream_ids') %}
+                        <p id="stream-ids-error" class="form-group__error">
+                            {{ t('Error:') }}
+                            {{ form.error('stream_ids') }}
+                        </p>
+                    {% endif %}
+
+                    {% if form.streams %}
+                        <div
+                            class="streams-selector"
+                            data-controller="streams-selector scroller"
+                            data-scroller-vertical-value="true"
+                            data-action="
+                                resize@window->scroller#refresh
+                                streams-selector:filtered->scroller#refresh
+                            "
+                        >
+                            {% if form.streams | length > 10 %}
+                                <input
+                                    type="search"
+                                    class="streams-selector__search"
+                                    placeholder="{{ t('Filter the streams…') }}"
+                                    aria-label="{{ t('Filter the streams') }}"
+                                    autocomplete="off"
+                                    data-streams-selector-target="search"
+                                    data-action="
+                                        input->streams-selector#filter
+                                        keydown.enter->streams-selector#filter:prevent
+                                    "
+                                >
+                            {% endif %}
+
+                            <div class="scroller scroller--vertical" data-scroller-target="viewport">
+                                <button
+                                    type="button"
+                                    class="button--icon scroller__button scroller__button--previous"
+                                    title="{{ t('Display the previous streams') }}"
+                                    data-scroller-target="previous"
+                                    data-action="scroller#previous"
+                                >
+                                    {{ icon('arrow-left', 'rotate90') }}
+
+                                    <span class="sr-only">
+                                        {{ t('Display the previous streams') }}
+                                    </span>
+                                </button>
+
+                                <div
+                                    class="scroller__strip scroller__strip--vertical streams-selector__options stack stack--gap-small"
+                                    data-scroller-target="strip"
+                                    data-action="scroll->scroller#refresh"
+                                >
+                                    {% for stream in form.streams %}
+                                        <div
+                                            class="streams-selector__option"
+                                            data-streams-selector-target="option"
+                                            data-name="{{ stream.name }}"
+                                        >
+                                            <input
+                                                type="checkbox"
+                                                id="stream-{{ stream.id }}"
+                                                name="stream_ids[]"
+                                                value="{{ stream.id }}"
+                                                {{ form.isStreamSelected(stream) ? 'checked' : '' }}
+                                                {% if form.isInvalid('stream_ids') %}
+                                                    aria-errormessage="stream-ids-error"
+                                                    aria-invalid="true"
+                                                {% endif %}
+                                            >
+
+                                            <label for="stream-{{ stream.id }}">
+                                                <span class="streams-selector__label">
+                                                    {{ stream.name }}
+                                                </span>
+
+                                                <img
+                                                    class="streams-selector__image"
+                                                    alt=""
+                                                    src="{{ url_media('covers', stream.image_filename, 'stream-card.png') }}"
+                                                >
+                                            </label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+
+                                <button
+                                    type="button"
+                                    class="button--icon scroller__button scroller__button--next"
+                                    title="{{ t('Display the next streams') }}"
+                                    data-scroller-target="next"
+                                    data-action="scroller#next"
+                                >
+                                    {{ icon('arrow-right', 'rotate90') }}
+
+                                    <span class="sr-only">
+                                        {{ t('Display the next streams') }}
+                                    </span>
+                                </button>
+                            </div>
+
+                            <p class="text--center text--secondary" data-streams-selector-target="empty" hidden>
+                                {{ t('No stream matches your search.') }}
+                            </p>
+                        </div>
+                    {% endif %}
+
+                    <div class="form-group">
+                        <label for="new-stream-name">
+                            {% if form.streams %}
+                                {{ t('Or create a stream') }}
+                            {% else %}
+                                {{ t('Create a stream') }}
+                            {% endif %}
+
+                            <span class="label__help">
+                                {{ t('(max. %d characters)', [form.stream_name_max_length]) }}
+                            </span>
+                        </label>
+
+                        {% if form.isInvalid('new_stream_name') %}
+                            <p id="new-stream-name-error" class="form-group__error">
+                                {{ t('Error:') }}
+                                {{ form.error('new_stream_name') }}
+                            </p>
+                        {% endif %}
+
+                        <input
+                            id="new-stream-name"
+                            name="new_stream_name"
+                            type="text"
+                            value="{{ form.new_stream_name }}"
+                            maxlength="{{ form.stream_name_max_length }}"
+                            autocomplete="off"
+                            aria-describedby="new-stream-name-caption"
+                            {% if form.isInvalid('new_stream_name') %}
+                                aria-errormessage="new-stream-name-error"
+                                aria-invalid="true"
+                            {% endif %}
+                        >
+
+                        <p class="form-group__caption" id="new-stream-name-caption">
+                            {{ t('The stream will be created with this source in it.') }}
+                        </p>
+                    </div>
+                </div>
+            </fieldset>
+
+            <div class="text--center">
+                <button type="submit" class="button--primary button--big">
+                    {{ t('Save changes') }}
+                </button>
+            </div>
+
+            <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}" />
+        </form>
+    </div>
+{% endblock %}

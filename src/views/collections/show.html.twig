@@ -1,6 +1,7 @@
 {% extends 'layouts/application.html.twig' %}
 
 {% set owner = collection.owner %}
+{% set is_alpha = app.user and app.user.isAlphaEnabled %}
 {% set is_following = app.user and app.user.isFollowing(collection.id) %}
 {% set is_shared = collection.shares | length > 0 %}
 {% set can_update = can(app.user, 'update', collection) %}
@@ -136,13 +137,20 @@
     <div class="panel panel--rounded stack stack--gap-small">
         {% if app.user %}
             {% if is_following %}
-                <form method="post" action="{{ url('unfollow collection', { id: collection.id }) }}">
-                    <button>
-                        {{ t('Unfollow') }}
-                    </button>
+                {{ include('collections/_unfollow_form.html.twig') }}
 
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\UnfollowCollection') }}">
-                </form>
+                {% if is_alpha %}
+                    <button
+                        data-controller="modal-opener"
+                        data-action="modal-opener#fetch"
+                        data-modal-opener-href-value="{{ url('edit collection follow', { id: collection.id }) }}"
+                        aria-haspopup="dialog"
+                        aria-controls="modal"
+                    >
+                        {{ icon('slider') }}
+                        {{ t('Manage the subscription') }}
+                    </button>
+                {% endif %}
             {% else %}
                 <form method="post" action="{{ url('follow collection', { id: collection.id }) }}">
                     <button class="button--primary">
@@ -187,7 +195,7 @@
             {% block items %}
                 {% import _self as item %}
 
-                {% if is_following %}
+                {% if is_following and not is_alpha %}
                     {{ item.modal(
                         url: url('edit collection filter', { id: collection.id }),
                         label: t('Adjust for the news'),
@@ -195,7 +203,7 @@
                     ) }}
                 {% endif %}
 
-                {% if can_update or (is_following and not app.user.isAlphaEnabled) %}
+                {% if can_update or (is_following and not is_alpha) %}
                     {{ item.modal(
                         url: url('edit group collection', { id: collection.id }),
                         label: t('Put in a group'),

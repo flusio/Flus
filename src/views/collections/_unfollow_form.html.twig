@@ -1,0 +1,25 @@
+{# Unfollowing deletes the follow, which removes the source from the streams
+ # as well: better warn the user. #}
+{% set count_streams = collection.countStreamsByUser(app.user) %}
+
+<form
+    method="post"
+    action="{{ url('unfollow collection', { id: collection.id }) }}"
+    {% if preserve_scroll ?? false %}data-turbo-preserve-scroll{% endif %}
+>
+    <button
+        class="{{ button_class ?? '' }}"
+        {% if count_streams > 0 %}
+            data-turbo-confirm="{{ t(
+                'Are you sure that you want to unfollow this source? It will be removed from %d stream.',
+                'Are you sure that you want to unfollow this source? It will be removed from %d streams.',
+                count_streams,
+                [count_streams],
+            ) }}"
+        {% endif %}
+    >
+        {{ t('Unfollow') }}
+    </button>
+
+    <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\UnfollowCollection') }}">
+</form>
