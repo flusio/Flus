@@ -1,4 +1,6 @@
 .scroller {
+    --scroller-color-shadow: var(--color-box-shadow);
+
     position: relative;
 }
 
@@ -25,18 +27,45 @@
 .scroller::before {
     left: 0;
 
-    background: linear-gradient(to right, var(--color-box-shadow), transparent);
+    background: radial-gradient(ellipse farthest-side at left center, var(--scroller-color-shadow), transparent);
 }
 
 .scroller::after {
     right: 0;
 
-    background: linear-gradient(to left, var(--color-box-shadow), transparent);
+    background: radial-gradient(ellipse farthest-side at right center, var(--scroller-color-shadow), transparent);
+}
+
+/* The vertical variant moves the shadows (and the buttons below) to the top
+ * and bottom edges. */
+.scroller--vertical::before,
+.scroller--vertical::after {
+    right: 0;
+    left: 0;
+
+    width: auto;
+    height: 1rem;
+}
+
+.scroller--vertical::before {
+    top: 0;
+    bottom: auto;
+
+    background: radial-gradient(ellipse farthest-side at center top, var(--scroller-color-shadow), transparent);
+}
+
+.scroller--vertical::after {
+    top: auto;
+    bottom: 0;
+
+    background: radial-gradient(ellipse farthest-side at center bottom, var(--scroller-color-shadow), transparent);
 }
 
 .scroller--overflow-left::before,
-.scroller--overflow-right::after {
-    opacity: 0.5;
+.scroller--overflow-right::after,
+.scroller--overflow-top::before,
+.scroller--overflow-bottom::after {
+    opacity: 1;
 }
 
 /* The buttons scrolling the strip by one page. They overlay its edges, on top
@@ -64,6 +93,32 @@
     right: var(--space-smaller);
 }
 
+/* In the vertical variant, the buttons overlay the top and bottom edges, and
+ * are centered horizontally. */
+.scroller--vertical .scroller__button {
+    top: auto;
+    right: auto;
+    left: 50%;
+
+    transform: translateX(-50%);
+}
+
+.scroller--vertical .scroller__button--previous {
+    top: var(--space-smaller);
+}
+
+.scroller--vertical .scroller__button--next {
+    bottom: var(--space-smaller);
+}
+
+.scroller__button:hover:not(:disabled) {
+    --button-background-color: var(--color-grey-bg-hover);
+}
+
+.scroller__button:active:not(:disabled) {
+    --button-background-color: var(--color-grey-bg-active);
+}
+
 .scroller__strip {
     position: relative;
 
@@ -73,6 +128,17 @@
     padding: var(--scroller-strip-padding, var(--space-smaller));
 
     scroll-snap-type: x proximity;
+}
+
+/* The vertical variant of the strip wraps its items and scrolls them along the
+ * vertical axis. It's up to the caller to cap its height, or it has nothing to
+ * scroll. */
+.scroller__strip--vertical {
+    overflow: hidden auto;
+
+    flex-wrap: wrap;
+
+    scroll-snap-type: y proximity;
 }
 
 @media (prefers-reduced-motion: no-preference) {

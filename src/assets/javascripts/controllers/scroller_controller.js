@@ -1,10 +1,15 @@
 import { Controller } from '@hotwired/stimulus';
 
-// Handle a strip of items that can be scrolled horizontally: it shows shadows
-// on the edges that can be scrolled, it moves the focus with the keyboard, and
-// it can be scrolled with previous/next buttons.
+// Handle a strip of items that can be scrolled: it shows shadows on the edges
+// that can be scrolled, it moves the focus with the keyboard, and it can be
+// scrolled with previous/next buttons.
+//
+// The strip is scrolled horizontally by default. Set the "vertical" value to
+// scroll it vertically.
 export default class extends Controller {
     static targets = ['viewport', 'strip', 'item', 'previous', 'next'];
+
+    static values = { vertical: Boolean };
 
     connect () {
         this.scrollToSelectedItem();
@@ -14,6 +19,14 @@ export default class extends Controller {
     // Show the shadows on the edges of the viewport (and enable the
     // navigation buttons) if the strip can be scrolled in that direction.
     refresh () {
+        if (this.verticalValue) {
+            this.refreshVertical();
+        } else {
+            this.refreshHorizontal();
+        }
+    }
+
+    refreshHorizontal () {
         const strip = this.stripTarget;
         const maxScrollLeft = strip.scrollWidth - strip.clientWidth;
 
@@ -24,12 +37,29 @@ export default class extends Controller {
         this.viewportTarget.classList.toggle('scroller--overflow-left', canScrollLeft);
         this.viewportTarget.classList.toggle('scroller--overflow-right', canScrollRight);
 
+        this.refreshButtons(canScrollLeft, canScrollRight);
+    }
+
+    refreshVertical () {
+        const strip = this.stripTarget;
+        const maxScrollTop = strip.scrollHeight - strip.clientHeight;
+
+        const canScrollUp = strip.scrollTop > 1;
+        const canScrollDown = strip.scrollTop < maxScrollTop - 1;
+
+        this.viewportTarget.classList.toggle('scroller--overflow-top', canScrollUp);
+        this.viewportTarget.classList.toggle('scroller--overflow-bottom', canScrollDown);
+
+        this.refreshButtons(canScrollUp, canScrollDown);
+    }
+
+    refreshButtons (canScrollToPrevious, canScrollToNext) {
         if (this.hasPreviousTarget) {
-            this.previousTarget.disabled = !canScrollLeft;
+            this.previousTarget.disabled = !canScrollToPrevious;
         }
 
         if (this.hasNextTarget) {
-            this.nextTarget.disabled = !canScrollRight;
+            this.nextTarget.disabled = !canScrollToNext;
         }
     }
 
@@ -46,7 +76,11 @@ export default class extends Controller {
 
         // Scroll by almost a full page, so an item stays visible from a page
         // to the next one.
-        strip.scrollBy({ left: direction * 0.8 * strip.clientWidth });
+        if (this.verticalValue) {
+            strip.scrollBy({ top: direction * 0.8 * strip.clientHeight });
+        } else {
+            strip.scrollBy({ left: direction * 0.8 * strip.clientWidth });
+        }
     }
 
     // Move the focus in the strip with the keyboard (roving tabindex): only
@@ -59,11 +93,14 @@ export default class extends Controller {
             return;
         }
 
+        const previousKey = this.verticalValue ? 'ArrowUp' : 'ArrowLeft';
+        const nextKey = this.verticalValue ? 'ArrowDown' : 'ArrowRight';
+
         let newIndex;
 
-        if (event.key === 'ArrowRight') {
+        if (event.key === nextKey) {
             newIndex = currentIndex + 1;
-        } else if (event.key === 'ArrowLeft') {
+        } else if (event.key === previousKey) {
             newIndex = currentIndex - 1;
         } else if (event.key === 'Home') {
             newIndex = 0;
@@ -94,15 +131,25 @@ export default class extends Controller {
         }
 
         // The position is computed from the bounding rects (and not from
-        // offsetLeft) as an item may be wrapped in a positioned element, which
-        // would then be its offset parent instead of the strip.
+        // offsetLeft/offsetTop) as an item may be wrapped in a positioned
+        // element, which would then be its offset parent instead of the strip.
         const stripRect = strip.getBoundingClientRect();
         const itemRect = selectedItem.getBoundingClientRect();
-        const itemPosition = itemRect.left - stripRect.left + strip.scrollLeft;
 
-        strip.scrollTo({
-            left: itemPosition - (strip.clientWidth - itemRect.width) / 2,
-            behavior: 'instant',
-        });
+        if (this.verticalValue) {
+            const itemPosition = itemRect.top - stripRect.top + strip.scrollTop;
+
+            strip.scrollTo({
+                top: itemPosition - (strip.clientHeight - itemRect.height) / 2,
+                behavior: 'instant',
+            });
+        } else {
+            const itemPosition = itemRect.left - stripRect.left + strip.scrollLeft;
+
+            strip.scrollTo({
+                left: itemPosition - (strip.clientWidth - itemRect.width) / 2,
+                behavior: 'instant',
+            });
+        }
     }
 };
