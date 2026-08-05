@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-08-05 10:13+0200\n"
-"PO-Revision-Date: 2026-08-05 10:13+0200\n"
+"POT-Creation-Date: 2026-08-05 11:30+0200\n"
+"PO-Revision-Date: 2026-08-05 11:30+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -1075,8 +1075,8 @@ msgid "Access"
 msgstr "Accès"
 
 #: views/collections/show.html.twig:184 views/links/_link.html.twig:215
-#: views/links/_link.html.twig:221 views/links/_link_row.html.twig:95
-#: views/links/_link_row.html.twig:101 views/links/show.html.twig:237
+#: views/links/_link.html.twig:221 views/links/_link_row.html.twig:99
+#: views/links/_link_row.html.twig:105 views/links/show.html.twig:237
 #: views/links/show.html.twig:241 views/news/index.html.twig:53
 #: views/news/index.html.twig:105 views/news/index.html.twig:150
 #: views/notes/_notepad.html.twig:27 views/notes/_notepad.html.twig:33
@@ -1104,12 +1104,12 @@ msgid "Copy link to Web feed"
 msgstr "Copier le lien du flux Web"
 
 #: views/collections/show.html.twig:224 views/news/_popup_actions.html.twig:21
-#: views/streams/_popup_actions.html.twig:27
+#: views/streams/_popup_actions.html.twig:28
 msgid "Mark all as read"
 msgstr "Tout marquer comme lu"
 
 #: views/collections/show.html.twig:231 views/news/_popup_actions.html.twig:41
-#: views/streams/_popup_actions.html.twig:47
+#: views/streams/_popup_actions.html.twig:48
 msgid "Ignore the links"
 msgstr "Ignorer les liens"
 
@@ -1560,7 +1560,7 @@ msgstr "Vous avez lu ce lien."
 msgid "You marked this link to be read."
 msgstr "Vous avez marqué ce lien à lire."
 
-#: views/links/_link.html.twig:162 views/links/_link_row.html.twig:82
+#: views/links/_link.html.twig:162 views/links/_link_row.html.twig:86
 #: views/links/show.html.twig:125
 msgid "ongoing synchronisation…"
 msgstr "synchronisation en cours…"
@@ -1578,15 +1578,15 @@ msgstr "Bloc-note"
 msgid "hidden"
 msgstr "masqué"
 
-#: views/links/_link.html.twig:231 views/links/_link_row.html.twig:111
+#: views/links/_link.html.twig:231 views/links/_link_row.html.twig:115
 msgid "Ignore the link"
 msgstr "Ignorer le lien"
 
-#: views/links/_link.html.twig:242 views/links/_link_row.html.twig:122
+#: views/links/_link.html.twig:242 views/links/_link_row.html.twig:126
 msgid "Copy the external link"
 msgstr "Copier le lien externe"
 
-#: views/links/_link.html.twig:248 views/links/_link_row.html.twig:128
+#: views/links/_link.html.twig:248 views/links/_link_row.html.twig:132
 #: views/links/show.html.twig:228
 msgid "Share on Mastodon"
 msgstr "Partager vers Mastodon"
@@ -1600,7 +1600,7 @@ msgid "Are you sure that you want to delete this link?"
 msgstr "Êtes-vous sur·e de vouloir supprimer ce lien ?"
 
 #: views/links/_link.html.twig:297 views/links/_link.html.twig:300
-#: views/links/_link_row.html.twig:137 views/links/_link_row.html.twig:140
+#: views/links/_link_row.html.twig:141 views/links/_link_row.html.twig:144
 #: views/links/show.html.twig:186
 msgid "Mark as read"
 msgstr "Marquer comme lu"
@@ -1610,10 +1610,14 @@ msgid "Remove from read list"
 msgstr "Retirer des liens lus"
 
 #: views/links/_link.html.twig:327 views/links/_link.html.twig:330
-#: views/links/_link_row.html.twig:154 views/links/_link_row.html.twig:157
+#: views/links/_link_row.html.twig:158 views/links/_link_row.html.twig:161
 #: views/links/show.html.twig:197
 msgid "Read later"
 msgstr "Lire plus tard"
+
+#: views/links/_link_row.html.twig:79
+msgid "You ignored this link."
+msgstr "Vous avez ignoré ce lien."
 
 #: views/links/_origin.html.twig:7
 #, php-format
@@ -2323,12 +2327,12 @@ msgid "Didn’t receive the email? Resend it"
 msgstr "Courriel non reçu ? Renvoyer"
 
 #: views/news/_popup_actions.html.twig:30
-#: views/streams/_popup_actions.html.twig:36
+#: views/streams/_popup_actions.html.twig:37
 msgid "Read the links later"
 msgstr "Lire les liens plus tard"
 
 #: views/news/_popup_actions.html.twig:46
-#: views/streams/_popup_actions.html.twig:52
+#: views/streams/_popup_actions.html.twig:53
 msgid ""
 "The links will no longer be counted as unread and won’t be suggested in your "
 "news. Are you sure?"
@@ -2957,7 +2961,7 @@ msgstr "Afficher les jours précédents"
 msgid "Date"
 msgstr "Date"
 
-#: views/streams/_filters.html.twig:57 views/streams/_filters.html.twig:232
+#: views/streams/_filters.html.twig:57 views/streams/_filters.html.twig:247
 #, php-format
 msgid "%s: %d link"
 msgid_plural "%s: %d links"
@@ -3002,7 +3006,11 @@ msgstr "Statut de lecture :"
 msgid "Unread"
 msgstr "Non lus"
 
-#: views/streams/_filters.html.twig:220
+#: views/streams/_filters.html.twig:226
+msgid "Include the ignored links"
+msgstr "Inclure les liens ignorés"
+
+#: views/streams/_filters.html.twig:235
 #, php-format
 msgid "Sources (%d)"
 msgstr "Sources (%d)"

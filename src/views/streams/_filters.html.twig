@@ -211,6 +211,21 @@
                 </div>
             {% endfor %}
         </div>
+
+        <div class="cols cols--always cols--center">
+            <input
+                type="checkbox"
+                id="stream-filter-with-dismissed"
+                name="with_dismissed"
+                value="1"
+                {{ stream_view.with_dismissed ? 'checked' : '' }}
+                data-action="change->stream#submit"
+            >
+
+            <label for="stream-filter-with-dismissed">
+                {{ t('Include the ignored links') }}
+            </label>
+        </div>
     </div>
 
     <div class="filters__section flow flow--small">

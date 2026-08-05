@@ -27,6 +27,7 @@ trait InStreams
      *     days?: int,
      *     source?: ?Collection,
      *     status?: string,
+     *     with_dismissed?: bool,
      *     query?: ?Query,
      *     created_before?: ?\DateTimeImmutable,
      * } $options
@@ -41,6 +42,7 @@ trait InStreams
             'days' => 1,
             'source' => null,
             'status' => 'all',
+            'with_dismissed' => false,
             'query' => null,
             'created_before' => null,
         ];
@@ -52,7 +54,7 @@ trait InStreams
             return [];
         }
 
-        $user_of_statuses = $options['status'] !== 'all' ? $options['context_user'] : null;
+        $user_of_statuses = self::needsUrlStatuses($options) ? $options['context_user'] : null;
         list($sql_join, $parameters) = self::buildStreamJoin($user_of_statuses);
         list($sql_where, $where_parameters) = self::buildStreamWhere($sources, $options);
         $parameters = array_merge($parameters, $where_parameters);
@@ -101,9 +103,11 @@ trait InStreams
         ];
         $options = array_merge($default_options, $options);
         // The counts per day are the ones of the whole activity of the stream:
-        // they must not depend on the other filters.
+        // they must not depend on the other filters. The dismissed links are
+        // counted in the total (they are excluded from the unread count below).
         $options['source'] = null;
         $options['status'] = 'all';
+        $options['with_dismissed'] = true;
         $options['query'] = null;
         $options['created_before'] = null;
 
@@ -162,14 +166,16 @@ trait InStreams
     /**
      * Return the counts of links of the given stream, per source.
      *
-     * The counts are the numbers of links matching the given dates, status and
-     * query (the status is ignored if no context user is given).
+     * The counts are the numbers of links matching the given dates, status,
+     * with_dismissed and query options (the status and with_dismissed options
+     * are ignored if no context user is given).
      *
      * @param array{
      *     context_user?: ?User,
      *     at?: \DateTimeImmutable,
      *     days?: int,
      *     status?: string,
+     *     with_dismissed?: bool,
      *     query?: ?Query,
      * } $options
      *
@@ -182,6 +188,7 @@ trait InStreams
             'at' => \Minz\Time::now(),
             'days' => 1,
             'status' => 'all',
+            'with_dismissed' => false,
             'query' => null,
         ];
         $options = array_merge($default_options, $options);
@@ -194,7 +201,7 @@ trait InStreams
             return [];
         }
 
-        $user_of_statuses = $options['status'] !== 'all' ? $options['context_user'] : null;
+        $user_of_statuses = self::needsUrlStatuses($options) ? $options['context_user'] : null;
         list($sql_join, $parameters) = self::buildStreamJoin($user_of_statuses);
         list($sql_where, $where_parameters) = self::buildStreamWhere($sources, $options);
         $parameters = array_merge($parameters, $where_parameters);
@@ -251,6 +258,9 @@ trait InStreams
             'at' => $options['at'] ?? \Minz\Time::now(),
             'days' => $options['days'] ?? 1,
             'status' => 'unread',
+            // The "unread" status already excludes the dismissed links: no
+            // need for a redundant clause.
+            'with_dismissed' => true,
             'query' => null,
             'created_before' => null,
         ];
@@ -320,6 +330,20 @@ trait InStreams
     }
 
     /**
+     * Return whether the url_statuses of the context user are needed to filter
+     * the links of a stream.
+     *
+     * @param array{
+     *     status: string,
+     *     with_dismissed: bool,
+     * } $options
+     */
+    private static function needsUrlStatuses(array $options): bool
+    {
+        return $options['status'] !== 'all' || !$options['with_dismissed'];
+    }
+
+    /**
      * Return the joins to add to the queries over the links of a stream.
      *
      * The url_statuses are joined only if a user is given. The :user_id
@@ -359,6 +383,7 @@ trait InStreams
      *     at: \DateTimeImmutable,
      *     days: int,
      *     status: string,
+     *     with_dismissed: bool,
      *     query: ?Query,
      *     created_before: ?\DateTimeImmutable,
      * } $options
@@ -412,6 +437,13 @@ trait InStreams
             }
         }
 
+        // Create the dismissed clause to hide the links that the user ignored,
+        // unless they are explicitly included.
+        $dismissed_clause = '';
+        if ($options['context_user'] && !$options['with_dismissed']) {
+            $dismissed_clause = 'AND us.dismissed_at IS NULL';
+        }
+
         // Create the search clause to limit the links matching the query.
         $search_clause = '';
         if ($options['query']) {
@@ -438,6 +470,7 @@ trait InStreams
             AND lc.created_at >= :at_start AND lc.created_at <= :at_end
 
             {$status_clause}
+            {$dismissed_clause}
             {$search_clause}
             {$created_before_clause}
         SQL;

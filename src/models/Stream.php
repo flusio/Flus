@@ -173,6 +173,7 @@ class Stream
      *     days?: int,
      *     source?: ?Collection,
      *     status?: string,
+     *     with_dismissed?: bool,
      *     query?: ?search_engine\Query,
      *     created_before?: ?\DateTimeImmutable,
      * } $options
@@ -204,6 +205,7 @@ class Stream
      *     at?: \DateTimeImmutable,
      *     days?: int,
      *     status?: string,
+     *     with_dismissed?: bool,
      *     query?: ?search_engine\Query,
      * } $options
      *

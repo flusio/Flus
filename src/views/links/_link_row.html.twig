@@ -74,6 +74,10 @@
                 {% if has_read_later %}
                     &nbsp;<span title="{{ t('You marked this link to be read.') }}">{{ icon('bookmark') }}</span>
                 {% endif %}
+
+                {% if is_dismissed %}
+                    &nbsp;<span title="{{ t('You ignored this link.') }}">{{ icon('times') }}</span>
+                {% endif %}
             </p>
 
             {% if not link.fetched_at %}

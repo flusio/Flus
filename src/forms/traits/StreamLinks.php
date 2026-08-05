@@ -24,6 +24,9 @@ trait StreamLinks
     #[Form\Field]
     public string $status = 'all';
 
+    #[Form\Field]
+    public bool $with_dismissed = false;
+
     #[Form\Field(transform: 'trim')]
     public string $q = '';
 
@@ -61,6 +64,7 @@ trait StreamLinks
             'days' => $this->days,
             'source' => $source,
             'status' => $status,
+            'with_dismissed' => $this->with_dismissed,
             'query' => $search_query,
             'created_before' => $this->before ?? \Minz\Time::now(),
         ]);

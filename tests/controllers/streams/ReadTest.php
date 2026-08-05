@@ -54,6 +54,61 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($origin, $new_link->origin);
     }
 
+    public function testCreateSkipsDismissedLinks(): void
+    {
+        $date = new \DateTimeImmutable('2024-03-25');
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link], at: $date);
+        $stream->addSource($source);
+        $user->markAsDismissed($link);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/read", [
+            'csrf_token' => $this->csrfToken(forms\streams\MarkStreamAsRead::class),
+            'at' => $date->format('Y-m-d'),
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertFalse($user->hasRead($link), 'The link should not be read.');
+    }
+
+    public function testCreateMarksDismissedLinksAsReadIfRequested(): void
+    {
+        $date = new \DateTimeImmutable('2024-03-25');
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link], at: $date);
+        $stream->addSource($source);
+        $user->markAsDismissed($link);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/read", [
+            'csrf_token' => $this->csrfToken(forms\streams\MarkStreamAsRead::class),
+            'at' => $date->format('Y-m-d'),
+            'with_dismissed' => '1',
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertTrue($user->hasRead($link), 'The link should be read.');
+    }
+
     public function testCreateRemovesLinksFromNews(): void
     {
         $date = new \DateTimeImmutable('2024-03-25');

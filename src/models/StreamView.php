@@ -27,6 +27,12 @@ class StreamView
     public readonly string $status;
 
     /**
+     * Whether the links that the user dismissed are displayed. They are hidden
+     * by default.
+     */
+    public readonly bool $with_dismissed;
+
+    /**
      * The search as typed by the user, kept to display it back in the filters.
      */
     public readonly string $query;
@@ -51,6 +57,7 @@ class StreamView
         int $days = 1,
         ?Collection $source = null,
         string $status = 'all',
+        bool $with_dismissed = false,
         string $query = '',
     ) {
         $period = $this->period();
@@ -71,6 +78,7 @@ class StreamView
         $this->at = $at;
         $this->days = $days;
         $this->status = $status;
+        $this->with_dismissed = $with_dismissed;
         $this->query = $query;
         $this->search_query = search_engine\Query::fromStringOrNull($query);
         $this->rendered_at = \Minz\Time::now();
@@ -93,10 +101,11 @@ class StreamView
         $at = $request->parameters->getDatetime('at', $today, 'Y-m-d');
         $days = $request->parameters->getInteger('days', 1);
         $status = $request->parameters->getString('status', 'all');
+        $with_dismissed = $request->parameters->getBoolean('with_dismissed');
         $source = Collection::loadFromRequest($request, parameter: 'source');
         $query = $request->parameters->getString('q', '');
 
-        return new self($stream, $context_user, $at, $days, $source, $status, $query);
+        return new self($stream, $context_user, $at, $days, $source, $status, $with_dismissed, $query);
     }
 
     public function isAt(\DateTimeImmutable $at): bool
@@ -155,6 +164,7 @@ class StreamView
             'days' => $this->days,
             'source' => $this->source,
             'status' => $this->status,
+            'with_dismissed' => $this->with_dismissed,
             'query' => $this->search_query,
         ]);
 
@@ -177,6 +187,7 @@ class StreamView
                 'at' => $this->at,
                 'days' => $this->days,
                 'status' => $this->status,
+                'with_dismissed' => $this->with_dismissed,
                 'query' => $this->search_query,
             ]);
 

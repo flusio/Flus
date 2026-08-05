@@ -14,6 +14,7 @@
 
 {% set default_params = {
     status: stream_view.status,
+    with_dismissed: stream_view.with_dismissed ? '1' : '',
     q: stream_view.query,
     before: stream_view.rendered_at.format('Y-m-d H:i:sP'),
 } %}

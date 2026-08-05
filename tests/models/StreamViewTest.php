@@ -532,6 +532,94 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_3->id, $source_group->links[0]->id);
     }
 
+    public function testLinksTimelineHidesDismissedLinks(): void
+    {
+        $date = $this->fakeDateInPeriod();
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link_1 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $link_2 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link_1, $link_2], at: $date);
+        $stream->addSource($source);
+        $user->markAsDismissed($link_1);
+        $stream_view = new StreamView($stream, $user, at: $date);
+
+        $links_timeline = $stream_view->linksTimeline();
+
+        $links = $this->linksOfTimeline($links_timeline);
+        $this->assertSame(1, count($links));
+        $this->assertSame($link_2->id, $links[0]->id);
+    }
+
+    public function testLinksTimelineCanListDismissedLinks(): void
+    {
+        $date = $this->fakeDateInPeriod();
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link_1 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $link_2 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link_1, $link_2], at: $date);
+        $stream->addSource($source);
+        $user->markAsDismissed($link_1);
+        $stream_view = new StreamView($stream, $user, at: $date, with_dismissed: true);
+
+        $links_timeline = $stream_view->linksTimeline();
+
+        $links = $this->linksOfTimeline($links_timeline);
+        $this->assertSame(2, count($links));
+    }
+
+    public function testLinksTimelineHidesDismissedLinksWithUnreadStatus(): void
+    {
+        // A dismissed link is never unread: including the dismissed links has
+        // no effect on the "unread" status.
+        $date = $this->fakeDateInPeriod();
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link_1 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $link_2 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link_1, $link_2], at: $date);
+        $stream->addSource($source);
+        $user->markAsDismissed($link_1);
+        $stream_view = new StreamView($stream, $user, at: $date, status: 'unread', with_dismissed: true);
+
+        $links_timeline = $stream_view->linksTimeline();
+
+        $links = $this->linksOfTimeline($links_timeline);
+        $this->assertSame(1, count($links));
+        $this->assertSame($link_2->id, $links[0]->id);
+    }
+
     public function testLinksTimelineCanListLinksByQuery(): void
     {
         $date = $this->fakeDateInPeriod();
@@ -959,6 +1047,38 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $sources_and_counts_read_later[0][1]);
     }
 
+    public function testCountedSourcesDoesNotCountDismissedLinks(): void
+    {
+        $date = $this->fakeDateInPeriod();
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link_1 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $link_2 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link_1, $link_2], at: $date);
+        $stream->addSource($source);
+        $user->markAsDismissed($link_1);
+        $stream_view = new StreamView($stream, $user, at: $date);
+        $stream_view_with_dismissed = new StreamView($stream, $user, at: $date, with_dismissed: true);
+
+        $sources_and_counts = $stream_view->countedSources();
+        $sources_and_counts_with_dismissed = $stream_view_with_dismissed->countedSources();
+
+        $this->assertSame(1, count($sources_and_counts));
+        $this->assertSame(1, $sources_and_counts[0][1]);
+        $this->assertSame(1, count($sources_and_counts_with_dismissed));
+        $this->assertSame(2, $sources_and_counts_with_dismissed[0][1]);
+    }
+
     public function testCountedSourcesCountsOnlyLinksMatchingTheQuery(): void
     {
         $date = $this->fakeDateInPeriod();
@@ -1214,6 +1334,37 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $count = $stream_view->countByDay($date);
 
         $this->assertSame(2, $count);
+    }
+
+    public function testCountByDayCountsDismissedLinks(): void
+    {
+        // The day picker displays the whole activity of the stream: its counts
+        // must not depend on the dismissed links being displayed or not.
+        $date = $this->fakeDateInPeriod();
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link_1 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $link_2 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link_1, $link_2], at: $date);
+        $stream->addSource($source);
+        $user->markAsDismissed($link_1);
+        $stream_view = new StreamView($stream, $user, at: $date);
+
+        $count = $stream_view->countByDay($date);
+        $count_unread = $stream_view->countUnreadByDay($date);
+
+        $this->assertSame(2, $count);
+        $this->assertSame(1, $count_unread);
     }
 
     public function testCountUnreadByDayReturnsNumberOfUnreadLinksOnGivenDay(): void

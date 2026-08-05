@@ -234,6 +234,62 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $link_title);
     }
 
+    public function testShowHidesDismissedLinks(): void
+    {
+        $user = $this->login();
+        /** @var string */
+        $link_title = $this->fake('words', 3, true);
+        $feed = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link = LinkFactory::create([
+            'user_id' => $feed->user_id,
+            'title' => $link_title,
+            'is_hidden' => false,
+        ]);
+        $feed->addLinks([$link], at: \Minz\Time::now());
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $stream->addSource($feed);
+        $user->markAsDismissed($link);
+
+        $response = $this->appRun('GET', "/streams/{$stream->id}");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseNotContains($response, $link_title);
+    }
+
+    public function testShowDisplaysDismissedLinksIfRequested(): void
+    {
+        $user = $this->login();
+        /** @var string */
+        $link_title = $this->fake('words', 3, true);
+        $feed = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link = LinkFactory::create([
+            'user_id' => $feed->user_id,
+            'title' => $link_title,
+            'is_hidden' => false,
+        ]);
+        $feed->addLinks([$link], at: \Minz\Time::now());
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $stream->addSource($feed);
+        $user->markAsDismissed($link);
+
+        $response = $this->appRun('GET', "/streams/{$stream->id}", [
+            'with_dismissed' => '1',
+        ]);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $link_title);
+    }
+
     public function testShowFailsIfStreamDoesNotExist(): void
     {
         $this->login();
