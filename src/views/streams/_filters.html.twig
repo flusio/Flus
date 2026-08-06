@@ -176,10 +176,11 @@
             value="{{ stream_view.query }}"
             autocomplete="off"
             placeholder="{{ t('Words or URL') }}"
+            data-controller="morph"
             data-action="
                 input->stream#searchQuery
                 search->stream#submitForm
-                turbo:before-morph-attribute->stream#preserveTypedValue
+                turbo:before-morph-attribute->morph#preserveTypedValue
             "
         >
     </div>

@@ -81,20 +81,6 @@ export default class extends Controller {
         this.searchTimeout = setTimeout(() => this.submit(), SEARCH_DELAY);
     }
 
-    preserveTypedValue (event) {
-        // The visits are rendered with morphing, which overwrites the value of
-        // the inputs with the one rendered by the server. The user keeps
-        // typing while a visit is in flight: the characters typed meanwhile
-        // would be lost. Keep the value of the input being typed in.
-        if (event.detail.attributeName !== 'value') {
-            return;
-        }
-
-        if (event.target === document.activeElement) {
-            event.preventDefault();
-        }
-    }
-
     press (buttons, pressedButton) {
         buttons.forEach((button) => {
             button.setAttribute('aria-pressed', button === pressedButton ? 'true' : 'false');
