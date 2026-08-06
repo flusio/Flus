@@ -10,6 +10,7 @@ import CollectionsSelectorController from './controllers/collections_selector_co
 import ColorSchemeController from './controllers/color_scheme_controller.js';
 import CopyToClipboardController from './controllers/copy_to_clipboard_controller.js';
 import CsrfController from './controllers/csrf_controller.js';
+import FilterController from './controllers/filter_controller.js';
 import FormFileController from './controllers/form_file_controller.js';
 import GroupSelectorController from './controllers/group_selector_controller.js';
 import InputPasswordController from './controllers/input_password_controller.js';
@@ -38,6 +39,7 @@ application.register('collections-selector', CollectionsSelectorController);
 application.register('color-scheme', ColorSchemeController);
 application.register('copy-to-clipboard', CopyToClipboardController);
 application.register('csrf', CsrfController);
+application.register('filter', FilterController);
 application.register('form-file', FormFileController);
 application.register('group-selector', GroupSelectorController);
 application.register('input-password', InputPasswordController);

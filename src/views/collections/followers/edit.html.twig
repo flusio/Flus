@@ -80,11 +80,11 @@
                     {% if form.streams %}
                         <div
                             class="streams-selector flow flow--smaller"
-                            data-controller="streams-selector scroller"
+                            data-controller="streams-selector filter scroller"
                             data-scroller-vertical-value="true"
                             data-action="
                                 resize@window->scroller#refresh
-                                streams-selector:filtered->scroller#refresh
+                                filter:filtered->scroller#refresh
                             "
                         >
                             {% if form.streams | length > 10 %}
@@ -94,10 +94,10 @@
                                     placeholder="{{ t('Filter the streams…') }}"
                                     aria-label="{{ t('Filter the streams') }}"
                                     autocomplete="off"
-                                    data-streams-selector-target="search"
+                                    data-filter-target="search"
                                     data-action="
-                                        input->streams-selector#filter
-                                        keydown.enter->streams-selector#filter:prevent
+                                        input->filter#filter
+                                        keydown.enter->filter#filter:prevent
                                     "
                                 >
                             {% endif %}
@@ -126,7 +126,7 @@
                                     {% for stream in form.streams %}
                                         <div
                                             class="streams-selector__option"
-                                            data-streams-selector-target="option"
+                                            data-filter-target="item"
                                             data-name="{{ stream.name }}"
                                         >
                                             <input
@@ -174,7 +174,7 @@
                                 </button>
                             </div>
 
-                            <p class="text--center text--secondary" data-streams-selector-target="empty" hidden>
+                            <p class="text--center text--secondary" data-filter-target="empty" hidden>
                                 {{ t('No stream matches your search.') }}
                             </p>
 
