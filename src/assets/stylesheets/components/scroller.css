@@ -1,5 +1,6 @@
 .scroller {
     --scroller-color-shadow: var(--color-box-shadow);
+    --scroller-color-line: var(--color-grey-line);
 
     position: relative;
 }
@@ -19,6 +20,8 @@
 
     opacity: 0;
 
+    border: 0 solid var(--scroller-color-line);
+
     transition: opacity 0.2s ease-in-out;
 
     pointer-events: none;
@@ -28,12 +31,14 @@
     left: 0;
 
     background: radial-gradient(ellipse farthest-side at left center, var(--scroller-color-shadow), transparent);
+    border-left-width: 1px;
 }
 
 .scroller::after {
     right: 0;
 
     background: radial-gradient(ellipse farthest-side at right center, var(--scroller-color-shadow), transparent);
+    border-right-width: 1px;
 }
 
 /* The vertical variant moves the shadows (and the buttons below) to the top
@@ -45,6 +50,8 @@
 
     width: auto;
     height: 1rem;
+
+    border-width: 0;
 }
 
 .scroller--vertical::before {
@@ -52,6 +59,7 @@
     bottom: auto;
 
     background: radial-gradient(ellipse farthest-side at center top, var(--scroller-color-shadow), transparent);
+    border-top-width: 1px;
 }
 
 .scroller--vertical::after {
@@ -59,6 +67,7 @@
     bottom: 0;
 
     background: radial-gradient(ellipse farthest-side at center bottom, var(--scroller-color-shadow), transparent);
+    border-bottom-width: 1px;
 }
 
 .scroller--overflow-left::before,
