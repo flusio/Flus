@@ -1,50 +1,75 @@
-.sources {
-    position: relative;
-}
-
 .sources__selector {
-    position: relative;
+    border: 1px solid var(--color-grey-line);
 }
 
 .sources__selector-header {
-    position: sticky;
-    top: 0;
-
-    padding-top: var(--space-smaller);
-    padding-bottom: var(--space-smaller);
-
-    background-color: var(--color-background);
+    list-style: none;
+    cursor: pointer;
 }
 
-.sources__submit {
-    position: sticky;
-    right: 0;
-    bottom: calc(var(--layout-header-height) + var(--space-smaller));
-    left: 0;
-
-    max-width: var(--width-large);
-    margin-right: auto;
-    margin-left: auto;
-    padding: var(--space-medium);
-
-    text-align: right;
-
-    background-color: var(--color-accent-bg-subtle);
-    border-radius: var(--border-radius);
+.sources__selector-header::-webkit-details-marker {
+    display: none;
 }
 
-@media (min-width: 800px) {
-    .sources__submit {
-        bottom: var(--space-smaller);
+@media (prefers-reduced-motion: no-preference) {
+    .sources__selector-chevron {
+        transition: transform 0.4s ease-in-out;
     }
 }
 
+/* The chevron points down when the column is open, right when it is collapsed.
+ * The `open` attribute is only removed at the end of the closing animation, so
+ * the state of the controller turns the chevron at the same time as the column
+ * folds. */
+.sources__selector[data-details-collapsed-value="true"] .sources__selector-chevron,
+.sources__selector:not([open]) .sources__selector-chevron {
+    transform: rotate(-90deg);
+}
+
+/* The height is capped on the body rather than on the list alone: the filters
+ * are part of the cap, so two selectors put side by side end at the same height
+ * even when one of them displays more filters than the other (or none at all).
+ * The list then takes whatever space the filters leave. */
+.sources__selector-body {
+    display: flex;
+
+    max-height: min(70vh, 40rem);
+
+    flex-direction: column;
+
+    gap: var(--space-small);
+}
+
+.sources__selector-filters {
+    flex-shrink: 0;
+}
+
+.sources__selector-body > .scroller {
+    display: flex;
+
+    min-height: 0;
+
+    flex-direction: column;
+}
+
+.sources__selector-container {
+    min-height: 0;
+
+    flex: 1 1 auto;
+}
+
 .source {
-    padding: var(--space-medium);
+    padding: var(--space-small);
 
     background-color: var(--color-base);
     border: 1px solid var(--color-grey-line);
     border-radius: var(--border-radius);
+}
+
+.source__content {
+    min-width: 0;
+
+    overflow-wrap: anywhere;
 }
 
 .source__image {

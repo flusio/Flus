@@ -19,6 +19,10 @@ export default class extends Controller {
     // Show the shadows on the edges of the viewport (and enable the
     // navigation buttons) if the strip can be scrolled in that direction.
     refresh () {
+        if (!this.hasStripTarget) {
+            return;
+        }
+
         if (this.verticalValue) {
             this.refreshVertical();
         } else {
@@ -123,6 +127,10 @@ export default class extends Controller {
     }
 
     scrollToSelectedItem () {
+        if (!this.hasStripTarget) {
+            return;
+        }
+
         const strip = this.stripTarget;
         const selectedItem = strip.querySelector('[aria-pressed="true"]');
 

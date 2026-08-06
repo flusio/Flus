@@ -1,0 +1,133 @@
+{% set action = action ?? null %}
+{% set with_flags = with_flags ?? false %}
+{% set frequency = frequency ?? null %}
+
+{% set filterable = sources | length > 10 %}
+
+<details
+    class="sources__selector panel panel--rounded flow flow--small"
+    open
+    data-controller="filter morph details scroller focus"
+    data-morph-preserve-value="open data-details-collapsed-value"
+    data-scroller-vertical-value="true"
+    data-action="
+        turbo:morph@document->filter#filter
+        turbo:before-morph-attribute->morph#preserveAttributes
+        filter:filtered->scroller#refresh
+        resize@window->scroller#refresh
+        submit->focus#remember
+        turbo:render@document->focus#restore
+    "
+>
+    <summary
+        class="sources__selector-header cols cols--always cols--center cols--gap-small"
+        data-focus-target="fallback"
+        data-action="click->details#toggle"
+    >
+        {{ icon('angle-down', 'sources__selector-chevron') }}
+
+        <h2 class="col--extend text--normal">{{ title }}</h2>
+
+        <span class="stack stack--gap">
+            <span>
+                {{ t('%d source', '%d sources', sources | length, [sources | length]) }}
+            </span>
+
+            {% if frequency is not null %}
+                <span title="{{ t('Publication frequency') }}">
+                    {{ icon('frequency') }}
+                    {{ frequency | format_publication_frequency }}
+                </span>
+            {% endif %}
+        </span>
+    </summary>
+
+    {% if sources %}
+        <div class="sources__selector-body">
+            {% if filterable %}
+                <div class="sources__selector-filters flow flow--small" id="{{ id }}-filters" data-turbo-permanent>
+                    <input
+                        type="search"
+                        placeholder="{{ t('Filter the sources…') }}"
+                        aria-label="{{ t('Filter the sources') }}"
+                        autocomplete="off"
+                        data-filter-target="search"
+                        data-action="input->filter#filter"
+                    >
+
+                    {% if with_flags %}
+                        <div>
+                            <input
+                                type="checkbox"
+                                id="{{ id }}-flag-without-stream"
+                                data-filter-target="flag"
+                                data-flag="without-stream"
+                                data-action="filter#filter"
+                            >
+
+                            <label for="{{ id }}-flag-without-stream">
+                                {{ t('Only the sources in no stream') }}
+                            </label>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            <div class="scroller scroller--vertical" data-scroller-target="viewport">
+                <button
+                    type="button"
+                    class="button--icon scroller__button scroller__button--previous"
+                    title="{{ t('Display the previous sources') }}"
+                    data-scroller-target="previous"
+                    data-action="scroller#previous"
+                    disabled
+                >
+                    {{ icon('arrow-left', 'rotate90') }}
+
+                    <span class="sr-only">
+                        {{ t('Display the previous sources') }}
+                    </span>
+                </button>
+
+                <div
+                    class="scroller__strip scroller__strip--vertical sources__selector-container flow flow--small"
+                    data-scroller-target="strip"
+                    data-action="scroll->scroller#refresh"
+                >
+                    {% for source in sources %}
+                        {{ include('streams/sources/_source.html.twig', { action: action }) }}
+                    {% endfor %}
+                </div>
+
+                <button
+                    type="button"
+                    class="button--icon scroller__button scroller__button--next"
+                    title="{{ t('Display the next sources') }}"
+                    data-scroller-target="next"
+                    data-action="scroller#next"
+                    disabled
+                >
+                    {{ icon('arrow-right', 'rotate90') }}
+
+                    <span class="sr-only">
+                        {{ t('Display the next sources') }}
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        {% if filterable %}
+            <p class="text--center text--secondary" data-filter-target="empty" hidden>
+                {% if with_flags %}
+                    {{ t('No source matches your filters.') }}
+                {% else %}
+                    {{ t('No source matches your search.') }}
+                {% endif %}
+            </p>
+        {% endif %}
+    {% else %}
+        <p class="text--center text--secondary">
+            {{ t('This list is empty.') }}
+        </p>
+    {% endif %}
+</details>

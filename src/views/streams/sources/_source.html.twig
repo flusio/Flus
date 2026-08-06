@@ -1,6 +1,14 @@
-{% set action = action | default(null) %}
+{% set action = action ?? null %}
 
-<article class="source cols cols--center cols--gap">
+<article
+    id="source-{{ source.id }}"
+    class="source cols cols--center cols--gap"
+    tabindex="-1"
+    data-filter-target="item"
+    data-focus-target="item"
+    data-name="{{ source.name }}"
+    data-flags="{{ source.number_streams ? '' : 'without-stream' }}"
+>
     <div class="col--extend cols cols--always cols--center cols--gap">
         <img
             class="source__image"
@@ -8,7 +16,7 @@
             src="{{ url_media('covers', source.image_filename, 'collection-card.png') }}"
         >
 
-        <div class="col--extend flow flow--smaller">
+        <div class="source__content col--extend flow flow--smaller">
             <h3 class="text--bold text--normal">
                 <a class="anchor--nostyle" href="{{ url('collection', { id: source.id }) }}">
                     {{ source.name }}
@@ -52,7 +60,11 @@
     </div>
 
     {% if action === 'add' %}
-        <form class="text--right" method="post" action="{{ url('add stream source', { id: stream.id, source_id: source.id }) }}" data-turbo-preserve-scroll>
+        <form
+            class="text--right"
+            method="post"
+            action="{{ url('add stream source', { id: stream.id, source_id: source.id }) }}"
+        >
             <button>
                 {{ t('Add') }}
             </button>
@@ -60,7 +72,11 @@
             <input type="hidden" name="csrf_token" value="{{ csrf_token('streams\\AddSource') }}" />
         </form>
     {% elseif action === 'remove' %}
-        <form class="text--right" method="post" action="{{ url('remove stream source', { id: stream.id, source_id: source.id }) }}" data-turbo-preserve-scroll>
+        <form
+            class="text--right"
+            method="post"
+            action="{{ url('remove stream source', { id: stream.id, source_id: source.id }) }}"
+        >
             <button>
                 {{ t('Remove') }}
             </button>
