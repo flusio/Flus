@@ -3,6 +3,8 @@
 
     /* The top padding reserves the band in which the month labels float. */
     --scroller-strip-padding: calc(var(--space-smaller) + 1.25rem) var(--space-smaller) var(--space-smaller);
+
+    display: flex;
 }
 
 .day-picker__day {

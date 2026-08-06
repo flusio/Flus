@@ -133,19 +133,15 @@
 
     overflow-x: auto;
 
-    display: flex;
     padding: var(--scroller-strip-padding, var(--space-smaller));
 
     scroll-snap-type: x proximity;
 }
 
-/* The vertical variant of the strip wraps its items and scrolls them along the
- * vertical axis. It's up to the caller to cap its height, or it has nothing to
- * scroll. */
+/* The vertical variant scrolls its items along the vertical axis. It's up to
+ * the caller to cap its height, or it has nothing to scroll. */
 .scroller__strip--vertical {
     overflow: hidden auto;
-
-    flex-wrap: wrap;
 
     scroll-snap-type: y proximity;
 }
