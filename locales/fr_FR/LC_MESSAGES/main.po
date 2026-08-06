@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-08-06 06:55+0200\n"
-"PO-Revision-Date: 2026-08-06 06:55+0200\n"
+"POT-Creation-Date: 2026-08-06 08:04+0200\n"
+"PO-Revision-Date: 2026-08-06 09:48+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -715,7 +715,6 @@ msgstr "Comment voulez-vous nommer cette collection ?"
 
 #: views/collections/_form.html.twig:14
 #: views/collections/_selector.html.twig:48
-#: views/collections/followers/edit.html.twig:197
 #: views/collections/groups/edit.html.twig:23 views/groups/edit.html.twig:14
 #: views/mastodon/show.html.twig:56 views/streams/_form.html.twig:14
 #, php-format
@@ -729,7 +728,7 @@ msgstr "(max. %d caractères)"
 #: views/collections/filters/edit.html.twig:19
 #: views/collections/followers/edit.html.twig:21
 #: views/collections/followers/edit.html.twig:75
-#: views/collections/followers/edit.html.twig:203
+#: views/collections/followers/edit.html.twig:199
 #: views/collections/groups/edit.html.twig:29
 #: views/collections/groups/edit.html.twig:65
 #: views/collections/images/edit.html.twig:26
@@ -997,17 +996,18 @@ msgstr "Aucun fil ne correspond à votre recherche."
 msgid "Selected streams:"
 msgstr "Fils sélectionnés :"
 
-#: views/collections/followers/edit.html.twig:191
-msgid "Or create a stream"
-msgstr "Ou créer un fil"
-
 #: views/collections/followers/edit.html.twig:193
-msgid "Create a stream"
-msgstr "Créer un fil"
+#, php-format
+msgid "(optional, max. %d characters)"
+msgstr "(facultatif, max. %d caractères)"
 
-#: views/collections/followers/edit.html.twig:223
+#: views/collections/followers/edit.html.twig:219
 msgid "The stream will be created with this source in it."
 msgstr "Le fil sera créé et la source lui sera associée."
+
+#: views/collections/followers/edit.html.twig:222
+msgid "The source will also be added to the streams selected above."
+msgstr "La source sera également associée aux fils sélectionnés ci-dessus."
 
 #: views/collections/groups/edit.html.twig:3
 msgid "Collection group"

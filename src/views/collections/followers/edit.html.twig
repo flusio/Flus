@@ -187,14 +187,10 @@
 
                     <div class="form-group">
                         <label for="new-stream-name">
-                            {% if form.streams %}
-                                {{ t('Or create a stream') }}
-                            {% else %}
-                                {{ t('Create a stream') }}
-                            {% endif %}
+                            {{ t('New stream') }}
 
                             <span class="label__help">
-                                {{ t('(max. %d characters)', [form.stream_name_max_length]) }}
+                                {{ t('(optional, max. %d characters)', [form.stream_name_max_length]) }}
                             </span>
                         </label>
 
@@ -221,6 +217,10 @@
 
                         <p class="form-group__caption" id="new-stream-name-caption">
                             {{ t('The stream will be created with this source in it.') }}
+
+                            {% if form.streams %}
+                                {{ t('The source will also be added to the streams selected above.') }}
+                            {% endif %}
                         </p>
                     </div>
                 </div>
