@@ -1,7 +1,3 @@
-.streams-selector__search {
-    margin-bottom: var(--space-small);
-}
-
 .streams-selector__options {
     max-height: 15rem;
 }

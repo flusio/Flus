@@ -2,7 +2,18 @@ import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
     static get targets () {
-        return ['search', 'option', 'empty'];
+        return ['search', 'option', 'checkbox', 'empty', 'counter'];
+    }
+
+    connect () {
+        this.refreshCounter();
+    }
+
+    // Count the selected streams, including the ones hidden by the search: they
+    // are still submitted with the form.
+    refreshCounter () {
+        const count = this.checkboxTargets.filter((checkbox) => checkbox.checked).length;
+        this.counterTarget.textContent = count;
     }
 
     filter () {

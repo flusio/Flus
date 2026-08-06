@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-08-05 18:30+0200\n"
-"PO-Revision-Date: 2026-08-05 18:34+0200\n"
+"POT-Creation-Date: 2026-08-06 06:55+0200\n"
+"PO-Revision-Date: 2026-08-06 06:55+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -715,7 +715,7 @@ msgstr "Comment voulez-vous nommer cette collection ?"
 
 #: views/collections/_form.html.twig:14
 #: views/collections/_selector.html.twig:48
-#: views/collections/followers/edit.html.twig:188
+#: views/collections/followers/edit.html.twig:197
 #: views/collections/groups/edit.html.twig:23 views/groups/edit.html.twig:14
 #: views/mastodon/show.html.twig:56 views/streams/_form.html.twig:14
 #, php-format
@@ -729,7 +729,7 @@ msgstr "(max. %d caractères)"
 #: views/collections/filters/edit.html.twig:19
 #: views/collections/followers/edit.html.twig:21
 #: views/collections/followers/edit.html.twig:75
-#: views/collections/followers/edit.html.twig:194
+#: views/collections/followers/edit.html.twig:203
 #: views/collections/groups/edit.html.twig:29
 #: views/collections/groups/edit.html.twig:65
 #: views/collections/images/edit.html.twig:26
@@ -841,7 +841,7 @@ msgstr "Modification d’une collection"
 
 #: views/collections/edit.html.twig:9
 #: views/collections/filters/edit.html.twig:121
-#: views/collections/followers/edit.html.twig:222
+#: views/collections/followers/edit.html.twig:231
 #: views/collections/groups/edit.html.twig:99 views/groups/edit.html.twig:43
 #: views/links/edit.html.twig:126 views/mastodon/show.html.twig:96
 #: views/my/preferences/edit.html.twig:202 views/my/profile/edit.html.twig:74
@@ -901,7 +901,7 @@ msgstr ""
 "pour la plupart des flux)."
 
 #: views/collections/filters/edit.html.twig:110
-#: views/streams/_filters.html.twig:196
+#: views/streams/_filters.html.twig:198
 msgid "All"
 msgstr "Tout"
 
@@ -980,28 +980,32 @@ msgid "Filter the streams"
 msgstr "Filtrer les fils"
 
 #: views/collections/followers/edit.html.twig:109
-#: views/collections/followers/edit.html.twig:116
+#: views/collections/followers/edit.html.twig:117
 msgid "Display the previous streams"
 msgstr "Afficher les fils précédents"
 
-#: views/collections/followers/edit.html.twig:161
-#: views/collections/followers/edit.html.twig:168
+#: views/collections/followers/edit.html.twig:164
+#: views/collections/followers/edit.html.twig:172
 msgid "Display the next streams"
 msgstr "Afficher les fils suivants"
 
-#: views/collections/followers/edit.html.twig:174
+#: views/collections/followers/edit.html.twig:178
 msgid "No stream matches your search."
 msgstr "Aucun fil ne correspond à votre recherche."
 
 #: views/collections/followers/edit.html.twig:182
+msgid "Selected streams:"
+msgstr "Fils sélectionnés :"
+
+#: views/collections/followers/edit.html.twig:191
 msgid "Or create a stream"
 msgstr "Ou créer un fil"
 
-#: views/collections/followers/edit.html.twig:184
+#: views/collections/followers/edit.html.twig:193
 msgid "Create a stream"
 msgstr "Créer un fil"
 
-#: views/collections/followers/edit.html.twig:214
+#: views/collections/followers/edit.html.twig:223
 msgid "The stream will be created with this source in it."
 msgstr "Le fil sera créé et la source lui sera associée."
 
@@ -3068,64 +3072,64 @@ msgstr "Mot de passe oublié ?"
 msgid "No account yet?"
 msgstr "Pas encore de compte ?"
 
-#: views/streams/_filters.html.twig:31 views/streams/_filters.html.twig:38
+#: views/streams/_filters.html.twig:31 views/streams/_filters.html.twig:39
 msgid "Display the previous days"
 msgstr "Afficher les jours précédents"
 
-#: views/streams/_filters.html.twig:45
+#: views/streams/_filters.html.twig:46
 msgid "Date"
 msgstr "Date"
 
-#: views/streams/_filters.html.twig:57 views/streams/_filters.html.twig:247
+#: views/streams/_filters.html.twig:58 views/streams/_filters.html.twig:249
 #, php-format
 msgid "%s: %d link"
 msgid_plural "%s: %d links"
 msgstr[0] "%s : %d lien"
 msgstr[1] "%s : %d liens"
 
-#: views/streams/_filters.html.twig:59
+#: views/streams/_filters.html.twig:60
 #, php-format
 msgid "(%d unread)"
 msgid_plural "(%d unread)"
 msgstr[0] "(%d non lu)"
 msgstr[1] "(%d non lus)"
 
-#: views/streams/_filters.html.twig:126 views/streams/_filters.html.twig:133
+#: views/streams/_filters.html.twig:127 views/streams/_filters.html.twig:135
 msgid "Display the next days"
 msgstr "Afficher les jours suivants"
 
-#: views/streams/_filters.html.twig:140
+#: views/streams/_filters.html.twig:142
 msgid "Display:"
 msgstr "Afficher :"
 
-#: views/streams/_filters.html.twig:157
+#: views/streams/_filters.html.twig:159
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d jour"
 msgstr[1] "%d jours"
 
-#: views/streams/_filters.html.twig:167
+#: views/streams/_filters.html.twig:169
 msgid "Search:"
 msgstr "Recherche :"
 
-#: views/streams/_filters.html.twig:176
+#: views/streams/_filters.html.twig:178
 msgid "Words or URL"
 msgstr "Mots ou URL"
 
-#: views/streams/_filters.html.twig:187
+#: views/streams/_filters.html.twig:189
 msgid "Reading status:"
 msgstr "Statut de lecture :"
 
-#: views/streams/_filters.html.twig:197
+#: views/streams/_filters.html.twig:199
 msgid "Unread"
 msgstr "Non lus"
 
-#: views/streams/_filters.html.twig:226
+#: views/streams/_filters.html.twig:228
 msgid "Include the ignored links"
 msgstr "Inclure les liens ignorés"
 
-#: views/streams/_filters.html.twig:235
+#: views/streams/_filters.html.twig:237
 #, php-format
 msgid "Sources (%d)"
 msgstr "Sources (%d)"
