@@ -1,11 +1,12 @@
 {% set action = action ?? null %}
+{% set focused_source_id = focused_source_id ?? null %}
 
 <article
     id="source-{{ source.id }}"
     class="source cols cols--center cols--gap"
     tabindex="-1"
     data-filter-target="item"
-    data-focus-target="item"
+    data-focus-target="{{ source.id == focused_source_id ? 'item autofocus' : 'item' }}"
     data-name="{{ source.name }}"
     data-flags="{{ source.number_streams ? '' : 'without-stream' }}"
 >

@@ -36,8 +36,8 @@
         <div class="cols cols--gap cols--start">
             <div class="col--size6">
                 {{ include('streams/sources/_selector.html.twig', {
-                    id: 'sources-to-add',
-                    title: t('Sources to add'),
+                    id: 'sources-suggested',
+                    title: t('Suggested sources'),
                     sources: suggested_sources,
                     action: 'add',
                     with_flags: true,
@@ -51,6 +51,7 @@
                     sources: stream.sources({ context_user: app.user }),
                     action: 'remove',
                     frequency: stream.publicationFrequencyPerYear({ context_user: app.user }),
+                    add_feed_url: url('new stream source feed', { id: stream.id }),
                 }) }}
             </div>
         </div>

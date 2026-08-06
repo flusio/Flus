@@ -58,6 +58,12 @@
     flex: 1 1 auto;
 }
 
+.sources__selector-footer {
+    padding-top: var(--space-small);
+
+    border-top: 1px solid var(--color-grey-line);
+}
+
 .source {
     padding: var(--space-small);
 

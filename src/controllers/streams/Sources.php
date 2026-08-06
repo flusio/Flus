@@ -6,6 +6,7 @@ use App\auth;
 use App\controllers\BaseController;
 use App\forms;
 use App\models;
+use App\services;
 use App\utils;
 use Minz\Request;
 use Minz\Response;
@@ -77,7 +78,89 @@ class Sources extends BaseController
         return Response::ok('streams/sources/edit.html.twig', [
             'stream' => $stream,
             'suggested_sources' => $suggested_sources,
+            'focused_source_id' => \Minz\Flash::pop('focused_source_id'),
         ]);
+    }
+
+    /**
+     * @request_param string id
+     *
+     * @response 200
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the stream doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot update the stream.
+     */
+    public function newFeed(Request $request): Response
+    {
+        $user = auth\CurrentUser::require();
+        $stream = models\Stream::requireFromRequest($request);
+
+        auth\Access::require($user, 'update', $stream);
+
+        $form = new forms\collections\NewFeed();
+
+        return Response::ok('streams/sources/new_feed.html.twig', [
+            'stream' => $stream,
+            'form' => $form,
+        ]);
+    }
+
+    /**
+     * @request_param string id
+     * @request_param string url
+     * @request_param string csrf_token
+     *
+     * @response 400
+     *     If at least one of the parameters is invalid.
+     * @response 302 /streams/:id/sources/edit
+     * @flash focused_source_id
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the stream doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot update the stream.
+     */
+    public function createFeed(Request $request): Response
+    {
+        $user = auth\CurrentUser::require();
+        $stream = models\Stream::requireFromRequest($request);
+
+        auth\Access::require($user, 'update', $stream);
+
+        $form = new forms\collections\NewFeed();
+        $form->handleRequest($request);
+
+        if (!$form->validate()) {
+            return Response::badRequest('streams/sources/new_feed.html.twig', [
+                'stream' => $stream,
+                'form' => $form,
+            ]);
+        }
+
+        $feed = $form->feed();
+
+        if (!$feed->isPersisted()) {
+            $feed_fetcher_service = new services\FeedFetcher([
+                'http_timeout' => 10,
+                'ignore_rate_limit' => true,
+            ]);
+            $feed_fetcher_service->fetch($feed);
+        }
+
+        $stream->addSource($feed);
+
+        // Let the edit page give the focus to the feed that has just been added.
+        \Minz\Flash::set('focused_source_id', $feed->id);
+
+        return Response::redirect('edit stream sources', ['id' => $stream->id]);
     }
 
     /**

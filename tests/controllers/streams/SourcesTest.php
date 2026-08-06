@@ -17,6 +17,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
+    use \tests\HttpHelper;
     use \tests\LoginHelper;
 
     public function testIndexRendersCorrectly(): void
@@ -146,7 +147,39 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, "Sources of {$stream_name}");
         $this->assertResponseContains($response, $source_name);
+        $this->assertResponseContains($response, "/streams/{$stream->id}/sources/feeds/new");
         $this->assertResponseTemplateName($response, 'streams/sources/edit.html.twig');
+    }
+
+    public function testEditGivesTheFocusToTheSourceOfTheFlash(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        /** @var string */
+        $feed_url = $this->fake('url');
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'feed_site_url' => $feed_url,
+            'is_public' => true,
+        ]);
+        $other_source = CollectionFactory::create([
+            'type' => 'feed',
+            'feed_site_url' => $feed_url,
+            'is_public' => true,
+        ]);
+        $stream->addSource($source);
+        $stream->addSource($other_source);
+        \Minz\Flash::set('focused_source_id', $source->id);
+
+        $response = $this->appRun('GET', "/streams/{$stream->id}/sources/edit");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'data-focus-target="item autofocus"');
+        // The flash is popped, so the focus is not given again on the next
+        // rendering of the page.
+        $this->assertNull(\Minz\Flash::get('focused_source_id'));
     }
 
     public function testEditRedirectsIfNotConnected(): void
@@ -209,6 +242,253 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', "/streams/{$stream->id}/sources/edit");
 
         $this->assertResponseCode($response, 403);
+    }
+
+    public function testNewFeedRendersCorrectly(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->appRun('GET', "/streams/{$stream->id}/sources/feeds/new");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'New feed');
+        $this->assertResponseTemplateName($response, 'streams/sources/new_feed.html.twig');
+    }
+
+    public function testNewFeedRedirectsIfNotConnected(): void
+    {
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->appRun('GET', "/streams/{$stream->id}/sources/feeds/new");
+
+        $redirect_to = urlencode("/streams/{$stream->id}/sources/feeds/new");
+        $this->assertResponseCode($response, 302, "/login?redirect_to={$redirect_to}");
+    }
+
+    public function testNewFeedFailsIfTheStreamDoesNotExist(): void
+    {
+        $user = $this->login();
+
+        $response = $this->appRun('GET', '/streams/unknown/sources/feeds/new');
+
+        $this->assertResponseCode($response, 404);
+    }
+
+    public function testNewFeedFailsIfTheUserCannotUpdateTheStream(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+        ]);
+
+        $response = $this->appRun('GET', "/streams/{$stream->id}/sources/feeds/new");
+
+        $this->assertResponseCode($response, 403);
+    }
+
+    public function testCreateFeedCreatesTheFeedAndAddsItToTheStream(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
+
+        $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/sources/feeds/new", [
+            'csrf_token' => $this->csrfToken(forms\collections\NewFeed::class),
+            'url' => $feed_url,
+        ]);
+
+        $this->assertResponseCode($response, 302, "/streams/{$stream->id}/sources/edit");
+        $this->assertSame(1, models\Collection::countBy(['type' => 'feed']));
+        $feed = models\Collection::findBy(['type' => 'feed']);
+        $this->assertNotNull($feed);
+        $this->assertSame($feed_url, $feed->feed_url);
+        $this->assertTrue($user->isFollowing($feed->id));
+        $this->assertTrue($stream->hasSource($feed));
+        $this->assertSame($feed->id, \Minz\Flash::get('focused_source_id'));
+    }
+
+    public function testCreateFeedAutodetectsFeedUrls(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $url = 'https://flus.fr/carnet/';
+        $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
+        $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/sources/feeds/new", [
+            'csrf_token' => $this->csrfToken(forms\collections\NewFeed::class),
+            'url' => $url,
+        ]);
+
+        $this->assertResponseCode($response, 302, "/streams/{$stream->id}/sources/edit");
+        $this->assertSame(1, models\Collection::countBy(['type' => 'feed']));
+        $feed = models\Collection::findBy(['type' => 'feed']);
+        $this->assertNotNull($feed);
+        $this->assertSame($feed_url, $feed->feed_url);
+        $this->assertTrue($stream->hasSource($feed));
+    }
+
+    public function testCreateFeedDoesNotDuplicateAnExistingFeed(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        $feed = CollectionFactory::create([
+            'type' => 'feed',
+            'feed_url' => $feed_url,
+            'is_public' => true,
+        ]);
+        $user->follow($feed->id);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/sources/feeds/new", [
+            'csrf_token' => $this->csrfToken(forms\collections\NewFeed::class),
+            'url' => $feed_url,
+        ]);
+
+        $this->assertResponseCode($response, 302, "/streams/{$stream->id}/sources/edit");
+        $this->assertSame(1, models\Collection::countBy(['type' => 'feed']));
+        $this->assertTrue($stream->hasSource($feed));
+    }
+
+    public function testCreateFeedRedirectsIfNotConnected(): void
+    {
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/sources/feeds/new", [
+            'csrf_token' => $this->csrfToken(forms\collections\NewFeed::class),
+            'url' => $feed_url,
+        ]);
+
+        $redirect_to = urlencode("/streams/{$stream->id}/sources/feeds/new");
+        $this->assertResponseCode($response, 302, "/login?redirect_to={$redirect_to}");
+        $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
+    }
+
+    public function testCreateFeedFailsIfTheStreamDoesNotExist(): void
+    {
+        $user = $this->login();
+        $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
+
+        $response = $this->appRun('POST', '/streams/unknown/sources/feeds/new', [
+            'csrf_token' => $this->csrfToken(forms\collections\NewFeed::class),
+            'url' => $feed_url,
+        ]);
+
+        $this->assertResponseCode($response, 404);
+        $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
+    }
+
+    public function testCreateFeedFailsIfTheUserCannotUpdateTheStream(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+        ]);
+        $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/sources/feeds/new", [
+            'csrf_token' => $this->csrfToken(forms\collections\NewFeed::class),
+            'url' => $feed_url,
+        ]);
+
+        $this->assertResponseCode($response, 403);
+        $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
+    }
+
+    public function testCreateFeedFailsIfCsrfIsInvalid(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/sources/feeds/new", [
+            'csrf_token' => 'not the token',
+            'url' => $feed_url,
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'A security verification failed');
+        $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
+        $this->assertSame([], $stream->sources());
+    }
+
+    public function testCreateFeedFailsIfUrlIsInvalid(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $feed_url = 'ftp://flus.fr/carnet/feeds/all.atom.xml';
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/sources/feeds/new", [
+            'csrf_token' => $this->csrfToken(forms\collections\NewFeed::class),
+            'url' => $feed_url,
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The link is invalid.');
+        $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
+        $this->assertSame([], $stream->sources());
+    }
+
+    public function testCreateFeedFailsIfNoFeedsCanBeFound(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        /** @var string */
+        $feed_url = $this->fake('url');
+        $this->mockHttpWithResponse($feed_url, <<<TEXT
+            HTTP/2 200
+            Content-type: text/html
+
+            <html>
+                <head>
+                    <title>Hello World</title>
+                </head>
+                <body>This site has no feeds.</body>
+            </html>
+            TEXT
+        );
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/sources/feeds/new", [
+            'csrf_token' => $this->csrfToken(forms\collections\NewFeed::class),
+            'url' => $feed_url,
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'There is no valid feeds at this address');
+        $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
+        $this->assertSame([], $stream->sources());
     }
 
     public function testAddAddsTheSourceToTheStream(): void

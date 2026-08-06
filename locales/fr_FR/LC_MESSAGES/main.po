@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-08-06 16:48+0200\n"
-"PO-Revision-Date: 2026-08-06 16:48+0200\n"
+"POT-Creation-Date: 2026-08-06 18:48+0200\n"
+"PO-Revision-Date: 2026-08-06 18:48+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-KeywordsList: t:1,2;t;translate:1,2;translate:1;Translatable\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: assets/javascripts/controllers/back_button_controller.js:47
+#: assets/javascripts/controllers/back_button_controller.js:48
 msgid "Back"
 msgstr "Retour"
 
@@ -686,8 +686,8 @@ msgstr "privée"
 #: views/collections/_collection.html.twig:52
 #: views/collections/_collection_follow.html.twig:24
 #: views/collections/show.html.twig:97 views/streams/show.html.twig:63
-#: views/streams/sources/_selector.html.twig:37
-#: views/streams/sources/_source.html.twig:54
+#: views/streams/sources/_selector.html.twig:38
+#: views/streams/sources/_source.html.twig:55
 #: views/streams/sources/index.html.twig:37
 msgid "Publication frequency"
 msgstr "Fréquence de publication"
@@ -733,8 +733,9 @@ msgstr "(max. %d caractères)"
 #: views/collections/groups/edit.html.twig:65
 #: views/collections/images/edit.html.twig:26
 #: views/collections/shares/index.html.twig:25
-#: views/collections/shares/index.html.twig:58 views/feeds/new.html.twig:17
-#: views/groups/edit.html.twig:20 views/importations/opml/show.html.twig:84
+#: views/collections/shares/index.html.twig:58
+#: views/feeds/_new_form.html.twig:13 views/groups/edit.html.twig:20
+#: views/importations/opml/show.html.twig:84
 #: views/links/_form_simple.html.twig:15
 #: views/links/collections/_new_note_form.html.twig:11
 #: views/links/edit.html.twig:26 views/links/edit.html.twig:71
@@ -1167,7 +1168,7 @@ msgid "Change the illustration"
 msgstr "Changer l’illustration"
 
 #: views/collections/show.html.twig:89
-#: views/streams/sources/_source.html.twig:28
+#: views/streams/sources/_source.html.twig:29
 #, php-format
 msgid "Feed of %s website"
 msgstr "Flux du site %s"
@@ -1347,6 +1348,23 @@ msgstr "Télécharger votre archive"
 msgid "generated on %s"
 msgstr "générée le %s"
 
+#: views/feeds/_new_form.html.twig:8
+msgid "What’s the address of the website or feed to follow?"
+msgstr "Quelle est l’adresse du site ou du flux à suivre ?"
+
+#: views/feeds/_new_form.html.twig:35 views/links/_form_simple.html.twig:37
+#: views/links/new.html.twig:49
+msgid ""
+"It can be copy-paste from the <abbr>URL</abbr> bar, at the top of your "
+"browser."
+msgstr ""
+"Elle peut être copiée-collée depuis la barre <abbr>URL</abbr>, en haut de "
+"votre navigateur."
+
+#: views/feeds/_new_form.html.twig:41
+msgid "Add the feed"
+msgstr "Ajouter le flux"
+
 #: views/feeds/feeds.xsl.twig:6
 msgid "(feed)"
 msgstr "(flux)"
@@ -1385,30 +1403,13 @@ msgstr "Flux"
 msgid "All the feeds that you follow are listed here."
 msgstr "Tous les flux que vous suivez sont listés ici."
 
-#: views/feeds/index.html.twig:32
+#: views/feeds/index.html.twig:32 views/streams/sources/_selector.html.twig:146
 msgid "Add a feed"
 msgstr "Ajouter un flux"
 
-#: views/feeds/new.html.twig:3
+#: views/feeds/new.html.twig:3 views/streams/sources/new_feed.html.twig:3
 msgid "New feed"
 msgstr "Nouveau flux"
-
-#: views/feeds/new.html.twig:12
-msgid "What’s the address of the website or feed to follow?"
-msgstr "Quelle est l’adresse du site ou du flux à suivre ?"
-
-#: views/feeds/new.html.twig:39 views/links/_form_simple.html.twig:37
-#: views/links/new.html.twig:49
-msgid ""
-"It can be copy-paste from the <abbr>URL</abbr> bar, at the top of your "
-"browser."
-msgstr ""
-"Elle peut être copiée-collée depuis la barre <abbr>URL</abbr>, en haut de "
-"votre navigateur."
-
-#: views/feeds/new.html.twig:45
-msgid "Add the feed"
-msgstr "Ajouter le flux"
 
 #: views/groups/edit.html.twig:3
 msgid "Group edition"
@@ -3178,7 +3179,7 @@ msgstr "Les illustrations aident à distinguer votre fil parmi les autres."
 msgid "Create the stream"
 msgstr "Créer le fil"
 
-#: views/streams/show.html.twig:71 views/streams/sources/_selector.html.twig:33
+#: views/streams/show.html.twig:71 views/streams/sources/_selector.html.twig:34
 #: views/streams/sources/index.html.twig:34
 #, php-format
 msgid "%d source"
@@ -3186,7 +3187,7 @@ msgid_plural "%d sources"
 msgstr[0] "%d source"
 msgstr[1] "%d sources"
 
-#: views/streams/show.html.twig:76 views/streams/sources/_source.html.twig:32
+#: views/streams/show.html.twig:76 views/streams/sources/_source.html.twig:33
 msgid "By"
 msgstr "Par"
 
@@ -3198,60 +3199,60 @@ msgstr "Gérer les sources"
 msgid "Are you sure that you want to delete this stream?"
 msgstr "Êtes-vous sur·e de vouloir supprimer ce fil ?"
 
-#: views/streams/sources/_selector.html.twig:51
+#: views/streams/sources/_selector.html.twig:52
 #: views/streams/sources/index.html.twig:53
 msgid "Filter the sources…"
 msgstr "Filtrer les sources…"
 
-#: views/streams/sources/_selector.html.twig:52
+#: views/streams/sources/_selector.html.twig:53
 #: views/streams/sources/index.html.twig:54
 msgid "Filter the sources"
 msgstr "Filtrer les sources"
 
-#: views/streams/sources/_selector.html.twig:69
+#: views/streams/sources/_selector.html.twig:70
 msgid "Only the sources in no stream"
 msgstr "Seulement les sources sans aucun fil"
 
-#: views/streams/sources/_selector.html.twig:80
-#: views/streams/sources/_selector.html.twig:88
+#: views/streams/sources/_selector.html.twig:81
+#: views/streams/sources/_selector.html.twig:89
 msgid "Display the previous sources"
 msgstr "Afficher les sources précédentes"
 
-#: views/streams/sources/_selector.html.twig:105
-#: views/streams/sources/_selector.html.twig:113
+#: views/streams/sources/_selector.html.twig:106
+#: views/streams/sources/_selector.html.twig:114
 msgid "Display the next sources"
 msgstr "Afficher les sources suivantes"
 
-#: views/streams/sources/_selector.html.twig:122
+#: views/streams/sources/_selector.html.twig:123
 msgid "No source matches your filters."
 msgstr "Aucune source ne correspond à vos filtres."
 
-#: views/streams/sources/_selector.html.twig:124
+#: views/streams/sources/_selector.html.twig:125
 #: views/streams/sources/index.html.twig:70
 msgid "No source matches your search."
 msgstr "Aucune source ne correspond à votre recherche."
 
-#: views/streams/sources/_selector.html.twig:130
+#: views/streams/sources/_selector.html.twig:131
 #: views/streams/sources/index.html.twig:75
 msgid "This list is empty."
 msgstr "Cette liste est vide."
 
-#: views/streams/sources/_source.html.twig:47
+#: views/streams/sources/_source.html.twig:48
 #, php-format
 msgid "In %d stream"
 msgid_plural "In %d streams"
 msgstr[0] "Dans %d fil"
 msgstr[1] "Dans %d fils"
 
-#: views/streams/sources/_source.html.twig:49
+#: views/streams/sources/_source.html.twig:50
 msgid "No stream"
 msgstr "Aucun fil"
 
-#: views/streams/sources/_source.html.twig:69
+#: views/streams/sources/_source.html.twig:70
 msgid "Add"
 msgstr "Ajouter"
 
-#: views/streams/sources/_source.html.twig:81
+#: views/streams/sources/_source.html.twig:82
 msgid "Remove"
 msgstr "Retirer"
 
@@ -3271,8 +3272,8 @@ msgid "Continue to the stream"
 msgstr "Continuer vers le fil"
 
 #: views/streams/sources/edit.html.twig:40
-msgid "Sources to add"
-msgstr "Sources à ajouter"
+msgid "Suggested sources"
+msgstr "Sources suggérées"
 
 #: views/streams/sources/edit.html.twig:50
 msgid "Sources of the stream"

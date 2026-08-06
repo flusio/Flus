@@ -4,6 +4,9 @@
 
 {% block body %}
     <div class="wrapper wrapper--small wrapper--center flow flow--large">
-        {{ include('feeds/_new_form.html.twig', { form: form }) }}
+        {{ include('feeds/_new_form.html.twig', {
+            form: form,
+            action_url: url('create stream source feed', { id: stream.id }),
+        }) }}
     </div>
 {% endblock %}

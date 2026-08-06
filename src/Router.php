@@ -241,6 +241,18 @@ class Router
         $router->addRoute('GET', '/streams/:id/sources', 'streams/Sources#index', 'stream sources');
         $router->addRoute('GET', '/streams/:id/sources/edit', 'streams/Sources#edit', 'edit stream sources');
         $router->addRoute(
+            'GET',
+            '/streams/:id/sources/feeds/new',
+            'streams/Sources#newFeed',
+            'new stream source feed',
+        );
+        $router->addRoute(
+            'POST',
+            '/streams/:id/sources/feeds/new',
+            'streams/Sources#createFeed',
+            'create stream source feed',
+        );
+        $router->addRoute(
             'POST',
             '/streams/:id/sources/:source_id/add',
             'streams/Sources#add',

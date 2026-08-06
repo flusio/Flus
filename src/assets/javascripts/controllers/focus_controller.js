@@ -14,8 +14,12 @@ import { Controller } from '@hotwired/stimulus';
 //
 // The element to focus is chosen when the form is submitted, while the page is
 // still intact, then focused on `turbo:render`, once the new page is rendered.
+//
+// An item can also be designated by the server as the `autofocus` target: it
+// takes the focus on the next render, so an item that didn't exist yet at
+// submission time can be focused.
 export default class extends Controller {
-    static targets = ['item', 'fallback'];
+    static targets = ['item', 'fallback', 'autofocus'];
 
     remember (event) {
         this.elementToFocus = null;
@@ -31,7 +35,8 @@ export default class extends Controller {
     }
 
     restore () {
-        const element = this.elementToFocus;
+        const autofocusElement = this.hasAutofocusTarget ? this.autofocusTarget : null;
+        const element = this.elementToFocus ?? autofocusElement;
         this.elementToFocus = null;
 
         if (!element) {

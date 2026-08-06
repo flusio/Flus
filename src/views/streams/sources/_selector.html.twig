@@ -1,6 +1,7 @@
 {% set action = action ?? null %}
 {% set with_flags = with_flags ?? false %}
 {% set frequency = frequency ?? null %}
+{% set add_feed_url = add_feed_url ?? null %}
 
 {% set filterable = sources | length > 10 %}
 
@@ -128,6 +129,22 @@
     {% else %}
         <p class="text--center text--secondary">
             {{ t('This list is empty.') }}
+        </p>
+    {% endif %}
+
+    {% if add_feed_url %}
+        <p class="sources__selector-footer text--center">
+            <button
+                class="button--big"
+                data-controller="modal-opener"
+                data-action="modal-opener#fetch"
+                data-modal-opener-href-value="{{ add_feed_url }}"
+                aria-haspopup="dialog"
+                aria-controls="modal"
+            >
+                {{ icon('plus-circle') }}
+                {{ t('Add a feed') }}
+            </button>
         </p>
     {% endif %}
 </details>
