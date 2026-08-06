@@ -40,8 +40,8 @@
         --layout-content-padding: var(--space-medium);
     }
 
-    .layout--connected .layout__content:has(.layout__back),
-    .layout--connected .layout__content:has(.layout__search) {
+    .layout--connected .layout__content:has(.layout__search),
+    .layout--connected .layout__content:has(.layout__back:not([hidden])) {
         margin-top: calc(-1 * var(--layout-content-padding));
     }
 }

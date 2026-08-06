@@ -43,11 +43,12 @@ export default class extends Controller {
         const backItem = backHistory[previousItemIndex];
         if (backItem) {
             // If the item exists, we update the back button
+            this.element.hidden = false;
             this.buttonTarget.href = backItem.path;
             this.buttonTarget.innerHTML = `${icon('back')} ${_('Back')} (${backItem.title})`;
         } else {
-            // Else, there's nowhere to go so we remove the navigation
-            this.element.remove();
+            // Else, there's nowhere to go so we hide the navigation.
+            this.element.hidden = true;
         }
     }
 

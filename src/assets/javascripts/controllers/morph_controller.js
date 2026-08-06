@@ -18,6 +18,18 @@ export default class extends Controller {
         }
     }
 
+    // Keep the element and its content untouched: they are entirely built on
+    // the client side and the server doesn't know about them.
+    preserveElement (event) {
+        // The event bubbles, so it is also dispatched for the children of the
+        // element.
+        if (event.target !== this.element) {
+            return;
+        }
+
+        event.preventDefault();
+    }
+
     // Keep the value of the input being typed in: morphing overwrites it with
     // the one rendered by the server, and the user keeps typing while a visit is
     // in flight, so the characters typed meanwhile would be lost.
