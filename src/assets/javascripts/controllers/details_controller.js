@@ -35,6 +35,13 @@ export default class extends Controller {
         // Let the browser toggle the element instantly when the animations are
         // not welcome.
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            if (!this.collapsedValue) {
+                // The browser only opens the element after this handler: the
+                // announcement is delayed by a frame so the content is
+                // measurable when it is received.
+                requestAnimationFrame(() => this.dispatch('opened'));
+            }
+
             return;
         }
 
@@ -53,7 +60,15 @@ export default class extends Controller {
         this.cancelAnimation();
         this.element.open = true;
 
-        this.animateHeight(startHeight, this.element.offsetHeight);
+        // The content is only announced once the element reached its expanded
+        // height: it may have been rendered while collapsed, with all its sizes
+        // to zero, and measuring it mid-animation would be just as wrong. A
+        // cancelled animation fires "cancel" instead, so an opening interrupted
+        // by a closing announces nothing.
+        this.animateHeight(startHeight, this.element.offsetHeight)
+            .addEventListener('finish', () => {
+                this.dispatch('opened');
+            });
     }
 
     close () {

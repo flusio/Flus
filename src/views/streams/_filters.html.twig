@@ -27,6 +27,7 @@
             data-action="
                 resize@window->scroller#refresh
                 turbo:morph@document->scroller#refresh
+                details:opened@document->scroller#reveal
             "
         >
             {% set max_count_per_day = stream_view.maxCountPerDay() %}

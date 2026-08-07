@@ -16,6 +16,15 @@ export default class extends Controller {
         this.refresh();
     }
 
+    // Take the measurements again, for a strip which was hidden when the
+    // controller connected (e.g. inside a collapsed <details>): its sizes were
+    // all zero, so the strip was not scrolled to the selected item and the
+    // navigation buttons were left disabled.
+    reveal () {
+        this.scrollToSelectedItem();
+        this.refresh();
+    }
+
     // Show the shadows on the edges of the viewport (and enable the
     // navigation buttons) if the strip can be scrolled in that direction.
     refresh () {
