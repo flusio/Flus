@@ -35,6 +35,8 @@ class Opml extends BaseController
         ]);
         $collections = utils\Sorter::localeSort($collections, 'name');
 
+        models\collections\Preloader::for($collections)->timeFiltersFor($user);
+
         return Response::ok('profiles/opml/show.opml.xml.twig', [
             'user' => $user,
             'collections' => $collections,

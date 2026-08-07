@@ -67,28 +67,47 @@ class StreamToFollow
     }
 
     /**
-     * Return the number of streams of the given user in which the source is
-     * attached.
+     * Return the numbers of streams of the given user in which the given
+     * sources are attached, indexed by the ids of these sources.
+     *
+     * The sources that are in no stream are absent from the returned array.
+     *
+     * @param Collection[] $sources
+     *
+     * @return array<string, int>
      */
-    public static function countByUserAndSource(User $user, Collection $source): int
+    public static function countByUserAndSources(User $user, array $sources): array
     {
+        if (!$sources) {
+            return [];
+        }
+
+        $source_ids = array_column($sources, 'id');
+        $ids_as_question_marks = array_fill(0, count($source_ids), '?');
+        $ids_as_question_marks = implode(', ', $ids_as_question_marks);
+
         $sql = <<<SQL
-            SELECT COUNT(*)
+            SELECT fc.collection_id, COUNT(*) AS count
             FROM streams_to_follows sf, followed_collections fc
 
             WHERE sf.follow_id = fc.id
-            AND fc.user_id = :user_id
-            AND fc.collection_id = :source_id
+            AND fc.user_id = ?
+            AND fc.collection_id IN ({$ids_as_question_marks})
+
+            GROUP BY fc.collection_id
         SQL;
 
         $database = Database::get();
         $statement = $database->prepare($sql);
-        $statement->execute([
-            'user_id' => $user->id,
-            'source_id' => $source->id,
-        ]);
+        $statement->execute([$user->id, ...$source_ids]);
 
-        return intval($statement->fetchColumn());
+        $counts = [];
+
+        foreach ($statement->fetchAll() as $row) {
+            $counts[$row['collection_id']] = intval($row['count']);
+        }
+
+        return $counts;
     }
 
     /**

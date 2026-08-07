@@ -99,12 +99,6 @@ class Collection
     #[Database\Column(computed: true)]
     public ?int $number_links = null;
 
-    #[Database\Column(computed: true)]
-    public ?int $number_streams = null;
-
-    #[Database\Column(computed: true)]
-    public ?string $time_filter = null;
-
     public function __construct()
     {
         $this->id = \Minz\Random::timebased();
@@ -262,24 +256,38 @@ class Collection
     }
 
     /**
+     * Set the publishers of the collection without querying the database.
+     *
+     * @see collections\Preloader
+     *
+     * @param User[] $publishers
+     */
+    public function preloadPublishers(array $publishers): void
+    {
+        $this->memoizeValue('publishers', $publishers);
+    }
+
+    /**
      * Return the list of users with write access.
      *
      * @return User[]
      */
     public function publishers(): array
     {
-        $owner = $this->owner();
-        $shares = $this->shares(['access_type' => 'write']);
+        return $this->memoize('publishers', function (): array {
+            $owner = $this->owner();
+            $shares = $this->shares(['access_type' => 'write']);
 
-        $publishers = array_map(function (CollectionShare $share): User {
-            return $share->user();
-        }, $shares);
+            $publishers = array_map(function (CollectionShare $share): User {
+                return $share->user();
+            }, $shares);
 
-        if ($owner) {
-            array_unshift($publishers, $owner);
-        }
+            if ($owner) {
+                array_unshift($publishers, $owner);
+            }
 
-        return $publishers;
+            return $publishers;
+        });
     }
 
     /**
@@ -395,15 +403,46 @@ class Collection
     /**
      * Return the number of streams of the given user in which this collection
      * is a source.
-     *
-     * This is the same information as the number_streams computed property,
-     * for a collection that has been loaded on its own.
      */
     public function countStreamsByUser(User $user): int
     {
         return $this->memoize("count_streams_{$user->id}", function () use ($user): int {
-            return StreamToFollow::countByUserAndSource($user, $this);
+            $counts = StreamToFollow::countByUserAndSources($user, [$this]);
+            return $counts[$this->id] ?? 0;
         });
+    }
+
+    /**
+     * Set the number of streams of a user without querying the database.
+     *
+     * @see collections\Preloader
+     */
+    public function preloadCountStreamsByUser(User $user, int $count): void
+    {
+        $this->memoizeValue("count_streams_{$user->id}", $count);
+    }
+
+    /**
+     * Return the time filter applied by the given user to this collection, or
+     * null if the user doesn't follow it.
+     */
+    public function timeFilterByUser(User $user): ?string
+    {
+        return $this->memoize("time_filter_{$user->id}", function () use ($user): ?string {
+            $follows = FollowedCollection::listByUserAndCollections($user, [$this]);
+            $follow = $follows[$this->id] ?? null;
+            return $follow?->time_filter;
+        });
+    }
+
+    /**
+     * Set the time filter of a user without querying the database.
+     *
+     * @see collections\Preloader
+     */
+    public function preloadTimeFilterByUser(User $user, ?string $time_filter): void
+    {
+        $this->memoizeValue("time_filter_{$user->id}", $time_filter);
     }
 
     /**
@@ -457,6 +496,8 @@ class Collection
     {
         $collection_share = new CollectionShare($user->id, $this->id, $access_type);
         $collection_share->save();
+
+        $this->unmemoize('publishers');
     }
 
     /**
@@ -468,6 +509,8 @@ class Collection
             'collection_id' => $this->id,
             'user_id' => $user->id,
         ]);
+
+        $this->unmemoize('publishers');
     }
 
     /**

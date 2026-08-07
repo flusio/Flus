@@ -1,4 +1,5 @@
-{% set display_time_filter = collection.time_filter and collection.time_filter != 'normal' %}
+{% set time_filter = collection.timeFilterByUser(user) %}
+{% set display_time_filter = time_filter and time_filter != 'normal' %}
 
 {% if collection.isFeed %}
     <outline
@@ -7,7 +8,7 @@
         xmlUrl="{{ collection.feed_url }}"
         htmlUrl="{{ collection.feed_site_url }}"
         {% if display_time_filter %}
-            category="/Flus/filters/{{ collection.time_filter }}"
+            category="/Flus/filters/{{ time_filter }}"
         {% endif %}
     />
 {% else %}
@@ -17,7 +18,7 @@
         xmlUrl="{{ url_full('collection feed', { id: collection.id, direct: 'true' }) }}"
         htmlUrl="{{ url_full('collection', { id: collection.id }) }}"
         {% if display_time_filter %}
-            category="/Flus/filters/{{ collection.time_filter }}"
+            category="/Flus/filters/{{ time_filter }}"
         {% endif %}
     />
 {% endif %}

@@ -98,10 +98,13 @@ class DataExporter
     private function generateOpml(models\User $user): string
     {
         $groups = models\Group::listBy(['user_id' => $user->id]);
-        $collections = $user->followedCollections(['time_filter']);
+        $collections = $user->followedCollections();
         $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
 
+        models\collections\Preloader::for($collections)->timeFiltersFor($user);
+
         $view = new \Minz\Template\Twig('collections/followed.opml.xml.twig', [
+            'user' => $user,
             'groups' => $groups,
             'groups_to_collections' => $groups_to_collections,
         ]);

@@ -64,6 +64,37 @@ class FollowedCollection
     }
 
     /**
+     * Return the follows of the given user for the given collections, indexed
+     * by the ids of these collections.
+     *
+     * The collections that the user doesn't follow are absent from the
+     * returned array.
+     *
+     * @param Collection[] $collections
+     *
+     * @return array<string, self>
+     */
+    public static function listByUserAndCollections(User $user, array $collections): array
+    {
+        if (!$collections) {
+            return [];
+        }
+
+        $follows = self::listBy([
+            'user_id' => $user->id,
+            'collection_id' => array_column($collections, 'id'),
+        ]);
+
+        $follows_by_collection_ids = [];
+
+        foreach ($follows as $follow) {
+            $follows_by_collection_ids[$follow->collection_id] = $follow;
+        }
+
+        return $follows_by_collection_ids;
+    }
+
+    /**
      * Return the streams in which the followed collection is a source.
      *
      * The streams are sorted by name.

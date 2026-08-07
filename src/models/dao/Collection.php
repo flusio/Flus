@@ -291,17 +291,11 @@ trait Collection
             $type_clause = "AND type = 'feed'";
         }
 
-        $time_filter_clause = '';
-        if (in_array('time_filter', $selected_computed_props)) {
-            $time_filter_clause = ', fc.time_filter AS time_filter';
-        }
-
         $sql = <<<SQL
             SELECT
                 c.*,
                 fc.group_id
                 {$number_links_clause}
-                {$time_filter_clause}
             FROM collections c, followed_collections fc
 
             {$join_clause}
@@ -469,9 +463,6 @@ trait Collection
     /**
      * List the sources followed by the given user.
      *
-     * The number_streams property is always computed: it counts the streams of
-     * the user in which each source is present.
-     *
      * @return self[]
      */
     public static function listSourcesByUser(models\User $user): array
@@ -483,10 +474,7 @@ trait Collection
         $visibility_clause = self::buildVisibilityClause($user);
 
         $sql = <<<SQL
-            SELECT c.*, (
-                SELECT COUNT(*) FROM streams_to_follows sf
-                WHERE sf.follow_id = fc.id
-            ) AS number_streams
+            SELECT c.*
             FROM collections c, followed_collections fc
 
             WHERE fc.collection_id = c.id
@@ -507,9 +495,6 @@ trait Collection
      *
      * Only the collections that the context user can view are returned, or
      * only the public ones if no context user is given.
-     *
-     * The number_streams property is always computed: it counts the streams of
-     * the stream's owner in which each source is present.
      *
      * @param array{
      *     context_user?: ?models\User,
@@ -532,10 +517,7 @@ trait Collection
         $visibility_clause = self::buildVisibilityClause($context_user);
 
         $sql = <<<SQL
-            SELECT c.*, (
-                SELECT COUNT(*) FROM streams_to_follows sf2
-                WHERE sf2.follow_id = fc.id
-            ) AS number_streams
+            SELECT c.*
             FROM collections c, followed_collections fc, streams_to_follows sf
 
             WHERE c.id = fc.collection_id
@@ -557,12 +539,6 @@ trait Collection
      *
      * Only the sources that the given user can view are returned. The streams
      * without viewable source are absent from the result.
-     *
-     * Contrary to listByStream(), the number_streams property is NOT computed:
-     * this method is called on every page (see models\Stream::listByUser()) and
-     * only needs to know which sources belong to which stream. Its results must
-     * not be used where the property is expected, nor be injected in the
-     * "sources" memoization of the Stream model.
      *
      * @param models\Stream[] $streams
      * @param array{

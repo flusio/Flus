@@ -23,7 +23,6 @@
         </a>
     </p>
 
-    {% set sources = stream.sources({ context_user: app.user }) %}
     {% set filterable = sources | length > 10 %}
 
     <div class="sources flow">

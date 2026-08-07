@@ -249,27 +249,6 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $collections[0]->number_links);
     }
 
-    public function testListComputedFollowedByUserIdCanReturnTimeFilter(): void
-    {
-        $user = UserFactory::create();
-        $other_user = UserFactory::create();
-        $collection = CollectionFactory::create([
-            'user_id' => $other_user->id,
-            'type' => 'collection',
-            'is_public' => true,
-        ]);
-        FollowedCollectionFactory::create([
-            'collection_id' => $collection->id,
-            'user_id' => $user->id,
-            'time_filter' => 'strict',
-        ]);
-
-        $collections = models\Collection::listComputedFollowedByUserId($user->id, ['time_filter']);
-
-        $this->assertSame(1, count($collections));
-        $this->assertSame('strict', $collections[0]->time_filter);
-    }
-
     public function testListComputedFollowedByUserIdCanFilterCollections(): void
     {
         $user = UserFactory::create();
@@ -409,7 +388,6 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, count($sources));
         $this->assertSame($collection->id, $sources[0]->id);
-        $this->assertSame(0, $sources[0]->number_streams);
     }
 
     public function testListSourcesByUserExcludesPrivateCollections(): void
@@ -429,32 +407,6 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $sources = models\Collection::listSourcesByUser($user);
 
         $this->assertSame(0, count($sources));
-    }
-
-    public function testListSourcesByUserCountsTheStreams(): void
-    {
-        $user = UserFactory::create();
-        $other_user = UserFactory::create();
-        $collection = CollectionFactory::create([
-            'user_id' => $other_user->id,
-            'type' => 'feed',
-            'is_public' => true,
-        ]);
-        $user->follow($collection->id);
-        $stream_1 = StreamFactory::create([
-            'user_id' => $user->id,
-        ]);
-        $stream_2 = StreamFactory::create([
-            'user_id' => $user->id,
-        ]);
-        $stream_1->addSource($collection);
-        $stream_2->addSource($collection);
-
-        $sources = models\Collection::listSourcesByUser($user);
-
-        $this->assertSame(1, count($sources));
-        $this->assertSame($collection->id, $sources[0]->id);
-        $this->assertSame(2, $sources[0]->number_streams);
     }
 
     public function testListByStreamOnlyListsThePublicSourcesIfNoContextUser(): void

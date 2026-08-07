@@ -37,8 +37,17 @@ class Sources extends BaseController
 
         auth\Access::require($user, 'view', $stream);
 
+        $sources = $stream->sources([
+            'context_user' => $user,
+        ]);
+
+        models\collections\Preloader::for($sources)
+            ->publishers()
+            ->countStreamsFor($user);
+
         return Response::ok('streams/sources/index.html.twig', [
             'stream' => $stream,
+            'sources' => $sources,
         ]);
     }
 
@@ -66,6 +75,11 @@ class Sources extends BaseController
         $existing_sources = $stream->sources([
             'context_user' => $user,
         ]);
+
+        $sources_to_preload = array_merge($followed_sources, $existing_sources);
+        models\collections\Preloader::for($sources_to_preload)
+            ->publishers()
+            ->countStreamsFor($user);
 
         $suggested_sources = array_udiff(
             $followed_sources,
