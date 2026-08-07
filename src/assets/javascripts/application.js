@@ -79,9 +79,30 @@ document.addEventListener('turbo:load', adaptLayoutContentBorderRadius);
 // Make sure to visit the response when receiving the `turbo:frame-missing` event.
 // This happens most of the time on redirection after submitting a form in a modal.
 // Otherwise, "Content missing" would be displayed within the modal.
-document.addEventListener('turbo:frame-missing', (event) => {
+document.addEventListener('turbo:frame-missing', async (event) => {
     event.preventDefault();
-    event.detail.visit(event.detail.response);
+
+    const { response, visit } = event.detail;
+
+    // A redirection back to the current page is a refresh: visiting it with the
+    // "replace" action lets Turbo render it with morphing, which preserves the
+    // state that only the client knows (e.g. the filters of a list).
+    // The response is handed over instead of being fetched again: the server
+    // has already rendered it, and it consumed the flash messages on the way.
+    const morphs = document.querySelector('meta[name="turbo-refresh-method"][content="morph"]');
+
+    if (morphs && response.url === window.location.href) {
+        visit(response.url, {
+            action: 'replace',
+            response: {
+                statusCode: response.status,
+                redirected: response.redirected,
+                responseHTML: await response.clone().text(),
+            },
+        });
+    } else {
+        visit(response);
+    }
 });
 
 // Allow to disable scroll on form submission.
