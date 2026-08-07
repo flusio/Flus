@@ -5,147 +5,158 @@
     data-stream-target="formFilters"
     data-action="submit->stream#submitForm"
 >
-    <div
-        class="filters__section flow"
-        data-controller="scroller"
-        data-action="
-            resize@window->scroller#refresh
-            turbo:morph@document->scroller#refresh
-        "
+    <details
+        open
+        data-controller="details morph"
+        data-details-storage-key-value="stream-filters"
+        data-morph-preserve-value="open data-details-collapsed-value"
+        data-action="turbo:before-morph-attribute->morph#preserveAttributes"
     >
-        {% set max_count_per_day = stream_view.maxCountPerDay() %}
+        <summary
+            class="details__header cols cols--always cols--center cols--gap-small"
+            data-action="click->details#toggle"
+        >
+            {{ icon('angle-down', 'details__chevron') }}
 
-        {# Number of days displayed per month, used to cap the width of each
-         # month label so it cannot overflow onto the next month's label. #}
-        {% set count_days_per_month = {} %}
-        {% for day in stream_view.period %}
-            {% set month_key = day.format('Y-m') %}
-            {% set count = count_days_per_month[month_key] | default(0) %}
-            {% set count_days_per_month = count_days_per_month | merge({ (month_key): count + 1 }) %}
-        {% endfor %}
+            <span class="col--extend text--bold">{{ t('Filters') }}</span>
+        </summary>
 
-        <div class="scroller" data-scroller-target="viewport">
-            <button
-                type="button"
-                class="button--icon scroller__button scroller__button--previous"
-                title="{{ t('Display the previous days') }}"
-                data-scroller-target="previous"
-                data-action="scroller#previous"
-                disabled
-            >
-                {{ icon('arrow-left') }}
+        <div
+            class="filters__section flow"
+            data-controller="scroller"
+            data-action="
+                resize@window->scroller#refresh
+                turbo:morph@document->scroller#refresh
+            "
+        >
+            {% set max_count_per_day = stream_view.maxCountPerDay() %}
 
-                <span class="sr-only">
-                    {{ t('Display the previous days') }}
-                </span>
-            </button>
+            {# Number of days displayed per month, used to cap the width of each
+             # month label so it cannot overflow onto the next month's label. #}
+            {% set count_days_per_month = {} %}
+            {% for day in stream_view.period %}
+                {% set month_key = day.format('Y-m') %}
+                {% set count = count_days_per_month[month_key] | default(0) %}
+                {% set count_days_per_month = count_days_per_month | merge({ (month_key): count + 1 }) %}
+            {% endfor %}
 
-            <div
-                class="scroller__strip day-picker"
-                role="group"
-                aria-label="{{ t('Date') }}"
-                data-scroller-target="strip"
-                data-action="
-                    keydown->scroller#navigate
-                    scroll->scroller#refresh
-                "
-            >
-                {% for day in stream_view.period %}
-                    {% set day_value = day.format('Y-m-d') %}
-                    {% set is_month_first_day = loop.first or day.format('Y-m') != stream_view.period[loop.index0 - 1].format('Y-m') %}
-                    {% set day_count = stream_view.countByDay(day) %}
-                    {% set day_count_unread = stream_view.countUnreadByDay(day) %}
-                    {% set day_title = t('%s: %d link', '%s: %d links', day_count, [d(day), day_count]) %}
-                    {% if day_count_unread > 0 %}
-                        {% set day_title = day_title ~ ' ' ~ t('(%d unread)', '(%d unread)', day_count_unread, [day_count_unread]) %}
-                    {% endif %}
+            <div class="scroller" data-scroller-target="viewport">
+                <button
+                    type="button"
+                    class="button--icon scroller__button scroller__button--previous"
+                    title="{{ t('Display the previous days') }}"
+                    data-scroller-target="previous"
+                    data-action="scroller#previous"
+                    disabled
+                >
+                    {{ icon('arrow-left') }}
 
-                    {% if is_month_first_day %}
-                        {% set count_month_days = count_days_per_month[day.format('Y-m')] %}
+                    <span class="sr-only">
+                        {{ t('Display the previous days') }}
+                    </span>
+                </button>
 
-                        <span class="day-picker__month-anchor">
-                            <span
-                                class="day-picker__month"
-                                style="max-width: calc({{ count_month_days }} * var(--day-width));"
-                            >
-                                {# Abbreviate for narrow months so we avoid truncating the name with an ellipsis. #}
-                                {% if count_month_days == 1 %}
-                                    {{ d(day, 'MMM') }}
-                                {% elseif count_month_days == 2 %}
-                                    {{ d(day, 'MMM y') }}
-                                {% else %}
-                                    {{ d(day, 'MMMM y') }}
-                                {% endif %}
+                <div
+                    class="scroller__strip day-picker"
+                    role="group"
+                    aria-label="{{ t('Date') }}"
+                    data-scroller-target="strip"
+                    data-action="
+                        keydown->scroller#navigate
+                        scroll->scroller#refresh
+                    "
+                >
+                    {% for day in stream_view.period %}
+                        {% set day_value = day.format('Y-m-d') %}
+                        {% set is_month_first_day = loop.first or day.format('Y-m') != stream_view.period[loop.index0 - 1].format('Y-m') %}
+                        {% set day_count = stream_view.countByDay(day) %}
+                        {% set day_count_unread = stream_view.countUnreadByDay(day) %}
+                        {% set day_title = t('%s: %d link', '%s: %d links', day_count, [d(day), day_count]) %}
+                        {% if day_count_unread > 0 %}
+                            {% set day_title = day_title ~ ' ' ~ t('(%d unread)', '(%d unread)', day_count_unread, [day_count_unread]) %}
+                        {% endif %}
+
+                        {% if is_month_first_day %}
+                            {% set count_month_days = count_days_per_month[day.format('Y-m')] %}
+
+                            <span class="day-picker__month-anchor">
+                                <span
+                                    class="day-picker__month"
+                                    style="max-width: calc({{ count_month_days }} * var(--day-width));"
+                                >
+                                    {# Abbreviate for narrow months so we avoid truncating the name with an ellipsis. #}
+                                    {% if count_month_days == 1 %}
+                                        {{ d(day, 'MMM') }}
+                                    {% elseif count_month_days == 2 %}
+                                        {{ d(day, 'MMM y') }}
+                                    {% else %}
+                                        {{ d(day, 'MMMM y') }}
+                                    {% endif %}
+                                </span>
                             </span>
-                        </span>
-                    {% endif %}
+                        {% endif %}
 
-                    <button
-                        type="button"
-                        class="day-picker__day {{ stream_view.isInRange(day) ? 'day-picker__day--in-range' : '' }} {{ day.format('j') == '1' ? 'day-picker__day--month-start' : '' }}"
-                        id="stream-at-{{ day_value }}"
-                        value="{{ day_value }}"
-                        title="{{ day_title }}"
-                        aria-pressed="{{ stream_view.isAt(day) ? 'true' : 'false' }}"
-                        tabindex="{{ stream_view.isAt(day) ? '0' : '-1' }}"
-                        data-stream-target="at"
-                        data-scroller-target="item"
-                        data-action="stream#selectAt"
-                    >
-                        <span class="day-picker__count">
-                            {{ day_count }}
-                        </span>
-
-                        <span class="day-picker__chart" aria-hidden="true">
-                            <span
-                                class="day-picker__bar {{ day_count == 0 ? 'day-picker__bar--empty' : '' }}"
-                                style="--total-ratio: {{ max_count_per_day > 0 ? day_count / max_count_per_day : 0 }};"
-                            >
-                                {% if day_count_unread > 0 %}
-                                    <span
-                                        class="day-picker__bar-unread"
-                                        style="--unread-ratio: {{ day_count_unread / day_count }};"
-                                    ></span>
-                                {% endif %}
+                        <button
+                            type="button"
+                            class="day-picker__day {{ stream_view.isInRange(day) ? 'day-picker__day--in-range' : '' }} {{ day.format('j') == '1' ? 'day-picker__day--month-start' : '' }}"
+                            id="stream-at-{{ day_value }}"
+                            value="{{ day_value }}"
+                            title="{{ day_title }}"
+                            aria-pressed="{{ stream_view.isAt(day) ? 'true' : 'false' }}"
+                            tabindex="{{ stream_view.isAt(day) ? '0' : '-1' }}"
+                            data-stream-target="at"
+                            data-scroller-target="item"
+                            data-action="stream#selectAt"
+                        >
+                            <span class="day-picker__count">
+                                {{ day_count }}
                             </span>
-                        </span>
 
-                        <span class="day-picker__weekday">
-                            {{ d(day, 'EEE') }}
-                        </span>
+                            <span class="day-picker__chart" aria-hidden="true">
+                                <span
+                                    class="day-picker__bar {{ day_count == 0 ? 'day-picker__bar--empty' : '' }}"
+                                    style="--total-ratio: {{ max_count_per_day > 0 ? day_count / max_count_per_day : 0 }};"
+                                >
+                                    {% if day_count_unread > 0 %}
+                                        <span
+                                            class="day-picker__bar-unread"
+                                            style="--unread-ratio: {{ day_count_unread / day_count }};"
+                                        ></span>
+                                    {% endif %}
+                                </span>
+                            </span>
 
-                        <span class="day-picker__number">
-                            {{ day.format('j') }}
-                        </span>
-                    </button>
-                {% endfor %}
-            </div>
+                            <span class="day-picker__weekday">
+                                {{ d(day, 'EEE') }}
+                            </span>
 
-            <button
+                            <span class="day-picker__number">
+                                {{ day.format('j') }}
+                            </span>
+                        </button>
+                    {% endfor %}
+                </div>
+
+                <button
                     type="button"
                     class="button--icon scroller__button scroller__button--next"
                     title="{{ t('Display the next days') }}"
                     data-scroller-target="next"
                     data-action="scroller#next"
                     disabled
-            >
-                {{ icon('arrow-right') }}
+                >
+                    {{ icon('arrow-right') }}
 
-                <span class="sr-only">
-                    {{ t('Display the next days') }}
-                </span>
-            </button>
-        </div>
-
-        <div class="stack stack--gap-small">
-            <p class="text--bold" id="stream-days-label">
-                {{ t('Display:') }}
-            </p>
+                    <span class="sr-only">
+                        {{ t('Display the next days') }}
+                    </span>
+                </button>
+            </div>
 
             <div
                 class="stack stack--gap-small"
                 role="group"
-                aria-labelledby="stream-days-label"
+                aria-label="{{ t('Period') }}"
             >
                 {% for number_of_days in [1, 3, 7] %}
                     <div class="filters__option">
@@ -161,128 +172,136 @@
                     </div>
                 {% endfor %}
             </div>
+
         </div>
-    </div>
 
-    <div class="filters__section cols cols--gap-small cols--center">
-        <label for="stream-filter-query">
-            {{ t('Search:') }}
-        </label>
+        <div class="filters__section">
+            <div class="cols cols--gap-small cols--center">
+                <label class="col--size2" for="stream-filter-query">
+                    {{ t('Keywords') }}
+                </label>
 
-        <input
-            id="stream-filter-query"
-            type="search"
-            name="q"
-            value="{{ stream_view.query }}"
-            autocomplete="off"
-            placeholder="{{ t('Words or URL') }}"
-            data-controller="morph"
-            data-action="
-                input->stream#searchQuery
-                search->stream#submitForm
-                turbo:before-morph-attribute->morph#preserveTypedValue
-            "
-        >
-    </div>
+                <input
+                    id="stream-filter-query"
+                    class="col--size10"
+                    type="search"
+                    name="q"
+                    value="{{ stream_view.query }}"
+                    autocomplete="off"
+                    placeholder="{{ t('Words or URL') }}"
+                    data-controller="morph"
+                    data-action="
+                        input->stream#searchQuery
+                        search->stream#submitForm
+                        turbo:before-morph-attribute->morph#preserveTypedValue
+                    "
+                >
+            </div>
+        </div>
 
-    <div class="filters__section stack stack--gap-small">
-        <p class="text--bold" id="stream-filter-status-label">
-            {{ t('Reading status:') }}
-        </p>
+        <div class="filters__section">
+            <div class="cols cols--gap-small cols--center">
+                <p class="col--size2 text--bold" id="stream-filter-status-label">
+                    {{ t('Reading status') }}
+                </p>
 
-        <div
-            class="stack stack--gap-small"
-            role="group"
-            aria-labelledby="stream-filter-status-label"
-        >
-            {% for status, label in {
-                'all': t('All'),
-                'unread': t('Unread'),
-                'read-later': t('To read'),
-                'read': t('Links read'),
-            } %}
-                <div class="filters__option">
-                    <button
-                        type="button"
-                        value="{{ status }}"
-                        aria-pressed="{{ stream_view.isStatusSelected(status) ? 'true' : 'false' }}"
-                        data-stream-target="status"
-                        data-action="stream#selectStatus"
+                <div class="col--size10 flow flow--small">
+                    <div
+                        class="stack stack--gap-small"
+                        role="group"
+                        aria-labelledby="stream-filter-status-label"
                     >
-                        {{ label }}
-                    </button>
-                </div>
-            {% endfor %}
-        </div>
+                        {% for status, label in {
+                            'all': t('All'),
+                            'unread': t('Unread'),
+                            'read-later': t('To read'),
+                            'read': t('Links read'),
+                        } %}
+                            <div class="filters__option">
+                                <button
+                                    type="button"
+                                    value="{{ status }}"
+                                    aria-pressed="{{ stream_view.isStatusSelected(status) ? 'true' : 'false' }}"
+                                    data-stream-target="status"
+                                    data-action="stream#selectStatus"
+                                >
+                                    {{ label }}
+                                </button>
+                            </div>
+                        {% endfor %}
 
-        <div class="cols cols--always cols--center">
-            <input
-                type="checkbox"
-                id="stream-filter-with-dismissed"
-                name="with_dismissed"
-                value="1"
-                {{ stream_view.with_dismissed ? 'checked' : '' }}
-                data-action="change->stream#submit"
-            >
-
-            <label for="stream-filter-with-dismissed">
-                {{ t('Include the ignored links') }}
-            </label>
-        </div>
-    </div>
-
-    <div class="filters__section flow flow--small">
-        {% set sources_and_counts = stream_view.countedSources() %}
-
-        <p class="text--bold" id="stream-filter-sources-label">
-            {{ t('Sources (%d)', [sources_and_counts | length]) }}
-        </p>
-
-        {% if sources_and_counts %}
-            <div
-                class="stack stack--gap-small"
-                role="group"
-                aria-labelledby="stream-filter-sources-label"
-            >
-                {% for source_and_count in sources_and_counts %}
-                    {% set source = source_and_count[0] %}
-                    {% set count_links = source_and_count[1] %}
-                    {% set source_title = t('%s: %d link', '%s: %d links', count_links, [source.name, count_links]) %}
-
-                    <div class="filters__option filters__option--light">
-                        <button
-                            type="button"
-                            class="cols cols--always cols--center cols--gap-small"
-                            id="stream-source-{{ source.id }}"
-                            value="{{ source.id }}"
-                            aria-pressed="{{ stream_view.isSourceSelected(source) ? 'true' : 'false' }}"
-                            title="{{ source_title }}"
-                            data-stream-target="source"
-                            data-action="stream#selectSource"
-                        >
-                            <img
-                                class="filters__option-image"
-                                alt=""
-                                src="{{ url_media('covers', source.image_filename, 'collection-card.png') }}"
+                        <div class="cols cols--always cols--center">
+                            <input
+                                type="checkbox"
+                                id="stream-filter-with-dismissed"
+                                name="with_dismissed"
+                                value="1"
+                                {{ stream_view.with_dismissed ? 'checked' : '' }}
+                                data-action="change->stream#submit"
                             >
 
-                            <span class="filters__option-label">
-                                {{ source.name }}
-                            </span>
-
-                            <span class="filters__option-count">
-                                {{ count_links }}
-                            </span>
-
-                            <span class="filters__option-unselect">
-                                {{ icon('times') }}
-                            </span>
-                        </button>
+                            <label for="stream-filter-with-dismissed">
+                                {{ t('Include the ignored links') }}
+                            </label>
+                        </div>
                     </div>
-                {% endfor %}
+                </div>
             </div>
-        {% endif %}
-    </div>
+        </div>
+
+        <div class="filters__section flow flow--small">
+            {% set sources_and_counts = stream_view.countedSources() %}
+
+            <p class="text--bold" id="stream-filter-sources-label">
+                {{ t('Sources (%d)', [sources_and_counts | length]) }}
+            </p>
+
+            {% if sources_and_counts %}
+                <div
+                    class="stack stack--gap-small"
+                    role="group"
+                    aria-labelledby="stream-filter-sources-label"
+                >
+                    {% for source_and_count in sources_and_counts %}
+                        {% set source = source_and_count[0] %}
+                        {% set count_links = source_and_count[1] %}
+                        {% set source_title = t('%s: %d link', '%s: %d links', count_links, [source.name, count_links]) %}
+
+                        <div class="filters__option filters__option--light">
+                            <button
+                                type="button"
+                                class="cols cols--always cols--center cols--gap-small"
+                                id="stream-source-{{ source.id }}"
+                                value="{{ source.id }}"
+                                aria-pressed="{{ stream_view.isSourceSelected(source) ? 'true' : 'false' }}"
+                                title="{{ source_title }}"
+                                data-stream-target="source"
+                                data-action="stream#selectSource"
+                            >
+                                <img
+                                    class="filters__option-image"
+                                    alt=""
+                                    src="{{ url_media('covers', source.image_filename, 'collection-card.png') }}"
+                                >
+
+                                <span class="filters__option-label">
+                                    {{ source.name }}
+                                </span>
+
+                                <span class="filters__option-count">
+                                    {{ count_links }}
+                                </span>
+
+                                <span class="filters__option-unselect">
+                                    {{ icon('times') }}
+                                </span>
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </details>
 
     {# The dates, days, sources and statuses are toggle buttons: these inputs
      # are what actually carry their values in the submitted query. #}
