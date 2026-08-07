@@ -29,6 +29,12 @@ class Feeds extends BaseController
     {
         $user = auth\CurrentUser::require();
 
+        if ($user->isAlphaEnabled()) {
+            // The page only displays a notice pointing to the Sources page to
+            // these users: there is nothing to list here.
+            return Response::ok('feeds/index.html.twig');
+        }
+
         $groups = models\Group::listBy(['user_id' => $user->id]);
         $groups = utils\Sorter::localeSort($groups, 'name');
 

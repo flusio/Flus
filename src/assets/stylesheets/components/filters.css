@@ -8,6 +8,7 @@
     padding: var(--space-medium);
 }
 
+.details__header + .filters__section,
 .filters__section + .filters__section {
     border-top: 1px solid var(--color-grey-line);
 }

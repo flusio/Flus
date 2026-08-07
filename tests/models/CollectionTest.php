@@ -93,11 +93,11 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
     public static function suggestedTimeFiltersProvider(): array
     {
         return [
-            // At least five links per day.
+            // At least three links per day.
             [18250, 'none'],
-            [1825, 'none'],
-            // At least one link per day, but less than five.
-            [1824, 'strict'],
+            [1095, 'none'],
+            // At least one link per day, but less than three.
+            [1094, 'strict'],
             [365, 'strict'],
             // At least one link per week, but less than one per day.
             [364, 'normal'],

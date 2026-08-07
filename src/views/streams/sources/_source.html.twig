@@ -50,20 +50,21 @@
             </p>
 
             <p class="text--secondary stack stack--gap">
+                <span title="{{ t('Publication frequency') }}">
+                    {{ icon('frequency') }}
+                    {{ source.publication_frequency_per_year | format_publication_frequency }}
+                </span>
+
                 {% if can(app.user, 'update', stream) %}
-                    <span>
+                    <span title="{{ t('Streams displaying this source') }}">
+                        {{ icon('stream') }}
                         {% if count_streams %}
-                            {{ t('In %d stream', 'In %d streams', count_streams, [count_streams]) }}
+                            {{ t('%d stream', '%d streams', count_streams, [count_streams]) }}
                         {% else %}
                             {{ t('No stream') }}
                         {% endif %}
                     </span>
                 {% endif %}
-
-                <span title="{{ t('Publication frequency') }}">
-                    {{ icon('frequency') }}
-                    {{ source.publication_frequency_per_year | format_publication_frequency }}
-                </span>
             </p>
         </div>
     </div>

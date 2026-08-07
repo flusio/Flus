@@ -641,8 +641,8 @@ class Collection
      */
     public function suggestedTimeFilter(): string
     {
-        if ($this->publication_frequency_per_year >= 5 * 365) {
-            // At least five links per day.
+        if ($this->publication_frequency_per_year >= 3 * 365) {
+            // At least three links per day.
             return 'none';
         }
 

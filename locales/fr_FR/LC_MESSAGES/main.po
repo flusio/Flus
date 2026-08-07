@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-08-06 18:48+0200\n"
-"PO-Revision-Date: 2026-08-06 18:48+0200\n"
+"POT-Creation-Date: 2026-08-07 14:51+0200\n"
+"PO-Revision-Date: 2026-08-07 14:51+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -336,22 +336,22 @@ msgstr "Le nom est obligatoire."
 msgid "The name must be less than {max} characters."
 msgstr "Le nom ne doit pas faire plus de {max} caractères."
 
-#: models/Collection.php:143 models/Collection.php:230
-#: models/ReadLaterSource.php:20 navigations/ReadingNavigation.php:33
+#: models/Collection.php:137 models/Collection.php:224
+#: models/ReadLaterSource.php:20 navigations/ReadingNavigation.php:35
 msgid "To read"
 msgstr "À lire"
 
-#: models/Collection.php:154 models/Collection.php:232 models/ReadSource.php:20
-#: navigations/ReadingNavigation.php:40
+#: models/Collection.php:148 models/Collection.php:226 models/ReadSource.php:20
+#: navigations/ReadingNavigation.php:42
 msgid "Links read"
 msgstr "Liens lus"
 
-#: models/Collection.php:165
+#: models/Collection.php:159
 msgid "Links never to read"
 msgstr "Liens à ne jamais lire"
 
-#: models/Collection.php:176 models/Collection.php:234
-#: navigations/ReadingNavigation.php:26
+#: models/Collection.php:170 models/Collection.php:228
+#: navigations/ReadingNavigation.php:28
 msgid "News"
 msgstr "Journal"
 
@@ -505,23 +505,27 @@ msgstr "Sécurité"
 msgid "Reading menu"
 msgstr "Menu lecture"
 
-#: navigations/ReadingNavigation.php:49
+#: navigations/ReadingNavigation.php:51
+msgid "Sources"
+msgstr "Sources"
+
+#: navigations/ReadingNavigation.php:60
 msgid "Explore"
 msgstr "Explorer"
 
-#: navigations/ReadingNavigation.php:58
+#: navigations/ReadingNavigation.php:69
 msgid "New stream"
 msgstr "Nouveau fil"
 
-#: navigations/ReadingNavigation.php:65
+#: navigations/ReadingNavigation.php:76
 msgid "Has unread links from the last seven days"
 msgstr "Contient des liens non lus datant des sept derniers jours"
 
-#: navigations/ReadingNavigation.php:79
+#: navigations/ReadingNavigation.php:90
 msgid "Create a stream to get started."
 msgstr "Créez un fil pour commencer."
 
-#: navigations/ReadingNavigation.php:84
+#: navigations/ReadingNavigation.php:95
 msgid "Streams"
 msgstr "Fils"
 
@@ -659,6 +663,7 @@ msgstr "Par %s"
 
 #: views/collections/_collection.html.twig:24
 #: views/collections/_collection_follow.html.twig:16
+#: views/sources/_source.html.twig:5
 msgid "no links"
 msgstr "aucun lien"
 
@@ -685,10 +690,10 @@ msgstr "privée"
 
 #: views/collections/_collection.html.twig:52
 #: views/collections/_collection_follow.html.twig:24
-#: views/collections/show.html.twig:97 views/streams/show.html.twig:63
-#: views/streams/sources/_selector.html.twig:38
-#: views/streams/sources/_source.html.twig:55
-#: views/streams/sources/index.html.twig:37
+#: views/collections/show.html.twig:97 views/sources/_source.html.twig:97
+#: views/streams/show.html.twig:63 views/streams/sources/_selector.html.twig:34
+#: views/streams/sources/_source.html.twig:53
+#: views/streams/sources/index.html.twig:32
 msgid "Publication frequency"
 msgstr "Fréquence de publication"
 
@@ -817,6 +822,7 @@ msgid "Unselect"
 msgstr "Désélectionner"
 
 #: views/collections/_unfollow_form.html.twig:13
+#: views/sources/_source.html.twig:169
 #, php-format
 msgid ""
 "Are you sure that you want to unfollow this source? It will be removed from "
@@ -832,6 +838,7 @@ msgstr[1] ""
 "retirée de %d fils."
 
 #: views/collections/_unfollow_form.html.twig:21
+#: views/sources/_source.html.twig:166
 msgid "Unfollow"
 msgstr "Ne plus suivre"
 
@@ -901,7 +908,7 @@ msgstr ""
 "pour la plupart des flux)."
 
 #: views/collections/filters/edit.html.twig:110
-#: views/streams/_filters.html.twig:199
+#: views/sources/index.html.twig:125 views/streams/_filters.html.twig:199
 msgid "All"
 msgstr "Tout"
 
@@ -914,7 +921,7 @@ msgstr ""
 "manquer)."
 
 #: views/collections/followers/edit.html.twig:3
-#: views/collections/show.html.twig:151
+#: views/collections/show.html.twig:151 views/sources/_source.html.twig:130
 msgid "Manage the subscription"
 msgstr "Gérer l’abonnement"
 
@@ -1167,8 +1174,8 @@ msgstr "Flux de syndication de %s"
 msgid "Change the illustration"
 msgstr "Changer l’illustration"
 
-#: views/collections/show.html.twig:89
-#: views/streams/sources/_source.html.twig:29
+#: views/collections/show.html.twig:89 views/sources/_source.html.twig:81
+#: views/streams/sources/_source.html.twig:37
 #, php-format
 msgid "Feed of %s website"
 msgstr "Flux du site %s"
@@ -1186,7 +1193,7 @@ msgstr[1] "Thématiques :"
 #: views/collections/show.html.twig:173 views/groups/_group.html.twig:20
 #: views/links/_link.html.twig:260 views/links/show.html.twig:269
 #: views/notes/_notepad.html.twig:42 views/profiles/layout.html.twig:81
-#: views/streams/show.html.twig:105
+#: views/streams/show.html.twig:106
 msgid "Edit"
 msgstr "Modifier"
 
@@ -1202,7 +1209,7 @@ msgstr "Accès"
 #: views/notes/_notepad.html.twig:27 views/notes/_notepad.html.twig:33
 #: views/profiles/layout.html.twig:88 views/streams/_timeline.html.twig:26
 #: views/streams/_timeline.html.twig:77 views/streams/_timeline.html.twig:119
-#: views/streams/show.html.twig:112
+#: views/streams/show.html.twig:113
 msgid "Actions"
 msgstr "Actions"
 
@@ -1214,12 +1221,12 @@ msgstr "Régler pour le journal"
 msgid "Put in a group"
 msgstr "Placer dans un groupe"
 
-#: views/collections/show.html.twig:218
+#: views/collections/show.html.twig:218 views/sources/_source.html.twig:151
 msgid "Copy link to collection"
 msgstr "Copier le lien de la collection"
 
 #: views/collections/show.html.twig:223 views/links/show.html.twig:260
-#: views/profiles/layout.html.twig:101
+#: views/profiles/layout.html.twig:101 views/sources/_source.html.twig:156
 msgid "Copy link to Web feed"
 msgstr "Copier le lien du flux Web"
 
@@ -1235,7 +1242,7 @@ msgstr "Ignorer les liens"
 
 #: views/collections/show.html.twig:250 views/links/_link.html.twig:284
 #: views/links/show.html.twig:285 views/notes/_notepad.html.twig:50
-#: views/streams/show.html.twig:120
+#: views/streams/show.html.twig:121
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -1399,11 +1406,24 @@ msgstr "Lire sur le site"
 msgid "Feeds"
 msgstr "Flux"
 
-#: views/feeds/index.html.twig:18
+#: views/feeds/index.html.twig:22
+msgid ""
+"This page has moved: the feeds and collections that you follow are now "
+"listed as “Sources”, in the “Reading” menu."
+msgstr ""
+"Cette page a été déplacée : les flux et collections que vous suivez sont "
+"désormais listées comme « Sources », dans le menu « Lecture »."
+
+#: views/feeds/index.html.twig:27
+msgid "Go to the sources"
+msgstr "Aller aux sources"
+
+#: views/feeds/index.html.twig:35
 msgid "All the feeds that you follow are listed here."
 msgstr "Tous les flux que vous suivez sont listés ici."
 
-#: views/feeds/index.html.twig:32 views/streams/sources/_selector.html.twig:146
+#: views/feeds/index.html.twig:49 views/sources/index.html.twig:40
+#: views/streams/sources/_selector.html.twig:149
 msgid "Add a feed"
 msgstr "Ajouter un flux"
 
@@ -3073,6 +3093,140 @@ msgstr "Mot de passe oublié ?"
 msgid "No account yet?"
 msgstr "Pas encore de compte ?"
 
+#: views/sources/_source.html.twig:6
+msgid "last 24 hours"
+msgstr "24 dernières heures"
+
+#: views/sources/_source.html.twig:7
+msgid "last 7 days"
+msgstr "7 derniers jours"
+
+#: views/sources/_source.html.twig:8
+msgid "all the links"
+msgstr "tous les liens"
+
+#: views/sources/_source.html.twig:85 views/streams/show.html.twig:77
+#: views/streams/sources/_source.html.twig:41
+msgid "By"
+msgstr "Par"
+
+#: views/sources/_source.html.twig:103
+msgid "Links received in the news"
+msgstr "Liens reçus dans le journal"
+
+#: views/sources/_source.html.twig:109
+#: views/streams/sources/_source.html.twig:59
+msgid "Streams displaying this source"
+msgstr "Fils affichant cette source"
+
+#: views/sources/_source.html.twig:112
+#: views/streams/sources/_source.html.twig:62
+#, php-format
+msgid "%d stream"
+msgid_plural "%d streams"
+msgstr[0] "%d fil"
+msgstr[1] "%d fils"
+
+#: views/sources/_source.html.twig:114
+#: views/streams/sources/_source.html.twig:64
+msgid "No stream"
+msgstr "Aucun fil"
+
+#: views/sources/_source.html.twig:136 views/sources/_source.html.twig:142
+#, php-format
+msgid "Actions on %s"
+msgstr "Actions sur %s"
+
+#: views/sources/index.html.twig:27
+msgid ""
+"The collections and the feeds that you follow feed both your news and your "
+"streams."
+msgstr ""
+"Les collections et les flux que vous suivez alimentent votre journal et vos "
+"fils."
+
+#: views/sources/index.html.twig:69
+msgid "Filters"
+msgstr "Filtres"
+
+#: views/sources/index.html.twig:75
+msgid "Keywords"
+msgstr "Mot-clés"
+
+#: views/sources/index.html.twig:82
+msgid "Name, website or author"
+msgstr "Nom, site ou auteur·ice"
+
+#: views/sources/index.html.twig:93
+msgid "Frequency"
+msgstr "Fréquence"
+
+#: views/sources/index.html.twig:102
+msgid "All the publication frequencies"
+msgstr "Toutes les fréquences de publication"
+
+#: views/sources/index.html.twig:103
+msgid "Inactive (no link over the past year)"
+msgstr "Inactive (aucun lien durant l’année passée)"
+
+#: views/sources/index.html.twig:104
+msgid "Occasional (less than 1 link per week)"
+msgstr "Occasionnelle (moins d’1 lien par semaine)"
+
+#: views/sources/index.html.twig:105
+msgid "Weekly (1 to 7 links per week)"
+msgstr "Hebdomadaire (1 à 7 liens par semaine)"
+
+#: views/sources/index.html.twig:106
+msgid "Daily (1 to 2 links per day)"
+msgstr "Quotidienne (1 à 2 liens par jour)"
+
+#: views/sources/index.html.twig:107
+msgid "Prolific (3 links per day or more)"
+msgstr "Prolifique (3 liens par jour ou plus)"
+
+#: views/sources/index.html.twig:116
+msgid "Type"
+msgstr "Type"
+
+#: views/sources/index.html.twig:126
+msgid "Collections only"
+msgstr "Collections seulement"
+
+#: views/sources/index.html.twig:127
+msgid "Feeds only"
+msgstr "Flux seulement"
+
+#: views/sources/index.html.twig:160
+#: views/streams/sources/_selector.html.twig:71
+msgid "Only the sources in no stream"
+msgstr "Seulement les sources sans aucun fil"
+
+#: views/sources/index.html.twig:174
+msgid "Only the sources that differ from the recommendation for the news"
+msgstr ""
+"Seulement les sources qui s'écartent de la recommandation pour le journal"
+
+#: views/sources/index.html.twig:185 views/streams/show.html.twig:72
+#: views/streams/sources/_selector.html.twig:42
+#: views/streams/sources/index.html.twig:39
+#, php-format
+msgid "%d source"
+msgid_plural "%d sources"
+msgstr[0] "%d source"
+msgstr[1] "%d sources"
+
+#: views/sources/index.html.twig:195
+#: views/streams/sources/_selector.html.twig:108
+msgid "No source matches your filters."
+msgstr "Aucune source ne correspond à vos filtres."
+
+#: views/sources/index.html.twig:200
+#: views/streams/sources/_selector.html.twig:134
+#: views/streams/sources/index.html.twig:75
+msgid "This list is empty."
+msgstr "Cette liste est vide."
+
 #: views/streams/_filters.html.twig:31 views/streams/_filters.html.twig:39
 msgid "Display the previous days"
 msgstr "Afficher les jours précédents"
@@ -3179,80 +3333,44 @@ msgstr "Les illustrations aident à distinguer votre fil parmi les autres."
 msgid "Create the stream"
 msgstr "Créer le fil"
 
-#: views/streams/show.html.twig:71 views/streams/sources/_selector.html.twig:34
-#: views/streams/sources/index.html.twig:34
-#, php-format
-msgid "%d source"
-msgid_plural "%d sources"
-msgstr[0] "%d source"
-msgstr[1] "%d sources"
-
-#: views/streams/show.html.twig:76 views/streams/sources/_source.html.twig:33
-msgid "By"
-msgstr "Par"
-
-#: views/streams/show.html.twig:94 views/streams/sources/index.html.twig:45
+#: views/streams/show.html.twig:95 views/streams/sources/index.html.twig:45
 msgid "Manage sources"
 msgstr "Gérer les sources"
 
-#: views/streams/show.html.twig:123
+#: views/streams/show.html.twig:124
 msgid "Are you sure that you want to delete this stream?"
 msgstr "Êtes-vous sur·e de vouloir supprimer ce fil ?"
 
-#: views/streams/sources/_selector.html.twig:52
+#: views/streams/sources/_selector.html.twig:53
 #: views/streams/sources/index.html.twig:53
 msgid "Filter the sources…"
 msgstr "Filtrer les sources…"
 
-#: views/streams/sources/_selector.html.twig:53
+#: views/streams/sources/_selector.html.twig:54
 #: views/streams/sources/index.html.twig:54
 msgid "Filter the sources"
 msgstr "Filtrer les sources"
 
-#: views/streams/sources/_selector.html.twig:70
-msgid "Only the sources in no stream"
-msgstr "Seulement les sources sans aucun fil"
-
-#: views/streams/sources/_selector.html.twig:81
-#: views/streams/sources/_selector.html.twig:89
+#: views/streams/sources/_selector.html.twig:82
+#: views/streams/sources/_selector.html.twig:90
 msgid "Display the previous sources"
 msgstr "Afficher les sources précédentes"
 
-#: views/streams/sources/_selector.html.twig:106
-#: views/streams/sources/_selector.html.twig:114
-msgid "Display the next sources"
-msgstr "Afficher les sources suivantes"
-
-#: views/streams/sources/_selector.html.twig:123
-msgid "No source matches your filters."
-msgstr "Aucune source ne correspond à vos filtres."
-
-#: views/streams/sources/_selector.html.twig:125
+#: views/streams/sources/_selector.html.twig:110
 #: views/streams/sources/index.html.twig:70
 msgid "No source matches your search."
 msgstr "Aucune source ne correspond à votre recherche."
 
-#: views/streams/sources/_selector.html.twig:131
-#: views/streams/sources/index.html.twig:75
-msgid "This list is empty."
-msgstr "Cette liste est vide."
+#: views/streams/sources/_selector.html.twig:119
+#: views/streams/sources/_selector.html.twig:127
+msgid "Display the next sources"
+msgstr "Afficher les sources suivantes"
 
-#: views/streams/sources/_source.html.twig:48
-#, php-format
-msgid "In %d stream"
-msgid_plural "In %d streams"
-msgstr[0] "Dans %d fil"
-msgstr[1] "Dans %d fils"
-
-#: views/streams/sources/_source.html.twig:50
-msgid "No stream"
-msgstr "Aucun fil"
-
-#: views/streams/sources/_source.html.twig:70
+#: views/streams/sources/_source.html.twig:79
 msgid "Add"
 msgstr "Ajouter"
 
-#: views/streams/sources/_source.html.twig:82
+#: views/streams/sources/_source.html.twig:91
 msgid "Remove"
 msgstr "Retirer"
 

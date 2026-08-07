@@ -68,6 +68,7 @@
                 {% set sources = stream.sources({ context_user: app.user }) %}
 
                 <a href="{{ url('stream sources', { id: stream.id }) }}">
+                    {{ icon('feed') }}
                     {{ t('%d source', '%d sources', sources | length, [sources | length]) }}
                 </a>
             </p>

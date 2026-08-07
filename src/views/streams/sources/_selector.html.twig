@@ -30,16 +30,17 @@
         <h2 class="col--extend text--normal">{{ title }}</h2>
 
         <span class="stack stack--gap">
-            <span>
-                {{ t('%d source', '%d sources', sources | length, [sources | length]) }}
-            </span>
-
             {% if frequency is not null %}
                 <span title="{{ t('Publication frequency') }}">
                     {{ icon('frequency') }}
                     {{ frequency | format_publication_frequency }}
                 </span>
             {% endif %}
+
+            <span>
+                {{ icon('feed') }}
+                {{ t('%d source', '%d sources', sources | length, [sources | length]) }}
+            </span>
         </span>
     </summary>
 

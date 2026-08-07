@@ -17,7 +17,7 @@
 {% if collection.isFeed %}
     {% set feed_url = collection.feed_url %}
     {% set opengraph_description = t('A feed from %s, on %s.', [collection.feedWebsiteHost, app.brand]) %}
-    {% set current_tab = 'feeds' %}
+    {% set current_tab = is_alpha ? 'reading' : 'feeds' %}
 {% else %}
     {% set feed_url = url_full('collection feed', { id: collection.id }) %}
     {% set opengraph_description = t('A collection created by %s on %s.', [owner.username, app.brand]) %}

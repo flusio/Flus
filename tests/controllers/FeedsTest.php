@@ -72,6 +72,29 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $group_name);
     }
 
+    public function testIndexRendersANoticeForAlphaUsers(): void
+    {
+        $user = $this->login();
+        models\FeatureFlag::enable('alpha', $user->id);
+        /** @var string */
+        $feed_name = $this->fake('words', 3, true);
+        /** @var string */
+        $feed_url = $this->fake('url');
+        $collection = CollectionFactory::create([
+            'name' => $feed_name,
+            'type' => 'feed',
+            'is_public' => true,
+            'feed_url' => $feed_url,
+        ]);
+        $user->follow($collection->id);
+
+        $response = $this->appRun('GET', '/feeds');
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'This page has moved');
+        $this->assertResponseNotContains($response, $feed_name);
+    }
+
     public function testIndexDoesNotRenderPrivateFollowed(): void
     {
         $user = $this->login();

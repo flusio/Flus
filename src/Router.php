@@ -226,6 +226,9 @@ class Router
 
         $router->addRoute('GET', '/feeds.xsl', 'Feeds#xsl', 'feeds xsl');
 
+        // Sources
+        $router->addRoute('GET', '/sources', 'Sources#index', 'sources');
+
         // Streams
         $router->addRoute('GET', '/streams/new', 'Streams#new', 'new stream');
         $router->addRoute('POST', '/streams/new', 'Streams#create', 'create stream');

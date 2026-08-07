@@ -78,8 +78,8 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'user_id' => $other_user->id,
             'is_public' => true,
-            // At least five links per day.
-            'publication_frequency_per_year' => 2000,
+            // At least three links per day.
+            'publication_frequency_per_year' => 3 * 365,
         ]);
         $user->follow($collection->id);
 

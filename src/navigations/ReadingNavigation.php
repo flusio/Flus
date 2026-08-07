@@ -21,6 +21,8 @@ class ReadingNavigation extends BaseNavigation
     {
         $current_user = auth\CurrentUser::require();
 
+        $is_alpha_enabled = $current_user->isAlphaEnabled();
+
         $elements = [
             new Item(
                 label: TwigExtension::translate('News'),
@@ -44,6 +46,15 @@ class ReadingNavigation extends BaseNavigation
             ),
         ];
 
+        if ($is_alpha_enabled) {
+            $elements[] = new Item(
+                label: TwigExtension::translate('Sources'),
+                key: 'sources',
+                url: \Minz\Url::for('sources'),
+                icon: 'feed',
+            );
+        }
+
         if ($current_user->isBetaEnabled()) {
             $elements[] = new Item(
                 label: TwigExtension::translate('Explore'),
@@ -53,7 +64,7 @@ class ReadingNavigation extends BaseNavigation
             );
         }
 
-        if ($current_user->isAlphaEnabled()) {
+        if ($is_alpha_enabled) {
             $new_stream_action = new ItemAction(
                 label: TwigExtension::translate('New stream'),
                 url: \Minz\Url::for('new stream'),
