@@ -1,31 +1,7 @@
 .sources__selector {
+    background-color: var(--color-background);
     border: 1px solid var(--color-grey-line);
-}
-
-.sources__selector-header {
-    border-radius: var(--border-radius-small);
-
-    list-style: none;
-    cursor: pointer;
-}
-
-.sources__selector-header::-webkit-details-marker {
-    display: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-    .sources__selector-chevron {
-        transition: transform 0.4s ease-in-out;
-    }
-}
-
-/* The chevron points down when the column is open, right when it is collapsed.
- * The `open` attribute is only removed at the end of the closing animation, so
- * the state of the controller turns the chevron at the same time as the column
- * folds. */
-.sources__selector[data-details-collapsed-value="true"] .sources__selector-chevron,
-.sources__selector:not([open]) .sources__selector-chevron {
-    transform: rotate(-90deg);
+    border-radius: var(--border-radius);
 }
 
 /* The height is capped on the body rather than on the list alone: the filters
@@ -34,8 +10,8 @@
  * The list then takes whatever space the filters leave. */
 .sources__selector-body {
     display: flex;
-
     max-height: min(70vh, 40rem);
+    padding: var(--space-small);
 
     flex-direction: column;
 
@@ -61,7 +37,7 @@
 }
 
 .sources__selector-footer {
-    padding-top: var(--space-small);
+    padding: var(--space-small);
 
     border-top: 1px solid var(--color-grey-line);
 }

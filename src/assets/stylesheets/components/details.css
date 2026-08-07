@@ -1,0 +1,32 @@
+/* The header of a collapsible <details>, with a chevron telling its state.
+ *
+ * It expects a <summary> classed with `details__header`, direct child of the
+ * <details>, containing an icon classed with `details__chevron`.
+ */
+.details__header {
+    padding: var(--space-medium);
+
+    border-radius: var(--border-radius);
+
+    list-style: none;
+    cursor: pointer;
+}
+
+.details__header::-webkit-details-marker {
+    display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .details__chevron {
+        transition: transform 0.4s ease-in-out;
+    }
+}
+
+/* The chevron points down when the element is open, right when it is collapsed.
+ * The `open` attribute is only removed at the end of the closing animation (see
+ * the "details" Stimulus controller), so the state of the controller turns the
+ * chevron at the same time as the element folds. */
+[data-details-collapsed-value="true"] > .details__header .details__chevron,
+details:not([open]) > .details__header .details__chevron {
+    transform: rotate(-90deg);
+}
