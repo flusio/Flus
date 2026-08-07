@@ -3,6 +3,8 @@
 }
 
 .sources__selector-header {
+    border-radius: var(--border-radius-small);
+
     list-style: none;
     cursor: pointer;
 }
