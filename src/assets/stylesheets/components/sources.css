@@ -80,6 +80,10 @@
     overflow-wrap: anywhere;
 }
 
+.source__image-container {
+    display: flex;
+}
+
 .source__image {
     width: 64px;
     max-width: none;

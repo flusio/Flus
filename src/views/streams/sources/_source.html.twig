@@ -13,11 +13,17 @@
     data-flags="{{ count_streams ? '' : 'without-stream' }}"
 >
     <div class="col--extend cols cols--always cols--center cols--gap">
-        <img
-            class="source__image"
-            alt=""
-            src="{{ url_media('covers', source.image_filename, 'collection-card.png') }}"
+        <a
+            class="source__image-container col--noshrink"
+            tabindex="-1"
+            href="{{ url('collection', { id: source.id }) }}"
         >
+            <img
+                class="source__image"
+                alt=""
+                src="{{ url_media('covers', source.image_filename, 'collection-card.png') }}"
+            >
+        </a>
 
         <div class="source__content col--extend flow flow--smaller">
             <h3 class="text--bold text--normal">
