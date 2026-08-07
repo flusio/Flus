@@ -660,6 +660,30 @@ class Collection
     }
 
     /**
+     * Return the publication rate of the collection as a group, to be displayed
+     * or filtered on.
+     *
+     * The groups are the ranges delimited by the thresholds of
+     * suggestedTimeFilter(), which doesn't distinguish a collection publishing
+     * nothing from a quiet one.
+     */
+    public function publicationFrequencyGroup(): string
+    {
+        if ($this->publication_frequency_per_year === 0) {
+            return 'inactive';
+        }
+
+        $groups = [
+            'all' => 'quiet',
+            'normal' => 'weekly',
+            'strict' => 'daily',
+            'none' => 'prolific',
+        ];
+
+        return $groups[$this->suggestedTimeFilter()];
+    }
+
+    /**
      * @return array<string, mixed>
      */
     public function toJson(User $context_user): array

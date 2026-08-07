@@ -71,7 +71,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'name' => $private_source_name,
             'is_public' => false,
             'user_id' => $other_user->id,
-            'publication_frequency_per_year' => 730,
+            'publication_frequency_per_year' => 7 * 365,
         ]);
         $stream->addSource($public_source);
         $stream->addSource($private_source);
@@ -82,9 +82,11 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $public_source_name);
         $this->assertResponseNotContains($response, $private_source_name);
         $this->assertResponseContains($response, '1 source');
-        // The publication frequency only sums the sources that are listed.
+        // The publication frequency only sums the sources that are listed: the
+        // rate of the private source cannot be read anywhere. The value is
+        // chosen so it doesn't collide with the labels of the frequency filter.
         $this->assertResponseContains($response, '1 link per week');
-        $this->assertResponseNotContains($response, 'per day');
+        $this->assertResponseNotContains($response, '7 links per day');
     }
 
     public function testIndexRedirectsIfNotConnected(): void

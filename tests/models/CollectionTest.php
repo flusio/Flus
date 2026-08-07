@@ -108,4 +108,34 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
             [0, 'all'],
         ];
     }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('publicationFrequencyGroupsProvider')]
+    public function testPublicationFrequencyGroup(int $frequency_per_year, string $expected_group): void
+    {
+        $collection = CollectionFactory::create([
+            'publication_frequency_per_year' => $frequency_per_year,
+        ]);
+
+        $group = $collection->publicationFrequencyGroup();
+
+        $this->assertSame($expected_group, $group);
+    }
+
+    /**
+     * @return array<array{int, string}>
+     */
+    public static function publicationFrequencyGroupsProvider(): array
+    {
+        return [
+            [0, 'inactive'],
+            [1, 'quiet'],
+            [51, 'quiet'],
+            [52, 'weekly'],
+            [364, 'weekly'],
+            [365, 'daily'],
+            [1094, 'daily'],
+            [1095, 'prolific'],
+            [18250, 'prolific'],
+        ];
+    }
 }

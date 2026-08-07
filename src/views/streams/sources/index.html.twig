@@ -16,65 +16,37 @@
 {% block body %}
     <h1 class="text--center">{{ title }}</h1>
 
-    <p class="text--right">
+    <p class="text--center">
         <a class="button button--big button--primary button--animated" href="{{ url('stream', { id: stream.id }) }}">
             {{ t('Continue to the stream') }}
             {{ icon('arrow-right') }}
         </a>
     </p>
 
-    {% set filterable = sources | length > 10 %}
+    <section class="sources flow" data-controller="filter">
+        {% if sources %}
+            {{ include('sources/_filters.html.twig', { id: 'stream-sources-filters' }) }}
 
-    <div class="sources flow">
-        <section class="panel panel--rounded flow" data-controller="filter">
-            <div class="cols cols--always cols--center cols--gap-small">
-                <p class="col--extend stack stack--gap">
-                    <span title="{{ t('Publication frequency') }}">
-                        {{ icon('frequency') }}
-                        {{ stream.publicationFrequencyPerYear({ context_user: app.user }) | format_publication_frequency }}
-                    </span>
-
-                    <span>
-                        {{ icon('feed') }}
-                        {{ t('%d source', '%d sources', sources | length, [sources | length]) }}
-                    </span>
+            <div class="panel panel--large panel--rounded flow flow--large">
+                <p class="text--center" role="status">
+                    <span data-filter-target="count"></span>
+                    {{ t('%d source', '%d sources', sources | length, [sources | length]) }}
                 </p>
 
-                {% if can(app.user, 'update', stream) %}
-                    <a class="button" href="{{ url('edit stream sources', { id: stream.id }) }}">
-                        {{ t('Manage sources') }}
-                    </a>
-                {% endif %}
-            </div>
-
-            {% if filterable %}
-                <input
-                    type="search"
-                    placeholder="{{ t('Filter the sources…') }}"
-                    aria-label="{{ t('Filter the sources') }}"
-                    autocomplete="off"
-                    data-filter-target="search"
-                    data-action="input->filter#filter"
-                >
-            {% endif %}
-
-            {% if sources %}
-                <div class="flow flow--small">
+                <div class="flow">
                     {% for source in sources %}
                         {{ include('streams/sources/_source.html.twig') }}
                     {% endfor %}
                 </div>
 
-                {% if filterable %}
-                    <p class="text--center text--secondary" data-filter-target="empty" hidden>
-                        {{ t('No source matches your search.') }}
-                    </p>
-                {% endif %}
-            {% else %}
-                <p class="text--center text--secondary">
-                    {{ t('This list is empty.') }}
+                <p class="text--center text--secondary" data-filter-target="empty" hidden>
+                    {{ t('No source matches your filters.') }}
                 </p>
-            {% endif %}
-        </section>
-    </div>
+            </div>
+        {% else %}
+            <p class="text--center text--secondary">
+                {{ t('This list is empty.') }}
+            </p>
+        {% endif %}
+    </section>
 {% endblock %}

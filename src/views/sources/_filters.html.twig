@@ -1,0 +1,140 @@
+{# Filters of a list of sources, to be placed inside an element controlled by
+ # the "filter" Stimulus controller.
+ #
+ # `id` (required) prefixes the ids of the fields, and identifies the remembered
+ # state of the block.
+ #
+ # `display_subscription_filters` adds the filters which only make sense on the
+ # full list of the sources of a user. #}
+
+{% set display_subscription_filters = display_subscription_filters ?? false %}
+
+<details
+    class="filters"
+    id="{{ id }}"
+    data-turbo-permanent
+    open
+    data-controller="details"
+    data-details-storage-key-value="{{ id }}"
+>
+    <summary
+        class="details__header cols cols--always cols--center cols--gap-small"
+        data-focus-target="fallback"
+        data-action="click->details#toggle"
+    >
+        {{ icon('angle-down', 'details__chevron') }}
+
+        <span class="col--extend text--bold">{{ t('Filters') }}</span>
+    </summary>
+
+    <div class="filters__section">
+        <div class="cols cols--gap-small cols--center">
+            <label class="col--size2" for="{{ id }}-query">
+                {{ t('Keywords') }}
+            </label>
+
+            <input
+                id="{{ id }}-query"
+                class="col--size10"
+                type="search"
+                placeholder="{{ t('Name, website or author') }}"
+                autocomplete="off"
+                data-filter-target="search"
+                data-action="input->filter#filter"
+            >
+        </div>
+    </div>
+
+    <div class="filters__section">
+        <div class="cols cols--gap-small cols--center">
+            <label class="col--size2" for="{{ id }}-frequency">
+                {{ t('Frequency') }}
+            </label>
+
+            <div class="col--size10">
+                <select
+                    id="{{ id }}-frequency"
+                    data-filter-target="flag"
+                    data-action="filter#filter"
+                >
+                    <option value="">{{ t('All the publication frequencies') }}</option>
+                    <option value="frequency-inactive">{{ t('Inactive (no link over the past year)') }}</option>
+                    <option value="frequency-quiet">{{ t('Occasional (less than 1 link per week)') }}</option>
+                    <option value="frequency-weekly">{{ t('Weekly (1 to 7 links per week)') }}</option>
+                    <option value="frequency-daily">{{ t('Daily (1 to 2 links per day)') }}</option>
+                    <option value="frequency-prolific">{{ t('Prolific (3 links per day or more)') }}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="filters__section">
+        <div class="cols cols--gap-small cols--center">
+            <p class="col--size2 text--bold" id="{{ id }}-type-label">
+                {{ t('Type') }}
+            </p>
+
+            <div
+                class="col--size10 stack stack--gap-small"
+                role="group"
+                aria-labelledby="{{ id }}-type-label"
+            >
+                {% for flag, label in {
+                    '': t('All'),
+                    'type-collection': t('Collections only'),
+                    'type-feed': t('Feeds only'),
+                } %}
+                    <div class="filters__option">
+                        <button
+                            type="button"
+                            aria-pressed="{{ loop.first ? 'true' : 'false' }}"
+                            value="{{ flag }}"
+                            data-filter-target="flag"
+                            data-action="filter#selectFlag"
+                        >
+                            {{ label }}
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    {% if display_subscription_filters %}
+        <div class="filters__section">
+            <div class="cols cols--gap-small cols--center">
+                <div class="col--size2"></div>
+
+                <div class="col--size10 flow flow--small">
+                    <div>
+                        <input
+                            type="checkbox"
+                            id="{{ id }}-without-stream"
+                            data-filter-target="flag"
+                            value="without-stream"
+                            data-action="filter#filter"
+                        >
+
+                        <label for="{{ id }}-without-stream">
+                            {{ t('Only the sources in no stream') }}
+                        </label>
+                    </div>
+
+                    <div>
+                        <input
+                            type="checkbox"
+                            id="{{ id }}-off-recommendation"
+                            data-filter-target="flag"
+                            value="off-recommendation"
+                            data-action="filter#filter"
+                        >
+
+                        <label for="{{ id }}-off-recommendation">
+                            {{ t('Only the sources that differ from the recommendation for the news') }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</details>

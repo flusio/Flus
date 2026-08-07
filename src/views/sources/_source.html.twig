@@ -8,22 +8,6 @@
     'all': t('all the links'),
 } %}
 
-{# The publication frequency is the information behind the suggested time
- # filter. The suggestion doesn't distinguish the inactive sources from the
- # quiet ones, so they are told apart here. #}
-{% set frequency_flags = {
-    'all': 'frequency-quiet',
-    'normal': 'frequency-weekly',
-    'strict': 'frequency-daily',
-    'none': 'frequency-prolific',
-} %}
-
-{% if source.publication_frequency_per_year == 0 %}
-    {% set frequency_flag = 'frequency-inactive' %}
-{% else %}
-    {% set frequency_flag = frequency_flags[source.suggestedTimeFilter] %}
-{% endif %}
-
 {# The time filter is compared to what Flus suggests for this publication rate:
  # a source is flagged as soon as it diverges. #}
 {% if time_filter and time_filter != source.suggestedTimeFilter %}
@@ -35,7 +19,7 @@
 {% set flags = [
     count_streams ? '' : 'without-stream',
     source.isFeed ? 'type-feed' : 'type-collection',
-    frequency_flag,
+    'frequency-' ~ source.publicationFrequencyGroup,
     recommendation_flag,
 ] %}
 
