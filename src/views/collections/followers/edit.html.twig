@@ -127,7 +127,7 @@
                                         <div
                                             class="streams-selector__option"
                                             data-filter-target="item"
-                                            data-name="{{ stream.name }}"
+                                            data-search="{{ [stream.name] | json_encode }}"
                                         >
                                             <input
                                                 type="checkbox"
