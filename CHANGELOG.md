@@ -1,5 +1,69 @@
 # Changelog of Flus
 
+## 2026-08-07 - v2.5.3
+
+### Features
+
+- Rename "Remove from news" into "Ignore the link" ([ff6f6e08](https://github.com/flusio/Flus/commit/ff6f6e08))
+
+### Bug fixes
+
+- Fix the Altcha CSP headers ([2087bd15](https://github.com/flusio/Flus/commit/2087bd15))
+- Display origin's collection owner ([0f83ed42](https://github.com/flusio/Flus/commit/0f83ed42))
+- Fix repairing links in read and read later lists ([826dd5f3](https://github.com/flusio/Flus/commit/826dd5f3))
+- Handle invalid query when searching in links ([c4cac480](https://github.com/flusio/Flus/commit/c4cac480))
+- Fix main column overflowing on medium screens ([7e9547ba](https://github.com/flusio/Flus/commit/7e9547ba))
+- Fix zindex on group headers properly ([80d4c9d9](https://github.com/flusio/Flus/commit/80d4c9d9))
+
+### Maintenance
+
+- Refactor the Link model and preload data ([0d804719](https://github.com/flusio/Flus/commit/0d804719), [f03bcabb](https://github.com/flusio/Flus/commit/f03bcabb), [918b22db](https://github.com/flusio/Flus/commit/918b22db), [b883f29e](https://github.com/flusio/Flus/commit/b883f29e), [9741474c](https://github.com/flusio/Flus/commit/9741474c))
+- Refactor collections loading with a Preloader ([68fd6178](https://github.com/flusio/Flus/commit/68fd6178))
+- Add an index on `links_to_collections(collection_id, created_at)` ([df72f1a6](https://github.com/flusio/Flus/commit/df72f1a6))
+- Stop accumulating modal focus events during navigation ([2e98707e](https://github.com/flusio/Flus/commit/2e98707e))
+- Refactor the popups ([cb94fff9](https://github.com/flusio/Flus/commit/cb94fff9), [57adcbf2](https://github.com/flusio/Flus/commit/57adcbf2))
+- Memoize isBetaEnabled and isAlphaEnabled methods ([f3c1c511](https://github.com/flusio/Flus/commit/f3c1c511))
+- Extract a details CSS component ([105553d6](https://github.com/flusio/Flus/commit/105553d6))
+- Update the dependencies ([039153ea](https://github.com/flusio/Flus/commit/039153ea), [4df92d32](https://github.com/flusio/Flus/commit/4df92d32), [d20557b5](https://github.com/flusio/Flus/commit/d20557b5))
+
+### Alpha: streams
+
+- Provide a new "sources" page to replace "feeds" ([21f35a67](https://github.com/flusio/Flus/commit/21f35a67))
+- Display links as rows ([7f2dc9a6](https://github.com/flusio/Flus/commit/7f2dc9a6))
+- Manage streams from the followed source ([8b6d0894](https://github.com/flusio/Flus/commit/8b6d0894)), [6c449daf](https://github.com/flusio/Flus/commit/6c449daf))
+- Add an unread dot to streams in navigation ([89624ce3](https://github.com/flusio/Flus/commit/89624ce3)), [7e859633](https://github.com/flusio/Flus/commit/7e859633))
+- Allow to filter links with text queries ([be2a2ef0](https://github.com/flusio/Flus/commit/be2a2ef0))
+- Hide dismissed links by default ([04a2cda3](https://github.com/flusio/Flus/commit/04a2cda3))
+- Allow to ignore link individually in streams ([dbe96b84](https://github.com/flusio/Flus/commit/dbe96b84))
+- Refactor and improve the filter component ([3a83f931](https://github.com/flusio/Flus/commit/3a83f931))
+- Rework the interface of stream sources ([92d9fa15](https://github.com/flusio/Flus/commit/92d9fa15), [979c8ef5](https://github.com/flusio/Flus/commit/979c8ef5))
+- Allow to add a source by a feed URL ([ddd7a781](https://github.com/flusio/Flus/commit/ddd7a781))
+- Add a page to list sources of a stream ([0c902107](https://github.com/flusio/Flus/commit/0c902107))
+- Display number of streams per sources ([ba92fdf7](https://github.com/flusio/Flus/commit/ba92fdf7))
+- Add scroll buttons on the day-picker ([d07dd85b](https://github.com/flusio/Flus/commit/d07dd85b))
+- Put statuses filter above the sources filter ([c9821f8e](https://github.com/flusio/Flus/commit/c9821f8e))
+- Make source images clickable ([6a98baa1](https://github.com/flusio/Flus/commit/6a98baa1))
+- Improve spacing and UX of the stream filters ([339f547c](https://github.com/flusio/Flus/commit/339f547c))
+- Homogeneize the source filters ([8f303140](https://github.com/flusio/Flus/commit/8f303140))
+- Improve the stream filters ([4061738e](https://github.com/flusio/Flus/commit/4061738e))
+- Fix rendering the modal after applying a stream filter ([a5905dbe](https://github.com/flusio/Flus/commit/a5905dbe))
+- Fix position of global actions' popup on mobile ([4ec94457](https://github.com/flusio/Flus/commit/4ec94457))
+- Set the source correctly when marking link as read ([9d89da53](https://github.com/flusio/Flus/commit/9d89da53))
+- Fix performances when editing stream sources ([e60c99e3](https://github.com/flusio/Flus/commit/e60c99e3))
+- Optimize the performance when loading streams ([56cbc033](https://github.com/flusio/Flus/commit/56cbc033))
+- Optimize the SQL request for links in streams ([a680779a](https://github.com/flusio/Flus/commit/a680779a))
+- Avoid useless SQL scans to list user's streams ([c8077d56](https://github.com/flusio/Flus/commit/c8077d56))
+- Extract a generic "filter" Stimulus controller ([ea7461c3](https://github.com/flusio/Flus/commit/ea7461c3))
+- Allow to remember details state in local storage ([8f87dcc8](https://github.com/flusio/Flus/commit/8f87dcc8))
+- Allow to remember "self" element in focus controller ([6b6bf2ce](https://github.com/flusio/Flus/commit/6b6bf2ce))
+- Fade out scroller buttons nicely ([84361df9](https://github.com/flusio/Flus/commit/84361df9))
+- Make scrolling sides more visible ([7d800236](https://github.com/flusio/Flus/commit/7d800236))
+- Handle vertical scrolling in scroller controller ([d517ab7e](https://github.com/flusio/Flus/commit/d517ab7e))
+- Don't force flex display on `scroller__strip` ([e9a363ff](https://github.com/flusio/Flus/commit/e9a363ff))
+- Extract a JS controller to preserve attributes through morphing ([42251d6f](https://github.com/flusio/Flus/commit/42251d6f))
+- Handle morphing on modal redirection ([bdf6e09d](https://github.com/flusio/Flus/commit/bdf6e09d))
+- Handle morphing with the "back" button correctly ([6cf0b3da](https://github.com/flusio/Flus/commit/6cf0b3da))
+
 ## 2026-07-24 - v2.5.2
 
 ### Migration notes
