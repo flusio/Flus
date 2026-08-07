@@ -34,6 +34,12 @@ export default class extends Controller {
         this.elementToFocus = this.siblingToFocus(element) ?? fallback;
     }
 
+    // Remember the item itself instead of its sibling, for the actions which
+    // keep it in the list (e.g. a modal opened from the item and submitted).
+    rememberSelf (event) {
+        this.elementToFocus = this.itemTargets.find((item) => item.contains(event.target)) ?? null;
+    }
+
     restore () {
         const autofocusElement = this.hasAutofocusTarget ? this.autofocusTarget : null;
         const element = this.elementToFocus ?? autofocusElement;
