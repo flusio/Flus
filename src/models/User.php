@@ -194,21 +194,27 @@ class User
     public function enableBeta(): void
     {
         FeatureFlag::enable('beta', $this->id);
+        $this->unmemoize('feature_flag_beta');
     }
 
     public function disableBeta(): void
     {
         FeatureFlag::disable('beta', $this->id);
+        $this->unmemoize('feature_flag_beta');
     }
 
     public function isBetaEnabled(): bool
     {
-        return FeatureFlag::isEnabled('beta', $this->id);
+        return $this->memoize('feature_flag_beta', function (): bool {
+            return FeatureFlag::isEnabled('beta', $this->id);
+        });
     }
 
     public function isAlphaEnabled(): bool
     {
-        return FeatureFlag::isEnabled('alpha', $this->id);
+        return $this->memoize('feature_flag_alpha', function (): bool {
+            return FeatureFlag::isEnabled('alpha', $this->id);
+        });
     }
 
     public function isOwning(Link|Collection $object): bool
