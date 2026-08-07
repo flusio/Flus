@@ -8,20 +8,29 @@ const DURATION = 400;
 // The height of the element is animated between its collapsed and its expanded
 // heights, and the `open` attribute is only removed once the closing animation
 // is over.
+//
+// The state can be remembered from a visit to another by declaring a storage key.
 export default class extends Controller {
-    // While a closing animation is in flight, the element is still open: the
-    // expected state is tracked in this value instead of being read from the
-    // element.
     static values = {
+        // While a closing animation is in flight, the element is still open:
+        // the expected state is tracked in this value instead of being read
+        // from the element.
         collapsed: Boolean,
+
+        // Optional: when it is set, the state is remembered under this key.
+        storageKey: String,
     };
 
     connect () {
+        this.restore();
+
         this.collapsedValue = !this.element.open;
     }
 
     toggle (event) {
         this.collapsedValue = !this.collapsedValue;
+
+        this.store();
 
         // Let the browser toggle the element instantly when the animations are
         // not welcome.
@@ -61,6 +70,35 @@ export default class extends Controller {
         this.animateHeight(startHeight, endHeight).addEventListener('finish', () => {
             this.element.open = false;
         });
+    }
+
+    get storageNamespace () {
+        return `details:${this.storageKeyValue}`;
+    }
+
+    // Apply the remembered state, if any. The element is opened or closed
+    // without animating: it must be rendered in its final state.
+    restore () {
+        if (!this.hasStorageKeyValue) {
+            return;
+        }
+
+        const storedState = window.localStorage.getItem(this.storageNamespace);
+
+        if (storedState === 'collapsed' || storedState === 'expanded') {
+            this.element.open = storedState === 'expanded';
+        }
+    }
+
+    store () {
+        if (!this.hasStorageKeyValue) {
+            return;
+        }
+
+        window.localStorage.setItem(
+            this.storageNamespace,
+            this.collapsedValue ? 'collapsed' : 'expanded',
+        );
     }
 
     // Animate the height of the element. Any animation in flight must be
