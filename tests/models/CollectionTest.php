@@ -102,10 +102,11 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
             // At least one link per week, but less than one per day.
             [364, 'normal'],
             [52, 'normal'],
-            // Less than one link per week.
-            [51, 'all'],
-            [1, 'all'],
-            [0, 'all'],
+            // Less than one link per week ("all" could theoretically be
+            // suggested, but it would flood the news too easily then).
+            [51, 'normal'],
+            [1, 'normal'],
+            [0, 'normal'],
         ];
     }
 
@@ -128,8 +129,8 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
     {
         return [
             [0, 'inactive'],
-            [1, 'quiet'],
-            [51, 'quiet'],
+            [1, 'weekly'],
+            [51, 'weekly'],
             [52, 'weekly'],
             [364, 'weekly'],
             [365, 'daily'],

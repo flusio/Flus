@@ -638,6 +638,9 @@ class Collection
      *
      * Above a few links a day, no filter can keep the news readable: the
      * collection is better followed in a stream, so "none" is suggested.
+     *
+     * "all" is never suggested as it would be too easy to get overwhelmed
+     * by the news.
      */
     public function suggestedTimeFilter(): string
     {
@@ -651,12 +654,7 @@ class Collection
             return 'strict';
         }
 
-        if ($this->publication_frequency_per_year >= 52) {
-            // At least one link per week.
-            return 'normal';
-        }
-
-        return 'all';
+        return 'normal';
     }
 
     /**
@@ -674,7 +672,6 @@ class Collection
         }
 
         $groups = [
-            'all' => 'quiet',
             'normal' => 'weekly',
             'strict' => 'daily',
             'none' => 'prolific',
