@@ -5,7 +5,13 @@
 }
 
 .filters__section {
-    padding: var(--space-medium);
+    padding: var(--space-medium) var(--space-small);
+}
+
+@media (min-width: 800px) {
+    .filters__section {
+        padding: var(--space-medium);
+    }
 }
 
 .details__header + .filters__section,

@@ -4,12 +4,18 @@
  * <details>, containing an icon classed with `details__chevron`.
  */
 .details__header {
-    padding: var(--space-medium);
+    padding: var(--space-medium) var(--space-small);
 
     border-radius: var(--border-radius);
 
     list-style: none;
     cursor: pointer;
+}
+
+@media (min-width: 800px) {
+    .filters__section {
+        padding: var(--space-medium);
+    }
 }
 
 .details__header::-webkit-details-marker {
