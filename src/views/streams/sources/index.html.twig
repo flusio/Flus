@@ -5,6 +5,11 @@
 {% block title %}{{ title }}{% endblock %}
 {% block canonical %}{{ url_full('stream sources', { id: stream.id }) }}{% endblock %}
 
+{% block head_additional_tags %}
+    <meta name="turbo-refresh-method" content="morph">
+    <meta name="turbo-refresh-scroll" content="preserve">
+{% endblock %}
+
 {% block layout_header %}
     {{ include('layouts/_header.html.twig', { page: 'stream sources', tab: 'reading' }) }}
 {% endblock %}
@@ -23,7 +28,15 @@
         </a>
     </p>
 
-    <section class="sources flow" data-controller="filter">
+    <section
+        class="sources flow"
+        data-controller="filter focus"
+        data-action="
+            turbo:morph@document->filter#filter
+            submit->focus#remember
+            turbo:render@document->focus#restore
+        "
+    >
         {% if sources %}
             {{ include('sources/_filters.html.twig', { id: 'stream-sources-filters' }) }}
 
@@ -35,7 +48,7 @@
 
                 <div class="flow">
                     {% for source in sources %}
-                        {{ include('streams/sources/_source.html.twig') }}
+                        {{ include('sources/_source.html.twig') }}
                     {% endfor %}
                 </div>
 

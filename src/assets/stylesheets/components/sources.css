@@ -56,6 +56,26 @@
     overflow-wrap: anywhere;
 }
 
+/* The details fall on a grid that adapts to the available width: the items
+ * always land at the same places across the cards. */
+.source__details {
+    display: grid;
+
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+
+    gap: var(--space-smaller) var(--space-small);
+
+    color: var(--color-grey-text);
+}
+
+/* In the selectors, the details flow on a single line as long as they fit:
+ * their column is too narrow for the grid. */
+.sources__selector .source__details {
+    display: flex;
+
+    flex-wrap: wrap;
+}
+
 .source__image-container {
     display: flex;
 }
