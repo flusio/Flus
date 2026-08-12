@@ -66,6 +66,11 @@
 
             <p class="link__text text--oneline">
                 <span class="text--ellipsis">{{ link.host }}</span>&nbsp;·&nbsp;{{ link.reading_time | format_reading_time }}
+                {%- if link.published_at -%}
+                    &nbsp;·&nbsp;<time datetime="{{ link.published_at | date_iso }}" title="{{ d(link.published_at, 'dd MMM Y, HH:mm') }}">
+                        {{- d(link.published_at, 'HH:mm') -}}
+                    </time>
+                {%- endif -%}
 
                 {% if is_read %}
                     &nbsp;<span title="{{ t('You read this link.') }}">{{ icon('check') }}</span>
