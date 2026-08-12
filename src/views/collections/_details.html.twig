@@ -1,0 +1,37 @@
+{# The details about a collection: its publication frequency, the number of
+ # streams displaying it, and the time filter of the current user. #}
+
+{% set count_streams = count_streams ?? null %}
+{% set time_filter = time_filter ?? null %}
+
+{% set time_filter_labels = {
+    'none': t('no links'),
+    'strict': t('last 24 hours'),
+    'normal': t('last 7 days'),
+    'all': t('all the links'),
+} %}
+
+<p class="source__details">
+    <span title="{{ t('Publication frequency') }}">
+        {{ icon('frequency') }}
+        {{ collection.publication_frequency_per_year | format_publication_frequency }}
+    </span>
+
+    {% if time_filter %}
+        <span title="{{ t('Links received in the news') }}">
+            {{ icon('news') }}
+            {{ time_filter_labels[time_filter] }}
+        </span>
+    {% endif %}
+
+    {% if count_streams is not null %}
+        <span title="{{ t('Streams displaying this source') }}">
+            {{ icon('stream') }}
+            {% if count_streams %}
+                {{ t('%d stream', '%d streams', count_streams, [count_streams]) }}
+            {% else %}
+                {{ t('No stream') }}
+            {% endif %}
+        </span>
+    {% endif %}
+</p>

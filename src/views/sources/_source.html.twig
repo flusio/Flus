@@ -1,13 +1,6 @@
 {% set count_streams = source.countStreamsByUser(app.user) %}
 {% set time_filter = source.timeFilterByUser(app.user) %}
 
-{% set time_filter_labels = {
-    'none': t('no links'),
-    'strict': t('last 24 hours'),
-    'normal': t('last 7 days'),
-    'all': t('all the links'),
-} %}
-
 {# The time filter is compared to what Flus suggests for this publication rate:
  # a source is flagged as soon as it diverges. #}
 {% if time_filter and time_filter != source.suggestedTimeFilter %}
@@ -77,28 +70,11 @@
                 {% endif %}
             </p>
 
-            <p class="source__details">
-                <span title="{{ t('Publication frequency') }}">
-                    {{ icon('frequency') }}
-                    {{ source.publication_frequency_per_year | format_publication_frequency }}
-                </span>
-
-                {% if time_filter %}
-                    <span title="{{ t('Links received in the news') }}">
-                        {{ icon('news') }}
-                        {{ time_filter_labels[time_filter] }}
-                    </span>
-                {% endif %}
-
-                <span title="{{ t('Streams displaying this source') }}">
-                    {{ icon('stream') }}
-                    {% if count_streams %}
-                        {{ t('%d stream', '%d streams', count_streams, [count_streams]) }}
-                    {% else %}
-                        {{ t('No stream') }}
-                    {% endif %}
-                </span>
-            </p>
+            {{ include('collections/_details.html.twig', {
+                collection: source,
+                count_streams: count_streams,
+                time_filter: time_filter,
+            }) }}
         </div>
     </div>
 

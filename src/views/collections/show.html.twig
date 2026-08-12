@@ -3,6 +3,8 @@
 {% set owner = collection.owner %}
 {% set is_alpha = app.user and app.user.isAlphaEnabled %}
 {% set is_following = app.user and app.user.isFollowing(collection.id) %}
+{% set count_streams = is_alpha and is_following ? collection.countStreamsByUser(app.user) : null %}
+{% set time_filter = app.user ? collection.timeFilterByUser(app.user) : null %}
 {% set is_shared = collection.shares | length > 0 %}
 {% set can_update = can(app.user, 'update', collection) %}
 {% set can_delete = can(app.user, 'delete', collection) %}
@@ -94,17 +96,18 @@
                     </span>
                 {% endif %}
 
-                <span title="{{ t('Publication frequency') }}">
-                    {{ icon('frequency') }}
-                    {{ collection.publication_frequency_per_year | format_publication_frequency }}
-                </span>
-
                 {% if collection.isCollection %}
                     <span class="badge badge--accent badge--border">
                         {{ collection.is_public ? t('public') : t('private') }}
                     </span>
                 {% endif %}
             </p>
+
+            {{ include('collections/_details.html.twig', {
+                collection: collection,
+                count_streams: count_streams,
+                time_filter: time_filter,
+            }) }}
 
             {% if not collection.isFeed %}
                 <p>
