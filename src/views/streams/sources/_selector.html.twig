@@ -21,15 +21,16 @@
     "
 >
     <summary
-        class="details__header cols cols--always cols--center cols--gap-small"
+        class="details__header cols cols--center cols--gap"
         data-focus-target="fallback"
         data-action="click->details#toggle"
     >
-        {{ icon('angle-down', 'details__chevron') }}
+        <div class="col--extend cols cols--always cols--center cols--gap-smaller">
+            {{ icon('angle-down', 'details__chevron') }}
+            <h2 class="col--extend text--normal text--oneline">{{ title }}</h2>
+        </div>
 
-        <h2 class="col--extend text--normal">{{ title }}</h2>
-
-        <span class="stack stack--gap">
+        <span class="stack stack--gap-small">
             {% if frequency is not null %}
                 <span title="{{ t('Publication frequency') }}">
                     {{ icon('frequency') }}
