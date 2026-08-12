@@ -256,3 +256,21 @@
 .link-row__title a {
     display: block;
 }
+
+/* On mobile, the rows stack like the cards: their actions take the same look
+ * as the cards footer. */
+@media (max-width: 799px) {
+    .link-row__actions {
+        margin-right: calc(-1 * var(--space-small));
+        margin-bottom: calc(-1 * var(--space-small));
+        margin-left: calc(-1 * var(--space-small));
+        padding: var(--space-smaller);
+
+        background-color: var(--color-pampas);
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+    }
+
+    [data-color-scheme="dark"] .link-row__actions {
+        background-color: var(--color-grey-base);
+    }
+}
