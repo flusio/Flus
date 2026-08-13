@@ -43,9 +43,13 @@
 
     <section
         class="sources flow"
-        data-controller="filter focus"
+        data-controller="filter focus morph selection"
+        data-morph-preserve-value="data-selection-mode"
         data-action="
             turbo:morph@document->filter#filter
+            turbo:morph@document->selection#clear
+            turbo:before-morph-attribute->morph#preserveAttributes
+            filter:filtered->selection#uncheckHidden
             submit->focus#remember
             turbo:render@document->focus#restore
         "
@@ -56,15 +60,17 @@
                 display_subscription_filters: true,
             }) }}
 
+            <p class="text--center" role="status">
+                <span data-filter-target="count"></span>
+                {{ t('%d source', '%d sources', sources | length, [sources | length]) }}
+            </p>
+
             <div class="panel panel--large panel--rounded flow flow--large">
-                <p class="text--center" role="status">
-                    <span data-filter-target="count"></span>
-                    {{ t('%d source', '%d sources', sources | length, [sources | length]) }}
-                </p>
+                {{ include('sources/_bulk_bar.html.twig') }}
 
                 <div class="flow">
                     {% for source in sources %}
-                        {{ include('sources/_source.html.twig') }}
+                        {{ include('sources/_source.html.twig', { selectable: true }) }}
                     {% endfor %}
                 </div>
 

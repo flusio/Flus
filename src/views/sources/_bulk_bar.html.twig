@@ -1,0 +1,70 @@
+{# Bar of the actions applying to a selection of sources.
+ #
+ # It must be placed inside an element controlled by the "selection" Stimulus
+ # controller, next to a list of selectable sources (see sources/_source.html.twig).
+ # Out of the selection mode, it only displays the button entering the mode. #}
+
+<div
+    class="sources__bulk"
+    data-controller="sticky morph"
+    data-morph-preserve-value="data-stuck"
+    data-action="turbo:before-morph-attribute->morph#preserveAttributes"
+>
+    <p class="sources__bulk-start">
+        <button data-selection-target="start" data-action="selection#start">
+            {{ icon('check') }}
+            {{ t('Select…') }}
+        </button>
+    </p>
+
+    <div class="sources__bulk-bar flow">
+        <div class="cols cols--always cols--center cols--gap-small">
+            <div class="sources__bulk-select col--extend stack stack--gap-small">
+                <div class="cols cols--always cols--center">
+                    <input
+                        type="checkbox"
+                        id="bulk-sources-select-all"
+                        data-selection-target="selectAll"
+                        data-action="selection#toggleAll"
+                    >
+
+                    <label for="bulk-sources-select-all">
+                        {{ t('Select all') }}
+                    </label>
+                </div>
+
+                <span class="sources__bulk-counter text--secondary" role="status">
+                    ({{ t('selection:') }} <span data-selection-target="counter">0</span>)
+                </span>
+            </div>
+
+            <button
+                type="button"
+                class="button--icon button--ghost"
+                data-action="selection#stop"
+            >
+                {{ icon('times') }}
+
+                <span class="sr-only">
+                    {{ t('Cancel') }}
+                </span>
+            </button>
+        </div>
+
+        <div class="sources__bulk-actions">
+            <form id="bulk-sources-form" method="post" action="{{ url('unfollow sources') }}">
+                <button
+                    type="submit"
+                    data-selection-target="button"
+                    data-turbo-confirm="{{ t('Are you sure that you want to unfollow the selected sources? They will be removed from all your streams.') }}"
+                    disabled
+                >
+                    {{ icon('disconnect') }}
+                    {{ t('Unfollow') }}
+                </button>
+
+                <input type="hidden" name="csrf_token" value="{{ csrf_token('sources\\Unfollow') }}">
+            </form>
+        </div>
+    </div>
+</div>

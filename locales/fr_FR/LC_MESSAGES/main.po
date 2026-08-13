@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-08-13 00:08+0200\n"
-"PO-Revision-Date: 2026-08-13 00:08+0200\n"
+"POT-Creation-Date: 2026-08-13 21:44+0200\n"
+"PO-Revision-Date: 2026-08-13 21:44+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -839,6 +839,7 @@ msgid "What do you want to name the collection?"
 msgstr "Comment voulez-vous nommer la collection ?"
 
 #: views/collections/_selector.html.twig:54
+#: views/sources/_bulk_bar.html.twig:49
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -855,7 +856,7 @@ msgid "Unselect"
 msgstr "Désélectionner"
 
 #: views/collections/_unfollow_form.html.twig:13
-#: views/sources/_source.html.twig:131
+#: views/sources/_source.html.twig:158
 #, php-format
 msgid ""
 "Are you sure that you want to unfollow this source? It will be removed from "
@@ -871,7 +872,7 @@ msgstr[1] ""
 "retirée de %d fils."
 
 #: views/collections/_unfollow_form.html.twig:21
-#: views/sources/_source.html.twig:128
+#: views/sources/_bulk_bar.html.twig:63 views/sources/_source.html.twig:155
 msgid "Unfollow"
 msgstr "Ne plus suivre"
 
@@ -954,7 +955,7 @@ msgstr ""
 "manquer)."
 
 #: views/collections/followers/edit.html.twig:3
-#: views/collections/show.html.twig:154 views/sources/_source.html.twig:92
+#: views/collections/show.html.twig:154 views/sources/_source.html.twig:119
 msgid "Manage the subscription"
 msgstr "Gérer l’abonnement"
 
@@ -1207,7 +1208,7 @@ msgstr "Flux de syndication de %s"
 msgid "Change the illustration"
 msgstr "Changer l’illustration"
 
-#: views/collections/show.html.twig:91 views/sources/_source.html.twig:58
+#: views/collections/show.html.twig:91 views/sources/_source.html.twig:84
 #: views/streams/sources/_source.html.twig:51
 #, php-format
 msgid "Feed of %s website"
@@ -1254,12 +1255,12 @@ msgstr "Régler pour le journal"
 msgid "Put in a group"
 msgstr "Placer dans un groupe"
 
-#: views/collections/show.html.twig:221 views/sources/_source.html.twig:113
+#: views/collections/show.html.twig:221 views/sources/_source.html.twig:140
 msgid "Copy link to collection"
 msgstr "Copier le lien de la collection"
 
 #: views/collections/show.html.twig:226 views/links/show.html.twig:260
-#: views/profiles/layout.html.twig:101 views/sources/_source.html.twig:118
+#: views/profiles/layout.html.twig:101 views/sources/_source.html.twig:145
 msgid "Copy link to Web feed"
 msgstr "Copier le lien du flux Web"
 
@@ -3126,6 +3127,26 @@ msgstr "Mot de passe oublié ?"
 msgid "No account yet?"
 msgstr "Pas encore de compte ?"
 
+#: views/sources/_bulk_bar.html.twig:16
+msgid "Select…"
+msgstr "Sélectionner…"
+
+#: views/sources/_bulk_bar.html.twig:32
+msgid "Select all"
+msgstr "Tout sélectionner"
+
+#: views/sources/_bulk_bar.html.twig:37
+msgid "selection:"
+msgstr "sélection :"
+
+#: views/sources/_bulk_bar.html.twig:59
+msgid ""
+"Are you sure that you want to unfollow the selected sources? They will be "
+"removed from all your streams."
+msgstr ""
+"Êtes-vous sur·e de vouloir arrêter de suivre les sources sélectionnées ? "
+"Elles seront retirées de tous vos fils."
+
 #: views/sources/_filters.html.twig:27 views/streams/_filters.html.twig:21
 msgid "Filters"
 msgstr "Filtres"
@@ -3189,12 +3210,17 @@ msgid "Only the sources that differ from the recommendation for the news"
 msgstr ""
 "Seulement les sources qui s'écartent de la recommandation pour le journal"
 
-#: views/sources/_source.html.twig:62 views/streams/show.html.twig:77
+#: views/sources/_source.html.twig:56
+#, php-format
+msgid "Select %s"
+msgstr "Sélectionner %s"
+
+#: views/sources/_source.html.twig:88 views/streams/show.html.twig:77
 #: views/streams/sources/_source.html.twig:55
 msgid "By"
 msgstr "Par"
 
-#: views/sources/_source.html.twig:98 views/sources/_source.html.twig:104
+#: views/sources/_source.html.twig:125 views/sources/_source.html.twig:131
 #, php-format
 msgid "Actions on %s"
 msgstr "Actions sur %s"
@@ -3207,24 +3233,24 @@ msgstr ""
 "Les collections et les flux que vous suivez alimentent votre journal et vos "
 "fils."
 
-#: views/sources/index.html.twig:62 views/streams/show.html.twig:72
+#: views/sources/index.html.twig:65 views/streams/show.html.twig:72
 #: views/streams/sources/_selector.html.twig:43
-#: views/streams/sources/index.html.twig:46
+#: views/streams/sources/index.html.twig:49
 #, php-format
 msgid "%d source"
 msgid_plural "%d sources"
 msgstr[0] "%d source"
 msgstr[1] "%d sources"
 
-#: views/sources/index.html.twig:72
+#: views/sources/index.html.twig:78
 #: views/streams/sources/_selector.html.twig:109
-#: views/streams/sources/index.html.twig:56
+#: views/streams/sources/index.html.twig:62
 msgid "No source matches your filters."
 msgstr "Aucune source ne correspond à vos filtres."
 
-#: views/sources/index.html.twig:77
+#: views/sources/index.html.twig:83
 #: views/streams/sources/_selector.html.twig:135
-#: views/streams/sources/index.html.twig:61
+#: views/streams/sources/index.html.twig:67
 msgid "This list is empty."
 msgstr "Cette liste est vide."
 
