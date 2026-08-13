@@ -1,3 +1,9 @@
+.popup__items {
+    overflow-y: auto;
+
+    max-height: min(60vh, 25rem);
+}
+
 @media (max-width: 799px) {
     .popup__container {
         position: fixed;

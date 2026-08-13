@@ -83,7 +83,9 @@
         class="popup__container popup__container--{{ position }}{{ drop_up ? ' popup__container--top' }}{{ over ? ' popup__container--over' }}"
         role="menu"
     >
-        {% block items %}{% endblock %}
+        <div class="popup__items" role="none">
+            {% block items %}{% endblock %}
+        </div>
     </nav>
 </details>
 
