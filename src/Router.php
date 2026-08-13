@@ -228,6 +228,7 @@ class Router
 
         // Sources
         $router->addRoute('GET', '/sources', 'Sources#index', 'sources');
+        $router->addRoute('POST', '/sources/unfollow', 'sources/Follows#delete', 'unfollow sources');
 
         // Streams
         $router->addRoute('GET', '/streams/new', 'Streams#new', 'new stream');
