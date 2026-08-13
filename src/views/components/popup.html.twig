@@ -39,7 +39,9 @@
  # `right` or `left`. `drop_up` opens it above the opener instead of below.
  # `over` moves the popup so it covers its opener.
  #
- # The items are rendered by the macros declared at the end of this file.
+ # The items are rendered by the macros declared at the end of this file. All
+ # the macros accept an `attrs` parameter, to set ad-hoc attributes on their
+ # main element.
  #}
 {% types {
     class: 'string',
@@ -88,19 +90,29 @@
 {#
 # A title, to introduce a section of the menu.
 #}
-{% macro heading(label) %}
-    <div class="popup__title">{{ label }}</div>
+{% macro heading(label, attrs = {}) %}
+    <div
+        class="popup__title"
+        {% for attr_name, attr_value in attrs %}
+            {{ attr_name }}="{{ attr_value }}"
+        {% endfor %}
+    >
+        {{ label }}
+    </div>
 {% endmacro %}
 
 {#
  # A link to another page.
  #}
-{% macro link(url, label, icon = '', current = false) %}
+{% macro link(url, label, icon = '', current = false, attrs = {}) %}
     <a
         class="popup__item"
         role="menuitem"
         href="{{ url }}"
         {% if current %}aria-current="page"{% endif %}
+        {% for attr_name, attr_value in attrs %}
+            {{ attr_name }}="{{ attr_value }}"
+        {% endfor %}
     >
         {% if icon %}
             {{ icon(icon) }}
@@ -113,35 +125,66 @@
 {#
  # A button submitting a POST form. `csrf` is passed to the csrf_token()
  # function, and `params` is rendered as a list of hidden inputs.
+ #
+ # When `form` is given, the button submits the identified form instead, via
+ # its `formaction` attribute: no form is rendered here, so the CSRF token and
+ # the params must be handled by that form.
  #}
-{% macro action(url, label, csrf, icon = '', params = {}, confirm = '', preserve_scroll = false) %}
-    <form
-        role="none"
-        method="post"
-        action="{{ url }}"
-        {% if confirm %}data-turbo-confirm="{{ confirm }}"{% endif %}
-        {% if preserve_scroll %}data-turbo-preserve-scroll{% endif %}
-    >
-        <button type="submit" class="popup__item" role="menuitem">
+{% macro action(url, label, csrf = '', icon = '', params = {}, confirm = '', preserve_scroll = false, form = '', attrs = {}) %}
+    {% if form %}
+        <button
+            type="submit"
+            class="popup__item"
+            role="menuitem"
+            form="{{ form }}"
+            formaction="{{ url }}"
+            {% if confirm %}data-turbo-confirm="{{ confirm }}"{% endif %}
+            {% for attr_name, attr_value in attrs %}
+                {{ attr_name }}="{{ attr_value }}"
+            {% endfor %}
+        >
             {% if icon %}
                 {{ icon(icon) }}
             {% endif %}
 
             {{ label }}
         </button>
+    {% else %}
+        <form
+            role="none"
+            method="post"
+            action="{{ url }}"
+            {% if confirm %}data-turbo-confirm="{{ confirm }}"{% endif %}
+            {% if preserve_scroll %}data-turbo-preserve-scroll{% endif %}
+        >
+            <button
+                type="submit"
+                class="popup__item"
+                role="menuitem"
+                {% for attr_name, attr_value in attrs %}
+                    {{ attr_name }}="{{ attr_value }}"
+                {% endfor %}
+            >
+                {% if icon %}
+                    {{ icon(icon) }}
+                {% endif %}
 
-        {% for param_name, param_value in params %}
-            <input type="hidden" name="{{ param_name }}" value="{{ param_value }}">
-        {% endfor %}
+                {{ label }}
+            </button>
 
-        <input type="hidden" name="csrf_token" value="{{ csrf_token(csrf) }}">
-    </form>
+            {% for param_name, param_value in params %}
+                <input type="hidden" name="{{ param_name }}" value="{{ param_value }}">
+            {% endfor %}
+
+            <input type="hidden" name="csrf_token" value="{{ csrf_token(csrf) }}">
+        </form>
+    {% endif %}
 {% endmacro %}
 
 {#
  # A button opening the modal on the given URL.
  #}
-{% macro modal(url, label, icon = '') %}
+{% macro modal(url, label, icon = '', attrs = {}) %}
     <button
         type="button"
         class="popup__item"
@@ -151,6 +194,9 @@
         data-modal-opener-href-value="{{ url }}"
         aria-haspopup="dialog"
         aria-controls="modal"
+        {% for attr_name, attr_value in attrs %}
+            {{ attr_name }}="{{ attr_value }}"
+        {% endfor %}
     >
         {% if icon %}
             {{ icon(icon) }}
@@ -163,7 +209,7 @@
 {#
  # A button copying the given value to the clipboard.
  #}
-{% macro clipboard(value, label, icon = 'copy-to-clipboard') %}
+{% macro clipboard(value, label, icon = 'copy-to-clipboard', attrs = {}) %}
     <div role="none" data-controller="copy-to-clipboard">
         <button
             type="button"
@@ -171,6 +217,9 @@
             role="menuitem"
             data-action="copy-to-clipboard#copy"
             data-copy-to-clipboard-target="feedback"
+            {% for attr_name, attr_value in attrs %}
+                {{ attr_name }}="{{ attr_value }}"
+            {% endfor %}
         >
             {{ icon(icon) }}
             {{ label }}
@@ -183,7 +232,7 @@
 {#
  # One choice among several, to be placed in a form provided by the caller.
  #}
-{% macro option(name, value, label, current = false) %}
+{% macro option(name, value, label, current = false, attrs = {}) %}
     <button
         type="submit"
         class="popup__item popup__item--selectable"
@@ -191,6 +240,9 @@
         name="{{ name }}"
         value="{{ value }}"
         {% if current %}aria-current="true"{% endif %}
+        {% for attr_name, attr_value in attrs %}
+            {{ attr_name }}="{{ attr_value }}"
+        {% endfor %}
     >
         {{ label }}
     </button>
@@ -199,6 +251,12 @@
 {#
  # A horizontal rule between two sections of the menu.
  #}
-{% macro separator() %}
-    <div class="popup__separator" role="separator"></div>
+{% macro separator(attrs = {}) %}
+    <div
+        class="popup__separator"
+        role="separator"
+        {% for attr_name, attr_value in attrs %}
+            {{ attr_name }}="{{ attr_value }}"
+        {% endfor %}
+    ></div>
 {% endmacro %}
