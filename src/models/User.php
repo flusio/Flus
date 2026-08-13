@@ -544,6 +544,23 @@ class User
     }
 
     /**
+     * Make the current user unfollowing the given collections.
+     *
+     * @param Collection[] $collections
+     */
+    public function unfollowAll(array $collections): void
+    {
+        if (!$collections) {
+            return;
+        }
+
+        FollowedCollection::deleteBy([
+            'user_id' => $this->id,
+            'collection_id' => array_column($collections, 'id'),
+        ]);
+    }
+
+    /**
      * Return links owned by the user with the same URLs as the given ones.
      *
      * If a link is already owned, it's returned as it is. If a user already

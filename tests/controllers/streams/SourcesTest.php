@@ -785,4 +785,361 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('A security verification failed', utils\Notification::popError());
         $this->assertTrue($stream->hasSource($source));
     }
+
+    public function testAddAllAddsTheSourcesToTheStreamAndRedirects(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source_1 = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $source_2 = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $user->follow($source_1->id);
+        $user->follow($source_2->id);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/sources/add", [
+            'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
+            'source_ids' => [$source_1->id, $source_2->id],
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertTrue($stream->hasSource($source_1));
+        $this->assertTrue($stream->hasSource($source_2));
+    }
+
+    public function testAddAllDoesNotFailIfTheSourceIsAlreadyInTheStream(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $user->follow($source->id);
+        $stream->addSource($source);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/sources/add", [
+            'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
+            'source_ids' => [$source->id],
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertTrue($stream->hasSource($source));
+    }
+
+    public function testAddAllIgnoresNotFollowedSources(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/sources/add", [
+            'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
+            'source_ids' => [$source->id],
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertFalse($stream->hasSource($source));
+        $this->assertFalse($user->isFollowing($source->id));
+    }
+
+    public function testAddAllDoesNothingIfSourceIdsIsEmpty(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $user->follow($source->id);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/sources/add", [
+            'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertFalse($stream->hasSource($source));
+    }
+
+    public function testAddAllRedirectsIfNotConnected(): void
+    {
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $user->follow($source->id);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/sources/add", [
+            'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
+            'source_ids' => [$source->id],
+        ]);
+
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
+        $this->assertFalse($stream->hasSource($source));
+    }
+
+    public function testAddAllFailsIfTheStreamDoesNotExist(): void
+    {
+        $user = $this->login();
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $user->follow($source->id);
+
+        $response = $this->appRun('POST', '/streams/unknown/sources/add', [
+            'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
+            'source_ids' => [$source->id],
+        ]);
+
+        $this->assertResponseCode($response, 404);
+    }
+
+    public function testAddAllFailsIfTheUserCannotUpdateTheStream(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $user->follow($source->id);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/sources/add", [
+            'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
+            'source_ids' => [$source->id],
+        ]);
+
+        $this->assertResponseCode($response, 403);
+        $this->assertFalse($stream->hasSource($source));
+    }
+
+    public function testAddAllFailsIfCsrfIsInvalid(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $user->follow($source->id);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/sources/add", [
+            'csrf_token' => 'not the token',
+            'source_ids' => [$source->id],
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertStringContainsString('A security verification failed', utils\Notification::popError());
+        $this->assertFalse($stream->hasSource($source));
+    }
+
+    public function testRemoveAllRemovesTheSourcesFromTheStreamAndRedirects(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source_1 = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $source_2 = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $user->follow($source_1->id);
+        $user->follow($source_2->id);
+        $stream->addSource($source_1);
+        $stream->addSource($source_2);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/sources/remove", [
+            'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
+            'source_ids' => [$source_1->id, $source_2->id],
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertFalse($stream->hasSource($source_1));
+        $this->assertFalse($stream->hasSource($source_2));
+    }
+
+    public function testRemoveAllDoesNotUnfollowTheSources(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $user->follow($source->id);
+        $stream->addSource($source);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/sources/remove", [
+            'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
+            'source_ids' => [$source->id],
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertFalse($stream->hasSource($source));
+        $this->assertTrue($user->isFollowing($source->id));
+    }
+
+    public function testRemoveAllDoesNotTouchTheOtherStreams(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $other_stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $user->follow($source->id);
+        $stream->addSource($source);
+        $other_stream->addSource($source);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/sources/remove", [
+            'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
+            'source_ids' => [$source->id],
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertFalse($stream->hasSource($source));
+        $this->assertTrue($other_stream->hasSource($source));
+    }
+
+    public function testRemoveAllDoesNotFailIfTheSourceIsNotInTheStream(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $user->follow($source->id);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/sources/remove", [
+            'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
+            'source_ids' => [$source->id],
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertFalse($stream->hasSource($source));
+    }
+
+    public function testRemoveAllRedirectsIfNotConnected(): void
+    {
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $user->follow($source->id);
+        $stream->addSource($source);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/sources/remove", [
+            'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
+            'source_ids' => [$source->id],
+        ]);
+
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
+        $this->assertTrue($stream->hasSource($source));
+    }
+
+    public function testRemoveAllFailsIfTheStreamDoesNotExist(): void
+    {
+        $user = $this->login();
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $user->follow($source->id);
+
+        $response = $this->appRun('POST', '/streams/unknown/sources/remove', [
+            'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
+            'source_ids' => [$source->id],
+        ]);
+
+        $this->assertResponseCode($response, 404);
+    }
+
+    public function testRemoveAllFailsIfTheUserCannotUpdateTheStream(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $other_user->follow($source->id);
+        $stream->addSource($source);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/sources/remove", [
+            'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
+            'source_ids' => [$source->id],
+        ]);
+
+        $this->assertResponseCode($response, 403);
+        $this->assertTrue($stream->hasSource($source));
+    }
+
+    public function testRemoveAllFailsIfCsrfIsInvalid(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $user->follow($source->id);
+        $stream->addSource($source);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/sources/remove", [
+            'csrf_token' => 'not the token',
+            'source_ids' => [$source->id],
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertStringContainsString('A security verification failed', utils\Notification::popError());
+        $this->assertTrue($stream->hasSource($source));
+    }
 }

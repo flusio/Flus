@@ -151,6 +151,40 @@ class Stream
     }
 
     /**
+     * Add the given sources to the stream.
+     *
+     * @param Collection[] $sources
+     */
+    public function addSources(array $sources): void
+    {
+        $database = Database::get();
+        $database->beginTransaction();
+
+        foreach ($sources as $source) {
+            $this->addSource($source);
+        }
+
+        $database->commit();
+    }
+
+    /**
+     * Remove the given sources from the stream.
+     *
+     * @param Collection[] $sources
+     */
+    public function removeSources(array $sources): void
+    {
+        $database = Database::get();
+        $database->beginTransaction();
+
+        foreach ($sources as $source) {
+            $this->removeSource($source);
+        }
+
+        $database->commit();
+    }
+
+    /**
      * Return the sum of the publication frequencies of the sources.
      *
      * Only the sources that the context user can view are taken into account,

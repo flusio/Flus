@@ -228,6 +228,13 @@ class Router
 
         // Sources
         $router->addRoute('GET', '/sources', 'Sources#index', 'sources');
+        $router->addRoute('POST', '/sources/unfollow', 'sources/Follows#delete', 'unfollow sources');
+        $router->addRoute(
+            'POST',
+            '/sources/time-filter',
+            'sources/Follows#updateTimeFilter',
+            'update sources time filter',
+        );
 
         // Streams
         $router->addRoute('GET', '/streams/new', 'Streams#new', 'new stream');
@@ -254,6 +261,18 @@ class Router
             '/streams/:id/sources/feeds/new',
             'streams/Sources#createFeed',
             'create stream source feed',
+        );
+        $router->addRoute(
+            'POST',
+            '/streams/:id/sources/add',
+            'streams/Sources#addAll',
+            'add stream sources',
+        );
+        $router->addRoute(
+            'POST',
+            '/streams/:id/sources/remove',
+            'streams/Sources#removeAll',
+            'remove stream sources',
         );
         $router->addRoute(
             'POST',

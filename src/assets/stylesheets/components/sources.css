@@ -42,12 +42,83 @@
     border-top: 1px solid var(--color-grey-line);
 }
 
+/* The selection of the sources happens in a dedicated mode, materialized by
+ * the `data-selection-mode` attribute set on the .sources section by the
+ * "selection" Stimulus controller. */
+.sources[data-selection-mode] .sources__bulk {
+    position: sticky;
+    z-index: 1;
+    top: -1px;
+
+    background-color: var(--panel-background-color);
+}
+
+.sources__bulk-bar {
+    display: none;
+}
+
+.sources[data-selection-mode] .sources__bulk-bar {
+    display: block;
+    padding: var(--space-small);
+
+    background-color: var(--color-accent-bg-subtle);
+    border-radius: var(--border-radius);
+}
+
+.sources[data-selection-mode] .sources__bulk[data-stuck] .sources__bulk-bar {
+    border-bottom: 1px solid var(--color-accent-line);
+    border-radius: 0;
+}
+
+@media (min-width: 800px) {
+    .sources[data-selection-mode] .sources__bulk-bar {
+        padding: var(--space-medium);
+    }
+}
+
+.sources[data-selection-mode] .sources__bulk-start {
+    display: none;
+}
+
+/* The popups of the bar cannot be disabled as the buttons are: they are made
+ * inert by the selection controller, and styled like disabled buttons. */
+.sources__bulk-actions [inert] .button {
+    --button-color: var(--color-grey-text);
+
+    filter: grayscale(0.6) opacity(0.7);
+}
+
+.source__select {
+    display: none;
+}
+
+.sources[data-selection-mode] .source__select {
+    display: flex;
+
+    align-items: center;
+}
+
+.source__select input[type="checkbox"] + label::before {
+    margin-right: 0;
+}
+
 .source {
     padding: var(--space-small);
 
     background-color: var(--color-base);
     border: 1px solid var(--color-grey-line);
     border-radius: var(--border-radius);
+}
+
+/* In selection mode, the whole card toggles its checkbox (see the selection
+ * controller). */
+.sources[data-selection-mode] .source {
+    cursor: pointer;
+}
+
+.sources[data-selection-mode] .source:has(.source__select input:checked) {
+    background-color: var(--color-accent-bg-subtle);
+    border-color: var(--color-accent-border);
 }
 
 .source__content {
@@ -86,4 +157,9 @@
 
     background-color: var(--color-base);
     border-radius: var(--border-radius);
+}
+
+/* In selection mode, the individual actions are hidden. */
+.sources[data-selection-mode] .source__actions {
+    display: none;
 }
