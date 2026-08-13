@@ -80,6 +80,14 @@
     display: none;
 }
 
+/* The popups of the bar cannot be disabled as the buttons are: they are made
+ * inert by the selection controller, and styled like disabled buttons. */
+.sources__bulk-actions [inert] .button {
+    --button-color: var(--color-grey-text);
+
+    filter: grayscale(0.6) opacity(0.7);
+}
+
 .source__select {
     display: none;
 }

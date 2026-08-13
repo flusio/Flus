@@ -95,6 +95,35 @@ class FollowedCollection
     }
 
     /**
+     * Update the time filter of the follows of the given user for the given
+     * collections.
+     *
+     * @param Collection[] $collections
+     */
+    public static function updateTimeFilter(User $user, array $collections, string $time_filter): void
+    {
+        if (!$collections) {
+            return;
+        }
+
+        $collection_ids = array_column($collections, 'id');
+
+        $ids_as_question_marks = array_fill(0, count($collection_ids), '?');
+        $ids_as_question_marks = implode(', ', $ids_as_question_marks);
+
+        $sql = <<<SQL
+            UPDATE followed_collections
+            SET time_filter = ?
+            WHERE user_id = ?
+            AND collection_id IN ({$ids_as_question_marks})
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute([$time_filter, $user->id, ...$collection_ids]);
+    }
+
+    /**
      * Return the streams in which the followed collection is a source.
      *
      * The streams are sorted by name.

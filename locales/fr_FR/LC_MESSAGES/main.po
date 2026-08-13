@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-08-13 21:44+0200\n"
-"PO-Revision-Date: 2026-08-13 21:44+0200\n"
+"POT-Creation-Date: 2026-08-13 22:16+0200\n"
+"PO-Revision-Date: 2026-08-13 22:17+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -229,6 +229,14 @@ msgid "The token has expired, you should reset your password again."
 msgstr ""
 "Le token a expiré, vous devez de nouveau réinitialiser votre mot de passe."
 
+#: forms/sources/UpdateTimeFilter.php:18 models/FollowedCollection.php:41
+msgid "The filter is required."
+msgstr "Le filtre est obligatoire."
+
+#: forms/sources/UpdateTimeFilter.php:22 models/FollowedCollection.php:45
+msgid "The filter is invalid."
+msgstr "Le filtre est invalide."
+
 #: forms/traits/Altcha.php:46
 msgid "The captcha has not been completed, please check “I’m not a robot”."
 msgstr ""
@@ -354,14 +362,6 @@ msgstr "Liens à ne jamais lire"
 #: navigations/ReadingNavigation.php:28
 msgid "News"
 msgstr "Journal"
-
-#: models/FollowedCollection.php:41
-msgid "The filter is required."
-msgstr "Le filtre est obligatoire."
-
-#: models/FollowedCollection.php:45
-msgid "The filter is invalid."
-msgstr "Le filtre est invalide."
 
 #: models/Group.php:60
 msgid "You already have a group with this name."
@@ -872,7 +872,7 @@ msgstr[1] ""
 "retirée de %d fils."
 
 #: views/collections/_unfollow_form.html.twig:21
-#: views/sources/_bulk_bar.html.twig:63 views/sources/_source.html.twig:155
+#: views/sources/_bulk_bar.html.twig:94 views/sources/_source.html.twig:155
 msgid "Unfollow"
 msgstr "Ne plus suivre"
 
@@ -960,22 +960,27 @@ msgid "Manage the subscription"
 msgstr "Gérer l’abonnement"
 
 #: views/collections/followers/edit.html.twig:16
+#: views/sources/_bulk_bar.html.twig:66
 msgid "Which links to receive in the news?"
 msgstr "Quels liens recevoir dans le journal ?"
 
 #: views/collections/followers/edit.html.twig:27
+#: views/sources/_bulk_bar.html.twig:69
 msgid "No link"
 msgstr "Aucun lien"
 
 #: views/collections/followers/edit.html.twig:28
+#: views/sources/_bulk_bar.html.twig:70
 msgid "The links published during the last 24 hours"
 msgstr "Les liens publiés durant les 24 dernières heures"
 
 #: views/collections/followers/edit.html.twig:29
+#: views/sources/_bulk_bar.html.twig:71
 msgid "The links published during the last 7 days"
 msgstr "Les liens publiés durant les 7 derniers jours"
 
 #: views/collections/followers/edit.html.twig:30
+#: views/sources/_bulk_bar.html.twig:72
 msgid "All the published links"
 msgstr "Tous les liens publiés"
 
@@ -3140,6 +3145,10 @@ msgid "selection:"
 msgstr "sélection :"
 
 #: views/sources/_bulk_bar.html.twig:59
+msgid "News filter"
+msgstr "Filtre du journal"
+
+#: views/sources/_bulk_bar.html.twig:90
 msgid ""
 "Are you sure that you want to unfollow the selected sources? They will be "
 "removed from all your streams."

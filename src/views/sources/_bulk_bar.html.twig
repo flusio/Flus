@@ -51,19 +51,51 @@
             </button>
         </div>
 
-        <div class="sources__bulk-actions">
-            <form id="bulk-sources-form" method="post" action="{{ url('unfollow sources') }}">
-                <button
-                    type="submit"
-                    data-selection-target="button"
-                    data-turbo-confirm="{{ t('Are you sure that you want to unfollow the selected sources? They will be removed from all your streams.') }}"
-                    disabled
-                >
-                    {{ icon('disconnect') }}
-                    {{ t('Unfollow') }}
-                </button>
+        <div class="sources__bulk-actions stack stack--gap-small">
+            <div data-selection-target="popup" inert>
+                {% embed 'components/popup.html.twig' %}
+                    {% block opener %}
+                        {{ icon('news') }}
+                        {{ t('News filter') }}
+                        {{ icon('angle-down') }}
+                    {% endblock %}
 
-                <input type="hidden" name="csrf_token" value="{{ csrf_token('sources\\Unfollow') }}">
+                    {% block items %}
+                        {% import _self as item %}
+
+                        {{ item.heading(t('Which links to receive in the news?')) }}
+
+                        {% for time_filter, label in {
+                            'none': t('No link'),
+                            'strict': t('The links published during the last 24 hours'),
+                            'normal': t('The links published during the last 7 days'),
+                            'all': t('All the published links'),
+                        } %}
+                            {{ item.action(
+                                url: url('update sources time filter'),
+                                label: label,
+                                form: 'bulk-sources-form',
+                                attrs: { name: 'time_filter', value: time_filter },
+                            ) }}
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
+            </div>
+
+            <button
+                type="submit"
+                form="bulk-sources-form"
+                formaction="{{ url('unfollow sources') }}"
+                data-selection-target="button"
+                data-turbo-confirm="{{ t('Are you sure that you want to unfollow the selected sources? They will be removed from all your streams.') }}"
+                disabled
+            >
+                {{ icon('disconnect') }}
+                {{ t('Unfollow') }}
+            </button>
+
+            <form id="bulk-sources-form" method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token('sources\\BulkSelection') }}">
             </form>
         </div>
     </div>

@@ -218,4 +218,191 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('A security verification failed', $error);
         $this->assertTrue($user->isFollowing($source->id));
     }
+
+    public function testUpdateTimeFilterChangesTheTimeFilterAndRedirects(): void
+    {
+        $user = $this->login();
+        $owner = UserFactory::create();
+        $source_1 = CollectionFactory::create([
+            'user_id' => $owner->id,
+            'type' => 'collection',
+            'is_public' => true,
+        ]);
+        $source_2 = CollectionFactory::create([
+            'user_id' => $owner->id,
+            'type' => 'collection',
+            'is_public' => true,
+        ]);
+        $user->follow($source_1->id);
+        $user->follow($source_2->id);
+
+        $response = $this->appRun('POST', '/sources/time-filter', [
+            'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
+            'source_ids' => [$source_1->id, $source_2->id],
+            'time_filter' => 'strict',
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertSame('strict', $user->followedCollection($source_1->id)->time_filter);
+        $this->assertSame('strict', $user->followedCollection($source_2->id)->time_filter);
+    }
+
+    public function testUpdateTimeFilterDoesNotChangeUnselectedSources(): void
+    {
+        $user = $this->login();
+        $owner = UserFactory::create();
+        $selected_source = CollectionFactory::create([
+            'user_id' => $owner->id,
+            'type' => 'collection',
+            'is_public' => true,
+        ]);
+        $other_source = CollectionFactory::create([
+            'user_id' => $owner->id,
+            'type' => 'collection',
+            'is_public' => true,
+        ]);
+        $user->follow($selected_source->id);
+        $user->follow($other_source->id);
+
+        $response = $this->appRun('POST', '/sources/time-filter', [
+            'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
+            'source_ids' => [$selected_source->id],
+            'time_filter' => 'all',
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertSame('all', $user->followedCollection($selected_source->id)->time_filter);
+        $this->assertSame('normal', $user->followedCollection($other_source->id)->time_filter);
+    }
+
+    public function testUpdateTimeFilterDoesNotChangeSourcesOfOtherUsers(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $owner = UserFactory::create();
+        $source = CollectionFactory::create([
+            'user_id' => $owner->id,
+            'type' => 'collection',
+            'is_public' => true,
+        ]);
+        $other_user->follow($source->id);
+
+        $response = $this->appRun('POST', '/sources/time-filter', [
+            'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
+            'source_ids' => [$source->id],
+            'time_filter' => 'strict',
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertSame('normal', $other_user->followedCollection($source->id)->time_filter);
+    }
+
+    public function testUpdateTimeFilterDoesNothingIfSourceIdsIsEmpty(): void
+    {
+        $user = $this->login();
+        $owner = UserFactory::create();
+        $source = CollectionFactory::create([
+            'user_id' => $owner->id,
+            'type' => 'collection',
+            'is_public' => true,
+        ]);
+        $user->follow($source->id);
+
+        $response = $this->appRun('POST', '/sources/time-filter', [
+            'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
+            'time_filter' => 'strict',
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertSame('normal', $user->followedCollection($source->id)->time_filter);
+    }
+
+    public function testUpdateTimeFilterFailsIfTimeFilterIsInvalid(): void
+    {
+        $user = $this->login();
+        $owner = UserFactory::create();
+        $source = CollectionFactory::create([
+            'user_id' => $owner->id,
+            'type' => 'collection',
+            'is_public' => true,
+        ]);
+        $user->follow($source->id);
+
+        $response = $this->appRun('POST', '/sources/time-filter', [
+            'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
+            'source_ids' => [$source->id],
+            'time_filter' => 'invalid',
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $error = utils\Notification::popError();
+        $this->assertStringContainsString('The filter is invalid', $error);
+        $this->assertSame('normal', $user->followedCollection($source->id)->time_filter);
+    }
+
+    public function testUpdateTimeFilterFailsIfTimeFilterIsMissing(): void
+    {
+        $user = $this->login();
+        $owner = UserFactory::create();
+        $source = CollectionFactory::create([
+            'user_id' => $owner->id,
+            'type' => 'collection',
+            'is_public' => true,
+        ]);
+        $user->follow($source->id);
+
+        $response = $this->appRun('POST', '/sources/time-filter', [
+            'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
+            'source_ids' => [$source->id],
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $error = utils\Notification::popError();
+        $this->assertStringContainsString('The filter is required', $error);
+        $this->assertSame('normal', $user->followedCollection($source->id)->time_filter);
+    }
+
+    public function testUpdateTimeFilterRedirectsIfNotConnected(): void
+    {
+        $user = UserFactory::create();
+        $owner = UserFactory::create();
+        $source = CollectionFactory::create([
+            'user_id' => $owner->id,
+            'type' => 'collection',
+            'is_public' => true,
+        ]);
+        $user->follow($source->id);
+
+        $response = $this->appRun('POST', '/sources/time-filter', [
+            'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
+            'source_ids' => [$source->id],
+            'time_filter' => 'strict',
+        ]);
+
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
+        $this->assertSame('normal', $user->followedCollection($source->id)->time_filter);
+    }
+
+    public function testUpdateTimeFilterFailsIfCsrfIsInvalid(): void
+    {
+        $user = $this->login();
+        $owner = UserFactory::create();
+        $source = CollectionFactory::create([
+            'user_id' => $owner->id,
+            'type' => 'collection',
+            'is_public' => true,
+        ]);
+        $user->follow($source->id);
+
+        $response = $this->appRun('POST', '/sources/time-filter', [
+            'csrf_token' => 'not the token',
+            'source_ids' => [$source->id],
+            'time_filter' => 'strict',
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $error = utils\Notification::popError();
+        $this->assertStringContainsString('A security verification failed', $error);
+        $this->assertSame('normal', $user->followedCollection($source->id)->time_filter);
+    }
 }
