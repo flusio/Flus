@@ -29,7 +29,6 @@ import SelectionController from './controllers/selection_controller.js';
 import SidenavController from './controllers/sidenav_controller.js';
 import StickyController from './controllers/sticky_controller.js';
 import StreamController from './controllers/stream_controller.js';
-import StreamsSelectorController from './controllers/streams_selector_controller.js';
 import TextEditorController from './controllers/text_editor_controller.js';
 
 window.jsConfiguration = JSON.parse(document.getElementById('javascript-configuration').innerHTML);
@@ -63,7 +62,6 @@ application.register('selection', SelectionController);
 application.register('sidenav', SidenavController);
 application.register('sticky', StickyController);
 application.register('stream', StreamController);
-application.register('streams-selector', StreamsSelectorController);
 application.register('text-editor', TextEditorController);
 
 function adaptLayoutContentBorderRadius () {

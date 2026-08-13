@@ -80,7 +80,7 @@
                     {% if form.streams %}
                         <div
                             class="streams-selector flow flow--smaller"
-                            data-controller="streams-selector filter scroller"
+                            data-controller="selection filter scroller"
                             data-scroller-vertical-value="true"
                             data-action="
                                 resize@window->scroller#refresh
@@ -134,8 +134,8 @@
                                                 id="stream-{{ stream.id }}"
                                                 name="stream_ids[]"
                                                 value="{{ stream.id }}"
-                                                data-streams-selector-target="checkbox"
-                                                data-action="streams-selector#refreshCounter"
+                                                data-selection-target="checkbox"
+                                                data-action="selection#refresh"
                                                 {{ form.isStreamSelected(stream) ? 'checked' : '' }}
                                                 {% if form.isInvalid('stream_ids') %}
                                                     aria-errormessage="stream-ids-error"
@@ -178,9 +178,9 @@
                                 {{ t('No stream matches your search.') }}
                             </p>
 
-                            <p class="text--center text--secondary" aria-live="polite">
+                            <p class="text--center text--secondary" role="status">
                                 {{ t('Selected streams:') }}
-                                <span data-streams-selector-target="counter">{{ form.stream_ids | length }}</span>
+                                <span data-selection-target="counter">{{ form.stream_ids | length }}</span>
                             </p>
                         </div>
                     {% endif %}
