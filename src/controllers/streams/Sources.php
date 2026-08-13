@@ -257,4 +257,92 @@ class Sources extends BaseController
 
         return Response::redirect('edit stream sources', ['id' => $stream->id]);
     }
+
+    /**
+     * Add the selected sources to the stream.
+     *
+     * @request_param string id
+     * @request_param string[] source_ids
+     * @request_param string csrf_token
+     *
+     * @response 302 :from
+     * @flash error
+     *     If the CSRF token is invalid.
+     * @response 302 :from
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the stream doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot update the stream.
+     */
+    public function addAll(Request $request): Response
+    {
+        $user = auth\CurrentUser::require();
+        $stream = models\Stream::requireFromRequest($request);
+
+        auth\Access::require($user, 'update', $stream);
+
+        $from = utils\RequestHelper::from($request);
+
+        $form = new forms\streams\AddSources(options: [
+            'user' => $user,
+        ]);
+        $form->handleRequest($request);
+
+        if (!$form->validate()) {
+            utils\Notification::error($form->error('@base'));
+            return Response::found($from);
+        }
+
+        $stream->addSources($form->selectedSources());
+
+        return Response::found($from);
+    }
+
+    /**
+     * Remove the selected sources from the stream.
+     *
+     * @request_param string id
+     * @request_param string[] source_ids
+     * @request_param string csrf_token
+     *
+     * @response 302 :from
+     * @flash error
+     *     If the CSRF token is invalid.
+     * @response 302 :from
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the stream doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot update the stream.
+     */
+    public function removeAll(Request $request): Response
+    {
+        $user = auth\CurrentUser::require();
+        $stream = models\Stream::requireFromRequest($request);
+
+        auth\Access::require($user, 'update', $stream);
+
+        $from = utils\RequestHelper::from($request);
+
+        $form = new forms\streams\RemoveSources(options: [
+            'user' => $user,
+        ]);
+        $form->handleRequest($request);
+
+        if (!$form->validate()) {
+            utils\Notification::error($form->error('@base'));
+            return Response::found($from);
+        }
+
+        $stream->removeSources($form->selectedSources());
+
+        return Response::found($from);
+    }
 }

@@ -264,6 +264,18 @@ class Router
         );
         $router->addRoute(
             'POST',
+            '/streams/:id/sources/add',
+            'streams/Sources#addAll',
+            'add stream sources',
+        );
+        $router->addRoute(
+            'POST',
+            '/streams/:id/sources/remove',
+            'streams/Sources#removeAll',
+            'remove stream sources',
+        );
+        $router->addRoute(
+            'POST',
             '/streams/:id/sources/:source_id/add',
             'streams/Sources#add',
             'add stream source',

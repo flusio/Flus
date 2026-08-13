@@ -2,7 +2,12 @@
  #
  # It must be placed inside an element controlled by the "selection" Stimulus
  # controller, next to a list of selectable sources (see sources/_source.html.twig).
- # Out of the selection mode, it only displays the button entering the mode. #}
+ # Out of the selection mode, it only displays the button entering the mode.
+ #
+ # On the page of a stream, `stream` enables the action removing the selection
+ # from this stream, and excludes it from the list of the streams to add to. #}
+
+{% set stream = stream ?? null %}
 
 <div
     class="sources__bulk"
@@ -81,6 +86,76 @@
                     {% endblock %}
                 {% endembed %}
             </div>
+
+            {% set addable_streams = app.user.streams | filter(s => stream == null or s.id != stream.id) %}
+            {% set filterable_streams = addable_streams | length > 10 %}
+
+            {% if addable_streams %}
+                <div
+                    data-selection-target="popup"
+                    inert
+                    {% if filterable_streams %}
+                        data-controller="filter"
+                    {% endif %}
+                >
+                    {% embed 'components/popup.html.twig' %}
+                        {% block opener %}
+                            {{ icon('plus') }}
+                            {{ t('Add to a stream') }}
+                            {{ icon('angle-down') }}
+                        {% endblock %}
+
+                        {% block items %}
+                            {% import _self as item %}
+
+                            {{ item.heading(t('In which stream to add the sources?')) }}
+
+                            {% if filterable_streams %}
+                                <input
+                                    type="search"
+                                    placeholder="{{ t('Filter the streams…') }}"
+                                    aria-label="{{ t('Filter the streams') }}"
+                                    autocomplete="off"
+                                    data-filter-target="search"
+                                    data-action="input->filter#filter"
+                                >
+                            {% endif %}
+
+                            {% for addable_stream in addable_streams %}
+                                {{ item.action(
+                                    url: url('add stream sources', { id: addable_stream.id }),
+                                    label: addable_stream.name,
+                                    form: 'bulk-sources-form',
+                                    attrs: filterable_streams ? {
+                                        'data-filter-target': 'item',
+                                        'data-search': [addable_stream.name] | json_encode,
+                                    } : {},
+                                ) }}
+                            {% endfor %}
+
+                            {% if filterable_streams %}
+                                <p class="text--center text--secondary" data-filter-target="empty" hidden>
+                                    {{ t('No stream matches your search.') }}
+                                </p>
+                            {% endif %}
+                        {% endblock %}
+                    {% endembed %}
+                </div>
+            {% endif %}
+
+            {% if stream %}
+                <button
+                    type="submit"
+                    form="bulk-sources-form"
+                    formaction="{{ url('remove stream sources', { id: stream.id }) }}"
+                    data-selection-target="button"
+                    data-turbo-confirm="{{ t('Are you sure that you want to remove the selected sources from this stream?') }}"
+                    disabled
+                >
+                    {{ icon('times') }}
+                    {{ t('Remove from this stream') }}
+                </button>
+            {% endif %}
 
             <button
                 type="submit"

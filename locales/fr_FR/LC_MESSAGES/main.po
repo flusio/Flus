@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-08-13 22:16+0200\n"
-"PO-Revision-Date: 2026-08-13 22:17+0200\n"
+"POT-Creation-Date: 2026-08-13 22:42+0200\n"
+"PO-Revision-Date: 2026-08-13 22:44+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -839,7 +839,7 @@ msgid "What do you want to name the collection?"
 msgstr "Comment voulez-vous nommer la collection ?"
 
 #: views/collections/_selector.html.twig:54
-#: views/sources/_bulk_bar.html.twig:49
+#: views/sources/_bulk_bar.html.twig:54
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -872,7 +872,7 @@ msgstr[1] ""
 "retirée de %d fils."
 
 #: views/collections/_unfollow_form.html.twig:21
-#: views/sources/_bulk_bar.html.twig:94 views/sources/_source.html.twig:155
+#: views/sources/_bulk_bar.html.twig:169 views/sources/_source.html.twig:155
 msgid "Unfollow"
 msgstr "Ne plus suivre"
 
@@ -960,27 +960,27 @@ msgid "Manage the subscription"
 msgstr "Gérer l’abonnement"
 
 #: views/collections/followers/edit.html.twig:16
-#: views/sources/_bulk_bar.html.twig:66
+#: views/sources/_bulk_bar.html.twig:71
 msgid "Which links to receive in the news?"
 msgstr "Quels liens recevoir dans le journal ?"
 
 #: views/collections/followers/edit.html.twig:27
-#: views/sources/_bulk_bar.html.twig:69
+#: views/sources/_bulk_bar.html.twig:74
 msgid "No link"
 msgstr "Aucun lien"
 
 #: views/collections/followers/edit.html.twig:28
-#: views/sources/_bulk_bar.html.twig:70
+#: views/sources/_bulk_bar.html.twig:75
 msgid "The links published during the last 24 hours"
 msgstr "Les liens publiés durant les 24 dernières heures"
 
 #: views/collections/followers/edit.html.twig:29
-#: views/sources/_bulk_bar.html.twig:71
+#: views/sources/_bulk_bar.html.twig:76
 msgid "The links published during the last 7 days"
 msgstr "Les liens publiés durant les 7 derniers jours"
 
 #: views/collections/followers/edit.html.twig:30
-#: views/sources/_bulk_bar.html.twig:72
+#: views/sources/_bulk_bar.html.twig:77
 msgid "All the published links"
 msgstr "Tous les liens publiés"
 
@@ -1018,10 +1018,12 @@ msgid "In which streams to display this source?"
 msgstr "Dans quels fils afficher cette source ?"
 
 #: views/collections/followers/edit.html.twig:94
+#: views/sources/_bulk_bar.html.twig:116
 msgid "Filter the streams…"
 msgstr "Filtrer les fils…"
 
 #: views/collections/followers/edit.html.twig:95
+#: views/sources/_bulk_bar.html.twig:117
 msgid "Filter the streams"
 msgstr "Filtrer les fils"
 
@@ -1036,6 +1038,7 @@ msgid "Display the next streams"
 msgstr "Afficher les fils suivants"
 
 #: views/collections/followers/edit.html.twig:178
+#: views/sources/_bulk_bar.html.twig:138
 msgid "No stream matches your search."
 msgstr "Aucun fil ne correspond à votre recherche."
 
@@ -3132,23 +3135,41 @@ msgstr "Mot de passe oublié ?"
 msgid "No account yet?"
 msgstr "Pas encore de compte ?"
 
-#: views/sources/_bulk_bar.html.twig:16
+#: views/sources/_bulk_bar.html.twig:21
 msgid "Select…"
 msgstr "Sélectionner…"
 
-#: views/sources/_bulk_bar.html.twig:32
+#: views/sources/_bulk_bar.html.twig:37
 msgid "Select all"
 msgstr "Tout sélectionner"
 
-#: views/sources/_bulk_bar.html.twig:37
+#: views/sources/_bulk_bar.html.twig:42
 msgid "selection:"
 msgstr "sélection :"
 
-#: views/sources/_bulk_bar.html.twig:59
+#: views/sources/_bulk_bar.html.twig:64
 msgid "News filter"
 msgstr "Filtre du journal"
 
-#: views/sources/_bulk_bar.html.twig:90
+#: views/sources/_bulk_bar.html.twig:104
+msgid "Add to a stream"
+msgstr "Ajouter à un fil"
+
+#: views/sources/_bulk_bar.html.twig:111
+msgid "In which stream to add the sources?"
+msgstr "Dans quel fil ajouter les sources ?"
+
+#: views/sources/_bulk_bar.html.twig:152
+msgid ""
+"Are you sure that you want to remove the selected sources from this stream?"
+msgstr ""
+"Êtes-vous sur·e de vouloir retirer les sources sélectionnées de ce fil ?"
+
+#: views/sources/_bulk_bar.html.twig:156
+msgid "Remove from this stream"
+msgstr "Retirer de ce fil"
+
+#: views/sources/_bulk_bar.html.twig:165
 msgid ""
 "Are you sure that you want to unfollow the selected sources? They will be "
 "removed from all your streams."
