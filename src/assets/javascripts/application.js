@@ -25,6 +25,7 @@ import NewsRefresherController from './controllers/news_refresher_controller.js'
 import NotificationController from './controllers/notification_controller.js';
 import PopupController from './controllers/popup_controller.js';
 import ScrollerController from './controllers/scroller_controller.js';
+import SelectionController from './controllers/selection_controller.js';
 import SidenavController from './controllers/sidenav_controller.js';
 import StickyController from './controllers/sticky_controller.js';
 import StreamController from './controllers/stream_controller.js';
@@ -58,6 +59,7 @@ application.register('news-refresher', NewsRefresherController);
 application.register('notification', NotificationController);
 application.register('popup', PopupController);
 application.register('scroller', ScrollerController);
+application.register('selection', SelectionController);
 application.register('sidenav', SidenavController);
 application.register('sticky', StickyController);
 application.register('stream', StreamController);
