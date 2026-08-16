@@ -248,6 +248,12 @@ class Router
         $router->addRoute('POST', '/streams/:id/read', 'streams/Read#create', 'mark stream as read');
         $router->addRoute('POST', '/streams/:id/read/later', 'streams/Read#later', 'read stream later');
         $router->addRoute('POST', '/streams/:id/dismiss', 'streams/Read#dismiss', 'dismiss stream');
+        $router->addRoute('GET', '/streams/:id/views/new', 'streams/Views#new', 'new stream view');
+        $router->addRoute('POST', '/streams/:id/views/new', 'streams/Views#create', 'create stream view');
+        $router->addRoute('POST', '/streams/:id/views/:view_id/save', 'streams/Views#save', 'save stream view');
+        $router->addRoute('GET', '/streams/:id/views/:view_id/edit', 'streams/Views#edit', 'edit stream view');
+        $router->addRoute('POST', '/streams/:id/views/:view_id/edit', 'streams/Views#update', 'update stream view');
+        $router->addRoute('POST', '/streams/:id/views/:view_id/delete', 'streams/Views#delete', 'delete stream view');
         $router->addRoute('GET', '/streams/:id/sources', 'streams/Sources#index', 'stream sources');
         $router->addRoute('GET', '/streams/:id/sources/edit', 'streams/Sources#edit', 'edit stream sources');
         $router->addRoute(

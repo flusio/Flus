@@ -23,6 +23,7 @@
 @import url('./components/topics.css');
 @import url('./components/turbo.css');
 @import url('./components/usernames.css');
+@import url('./components/views.css');
 @import url('./layouts/base.css');
 @import url('./layouts/application.css');
 @import url('./layouts/authentication.css');

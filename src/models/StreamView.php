@@ -4,6 +4,7 @@ namespace App\models;
 
 use App\search_engine;
 use App\utils;
+use Minz\ParameterBag;
 use Minz\Request;
 
 /**
@@ -17,6 +18,8 @@ class StreamView
     public readonly Stream $stream;
 
     public readonly ?User $context_user;
+
+    public readonly View $view;
 
     public readonly \DateTimeImmutable $at;
 
@@ -50,44 +53,49 @@ class StreamView
      */
     public readonly \DateTimeImmutable $rendered_at;
 
+    public static function buildFromRequest(Stream $stream, ?User $context_user, Request $request): self
+    {
+        $view = View::loadFromRequest($request, parameter: 'view');
+
+        if (!$view || $view->stream_id !== $stream->id) {
+            $view = $stream->defaultView(['context_user' => $context_user]);
+        }
+
+        $view->setStream($stream);
+        $view->loadUrlParameters($request->parameters);
+
+        return new StreamView($stream, $context_user, $view);
+    }
+
     public function __construct(
         Stream $stream,
         ?User $context_user,
-        \DateTimeImmutable $at,
-        int $days = 1,
-        ?Collection $source = null,
-        string $status = 'all',
-        bool $with_dismissed = false,
-        string $query = '',
+        View $view,
     ) {
-        $period = $this->period();
-        $period_end = $period[0];
-        $period_start = $period[count($period) - 1];
-        $at = min(max($at, $period_start), $period_end);
-
-        $days = min(max($days, 1), 7);
-
-        if (!in_array($status, ['all', 'unread', 'read', 'read-later'])) {
-            $status = 'all';
-        }
-
-        $query = trim($query);
+        // The view carries normalized parameters (cf. View::loadUrlParameters()):
+        // they are interpreted here, not checked again.
+        $url_parameters = new ParameterBag($view->current_url_parameters);
+        $defaults = $view->defaultUrlParameters();
 
         $this->stream = $stream;
         $this->context_user = $context_user;
-        $this->at = $at;
-        $this->days = $days;
-        $this->status = $status;
-        $this->with_dismissed = $with_dismissed;
-        $this->query = $query;
-        $this->search_query = search_engine\Query::fromStringOrNull($query);
+        $this->view = $view;
+        $default_at = new \DateTimeImmutable($defaults['at']);
+        $this->at = $url_parameters->getDatetime('at', $default_at, 'Y-m-d');
+        $this->days = $url_parameters->getInteger('days', (int) $defaults['days']);
+        $this->status = $url_parameters->getString('status', $defaults['status']);
+        $this->with_dismissed = $url_parameters->getBoolean('with_dismissed', $defaults['with_dismissed'] !== '');
+        $this->query = $url_parameters->getString('q', $defaults['q']);
+        $this->search_query = search_engine\Query::fromStringOrNull($this->query);
         $this->rendered_at = \Minz\Time::now();
 
-        // The source is checked last as isSourceCounted() requires the other
-        // properties to be set. A source can be selected while having no link
-        // to count (e.g. after changing the date or the status). It would then
-        // be filtered out of the sources list, with no way to unselect it:
-        // better forget about it.
+        // The source is set last as isSourceCounted() requires the other
+        // properties. It is more restricted here as we don't display sources
+        // without any link, but we want to keep it in the view as it may be
+        // used to save the filters.
+        $source_id = $url_parameters->getString('source', '');
+        $source = $source_id ? Collection::find($source_id) : null;
+
         if ($source && !$this->isSourceCounted($source)) {
             $source = null;
         }
@@ -95,17 +103,9 @@ class StreamView
         $this->source = $source;
     }
 
-    public static function buildFromRequest(Stream $stream, ?User $context_user, Request $request): self
+    public function isViewSelected(View $view): bool
     {
-        $today = \Minz\Time::now();
-        $at = $request->parameters->getDatetime('at', $today, 'Y-m-d');
-        $days = $request->parameters->getInteger('days', 1);
-        $status = $request->parameters->getString('status', 'all');
-        $with_dismissed = $request->parameters->getBoolean('with_dismissed');
-        $source = Collection::loadFromRequest($request, parameter: 'source');
-        $query = $request->parameters->getString('q', '');
-
-        return new self($stream, $context_user, $at, $days, $source, $status, $with_dismissed, $query);
+        return $this->view->id === $view->id;
     }
 
     public function isAt(\DateTimeImmutable $at): bool
@@ -143,17 +143,20 @@ class StreamView
      */
     public function period(): array
     {
-        $day = \Minz\Time::relative('today midnight');
-        $limit = \Minz\Time::relative('-30 days midnight');
+        return $this->memoize('period', function (): array {
+            $day = \Minz\Time::relative('today midnight');
+            $period_days = View::STREAM_PERIOD_DAYS;
+            $limit = \Minz\Time::relative("-{$period_days} days midnight");
 
-        $period = [];
+            $period = [];
 
-        while ($day > $limit) {
-            $period[] = $day;
-            $day = $day->modify('-1 day');
-        }
+            while ($day > $limit) {
+                $period[] = $day;
+                $day = $day->modify('-1 day');
+            }
 
-        return $period;
+            return $period;
+        });
     }
 
     public function linksTimeline(): utils\LinksTimeline

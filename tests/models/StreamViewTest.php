@@ -4,12 +4,14 @@ namespace App\models;
 
 use tests\factories\CollectionFactory;
 use tests\factories\LinkFactory;
+use tests\factories\ViewFactory;
 use tests\factories\StreamFactory;
 use tests\factories\UserFactory;
 
 class StreamViewTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\InitializerHelper;
+    use \Minz\Tests\TimeHelper;
     use \tests\FakerHelper;
 
     #[\PHPUnit\Framework\Attributes\BeforeClass]
@@ -109,7 +111,9 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $date_1 = $this->fakeDateInPeriod();
         $date_2 = $date_1->modify('-1 day');
         $stream = StreamFactory::create();
-        $stream_view = new StreamView($stream, null, at: $date_1);
+        $stream_view = StreamView::buildFromRequest($stream, null, new \Minz\Request('GET', '/stream', [
+            'at' => $date_1->format('Y-m-d'),
+        ]));
 
         $is_at_date_1 = $stream_view->isAt($date_1);
         $is_at_date_2 = $stream_view->isAt($date_2);
@@ -122,7 +126,10 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
     {
         $date = $this->fakeDateInPeriod();
         $stream = StreamFactory::create();
-        $stream_view = new StreamView($stream, null, at: $date, days: 2);
+        $stream_view = StreamView::buildFromRequest($stream, null, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'days' => '2',
+        ]));
 
         $is_in_range_at = $stream_view->isInRange($date);
         $is_in_range_day_before = $stream_view->isInRange($date->modify('-1 day'));
@@ -157,7 +164,10 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $source_2->addLinks([$link_2], at: $date);
         $stream->addSource($source_1);
         $stream->addSource($source_2);
-        $stream_view = new StreamView($stream, null, at: $date, source: $source_1);
+        $stream_view = StreamView::buildFromRequest($stream, null, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'source' => $source_1->id,
+        ]));
 
         $is_source_1_selected = $stream_view->isSourceSelected($source_1);
         $is_source_2_selected = $stream_view->isSourceSelected($source_2);
@@ -180,7 +190,10 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         ]);
         $source->addLinks([$link], at: $other_date);
         $stream->addSource($source);
-        $stream_view = new StreamView($stream, null, at: $date, source: $source);
+        $stream_view = StreamView::buildFromRequest($stream, null, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'source' => $source->id,
+        ]));
 
         $is_source_selected = $stream_view->isSourceSelected($source);
 
@@ -205,7 +218,11 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $source->addLinks([$link], at: $date);
         $stream->addSource($source);
         $user->markAsRead($link);
-        $stream_view = new StreamView($stream, $user, at: $date, source: $source, status: 'unread');
+        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'source' => $source->id,
+            'status' => 'unread',
+        ]));
 
         $is_source_selected = $stream_view->isSourceSelected($source);
 
@@ -231,7 +248,11 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         ]);
         $source->addLinks([$link], at: $date);
         $stream->addSource($source);
-        $stream_view = new StreamView($stream, $user, at: $date, source: $source, query: 'foos');
+        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'source' => $source->id,
+            'q' => 'foos',
+        ]));
 
         $is_source_selected = $stream_view->isSourceSelected($source);
 
@@ -245,7 +266,10 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $status_all = 'all';
         $status_unread = 'unread';
         $stream = StreamFactory::create();
-        $stream_view = new StreamView($stream, null, at: $date, status: $status_all);
+        $stream_view = StreamView::buildFromRequest($stream, null, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'status' => $status_all,
+        ]));
 
         $is_status_all = $stream_view->isStatusSelected($status_all);
         $is_status_unread = $stream_view->isStatusSelected($status_unread);
@@ -258,7 +282,9 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
     {
         $date = $this->fakeDateInPeriod();
         $stream = StreamFactory::create();
-        $stream_view = new StreamView($stream, null, at: $date);
+        $stream_view = StreamView::buildFromRequest($stream, null, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+        ]));
 
         $period = $stream_view->period();
 
@@ -396,7 +422,10 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $source_2->addLinks([$link_2], at: $date);
         $stream->addSource($source_1);
         $stream->addSource($source_2);
-        $stream_view = new StreamView($stream, $user, at: $date, source: $source_1);
+        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'source' => $source_1->id,
+        ]));
 
         $links_timeline = $stream_view->linksTimeline();
 
@@ -436,7 +465,10 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $stream->addSource($source);
         $user->markAsRead($link_1);
         $user->markAsReadLater($link_2);
-        $stream_view = new StreamView($stream, $user, at: $date, status: 'read');
+        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'status' => 'read',
+        ]));
 
         $links_timeline = $stream_view->linksTimeline();
 
@@ -476,7 +508,10 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $stream->addSource($source);
         $user->markAsRead($link_1);
         $user->markAsReadLater($link_2);
-        $stream_view = new StreamView($stream, $user, at: $date, status: 'read-later');
+        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'status' => 'read-later',
+        ]));
 
         $links_timeline = $stream_view->linksTimeline();
 
@@ -516,7 +551,10 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $stream->addSource($source);
         $user->markAsRead($link_1);
         $user->markAsReadLater($link_2);
-        $stream_view = new StreamView($stream, $user, at: $date, status: 'unread');
+        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'status' => 'unread',
+        ]));
 
         $links_timeline = $stream_view->linksTimeline();
 
@@ -552,7 +590,9 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $source->addLinks([$link_1, $link_2], at: $date);
         $stream->addSource($source);
         $user->markAsDismissed($link_1);
-        $stream_view = new StreamView($stream, $user, at: $date);
+        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+        ]));
 
         $links_timeline = $stream_view->linksTimeline();
 
@@ -581,7 +621,10 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $source->addLinks([$link_1, $link_2], at: $date);
         $stream->addSource($source);
         $user->markAsDismissed($link_1);
-        $stream_view = new StreamView($stream, $user, at: $date, with_dismissed: true);
+        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'with_dismissed' => '1',
+        ]));
 
         $links_timeline = $stream_view->linksTimeline();
 
@@ -611,7 +654,11 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $source->addLinks([$link_1, $link_2], at: $date);
         $stream->addSource($source);
         $user->markAsDismissed($link_1);
-        $stream_view = new StreamView($stream, $user, at: $date, status: 'unread', with_dismissed: true);
+        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'status' => 'unread',
+            'with_dismissed' => '1',
+        ]));
 
         $links_timeline = $stream_view->linksTimeline();
 
@@ -643,7 +690,10 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         ]);
         $source->addLinks([$link_1, $link_2], at: $date);
         $stream->addSource($source);
-        $stream_view = new StreamView($stream, $user, at: $date, query: 'foos');
+        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'q' => 'foos',
+        ]));
 
         $links_timeline = $stream_view->linksTimeline();
 
@@ -675,7 +725,10 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         ]);
         $source->addLinks([$link_1, $link_2], at: $date);
         $stream->addSource($source);
-        $stream_view = new StreamView($stream, $user, at: $date, query: 'url:example.com');
+        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'q' => 'url:example.com',
+        ]));
 
         $links_timeline = $stream_view->linksTimeline();
 
@@ -705,7 +758,10 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         ]);
         $source->addLinks([$link_1, $link_2], at: $date);
         $stream->addSource($source);
-        $stream_view = new StreamView($stream, $user, at: $date, query: '#foo');
+        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'q' => '#foo',
+        ]));
 
         $links_timeline = $stream_view->linksTimeline();
 
@@ -735,7 +791,10 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         ]);
         $source->addLinks([$link_1, $link_2], at: $date);
         $stream->addSource($source);
-        $stream_view = new StreamView($stream, $user, at: $date, query: '-#bar');
+        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'q' => '-#bar',
+        ]));
 
         $links_timeline = $stream_view->linksTimeline();
 
@@ -760,7 +819,10 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         ]);
         $source->addLinks([$link], at: $date);
         $stream->addSource($source);
-        $stream_view = new StreamView($stream, $user, at: $date, query: '""');
+        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'q' => '""',
+        ]));
 
         $links_timeline = $stream_view->linksTimeline();
 
@@ -997,7 +1059,9 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $source->addLinks([$link_1, $link_2], at: $date);
         $stream->addSource($source);
         $user->markAsRead($link_1);
-        $stream_view = new StreamView($stream, $user, at: $date);
+        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+        ]));
 
         $sources_and_counts = $stream_view->countedSources();
 
@@ -1031,9 +1095,18 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $stream->addSource($source);
         $user->markAsRead($link_1);
         $user->markAsReadLater($link_2);
-        $stream_view_unread = new StreamView($stream, $user, at: $date, status: 'unread');
-        $stream_view_read = new StreamView($stream, $user, at: $date, status: 'read');
-        $stream_view_read_later = new StreamView($stream, $user, at: $date, status: 'read-later');
+        $stream_view_unread = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'status' => 'unread',
+        ]));
+        $stream_view_read = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'status' => 'read',
+        ]));
+        $stream_view_read_later = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'status' => 'read-later',
+        ]));
 
         $sources_and_counts_unread = $stream_view_unread->countedSources();
         $sources_and_counts_read = $stream_view_read->countedSources();
@@ -1067,8 +1140,13 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $source->addLinks([$link_1, $link_2], at: $date);
         $stream->addSource($source);
         $user->markAsDismissed($link_1);
-        $stream_view = new StreamView($stream, $user, at: $date);
-        $stream_view_with_dismissed = new StreamView($stream, $user, at: $date, with_dismissed: true);
+        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+        ]));
+        $stream_view_with_dismissed = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'with_dismissed' => '1',
+        ]));
 
         $sources_and_counts = $stream_view->countedSources();
         $sources_and_counts_with_dismissed = $stream_view_with_dismissed->countedSources();
@@ -1102,7 +1180,10 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         ]);
         $source->addLinks([$link_1, $link_2], at: $date);
         $stream->addSource($source);
-        $stream_view = new StreamView($stream, $user, at: $date, query: 'foos');
+        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'q' => 'foos',
+        ]));
 
         $sources_and_counts = $stream_view->countedSources();
 
@@ -1138,7 +1219,10 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $stream->addSource($source_1);
         $stream->addSource($source_2);
         $user->markAsRead($link_2);
-        $stream_view = new StreamView($stream, $user, at: $date, status: 'unread');
+        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'status' => 'unread',
+        ]));
 
         $sources_and_counts = $stream_view->countedSources();
 
@@ -1159,7 +1243,10 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         ]);
         $source->addLinks([$link], at: $date);
         $stream->addSource($source);
-        $stream_view = new StreamView($stream, null, at: $date, status: 'read');
+        $stream_view = StreamView::buildFromRequest($stream, null, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'status' => 'read',
+        ]));
 
         $sources_and_counts = $stream_view->countedSources();
 
@@ -1192,7 +1279,9 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $source_2->addLinks([$link_2], at: $other_date);
         $stream->addSource($source_1);
         $stream->addSource($source_2);
-        $stream_view = new StreamView($stream, null, at: $date);
+        $stream_view = StreamView::buildFromRequest($stream, null, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+        ]));
 
         $sources_and_counts = $stream_view->countedSources();
 
@@ -1227,7 +1316,9 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $source_2->addLinks([$link_3], at: $date);
         $stream->addSource($source_1);
         $stream->addSource($source_2);
-        $stream_view = new StreamView($stream, null, at: $date);
+        $stream_view = StreamView::buildFromRequest($stream, null, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+        ]));
 
         $sources_and_counts = $stream_view->countedSources();
 
@@ -1263,7 +1354,9 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $source_2->addLinks([$link_2], at: $date);
         $stream->addSource($source_1);
         $stream->addSource($source_2);
-        $stream_view = new StreamView($stream, $user, at: $date);
+        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+        ]));
 
         $sources_and_counts = $stream_view->countedSources();
 
@@ -1295,7 +1388,9 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $source->addLinks([$link_1], at: $date_1);
         $source->addLinks([$link_2, $link_3], at: $date_2);
         $stream->addSource($source);
-        $stream_view = new StreamView($stream, null, at: $date_1);
+        $stream_view = StreamView::buildFromRequest($stream, null, new \Minz\Request('GET', '/stream', [
+            'at' => $date_1->format('Y-m-d'),
+        ]));
 
         $count_day_1 = $stream_view->countByDay($date_1);
         $count_day_2 = $stream_view->countByDay($date_2);
@@ -1329,7 +1424,10 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         ]);
         $source->addLinks([$link_1, $link_2], at: $date);
         $stream->addSource($source);
-        $stream_view = new StreamView($stream, $user, at: $date, query: 'foos');
+        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'q' => 'foos',
+        ]));
 
         $count = $stream_view->countByDay($date);
 
@@ -1358,7 +1456,9 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $source->addLinks([$link_1, $link_2], at: $date);
         $stream->addSource($source);
         $user->markAsDismissed($link_1);
-        $stream_view = new StreamView($stream, $user, at: $date);
+        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+        ]));
 
         $count = $stream_view->countByDay($date);
         $count_unread = $stream_view->countUnreadByDay($date);
@@ -1390,7 +1490,9 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $source->addLinks([$link_1, $link_2, $link_3], at: $date);
         $stream->addSource($source);
         $user->markAsRead($link_1);
-        $stream_view = new StreamView($stream, $user, at: $date);
+        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+        ]));
 
         $count_unread = $stream_view->countUnreadByDay($date);
 
@@ -1410,7 +1512,9 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         ]);
         $source->addLinks([$link], at: $date);
         $stream->addSource($source);
-        $stream_view = new StreamView($stream, null, at: $date);
+        $stream_view = StreamView::buildFromRequest($stream, null, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+        ]));
 
         $count_unread = $stream_view->countUnreadByDay($date);
 
@@ -1441,7 +1545,9 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $source->addLinks([$link_1], at: $date_1);
         $source->addLinks([$link_2, $link_3], at: $date_2);
         $stream->addSource($source);
-        $stream_view = new StreamView($stream, null, at: $date_1);
+        $stream_view = StreamView::buildFromRequest($stream, null, new \Minz\Request('GET', '/stream', [
+            'at' => $date_1->format('Y-m-d'),
+        ]));
 
         $max_count = $stream_view->maxCountPerDay();
 
@@ -1470,7 +1576,9 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             ]);
             $source->addLinks([$link], at: $date);
             $stream->addSource($source);
-            $stream_view = new StreamView($stream, null, at: $date);
+            $stream_view = StreamView::buildFromRequest($stream, null, new \Minz\Request('GET', '/stream', [
+                'at' => $date->format('Y-m-d'),
+            ]));
 
             $count_day = $stream_view->countByDay($date);
             $count_previous_day = $stream_view->countByDay($date->modify('-1 day'));
@@ -1501,7 +1609,9 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         ]);
         $source->addLinks([$link_1, $link_2], at: $date);
         $stream->addSource($source);
-        $stream_view = new StreamView($stream, null, at: $date);
+        $stream_view = StreamView::buildFromRequest($stream, null, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+        ]));
 
         $count_day = $stream_view->countByDay($date);
 
@@ -1533,7 +1643,9 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $source_2->addLinks([$link_2], at: $date);
         $stream->addSource($source_1);
         $stream->addSource($source_2);
-        $stream_view = new StreamView($stream, null, at: $date);
+        $stream_view = StreamView::buildFromRequest($stream, null, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+        ]));
 
         $count_day = $stream_view->countByDay($date);
 
@@ -1594,6 +1706,294 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertSame(2, count($links));
+    }
+
+    public function testBuildFromRequestSelectsAnUnsavedDefaultViewByDefault(): void
+    {
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $request = new \Minz\Request('GET', '/stream', []);
+
+        $stream_view = StreamView::buildFromRequest($stream, $user, $request);
+
+        $this->assertTrue($stream_view->view->is_default);
+        $this->assertFalse($stream_view->view->isPersisted());
+        $this->assertFalse($stream_view->view->isModified());
+    }
+
+    public function testBuildFromRequestAppliesTheDefaultViewOnABareUrl(): void
+    {
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $view = ViewFactory::create([
+            'stream_id' => $stream->id,
+            'user_id' => $user->id,
+            'is_default' => true,
+            'parameters' => [
+                'at_offset' => '-3',
+                'days' => '7',
+                'source' => '',
+                'status' => 'unread',
+                'with_dismissed' => '',
+                'q' => '',
+            ],
+        ]);
+        $request = new \Minz\Request('GET', '/stream', []);
+
+        $stream_view = StreamView::buildFromRequest($stream, $user, $request);
+
+        $expected_at = \Minz\Time::relative('-3 days midnight');
+        $this->assertSame($expected_at->format('Y-m-d'), $stream_view->at->format('Y-m-d'));
+        $this->assertSame(7, $stream_view->days);
+        $this->assertSame('unread', $stream_view->status);
+        $this->assertSame($view->id, $stream_view->view->id);
+        $this->assertFalse($stream_view->view->isModified());
+    }
+
+    public function testBuildFromRequestAppliesTheRequestedView(): void
+    {
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $view = ViewFactory::create([
+            'stream_id' => $stream->id,
+            'user_id' => $user->id,
+            'parameters' => [
+                'days' => '3',
+                'status' => 'read-later',
+                'with_dismissed' => 'true',
+            ],
+        ]);
+        $request = new \Minz\Request('GET', '/stream', [
+            'view' => $view->id,
+        ]);
+
+        $stream_view = StreamView::buildFromRequest($stream, $user, $request);
+
+        $this->assertSame(3, $stream_view->days);
+        $this->assertSame('read-later', $stream_view->status);
+        $this->assertTrue($stream_view->with_dismissed);
+        $this->assertSame($view->id, $stream_view->view->id);
+    }
+
+    public function testBuildFromRequestPrefersTheRequestParametersOverTheView(): void
+    {
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $view = ViewFactory::create([
+            'stream_id' => $stream->id,
+            'user_id' => $user->id,
+            'parameters' => [
+                'at_offset' => '0',
+                'days' => '1',
+                'source' => '',
+                'status' => 'unread',
+                'with_dismissed' => '',
+                'q' => '',
+            ],
+        ]);
+        $request = new \Minz\Request('GET', '/stream', [
+            'view' => $view->id,
+            'status' => 'read',
+        ]);
+
+        $stream_view = StreamView::buildFromRequest($stream, $user, $request);
+
+        $this->assertSame('read', $stream_view->status);
+        // The view stays selected, so that the change can be saved into it.
+        $this->assertSame($view->id, $stream_view->view->id);
+        $this->assertTrue($stream_view->view->isModified());
+    }
+
+    public function testBuildFromRequestUnsetsWithDismissedWhenTheFormSubmitsItEmpty(): void
+    {
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $view = ViewFactory::create([
+            'stream_id' => $stream->id,
+            'user_id' => $user->id,
+            'parameters' => [
+                'with_dismissed' => 'true',
+            ],
+        ]);
+        $request = new \Minz\Request('GET', '/stream', [
+            'view' => $view->id,
+            'with_dismissed' => '',
+        ]);
+
+        $stream_view = StreamView::buildFromRequest($stream, $user, $request);
+
+        $this->assertFalse($stream_view->with_dismissed);
+    }
+
+    public function testBuildFromRequestResolvesTheDateOffsetRelativelyToToday(): void
+    {
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $view = ViewFactory::create([
+            'stream_id' => $stream->id,
+            'user_id' => $user->id,
+            'parameters' => [
+                'at_offset' => '-3',
+            ],
+        ]);
+        $request = new \Minz\Request('GET', '/stream', [
+            'view' => $view->id,
+        ]);
+        $today = new \DateTimeImmutable('2026-08-17 10:00:00');
+        $tomorrow = $today->modify('+1 day');
+
+        $this->freeze($today);
+        $stream_view_today = StreamView::buildFromRequest($stream, $user, $request);
+        $this->freeze($tomorrow);
+        $stream_view_tomorrow = StreamView::buildFromRequest($stream, $user, $request);
+
+        // The same view must follow the days instead of pointing at a frozen
+        // date.
+        $this->assertSame(
+            $today->modify('-3 days')->format('Y-m-d'),
+            $stream_view_today->at->format('Y-m-d'),
+        );
+        $this->assertSame(
+            $tomorrow->modify('-3 days')->format('Y-m-d'),
+            $stream_view_tomorrow->at->format('Y-m-d'),
+        );
+    }
+
+    public function testBuildFromRequestIgnoresAViewOfAnotherStream(): void
+    {
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $other_stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $view = ViewFactory::create([
+            'stream_id' => $other_stream->id,
+            'user_id' => $user->id,
+            'is_default' => false,
+        ]);
+        $request = new \Minz\Request('GET', '/stream', [
+            'view' => $view->id,
+        ]);
+
+        $stream_view = StreamView::buildFromRequest($stream, $user, $request);
+
+        $this->assertNotSame($view->id, $stream_view->view->id);
+        $this->assertTrue($stream_view->view->is_default);
+    }
+
+    public function testBuildFromRequestAcceptsAViewOfAnotherUserOnTheSameStream(): void
+    {
+        // The views follow their stream: being able to view the stream is
+        // being able to view its views, whoever created them.
+        $user = UserFactory::create();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $view = ViewFactory::create([
+            'stream_id' => $stream->id,
+            'user_id' => $other_user->id,
+            'is_default' => false,
+        ]);
+        $request = new \Minz\Request('GET', '/stream', [
+            'view' => $view->id,
+        ]);
+
+        $stream_view = StreamView::buildFromRequest($stream, $user, $request);
+
+        $this->assertSame($view->id, $stream_view->view->id);
+        $this->assertFalse($stream_view->view->is_default);
+    }
+
+    public function testViewsListsTheSelectedDefaultViewItself(): void
+    {
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $request = new \Minz\Request('GET', '/stream', []);
+
+        $stream_view = StreamView::buildFromRequest($stream, $user, $request);
+
+        $views = $stream->views(['context_user' => $user]);
+        $this->assertSame(1, count($views));
+        // An unsaved default view carries a random id: listing it must reuse
+        // the very instance that is selected, or the chip would never appear as
+        // selected.
+        $this->assertTrue($stream_view->isViewSelected($views[0]));
+    }
+
+    public function testViewsReturnsTheDefaultViewFirstThenSortsByName(): void
+    {
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $default_view = ViewFactory::create([
+            'stream_id' => $stream->id,
+            'user_id' => $user->id,
+            'is_default' => true,
+            'name' => 'Zulu',
+        ]);
+        $beta_view = ViewFactory::create([
+            'stream_id' => $stream->id,
+            'user_id' => $user->id,
+            'is_default' => false,
+            'name' => 'Beta',
+        ]);
+        $alpha_view = ViewFactory::create([
+            'stream_id' => $stream->id,
+            'user_id' => $user->id,
+            'is_default' => false,
+            'name' => 'Alpha',
+        ]);
+        $views = $stream->views(['context_user' => $user]);
+        $view_ids = array_column($views, 'id');
+        $this->assertSame([
+            $default_view->id,
+            $alpha_view->id,
+            $beta_view->id,
+        ], $view_ids);
+    }
+
+    public function testToStoredParametersStoresTheDateAsAnOffset(): void
+    {
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $request = new \Minz\Request('GET', '/stream', [
+            'at' => \Minz\Time::relative('-3 days midnight')->format('Y-m-d'),
+            'days' => 7,
+            'status' => 'unread',
+        ]);
+
+        $stream_view = StreamView::buildFromRequest($stream, $user, $request);
+
+        $view = $stream_view->view;
+        $stored_parameters = $view->currentParameters();
+        $this->assertSame([
+            'at_offset' => '-3',
+            'days' => '7',
+            'source' => '',
+            'status' => 'unread',
+            'with_dismissed' => '',
+            'q' => '',
+        ], $stored_parameters);
     }
 
     /**

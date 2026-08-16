@@ -1,0 +1,48 @@
+.views {
+    --scroller-strip-padding: var(--space-smaller);
+
+    display: flex;
+
+    align-items: center;
+    gap: var(--space-small);
+}
+
+.views__scroller {
+    min-width: 0;
+
+    flex: 1 1 auto;
+
+    /* The right edge is always marked, to separate the views from the
+     * actions even when the strip doesn't overflow. The line coincides with
+     * the one drawn by the scroller on overflow, so the shadow fades in over
+     * it seamlessly. */
+    box-shadow: inset -1px 0 0 var(--scroller-color-line);
+}
+
+.views__strip {
+    display: flex;
+
+    align-items: center;
+    gap: var(--space-smaller);
+}
+
+.views__view {
+    font-weight: normal;
+    white-space: nowrap;
+
+    border-color: var(--color-grey-border);
+}
+
+/* The "New view" chip is a button opening the creation modal: the dashed
+ * border marks it as a placeholder among the real views. */
+.views__view--new {
+    border-style: dashed;
+}
+
+.views__view[aria-current] {
+    color: var(--color-accent-text-contrast);
+    font-weight: 600;
+
+    background-color: var(--color-accent-bg-active);
+    border-color: var(--color-accent-border);
+}

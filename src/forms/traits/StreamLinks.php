@@ -52,7 +52,7 @@ trait StreamLinks
         }
 
         $status = $this->status;
-        if (!in_array($status, ['all', 'unread', 'read', 'read-later'])) {
+        if (!in_array($status, models\View::STREAM_STATUSES)) {
             $status = 'all';
         }
 

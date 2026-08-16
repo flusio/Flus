@@ -115,12 +115,7 @@ class Stream
     public function sources(array $options = []): array
     {
         $context_user = $options['context_user'] ?? null;
-
-        if ($context_user) {
-            $memoize_key = "sources_{$context_user->id}";
-        } else {
-            $memoize_key = 'sources_anonymous';
-        }
+        $memoize_key = $this->memoizeKeyFor('sources', $context_user);
 
         return $this->memoize($memoize_key, function () use ($context_user): array {
             $collections = Collection::listByStream($this, [
@@ -128,6 +123,62 @@ class Stream
             ]);
             return utils\Sorter::localeSort($collections, 'name');
         });
+    }
+
+    /**
+     * Return the default view of the stream, or a new unsaved one with the
+     * default parameters.
+     *
+     * The context user is the one who would own the view once saved.
+     *
+     * @param array{
+     *     context_user?: ?User,
+     * } $options
+     */
+    public function defaultView(array $options = []): View
+    {
+        $context_user = $options['context_user'] ?? null;
+        $memoize_key = $this->memoizeKeyFor('default_view', $context_user);
+
+        return $this->memoize($memoize_key, function () use ($context_user): View {
+            return View::findOrBuildDefaultForStream($this, $context_user);
+        });
+    }
+
+    /**
+     * Return the views of the stream, the default one first, then sorted by
+     * name.
+     *
+     * @param array{
+     *     context_user?: ?User,
+     * } $options
+     *
+     * @return View[]
+     */
+    public function views(array $options = []): array
+    {
+        $context_user = $options['context_user'] ?? null;
+        $memoize_key = $this->memoizeKeyFor('views', $context_user);
+
+        return $this->memoize($memoize_key, function () use ($options): array {
+            $views = View::listByStream($this);
+
+            // listByStream() only returns the saved views: the default one has
+            // to be added by hand as long as it may have not been saved yet.
+            array_unshift($views, $this->defaultView($options));
+
+            return $views;
+        });
+    }
+
+    /**
+     * Return a memoize key discriminating on the context user, e.g.
+     * "sources_<user id>", or "sources_anonymous" if no user is given.
+     */
+    private function memoizeKeyFor(string $prefix, ?User $context_user): string
+    {
+        $suffix = $context_user ? $context_user->id : 'anonymous';
+        return "{$prefix}_{$suffix}";
     }
 
     public function hasSource(Collection $source): bool

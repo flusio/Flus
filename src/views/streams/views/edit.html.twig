@@ -1,0 +1,14 @@
+{% extends 'layouts/modal.html.twig' %}
+
+{% block title %}{{ t('Rename the view') }}{% endblock %}
+
+{% block body %}
+    {{ include('streams/views/_form.html.twig', {
+        form: form,
+        action: url('update stream view', {
+            id: stream.id,
+            view_id: view.routeId,
+        }),
+        submit_label: t('Save changes'),
+    }) }}
+{% endblock %}

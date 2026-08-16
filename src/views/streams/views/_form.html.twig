@@ -1,0 +1,47 @@
+{% set url_parameters = url_parameters ?? {} %}
+
+<form method="post" action="{{ action }}" class="flow">
+    {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+
+    <div class="form-group">
+        <label for="name">
+            {{ t('What’s the name of the view?') }}
+            <span class="label__help">
+                {{ t('(max. %d characters)', [form.name_max_length]) }}
+            </span>
+        </label>
+
+        {% if form.isInvalid('name') %}
+            <p id="name-error" class="form-group__error">
+                {{ t('Error:') }}
+                {{ form.error('name') }}
+            </p>
+        {% endif %}
+
+        <input
+            id="name"
+            name="name"
+            type="text"
+            required
+            value="{{ form.name }}"
+            autofocus
+            maxlength="{{ form.name_max_length }}"
+            {% if form.isInvalid('name') %}
+                aria-errormessage="name-error"
+                aria-invalid="true"
+            {% endif %}
+        />
+    </div>
+
+    <div class="text--center">
+        <button type="submit" class="button--primary button--big">
+            {{ submit_label }}
+        </button>
+    </div>
+
+    {% for param_name, param_value in url_parameters %}
+        <input type="hidden" name="{{ param_name }}" value="{{ param_value }}">
+    {% endfor %}
+
+    <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}" />
+</form>

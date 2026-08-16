@@ -258,6 +258,22 @@ CREATE TABLE streams_to_follows (
 CREATE UNIQUE INDEX idx_streams_to_follows ON streams_to_follows(stream_id, follow_id);
 CREATE INDEX idx_streams_to_follows_follow_id ON streams_to_follows(follow_id);
 
+CREATE TABLE views (
+    id TEXT PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL,
+
+    name TEXT NOT NULL,
+    parameters JSON NOT NULL,
+    is_default BOOLEAN NOT NULL DEFAULT false,
+
+    user_id TEXT NOT NULL REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE,
+    stream_id TEXT REFERENCES streams ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE INDEX idx_views_user_id ON views(user_id);
+CREATE INDEX idx_views_stream_id ON views(stream_id) WHERE stream_id IS NOT NULL;
+CREATE UNIQUE INDEX idx_views_default ON views(stream_id) WHERE is_default;
+
 CREATE TABLE collection_shares (
     id BIGSERIAL PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,

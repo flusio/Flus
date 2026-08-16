@@ -9,6 +9,7 @@ use tests\factories\CollectionFactory;
 use tests\factories\LinkFactory;
 use tests\factories\StreamFactory;
 use tests\factories\UserFactory;
+use tests\factories\ViewFactory;
 
 class StreamsTest extends \PHPUnit\Framework\TestCase
 {
@@ -288,6 +289,51 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $link_title);
+    }
+
+    public function testShowDisplaysTheViewsBar(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        ViewFactory::create([
+            'stream_id' => $stream->id,
+            'user_id' => $user->id,
+            'name' => 'My unreads',
+        ]);
+
+        $response = $this->appRun('GET', "/streams/{$stream->id}");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Main view');
+        $this->assertResponseContains($response, 'My unreads');
+    }
+
+    public function testShowAppliesTheDefaultViewOnABareUrl(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        ViewFactory::create([
+            'stream_id' => $stream->id,
+            'user_id' => $user->id,
+            'is_default' => true,
+            'parameters' => [
+                'at_offset' => '0',
+                'days' => '1',
+                'source' => '',
+                'status' => 'all',
+                'with_dismissed' => '',
+                'q' => 'a very specific query',
+            ],
+        ]);
+
+        $response = $this->appRun('GET', "/streams/{$stream->id}");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'value="a very specific query"');
     }
 
     public function testShowFailsIfStreamDoesNotExist(): void

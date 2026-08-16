@@ -96,7 +96,20 @@ export default class extends Controller {
         // and the scroll positions.
         const form = this.formFiltersTarget;
         const url = new URL(form.action);
-        url.search = new URLSearchParams(new FormData(form)).toString();
+
+        const parameters = new URLSearchParams();
+        for (const [name, value] of new FormData(form)) {
+            if (name.endsWith('[]')) {
+                // Array parameters are legitimately repeated: keep them all.
+                parameters.append(name, value);
+            } else {
+                // Later entries win, as PHP does when parsing a query string:
+                // this collapses the hidden/checkbox pairs into a single
+                // parameter, so the URL stays shareable.
+                parameters.set(name, value);
+            }
+        }
+        url.search = parameters.toString();
 
         // Dim the timeline while the visit is in flight. The morph removes the
         // attribute once the new page is rendered (the server never renders it).
