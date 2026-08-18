@@ -141,7 +141,7 @@ export default class extends Controller {
         }
 
         const strip = this.stripTarget;
-        const selectedItem = strip.querySelector('[aria-pressed="true"]');
+        const selectedItem = strip.querySelector('[aria-pressed="true"], [aria-current="true"]');
 
         if (!selectedItem) {
             return;
