@@ -1,5 +1,31 @@
 # Changelog of Flus
 
+## 2026-08-19 - v2.5.4
+
+### Developers
+
+- Add ArrayHelper::find and ArrayHelper::any methods ([8f90862d](https://github.com/flusio/Flus/commit/8f90862d))
+- Extract a "scroller" Twig component ([2cbab88d](https://github.com/flusio/Flus/commit/2cbab88d))
+- Provide a "sticky" controller to apply CSS on stuck elements ([99a5706c](https://github.com/flusio/Flus/commit/99a5706c))
+- Provide a "selection" Stimulus controller ([f4d35ca2](https://github.com/flusio/Flus/commit/f4d35ca2), [32a9024b](https://github.com/flusio/Flus/commit/32a9024b))
+- Accept `attrs` on popup macros and `form` on popup actions ([53828d6e](https://github.com/flusio/Flus/commit/53828d6e))
+- Handle `aria-current` selected items in scroller ([8fd21e12](https://github.com/flusio/Flus/commit/8fd21e12))
+- Handle more cases in the "focus" Stimulus controller ([66eed5e4](https://github.com/flusio/Flus/commit/66eed5e4))
+- Limit the height of popups ([bd025e38](https://github.com/flusio/Flus/commit/bd025e38))
+
+
+### Alpha: streams
+
+- Allow to save stream filters as views ([5733d53e](https://github.com/flusio/Flus/commit/5733d53e))
+- Add bulk actions to sources ([97d0aa82](https://github.com/flusio/Flus/commit/97d0aa82))
+- Don't suggest the "all" filter for news ([7265f7b2](https://github.com/flusio/Flus/commit/7265f7b2))
+- Add links' publication hour in streams ([72b4fce7](https://github.com/flusio/Flus/commit/72b4fce7))
+- Display news info and stream count in collection ([2c57932e](https://github.com/flusio/Flus/commit/2c57932e))
+- Improve the source information display on small screens ([074cffa9](https://github.com/flusio/Flus/commit/074cffa9))
+- Improve look coherence of links on mobile ([38bf3044](https://github.com/flusio/Flus/commit/38bf3044))
+- Fix look of source selector on small screens ([4c085a45](https://github.com/flusio/Flus/commit/4c085a45))
+- Reduce filters spacing on mobile ([27ee0bdc](https://github.com/flusio/Flus/commit/27ee0bdc))
+
 ## 2026-08-07 - v2.5.3
 
 ### Features
