@@ -80,12 +80,7 @@
                     {% if form.streams %}
                         <div
                             class="streams-selector flow flow--smaller"
-                            data-controller="selection filter scroller"
-                            data-scroller-vertical-value="true"
-                            data-action="
-                                resize@window->scroller#refresh
-                                filter:filtered->scroller#refresh
-                            "
+                            data-controller="selection filter"
                         >
                             {% if form.streams | length > 10 %}
                                 <input
@@ -102,27 +97,14 @@
                                 >
                             {% endif %}
 
-                            <div class="scroller scroller--vertical" data-scroller-target="viewport">
-                                <button
-                                    type="button"
-                                    class="button--icon scroller__button scroller__button--previous"
-                                    title="{{ t('Display the previous streams') }}"
-                                    data-scroller-target="previous"
-                                    data-action="scroller#previous"
-                                    disabled
-                                >
-                                    {{ icon('arrow-left', 'rotate90') }}
-
-                                    <span class="sr-only">
-                                        {{ t('Display the previous streams') }}
-                                    </span>
-                                </button>
-
-                                <div
-                                    class="scroller__strip scroller__strip--vertical streams-selector__options stack stack--gap-small"
-                                    data-scroller-target="strip"
-                                    data-action="scroll->scroller#refresh"
-                                >
+                            {% embed 'components/scroller.html.twig' with {
+                                previous_label: t('Display the previous streams'),
+                                next_label: t('Display the next streams'),
+                                strip_class: 'streams-selector__options stack stack--gap-small',
+                                vertical: true,
+                                actions: 'filter:filtered@document->scroller#refresh',
+                            } %}
+                                {% block strip %}
                                     {% for stream in form.streams %}
                                         <div
                                             class="streams-selector__option"
@@ -156,23 +138,8 @@
                                             </label>
                                         </div>
                                     {% endfor %}
-                                </div>
-
-                                <button
-                                    type="button"
-                                    class="button--icon scroller__button scroller__button--next"
-                                    title="{{ t('Display the next streams') }}"
-                                    data-scroller-target="next"
-                                    data-action="scroller#next"
-                                    disabled
-                                >
-                                    {{ icon('arrow-right', 'rotate90') }}
-
-                                    <span class="sr-only">
-                                        {{ t('Display the next streams') }}
-                                    </span>
-                                </button>
-                            </div>
+                                {% endblock %}
+                            {% endembed %}
 
                             <p class="text--center text--secondary" data-filter-target="empty" hidden>
                                 {{ t('No stream matches your search.') }}

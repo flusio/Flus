@@ -8,14 +8,11 @@
 <details
     class="sources__selector"
     open
-    data-controller="filter morph details scroller focus"
+    data-controller="filter morph details focus"
     data-morph-preserve-value="open data-details-collapsed-value"
-    data-scroller-vertical-value="true"
     data-action="
         turbo:morph@document->filter#filter
         turbo:before-morph-attribute->morph#preserveAttributes
-        filter:filtered->scroller#refresh
-        resize@window->scroller#refresh
         submit->focus#remember
         turbo:render@document->focus#restore
     "
@@ -76,27 +73,14 @@
                 </div>
             {% endif %}
 
-            <div class="scroller scroller--vertical" data-scroller-target="viewport">
-                <button
-                    type="button"
-                    class="button--icon scroller__button scroller__button--previous"
-                    title="{{ t('Display the previous sources') }}"
-                    data-scroller-target="previous"
-                    data-action="scroller#previous"
-                    disabled
-                >
-                    {{ icon('arrow-left', 'rotate90') }}
-
-                    <span class="sr-only">
-                        {{ t('Display the previous sources') }}
-                    </span>
-                </button>
-
-                <div
-                    class="scroller__strip scroller__strip--vertical sources__selector-container"
-                    data-scroller-target="strip"
-                    data-action="scroll->scroller#refresh"
-                >
+            {% embed 'components/scroller.html.twig' with {
+                previous_label: t('Display the previous sources'),
+                next_label: t('Display the next sources'),
+                strip_class: 'sources__selector-container',
+                vertical: true,
+                actions: 'details:opened@document->scroller#reveal filter:filtered@document->scroller#refresh',
+            } %}
+                {% block strip %}
                     <div class="flow flow--small">
                         {% for source in sources %}
                             {{ include('streams/sources/_source.html.twig', { action: action }) }}
@@ -112,23 +96,8 @@
                             {% endif %}
                         </p>
                     {% endif %}
-                </div>
-
-                <button
-                    type="button"
-                    class="button--icon scroller__button scroller__button--next"
-                    title="{{ t('Display the next sources') }}"
-                    data-scroller-target="next"
-                    data-action="scroller#next"
-                    disabled
-                >
-                    {{ icon('arrow-right', 'rotate90') }}
-
-                    <span class="sr-only">
-                        {{ t('Display the next sources') }}
-                    </span>
-                </button>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     {% else %}
         <p class="sources__selector-body text--center text--secondary">

@@ -1,35 +1,13 @@
 <div class="flow flow--smaller">
-    <div
-        class="views"
-        data-controller="scroller"
-        data-action="
-            resize@window->scroller#refresh
-            turbo:morph@document->scroller#refresh
-        "
-    >
-        <div class="scroller views__scroller" data-scroller-target="viewport">
-            <button
-                type="button"
-                class="button--icon scroller__button scroller__button--previous"
-                title="{{ t('Display the previous views') }}"
-                data-scroller-target="previous"
-                data-action="scroller#previous"
-                disabled
-            >
-                {{ icon('arrow-left') }}
-
-                <span class="sr-only">
-                    {{ t('Display the previous views') }}
-                </span>
-            </button>
-
-            <div
-                class="scroller__strip views__strip"
-                role="group"
-                aria-label="{{ t('Views') }}"
-                data-scroller-target="strip"
-                data-action="scroll->scroller#refresh"
-            >
+    <div class="views">
+        {% embed 'components/scroller.html.twig' with {
+            previous_label: t('Display the previous views'),
+            next_label: t('Display the next views'),
+            class: 'views__scroller',
+            strip_class: 'views__strip',
+            strip_label: t('Views'),
+        } %}
+            {% block strip %}
                 {% for view in stream.views({ context_user: app.user }) %}
                     <a
                         id="stream-view-{{ view.routeId }}"
@@ -55,23 +33,8 @@
                     {{ icon('plus') }}
                     {{ t('New view') }}
                 </button>
-            </div>
-
-            <button
-                type="button"
-                class="button--icon scroller__button scroller__button--next"
-                title="{{ t('Display the next views') }}"
-                data-scroller-target="next"
-                data-action="scroller#next"
-                disabled
-            >
-                {{ icon('arrow-right') }}
-
-                <span class="sr-only">
-                    {{ t('Display the next views') }}
-                </span>
-            </button>
-        </div>
+            {% endblock %}
+        {% endembed %}
 
         {% embed 'components/popup.html.twig' with {
             position: 'right',
@@ -133,15 +96,7 @@
                 <span class="col--extend text--bold">{{ t('View filters') }}</span>
             </summary>
 
-            <div
-                class="filters__section flow"
-                data-controller="scroller"
-                data-action="
-                    resize@window->scroller#refresh
-                    turbo:morph@document->scroller#refresh
-                    details:opened@document->scroller#reveal
-                "
-            >
+            <div class="filters__section flow">
                 {% set max_count_per_day = stream_view.maxCountPerDay() %}
 
                 {# Number of days displayed per month, used to cap the width of each
@@ -153,32 +108,15 @@
                     {% set count_days_per_month = count_days_per_month | merge({ (month_key): count + 1 }) %}
                 {% endfor %}
 
-                <div class="scroller" data-scroller-target="viewport">
-                    <button
-                        type="button"
-                        class="button--icon scroller__button scroller__button--previous"
-                        title="{{ t('Display the previous days') }}"
-                        data-scroller-target="previous"
-                        data-action="scroller#previous"
-                        disabled
-                    >
-                        {{ icon('arrow-left') }}
-
-                        <span class="sr-only">
-                            {{ t('Display the previous days') }}
-                        </span>
-                    </button>
-
-                    <div
-                        class="scroller__strip day-picker"
-                        role="group"
-                        aria-label="{{ t('Date') }}"
-                        data-scroller-target="strip"
-                        data-action="
-                            keydown->scroller#navigate
-                            scroll->scroller#refresh
-                        "
-                    >
+                {% embed 'components/scroller.html.twig' with {
+                    previous_label: t('Display the previous days'),
+                    next_label: t('Display the next days'),
+                    strip_class: 'day-picker',
+                    strip_label: t('Date'),
+                    navigable: true,
+                    actions: 'details:opened@document->scroller#reveal',
+                } %}
+                    {% block strip %}
                         {% for day in stream_view.period %}
                             {% set day_value = day.format('Y-m-d') %}
                             {% set is_month_first_day = loop.first or day.format('Y-m') != stream_view.period[loop.index0 - 1].format('Y-m') %}
@@ -248,23 +186,8 @@
                                 </span>
                             </button>
                         {% endfor %}
-                    </div>
-
-                    <button
-                        type="button"
-                        class="button--icon scroller__button scroller__button--next"
-                        title="{{ t('Display the next days') }}"
-                        data-scroller-target="next"
-                        data-action="scroller#next"
-                        disabled
-                    >
-                        {{ icon('arrow-right') }}
-
-                        <span class="sr-only">
-                            {{ t('Display the next days') }}
-                        </span>
-                    </button>
-                </div>
+                    {% endblock %}
+                {% endembed %}
 
                 <div
                     class="stack stack--gap-small"

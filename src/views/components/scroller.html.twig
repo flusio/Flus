@@ -1,0 +1,102 @@
+{#
+ # A scrollable strip with previous/next buttons, to be used with {% embed %}:
+ #
+ #     {% embed 'components/scroller.html.twig' with {
+ #         previous_label: t('Display the previous views'),
+ #         next_label: t('Display the next views'),
+ #         strip_class: 'views__strip',
+ #         strip_label: t('Views'),
+ #     } %}
+ #         {% block strip %}
+ #             …
+ #         {% endblock %}
+ #     {% endembed %}
+ #
+ # The component declares the `scroller` Stimulus controller itself, and
+ # refreshes it on the events that may resize the strip (window resize, Turbo
+ # morphing). `actions` binds extra site-specific actions on it: as the
+ # controller lives on the component, the events dispatched by the ancestors
+ # must be listened at the document level (e.g. `filter:filtered@document->scroller#refresh`).
+ #
+ # `class` and `strip_class` add classes to the viewport and to the strip.
+ # `strip_label` exposes the strip as a labelled group. `navigable` moves the
+ # focus with the arrow keys: the items must then declare
+ # `data-scroller-target="item"` and handle a roving tabindex (cf.
+ # scroller_controller.js).
+ #}
+{% types {
+    previous_label: 'string',
+    next_label: 'string',
+    class: 'string',
+    strip_class: 'string',
+    strip_label: 'string',
+    vertical: 'boolean',
+    navigable: 'boolean',
+    actions: 'string',
+} %}
+
+{% set class = class ?? '' %}
+{% set strip_class = strip_class ?? '' %}
+{% set strip_label = strip_label ?? '' %}
+{% set vertical = vertical ?? false %}
+{% set navigable = navigable ?? false %}
+{% set actions = actions ?? '' %}
+
+<div
+    class="scroller {{ vertical ? 'scroller--vertical' }} {{ class }}"
+    data-controller="scroller"
+    {% if vertical %}
+        data-scroller-vertical-value="true"
+    {% endif %}
+    data-scroller-target="viewport"
+    data-action="
+        resize@window->scroller#refresh
+        turbo:morph@document->scroller#refresh
+        {{ actions }}
+    "
+>
+    <button
+        type="button"
+        class="button--icon scroller__button scroller__button--previous"
+        title="{{ previous_label }}"
+        data-scroller-target="previous"
+        data-action="scroller#previous"
+        disabled
+    >
+        {{ icon('arrow-left', vertical ? 'rotate90' : '') }}
+
+        <span class="sr-only">
+            {{ previous_label }}
+        </span>
+    </button>
+
+    <div
+        class="scroller__strip {{ vertical ? 'scroller__strip--vertical' }} {{ strip_class }}"
+        {% if strip_label %}
+            role="group"
+            aria-label="{{ strip_label }}"
+        {% endif %}
+        data-scroller-target="strip"
+        data-action="
+            {{ navigable ? 'keydown->scroller#navigate' }}
+            scroll->scroller#refresh
+        "
+    >
+        {% block strip %}{% endblock %}
+    </div>
+
+    <button
+        type="button"
+        class="button--icon scroller__button scroller__button--next"
+        title="{{ next_label }}"
+        data-scroller-target="next"
+        data-action="scroller#next"
+        disabled
+    >
+        {{ icon('arrow-right', vertical ? 'rotate90' : '') }}
+
+        <span class="sr-only">
+            {{ next_label }}
+        </span>
+    </button>
+</div>
