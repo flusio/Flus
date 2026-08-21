@@ -68,7 +68,7 @@
                 <span class="text--ellipsis">{{ link.host }}</span>&nbsp;·&nbsp;{{ link.reading_time | format_reading_time }}
                 {%- if link.published_at -%}
                     &nbsp;·&nbsp;<time datetime="{{ link.published_at | date_iso }}" title="{{ d(link.published_at, 'dd MMM Y, HH:mm') }}">
-                        {{- d(link.published_at, 'HH:mm') -}}
+                        {{- link.published_at | format_time -}}
                     </time>
                 {%- endif -%}
 

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-08-21 10:53+0200\n"
-"PO-Revision-Date: 2026-08-21 10:53+0200\n"
+"POT-Creation-Date: 2026-08-21 14:14+0200\n"
+"PO-Revision-Date: 2026-08-21 14:15+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -605,35 +605,39 @@ msgstr "< 1 min"
 msgid "%s&nbsp;min"
 msgstr "%s&nbsp;min"
 
-#: twig/FormattersExtension.php:61
+#: twig/FormattersExtension.php:52
+msgid "h:mm a"
+msgstr "H' h 'mm"
+
+#: twig/FormattersExtension.php:71
 #, php-format
 msgid "%d link per day"
 msgid_plural "%d links per day"
 msgstr[0] "%d lien par jour"
 msgstr[1] "%d liens par jour"
 
-#: twig/FormattersExtension.php:70
+#: twig/FormattersExtension.php:80
 #, php-format
 msgid "%d link per week"
 msgid_plural "%d links per week"
 msgstr[0] "%d lien par semaine"
 msgstr[1] "%d liens par semaine"
 
-#: twig/FormattersExtension.php:79
+#: twig/FormattersExtension.php:89
 #, php-format
 msgid "%d link per month"
 msgid_plural "%d links per month"
 msgstr[0] "%d lien par mois"
 msgstr[1] "%d liens par mois"
 
-#: twig/FormattersExtension.php:88
+#: twig/FormattersExtension.php:98
 #, php-format
 msgid "%d link per year"
 msgid_plural "%d links per year"
 msgstr[0] "%d lien par an"
 msgstr[1] "%d liens par an"
 
-#: twig/FormattersExtension.php:95
+#: twig/FormattersExtension.php:105
 msgid "Inactive"
 msgstr "Inactif"
 

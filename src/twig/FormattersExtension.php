@@ -44,6 +44,16 @@ class FormattersExtension
     }
 
     /**
+     * Format the given time accordingly to the current locale.
+     */
+    #[AsTwigFilter('format_time')]
+    public static function formatTime(\DateTimeInterface $date): string
+    {
+        $format = \Minz\Template\TwigExtension::translate('h:mm a');
+        return \Minz\Template\TwigExtension::translateDate($date, $format);
+    }
+
+    /**
      * Format a publication frequency.
      *
      * It displays the frequency in priority by day, then week, month or year,
