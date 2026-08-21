@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-08-19 09:25+0200\n"
-"PO-Revision-Date: 2026-08-19 09:26+0200\n"
+"POT-Creation-Date: 2026-08-21 10:51+0200\n"
+"PO-Revision-Date: 2026-08-21 10:51+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -692,7 +692,7 @@ msgstr "aucun lien"
 #: views/collections/_collection.html.twig:26
 #: views/collections/_collection_follow.html.twig:18
 #: views/links/_pagination_count.html.twig:7 views/news/index.html.twig:26
-#: views/news/index.html.twig:95 views/streams/_timeline.html.twig:67
+#: views/news/index.html.twig:95 views/streams/_timeline.html.twig:73
 #, php-format
 msgid "%s link"
 msgid_plural "%s links"
@@ -1269,10 +1269,10 @@ msgstr "Accès"
 #: views/links/_link.html.twig:221 views/links/_link_row.html.twig:102
 #: views/links/_link_row.html.twig:108 views/links/show.html.twig:237
 #: views/links/show.html.twig:241 views/news/index.html.twig:53
-#: views/news/index.html.twig:105 views/news/index.html.twig:150
+#: views/news/index.html.twig:105 views/news/index.html.twig:151
 #: views/notes/_notepad.html.twig:27 views/notes/_notepad.html.twig:33
-#: views/profiles/layout.html.twig:88 views/streams/_timeline.html.twig:26
-#: views/streams/_timeline.html.twig:77 views/streams/_timeline.html.twig:119
+#: views/profiles/layout.html.twig:88 views/streams/_timeline.html.twig:32
+#: views/streams/_timeline.html.twig:83 views/streams/_timeline.html.twig:125
 #: views/streams/show.html.twig:113
 msgid "Actions"
 msgstr "Actions"
@@ -2544,27 +2544,27 @@ msgstr ""
 "Les liens ne seront plus considérés comme non lus et ne seront plus suggérés "
 "dans le journal. Êtes vous sur·es ?"
 
-#: views/news/index.html.twig:37
+#: views/news/index.html.twig:37 views/streams/_timeline.html.twig:16
 msgid "today"
 msgstr "aujourd’hui"
 
-#: views/news/index.html.twig:39
+#: views/news/index.html.twig:39 views/streams/_timeline.html.twig:18
 msgid "yesterday"
 msgstr "hier"
 
-#: views/news/index.html.twig:59 views/streams/_timeline.html.twig:32
+#: views/news/index.html.twig:59 views/streams/_timeline.html.twig:38
 msgid "Actions on the day"
 msgstr "Actions pour la journée"
 
-#: views/news/index.html.twig:111 views/streams/_timeline.html.twig:83
+#: views/news/index.html.twig:111 views/streams/_timeline.html.twig:89
 msgid "Actions on the feed"
 msgstr "Actions pour le flux"
 
-#: views/news/index.html.twig:155
+#: views/news/index.html.twig:156
 msgid "Empty the news"
 msgstr "Vider le journal"
 
-#: views/news/index.html.twig:161
+#: views/news/index.html.twig:162
 msgid ""
 "Note: you will need to clear the news before you can refresh it. Mark the "
 "links as read, to be read later, or remove them with the appropriate actions."
@@ -2573,17 +2573,17 @@ msgstr ""
 "Marquez les liens comme lus, à lire plus tard, ou retirez-les avec les "
 "actions adéquats."
 
-#: views/news/index.html.twig:166
+#: views/news/index.html.twig:167
 msgid ""
 "Fill your news feed with the content published by the feeds that you follow."
 msgstr ""
 "Remplissez votre journal avec le contenu publié par les flux que vous suivez."
 
-#: views/news/index.html.twig:172
+#: views/news/index.html.twig:173
 msgid "There are no relevant links to suggest at this time."
 msgstr "Il n’y a aucun lien pertinent à vous proposer pour le moment."
 
-#: views/news/index.html.twig:191
+#: views/news/index.html.twig:192
 msgid "Refresh the news"
 msgstr "Rafraichir le journal"
 
@@ -3326,11 +3326,11 @@ msgstr ""
 "Un point s’affiche à côté du fil lorsqu’il contient des liens non lus datant "
 "des sept derniers jours."
 
-#: views/streams/_timeline.html.twig:124
+#: views/streams/_timeline.html.twig:130
 msgid "Actions on the links"
 msgstr "Actions sur les liens"
 
-#: views/streams/_timeline.html.twig:137
+#: views/streams/_timeline.html.twig:143
 msgid "There is no link matching your filters."
 msgstr "Il n’y a aucun lien qui correspond à vos filtres."
 

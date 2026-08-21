@@ -11,6 +11,12 @@
                         <header class="group__header">
                             <h2 class="group__title">
                                 {{ d(date_group.date, 'dd MMMM') }}
+
+                                {% if date_group.isToday %}
+                                    <small class="text--secondary">· {{ t('today') }}</small>
+                                {% elseif date_group.isYesterday %}
+                                    <small class="text--secondary">· {{ t('yesterday') }}</small>
+                                {% endif %}
                             </h2>
 
                             <div class="group__separator"></div>
