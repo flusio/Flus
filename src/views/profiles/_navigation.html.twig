@@ -14,4 +14,12 @@
     >
         {{ t('Collections') }}
     </a>
+
+    <a
+        class="button button--ghost"
+        href="{{ url('profile streams', { id: user.id }) }}"
+        {{ page === 'streams' ? 'aria-current="page"' : '' }}
+    >
+        {{ t('Streams') }}
+    </a>
 </div>

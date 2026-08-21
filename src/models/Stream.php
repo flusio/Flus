@@ -338,17 +338,37 @@ class Stream
     /**
      * List the streams owned by the given user.
      *
-     * The has_unread_links property is always set: it indicates whether the
-     * stream contains unread links published during the last seven days.
-     * It is only computed for the streams displaying the unread links in the
-     * sidenav, and set to false for the others.
+     * By default, the private streams are listed as well: pass the is_private
+     * option to false to only list the public ones.
+     *
+     * Unless the with_has_unread_links option is set to false, the
+     * has_unread_links property is set: it indicates whether the stream
+     * contains unread links published during the last seven days.
+     *
+     * @param array{
+     *     'is_private'?: bool,
+     *     'with_has_unread_links'?: bool,
+     * } $options
      *
      * @return self[]
      */
-    public static function listByUser(User $user): array
+    public static function listByUser(User $user, array $options = []): array
     {
+        $is_private = $options['is_private'] ?? true;
+        $with_has_unread_links = $options['with_has_unread_links'] ?? true;
+
         // List all the streams
-        $streams = self::listBy(['user_id' => $user->id]);
+        $criteria = ['user_id' => $user->id];
+
+        if (!$is_private) {
+            $criteria['is_public'] = true;
+        }
+
+        $streams = self::listBy($criteria);
+
+        if (!$with_has_unread_links) {
+            return $streams;
+        }
 
         // Then, the rest of this method is dedicated to calculating the
         // "unread" information for each stream.

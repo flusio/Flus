@@ -1,0 +1,39 @@
+{% extends 'profiles/layout.html.twig' %}
+
+{% block title %}{{ t('Streams of %s', [user.username]) }}{% endblock %}
+{% block canonical %}{{ url_full('profile streams', { id: user.id }) }}{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: t('Streams of %s', [user.username]) }) }}
+{% endblock %}
+
+{% block profile_navigation %}
+    {{ include('profiles/_navigation.html.twig', { page: 'streams' }) }}
+{% endblock %}
+
+{% block profile_body %}
+    {% set is_current_user_profile = app.user and app.user.id === user.id %}
+
+    {% set count_streams = streams | length %}
+    {% if count_streams > 0 %}
+        <p class="text--center text--secondary">
+            {{ t('%s stream', '%s streams', count_streams, [count_streams | format_number]) }}
+        </p>
+    {% endif %}
+
+    {% if streams %}
+        <div class="grid">
+            {% for stream in streams %}
+                {{ include('streams/_stream.html.twig', { stream: stream }) }}
+            {% endfor %}
+        </div>
+    {% elseif is_current_user_profile %}
+        <p class="panel panel--grey panel--rounded panel--larger text--bolder text--center">
+            {{ t('You didn’t share any public streams yet.') }}
+        </p>
+    {% else %}
+        <p class="panel panel--grey panel--rounded panel--larger text--bolder text--center">
+            {{ t('This user didn’t share any public streams yet.') }}
+        </p>
+    {% endif %}
+{% endblock %}

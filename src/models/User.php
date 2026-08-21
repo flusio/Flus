@@ -885,12 +885,24 @@ class User
     /**
      * Return the list of streams owned by the user.
      *
+     * @see Stream::listByUser
+     *
+     * @param array{
+     *     'is_private'?: bool,
+     *     'with_has_unread_links'?: bool,
+     * } $options
+     *
      * @return Stream[]
      */
-    public function streams(): array
+    public function streams(array $options = []): array
     {
-        return $this->memoize('streams', function (): array {
-            $streams = Stream::listByUser($this);
+        $is_private = $options['is_private'] ?? true;
+        $with_has_unread_links = $options['with_has_unread_links'] ?? true;
+
+        $key = sprintf('streams_%d_%d', $is_private, $with_has_unread_links);
+
+        return $this->memoize($key, function () use ($options): array {
+            $streams = Stream::listByUser($this, $options);
 
             return utils\Sorter::localeSort($streams, 'name');
         });

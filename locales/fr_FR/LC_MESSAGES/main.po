@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-08-21 16:48+0200\n"
-"PO-Revision-Date: 2026-08-21 16:48+0200\n"
+"POT-Creation-Date: 2026-08-21 17:28+0200\n"
+"PO-Revision-Date: 2026-08-21 17:28+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -717,8 +717,8 @@ msgstr "privée"
 
 #: views/collections/_collection.html.twig:52
 #: views/collections/_collection_follow.html.twig:24
-#: views/collections/_details.html.twig:15 views/streams/show.html.twig:81
-#: views/streams/sources/_selector.html.twig:32
+#: views/collections/_details.html.twig:15 views/streams/_stream.html.twig:12
+#: views/streams/show.html.twig:81 views/streams/sources/_selector.html.twig:32
 #: views/streams/sources/_source.html.twig:67
 msgid "Publication frequency"
 msgstr "Fréquence de publication"
@@ -3097,6 +3097,27 @@ msgstr "Vous n’avez encore partagé aucun lien."
 msgid "This user didn’t share any links yet."
 msgstr "Cet·te utilisateur·ice n’a pas encore partagé de lien."
 
+#: views/profiles/streams/index.html.twig:3
+#: views/profiles/streams/index.html.twig:7
+#, php-format
+msgid "Streams of %s"
+msgstr "Fils de %s"
+
+#: views/profiles/streams/index.html.twig:20
+#, php-format
+msgid "%s stream"
+msgid_plural "%s streams"
+msgstr[0] "%s fil"
+msgstr[1] "%s fils"
+
+#: views/profiles/streams/index.html.twig:32
+msgid "You didn’t share any public streams yet."
+msgstr "Vous n’avez encore partagé aucun fil public."
+
+#: views/profiles/streams/index.html.twig:36
+msgid "This user didn’t share any public streams yet."
+msgstr "Cet·te utilisateur·ice n’a pas encore partagé de fil public."
+
 #: views/registrations/new.html.twig:3 views/registrations/new.html.twig:11
 #: views/registrations/new.html.twig:24
 msgid "Registration"
@@ -3290,8 +3311,8 @@ msgstr ""
 "Les collections et les flux que vous suivez alimentent votre journal et vos "
 "fils."
 
-#: views/sources/index.html.twig:65 views/streams/show.html.twig:90
-#: views/streams/sources/_selector.html.twig:40
+#: views/sources/index.html.twig:65 views/streams/_stream.html.twig:21
+#: views/streams/show.html.twig:90 views/streams/sources/_selector.html.twig:40
 #: views/streams/sources/index.html.twig:49
 #, php-format
 msgid "%d source"

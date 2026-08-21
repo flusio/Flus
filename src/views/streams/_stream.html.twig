@@ -1,0 +1,25 @@
+<div
+    class="stream"
+    style="background-image: url('{{ url_media('covers', stream.image_filename, 'stream-card.png') }}');"
+    data-color-scheme="dark"
+>
+    <a class="stream__body flow" href="{{ url('stream', { id: stream.id }) }}">
+        <div class="stream__title">
+            {{ stream.name }}
+        </div>
+
+        <p class="stack stack--gap-small">
+            <span title="{{ t('Publication frequency') }}">
+                {{ icon('frequency') }}
+                {{ stream.publicationFrequencyPerYear({ context_user: app.user }) | format_publication_frequency }}
+            </span>
+
+            {% set sources = stream.sources({ context_user: app.user }) %}
+
+            <span>
+                {{ icon('feed') }}
+                {{ t('%d source', '%d sources', sources | length, [sources | length]) }}
+            </span>
+        </p>
+    </a>
+</div>
