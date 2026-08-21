@@ -89,11 +89,65 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, '7 links per day');
     }
 
-    public function testIndexRedirectsIfNotConnected(): void
+    public function testIndexRendersCorrectlyIfPublicAndNotOwned(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+            'is_public' => true,
+        ]);
+        /** @var string */
+        $source_name = $this->fake('words', 3, true);
+        /** @var string */
+        $feed_url = $this->fake('url');
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'name' => $source_name,
+            'feed_site_url' => $feed_url,
+            'is_public' => true,
+        ]);
+        $stream->addSource($source);
+
+        $response = $this->appRun('GET', "/streams/{$stream->id}/sources");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $source_name);
+        $this->assertResponseTemplateName($response, 'streams/sources/index.html.twig');
+    }
+
+    public function testIndexRendersCorrectlyIfPublicAndNotConnected(): void
     {
         $user = UserFactory::create();
         $stream = StreamFactory::create([
             'user_id' => $user->id,
+            'is_public' => true,
+        ]);
+        /** @var string */
+        $source_name = $this->fake('words', 3, true);
+        /** @var string */
+        $feed_url = $this->fake('url');
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'name' => $source_name,
+            'feed_site_url' => $feed_url,
+            'is_public' => true,
+        ]);
+        $stream->addSource($source);
+
+        $response = $this->appRun('GET', "/streams/{$stream->id}/sources");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $source_name);
+        $this->assertResponseTemplateName($response, 'streams/sources/index.html.twig');
+    }
+
+    public function testIndexRedirectsIfPrivateAndNotConnected(): void
+    {
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+            'is_public' => false,
         ]);
 
         $response = $this->appRun('GET', "/streams/{$stream->id}/sources");
@@ -116,6 +170,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         $stream = StreamFactory::create([
             'user_id' => $other_user->id,
+            'is_public' => false,
         ]);
 
         $response = $this->appRun('GET', "/streams/{$stream->id}/sources");

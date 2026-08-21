@@ -24,7 +24,7 @@ class Sources extends BaseController
      *     On success.
      *
      * @throws auth\MissingCurrentUserError
-     *     If the user is not connected.
+     *     If the stream requires the users to be logged in while they are not.
      * @throws \Minz\Errors\MissingRecordError
      *     If the stream doesn't exist.
      * @throws auth\AccessDeniedError
@@ -32,10 +32,14 @@ class Sources extends BaseController
      */
     public function index(Request $request): Response
     {
-        $user = auth\CurrentUser::require();
+        $user = auth\CurrentUser::get();
         $stream = models\Stream::requireFromRequest($request);
 
-        auth\Access::require($user, 'view', $stream);
+        if ($user) {
+            auth\Access::require($user, 'view', $stream);
+        } elseif (!auth\Access::can($user, 'view', $stream)) {
+            auth\CurrentUser::require();
+        }
 
         $sources = $stream->sources([
             'context_user' => $user,
@@ -43,7 +47,8 @@ class Sources extends BaseController
 
         models\collections\Preloader::for($sources)
             ->publishers()
-            ->countStreamsFor($user);
+            ->countStreamsFor($user)
+            ->followsFor($user);
 
         return Response::ok('streams/sources/index.html.twig', [
             'stream' => $stream,

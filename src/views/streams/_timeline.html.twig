@@ -26,29 +26,31 @@
 
                             <div class="group__separator"></div>
 
-                            {% embed 'components/popup.html.twig' with {
-                                opener_class: 'button button--icon-mobile',
-                                position: 'right',
-                            } %}
-                                {% block opener %}
-                                    {{ icon('menu') }}
+                            {% if app.user %}
+                                {% embed 'components/popup.html.twig' with {
+                                    opener_class: 'button button--icon-mobile',
+                                    position: 'right',
+                                } %}
+                                    {% block opener %}
+                                        {{ icon('menu') }}
 
-                                    <span class="no-mobile">
-                                        {{ t('Actions') }}
-                                    </span>
-                                {% endblock %}
+                                        <span class="no-mobile">
+                                            {{ t('Actions') }}
+                                        </span>
+                                    {% endblock %}
 
-                                {% block items %}
-                                    {{ include('streams/_popup_actions.html.twig', {
-                                        heading: t('Actions on the day'),
-                                        params: {
-                                            at: date_group.date.format('Y-m-d'),
-                                            days: 1,
-                                            source: stream_view.source ? stream_view.source.id : '',
-                                        },
-                                    }) }}
-                                {% endblock %}
-                            {% endembed %}
+                                    {% block items %}
+                                        {{ include('streams/_popup_actions.html.twig', {
+                                            heading: t('Actions on the day'),
+                                            params: {
+                                                at: date_group.date.format('Y-m-d'),
+                                                days: 1,
+                                                source: stream_view.source ? stream_view.source.id : '',
+                                            },
+                                        }) }}
+                                    {% endblock %}
+                                {% endembed %}
+                            {% endif %}
                         </header>
 
                         <div class="group__body flow">
@@ -78,29 +80,31 @@
                                             {{ t('%s link', '%s links', source_group.links | length, [source_group.links | length]) }}
                                         </span>
 
-                                        {% embed 'components/popup.html.twig' with {
-                                            opener_class: 'button button--icon button--ghost',
-                                        } %}
-                                            {% block opener %}
-                                                {{ icon('menu') }}
+                                        {% if app.user %}
+                                            {% embed 'components/popup.html.twig' with {
+                                                opener_class: 'button button--icon button--ghost',
+                                            } %}
+                                                {% block opener %}
+                                                    {{ icon('menu') }}
 
-                                                <span class="sr-only">
-                                                    {{ t('Actions') }}
-                                                </span>
-                                            {% endblock %}
+                                                    <span class="sr-only">
+                                                        {{ t('Actions') }}
+                                                    </span>
+                                                {% endblock %}
 
-                                            {% block items %}
-                                                {{ include('streams/_popup_actions.html.twig', {
-                                                    heading: t('Actions on the feed'),
-                                                    params: {
-                                                        at: date_group.date.format('Y-m-d'),
-                                                        days: 1,
-                                                        source: source_group.source.id,
-                                                    },
-                                                    preserve_scroll: true,
-                                                }) }}
-                                            {% endblock %}
-                                        {% endembed %}
+                                                {% block items %}
+                                                    {{ include('streams/_popup_actions.html.twig', {
+                                                        heading: t('Actions on the feed'),
+                                                        params: {
+                                                            at: date_group.date.format('Y-m-d'),
+                                                            days: 1,
+                                                            source: source_group.source.id,
+                                                        },
+                                                        preserve_scroll: true,
+                                                    }) }}
+                                                {% endblock %}
+                                            {% endembed %}
+                                        {% endif %}
                                     </div>
 
                                     <div class="source-group__body flow flow--smaller">
@@ -120,28 +124,30 @@
                 {% endfor %}
             </div>
 
-            <div class="text--center">
-                {% embed 'components/popup.html.twig' with {
-                    opener_class: 'button button--primary button--big',
-                    drop_up: true,
-                } %}
-                    {% block opener %}
-                        {{ icon('menu') }}
-                        {{ t('Actions') }}
-                    {% endblock %}
+            {% if app.user %}
+                <div class="text--center">
+                    {% embed 'components/popup.html.twig' with {
+                        opener_class: 'button button--primary button--big',
+                        drop_up: true,
+                    } %}
+                        {% block opener %}
+                            {{ icon('menu') }}
+                            {{ t('Actions') }}
+                        {% endblock %}
 
-                    {% block items %}
-                        {{ include('streams/_popup_actions.html.twig', {
-                            heading: t('Actions on the links'),
-                            params: {
-                                at: stream_view.at.format('Y-m-d'),
-                                days: stream_view.days,
-                                source: stream_view.source ? stream_view.source.id : '',
-                            },
-                        }) }}
-                    {% endblock %}
-                {% endembed %}
-            </div>
+                        {% block items %}
+                            {{ include('streams/_popup_actions.html.twig', {
+                                heading: t('Actions on the links'),
+                                params: {
+                                    at: stream_view.at.format('Y-m-d'),
+                                    days: stream_view.days,
+                                    source: stream_view.source ? stream_view.source.id : '',
+                                },
+                            }) }}
+                        {% endblock %}
+                    {% endembed %}
+                </div>
+            {% endif %}
         </div>
     {% else %}
         <p class="panel panel--grey panel--rounded panel--larger text--bolder text--center">

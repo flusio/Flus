@@ -37,7 +37,7 @@ class Sources extends BaseController
         models\collections\Preloader::for($sources)
             ->publishers()
             ->countStreamsFor($user)
-            ->timeFiltersFor($user);
+            ->followsFor($user);
 
         return Response::ok('sources/index.html.twig', [
             'sources' => $sources,

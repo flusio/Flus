@@ -11,11 +11,12 @@
     min-width: 0;
 
     flex: 1 1 auto;
+}
 
-    /* The right edge is always marked, to separate the views from the
-     * actions even when the strip doesn't overflow. The line coincides with
-     * the one drawn by the scroller on overflow, so the shadow fades in over
-     * it seamlessly. */
+.views__scroller:not(:last-child) {
+    /* The right edge is marked to separate the views from the actions even when
+     * the strip doesn't overflow. The line coincides with the one drawn by the
+     * scroller on overflow, so the shadow fades in over it seamlessly. */
     box-shadow: inset -1px 0 0 var(--scroller-color-line);
 }
 

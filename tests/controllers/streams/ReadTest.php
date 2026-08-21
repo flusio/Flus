@@ -448,6 +448,34 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($user->hasRead($link), 'The link should not be read.');
     }
 
+    public function testCreateWorksIfStreamIsPublicAndNotOwned(): void
+    {
+        $date = new \DateTimeImmutable('2024-03-25');
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+            'is_public' => true,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link], at: $date);
+        $stream->addSource($source);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/read", [
+            'csrf_token' => $this->csrfToken(forms\streams\MarkStreamAsRead::class),
+            'at' => $date->format('Y-m-d'),
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertTrue($user->hasRead($link), 'The link should be read.');
+    }
+
     public function testCreateFailsIfStreamIsInaccessible(): void
     {
         $date = new \DateTimeImmutable('2024-03-25');
@@ -455,6 +483,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         $stream = StreamFactory::create([
             'user_id' => $other_user->id,
+            'is_public' => false,
         ]);
         $source = CollectionFactory::create([
             'type' => 'feed',
@@ -600,6 +629,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         $stream = StreamFactory::create([
             'user_id' => $other_user->id,
+            'is_public' => false,
         ]);
         $source = CollectionFactory::create([
             'type' => 'feed',
@@ -745,6 +775,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         $stream = StreamFactory::create([
             'user_id' => $other_user->id,
+            'is_public' => false,
         ]);
         $source = CollectionFactory::create([
             'type' => 'feed',

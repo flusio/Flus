@@ -73,6 +73,19 @@
     <div>
         <input
             type="checkbox"
+            id="is_public"
+            name="is_public"
+            {{ form.is_public ? 'checked' : '' }}
+        >
+
+        <label for="is_public">
+            {{ t('Show the stream publicly') }}
+        </label>
+    </div>
+
+    <div>
+        <input
+            type="checkbox"
             id="display-unread-in-sidenav"
             name="display_unread_in_sidenav"
             aria-describedby="display-unread-in-sidenav-caption"

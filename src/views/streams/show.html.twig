@@ -16,8 +16,20 @@
     {{ include('layouts/_header.html.twig', { page: 'stream', tab: 'reading' }) }}
 {% endblock %}
 
+{% block opengraph %}
+    {{ include('layouts/_opengraph.html.twig', {
+        title: stream.name,
+        description: t('A stream created by %s on %s.', [stream.owner.username, app.brand]),
+        locale: stream.owner.locale ?? app.locale,
+        url: url_full('stream', { id: stream.id }),
+        image: url_media_full('covers', stream.image_filename, 'stream-card.png'),
+    }) }}
+{% endblock %}
+
 {% block layout_sidenav %}
-    {{ include('layouts/_sidenav.html.twig', { navigation: reading_navigation(current: stream.id) }) }}
+    {% if app.user %}
+        {{ include('layouts/_sidenav.html.twig', { navigation: reading_navigation(current: stream.id) }) }}
+    {% endif %}
 {% endblock %}
 
 {% block back %}
@@ -58,6 +70,12 @@
 
         <div class="col--extend flow">
             <h1 class="text--break">{{ stream.name }}</h1>
+
+            <p>
+                <span class="badge badge--accent badge--border">
+                    {{ stream.is_public ? t('public') : t('private') }}
+                </span>
+            </p>
 
             <p class="stack stack--gap">
                 <span title="{{ t('Publication frequency') }}">

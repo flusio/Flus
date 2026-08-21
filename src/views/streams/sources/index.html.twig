@@ -50,11 +50,13 @@
             </p>
 
             <div class="panel panel--large panel--rounded flow flow--large">
-                {{ include('sources/_bulk_bar.html.twig') }}
+                {% if can(app.user, 'update', stream) %}
+                    {{ include('sources/_bulk_bar.html.twig') }}
+                {% endif %}
 
                 <div class="flow">
                     {% for source in sources %}
-                        {{ include('sources/_source.html.twig', { selectable: true }) }}
+                        {{ include('sources/_source.html.twig', { selectable: can(app.user, 'update', stream) }) }}
                     {% endfor %}
                 </div>
 

@@ -423,26 +423,42 @@ class Collection
     }
 
     /**
+     * Return the follow of the given user on this collection, or null if the
+     * user doesn't follow it.
+     */
+    public function followByUser(User $user): ?FollowedCollection
+    {
+        return $this->memoize("follow_{$user->id}", function () use ($user): ?FollowedCollection {
+            $follows = FollowedCollection::listByUserAndCollections($user, [$this]);
+            return $follows[$this->id] ?? null;
+        });
+    }
+
+    /**
+     * Set the follow of a user without querying the database.
+     *
+     * @see collections\Preloader
+     */
+    public function preloadFollowByUser(User $user, ?FollowedCollection $follow): void
+    {
+        $this->memoizeValue("follow_{$user->id}", $follow);
+    }
+
+    /**
      * Return the time filter applied by the given user to this collection, or
      * null if the user doesn't follow it.
      */
     public function timeFilterByUser(User $user): ?string
     {
-        return $this->memoize("time_filter_{$user->id}", function () use ($user): ?string {
-            $follows = FollowedCollection::listByUserAndCollections($user, [$this]);
-            $follow = $follows[$this->id] ?? null;
-            return $follow?->time_filter;
-        });
+        return $this->followByUser($user)?->time_filter;
     }
 
     /**
-     * Set the time filter of a user without querying the database.
-     *
-     * @see collections\Preloader
+     * Return whether the given user follows this collection.
      */
-    public function preloadTimeFilterByUser(User $user, ?string $time_filter): void
+    public function isFollowedBy(User $user): bool
     {
-        $this->memoizeValue("time_filter_{$user->id}", $time_filter);
+        return $this->followByUser($user) !== null;
     }
 
     /**

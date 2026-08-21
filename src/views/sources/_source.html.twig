@@ -1,7 +1,14 @@
 {% set selectable = selectable ?? false %}
 
-{% set count_streams = source.countStreamsByUser(app.user) %}
-{% set time_filter = source.timeFilterByUser(app.user) %}
+{% set is_followed = app.user ? source.isFollowedBy(app.user) : false %}
+
+{% if is_followed %}
+    {% set count_streams = source.countStreamsByUser(app.user) %}
+    {% set time_filter = source.timeFilterByUser(app.user) %}
+{% else %}
+    {% set count_streams = null %}
+    {% set time_filter = null %}
+{% endif %}
 
 {# The time filter is compared to what Flus suggests for this publication rate:
  # a source is flagged as soon as it diverges. #}
@@ -108,16 +115,18 @@
     <div class="source__actions cols cols--always cols--center cols--gap-smaller">
         <div class="col--extend"></div>
 
-        <button
-            data-controller="modal-opener"
-            data-action="modal-opener#fetch focus#remember"
-            data-modal-opener-href-value="{{ url('edit collection follow', { id: source.id }) }}"
-            aria-haspopup="dialog"
-            aria-controls="modal"
-        >
-            {{ icon('slider') }}
-            {{ t('Manage the subscription') }}
-        </button>
+        {% if is_followed %}
+            <button
+                data-controller="modal-opener"
+                data-action="modal-opener#fetch focus#remember"
+                data-modal-opener-href-value="{{ url('edit collection follow', { id: source.id }) }}"
+                aria-haspopup="dialog"
+                aria-controls="modal"
+            >
+                {{ icon('slider') }}
+                {{ t('Manage the subscription') }}
+            </button>
+        {% endif %}
 
         {% embed 'components/popup.html.twig' with {
             opener_class: 'button button--icon',
@@ -146,22 +155,24 @@
                     icon: 'feed',
                 ) }}
 
-                {{ item.separator() }}
+                {% if is_followed %}
+                    {{ item.separator() }}
 
-                {# Unfollowing deletes the follow, which removes the source from
-                 # the streams as well: better warn the user. #}
-                {{ item.action(
-                    url: url('unfollow collection', { id: source.id }),
-                    label: t('Unfollow'),
-                    icon: 'disconnect',
-                    csrf: 'collections\\UnfollowCollection',
-                    confirm: count_streams > 0 ? t(
-                        'Are you sure that you want to unfollow this source? It will be removed from %d stream.',
-                        'Are you sure that you want to unfollow this source? It will be removed from %d streams.',
-                        count_streams,
-                        [count_streams],
-                    ) : '',
-                ) }}
+                    {# Unfollowing deletes the follow, which removes the source from
+                     # the streams as well: better warn the user. #}
+                    {{ item.action(
+                        url: url('unfollow collection', { id: source.id }),
+                        label: t('Unfollow'),
+                        icon: 'disconnect',
+                        csrf: 'collections\\UnfollowCollection',
+                        confirm: count_streams > 0 ? t(
+                            'Are you sure that you want to unfollow this source? It will be removed from %d stream.',
+                            'Are you sure that you want to unfollow this source? It will be removed from %d streams.',
+                            count_streams,
+                            [count_streams],
+                        ) : '',
+                    ) }}
+                {% endif %}
             {% endblock %}
         {% endembed %}
     </div>

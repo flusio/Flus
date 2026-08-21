@@ -336,6 +336,90 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'value="a very specific query"');
     }
 
+    public function testShowRendersCorrectlyIfPublicAndNotOwned(): void
+    {
+        $this->login();
+        $other_user = UserFactory::create();
+        /** @var string */
+        $link_title = $this->fake('words', 3, true);
+        $feed = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link = LinkFactory::create([
+            'user_id' => $feed->user_id,
+            'title' => $link_title,
+            'is_hidden' => false,
+        ]);
+        $feed->addLinks([$link], at: \Minz\Time::now());
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+            'is_public' => true,
+        ]);
+        $stream->addSource($feed);
+
+        $response = $this->appRun('GET', "/streams/{$stream->id}");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $link_title);
+        $this->assertResponseTemplateName($response, 'streams/show.html.twig');
+    }
+
+    public function testShowRendersCorrectlyIfPublicAndNotConnected(): void
+    {
+        $user = UserFactory::create();
+        /** @var string */
+        $link_title = $this->fake('words', 3, true);
+        $feed = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link = LinkFactory::create([
+            'user_id' => $feed->user_id,
+            'title' => $link_title,
+            'is_hidden' => false,
+        ]);
+        $feed->addLinks([$link], at: \Minz\Time::now());
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+            'is_public' => true,
+        ]);
+        $stream->addSource($feed);
+
+        $response = $this->appRun('GET', "/streams/{$stream->id}");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $link_title);
+        $this->assertResponseTemplateName($response, 'streams/show.html.twig');
+    }
+
+    public function testShowRedirectsIfPrivateAndNotConnected(): void
+    {
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+            'is_public' => false,
+        ]);
+
+        $response = $this->appRun('GET', "/streams/{$stream->id}");
+
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Fstreams%2F{$stream->id}");
+    }
+
+    public function testShowFailsIfPrivateAndNotOwned(): void
+    {
+        $this->login();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+            'is_public' => false,
+        ]);
+
+        $response = $this->appRun('GET', "/streams/{$stream->id}");
+
+        $this->assertResponseCode($response, 403);
+    }
+
     public function testShowFailsIfStreamDoesNotExist(): void
     {
         $this->login();
@@ -400,6 +484,7 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'name' => 'Old name',
             'description' => 'Old description',
+            'is_public' => false,
         ]);
         /** @var string */
         $new_name = $this->fake('words', 3, true);
@@ -410,12 +495,14 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
             'csrf_token' => $this->csrfToken(forms\streams\Stream::class),
             'name' => $new_name,
             'description' => $new_description,
+            'is_public' => true,
         ]);
 
         $this->assertResponseCode($response, 302, "/streams/{$stream->id}/edit");
         $stream = $stream->reload();
         $this->assertSame($new_name, $stream->name);
         $this->assertSame($new_description, $stream->description);
+        $this->assertTrue($stream->is_public);
     }
 
     public function testUpdateDisablesDisplayUnreadInSidenav(): void

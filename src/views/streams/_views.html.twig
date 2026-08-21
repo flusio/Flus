@@ -20,57 +20,61 @@
                     </a>
                 {% endfor %}
 
-                <button
-                    type="button"
-                    id="stream-view-new"
-                    class="views__view views__view--new"
-                    data-controller="modal-opener"
-                    data-action="modal-opener#fetch"
-                    data-modal-opener-href-value="{{ url('new stream view', { id: stream.id }) }}"
-                    aria-haspopup="dialog"
-                    aria-controls="modal"
-                >
-                    {{ icon('plus') }}
-                    {{ t('New view') }}
-                </button>
-            {% endblock %}
-        {% endembed %}
-
-        {% embed 'components/popup.html.twig' with {
-            position: 'right',
-            opener_class: 'button button--icon',
-            tooltip: t('View actions'),
-        } %}
-            {% block opener %}
-                {{ icon('menu') }}
-
-                <span class="sr-only">{{ t('View actions') }}</span>
-            {% endblock %}
-
-            {% block items %}
-                {% import _self as item %}
-
-                {{ item.modal(
-                    url: url('edit stream view', { id: stream.id, view_id: stream_view.view.routeId }),
-                    label: t('Rename the view'),
-                    icon: 'pencil',
-                ) }}
-
-                {% if stream_view.view.isPersisted %}
-                    {{ item.separator() }}
-
-                    {{ item.action(
-                        url: url('delete stream view', { id: stream.id, view_id: stream_view.view.routeId }),
-                        label: stream_view.view.is_default ? t('Reset the view') : t('Delete the view'),
-                        icon: 'trash',
-                        csrf: 'views\\DeleteView',
-                        confirm: stream_view.view.is_default
-                            ? t('Are you sure that you want to reset the main view?')
-                            : t('Are you sure that you want to delete this view?'),
-                    ) }}
+                {% if can(app.user, 'update', stream) %}
+                    <button
+                        type="button"
+                        id="stream-view-new"
+                        class="views__view views__view--new"
+                        data-controller="modal-opener"
+                        data-action="modal-opener#fetch"
+                        data-modal-opener-href-value="{{ url('new stream view', { id: stream.id }) }}"
+                        aria-haspopup="dialog"
+                        aria-controls="modal"
+                    >
+                        {{ icon('plus') }}
+                        {{ t('New view') }}
+                    </button>
                 {% endif %}
             {% endblock %}
         {% endembed %}
+
+        {% if can(app.user, 'update', stream) %}
+            {% embed 'components/popup.html.twig' with {
+                position: 'right',
+                opener_class: 'button button--icon',
+                tooltip: t('View actions'),
+            } %}
+                {% block opener %}
+                    {{ icon('menu') }}
+
+                    <span class="sr-only">{{ t('View actions') }}</span>
+                {% endblock %}
+
+                {% block items %}
+                    {% import _self as item %}
+
+                    {{ item.modal(
+                        url: url('edit stream view', { id: stream.id, view_id: stream_view.view.routeId }),
+                        label: t('Rename the view'),
+                        icon: 'pencil',
+                    ) }}
+
+                    {% if stream_view.view.isPersisted %}
+                        {{ item.separator() }}
+
+                        {{ item.action(
+                            url: url('delete stream view', { id: stream.id, view_id: stream_view.view.routeId }),
+                            label: stream_view.view.is_default ? t('Reset the view') : t('Delete the view'),
+                            icon: 'trash',
+                            csrf: 'views\\DeleteView',
+                            confirm: stream_view.view.is_default
+                                ? t('Are you sure that you want to reset the main view?')
+                                : t('Are you sure that you want to delete this view?'),
+                        ) }}
+                    {% endif %}
+                {% endblock %}
+            {% endembed %}
+        {% endif %}
     </div>
 
     <form
@@ -235,61 +239,63 @@
                 </div>
             </div>
 
-            <div class="filters__section">
-                <div class="cols cols--gap-small cols--center">
-                    <p class="col--size2 text--bold" id="stream-filter-status-label">
-                        {{ t('Reading status') }}
-                    </p>
+            {% if app.user %}
+                <div class="filters__section">
+                    <div class="cols cols--gap-small cols--center">
+                        <p class="col--size2 text--bold" id="stream-filter-status-label">
+                            {{ t('Reading status') }}
+                        </p>
 
-                    <div class="col--size10 flow flow--small">
-                        <div
-                            class="stack stack--gap-small"
-                            role="group"
-                            aria-labelledby="stream-filter-status-label"
-                        >
-                            {% for status, label in {
-                                'all': t('All'),
-                                'unread': t('Unread'),
-                                'read-later': t('To read'),
-                                'read': t('Links read'),
-                            } %}
-                                <div class="filters__option">
-                                    <button
-                                        type="button"
-                                        value="{{ status }}"
-                                        aria-pressed="{{ stream_view.isStatusSelected(status) ? 'true' : 'false' }}"
-                                        data-stream-target="status"
-                                        data-action="stream#selectStatus"
+                        <div class="col--size10 flow flow--small">
+                            <div
+                                class="stack stack--gap-small"
+                                role="group"
+                                aria-labelledby="stream-filter-status-label"
+                            >
+                                {% for status, label in {
+                                    'all': t('All'),
+                                    'unread': t('Unread'),
+                                    'read-later': t('To read'),
+                                    'read': t('Links read'),
+                                } %}
+                                    <div class="filters__option">
+                                        <button
+                                            type="button"
+                                            value="{{ status }}"
+                                            aria-pressed="{{ stream_view.isStatusSelected(status) ? 'true' : 'false' }}"
+                                            data-stream-target="status"
+                                            data-action="stream#selectStatus"
+                                        >
+                                            {{ label }}
+                                        </button>
+                                    </div>
+                                {% endfor %}
+
+                                <div class="cols cols--always cols--center">
+                                    {# A checkbox submits nothing when unchecked: this hidden input
+                                     # makes "with_dismissed" always present, so that its absence can
+                                     # never pass for "unchecked". It must come first, as the later
+                                     # value is the one that wins. #}
+                                    <input type="hidden" name="with_dismissed" value="">
+
+                                    <input
+                                        type="checkbox"
+                                        id="stream-filter-with-dismissed"
+                                        name="with_dismissed"
+                                        value="1"
+                                        {{ stream_view.with_dismissed ? 'checked' : '' }}
+                                        data-action="change->stream#submit"
                                     >
-                                        {{ label }}
-                                    </button>
+
+                                    <label for="stream-filter-with-dismissed">
+                                        {{ t('Include the ignored links') }}
+                                    </label>
                                 </div>
-                            {% endfor %}
-
-                            <div class="cols cols--always cols--center">
-                                {# A checkbox submits nothing when unchecked: this hidden input
-                                 # makes "with_dismissed" always present, so that its absence can
-                                 # never pass for "unchecked". It must come first, as the later
-                                 # value is the one that wins. #}
-                                <input type="hidden" name="with_dismissed" value="">
-
-                                <input
-                                    type="checkbox"
-                                    id="stream-filter-with-dismissed"
-                                    name="with_dismissed"
-                                    value="1"
-                                    {{ stream_view.with_dismissed ? 'checked' : '' }}
-                                    data-action="change->stream#submit"
-                                >
-
-                                <label for="stream-filter-with-dismissed">
-                                    {{ t('Include the ignored links') }}
-                                </label>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            {% endif %}
 
             <div class="filters__section flow flow--small">
                 {% set sources_and_counts = stream_view.countedSources() %}
@@ -344,40 +350,42 @@
                 {% endif %}
             </div>
 
-            <div class="filters__section text--right">
-                {% if stream_view.view.isModified %}
-                    {% embed 'components/popup.html.twig' with {
-                        position: 'right',
-                    } %}
-                        {% block opener %}
+            {% if can(app.user, 'update', stream) %}
+                <div class="filters__section text--right">
+                    {% if stream_view.view.isModified %}
+                        {% embed 'components/popup.html.twig' with {
+                            position: 'right',
+                        } %}
+                            {% block opener %}
+                                {{ t('Save view') }}
+                                {{ icon('angle-down') }}
+                            {% endblock %}
+
+                            {% block items %}
+                                {% import _self as item %}
+
+                                {{ item.action(
+                                    url: url('save stream view', { id: stream.id, view_id: stream_view.view.routeId }),
+                                    label: t('Save to current view'),
+                                    icon: 'check',
+                                    form: 'save-stream-view',
+                                ) }}
+
+                                {{ item.modal(
+                                    url: url('new stream view', stream_view.view.current_url_parameters | merge({ id: stream_view.stream.id })),
+                                    label: t('Save changes to new view'),
+                                    icon: 'plus',
+                                ) }}
+                            {% endblock %}
+                        {% endembed %}
+                    {% else %}
+                        <button type="button" disabled>
                             {{ t('Save view') }}
                             {{ icon('angle-down') }}
-                        {% endblock %}
-
-                        {% block items %}
-                            {% import _self as item %}
-
-                            {{ item.action(
-                                url: url('save stream view', { id: stream.id, view_id: stream_view.view.routeId }),
-                                label: t('Save to current view'),
-                                icon: 'check',
-                                form: 'save-stream-view',
-                            ) }}
-
-                            {{ item.modal(
-                                url: url('new stream view', stream_view.view.current_url_parameters | merge({ id: stream_view.stream.id })),
-                                label: t('Save changes to new view'),
-                                icon: 'plus',
-                            ) }}
-                        {% endblock %}
-                    {% endembed %}
-                {% else %}
-                    <button type="button" disabled>
-                        {{ t('Save view') }}
-                        {{ icon('angle-down') }}
-                    </button>
-                {% endif %}
-            </div>
+                        </button>
+                    {% endif %}
+                </div>
+            {% endif %}
         </details>
 
         {# The dates, days, sources and statuses are toggle buttons: these inputs
@@ -422,18 +430,20 @@
         {% endif %}
     </form>
 
-    {# The target of the "Save to current view" button of the save menu, which
-     # lives inside the GET form above where a POST form cannot be nested. #}
-    <form
-        id="save-stream-view"
-        method="post"
-        action="{{ url('save stream view', { id: stream.id, view_id: stream_view.view.routeId }) }}"
-        data-turbo-preserve-scroll
-    >
-        {% for param_name, param_value in stream_view.view.current_url_parameters %}
-            <input type="hidden" name="{{ param_name }}" value="{{ param_value }}">
-        {% endfor %}
+    {% if can(app.user, 'update', stream) %}
+        {# The target of the "Save to current view" button of the save menu, which
+         # lives inside the GET form above where a POST form cannot be nested. #}
+        <form
+            id="save-stream-view"
+            method="post"
+            action="{{ url('save stream view', { id: stream.id, view_id: stream_view.view.routeId }) }}"
+            data-turbo-preserve-scroll
+        >
+            {% for param_name, param_value in stream_view.view.current_url_parameters %}
+                <input type="hidden" name="{{ param_name }}" value="{{ param_value }}">
+            {% endfor %}
 
-        <input type="hidden" name="csrf_token" value="{{ csrf_token('views\\SaveView') }}">
-    </form>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token('views\\SaveView') }}">
+        </form>
+    {% endif %}
 </div>

@@ -36,6 +36,7 @@ class Streams extends BaseController
      * @request_param string name
      * @request_param string description
      * @request_param bool display_unread_in_sidenav
+     * @request_param bool is_public
      * @request_param string csrf_token
      *
      * @response 400
@@ -74,7 +75,7 @@ class Streams extends BaseController
      *     On success.
      *
      * @throws auth\MissingCurrentUserError
-     *     If the user is not connected.
+     *     If the stream requires the users to be logged in while they are not.
      * @throws \Minz\Errors\MissingRecordError
      *     If the stream doesn't exist.
      * @throws auth\AccessDeniedError
@@ -82,10 +83,14 @@ class Streams extends BaseController
      */
     public function show(Request $request): Response
     {
-        $user = auth\CurrentUser::require();
+        $user = auth\CurrentUser::get();
         $stream = models\Stream::requireFromRequest($request);
 
-        auth\Access::require($user, 'view', $stream);
+        if ($user) {
+            auth\Access::require($user, 'view', $stream);
+        } elseif (!auth\Access::can($user, 'view', $stream)) {
+            auth\CurrentUser::require();
+        }
 
         $stream_view = models\StreamView::buildFromRequest($stream, $user, $request);
 
@@ -127,6 +132,7 @@ class Streams extends BaseController
      * @request_param string name
      * @request_param string description
      * @request_param bool display_unread_in_sidenav
+     * @request_param bool is_public
      * @request_param string csrf_token
      *
      * @response 400

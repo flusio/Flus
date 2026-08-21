@@ -12,6 +12,10 @@ class StreamsAccess
 {
     public static function canView(?models\User $user, models\Stream $stream): bool
     {
+        if ($stream->is_public) {
+            return true;
+        }
+
         return $user && $user->id === $stream->user_id;
     }
 

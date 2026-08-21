@@ -21,7 +21,7 @@ use App\utils\Sorter;
  *     Preloader::for($sources)
  *         ->publishers()
  *         ->countStreamsFor($user)
- *         ->timeFiltersFor($user);
+ *         ->followsFor($user);
  *
  * The methods taking a user accept a null one, so that they can be chained
  * without condition when the current user is optional.
@@ -121,9 +121,9 @@ class Preloader
     }
 
     /**
-     * Preload the time filters applied by the given user to the collections.
+     * Preload the follows of the given user on the collections.
      */
-    public function timeFiltersFor(?User $user): self
+    public function followsFor(?User $user): self
     {
         if (!$user) {
             return $this;
@@ -132,8 +132,7 @@ class Preloader
         $follows = FollowedCollection::listByUserAndCollections($user, $this->collections);
 
         foreach ($this->collections as $collection) {
-            $follow = $follows[$collection->id] ?? null;
-            $collection->preloadTimeFilterByUser($user, $follow?->time_filter);
+            $collection->preloadFollowByUser($user, $follows[$collection->id] ?? null);
         }
 
         return $this;

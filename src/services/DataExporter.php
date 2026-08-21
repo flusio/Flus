@@ -101,7 +101,7 @@ class DataExporter
         $collections = $user->followedCollections();
         $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
 
-        models\collections\Preloader::for($collections)->timeFiltersFor($user);
+        models\collections\Preloader::for($collections)->followsFor($user);
 
         $view = new \Minz\Template\Twig('collections/followed.opml.xml.twig', [
             'user' => $user,

@@ -122,7 +122,7 @@ class PreloaderTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(Preloader::class, $preloader);
     }
 
-    public function testTimeFiltersForPreloadsTheTimeFilterOfTheFollow(): void
+    public function testFollowsForPreloadsTheTimeFilterOfTheFollow(): void
     {
         $user = UserFactory::create();
         $collection = CollectionFactory::create([
@@ -133,26 +133,26 @@ class PreloaderTest extends \PHPUnit\Framework\TestCase
         $follow->time_filter = 'strict';
         $follow->save();
 
-        Preloader::for([$collection])->timeFiltersFor($user);
+        Preloader::for([$collection])->followsFor($user);
 
         $user->unfollow($collection->id);
 
         $this->assertSame('strict', $collection->timeFilterByUser($user));
     }
 
-    public function testTimeFiltersForPreloadsNullWhenTheCollectionIsNotFollowed(): void
+    public function testFollowsForPreloadsNullTimeFilterWhenTheCollectionIsNotFollowed(): void
     {
         $user = UserFactory::create();
         $collection = CollectionFactory::create([
             'type' => 'feed',
         ]);
 
-        Preloader::for([$collection])->timeFiltersFor($user);
+        Preloader::for([$collection])->followsFor($user);
 
         $this->assertNull($collection->timeFilterByUser($user));
     }
 
-    public function testTimeFiltersForDoesNotReturnTheFilterOfAnotherUser(): void
+    public function testFollowsForDoesNotReturnTheFilterOfAnotherUser(): void
     {
         $user = UserFactory::create();
         $other_user = UserFactory::create();
@@ -164,8 +164,35 @@ class PreloaderTest extends \PHPUnit\Framework\TestCase
         $follow->time_filter = 'strict';
         $follow->save();
 
-        Preloader::for([$collection])->timeFiltersFor($user);
+        Preloader::for([$collection])->followsFor($user);
 
         $this->assertNull($collection->timeFilterByUser($user));
+    }
+
+    public function testFollowsForPreloadsWhetherTheUserFollowsTheCollection(): void
+    {
+        $user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'type' => 'feed',
+        ]);
+        $user->follow($collection->id);
+
+        Preloader::for([$collection])->followsFor($user);
+
+        $user->unfollow($collection->id);
+
+        $this->assertTrue($collection->isFollowedBy($user));
+    }
+
+    public function testFollowsForPreloadsFalseWhenTheCollectionIsNotFollowed(): void
+    {
+        $user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'type' => 'feed',
+        ]);
+
+        Preloader::for([$collection])->followsFor($user);
+
+        $this->assertFalse($collection->isFollowedBy($user));
     }
 }
