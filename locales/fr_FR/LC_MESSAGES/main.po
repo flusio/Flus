@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-08-21 10:51+0200\n"
-"PO-Revision-Date: 2026-08-21 10:51+0200\n"
+"POT-Creation-Date: 2026-08-21 10:53+0200\n"
+"PO-Revision-Date: 2026-08-21 10:53+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -692,7 +692,8 @@ msgstr "aucun lien"
 #: views/collections/_collection.html.twig:26
 #: views/collections/_collection_follow.html.twig:18
 #: views/links/_pagination_count.html.twig:7 views/news/index.html.twig:26
-#: views/news/index.html.twig:95 views/streams/_timeline.html.twig:73
+#: views/news/index.html.twig:95 views/streams/_timeline.html.twig:9
+#: views/streams/_timeline.html.twig:78
 #, php-format
 msgid "%s link"
 msgid_plural "%s links"
@@ -1271,8 +1272,8 @@ msgstr "Accès"
 #: views/links/show.html.twig:241 views/news/index.html.twig:53
 #: views/news/index.html.twig:105 views/news/index.html.twig:151
 #: views/notes/_notepad.html.twig:27 views/notes/_notepad.html.twig:33
-#: views/profiles/layout.html.twig:88 views/streams/_timeline.html.twig:32
-#: views/streams/_timeline.html.twig:83 views/streams/_timeline.html.twig:125
+#: views/profiles/layout.html.twig:88 views/streams/_timeline.html.twig:37
+#: views/streams/_timeline.html.twig:88 views/streams/_timeline.html.twig:130
 #: views/streams/show.html.twig:113
 msgid "Actions"
 msgstr "Actions"
@@ -2544,19 +2545,19 @@ msgstr ""
 "Les liens ne seront plus considérés comme non lus et ne seront plus suggérés "
 "dans le journal. Êtes vous sur·es ?"
 
-#: views/news/index.html.twig:37 views/streams/_timeline.html.twig:16
+#: views/news/index.html.twig:37 views/streams/_timeline.html.twig:21
 msgid "today"
 msgstr "aujourd’hui"
 
-#: views/news/index.html.twig:39 views/streams/_timeline.html.twig:18
+#: views/news/index.html.twig:39 views/streams/_timeline.html.twig:23
 msgid "yesterday"
 msgstr "hier"
 
-#: views/news/index.html.twig:59 views/streams/_timeline.html.twig:38
+#: views/news/index.html.twig:59 views/streams/_timeline.html.twig:43
 msgid "Actions on the day"
 msgstr "Actions pour la journée"
 
-#: views/news/index.html.twig:111 views/streams/_timeline.html.twig:89
+#: views/news/index.html.twig:111 views/streams/_timeline.html.twig:94
 msgid "Actions on the feed"
 msgstr "Actions pour le flux"
 
@@ -3326,11 +3327,11 @@ msgstr ""
 "Un point s’affiche à côté du fil lorsqu’il contient des liens non lus datant "
 "des sept derniers jours."
 
-#: views/streams/_timeline.html.twig:130
+#: views/streams/_timeline.html.twig:135
 msgid "Actions on the links"
 msgstr "Actions sur les liens"
 
-#: views/streams/_timeline.html.twig:143
+#: views/streams/_timeline.html.twig:148
 msgid "There is no link matching your filters."
 msgstr "Il n’y a aucun lien qui correspond à vos filtres."
 

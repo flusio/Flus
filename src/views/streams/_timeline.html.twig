@@ -2,8 +2,13 @@
 
 {# The "aria-busy" attribute is set by the stream controller while a filter
  # change is in flight, to dim the timeline (cf. the timelines stylesheet). #}
-<div id="stream-timeline" data-stream-target="timeline">
+<div id="stream-timeline" class="flow flow--large" data-stream-target="timeline">
     {% if not links_timeline.empty %}
+        <p class="text--center text--secondary">
+            {% set count_links = links_timeline.count %}
+            {{ t('%s link', '%s links', count_links, [count_links | format_number]) }}
+        </p>
+
         <div class="flow flow--large">
             <div class="flow flow--large">
                 {% for date_group in links_timeline.datesGroups %}
