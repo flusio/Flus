@@ -100,9 +100,23 @@ export default class extends Controller {
 
         const storedState = window.localStorage.getItem(this.storageNamespace);
 
-        if (storedState === 'collapsed' || storedState === 'expanded') {
-            this.element.open = storedState === 'expanded';
+        if (storedState !== 'collapsed' && storedState !== 'expanded') {
+            return;
         }
+
+        const open = storedState === 'expanded';
+
+        if (this.element.open === open) {
+            return;
+        }
+
+        // Apply a temporary attribute to allow the CSS to know if
+        // transitions must be applied (in this case: not).
+        this.element.setAttribute('data-details-restoring', '');
+        this.element.open = open;
+        // Force reflow so CSS applies to the attribute.
+        void this.element.offsetWidth;
+        this.element.removeAttribute('data-details-restoring');
     }
 
     store () {

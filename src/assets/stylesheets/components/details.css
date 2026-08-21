@@ -28,6 +28,11 @@
     }
 }
 
+/* Don't animate the rotation if the details state is restored from localStorage. */
+[data-details-restoring] .details__chevron {
+    transition: none;
+}
+
 /* The chevron points down when the element is open, right when it is collapsed.
  * The `open` attribute is only removed at the end of the closing animation (see
  * the "details" Stimulus controller), so the state of the controller turns the
