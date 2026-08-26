@@ -69,7 +69,8 @@ class Migration202606100002DropSupportUser
         $statement = $database->prepare(<<<'SQL'
             UPDATE links SET user_id = (
                 SELECT id FROM users WHERE email = :email
-            );
+            )
+            WHERE user_id IS NULL;
         SQL);
 
         $statement->execute([
@@ -79,7 +80,8 @@ class Migration202606100002DropSupportUser
         $statement = $database->prepare(<<<'SQL'
             UPDATE collections SET user_id = (
                 SELECT id FROM users WHERE email = :email
-            );
+            )
+            WHERE user_id IS NULL;
         SQL);
 
         $statement->execute([
