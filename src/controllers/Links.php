@@ -65,7 +65,8 @@ class Links extends BaseController
             models\links\Preloader::for($links)
                 ->originsFor($user)
                 ->urlStatusesFor($user)
-                ->numberCollectionsFor($user);
+                ->numberCollectionsFor($user)
+                ->numberNotes();
 
             return Response::ok('links/search.html.twig', [
                 'links' => $links,

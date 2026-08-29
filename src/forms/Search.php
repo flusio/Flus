@@ -43,10 +43,10 @@ class Search extends BaseForm
         return $this->memoize('existing_link', function (): ?models\Link {
             $user = $this->optionAs('user', models\User::class);
 
-            return models\Link::findComputedBy([
+            return models\Link::findBy([
                 'user_id' => $user->id,
                 'url_hash' => utils\Belt::hashUrl($this->url),
-            ], ['number_notes']);
+            ]);
         });
     }
 

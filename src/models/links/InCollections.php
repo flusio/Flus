@@ -266,16 +266,6 @@ trait InCollections
             $order_by_clause = 'ORDER BY lc.created_at DESC, l.id';
         }
 
-        $number_notes_clause = '';
-        if (in_array('number_notes', $selected_computed_props)) {
-            $number_notes_clause = <<<'SQL'
-                , (
-                    SELECT COUNT(*) FROM notes m
-                    WHERE m.link_id = l.id
-                ) AS number_notes
-            SQL;
-        }
-
         $date_clause = '';
         if ($options['published_date'] !== null) {
             $date_clause = "AND lc.created_at >= :published_start AND lc.created_at <= :published_end";
@@ -309,7 +299,6 @@ trait InCollections
             SELECT
                 l.*
                 {$published_at_clause}
-                {$number_notes_clause}
             FROM links l, links_to_collections lc
 
             WHERE l.id = lc.link_id

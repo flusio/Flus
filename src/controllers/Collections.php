@@ -136,7 +136,7 @@ class Collections extends BaseController
         $topics = utils\Sorter::localeSort($topics, 'label');
 
         $links = $collection->links(
-            ['published_at', 'number_notes'],
+            ['published_at'],
             [
                 'hidden' => $can_update || $access_is_shared,
                 'offset' => $pagination->currentOffset(),
@@ -147,7 +147,8 @@ class Collections extends BaseController
         models\links\Preloader::for($links)
             ->originsFor($user)
             ->urlStatusesFor($user)
-            ->numberCollectionsFor($user);
+            ->numberCollectionsFor($user)
+            ->numberNotes();
 
         return Response::ok('collections/show.html.twig', [
             'collection' => $collection,

@@ -3,7 +3,6 @@
 namespace App\models\links;
 
 use App\models\Note;
-use Minz\Database;
 
 /**
  * Add the notes that a user can attach to a link.
@@ -15,9 +14,6 @@ use Minz\Database;
  */
 trait Annotable
 {
-    #[Database\Column(computed: true)]
-    public ?int $number_notes = null;
-
     /**
      * Return the notes attached to the current link
      *
@@ -81,17 +77,26 @@ trait Annotable
         $this->refreshTags();
     }
 
+    /**
+     * Return the number of notes attached to the current link
+     */
     public function numberNotes(): int
     {
-        if ($this->number_notes !== null) {
-            return $this->number_notes;
-        }
-
-        return $this->memoize('count_notes', function (): int {
+        return $this->memoize('number_notes', function (): int {
             return Note::countBy([
                 'link_id' => $this->id,
             ]);
         });
+    }
+
+    /**
+     * Set the number of notes without querying the database.
+     *
+     * @see Preloader
+     */
+    public function preloadNumberNotes(int $number): void
+    {
+        $this->memoizeValue('number_notes', $number);
     }
 
     /**
@@ -102,8 +107,7 @@ trait Annotable
      */
     private function unmemoizeNotes(): void
     {
-        $this->number_notes = null;
         $this->unmemoize('notes');
-        $this->unmemoize('count_notes');
+        $this->unmemoize('number_notes');
     }
 }

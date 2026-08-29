@@ -242,6 +242,26 @@ class PreloaderTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, $link->numberCollectionsForUser($user));
     }
 
+    public function testNumberNotesPreloadsTheNumbersOfNotes(): void
+    {
+        $user = UserFactory::create();
+        $link_with_two_notes = LinkFactory::create(['user_id' => $user->id]);
+        $link_with_one_note = LinkFactory::create(['user_id' => $user->id]);
+        $link_without_note = LinkFactory::create(['user_id' => $user->id]);
+        $link_with_two_notes->addNote(new models\Note($user, 'First note'));
+        $link_with_two_notes->addNote(new models\Note($user, 'Second note'));
+        $link_with_one_note->addNote(new models\Note($user, 'A note'));
+
+        $links = [$link_with_two_notes, $link_with_one_note, $link_without_note];
+        Preloader::for($links)->numberNotes();
+
+        models\Note::deleteBy(['user_id' => $user->id]);
+
+        $this->assertSame(2, $link_with_two_notes->numberNotes());
+        $this->assertSame(1, $link_with_one_note->numberNotes());
+        $this->assertSame(0, $link_without_note->numberNotes());
+    }
+
     public function testPreloadingAcceptsAnEmptyListOfLinks(): void
     {
         $user = UserFactory::create();
@@ -250,7 +270,8 @@ class PreloaderTest extends \PHPUnit\Framework\TestCase
             ->sources()
             ->collections()
             ->urlStatusesFor($user)
-            ->numberCollectionsFor($user);
+            ->numberCollectionsFor($user)
+            ->numberNotes();
 
         $this->assertInstanceOf(Preloader::class, $preloader);
     }

@@ -124,6 +124,48 @@ class Note
     }
 
     /**
+     * Return the numbers of notes attached to the given links, indexed by the
+     * ids of these links.
+     *
+     * The links without any note are absent from the returned array.
+     *
+     * @param Link[] $links
+     *
+     * @return array<string, int>
+     */
+    public static function countByLinks(array $links): array
+    {
+        if (!$links) {
+            return [];
+        }
+
+        $link_ids = array_column($links, 'id');
+        $ids_as_question_marks = array_fill(0, count($link_ids), '?');
+        $ids_as_question_marks = implode(', ', $ids_as_question_marks);
+
+        $sql = <<<SQL
+            SELECT link_id, COUNT(*) AS count
+            FROM notes
+
+            WHERE link_id IN ({$ids_as_question_marks})
+
+            GROUP BY link_id
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute($link_ids);
+
+        $counts = [];
+
+        foreach ($statement->fetchAll() as $row) {
+            $counts[$row['link_id']] = intval($row['count']);
+        }
+
+        return $counts;
+    }
+
+    /**
      * @return array<string, mixed>
      */
     public function toJson(): array

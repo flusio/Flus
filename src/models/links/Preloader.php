@@ -4,6 +4,7 @@ namespace App\models\links;
 
 use App\models\Collection;
 use App\models\Link;
+use App\models\Note;
 use App\models\UrlStatus;
 use App\models\User;
 use App\utils\OriginFormatter;
@@ -71,6 +72,20 @@ class Preloader
 
         foreach ($this->links as $link) {
             $link->preloadCollections($collections_by_link_ids[$link->id] ?? []);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Preload the number of notes attached to the links.
+     */
+    public function numberNotes(): self
+    {
+        $numbers_by_link_ids = Note::countByLinks($this->links);
+
+        foreach ($this->links as $link) {
+            $link->preloadNumberNotes($numbers_by_link_ids[$link->id] ?? 0);
         }
 
         return $this;

@@ -42,7 +42,8 @@ class Read extends BaseController
         models\links\Preloader::for($links)
             ->originsFor($user)
             ->urlStatusesFor($user)
-            ->numberCollectionsFor($user);
+            ->numberCollectionsFor($user)
+            ->numberNotes();
 
         return Response::ok('read/index.html.twig', [
             'read_source' => $read_source,

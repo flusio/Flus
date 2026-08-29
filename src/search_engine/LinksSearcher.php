@@ -48,11 +48,7 @@ class LinksSearcher
         $sql = <<<SQL
             SELECT
                 l.*,
-                l.created_at AS published_at,
-                (
-                    SELECT COUNT(*) FROM notes n
-                    WHERE n.link_id = l.id
-                ) AS number_notes
+                l.created_at AS published_at
             FROM links l
 
             WHERE l.user_id = :user_id

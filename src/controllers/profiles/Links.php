@@ -43,7 +43,7 @@ class Links extends BaseController
         $pagination_page = $request->parameters->getInteger('page', 1);
         $pagination = new utils\Pagination($number_links, 30, $pagination_page);
 
-        $links = $user->links(['published_at', 'number_notes'], [
+        $links = $user->links(['published_at'], [
             'unshared' => false,
             'tag' => $tag,
             'offset' => $pagination->currentOffset(),
@@ -52,7 +52,8 @@ class Links extends BaseController
 
         models\links\Preloader::for($links)
             ->urlStatusesFor($current_user)
-            ->numberCollectionsFor($current_user);
+            ->numberCollectionsFor($current_user)
+            ->numberNotes();
 
         return Response::ok('profiles/links/index.html.twig', [
             'user' => $user,

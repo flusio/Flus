@@ -111,7 +111,8 @@ class Bookmarks extends BaseController
         models\links\Preloader::for($links)
             ->originsFor($user)
             ->urlStatusesFor($user)
-            ->numberCollectionsFor($user);
+            ->numberCollectionsFor($user)
+            ->numberNotes();
 
         return Response::ok('bookmarks/index.html.twig', [
             'read_later_source' => $read_later_source,

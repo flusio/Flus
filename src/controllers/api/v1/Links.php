@@ -81,7 +81,7 @@ class Links extends BaseController
         $pagination = new utils\Pagination($number_links, $pagination_per_page, $pagination_page);
 
         $links = $collection->links(
-            ['published_at', 'number_notes'],
+            ['published_at'],
             [
                 'hidden' => $can_view_hidden_links,
                 'offset' => $pagination->currentOffset(),
@@ -92,7 +92,8 @@ class Links extends BaseController
         models\links\Preloader::for($links)
             ->collections()
             ->originsFor($user)
-            ->urlStatusesFor($user);
+            ->urlStatusesFor($user)
+            ->numberNotes();
 
         return Response::json(200, array_map(function (models\Link $link) use ($user): array {
             return $link->toJson(context_user: $user);
@@ -110,6 +111,12 @@ class Links extends BaseController
         $pagination = new utils\Pagination($number_links, $pagination_per_page, $pagination_page);
 
         $links = $source->links($pagination);
+
+        models\links\Preloader::for($links)
+            ->collections()
+            ->originsFor($user)
+            ->urlStatusesFor($user)
+            ->numberNotes();
 
         return Response::json(200, array_map(function (models\Link $link) use ($user): array {
             return $link->toJson(context_user: $user);

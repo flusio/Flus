@@ -159,16 +159,6 @@ trait OwnedByUser
             $order_by_clause = 'ORDER BY published_at DESC, l.id';
         }
 
-        $number_notes_clause = '';
-        if (in_array('number_notes', $selected_computed_props)) {
-            $number_notes_clause = <<<'SQL'
-                , (
-                    SELECT COUNT(*) FROM notes m
-                    WHERE m.link_id = l.id
-                ) AS number_notes
-            SQL;
-        }
-
         $visibility_clause = '';
         $join_clause = '';
         $group_by_clause = '';
@@ -206,7 +196,6 @@ trait OwnedByUser
             SELECT
                 l.*
                 {$published_at_clause}
-                {$number_notes_clause}
             FROM links l
 
             {$join_clause}

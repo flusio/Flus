@@ -99,21 +99,6 @@ class OwnedByUserTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($published_at, $links[0]->published_at);
     }
 
-    public function testListComputedByUserCanReturnNumberNotes(): void
-    {
-        $user = UserFactory::create();
-        $link = LinkFactory::create([
-            'user_id' => $user->id,
-        ]);
-        NoteFactory::create([
-            'link_id' => $link->id,
-        ]);
-
-        $links = models\Link::listComputedByUser($user, ['number_notes']);
-
-        $this->assertSame(1, $links[0]->number_notes);
-    }
-
     public function testListComputedByUserCanListSharedOnly(): void
     {
         $user = UserFactory::create();

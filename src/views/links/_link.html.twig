@@ -189,8 +189,8 @@
                     <span class="col--extend">
                         <a class="link__notepad" href="{{ url('link', { id: link.id }) }}">
                             {{ icon('notepad') }}
-                            {% if link.number_notes > 0 %}
-                                {{ t('Notepad (%s)', [link.number_notes | format_number]) }}
+                            {% if link.numberNotes > 0 %}
+                                {{ t('Notepad (%s)', [link.numberNotes | format_number]) }}
                             {% else %}
                                 {{ t('Notepad') }}
                             {% endif %}

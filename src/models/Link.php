@@ -125,59 +125,6 @@ class Link
     }
 
     /**
-     * Return a link with its computed properties.
-     *
-     * @param DatabaseCriteria $criteria
-     *     The conditions the link must match.
-     * @param string[] $selected_computed_props
-     *     The list of computed properties to return. It is mandatory to
-     *     select specific properties to avoid computing dispensable
-     *     properties.
-     */
-    public static function findComputedBy(array $criteria, array $selected_computed_props): ?self
-    {
-        // Note that publication date is usually computed by considering the
-        // date of association with a collection. Without collection, we
-        // consider its date of insertion in the database.
-        $published_at_clause = '';
-        if (in_array('published_at', $selected_computed_props)) {
-            $published_at_clause = ', l.created_at AS published_at';
-        }
-
-        $number_notes_clause = '';
-        if (in_array('number_notes', $selected_computed_props)) {
-            $number_notes_clause = <<<'SQL'
-                , (
-                    SELECT COUNT(*) FROM notes m
-                    WHERE m.link_id = l.id
-                ) AS number_notes
-            SQL;
-        }
-
-        list($where_statement, $parameters) = Database\Helper::buildWhere($criteria);
-
-        $sql = <<<SQL
-            SELECT
-                l.*
-                {$published_at_clause}
-                {$number_notes_clause}
-            FROM links l
-            WHERE {$where_statement}
-        SQL;
-
-        $database = Database::get();
-        $statement = $database->prepare($sql);
-        $statement->execute($parameters);
-
-        $result = $statement->fetch();
-        if (is_array($result)) {
-            return self::fromDatabaseRow($result);
-        } else {
-            return null;
-        }
-    }
-
-    /**
      * Set the origin of the link.
      *
      * It is useful to keep the old source_type and source_resource_id columns

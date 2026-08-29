@@ -31,7 +31,7 @@ class News extends BaseController
         $user = auth\CurrentUser::require();
 
         $news = $user->news();
-        $links = $news->links(['published_at', 'number_notes']);
+        $links = $news->links(['published_at']);
 
         models\links\Preloader::for($links)
             ->sources()
