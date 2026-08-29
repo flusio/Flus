@@ -19,6 +19,12 @@ class InactivityNotifierTest extends \PHPUnit\Framework\TestCase
         \Minz\Engine::init($router);
     }
 
+    #[\PHPUnit\Framework\Attributes\After]
+    public function resetSubscriptionConfiguration(): void
+    {
+        \App\Configuration::$application['subscriptions_enabled'] = false;
+    }
+
     public function testQueue(): void
     {
         $job = new InactivityNotifier();
@@ -129,6 +135,76 @@ class InactivityNotifierTest extends \PHPUnit\Framework\TestCase
             'last_activity_at' => \Minz\Time::ago($inactivity_months, 'months'),
             'deletion_notified_at' => $notified_at,
             'validated_at' => $validated_at,
+        ]);
+
+        $job->perform();
+
+        $user = $user->reload();
+        $this->assertNull($user->deletion_notified_at);
+        $this->assertEmailsCount(0);
+    }
+
+    public function testPerformNotifiesUsersWithOverdueSubscription(): void
+    {
+        \App\Configuration::$application['subscriptions_enabled'] = true;
+        $this->freeze();
+        $now = \Minz\Time::now();
+        $job = new InactivityNotifier();
+        $inactivity_months = 11;
+        $notified_at = null;
+        $validated_at = \Minz\Time::ago(1, 'year');
+        $subscription_expired_at = \Minz\Time::ago(1, 'month');
+        $user = UserFactory::create([
+            'last_activity_at' => \Minz\Time::ago($inactivity_months, 'months'),
+            'deletion_notified_at' => $notified_at,
+            'validated_at' => $validated_at,
+            'subscription_expired_at' => $subscription_expired_at,
+        ]);
+
+        $job->perform();
+
+        $user = $user->reload();
+        $this->assertSame($now->getTimestamp(), $user->deletion_notified_at?->getTimestamp());
+        $this->assertEmailsCount(1);
+    }
+
+    public function testPerformIgnoresUsersWithActiveSubscription(): void
+    {
+        \App\Configuration::$application['subscriptions_enabled'] = true;
+        $this->freeze();
+        $job = new InactivityNotifier();
+        $inactivity_months = 11;
+        $notified_at = null;
+        $validated_at = \Minz\Time::ago(1, 'year');
+        $subscription_expired_at = \Minz\Time::fromNow(1, 'month');
+        $user = UserFactory::create([
+            'last_activity_at' => \Minz\Time::ago($inactivity_months, 'months'),
+            'deletion_notified_at' => $notified_at,
+            'validated_at' => $validated_at,
+            'subscription_expired_at' => $subscription_expired_at,
+        ]);
+
+        $job->perform();
+
+        $user = $user->reload();
+        $this->assertNull($user->deletion_notified_at);
+        $this->assertEmailsCount(0);
+    }
+
+    public function testPerformIgnoresUsersWithExemptedSubscription(): void
+    {
+        \App\Configuration::$application['subscriptions_enabled'] = true;
+        $this->freeze();
+        $job = new InactivityNotifier();
+        $inactivity_months = 11;
+        $notified_at = null;
+        $validated_at = \Minz\Time::ago(1, 'year');
+        $subscription_expired_at = new \DateTimeImmutable('1970-01-01');
+        $user = UserFactory::create([
+            'last_activity_at' => \Minz\Time::ago($inactivity_months, 'months'),
+            'deletion_notified_at' => $notified_at,
+            'validated_at' => $validated_at,
+            'subscription_expired_at' => $subscription_expired_at,
         ]);
 
         $job->perform();

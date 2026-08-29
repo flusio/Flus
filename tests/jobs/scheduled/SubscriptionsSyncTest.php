@@ -7,6 +7,7 @@ use tests\factories\UserFactory;
 class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\InitializerHelper;
+    use \Minz\Tests\TimeHelper;
     use \tests\FakerHelper;
     use \tests\HttpHelper;
 
@@ -78,6 +79,74 @@ class SubscriptionsSyncTest extends \PHPUnit\Framework\TestCase
 
         $user = $user->reload();
         $this->assertEquals($new_expired_at, $user->subscription_expired_at);
+    }
+
+    public function testSyncResetsDeletionNotifiedAtIfSubscriptionIsRenewed(): void
+    {
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $subscriptions_host = \App\Configuration::$application['subscriptions_host'];
+        $subscriptions_sync_job = new SubscriptionsSync();
+        /** @var string */
+        $account_id = $this->fake('uuid');
+        $old_expired_at = \Minz\Time::ago(1, 'month');
+        $new_expired_at = \Minz\Time::fromNow(1, 'year');
+        $subscription_api_url = "{$subscriptions_host}/api/accounts/sync";
+        $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
+            HTTP/2 200
+            Content-type: application/json
+
+            {
+                "{$account_id}": "{$new_expired_at->format(\Minz\Database\Column::DATETIME_FORMAT)}"
+            }
+            TEXT
+        );
+        $user = UserFactory::create([
+            'subscription_account_id' => $account_id,
+            'subscription_expired_at' => $old_expired_at,
+            'deletion_notified_at' => \Minz\Time::ago(1, 'week'),
+        ]);
+
+        $subscriptions_sync_job->perform();
+
+        $user = $user->reload();
+        $this->assertEquals($new_expired_at, $user->subscription_expired_at);
+        $this->assertNull($user->deletion_notified_at);
+    }
+
+    public function testSyncKeepsDeletionNotifiedAtIfSubscriptionIsNotRenewed(): void
+    {
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $subscriptions_host = \App\Configuration::$application['subscriptions_host'];
+        $subscriptions_sync_job = new SubscriptionsSync();
+        /** @var string */
+        $account_id = $this->fake('uuid');
+        $expired_at = \Minz\Time::ago(1, 'month');
+        $deletion_notified_at = \Minz\Time::ago(1, 'week');
+        $subscription_api_url = "{$subscriptions_host}/api/accounts/sync";
+        $this->mockHttpWithResponse($subscription_api_url, <<<TEXT
+            HTTP/2 200
+            Content-type: application/json
+
+            {
+                "{$account_id}": "{$expired_at->format(\Minz\Database\Column::DATETIME_FORMAT)}"
+            }
+            TEXT
+        );
+        $user = UserFactory::create([
+            'subscription_account_id' => $account_id,
+            'subscription_expired_at' => $expired_at,
+            'deletion_notified_at' => $deletion_notified_at,
+        ]);
+
+        $subscriptions_sync_job->perform();
+
+        $user = $user->reload();
+        $this->assertEquals($expired_at, $user->subscription_expired_at);
+        $this->assertEquals($deletion_notified_at, $user->deletion_notified_at);
     }
 
     public function testSyncGetsAccountIdIfMissing(): void

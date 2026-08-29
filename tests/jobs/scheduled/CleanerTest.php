@@ -19,6 +19,12 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
     use \tests\FakerHelper;
     use \tests\HttpHelper;
 
+    #[\PHPUnit\Framework\Attributes\After]
+    public function resetSubscriptionConfiguration(): void
+    {
+        \App\Configuration::$application['subscriptions_enabled'] = false;
+    }
+
     public function testQueue(): void
     {
         $cleaner_job = new Cleaner();
@@ -206,6 +212,66 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $cleaner_job->perform();
 
         $this->assertFalse(models\User::exists($user->id));
+    }
+
+    public function testPerformDeletesInactiveAndNotifiedUsersWithOverdueSubscription(): void
+    {
+        \App\Configuration::$application['subscriptions_enabled'] = true;
+        $this->freeze();
+        $cleaner_job = new Cleaner();
+        $inactivity_months = 12;
+        $notified_months = 1;
+        $subscription_expired_at = \Minz\Time::ago(1, 'month');
+        $user = UserFactory::create([
+            'last_activity_at' => \Minz\Time::ago($inactivity_months, 'months'),
+            'deletion_notified_at' => \Minz\Time::ago($notified_months, 'months'),
+            'validated_at' => \Minz\Time::now(),
+            'subscription_expired_at' => $subscription_expired_at,
+        ]);
+
+        $cleaner_job->perform();
+
+        $this->assertFalse(models\User::exists($user->id));
+    }
+
+    public function testPerformKeepsInactiveAndNotifiedUsersWithActiveSubscription(): void
+    {
+        \App\Configuration::$application['subscriptions_enabled'] = true;
+        $this->freeze();
+        $cleaner_job = new Cleaner();
+        $inactivity_months = 12;
+        $notified_months = 1;
+        $subscription_expired_at = \Minz\Time::fromNow(1, 'month');
+        $user = UserFactory::create([
+            'last_activity_at' => \Minz\Time::ago($inactivity_months, 'months'),
+            'deletion_notified_at' => \Minz\Time::ago($notified_months, 'months'),
+            'validated_at' => \Minz\Time::now(),
+            'subscription_expired_at' => $subscription_expired_at,
+        ]);
+
+        $cleaner_job->perform();
+
+        $this->assertTrue(models\User::exists($user->id));
+    }
+
+    public function testPerformKeepsInactiveAndNotifiedUsersWithExemptedSubscription(): void
+    {
+        \App\Configuration::$application['subscriptions_enabled'] = true;
+        $this->freeze();
+        $cleaner_job = new Cleaner();
+        $inactivity_months = 12;
+        $notified_months = 1;
+        $subscription_expired_at = new \DateTimeImmutable('1970-01-01');
+        $user = UserFactory::create([
+            'last_activity_at' => \Minz\Time::ago($inactivity_months, 'months'),
+            'deletion_notified_at' => \Minz\Time::ago($notified_months, 'months'),
+            'validated_at' => \Minz\Time::now(),
+            'subscription_expired_at' => $subscription_expired_at,
+        ]);
+
+        $cleaner_job->perform();
+
+        $this->assertTrue(models\User::exists($user->id));
     }
 
     public function testPerformKeepsInactiveButNotNotifiedUsers(): void

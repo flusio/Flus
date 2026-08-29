@@ -253,6 +253,12 @@ class Subscriptions
 
             $user = $account_ids_to_users[$account_id];
             if ($user->subscription_expired_at != $expired_at) {
+                // The user may have been warned about the deletion of their
+                // account, but they renewed their subscription: make sure to
+                // forget the notification so they will be warned again if their
+                // subscription expires while still inactive.
+                $user->deletion_notified_at = null;
+
                 $user->subscription_expired_at = $expired_at;
                 $user->save();
             }

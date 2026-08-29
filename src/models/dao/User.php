@@ -139,10 +139,14 @@ trait User
 
     /**
      * Delete the inactive users that have been notified about it.
+     *
+     * If $except_subscribed is true, the users with an active subscription are
+     * not deleted.
      */
     public static function deleteInactiveAndNotified(
         \DateTimeImmutable $inactive_since,
-        \DateTimeImmutable $notified_since
+        \DateTimeImmutable $notified_since,
+        bool $except_subscribed = false,
     ): bool {
         $sql = <<<SQL
             DELETE FROM users
@@ -150,12 +154,20 @@ trait User
             AND deletion_notified_at <= :notified_since
         SQL;
 
-        $database = Database::get();
-        $statement = $database->prepare($sql);
-        return $statement->execute([
+        $parameters = [
             ':inactive_since' => $inactive_since->format(Database\Column::DATETIME_FORMAT),
             ':notified_since' => $notified_since->format(Database\Column::DATETIME_FORMAT),
-        ]);
+        ];
+
+        if ($except_subscribed) {
+            [$overdue_clause, $overdue_parameters] = self::sqlOverdueSubscription();
+            $sql .= $overdue_clause;
+            $parameters += $overdue_parameters;
+        }
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        return $statement->execute($parameters);
     }
 
     /**
@@ -184,22 +196,54 @@ trait User
     /**
      * Return the users that haven't be active since the given date.
      *
+     * If $except_subscribed is true, the users with an active subscription are
+     * not returned.
+     *
      * @return self[]
      */
-    public static function listInactiveAndNotNotified(\DateTimeImmutable $inactive_since): array
-    {
+    public static function listInactiveAndNotNotified(
+        \DateTimeImmutable $inactive_since,
+        bool $except_subscribed = false,
+    ): array {
         $sql = <<<'SQL'
             SELECT * FROM users
             WHERE last_activity_at <= :inactive_since
             AND deletion_notified_at IS NULL
         SQL;
 
+        $parameters = [
+            ':inactive_since' => $inactive_since->format(Database\Column::DATETIME_FORMAT),
+        ];
+
+        if ($except_subscribed) {
+            [$overdue_clause, $overdue_parameters] = self::sqlOverdueSubscription();
+            $sql .= $overdue_clause;
+            $parameters += $overdue_parameters;
+        }
+
         $database = Database::get();
         $statement = $database->prepare($sql);
-        $statement->execute([
-            ':inactive_since' => $inactive_since->format(Database\Column::DATETIME_FORMAT),
-        ]);
+        $statement->execute($parameters);
 
         return self::fromDatabaseRows($statement->fetchAll());
+    }
+
+    /**
+     * Return a SQL clause (and its parameters) matching the users whose
+     * subscription is overdue (i.e. neither active nor exempted).
+     *
+     * @return array{string, array<string, string>}
+     */
+    private static function sqlOverdueSubscription(): array
+    {
+        $sql = ' AND subscription_expired_at <= :now AND subscription_expired_at > :exempted_date';
+
+        $exempted_date = new \DateTimeImmutable('@0');
+        $parameters = [
+            ':now' => \Minz\Time::now()->format(Database\Column::DATETIME_FORMAT),
+            ':exempted_date' => $exempted_date->format(Database\Column::DATETIME_FORMAT),
+        ];
+
+        return [$sql, $parameters];
     }
 }

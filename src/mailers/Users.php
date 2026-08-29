@@ -120,6 +120,11 @@ class Users extends Mailer
             return null;
         }
 
+        if (\App\Configuration::areSubscriptionsEnabled() && !$user->isSubscriptionOverdue()) {
+            \Minz\Log::warning("Can’t send inactivity email to user {$user_id} (subscription is active)");
+            return null;
+        }
+
         utils\Locale::setCurrentLocale($user->locale);
 
         $email = new Mailer\Email();
