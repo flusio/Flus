@@ -476,6 +476,35 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($user->hasRead($link), 'The link should be read.');
     }
 
+    public function testCreateWorksIfStreamIsSharedWithUser(): void
+    {
+        $date = new \DateTimeImmutable('2024-03-25');
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+            'is_public' => false,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link], at: $date);
+        $stream->addSource($source);
+        $stream->shareWith($user);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/read", [
+            'csrf_token' => $this->csrfToken(forms\streams\MarkStreamAsRead::class),
+            'at' => $date->format('Y-m-d'),
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertTrue($user->hasRead($link), 'The link should be read.');
+    }
+
     public function testCreateFailsIfStreamIsInaccessible(): void
     {
         $date = new \DateTimeImmutable('2024-03-25');
@@ -622,6 +651,35 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($user->hasReadLater($link), 'The link should not be to read later.');
     }
 
+    public function testLaterWorksIfStreamIsSharedWithUser(): void
+    {
+        $date = new \DateTimeImmutable('2024-03-25');
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+            'is_public' => false,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link], at: $date);
+        $stream->addSource($source);
+        $stream->shareWith($user);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/read/later", [
+            'csrf_token' => $this->csrfToken(forms\streams\MarkStreamAsReadLater::class),
+            'at' => $date->format('Y-m-d'),
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertTrue($user->hasReadLater($link), 'The link should be to read later.');
+    }
+
     public function testLaterFailsIfStreamIsInaccessible(): void
     {
         $date = new \DateTimeImmutable('2024-03-25');
@@ -766,6 +824,35 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
         $this->assertFalse($user->hasDismissed($link), 'The link should not have been dismissed.');
+    }
+
+    public function testDismissWorksIfStreamIsSharedWithUser(): void
+    {
+        $date = new \DateTimeImmutable('2024-03-25');
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+            'is_public' => false,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link], at: $date);
+        $stream->addSource($source);
+        $stream->shareWith($user);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/dismiss", [
+            'csrf_token' => $this->csrfToken(forms\streams\MarkStreamAsDismissed::class),
+            'at' => $date->format('Y-m-d'),
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertTrue($user->hasDismissed($link), 'The link should have been dismissed.');
     }
 
     public function testDismissFailsIfStreamIsInaccessible(): void

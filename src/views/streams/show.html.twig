@@ -124,6 +124,17 @@
                 {{ t('Edit') }}
             </button>
 
+            <button
+                data-controller="modal-opener"
+                data-action="modal-opener#fetch"
+                data-modal-opener-href-value="{{ url('stream shares', { id: stream.id }) }}"
+                aria-haspopup="dialog"
+                aria-controls="modal"
+            >
+                {{ icon('users') }}
+                {{ t('Access') }}
+            </button>
+
             {% if can(app.user, 'delete', stream) %}
                 {% embed 'components/popup.html.twig' %}
                     {% block opener %}

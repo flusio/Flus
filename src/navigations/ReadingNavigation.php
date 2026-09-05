@@ -65,6 +65,19 @@ class ReadingNavigation extends BaseNavigation
             );
         }
 
+        $streams = $current_user->streams();
+        $shared_streams = $current_user->sharedStreams();
+
+        // Preload the unread dots.
+        $streams_with_unread_dot = array_filter(
+            array_merge($streams, $shared_streams),
+            function (models\Stream $stream): bool {
+                return $stream->display_unread_in_sidenav;
+            },
+        );
+
+        models\streams\Preloader::for($streams_with_unread_dot)->hasUnreadLinksFor($current_user);
+
         if ($is_alpha_enabled) {
             $new_stream_action = new ItemAction(
                 label: TwigExtension::translate('New stream'),
@@ -74,24 +87,8 @@ class ReadingNavigation extends BaseNavigation
 
             $stream_items = [];
 
-            $unread_links_label = TwigExtension::translate('Has unread links from the last seven days');
-
-            $streams = $current_user->streams();
-
-            $streams_with_unread_dot = array_filter($streams, function (models\Stream $stream): bool {
-                return $stream->display_unread_in_sidenav;
-            });
-
-            models\streams\Preloader::for($streams_with_unread_dot)->hasUnreadLinksFor($current_user);
-
             foreach ($streams as $stream) {
-                $stream_items[] = new Item(
-                    label: $stream->name,
-                    key: $stream->id,
-                    url: \Minz\Url::for('stream', ['id' => $stream->id]),
-                    image_filename: twig\UrlExtension::urlMedia('covers', $stream->image_filename, 'stream-card.png'),
-                    dot_label: $stream->displaysUnreadInSidenav($current_user) ? $unread_links_label : '',
-                );
+                $stream_items[] = $this->streamItem($stream, $current_user);
             }
 
             if (count($stream_items) === 0) {
@@ -107,6 +104,32 @@ class ReadingNavigation extends BaseNavigation
             );
         }
 
+        if ($shared_streams) {
+            $shared_stream_items = [];
+
+            foreach ($shared_streams as $stream) {
+                $shared_stream_items[] = $this->streamItem($stream, $current_user);
+            }
+
+            $elements[] = new ItemGroup(
+                label: TwigExtension::translate('Shared streams'),
+                items: $shared_stream_items,
+            );
+        }
+
         return $elements;
+    }
+
+    private function streamItem(models\Stream $stream, models\User $current_user): Item
+    {
+        $unread_links_label = TwigExtension::translate('Has unread links from the last seven days');
+
+        return new Item(
+            label: $stream->name,
+            key: $stream->id,
+            url: \Minz\Url::for('stream', ['id' => $stream->id]),
+            image_filename: twig\UrlExtension::urlMedia('covers', $stream->image_filename, 'stream-card.png'),
+            dot_label: $stream->displaysUnreadInSidenav($current_user) ? $unread_links_label : '',
+        );
     }
 }

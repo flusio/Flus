@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-09-05 21:45+0200\n"
-"PO-Revision-Date: 2026-09-05 21:45+0200\n"
+"POT-Creation-Date: 2026-09-06 18:21+0200\n"
+"PO-Revision-Date: 2026-09-06 18:21+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -190,26 +190,21 @@ msgstr "L’un des fils sélectionnés n’existe pas."
 msgid "There is no valid feeds at this address."
 msgstr "Aucun flux valide n’a été détecté à cette adresse."
 
-#: forms/collections/ShareCollection.php:25 models/CollectionShare.php:39
+#: forms/collections/ShareCollection.php:24 models/CollectionShare.php:39
 msgid "The type is required."
 msgstr "Le type est obligatoire."
 
-#: forms/collections/ShareCollection.php:29 models/CollectionShare.php:43
+#: forms/collections/ShareCollection.php:28 models/CollectionShare.php:43
 msgid "The type is invalid."
 msgstr "Le type est invalide."
 
-#: forms/collections/ShareCollection.php:74
-#: forms/collections/UnshareCollection.php:31
-msgid "This user doesn’t exist."
-msgstr "Cet‧te utilisateur‧ice n’existe pas."
-
-#: forms/collections/ShareCollection.php:84
+#: forms/collections/ShareCollection.php:58
 msgid "You can’t share access with the owner of the collection."
 msgstr ""
 "Vous ne pouvez pas partager l’accès avec le ou la propriétaire de la "
 "collection."
 
-#: forms/collections/ShareCollection.php:95
+#: forms/collections/ShareCollection.php:63
 msgid "The collection is already shared with this user."
 msgstr "Cette collection est déjà partagée avec cet‧te utilisateur‧ice."
 
@@ -250,6 +245,14 @@ msgstr "Le filtre est obligatoire."
 msgid "The filter is invalid."
 msgstr "Le filtre est invalide."
 
+#: forms/streams/ShareStream.php:31
+msgid "You can’t share access with the owner of the stream."
+msgstr "Vous ne pouvez pas partager l’accès avec le ou la propriétaire du fil."
+
+#: forms/streams/ShareStream.php:36
+msgid "The stream is already shared with this user."
+msgstr "Ce fil est déjà partagé avec cet‧te utilisateur‧ice."
+
 #: forms/traits/Altcha.php:46
 msgid "The captcha has not been completed, please check “I’m not a robot”."
 msgstr ""
@@ -279,6 +282,10 @@ msgstr "La langue est obligatoire."
 #: forms/traits/Locale.php:22 models/User.php:99
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
+
+#: forms/traits/ShareRecipient.php:54 forms/traits/UnshareRecipient.php:32
+msgid "This user doesn’t exist."
+msgstr "Cet‧te utilisateur‧ice n’existe pas."
 
 #: forms/users/AccountValidation.php:29
 msgid ""
@@ -360,12 +367,12 @@ msgid "The name must be less than {max} characters."
 msgstr "Le nom ne doit pas faire plus de {max} caractères."
 
 #: models/Collection.php:137 models/Collection.php:224
-#: models/ReadLaterSource.php:20 navigations/ReadingNavigation.php:35
+#: models/ReadLaterSource.php:20 navigations/ReadingNavigation.php:36
 msgid "To read"
 msgstr "À lire"
 
 #: models/Collection.php:148 models/Collection.php:226 models/ReadSource.php:20
-#: navigations/ReadingNavigation.php:42
+#: navigations/ReadingNavigation.php:43
 msgid "Links read"
 msgstr "Liens lus"
 
@@ -374,7 +381,7 @@ msgid "Links never to read"
 msgstr "Liens à ne jamais lire"
 
 #: models/Collection.php:170 models/Collection.php:228
-#: navigations/ReadingNavigation.php:28
+#: navigations/ReadingNavigation.php:29
 msgid "News"
 msgstr "Journal"
 
@@ -528,33 +535,37 @@ msgstr "Données"
 msgid "Security"
 msgstr "Sécurité"
 
-#: navigations/ReadingNavigation.php:17
+#: navigations/ReadingNavigation.php:18
 msgid "Reading menu"
 msgstr "Menu lecture"
 
-#: navigations/ReadingNavigation.php:51
+#: navigations/ReadingNavigation.php:52
 msgid "Sources"
 msgstr "Sources"
 
-#: navigations/ReadingNavigation.php:60
+#: navigations/ReadingNavigation.php:61
 msgid "Explore"
 msgstr "Explorer"
 
-#: navigations/ReadingNavigation.php:69
+#: navigations/ReadingNavigation.php:83
 msgid "New stream"
 msgstr "Nouveau fil"
 
-#: navigations/ReadingNavigation.php:76
-msgid "Has unread links from the last seven days"
-msgstr "Contient des liens non lus datant des sept derniers jours"
-
-#: navigations/ReadingNavigation.php:90
+#: navigations/ReadingNavigation.php:96
 msgid "Create a stream to get started."
 msgstr "Créez un fil pour commencer."
 
-#: navigations/ReadingNavigation.php:95
+#: navigations/ReadingNavigation.php:101
 msgid "Streams"
 msgstr "Fils"
+
+#: navigations/ReadingNavigation.php:115
+msgid "Shared streams"
+msgstr "Fils partagés"
+
+#: navigations/ReadingNavigation.php:125
+msgid "Has unread links from the last seven days"
+msgstr "Contient des liens non lus datant des sept derniers jours"
 
 #: seeds.php:12
 msgid "Business"
@@ -824,6 +835,7 @@ msgstr "(max. %d caractères)"
 #: views/registrations/new.html.twig:114 views/registrations/new.html.twig:152
 #: views/sessions/new.html.twig:32 views/sessions/new.html.twig:67
 #: views/streams/_form.html.twig:20 views/streams/images/edit.html.twig:26
+#: views/streams/shares/index.html.twig:25
 #: views/streams/views/_form.html.twig:16 views/support/show.html.twig:41
 #: views/support/show.html.twig:67
 msgid "Error:"
@@ -1147,6 +1159,7 @@ msgid "Create the collection"
 msgstr "Créer la collection"
 
 #: views/collections/shares/index.html.twig:3
+#: views/streams/shares/index.html.twig:3
 #, php-format
 msgid "Sharing access to “%s”"
 msgstr "Partager l’accès de « %s »"
@@ -1162,14 +1175,17 @@ msgstr ""
 "utilisateur‧ices."
 
 #: views/collections/shares/index.html.twig:20
+#: views/streams/shares/index.html.twig:20
 msgid "Share access with"
 msgstr "Partagez l’accès avec"
 
 #: views/collections/shares/index.html.twig:46 views/links/show.html.twig:231
+#: views/streams/shares/index.html.twig:46
 msgid "Share"
 msgstr "Partager"
 
 #: views/collections/shares/index.html.twig:51
+#: views/streams/shares/index.html.twig:51
 msgid "Copy and paste the <abbr>URL</abbr> of a user’s profile."
 msgstr "Copiez et collez l’<abbr>URL</abbr> du profil d’un‧e utilisateur‧ice."
 
@@ -1202,6 +1218,7 @@ msgstr ""
 "en modifier les informations ou ajouter des liens."
 
 #: views/collections/shares/index.html.twig:120
+#: views/streams/shares/index.html.twig:62
 msgid "Shared with:"
 msgstr "Partagée avec :"
 
@@ -1214,10 +1231,12 @@ msgid "read / write"
 msgstr "lecture / écriture"
 
 #: views/collections/shares/index.html.twig:146
+#: views/streams/shares/index.html.twig:80
 msgid "Revoke"
 msgstr "Révoquer"
 
 #: views/collections/shares/index.html.twig:167
+#: views/streams/shares/index.html.twig:101
 msgid "Copy"
 msgstr "Copier"
 
@@ -1266,7 +1285,7 @@ msgstr[1] "Thématiques :"
 msgid "Edit"
 msgstr "Modifier"
 
-#: views/collections/show.html.twig:187
+#: views/collections/show.html.twig:187 views/streams/show.html.twig:135
 msgid "Access"
 msgstr "Accès"
 
@@ -1278,7 +1297,7 @@ msgstr "Accès"
 #: views/notes/_notepad.html.twig:27 views/notes/_notepad.html.twig:33
 #: views/profiles/layout.html.twig:88 views/streams/_timeline.html.twig:38
 #: views/streams/_timeline.html.twig:91 views/streams/_timeline.html.twig:135
-#: views/streams/show.html.twig:131
+#: views/streams/show.html.twig:142
 msgid "Actions"
 msgstr "Actions"
 
@@ -1311,7 +1330,7 @@ msgstr "Ignorer les liens"
 
 #: views/collections/show.html.twig:253 views/links/_link.html.twig:284
 #: views/links/show.html.twig:285 views/notes/_notepad.html.twig:50
-#: views/streams/show.html.twig:139
+#: views/streams/show.html.twig:150
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -3510,15 +3529,15 @@ msgstr "Inclure les liens ignorés"
 msgid "Sources (%d)"
 msgstr "Sources (%d)"
 
-#: views/streams/_views.html.twig:360 views/streams/_views.html.twig:383
+#: views/streams/_views.html.twig:360 views/streams/_views.html.twig:385
 msgid "Save view"
 msgstr "Enregistrer la vue"
 
-#: views/streams/_views.html.twig:369
+#: views/streams/_views.html.twig:370
 msgid "Save to current view"
 msgstr "Enregistrer la vue courante"
 
-#: views/streams/_views.html.twig:376
+#: views/streams/_views.html.twig:378
 msgid "Save changes to new view"
 msgstr "Enregistrer dans une nouvelle vue"
 
@@ -3538,6 +3557,24 @@ msgstr "Les illustrations aident à distinguer votre fil parmi les autres."
 msgid "Create the stream"
 msgstr "Créer le fil"
 
+#: views/streams/shares/index.html.twig:9
+msgid "This stream is public, anyone can access it."
+msgstr "Ce fil est public, n’importe qui peut y accéder."
+
+#: views/streams/shares/index.html.twig:11
+msgid "This stream is private, you can share access to other users."
+msgstr ""
+"Ce fil est privé, vous pouvez en partager l’accès à d’autres utilisateur‧"
+"ices."
+
+#: views/streams/shares/index.html.twig:52
+msgid ""
+"They will see the sources and links they already have access to, and will be "
+"able to create their own views."
+msgstr ""
+"Il ou elle verra les sources et les liens auxquels il ou elle a déjà accès, "
+"et sera capable de créer ses propres vues."
+
 #: views/streams/show.html.twig:22
 #, php-format
 msgid "A stream created by %s on %s."
@@ -3547,7 +3584,7 @@ msgstr "Un fil créé par %s sur %s."
 msgid "Manage sources"
 msgstr "Gérer les sources"
 
-#: views/streams/show.html.twig:142
+#: views/streams/show.html.twig:153
 msgid "Are you sure that you want to delete this stream?"
 msgstr "Êtes-vous sur·e de vouloir supprimer ce fil ?"
 

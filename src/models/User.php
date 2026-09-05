@@ -907,6 +907,22 @@ class User
     }
 
     /**
+     * Return the list of streams shared with the user.
+     *
+     * @see Stream::listSharedToUser
+     *
+     * @return Stream[]
+     */
+    public function sharedStreams(): array
+    {
+        return $this->memoize('shared_streams', function (): array {
+            $streams = Stream::listSharedToUser($this);
+
+            return utils\Sorter::localeSort($streams, 'name');
+        });
+    }
+
+    /**
      * Set the user password.
      */
     public function setPassword(string $password): void

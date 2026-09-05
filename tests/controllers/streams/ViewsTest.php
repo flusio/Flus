@@ -83,6 +83,21 @@ class ViewsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 403);
     }
 
+    public function testNewWorksIfStreamIsSharedWithUser(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+        ]);
+        $stream->shareWith($user);
+
+        $response = $this->appRun('GET', "/streams/{$stream->id}/views/new");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseTemplateName($response, 'streams/views/new.html.twig');
+    }
+
     public function testCreateCreatesTheViewAndRedirects(): void
     {
         $user = $this->login();
@@ -151,6 +166,27 @@ class ViewsTest extends \PHPUnit\Framework\TestCase
             'with_dismissed' => '',
             'q' => '',
         ], $view->parameters);
+    }
+
+    public function testCreateWorksIfStreamIsSharedWithUser(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+        ]);
+        $stream->shareWith($user);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/views/new", [
+            'csrf_token' => $this->csrfToken(forms\views\View::class),
+            'name' => 'My view',
+        ]);
+
+        $view = models\View::take();
+        $this->assertNotNull($view);
+        $this->assertResponseCode($response, 302, "/streams/{$stream->id}?view={$view->id}");
+        $this->assertSame($user->id, $view->user_id);
+        $this->assertFalse($view->is_default);
     }
 
     public function testCreateRedirectsIfNotConnected(): void
@@ -271,6 +307,30 @@ class ViewsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\View::count());
     }
 
+    public function testCreateFailsIfNameIsUsedByAnotherUsersView(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+        ]);
+        $stream->shareWith($user);
+        ViewFactory::create([
+            'stream_id' => $stream->id,
+            'user_id' => $other_user->id,
+            'name' => 'My view',
+        ]);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/views/new", [
+            'csrf_token' => $this->csrfToken(forms\views\View::class),
+            'name' => 'My view',
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'A view with this name already exists');
+        $this->assertSame(1, models\View::count());
+    }
+
     public function testSaveSavesTheParametersAndRedirects(): void
     {
         $user = $this->login();
@@ -386,6 +446,30 @@ class ViewsTest extends \PHPUnit\Framework\TestCase
         ], $view->parameters);
     }
 
+    public function testSaveWorksIfUserOwnsTheView(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+        ]);
+        $stream->shareWith($user);
+        $view = ViewFactory::create([
+            'stream_id' => $stream->id,
+            'user_id' => $user->id,
+            'parameters' => models\View::STREAM_PARAMETERS,
+        ]);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/views/{$view->id}/save", [
+            'csrf_token' => $this->csrfToken(forms\views\SaveView::class),
+            'status' => 'unread',
+        ]);
+
+        $this->assertResponseCode($response, 302);
+        $view = $view->reload();
+        $this->assertSame('unread', $view->parameters['status']);
+    }
+
     public function testSaveRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create();
@@ -482,6 +566,26 @@ class ViewsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 403);
+    }
+
+    public function testSaveFailsIfViewIsDefaultAndUserDoesNotOwnTheStream(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+        ]);
+        $stream->shareWith($user);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/views/default/save", [
+            'csrf_token' => $this->csrfToken(forms\views\SaveView::class),
+            'status' => 'unread',
+        ]);
+
+        $this->assertResponseCode($response, 403);
+        // The default view must not have been created for the user the stream
+        // is shared with.
+        $this->assertSame(0, models\View::count());
     }
 
     public function testEditRendersCorrectly(): void
@@ -586,6 +690,30 @@ class ViewsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, $referer);
+        $view = $view->reload();
+        $this->assertSame('Renamed view', $view->name);
+    }
+
+    public function testUpdateWorksIfUserOwnsTheView(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+        ]);
+        $stream->shareWith($user);
+        $view = ViewFactory::create([
+            'stream_id' => $stream->id,
+            'user_id' => $user->id,
+            'name' => 'My view',
+        ]);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/views/{$view->id}/edit", [
+            'csrf_token' => $this->csrfToken(forms\views\View::class),
+            'name' => 'Renamed view',
+        ]);
+
+        $this->assertResponseCode($response, 302);
         $view = $view->reload();
         $this->assertSame('Renamed view', $view->name);
     }
@@ -727,6 +855,57 @@ class ViewsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('My view', $view->name);
     }
 
+    public function testUpdateFailsIfViewIsDefaultAndUserDoesNotOwnTheStream(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+        ]);
+        $stream->shareWith($user);
+        $view = ViewFactory::create([
+            'stream_id' => $stream->id,
+            'user_id' => $other_user->id,
+            'is_default' => true,
+            'name' => 'Main view',
+        ]);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/views/{$view->id}/edit", [
+            'csrf_token' => $this->csrfToken(forms\views\View::class),
+            'name' => 'Renamed view',
+        ]);
+
+        $this->assertResponseCode($response, 403);
+        $view = $view->reload();
+        $this->assertSame('Main view', $view->name);
+    }
+
+    public function testUpdateFailsIfUserDoesNotOwnTheView(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $yet_another_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+        ]);
+        $stream->shareWith($user);
+        $stream->shareWith($yet_another_user);
+        $view = ViewFactory::create([
+            'stream_id' => $stream->id,
+            'user_id' => $yet_another_user->id,
+            'name' => 'My view',
+        ]);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/views/{$view->id}/edit", [
+            'csrf_token' => $this->csrfToken(forms\views\View::class),
+            'name' => 'Renamed view',
+        ]);
+
+        $this->assertResponseCode($response, 403);
+        $view = $view->reload();
+        $this->assertSame('My view', $view->name);
+    }
+
     public function testDeleteDeletesTheViewAndRedirects(): void
     {
         $user = $this->login();
@@ -744,6 +923,27 @@ class ViewsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, "/streams/{$stream->id}");
         $this->assertSame(0, models\View::count());
         $this->assertStringContainsString('The view has been deleted', utils\Notification::popSuccess());
+    }
+
+    public function testDeleteWorksIfUserOwnsTheView(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+        ]);
+        $stream->shareWith($user);
+        $view = ViewFactory::create([
+            'stream_id' => $stream->id,
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/views/{$view->id}/delete", [
+            'csrf_token' => $this->csrfToken(forms\views\DeleteView::class),
+        ]);
+
+        $this->assertResponseCode($response, 302, "/streams/{$stream->id}");
+        $this->assertSame(0, models\View::count());
     }
 
     public function testDeleteResetsTheDefaultView(): void
@@ -836,6 +1036,51 @@ class ViewsTest extends \PHPUnit\Framework\TestCase
         ]);
         $view = ViewFactory::create([
             'stream_id' => $stream->id,
+        ]);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/views/{$view->id}/delete", [
+            'csrf_token' => $this->csrfToken(forms\views\DeleteView::class),
+        ]);
+
+        $this->assertResponseCode($response, 403);
+        $this->assertSame(1, models\View::count());
+    }
+
+    public function testDeleteFailsIfViewIsDefaultAndUserDoesNotOwnTheStream(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+        ]);
+        $stream->shareWith($user);
+        $view = ViewFactory::create([
+            'stream_id' => $stream->id,
+            'user_id' => $other_user->id,
+            'is_default' => true,
+        ]);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/views/{$view->id}/delete", [
+            'csrf_token' => $this->csrfToken(forms\views\DeleteView::class),
+        ]);
+
+        $this->assertResponseCode($response, 403);
+        $this->assertSame(1, models\View::count());
+    }
+
+    public function testDeleteFailsIfUserDoesNotOwnTheView(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $yet_another_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+        ]);
+        $stream->shareWith($user);
+        $stream->shareWith($yet_another_user);
+        $view = ViewFactory::create([
+            'stream_id' => $stream->id,
+            'user_id' => $yet_another_user->id,
         ]);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/views/{$view->id}/delete", [

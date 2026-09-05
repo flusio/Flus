@@ -20,7 +20,7 @@
                     </a>
                 {% endfor %}
 
-                {% if can(app.user, 'update', stream) %}
+                {% if can(app.user, 'createViews', stream) %}
                     <button
                         type="button"
                         id="stream-view-new"
@@ -38,7 +38,7 @@
             {% endblock %}
         {% endembed %}
 
-        {% if can(app.user, 'update', stream) %}
+        {% if can(app.user, 'update', stream_view.view) %}
             {% embed 'components/popup.html.twig' with {
                 position: 'right',
                 opener_class: 'button button--icon',
@@ -350,7 +350,7 @@
                 {% endif %}
             </div>
 
-            {% if can(app.user, 'update', stream) %}
+            {% if can(app.user, 'createViews', stream) %}
                 <div class="filters__section text--right">
                     {% if stream_view.view.isModified %}
                         {% embed 'components/popup.html.twig' with {
@@ -364,12 +364,14 @@
                             {% block items %}
                                 {% import _self as item %}
 
-                                {{ item.action(
-                                    url: url('save stream view', { id: stream.id, view_id: stream_view.view.routeId }),
-                                    label: t('Save to current view'),
-                                    icon: 'check',
-                                    form: 'save-stream-view',
-                                ) }}
+                                {% if can(app.user, 'update', stream_view.view) %}
+                                    {{ item.action(
+                                        url: url('save stream view', { id: stream.id, view_id: stream_view.view.routeId }),
+                                        label: t('Save to current view'),
+                                        icon: 'check',
+                                        form: 'save-stream-view',
+                                    ) }}
+                                {% endif %}
 
                                 {{ item.modal(
                                     url: url('new stream view', stream_view.view.current_url_parameters | merge({ id: stream_view.stream.id })),
@@ -430,7 +432,7 @@
         {% endif %}
     </form>
 
-    {% if can(app.user, 'update', stream) %}
+    {% if can(app.user, 'update', stream_view.view) %}
         {# The target of the "Save to current view" button of the save menu, which
          # lives inside the GET form above where a POST form cannot be nested. #}
         <form

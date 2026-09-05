@@ -16,7 +16,28 @@ class StreamsAccess
             return true;
         }
 
-        return $user && $user->id === $stream->user_id;
+        if (!$user) {
+            return false;
+        }
+
+        if ($user->id === $stream->user_id) {
+            return true;
+        }
+
+        return $stream->sharedWith($user);
+    }
+
+    public static function canCreateViews(?models\User $user, models\Stream $stream): bool
+    {
+        if (!$user) {
+            return false;
+        }
+
+        if ($user->id === $stream->user_id) {
+            return true;
+        }
+
+        return $stream->sharedWith($user);
     }
 
     public static function canUpdate(?models\User $user, models\Stream $stream): bool

@@ -293,6 +293,9 @@ class Router
             'streams/Sources#remove',
             'remove stream source',
         );
+        $router->addRoute('GET', '/streams/:id/share', 'streams/Shares#index', 'stream shares');
+        $router->addRoute('POST', '/streams/:id/share', 'streams/Shares#create', 'share stream');
+        $router->addRoute('POST', '/streams/:id/unshare', 'streams/Shares#delete', 'unshare stream');
 
         // Explore
         $router->addRoute('GET', '/explore', 'Explore#show', 'explore');

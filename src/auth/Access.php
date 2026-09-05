@@ -41,6 +41,8 @@ class Access
             $access_class = SessionsAccess::class;
         } elseif ($subject instanceof models\Stream) {
             $access_class = StreamsAccess::class;
+        } elseif ($subject instanceof models\View) {
+            $access_class = ViewsAccess::class;
         } else {
             throw new \InvalidArgumentException("{$subject_class} subject is not supported");
         }

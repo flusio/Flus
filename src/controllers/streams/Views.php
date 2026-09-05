@@ -31,14 +31,14 @@ class Views extends BaseController
      * @throws \Minz\Errors\MissingRecordError
      *     If the stream doesn't exist.
      * @throws auth\AccessDeniedError
-     *     If the user cannot update the stream.
+     *     If the user cannot create views on the stream.
      */
     public function new(Request $request): Response
     {
         $user = auth\CurrentUser::require();
         $stream = models\Stream::requireFromRequest($request);
 
-        auth\Access::require($user, 'update', $stream);
+        auth\Access::require($user, 'createViews', $stream);
 
         $view = new models\View($user);
         $view->setStream($stream);
@@ -74,14 +74,14 @@ class Views extends BaseController
      * @throws \Minz\Errors\MissingRecordError
      *     If the stream doesn't exist.
      * @throws auth\AccessDeniedError
-     *     If the user cannot update the stream.
+     *     If the user cannot create views on the stream.
      */
     public function create(Request $request): Response
     {
         $user = auth\CurrentUser::require();
         $stream = models\Stream::requireFromRequest($request);
 
-        auth\Access::require($user, 'update', $stream);
+        auth\Access::require($user, 'createViews', $stream);
 
         $view = new models\View($user);
         $view->setStream($stream);
@@ -132,16 +132,16 @@ class Views extends BaseController
      * @throws \Minz\Errors\MissingRecordError
      *     If the stream or the view don't exist.
      * @throws auth\AccessDeniedError
-     *     If the user cannot update the stream.
+     *     If the user cannot update the view.
      */
     public function save(Request $request): Response
     {
         $user = auth\CurrentUser::require();
         $stream = models\Stream::requireFromRequest($request);
 
-        auth\Access::require($user, 'update', $stream);
-
         $view = $this->requireView($request, $stream, $user);
+
+        auth\Access::require($user, 'update', $view);
 
         $from = utils\RequestHelper::from($request);
 
@@ -179,16 +179,16 @@ class Views extends BaseController
      * @throws \Minz\Errors\MissingRecordError
      *     If the stream or the view don't exist.
      * @throws auth\AccessDeniedError
-     *     If the user cannot update the stream.
+     *     If the user cannot update the view.
      */
     public function edit(Request $request): Response
     {
         $user = auth\CurrentUser::require();
         $stream = models\Stream::requireFromRequest($request);
 
-        auth\Access::require($user, 'update', $stream);
-
         $view = $this->requireView($request, $stream, $user);
+
+        auth\Access::require($user, 'update', $view);
 
         $form = new forms\views\View(model: $view);
 
@@ -215,16 +215,16 @@ class Views extends BaseController
      * @throws \Minz\Errors\MissingRecordError
      *     If the stream or the view don't exist.
      * @throws auth\AccessDeniedError
-     *     If the user cannot update the stream.
+     *     If the user cannot update the view.
      */
     public function update(Request $request): Response
     {
         $user = auth\CurrentUser::require();
         $stream = models\Stream::requireFromRequest($request);
 
-        auth\Access::require($user, 'update', $stream);
-
         $view = $this->requireView($request, $stream, $user);
+
+        auth\Access::require($user, 'update', $view);
 
         $form = new forms\views\View(model: $view);
         $form->handleRequest($request);
@@ -259,16 +259,16 @@ class Views extends BaseController
      * @throws \Minz\Errors\MissingRecordError
      *     If the stream or the view don't exist.
      * @throws auth\AccessDeniedError
-     *     If the user cannot update the stream.
+     *     If the user cannot delete the view.
      */
     public function delete(Request $request): Response
     {
         $user = auth\CurrentUser::require();
         $stream = models\Stream::requireFromRequest($request);
 
-        auth\Access::require($user, 'update', $stream);
-
         $view = $this->requireView($request, $stream, $user);
+
+        auth\Access::require($user, 'delete', $view);
 
         $from = utils\RequestHelper::from($request);
 

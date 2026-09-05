@@ -393,6 +393,68 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseTemplateName($response, 'streams/show.html.twig');
     }
 
+    public function testShowRendersCorrectlyIfPrivateAndShared(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        /** @var string */
+        $link_title = $this->fake('words', 3, true);
+        $feed = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link = LinkFactory::create([
+            'user_id' => $feed->user_id,
+            'title' => $link_title,
+            'is_hidden' => false,
+        ]);
+        $feed->addLinks([$link], at: \Minz\Time::now());
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+            'is_public' => false,
+        ]);
+        $stream->addSource($feed);
+        $stream->shareWith($user);
+
+        $response = $this->appRun('GET', "/streams/{$stream->id}");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $link_title);
+        $this->assertResponseTemplateName($response, 'streams/show.html.twig');
+    }
+
+    public function testShowHidesLinksOfSourcesTheSharedUserCannotView(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        /** @var string */
+        $link_title = $this->fake('words', 3, true);
+        // The source is a private collection of the owner of the stream: the
+        // user the stream is shared with cannot view it.
+        $collection = CollectionFactory::create([
+            'type' => 'collection',
+            'user_id' => $other_user->id,
+            'is_public' => false,
+        ]);
+        $link = LinkFactory::create([
+            'user_id' => $other_user->id,
+            'title' => $link_title,
+            'is_hidden' => false,
+        ]);
+        $collection->addLinks([$link], at: \Minz\Time::now());
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+            'is_public' => false,
+        ]);
+        $stream->addSource($collection);
+        $stream->shareWith($user);
+
+        $response = $this->appRun('GET', "/streams/{$stream->id}");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseNotContains($response, $link_title);
+    }
+
     public function testShowRedirectsIfPrivateAndNotConnected(): void
     {
         $user = UserFactory::create();

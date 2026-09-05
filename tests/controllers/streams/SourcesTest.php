@@ -142,6 +142,41 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseTemplateName($response, 'streams/sources/index.html.twig');
     }
 
+    public function testIndexRendersCorrectlyIfPrivateAndShared(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+            'is_public' => false,
+        ]);
+        /** @var string */
+        $public_source_name = $this->fake('words', 3, true);
+        $public_source = CollectionFactory::create([
+            'type' => 'collection',
+            'name' => $public_source_name,
+            'is_public' => true,
+        ]);
+        /** @var string */
+        $private_source_name = $this->fake('words', 3, true);
+        $private_source = CollectionFactory::create([
+            'type' => 'collection',
+            'name' => $private_source_name,
+            'user_id' => $other_user->id,
+            'is_public' => false,
+        ]);
+        $stream->addSource($public_source);
+        $stream->addSource($private_source);
+        $stream->shareWith($user);
+
+        $response = $this->appRun('GET', "/streams/{$stream->id}/sources");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseTemplateName($response, 'streams/sources/index.html.twig');
+        $this->assertResponseContains($response, $public_source_name);
+        $this->assertResponseNotContains($response, $private_source_name);
+    }
+
     public function testIndexRedirectsIfPrivateAndNotConnected(): void
     {
         $user = UserFactory::create();
