@@ -49,8 +49,17 @@ export default class extends Controller {
     // Resize the textarea to fit its content.
     refresh () {
         const textarea = this.textareaTarget;
+
+        // The textarea is collapsed to measure its content, which shortens
+        // the page for the time of the measure: the browser would clamp the
+        // scroll position and the page would jump. The element keeps its
+        // height in the meantime to prevent that.
+        this.element.style.minHeight = `${this.element.offsetHeight}px`;
+
         textarea.style.height = 'auto';
-        textarea.style.height = textarea.scrollHeight + 'px';
+        textarea.style.height = `${textarea.scrollHeight}px`;
+
+        this.element.style.minHeight = '';
     }
 
     // Apply the format given as the `format` param of the action.
