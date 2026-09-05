@@ -54,9 +54,6 @@ class Stream
     #[Database\Column]
     public string $user_id;
 
-    #[Database\Column(computed: true)]
-    public ?bool $has_unread_links = null;
-
     public function __construct(User $user)
     {
         $this->id = \Minz\Random::timebased();
@@ -303,12 +300,86 @@ class Stream
 
     /**
      * Return whether the unread links must be indicated in the sidenav.
-     *
-     * The has_unread_links property must have been computed (see listByUser()).
      */
-    public function displaysUnreadInSidenav(): bool
+    public function displaysUnreadInSidenav(User $user): bool
     {
-        return $this->display_unread_in_sidenav && $this->has_unread_links === true;
+        return $this->display_unread_in_sidenav && $this->hasUnreadLinks($user);
+    }
+
+    /**
+     * Return whether the stream contains unread links published during the
+     * last seven days.
+     */
+    public function hasUnreadLinks(User $user): bool
+    {
+        $memoize_key = $this->memoizeKeyFor('has_unread_links', $user);
+
+        return $this->memoize($memoize_key, function () use ($user): bool {
+            $streams_with_unread = self::listWithUnreadLinks([$this], $user);
+            return isset($streams_with_unread[$this->id]);
+        });
+    }
+
+    /**
+     * Set whether the stream contains unread links for the given user without
+     * querying the database.
+     *
+     * @see streams\Preloader
+     */
+    public function preloadHasUnreadLinks(User $user, bool $has_unread_links): void
+    {
+        $memoize_key = $this->memoizeKeyFor('has_unread_links', $user);
+        $this->memoizeValue($memoize_key, $has_unread_links);
+    }
+
+    /**
+     * Return the given streams that contain unread links published during the
+     * last seven days, indexed by their ids.
+     *
+     * @param self[] $streams
+     *
+     * @return array<string, self>
+     */
+    public static function listWithUnreadLinks(array $streams, User $context_user): array
+    {
+        // This method is executed on every page of the application (through
+        // the sidenav): it is deliberately made of flat queries rather than of
+        // a subquery correlated on the streams, which would redo a whole join
+        // over seven days for each of them.
+        // It also allows to regroup business logic (i.e. sources visibility,
+        // unread status) in the classes it belongs instead of duplicating it.
+
+        // Get the sources of the streams.
+        $sources_by_stream_ids = Collection::listByStreams($streams, [
+            'context_user' => $context_user,
+        ]);
+
+        $sources = array_values($sources_by_stream_ids);
+        $sources = array_merge(...$sources);
+        // Deduplicate the sources by id as a same source can be in several streams.
+        $sources = array_column($sources, null, 'id');
+        $sources = array_values($sources);
+
+        // Filter the sources that contain unread links.
+        $unread_sources = Link::filterSourcesWithUnreadLinks($context_user, $sources, [
+            'at' => \Minz\Time::now(),
+            'days' => 7,
+        ]);
+        $unread_source_ids = array_column($unread_sources, 'id');
+
+        // Finally, keep the streams of which at least one source has unread links.
+        $streams_with_unread = [];
+
+        foreach ($streams as $stream) {
+            $stream_sources = $sources_by_stream_ids[$stream->id] ?? [];
+            $stream_source_ids = array_column($stream_sources, 'id');
+
+            if (array_intersect($stream_source_ids, $unread_source_ids) !== []) {
+                $streams_with_unread[$stream->id] = $stream;
+            }
+        }
+
+        return $streams_with_unread;
     }
 
     /**
@@ -341,13 +412,8 @@ class Stream
      * By default, the private streams are listed as well: pass the is_private
      * option to false to only list the public ones.
      *
-     * Unless the with_has_unread_links option is set to false, the
-     * has_unread_links property is set: it indicates whether the stream
-     * contains unread links published during the last seven days.
-     *
      * @param array{
      *     'is_private'?: bool,
-     *     'with_has_unread_links'?: bool,
      * } $options
      *
      * @return self[]
@@ -355,63 +421,14 @@ class Stream
     public static function listByUser(User $user, array $options = []): array
     {
         $is_private = $options['is_private'] ?? true;
-        $with_has_unread_links = $options['with_has_unread_links'] ?? true;
 
-        // List all the streams
         $criteria = ['user_id' => $user->id];
 
         if (!$is_private) {
             $criteria['is_public'] = true;
         }
 
-        $streams = self::listBy($criteria);
-
-        if (!$with_has_unread_links) {
-            return $streams;
-        }
-
-        // Then, the rest of this method is dedicated to calculating the
-        // "unread" information for each stream.
-        // This method is executed on every page of the application: it is
-        // deliberately made of flat queries rather than of a subquery correlated
-        // on the streams, which would redo a whole join over seven days for each
-        // of them.
-        // It also allows to regroup business logic (i.e. sources visibility,
-        // unread status) in the classes it belongs instead of duplicating it.
-
-        // Filter the sources for which we need to calculate the unread information.
-        $streams_with_unread_dot = array_filter($streams, function (self $stream): bool {
-            return $stream->display_unread_in_sidenav;
-        });
-
-        // Get the sources of the "unread-filtered" streams.
-        $sources_by_stream_ids = Collection::listByStreams($streams_with_unread_dot, [
-            'context_user' => $user,
-        ]);
-
-        $sources = array_values($sources_by_stream_ids);
-        $sources = array_merge(...$sources);
-        // Deduplicate the sources by id as a same source can be in several streams.
-        $sources = array_column($sources, null, 'id');
-        $sources = array_values($sources);
-
-        // Filter the sources that contain unread links.
-        $unread_sources = Link::filterSourcesWithUnreadLinks($user, $sources, [
-            'at' => \Minz\Time::now(),
-            'days' => 7,
-        ]);
-        $unread_source_ids = array_column($unread_sources, 'id');
-
-        // Finally, set the has_unread_links attribute manually based on what we
-        // calculated.
-        foreach ($streams as $stream) {
-            $stream_sources = $sources_by_stream_ids[$stream->id] ?? [];
-            $stream_source_ids = array_column($stream_sources, 'id');
-
-            $stream->has_unread_links = array_intersect($stream_source_ids, $unread_source_ids) !== [];
-        }
-
-        return $streams;
+        return self::listBy($criteria);
     }
 
     /**

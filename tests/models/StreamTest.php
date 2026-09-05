@@ -3,8 +3,6 @@
 namespace App\models;
 
 use tests\factories\CollectionFactory;
-use tests\factories\CollectionShareFactory;
-use tests\factories\FollowedCollectionFactory;
 use tests\factories\LinkFactory;
 use tests\factories\StreamFactory;
 use tests\factories\UserFactory;
@@ -30,7 +28,7 @@ class StreamTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($stream->id, $streams[0]->id);
     }
 
-    public function testListByUserComputesHasUnreadLinks(): void
+    public function testHasUnreadLinksReturnsTrueIfASourceHasUnreadLinks(): void
     {
         $user = UserFactory::create();
         $stream = StreamFactory::create([
@@ -46,49 +44,24 @@ class StreamTest extends \PHPUnit\Framework\TestCase
         $source->addLinks([$link], at: \Minz\Time::now());
         $stream->addSource($source);
 
-        $streams = Stream::listByUser($user);
+        $has_unread_links = $stream->hasUnreadLinks($user);
 
-        $this->assertSame(1, count($streams));
-        $this->assertTrue($streams[0]->has_unread_links);
+        $this->assertTrue($has_unread_links);
     }
 
-    public function testListByUserForcesHasUnreadLinksToFalseIfStreamDoesNotDisplayUnreadInSidenav(): void
-    {
-        $user = UserFactory::create();
-        $stream = StreamFactory::create([
-            'user_id' => $user->id,
-            'display_unread_in_sidenav' => false,
-        ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
-            'is_public' => true,
-        ]);
-        $link = LinkFactory::create([
-            'is_hidden' => false,
-        ]);
-        $source->addLinks([$link], at: \Minz\Time::now());
-        $stream->addSource($source);
-
-        $streams = Stream::listByUser($user);
-
-        $this->assertSame(1, count($streams));
-        $this->assertFalse($streams[0]->has_unread_links);
-    }
-
-    public function testListByUserDoesNotSetHasUnreadLinksIfStreamHasNoSource(): void
+    public function testHasUnreadLinksReturnsFalseIfStreamHasNoSource(): void
     {
         $user = UserFactory::create();
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
 
-        $streams = Stream::listByUser($user);
+        $has_unread_links = $stream->hasUnreadLinks($user);
 
-        $this->assertSame(1, count($streams));
-        $this->assertFalse($streams[0]->has_unread_links);
+        $this->assertFalse($has_unread_links);
     }
 
-    public function testListByUserDoesNotSetHasUnreadLinksIfStreamHasNoLink(): void
+    public function testHasUnreadLinksReturnsFalseIfStreamHasNoLink(): void
     {
         $user = UserFactory::create();
         $stream = StreamFactory::create([
@@ -100,13 +73,12 @@ class StreamTest extends \PHPUnit\Framework\TestCase
         ]);
         $stream->addSource($source);
 
-        $streams = Stream::listByUser($user);
+        $has_unread_links = $stream->hasUnreadLinks($user);
 
-        $this->assertSame(1, count($streams));
-        $this->assertFalse($streams[0]->has_unread_links);
+        $this->assertFalse($has_unread_links);
     }
 
-    public function testListByUserDoesNotSetHasUnreadLinksIfLinksAreNotUnread(): void
+    public function testHasUnreadLinksReturnsFalseIfLinksAreNotUnread(): void
     {
         $user = UserFactory::create();
         $stream = StreamFactory::create([
@@ -131,35 +103,12 @@ class StreamTest extends \PHPUnit\Framework\TestCase
         $user->markAsReadLater($read_later_link);
         $user->markAsDismissed($dismissed_link);
 
-        $streams = Stream::listByUser($user);
+        $has_unread_links = $stream->hasUnreadLinks($user);
 
-        $this->assertSame(1, count($streams));
-        $this->assertFalse($streams[0]->has_unread_links);
+        $this->assertFalse($has_unread_links);
     }
 
-    public function testListByUserComputesHasUnreadLinksIfLinkIsPublishedDuringThePastWeek(): void
-    {
-        $user = UserFactory::create();
-        $stream = StreamFactory::create([
-            'user_id' => $user->id,
-        ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
-            'is_public' => true,
-        ]);
-        $link = LinkFactory::create([
-            'is_hidden' => false,
-        ]);
-        $source->addLinks([$link], at: \Minz\Time::ago(3, 'days'));
-        $stream->addSource($source);
-
-        $streams = Stream::listByUser($user);
-
-        $this->assertSame(1, count($streams));
-        $this->assertTrue($streams[0]->has_unread_links);
-    }
-
-    public function testListByUserDoesNotSetHasUnreadLinksIfLinkIsPublishedBeforeThePastWeek(): void
+    public function testHasUnreadLinksReturnsFalseIfLinkIsPublishedBeforeThePastWeek(): void
     {
         $user = UserFactory::create();
         $stream = StreamFactory::create([
@@ -175,13 +124,12 @@ class StreamTest extends \PHPUnit\Framework\TestCase
         $source->addLinks([$link], at: \Minz\Time::ago(2, 'weeks'));
         $stream->addSource($source);
 
-        $streams = Stream::listByUser($user);
+        $has_unread_links = $stream->hasUnreadLinks($user);
 
-        $this->assertSame(1, count($streams));
-        $this->assertFalse($streams[0]->has_unread_links);
+        $this->assertFalse($has_unread_links);
     }
 
-    public function testListByUserDoesNotSetHasUnreadLinksIfLinkIsHidden(): void
+    public function testHasUnreadLinksReturnsFalseIfLinkIsHidden(): void
     {
         $user = UserFactory::create();
         $stream = StreamFactory::create([
@@ -197,13 +145,12 @@ class StreamTest extends \PHPUnit\Framework\TestCase
         $source->addLinks([$link], at: \Minz\Time::now());
         $stream->addSource($source);
 
-        $streams = Stream::listByUser($user);
+        $has_unread_links = $stream->hasUnreadLinks($user);
 
-        $this->assertSame(1, count($streams));
-        $this->assertFalse($streams[0]->has_unread_links);
+        $this->assertFalse($has_unread_links);
     }
 
-    public function testListByUserDoesNotSetHasUnreadLinksIfSourceIsNotVisible(): void
+    public function testHasUnreadLinksReturnsFalseIfSourceIsNotVisible(): void
     {
         $user = UserFactory::create();
         $other_user = UserFactory::create();
@@ -221,13 +168,12 @@ class StreamTest extends \PHPUnit\Framework\TestCase
         $source->addLinks([$link], at: \Minz\Time::now());
         $stream->addSource($source);
 
-        $streams = Stream::listByUser($user);
+        $has_unread_links = $stream->hasUnreadLinks($user);
 
-        $this->assertSame(1, count($streams));
-        $this->assertFalse($streams[0]->has_unread_links);
+        $this->assertFalse($has_unread_links);
     }
 
-    public function testListByUserComputesHasUnreadLinksIfSourceIsShared(): void
+    public function testHasUnreadLinksReturnsTrueIfSourceIsShared(): void
     {
         $user = UserFactory::create();
         $other_user = UserFactory::create();
@@ -239,9 +185,58 @@ class StreamTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => false,
         ]);
-        CollectionShareFactory::create([
+        $source->shareWith($user, 'read');
+        $link = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link], at: \Minz\Time::now());
+        $stream->addSource($source);
+
+        $has_unread_links = $stream->hasUnreadLinks($user);
+
+        $this->assertTrue($has_unread_links);
+    }
+
+    public function testHasUnreadLinksConsidersTheVisibilityOfTheGivenUser(): void
+    {
+        $user = UserFactory::create();
+        $other_user = UserFactory::create();
+        $third_user = UserFactory::create();
+        $stream = StreamFactory::create([
             'user_id' => $user->id,
-            'collection_id' => $source->id,
+        ]);
+        // The source is shared with the owner of the stream, but not with
+        // other_user: the same stream has unread links for the first and not
+        // for the second.
+        $source = CollectionFactory::create([
+            'type' => 'collection',
+            'user_id' => $third_user->id,
+            'is_public' => false,
+        ]);
+        $source->shareWith($user, 'read');
+        $link = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link], at: \Minz\Time::now());
+        $stream->addSource($source);
+
+        $has_unread_links = $stream->hasUnreadLinks($user);
+        $other_has_unread_links = $stream->hasUnreadLinks($other_user);
+
+        $this->assertTrue($has_unread_links);
+        $this->assertFalse($other_has_unread_links);
+    }
+
+    public function testDisplaysUnreadInSidenavReturnsTrueIfStreamHasUnreadLinks(): void
+    {
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+            'display_unread_in_sidenav' => true,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
         ]);
         $link = LinkFactory::create([
             'is_hidden' => false,
@@ -249,9 +244,32 @@ class StreamTest extends \PHPUnit\Framework\TestCase
         $source->addLinks([$link], at: \Minz\Time::now());
         $stream->addSource($source);
 
-        $streams = Stream::listByUser($user);
+        $displays_unread_in_sidenav = $stream->displaysUnreadInSidenav($user);
 
-        $this->assertSame(1, count($streams));
-        $this->assertTrue($streams[0]->has_unread_links);
+        $this->assertTrue($displays_unread_in_sidenav);
+    }
+
+    public function testDisplaysUnreadInSidenavReturnsFalseIfStreamDoesNotDisplayUnreadInSidenav(): void
+    {
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+            'display_unread_in_sidenav' => false,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link], at: \Minz\Time::now());
+        $stream->addSource($source);
+
+        $has_unread_links = $stream->hasUnreadLinks($user);
+        $displays_unread_in_sidenav = $stream->displaysUnreadInSidenav($user);
+
+        $this->assertTrue($has_unread_links);
+        $this->assertFalse($displays_unread_in_sidenav);
     }
 }

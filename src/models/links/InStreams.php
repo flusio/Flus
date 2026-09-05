@@ -236,8 +236,8 @@ trait InStreams
      * This method takes and returns collections rather than links, and takes no
      * stream: it lives here because it reuses buildStreamJoin() and
      * buildStreamWhere(), so that the "unread" logic is defined at a single
-     * place. It is called by models\Stream::listByUser() to compute the unread
-     * dots of the sidenav.
+     * place. It is called by models\Stream::hasUnreadLinks() to compute the
+     * unread dots of the sidenav.
      *
      * @param Collection[] $sources
      * @param array{

@@ -889,7 +889,6 @@ class User
      *
      * @param array{
      *     'is_private'?: bool,
-     *     'with_has_unread_links'?: bool,
      * } $options
      *
      * @return Stream[]
@@ -897,9 +896,8 @@ class User
     public function streams(array $options = []): array
     {
         $is_private = $options['is_private'] ?? true;
-        $with_has_unread_links = $options['with_has_unread_links'] ?? true;
 
-        $key = sprintf('streams_%d_%d', $is_private, $with_has_unread_links);
+        $key = sprintf('streams_%d', $is_private);
 
         return $this->memoize($key, function () use ($options): array {
             $streams = Stream::listByUser($this, $options);

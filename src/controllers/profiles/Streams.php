@@ -28,7 +28,6 @@ class Streams extends BaseController
 
         $streams = $user->streams([
             'is_private' => false,
-            'with_has_unread_links' => false,
         ]);
 
         return Response::ok('profiles/streams/index.html.twig', [

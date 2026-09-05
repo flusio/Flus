@@ -3,6 +3,7 @@
 namespace App\navigations;
 
 use App\auth;
+use App\models;
 use App\twig;
 use Minz\Template\TwigExtension;
 
@@ -75,13 +76,21 @@ class ReadingNavigation extends BaseNavigation
 
             $unread_links_label = TwigExtension::translate('Has unread links from the last seven days');
 
-            foreach ($current_user->streams() as $stream) {
+            $streams = $current_user->streams();
+
+            $streams_with_unread_dot = array_filter($streams, function (models\Stream $stream): bool {
+                return $stream->display_unread_in_sidenav;
+            });
+
+            models\streams\Preloader::for($streams_with_unread_dot)->hasUnreadLinksFor($current_user);
+
+            foreach ($streams as $stream) {
                 $stream_items[] = new Item(
                     label: $stream->name,
                     key: $stream->id,
                     url: \Minz\Url::for('stream', ['id' => $stream->id]),
                     image_filename: twig\UrlExtension::urlMedia('covers', $stream->image_filename, 'stream-card.png'),
-                    dot_label: $stream->displaysUnreadInSidenav() ? $unread_links_label : '',
+                    dot_label: $stream->displaysUnreadInSidenav($current_user) ? $unread_links_label : '',
                 );
             }
 
