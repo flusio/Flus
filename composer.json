@@ -38,6 +38,6 @@
         "squizlabs/php_codesniffer": "^4.0",
         "fakerphp/faker": "^1.17",
         "phpstan/phpstan": "^2.0",
-        "rector/rector": "^2.0"
+        "rector/rector": "2.6.4"
     }
 }
