@@ -985,6 +985,50 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
         $this->assertFalse(models\Link::exists($link->id));
         $this->assertFalse($user->hasRead($link));
+        $this->assertStringContainsString(
+            "The link “{$link->title}” has been deleted",
+            utils\Notification::popSuccess()
+        );
+    }
+
+    public function testDeleteRedirectsToLinksIfDeletedFromItsOwnPage(): void
+    {
+        $user = $this->login();
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $from = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
+
+        $response = $this->appRun('POST', "/links/{$link->id}/delete", [
+            'csrf_token' => $this->csrfToken(forms\links\DeleteLink::class),
+        ], headers: [
+            'Referer' => $from,
+        ]);
+
+        $this->assertResponseCode($response, 302, '/links');
+        $this->assertFalse(models\Link::exists($link->id));
+    }
+
+    public function testDeleteRedirectsToFromIfDeletedFromElsewhere(): void
+    {
+        $user = $this->login();
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $collection->addLinks([$link]);
+        $from = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
+
+        $response = $this->appRun('POST', "/links/{$link->id}/delete", [
+            'csrf_token' => $this->csrfToken(forms\links\DeleteLink::class),
+        ], headers: [
+            'Referer' => $from,
+        ]);
+
+        $this->assertResponseCode($response, 302, $from);
+        $this->assertFalse(models\Link::exists($link->id));
     }
 
     public function testDeleteRedirectsIfNotConnected(): void

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-08-21 17:28+0200\n"
-"PO-Revision-Date: 2026-08-21 17:28+0200\n"
+"POT-Creation-Date: 2026-09-05 16:33+0200\n"
+"PO-Revision-Date: 2026-09-05 16:33+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -63,6 +63,11 @@ msgstr "Liens wallabag"
 #: cli/Wallabag.php:94
 msgid "All your links imported from wallabag."
 msgstr "Tous vos liens importés depuis wallabag."
+
+#: controllers/Links.php:352
+#, php-format
+msgid "The link “%s” has been deleted."
+msgstr "Le lien « %s » a été supprimé."
 
 #: controllers/Mastodon.php:87 controllers/Mastodon.php:171
 msgid "The Mastodon host returned an error, please try later."
@@ -339,7 +344,7 @@ msgstr "[%s] Confirmer votre compte"
 msgid "[%s] Reset your password"
 msgstr "[%s] Réinitialisation de votre mot de passe"
 
-#: mailers/Users.php:128
+#: mailers/Users.php:133
 #, php-format
 msgid "[%s] Your account will be deleted soon due to inactivity"
 msgstr "[%s] Votre compte sera bientôt supprimé pour cause d’inactivité"

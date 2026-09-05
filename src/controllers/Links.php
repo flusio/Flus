@@ -312,9 +312,14 @@ class Links extends BaseController
      * @request_param string csrf_token
      *
      * @response 302 :from
+     * @flash notification.error
      *     If the CSRF token is invalid.
+     * @response 302 /links
+     * @flash notification.success
+     *     On success, if the link was deleted from its own page.
      * @response 302 :from
-     *     On success.
+     * @flash notification.success
+     *     On success, otherwise.
      *
      * @throws auth\MissingCurrentUserError
      *     If the user is not connected.
@@ -342,6 +347,18 @@ class Links extends BaseController
 
         $user->unmark($link);
         $link->remove();
+
+        utils\Notification::success(\Minz\Template\TwigExtension::translate(
+            'The link “%s” has been deleted.',
+            [$link->title],
+        ));
+
+        [$origin_type, $origin_id] = utils\OriginHelper::parseFromPath($from);
+        if ($origin_type === 'link' && $origin_id === $link->id) {
+            // Redirect to the links page if the link was deleted from its own
+            // page as it no longer exists.
+            return Response::redirect('links');
+        }
 
         return Response::found($from);
     }
