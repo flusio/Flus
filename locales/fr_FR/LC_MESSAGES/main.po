@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-09-05 16:33+0200\n"
-"PO-Revision-Date: 2026-09-05 16:33+0200\n"
+"POT-Creation-Date: 2026-09-05 19:53+0200\n"
+"PO-Revision-Date: 2026-09-05 19:53+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -792,8 +792,7 @@ msgstr "Comment voulez-vous nommer cette collection ?"
 msgid "(max. %d characters)"
 msgstr "(max. %d caractères)"
 
-#: views/collections/_form.html.twig:20 views/collections/_form.html.twig:51
-#: views/collections/_form.html.twig:80
+#: views/collections/_form.html.twig:20 views/collections/_form.html.twig:56
 #: views/collections/_selector.html.twig:20
 #: views/collections/_selector.html.twig:27
 #: views/collections/filters/edit.html.twig:19
@@ -805,36 +804,32 @@ msgstr "(max. %d caractères)"
 #: views/collections/images/edit.html.twig:26
 #: views/collections/shares/index.html.twig:25
 #: views/collections/shares/index.html.twig:58
-#: views/feeds/_new_form.html.twig:13 views/groups/edit.html.twig:20
-#: views/importations/opml/show.html.twig:84
-#: views/links/_form_simple.html.twig:15
-#: views/links/collections/_new_note_form.html.twig:11
-#: views/links/edit.html.twig:26 views/links/edit.html.twig:71
-#: views/links/edit.html.twig:91 views/links/images/edit.html.twig:20
+#: views/components/text_editor.html.twig:43 views/feeds/_new_form.html.twig:13
+#: views/groups/edit.html.twig:20 views/importations/opml/show.html.twig:84
+#: views/links/_form_simple.html.twig:15 views/links/edit.html.twig:26
+#: views/links/edit.html.twig:71 views/links/edit.html.twig:91
+#: views/links/images/edit.html.twig:20
 #: views/links/mastodon_threads/new.html.twig:17 views/links/new.html.twig:27
 #: views/links/repairing/new.html.twig:30
-#: views/links/searches/show.html.twig:39 views/links/show.html.twig:334
-#: views/mastodon/show.html.twig:62 views/mastodon/show.html.twig:139
-#: views/my/account/deletion.html.twig:38 views/my/avatar/edit.html.twig:20
-#: views/my/preferences/edit.html.twig:35
+#: views/links/searches/show.html.twig:39 views/mastodon/show.html.twig:62
+#: views/mastodon/show.html.twig:139 views/my/account/deletion.html.twig:38
+#: views/my/avatar/edit.html.twig:20 views/my/preferences/edit.html.twig:35
 #: views/my/preferences/edit.html.twig:66
 #: views/my/preferences/edit.html.twig:97
 #: views/my/preferences/edit.html.twig:128 views/my/profile/edit.html.twig:20
-#: views/my/profile/edit.html.twig:50
 #: views/my/security/confirmation.html.twig:40
 #: views/my/security/show.html.twig:31 views/my/security/show.html.twig:59
-#: views/notes/edit.html.twig:24 views/passwords/edit.html.twig:31
-#: views/passwords/forgot.html.twig:43 views/registrations/new.html.twig:52
-#: views/registrations/new.html.twig:80 views/registrations/new.html.twig:114
-#: views/registrations/new.html.twig:152 views/sessions/new.html.twig:32
-#: views/sessions/new.html.twig:67 views/streams/_form.html.twig:20
-#: views/streams/_form.html.twig:51 views/streams/images/edit.html.twig:26
+#: views/passwords/edit.html.twig:31 views/passwords/forgot.html.twig:43
+#: views/registrations/new.html.twig:52 views/registrations/new.html.twig:80
+#: views/registrations/new.html.twig:114 views/registrations/new.html.twig:152
+#: views/sessions/new.html.twig:32 views/sessions/new.html.twig:67
+#: views/streams/_form.html.twig:20 views/streams/images/edit.html.twig:26
 #: views/streams/views/_form.html.twig:16 views/support/show.html.twig:41
 #: views/support/show.html.twig:67
 msgid "Error:"
 msgstr "Erreur :"
 
-#: views/collections/_form.html.twig:43
+#: views/collections/_form.html.twig:44
 msgid "What’s the purpose of this collection?"
 msgstr "Quelle est la raison d’être de cette collection ?"
 
@@ -844,15 +839,15 @@ msgstr "Quelle est la raison d’être de cette collection ?"
 msgid "(optional)"
 msgstr "(optionnel)"
 
-#: views/collections/_form.html.twig:69 views/streams/_form.html.twig:69
+#: views/collections/_form.html.twig:46 views/streams/_form.html.twig:46
 msgid "You can format the description in Markdown."
 msgstr "Vous pouvez formater la description en Markdown."
 
-#: views/collections/_form.html.twig:76
+#: views/collections/_form.html.twig:52
 msgid "What topics will be covered?"
 msgstr "Quelles thématiques seront abordées ?"
 
-#: views/collections/_form.html.twig:114
+#: views/collections/_form.html.twig:90
 msgid "Show the collection publicly"
 msgstr "Afficher la collection publiquement"
 
@@ -919,8 +914,8 @@ msgstr "Modification d’une collection"
 #: views/collections/followers/edit.html.twig:198
 #: views/collections/groups/edit.html.twig:99 views/groups/edit.html.twig:43
 #: views/links/edit.html.twig:126 views/mastodon/show.html.twig:96
-#: views/my/preferences/edit.html.twig:202 views/my/profile/edit.html.twig:74
-#: views/my/security/show.html.twig:98 views/notes/edit.html.twig:49
+#: views/my/preferences/edit.html.twig:202 views/my/profile/edit.html.twig:50
+#: views/my/security/show.html.twig:98 views/notes/edit.html.twig:27
 #: views/streams/edit.html.twig:9 views/streams/views/edit.html.twig:12
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
@@ -1331,6 +1326,50 @@ msgstr ""
 #: views/collections/show.html.twig:301
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
+
+#: views/components/text_editor.html.twig:15
+msgid "Heading"
+msgstr "Titre"
+
+#: views/components/text_editor.html.twig:16
+msgid "Bold"
+msgstr "Gras"
+
+#: views/components/text_editor.html.twig:17
+msgid "Italic"
+msgstr "Italique"
+
+#: views/components/text_editor.html.twig:18
+msgid "Link"
+msgstr "Lien"
+
+#: views/components/text_editor.html.twig:19
+msgid "Bulleted list"
+msgstr "Liste à puces"
+
+#: views/components/text_editor.html.twig:20
+msgid "Numbered list"
+msgstr "Liste numérotée"
+
+#: views/components/text_editor.html.twig:21
+msgid "Quote"
+msgstr "Citation"
+
+#: views/components/text_editor.html.twig:27
+msgid "bold text"
+msgstr "texte en gras"
+
+#: views/components/text_editor.html.twig:28
+msgid "italic text"
+msgstr "texte en italique"
+
+#: views/components/text_editor.html.twig:29
+msgid "link text"
+msgstr "texte du lien"
+
+#: views/components/text_editor.html.twig:52
+msgid "Formatting"
+msgstr "Mise en forme"
 
 #: views/errors/forbidden.html.twig:3 views/errors/forbidden.html.twig:10
 msgid "Access forbidden"
@@ -1852,13 +1891,13 @@ msgstr "par"
 msgid "%s of %s links"
 msgstr "%s sur %s liens"
 
-#: views/links/collections/_new_note_form.html.twig:3
-#: views/links/show.html.twig:329
+#: views/links/collections/_new_note_form.html.twig:4
+#: views/links/show.html.twig:330
 msgid "What do you retain from this content?"
 msgstr "Que retenez-vous de ce contenu ?"
 
-#: views/links/collections/_new_note_form.html.twig:29
-#: views/links/show.html.twig:353 views/notes/edit.html.twig:43
+#: views/links/collections/_new_note_form.html.twig:6
+#: views/links/show.html.twig:331 views/notes/edit.html.twig:21
 msgid "You can format the content in Markdown and use #tags."
 msgstr "Vous pouvez formater le contenu en Markdown et utiliser des #tags."
 
@@ -2103,7 +2142,7 @@ msgstr "Ce lien étant masqué, les notes sont privées."
 msgid "No notes have yet been taken."
 msgstr "Aucune note n’a encore été prise."
 
-#: views/links/show.html.twig:359
+#: views/links/show.html.twig:337
 msgid "Add a note"
 msgstr "Ajouter une note"
 
@@ -2419,7 +2458,7 @@ msgstr "Votre nom"
 msgid "(public, max. %d characters)"
 msgstr "(public, max. %d caractères)"
 
-#: views/my/profile/edit.html.twig:42
+#: views/my/profile/edit.html.twig:43
 msgid "A few words about you and your monitoring practices"
 msgstr "Quelques mots à propos de vous et de vos pratiques de veille"
 
@@ -2427,7 +2466,7 @@ msgstr "Quelques mots à propos de vous et de vos pratiques de veille"
 msgid "(public, optional)"
 msgstr "(public, optionnel)"
 
-#: views/my/profile/edit.html.twig:68
+#: views/my/profile/edit.html.twig:45
 msgid "You can format this section in Markdown and use #tags."
 msgstr "Vous pouvez formater cette section en Markdown et utiliser des #tags."
 
@@ -2605,7 +2644,7 @@ msgstr "Êtes-vous sur·e de vouloir supprimer cette note ?"
 msgid "Note edition"
 msgstr "Modification d’une note"
 
-#: views/notes/edit.html.twig:19
+#: views/notes/edit.html.twig:20
 msgid "Your note"
 msgstr "Votre note"
 
@@ -3341,19 +3380,19 @@ msgstr "Cette liste est vide."
 msgid "What’s the name of the stream?"
 msgstr "Quelle est le nom du fil ?"
 
-#: views/streams/_form.html.twig:43
+#: views/streams/_form.html.twig:44
 msgid "What’s the purpose of the stream?"
 msgstr "Quelle est la raison d’être du fil ?"
 
-#: views/streams/_form.html.twig:82
+#: views/streams/_form.html.twig:58
 msgid "Show the stream publicly"
 msgstr "Afficher le fil publiquement"
 
-#: views/streams/_form.html.twig:96
+#: views/streams/_form.html.twig:72
 msgid "Flag unread links in the reading menu"
 msgstr "Signaler les liens non lus dans le menu lecture"
 
-#: views/streams/_form.html.twig:100
+#: views/streams/_form.html.twig:76
 msgid ""
 "A dot is displayed next to the stream when it contains unread links from the "
 "last seven days."

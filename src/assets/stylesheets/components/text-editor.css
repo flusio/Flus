@@ -1,0 +1,50 @@
+/* A textarea topped by a toolbar inserting Markdown syntax (see the
+ * "text-editor" Stimulus controller). */
+
+.text-editor {
+    --input-border-color: var(--color-grey-solid);
+
+    background-color: var(--color-base);
+    border: 1px solid var(--input-border-color);
+    border-radius: var(--border-radius);
+
+    transition: border-color 0.2s ease-in-out;
+}
+
+.text-editor:has(textarea[aria-invalid="true"]) {
+    --input-border-color: var(--color-danger-solid);
+}
+
+.text-editor:has(textarea:focus) {
+    outline: var(--outline-width) solid var(--outline-color);
+    outline-offset: var(--outline-offset);
+}
+
+.text-editor__toolbar {
+    display: flex;
+
+    padding: var(--space-smaller);
+
+    flex-wrap: wrap;
+    gap: var(--space-smaller);
+
+    background-color: var(--color-grey-base);
+    border-bottom: 1px solid var(--input-border-color);
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+
+    transition: border-color 0.2s ease-in-out;
+}
+
+.text-editor__toolbar .button {
+    font-size: var(--font-size-smaller);
+}
+
+.text-editor textarea {
+    background-color: transparent;
+    border: none;
+    border-radius: var(--border-radius);
+}
+
+.text-editor textarea:focus {
+    outline: none;
+}

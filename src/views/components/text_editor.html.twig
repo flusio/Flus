@@ -11,7 +11,23 @@
 {% set caption = caption ?? '' %}
 {% set required = required ?? false %}
 
-<div class="form-group">
+{% set tools = [
+    { format: 'heading', label: t('Heading'), icon: 'heading' },
+    { format: 'bold', label: t('Bold'), icon: 'bold', shortcut: 'Control+B' },
+    { format: 'italic', label: t('Italic'), icon: 'italic', shortcut: 'Control+I' },
+    { format: 'link', label: t('Link'), icon: 'link', shortcut: 'Control+K' },
+    { format: 'list', label: t('Bulleted list'), icon: 'list' },
+    { format: 'orderedList', label: t('Numbered list'), icon: 'list-ordered' },
+    { format: 'quote', label: t('Quote'), icon: 'block-quote' },
+] %}
+
+<div
+    class="form-group"
+    data-controller="text-editor"
+    data-text-editor-bold-placeholder-value="{{ t('bold text') }}"
+    data-text-editor-italic-placeholder-value="{{ t('italic text') }}"
+    data-text-editor-link-placeholder-value="{{ t('link text') }}"
+>
     <label for="{{ name }}">
         {{ label }}
 
@@ -29,20 +45,48 @@
         </p>
     {% endif %}
 
-    <textarea
-        id="{{ name }}"
-        name="{{ name }}"
-        {% if required %}required{% endif %}
-        data-controller="text-editor"
-        data-action="text-editor#refresh keyup->autosave#save"
-        {% if caption %}
-            aria-describedby="{{ name }}-caption"
-        {% endif %}
-        {% if form.isInvalid(name) %}
-            aria-errormessage="{{ name }}-error"
-            aria-invalid="true"
-        {% endif %}
-    >{{ attribute(form, name) }}</textarea>
+    <div class="text-editor">
+        <div
+            class="text-editor__toolbar"
+            role="toolbar"
+            aria-label="{{ t('Formatting') }}"
+            aria-controls="{{ name }}"
+            data-text-editor-target="toolbar"
+            data-action="keydown->text-editor#navigate"
+        >
+            {% for tool in tools %}
+                <button
+                    type="button"
+                    class="button button--ghost button--icon"
+                    title="{{ tool.label }}"
+                    {% if tool.shortcut is defined %}
+                        aria-keyshortcuts="{{ tool.shortcut }}"
+                    {% endif %}
+                    data-action="text-editor#apply"
+                    data-text-editor-format-param="{{ tool.format }}"
+                >
+                    {{ icon(tool.icon) }}
+
+                    <span class="sr-only">{{ tool.label }}</span>
+                </button>
+            {% endfor %}
+        </div>
+
+        <textarea
+            id="{{ name }}"
+            name="{{ name }}"
+            {% if required %}required{% endif %}
+            data-text-editor-target="textarea"
+            data-action="text-editor#refresh input->autosave#save keydown->text-editor#shortcut keydown->text-editor#continueLine"
+            {% if caption %}
+                aria-describedby="{{ name }}-caption"
+            {% endif %}
+            {% if form.isInvalid(name) %}
+                aria-errormessage="{{ name }}-error"
+                aria-invalid="true"
+            {% endif %}
+        >{{ attribute(form, name) }}</textarea>
+    </div>
 
     {% if caption %}
         <p id="{{ name }}-caption" class="form-group__caption">

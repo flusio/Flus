@@ -57,7 +57,7 @@
             />
         </div>
 
-        <div class="form-group">
+        <div class="form-group" data-controller="text-editor">
             <label for="message">
                 {{ t('Your message') }}
             </label>
@@ -73,8 +73,8 @@
                 id="message"
                 name="message"
                 required
-                data-controller="text-editor"
-                data-action="text-editor#refresh keyup->autosave#save"
+                data-text-editor-target="textarea"
+                data-action="text-editor#refresh input->autosave#save"
                 aria-describedby="message-desc"
                 {% if form.isInvalid('message') %}
                     aria-errormessage="message-error"
