@@ -14,35 +14,13 @@
         >
             {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
 
-            <div class="form-group">
-                <label for="content">
-                    {{ t('Your note') }}
-                </label>
-
-                {% if form.isInvalid('content') %}
-                    <p id="content-error" class="form-group__error">
-                        {{ t('Error:') }}
-                        {{ form.error('content') }}
-                    </p>
-                {% endif %}
-
-                <textarea
-                    id="content"
-                    name="content"
-                    required
-                    data-controller="text-editor"
-                    data-action="text-editor#refresh keyup->autosave#save"
-                    aria-describedby="content-caption"
-                    {% if form.isInvalid('content') %}
-                        aria-errormessage="content-error"
-                        aria-invalid="true"
-                    {% endif %}
-                >{{ form.content }}</textarea>
-
-                <p id="content-caption" class="form-group__caption">
-                    {{ t('You can format the content in Markdown and use #tags.') }}
-                </p>
-            </div>
+            {{ include('components/text_editor.html.twig', {
+                form: form,
+                name: 'content',
+                label: t('Your note'),
+                caption: t('You can format the content in Markdown and use #tags.'),
+                required: true,
+            }) }}
 
             <div class="text--center">
                 <button type="submit" class="button--primary button--big">

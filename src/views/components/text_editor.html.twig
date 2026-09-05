@@ -1,0 +1,52 @@
+{% types {
+    form: '\\App\\forms\\BaseForm',
+    name: 'string',
+    label: 'string',
+    label_help: 'string',
+    caption: 'string',
+    required: 'boolean',
+} %}
+
+{% set label_help = label_help ?? '' %}
+{% set caption = caption ?? '' %}
+{% set required = required ?? false %}
+
+<div class="form-group">
+    <label for="{{ name }}">
+        {{ label }}
+
+        {% if label_help %}
+            <span class="label__help">
+                {{ label_help }}
+            </span>
+        {% endif %}
+    </label>
+
+    {% if form.isInvalid(name) %}
+        <p id="{{ name }}-error" class="form-group__error">
+            {{ t('Error:') }}
+            {{ form.error(name) }}
+        </p>
+    {% endif %}
+
+    <textarea
+        id="{{ name }}"
+        name="{{ name }}"
+        {% if required %}required{% endif %}
+        data-controller="text-editor"
+        data-action="text-editor#refresh keyup->autosave#save"
+        {% if caption %}
+            aria-describedby="{{ name }}-caption"
+        {% endif %}
+        {% if form.isInvalid(name) %}
+            aria-errormessage="{{ name }}-error"
+            aria-invalid="true"
+        {% endif %}
+    >{{ attribute(form, name) }}</textarea>
+
+    {% if caption %}
+        <p id="{{ name }}-caption" class="form-group__caption">
+            {{ caption }}
+        </p>
+    {% endif %}
+</div>
