@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-09-06 18:21+0200\n"
-"PO-Revision-Date: 2026-09-06 18:21+0200\n"
+"POT-Creation-Date: 2026-09-06 18:46+0200\n"
+"PO-Revision-Date: 2026-09-06 18:46+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -1234,11 +1234,6 @@ msgstr "lecture / écriture"
 #: views/streams/shares/index.html.twig:80
 msgid "Revoke"
 msgstr "Révoquer"
-
-#: views/collections/shares/index.html.twig:167
-#: views/streams/shares/index.html.twig:101
-msgid "Copy"
-msgstr "Copier"
 
 #: views/collections/show.html.twig:21
 #, php-format
