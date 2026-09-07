@@ -36,7 +36,7 @@ class Followers extends BaseController
 
         auth\Access::require($user, 'view', $collection);
 
-        $followed_collection = $user->followedCollection($collection->id);
+        $followed_collection = $user->followedCollection($collection);
 
         $form = new forms\collections\EditFollow(model: $followed_collection, options: [
             'user' => $user,
@@ -76,7 +76,7 @@ class Followers extends BaseController
 
         auth\Access::require($user, 'view', $collection);
 
-        $followed_collection = $user->followedCollection($collection->id);
+        $followed_collection = $user->followedCollection($collection);
 
         $form = new forms\collections\EditFollow(model: $followed_collection, options: [
             'user' => $user,
@@ -146,9 +146,9 @@ class Followers extends BaseController
             return Response::found($from);
         }
 
-        $is_following = $user->isFollowing($collection->id);
+        $is_following = $user->isFollowing($collection);
         if (!$is_following) {
-            $user->follow($collection->id);
+            $user->follow($collection);
         }
 
         return Response::found($from);
@@ -186,9 +186,9 @@ class Followers extends BaseController
             return Response::found($from);
         }
 
-        $is_following = $user->isFollowing($collection->id);
+        $is_following = $user->isFollowing($collection);
         if ($is_following) {
-            $user->unfollow($collection->id);
+            $user->unfollow($collection);
         }
 
         return Response::found($from);

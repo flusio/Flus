@@ -32,8 +32,8 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        $user->follow($source_1->id);
-        $user->follow($source_2->id);
+        $user->follow($source_1);
+        $user->follow($source_2);
 
         $response = $this->appRun('POST', '/sources/unfollow', [
             'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
@@ -41,8 +41,8 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertFalse($user->isFollowing($source_1->id));
-        $this->assertFalse($user->isFollowing($source_2->id));
+        $this->assertFalse($user->isFollowing($source_1));
+        $this->assertFalse($user->isFollowing($source_2));
     }
 
     public function testDeleteRemovesTheSourcesFromTheStreams(): void
@@ -54,7 +54,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        $user->follow($source->id);
+        $user->follow($source);
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
@@ -66,7 +66,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertFalse($user->isFollowing($source->id));
+        $this->assertFalse($user->isFollowing($source));
         $this->assertFalse($stream->hasSource($source));
         $this->assertTrue(models\Stream::exists($stream->id));
     }
@@ -85,8 +85,8 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        $user->follow($selected_source->id);
-        $user->follow($other_source->id);
+        $user->follow($selected_source);
+        $user->follow($other_source);
 
         $response = $this->appRun('POST', '/sources/unfollow', [
             'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
@@ -94,8 +94,8 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertFalse($user->isFollowing($selected_source->id));
-        $this->assertTrue($user->isFollowing($other_source->id));
+        $this->assertFalse($user->isFollowing($selected_source));
+        $this->assertTrue($user->isFollowing($other_source));
     }
 
     public function testDeleteIgnoresNotFollowedSources(): void
@@ -127,7 +127,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        $other_user->follow($source->id);
+        $other_user->follow($source);
 
         $response = $this->appRun('POST', '/sources/unfollow', [
             'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
@@ -135,7 +135,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertTrue($other_user->isFollowing($source->id));
+        $this->assertTrue($other_user->isFollowing($source));
     }
 
     public function testDeleteIgnoresUnknownSourceIds(): void
@@ -147,7 +147,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        $user->follow($source->id);
+        $user->follow($source);
 
         $response = $this->appRun('POST', '/sources/unfollow', [
             'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
@@ -155,7 +155,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertFalse($user->isFollowing($source->id));
+        $this->assertFalse($user->isFollowing($source));
     }
 
     public function testDeleteDoesNothingIfSourceIdsIsEmpty(): void
@@ -167,14 +167,14 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        $user->follow($source->id);
+        $user->follow($source);
 
         $response = $this->appRun('POST', '/sources/unfollow', [
             'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertTrue($user->isFollowing($source->id));
+        $this->assertTrue($user->isFollowing($source));
     }
 
     public function testDeleteRedirectsIfNotConnected(): void
@@ -186,7 +186,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        $user->follow($source->id);
+        $user->follow($source);
 
         $response = $this->appRun('POST', '/sources/unfollow', [
             'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
@@ -194,7 +194,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
-        $this->assertTrue($user->isFollowing($source->id));
+        $this->assertTrue($user->isFollowing($source));
     }
 
     public function testDeleteFailsIfCsrfIsInvalid(): void
@@ -206,7 +206,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        $user->follow($source->id);
+        $user->follow($source);
 
         $response = $this->appRun('POST', '/sources/unfollow', [
             'csrf_token' => 'not the token',
@@ -216,7 +216,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
         $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
-        $this->assertTrue($user->isFollowing($source->id));
+        $this->assertTrue($user->isFollowing($source));
     }
 
     public function testUpdateTimeFilterChangesTheTimeFilterAndRedirects(): void
@@ -233,8 +233,8 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        $user->follow($source_1->id);
-        $user->follow($source_2->id);
+        $user->follow($source_1);
+        $user->follow($source_2);
 
         $response = $this->appRun('POST', '/sources/time-filter', [
             'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
@@ -243,8 +243,8 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertSame('strict', $user->followedCollection($source_1->id)->time_filter);
-        $this->assertSame('strict', $user->followedCollection($source_2->id)->time_filter);
+        $this->assertSame('strict', $user->followedCollection($source_1)->time_filter);
+        $this->assertSame('strict', $user->followedCollection($source_2)->time_filter);
     }
 
     public function testUpdateTimeFilterDoesNotChangeUnselectedSources(): void
@@ -261,8 +261,8 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        $user->follow($selected_source->id);
-        $user->follow($other_source->id);
+        $user->follow($selected_source);
+        $user->follow($other_source);
 
         $response = $this->appRun('POST', '/sources/time-filter', [
             'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
@@ -271,8 +271,8 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertSame('all', $user->followedCollection($selected_source->id)->time_filter);
-        $this->assertSame('normal', $user->followedCollection($other_source->id)->time_filter);
+        $this->assertSame('all', $user->followedCollection($selected_source)->time_filter);
+        $this->assertSame('normal', $user->followedCollection($other_source)->time_filter);
     }
 
     public function testUpdateTimeFilterDoesNotChangeSourcesOfOtherUsers(): void
@@ -285,7 +285,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        $other_user->follow($source->id);
+        $other_user->follow($source);
 
         $response = $this->appRun('POST', '/sources/time-filter', [
             'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
@@ -294,7 +294,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertSame('normal', $other_user->followedCollection($source->id)->time_filter);
+        $this->assertSame('normal', $other_user->followedCollection($source)->time_filter);
     }
 
     public function testUpdateTimeFilterDoesNothingIfSourceIdsIsEmpty(): void
@@ -306,7 +306,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        $user->follow($source->id);
+        $user->follow($source);
 
         $response = $this->appRun('POST', '/sources/time-filter', [
             'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
@@ -314,7 +314,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertSame('normal', $user->followedCollection($source->id)->time_filter);
+        $this->assertSame('normal', $user->followedCollection($source)->time_filter);
     }
 
     public function testUpdateTimeFilterFailsIfTimeFilterIsInvalid(): void
@@ -326,7 +326,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        $user->follow($source->id);
+        $user->follow($source);
 
         $response = $this->appRun('POST', '/sources/time-filter', [
             'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
@@ -337,7 +337,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
         $error = utils\Notification::popError();
         $this->assertStringContainsString('The filter is invalid', $error);
-        $this->assertSame('normal', $user->followedCollection($source->id)->time_filter);
+        $this->assertSame('normal', $user->followedCollection($source)->time_filter);
     }
 
     public function testUpdateTimeFilterFailsIfTimeFilterIsMissing(): void
@@ -349,7 +349,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        $user->follow($source->id);
+        $user->follow($source);
 
         $response = $this->appRun('POST', '/sources/time-filter', [
             'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
@@ -359,7 +359,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
         $error = utils\Notification::popError();
         $this->assertStringContainsString('The filter is required', $error);
-        $this->assertSame('normal', $user->followedCollection($source->id)->time_filter);
+        $this->assertSame('normal', $user->followedCollection($source)->time_filter);
     }
 
     public function testUpdateTimeFilterRedirectsIfNotConnected(): void
@@ -371,7 +371,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        $user->follow($source->id);
+        $user->follow($source);
 
         $response = $this->appRun('POST', '/sources/time-filter', [
             'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
@@ -380,7 +380,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
-        $this->assertSame('normal', $user->followedCollection($source->id)->time_filter);
+        $this->assertSame('normal', $user->followedCollection($source)->time_filter);
     }
 
     public function testUpdateTimeFilterFailsIfCsrfIsInvalid(): void
@@ -392,7 +392,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        $user->follow($source->id);
+        $user->follow($source);
 
         $response = $this->appRun('POST', '/sources/time-filter', [
             'csrf_token' => 'not the token',
@@ -403,6 +403,6 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
         $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
-        $this->assertSame('normal', $user->followedCollection($source->id)->time_filter);
+        $this->assertSame('normal', $user->followedCollection($source)->time_filter);
     }
 }

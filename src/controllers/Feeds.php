@@ -114,9 +114,9 @@ class Feeds extends BaseController
             $feed_fetcher_service->fetch($feed);
         }
 
-        $is_following = $user->isFollowing($feed->id);
+        $is_following = $user->isFollowing($feed);
         if (!$is_following) {
-            $user->follow($feed->id);
+            $user->follow($feed);
         }
 
         return Response::redirect('collection', ['id' => $feed->id]);

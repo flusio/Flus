@@ -710,7 +710,7 @@ class Collection
                 'url' => $this->feed_url,
                 'type' => $this->feed_type,
                 'site_url' => $this->feed_site_url,
-                'is_followed' => $context_user->isFollowing($this->id),
+                'is_followed' => $context_user->isFollowing($this),
                 'publication_frequency_per_year' => $this->publication_frequency_per_year,
             ];
         } else {
@@ -720,7 +720,7 @@ class Collection
                 'description' => $this->description,
                 'group' => $this->groupForUser($context_user->id)?->name,
                 'is_public' => $this->is_public,
-                'is_followed' => $context_user->isFollowing($this->id),
+                'is_followed' => $context_user->isFollowing($this),
                 'publication_frequency_per_year' => $this->publication_frequency_per_year,
             ];
         }

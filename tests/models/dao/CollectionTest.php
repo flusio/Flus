@@ -4,7 +4,6 @@ namespace App\models\dao;
 
 use App\models;
 use tests\factories\CollectionFactory;
-use tests\factories\FollowedCollectionFactory;
 use tests\factories\LinkFactory;
 use tests\factories\StreamFactory;
 use tests\factories\UserFactory;
@@ -193,10 +192,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        FollowedCollectionFactory::create([
-            'collection_id' => $collection->id,
-            'user_id' => $user->id,
-        ]);
+        $user->follow($collection);
 
         $collections = models\Collection::listComputedFollowedByUserId($user->id, []);
 
@@ -213,10 +209,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => false,
         ]);
-        FollowedCollectionFactory::create([
-            'collection_id' => $collection->id,
-            'user_id' => $user->id,
-        ]);
+        $user->follow($collection);
 
         $collections = models\Collection::listComputedFollowedByUserId($user->id, []);
 
@@ -232,10 +225,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        FollowedCollectionFactory::create([
-            'collection_id' => $collection->id,
-            'user_id' => $user->id,
-        ]);
+        $user->follow($collection);
         $link = LinkFactory::create([
             'user_id' => $user->id,
             'is_hidden' => false,
@@ -263,14 +253,8 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'is_public' => true,
         ]);
-        FollowedCollectionFactory::create([
-            'collection_id' => $collection_1->id,
-            'user_id' => $user->id,
-        ]);
-        FollowedCollectionFactory::create([
-            'collection_id' => $collection_2->id,
-            'user_id' => $user->id,
-        ]);
+        $user->follow($collection_1);
+        $user->follow($collection_2);
 
         $collections = models\Collection::listComputedFollowedByUserId($user->id, [], [
             'type' => 'collection',
@@ -294,14 +278,8 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'is_public' => true,
         ]);
-        FollowedCollectionFactory::create([
-            'collection_id' => $collection_1->id,
-            'user_id' => $user->id,
-        ]);
-        FollowedCollectionFactory::create([
-            'collection_id' => $collection_2->id,
-            'user_id' => $user->id,
-        ]);
+        $user->follow($collection_1);
+        $user->follow($collection_2);
 
         $collections = models\Collection::listComputedFollowedByUserId($user->id, [], [
             'type' => 'feed',
@@ -320,10 +298,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        FollowedCollectionFactory::create([
-            'collection_id' => $collection->id,
-            'user_id' => $user->id,
-        ]);
+        $user->follow($collection);
         $link = LinkFactory::create([
             'user_id' => $user->id,
             'is_hidden' => true,
@@ -351,10 +326,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'is_public' => true,
         ]);
-        FollowedCollectionFactory::create([
-            'collection_id' => $collection->id,
-            'user_id' => $user->id,
-        ]);
+        $user->follow($collection);
         $link = LinkFactory::create([
             'user_id' => $user->id,
             'is_hidden' => true,
@@ -379,10 +351,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'is_public' => true,
         ]);
-        FollowedCollectionFactory::create([
-            'collection_id' => $collection->id,
-            'user_id' => $user->id,
-        ]);
+        $user->follow($collection);
 
         $sources = models\Collection::listSourcesByUser($user);
 
@@ -399,10 +368,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => false,
         ]);
-        FollowedCollectionFactory::create([
-            'collection_id' => $collection->id,
-            'user_id' => $user->id,
-        ]);
+        $user->follow($collection);
 
         $sources = models\Collection::listSourcesByUser($user);
 

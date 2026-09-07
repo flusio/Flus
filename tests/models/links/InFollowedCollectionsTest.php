@@ -5,7 +5,6 @@ namespace App\models\links;
 use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\CollectionShareFactory;
-use tests\factories\FollowedCollectionFactory;
 use tests\factories\LinkFactory;
 use tests\factories\UserFactory;
 
@@ -47,10 +46,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection->addLinks([$link1], at: $published_at1);
         $collection->addLinks([$link2], at: $published_at2);
-        FollowedCollectionFactory::create([
-            'user_id' => $this->user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $this->user->follow($collection);
 
         $links = models\Link::listFromFollowedCollections($this->user, max: 50);
 
@@ -79,10 +75,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $published_at);
-        FollowedCollectionFactory::create([
-            'user_id' => $this->user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $this->user->follow($collection);
         CollectionShareFactory::create([
             'user_id' => $this->user->id,
             'collection_id' => $collection->id,
@@ -113,10 +106,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'is_public' => false,
         ]);
         $collection->addLinks([$link], at: $published_at);
-        FollowedCollectionFactory::create([
-            'user_id' => $this->user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $this->user->follow($collection);
         CollectionShareFactory::create([
             'user_id' => $this->user->id,
             'collection_id' => $collection->id,
@@ -152,12 +142,9 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $published_at);
-        FollowedCollectionFactory::create([
-            'created_at' => $followed_at,
-            'user_id' => $this->user->id,
-            'collection_id' => $collection->id,
-            'time_filter' => 'all',
-        ]);
+        $followed_collection = $this->user->follow($collection, time_filter: 'all');
+        $followed_collection->created_at = $followed_at;
+        $followed_collection->save();
 
         $links = models\Link::listFromFollowedCollections($this->user, max: 50);
 
@@ -188,7 +175,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $link1->addCollection($collection, at: $published_at1);
         $link2->addCollection($collection, at: $published_at2);
-        $this->user->follow($collection->id);
+        $this->user->follow($collection);
 
         $links = models\Link::listFromFollowedCollections($this->user, max: 50);
 
@@ -217,10 +204,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $published_at);
-        FollowedCollectionFactory::create([
-            'user_id' => $this->user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $this->user->follow($collection);
 
         $links = models\Link::listFromFollowedCollections($this->user, max: 50);
 
@@ -245,11 +229,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $published_at);
-        FollowedCollectionFactory::create([
-            'user_id' => $this->user->id,
-            'collection_id' => $collection->id,
-            'time_filter' => 'strict',
-        ]);
+        $this->user->follow($collection, time_filter: 'strict');
 
         $links = models\Link::listFromFollowedCollections($this->user, max: 50);
 
@@ -273,11 +253,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $published_at);
-        FollowedCollectionFactory::create([
-            'user_id' => $this->user->id,
-            'collection_id' => $collection->id,
-            'time_filter' => 'none',
-        ]);
+        $this->user->follow($collection, time_filter: 'none');
 
         $links = models\Link::listFromFollowedCollections($this->user, max: 50);
 
@@ -302,10 +278,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $published_at);
-        FollowedCollectionFactory::create([
-            'user_id' => $this->user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $this->user->follow($collection);
 
         $links = models\Link::listFromFollowedCollections($this->user, max: 50);
 
@@ -330,10 +303,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'is_public' => false,
         ]);
         $collection->addLinks([$link], at: $published_at);
-        FollowedCollectionFactory::create([
-            'user_id' => $this->user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $this->user->follow($collection);
 
         $links = models\Link::listFromFollowedCollections($this->user, max: 50);
 
@@ -365,10 +335,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
         $owned_link = $this->user->obtainLink($link);
         $owned_link->save();
         $this->user->markAsReadLater($owned_link);
-        FollowedCollectionFactory::create([
-            'user_id' => $this->user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $this->user->follow($collection);
 
         $links = models\Link::listFromFollowedCollections($this->user, max: 50);
 
@@ -400,10 +367,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
         $owned_link = $this->user->obtainLink($link);
         $owned_link->save();
         $this->user->markAsRead($owned_link);
-        FollowedCollectionFactory::create([
-            'user_id' => $this->user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $this->user->follow($collection);
 
         $links = models\Link::listFromFollowedCollections($this->user, max: 50);
 
@@ -435,10 +399,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
         $owned_link = $this->user->obtainLink($link);
         $owned_link->save();
         $this->user->markAsDismissed($owned_link);
-        FollowedCollectionFactory::create([
-            'user_id' => $this->user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $this->user->follow($collection);
 
         $links = models\Link::listFromFollowedCollections($this->user, max: 50);
 
@@ -468,10 +429,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $published_at);
-        FollowedCollectionFactory::create([
-            'user_id' => $this->user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $this->user->follow($collection);
 
         $links = models\Link::listFromFollowedCollections($this->user, max: 50);
 
@@ -491,10 +449,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $published_at);
-        FollowedCollectionFactory::create([
-            'user_id' => $this->user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $this->user->follow($collection);
 
         $result = models\Link::anyFromFollowedCollections($this->user);
 
@@ -514,10 +469,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $published_at);
-        FollowedCollectionFactory::create([
-            'user_id' => $this->user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $this->user->follow($collection);
 
         $result = models\Link::anyFromFollowedCollections($this->user);
 
@@ -537,11 +489,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $published_at);
-        FollowedCollectionFactory::create([
-            'user_id' => $this->user->id,
-            'collection_id' => $collection->id,
-            'time_filter' => 'none',
-        ]);
+        $this->user->follow($collection, time_filter: 'none');
 
         $result = models\Link::anyFromFollowedCollections($this->user);
 
@@ -561,7 +509,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link->addCollection($collection, at: $published_at);
-        $this->user->follow($collection->id);
+        $this->user->follow($collection);
 
         $result = models\Link::anyFromFollowedCollections($this->user);
 
@@ -581,7 +529,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link->addCollection($collection, at: $published_at);
-        $this->user->follow($collection->id);
+        $this->user->follow($collection);
 
         $result = models\Link::anyFromFollowedCollections($this->user);
 

@@ -232,7 +232,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'feed_site_url' => $feed_url,
             'is_public' => true,
         ]);
-        $user->follow($source->id);
+        $user->follow($source);
 
         $response = $this->appRun('GET', "/streams/{$stream->id}/sources/edit");
 
@@ -293,7 +293,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'feed_site_url' => $feed_url,
             'is_public' => true,
         ]);
-        $user->follow($source->id);
+        $user->follow($source);
 
         $response = $this->appRun('GET', "/streams/{$stream->id}/sources/edit");
 
@@ -329,7 +329,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'feed_site_url' => $feed_url,
             'is_public' => true,
         ]);
-        $other_user->follow($source->id);
+        $other_user->follow($source);
 
         $response = $this->appRun('GET', "/streams/{$stream->id}/sources/edit");
 
@@ -406,7 +406,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $feed = models\Collection::findBy(['type' => 'feed']);
         $this->assertNotNull($feed);
         $this->assertSame($feed_url, $feed->feed_url);
-        $this->assertTrue($user->isFollowing($feed->id));
+        $this->assertTrue($user->isFollowing($feed));
         $this->assertTrue($stream->hasSource($feed));
         $this->assertSame($feed->id, \Minz\Flash::get('focused_source_id'));
     }
@@ -447,7 +447,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'feed_url' => $feed_url,
             'is_public' => true,
         ]);
-        $user->follow($feed->id);
+        $user->follow($feed);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/sources/feeds/new", [
             'csrf_token' => $this->csrfToken(forms\collections\NewFeed::class),
@@ -593,7 +593,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'is_public' => true,
         ]);
-        $user->follow($source->id);
+        $user->follow($source);
 
         $this->assertFalse($stream->hasSource($source));
 
@@ -617,7 +617,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($stream->hasSource($source));
-        $this->assertFalse($user->isFollowing($source->id));
+        $this->assertFalse($user->isFollowing($source));
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/sources/{$source->id}/add", [
             'csrf_token' => $this->csrfToken(forms\streams\AddSource::class),
@@ -625,7 +625,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, "/streams/{$stream->id}/sources/edit");
         $this->assertTrue($stream->hasSource($source));
-        $this->assertTrue($user->isFollowing($source->id));
+        $this->assertTrue($user->isFollowing($source));
     }
 
     public function testAddRedirectsIfNotConnected(): void
@@ -638,7 +638,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'is_public' => true,
         ]);
-        $user->follow($source->id);
+        $user->follow($source);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/sources/{$source->id}/add", [
             'csrf_token' => $this->csrfToken(forms\streams\AddSource::class),
@@ -655,7 +655,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'is_public' => true,
         ]);
-        $user->follow($source->id);
+        $user->follow($source);
 
         $response = $this->appRun('POST', "/streams/unknown/sources/{$source->id}/add", [
             'csrf_token' => $this->csrfToken(forms\streams\AddSource::class),
@@ -729,7 +729,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'is_public' => true,
         ]);
-        $user->follow($source->id);
+        $user->follow($source);
 
         $this->assertFalse($stream->hasSource($source));
 
@@ -890,8 +890,8 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'is_public' => true,
         ]);
-        $user->follow($source_1->id);
-        $user->follow($source_2->id);
+        $user->follow($source_1);
+        $user->follow($source_2);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/sources/add", [
             'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
@@ -913,7 +913,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'is_public' => true,
         ]);
-        $user->follow($source->id);
+        $user->follow($source);
         $stream->addSource($source);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/sources/add", [
@@ -943,7 +943,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/');
         $this->assertFalse($stream->hasSource($source));
-        $this->assertFalse($user->isFollowing($source->id));
+        $this->assertFalse($user->isFollowing($source));
     }
 
     public function testAddAllDoesNothingIfSourceIdsIsEmpty(): void
@@ -956,7 +956,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'is_public' => true,
         ]);
-        $user->follow($source->id);
+        $user->follow($source);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/sources/add", [
             'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
@@ -976,7 +976,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'is_public' => true,
         ]);
-        $user->follow($source->id);
+        $user->follow($source);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/sources/add", [
             'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
@@ -994,7 +994,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'is_public' => true,
         ]);
-        $user->follow($source->id);
+        $user->follow($source);
 
         $response = $this->appRun('POST', '/streams/unknown/sources/add', [
             'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
@@ -1015,7 +1015,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'is_public' => true,
         ]);
-        $user->follow($source->id);
+        $user->follow($source);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/sources/add", [
             'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
@@ -1036,7 +1036,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'is_public' => true,
         ]);
-        $user->follow($source->id);
+        $user->follow($source);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/sources/add", [
             'csrf_token' => 'not the token',
@@ -1062,8 +1062,8 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'is_public' => true,
         ]);
-        $user->follow($source_1->id);
-        $user->follow($source_2->id);
+        $user->follow($source_1);
+        $user->follow($source_2);
         $stream->addSource($source_1);
         $stream->addSource($source_2);
 
@@ -1087,7 +1087,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'is_public' => true,
         ]);
-        $user->follow($source->id);
+        $user->follow($source);
         $stream->addSource($source);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/sources/remove", [
@@ -1097,7 +1097,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/');
         $this->assertFalse($stream->hasSource($source));
-        $this->assertTrue($user->isFollowing($source->id));
+        $this->assertTrue($user->isFollowing($source));
     }
 
     public function testRemoveAllDoesNotTouchTheOtherStreams(): void
@@ -1113,7 +1113,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'is_public' => true,
         ]);
-        $user->follow($source->id);
+        $user->follow($source);
         $stream->addSource($source);
         $other_stream->addSource($source);
 
@@ -1137,7 +1137,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'is_public' => true,
         ]);
-        $user->follow($source->id);
+        $user->follow($source);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/sources/remove", [
             'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
@@ -1158,7 +1158,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'is_public' => true,
         ]);
-        $user->follow($source->id);
+        $user->follow($source);
         $stream->addSource($source);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/sources/remove", [
@@ -1177,7 +1177,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'is_public' => true,
         ]);
-        $user->follow($source->id);
+        $user->follow($source);
 
         $response = $this->appRun('POST', '/streams/unknown/sources/remove', [
             'csrf_token' => $this->csrfToken(forms\sources\BulkSelection::class),
@@ -1198,7 +1198,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'is_public' => true,
         ]);
-        $other_user->follow($source->id);
+        $other_user->follow($source);
         $stream->addSource($source);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/sources/remove", [
@@ -1220,7 +1220,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'is_public' => true,
         ]);
-        $user->follow($source->id);
+        $user->follow($source);
         $stream->addSource($source);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/sources/remove", [

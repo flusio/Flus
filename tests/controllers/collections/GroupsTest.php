@@ -6,7 +6,6 @@ use App\forms;
 use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\CollectionShareFactory;
-use tests\factories\FollowedCollectionFactory;
 use tests\factories\GroupFactory;
 use tests\factories\UserFactory;
 
@@ -69,10 +68,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'name' => $collection_name,
             'is_public' => true,
         ]);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $user->follow($collection);
 
         $response = $this->appRun('GET', "/collections/{$collection->id}/group");
 
@@ -102,11 +98,9 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
             'group_id' => $other_group->id,
         ]);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-            'group_id' => $group->id,
-        ]);
+        $followed_collection = $user->follow($collection);
+        $followed_collection->group_id = $group->id;
+        $followed_collection->save();
 
         $response = $this->appRun('GET', "/collections/{$collection->id}/group");
 
@@ -230,11 +224,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
             'group_id' => null,
         ]);
-        $followed_collection = FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-            'group_id' => null,
-        ]);
+        $followed_collection = $user->follow($collection);
 
         $this->assertSame(0, models\Group::count());
 

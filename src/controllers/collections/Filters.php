@@ -32,7 +32,7 @@ class Filters extends BaseController
 
         auth\Access::require($user, 'view', $collection);
 
-        $followed_collection = $user->followedCollection($collection->id);
+        $followed_collection = $user->followedCollection($collection);
         $form = new forms\collections\EditTimeFilter(model: $followed_collection);
 
         return Response::ok('collections/filters/edit.html.twig', [
@@ -65,7 +65,7 @@ class Filters extends BaseController
 
         auth\Access::require($user, 'view', $collection);
 
-        $followed_collection = $user->followedCollection($collection->id);
+        $followed_collection = $user->followedCollection($collection);
         $form = new forms\collections\EditTimeFilter(model: $followed_collection);
 
         $form->handleRequest($request);

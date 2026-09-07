@@ -4,7 +4,6 @@ namespace App\models;
 
 use App\models;
 use tests\factories\CollectionFactory;
-use tests\factories\FollowedCollectionFactory;
 use tests\factories\LinkFactory;
 use tests\factories\UserFactory;
 

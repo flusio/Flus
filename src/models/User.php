@@ -317,7 +317,7 @@ class User
             $collection->group_id = $group_id;
             $collection->save();
         } else {
-            $followed_collection = $this->followedCollection($collection->id);
+            $followed_collection = $this->followedCollection($collection);
             $followed_collection->group_id = $group_id;
             $followed_collection->save();
         }
@@ -498,22 +498,22 @@ class User
      * @throws \Minz\Errors\MissingRecordError
      *     If the user is not following the collection.
      */
-    public function followedCollection(string $collection_id): FollowedCollection
+    public function followedCollection(Collection $collection): FollowedCollection
     {
         return FollowedCollection::requireBy([
             'user_id' => $this->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
         ]);
     }
 
     /**
      * Return true if the current user is following the given collection.
      */
-    public function isFollowing(string $collection_id): bool
+    public function isFollowing(Collection $collection): bool
     {
         return FollowedCollection::existsBy([
             'user_id' => $this->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
         ]);
     }
 
@@ -522,24 +522,23 @@ class User
      *
      * Be careful to check isFollowing() is returning false before calling this
      * method.
-     *
-     * Return the id of the created FollowedCollection.
      */
-    public function follow(string $collection_id): int
+    public function follow(Collection $collection, string $time_filter = 'normal'): FollowedCollection
     {
-        $followed_collection = new FollowedCollection($this->id, $collection_id);
+        $followed_collection = new FollowedCollection($this->id, $collection->id);
+        $followed_collection->time_filter = $time_filter;
         $followed_collection->save();
-        return $followed_collection->id;
+        return $followed_collection;
     }
 
     /**
      * Make the current user unfollowing the given collection.
      */
-    public function unfollow(string $collection_id): void
+    public function unfollow(Collection $collection): void
     {
         FollowedCollection::deleteBy([
             'user_id' => $this->id,
-            'collection_id' => $collection_id,
+            'collection_id' => $collection->id,
         ]);
     }
 

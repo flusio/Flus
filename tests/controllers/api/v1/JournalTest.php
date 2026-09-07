@@ -113,7 +113,7 @@ class JournalTest extends \PHPUnit\Framework\TestCase
         ]);
         $link1->addCollection($collection);
         $link2->addCollection($collection);
-        $user->follow($collection->id);
+        $user->follow($collection);
 
         $response = $this->apiRun('POST', '/api/v1/journal');
 
@@ -143,7 +143,7 @@ class JournalTest extends \PHPUnit\Framework\TestCase
         ]);
         $link1->addCollection($collection);
         $link2->addCollection($collection);
-        $user->follow($collection->id);
+        $user->follow($collection);
 
         $response = $this->apiRun('POST', '/api/v1/journal');
 

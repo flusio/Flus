@@ -44,9 +44,9 @@ class Follow extends BaseController
             ]);
         }
 
-        $is_following = $user->isFollowing($collection->id);
+        $is_following = $user->isFollowing($collection);
         if (!$is_following) {
-            $user->follow($collection->id);
+            $user->follow($collection);
         }
 
         return Response::json(200, []);
@@ -78,9 +78,9 @@ class Follow extends BaseController
         // This is to prevent the case where the user has lost the access to
         // the collection, but wouldn't be able to unfollow it.
 
-        $is_following = $user->isFollowing($collection->id);
+        $is_following = $user->isFollowing($collection);
         if ($is_following) {
-            $user->unfollow($collection->id);
+            $user->unfollow($collection);
         }
 
         return Response::json(200, []);

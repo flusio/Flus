@@ -5,7 +5,6 @@ namespace App\cli;
 use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\CollectionShareFactory;
-use tests\factories\FollowedCollectionFactory;
 use tests\factories\GroupFactory;
 use tests\factories\LinkFactory;
 use tests\factories\LinkToCollectionFactory;
@@ -298,21 +297,13 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
         $collection_3 = CollectionFactory::create([
             'is_public' => true,
         ]);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection_1->id,
-            'group_id' => $group->id,
-        ]);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection_2->id,
-            'group_id' => $group->id,
-        ]);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection_3->id,
-            'group_id' => null,
-        ]);
+        $followed_collection_1 = $user->follow($collection_1);
+        $followed_collection_1->group_id = $group->id;
+        $followed_collection_1->save();
+        $followed_collection_2 = $user->follow($collection_2);
+        $followed_collection_2->group_id = $group->id;
+        $followed_collection_2->save();
+        $user->follow($collection_3);
 
         $response = $this->appRun('CLI', '/migrations/setup-streams', [
             'user' => $user->id,
@@ -343,11 +334,9 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'is_public' => true,
         ]);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-            'group_id' => $group->id,
-        ]);
+        $followed_collection = $user->follow($collection);
+        $followed_collection->group_id = $group->id;
+        $followed_collection->save();
 
         $response = $this->appRun('CLI', '/migrations/setup-streams', [
             'user' => $user->id,

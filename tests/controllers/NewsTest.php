@@ -6,7 +6,6 @@ use App\forms;
 use App\models;
 use App\utils;
 use tests\factories\CollectionFactory;
-use tests\factories\FollowedCollectionFactory;
 use tests\factories\LinkFactory;
 use tests\factories\UserFactory;
 
@@ -176,10 +175,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $created_at);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $user->follow($collection);
 
         $response = $this->appRun('POST', '/news', [
             'csrf_token' => $this->csrfToken(forms\FillNews::class),
@@ -221,10 +217,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection->addLinks([$link1, $link2], at: \Minz\Time::ago(1, 'day'));
         $collection->addLinks([$link3], at: \Minz\Time::ago(2, 'days'));
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $user->follow($collection);
 
         $response = $this->appRun('POST', '/news', [
             'csrf_token' => $this->csrfToken(forms\FillNews::class),
@@ -264,10 +257,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $created_at);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $user->follow($collection);
 
         $response = $this->appRun('POST', '/news', [
             'csrf_token' => $this->csrfToken(forms\FillNews::class),
@@ -314,10 +304,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $created_at);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $user->follow($collection);
 
         $response = $this->appRun('POST', '/news', [
             'csrf_token' => $this->csrfToken(forms\FillNews::class),
@@ -351,10 +338,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $created_at);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $user->follow($collection);
 
         $response = $this->appRun('POST', '/news', [
             'csrf_token' => 'not the token',

@@ -6,7 +6,6 @@ use App\forms;
 use App\models;
 use tests\factories\UserFactory;
 use tests\factories\CollectionFactory;
-use tests\factories\FollowedCollectionFactory;
 
 class FiltersTest extends \PHPUnit\Framework\TestCase
 {
@@ -29,10 +28,7 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
             'name' => $collection_name,
         ]);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $user->follow($collection);
 
         $response = $this->appRun('GET', "/collections/{$collection->id}/filter");
 
@@ -53,10 +49,7 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
             'name' => $collection_name,
         ]);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $user->follow($collection);
 
         $response = $this->appRun('GET', "/collections/{$collection->id}/filter");
 
@@ -75,10 +68,7 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
             'is_public' => false,
             'name' => $collection_name,
         ]);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $user->follow($collection);
 
         $response = $this->appRun('GET', "/collections/{$collection->id}/filter");
 
@@ -116,11 +106,7 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $followed_collection = FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-            'time_filter' => $old_time_filter,
-        ]);
+        $followed_collection = $user->follow($collection, time_filter: $old_time_filter);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/filter", [
             'csrf_token' => $this->csrfToken(forms\collections\EditTimeFilter::class),
@@ -145,11 +131,7 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $followed_collection = FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-            'time_filter' => $old_time_filter,
-        ]);
+        $followed_collection = $user->follow($collection, time_filter: $old_time_filter);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/filter", [
             'csrf_token' => $this->csrfToken(forms\collections\EditTimeFilter::class),
@@ -174,11 +156,7 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => false,
         ]);
-        $followed_collection = FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-            'time_filter' => $old_time_filter,
-        ]);
+        $followed_collection = $user->follow($collection, time_filter: $old_time_filter);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/filter", [
             'csrf_token' => $this->csrfToken(forms\collections\EditTimeFilter::class),
@@ -225,11 +203,7 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $followed_collection = FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-            'time_filter' => $old_time_filter,
-        ]);
+        $followed_collection = $user->follow($collection, time_filter: $old_time_filter);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/filter", [
             'csrf_token' => 'not the token',
@@ -255,11 +229,7 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $followed_collection = FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-            'time_filter' => $old_time_filter,
-        ]);
+        $followed_collection = $user->follow($collection, time_filter: $old_time_filter);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/filter", [
             'csrf_token' => $this->csrfToken(forms\collections\EditTimeFilter::class),
@@ -284,11 +254,7 @@ class FiltersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $followed_collection = FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-            'time_filter' => $old_time_filter,
-        ]);
+        $followed_collection = $user->follow($collection, time_filter: $old_time_filter);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/filter", [
             'csrf_token' => $this->csrfToken(forms\collections\EditTimeFilter::class),

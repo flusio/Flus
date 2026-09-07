@@ -20,12 +20,12 @@ class FollowTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
 
-        $this->assertFalse($user->isFollowing($collection->id));
+        $this->assertFalse($user->isFollowing($collection));
 
         $response = $this->apiRun('POST', "/api/v1/collections/{$collection->id}/follow");
 
         $this->assertResponseCode($response, 200);
-        $this->assertTrue($user->isFollowing($collection->id));
+        $this->assertTrue($user->isFollowing($collection));
     }
 
     public function testCreateFailsIfTheCollectionIsNotAccessible(): void
@@ -38,12 +38,12 @@ class FollowTest extends \PHPUnit\Framework\TestCase
             'is_public' => false,
         ]);
 
-        $this->assertFalse($user->isFollowing($collection->id));
+        $this->assertFalse($user->isFollowing($collection));
 
         $response = $this->apiRun('POST', "/api/v1/collections/{$collection->id}/follow");
 
         $this->assertResponseCode($response, 403);
-        $this->assertFalse($user->isFollowing($collection->id));
+        $this->assertFalse($user->isFollowing($collection));
         $this->assertApiResponse($response, [
             'error' => 'You cannot follow the collection.',
         ]);
@@ -71,12 +71,12 @@ class FollowTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
 
-        $this->assertFalse($user->isFollowing($collection->id));
+        $this->assertFalse($user->isFollowing($collection));
 
         $response = $this->apiRun('POST', "/api/v1/collections/{$collection->id}/follow");
 
         $this->assertResponseCode($response, 401);
-        $this->assertFalse($user->isFollowing($collection->id));
+        $this->assertFalse($user->isFollowing($collection));
         $this->assertApiResponse($response, [
             'error' => 'The request is not authenticated.',
         ]);
@@ -91,14 +91,14 @@ class FollowTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        $user->follow($collection->id);
+        $user->follow($collection);
 
-        $this->assertTrue($user->isFollowing($collection->id));
+        $this->assertTrue($user->isFollowing($collection));
 
         $response = $this->apiRun('DELETE', "/api/v1/collections/{$collection->id}/follow");
 
         $this->assertResponseCode($response, 200);
-        $this->assertFalse($user->isFollowing($collection->id));
+        $this->assertFalse($user->isFollowing($collection));
     }
 
     public function testDeleteFailsIfTheCollectionDoesNotExist(): void
@@ -122,14 +122,14 @@ class FollowTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        $user->follow($collection->id);
+        $user->follow($collection);
 
-        $this->assertTrue($user->isFollowing($collection->id));
+        $this->assertTrue($user->isFollowing($collection));
 
         $response = $this->apiRun('DELETE', "/api/v1/collections/{$collection->id}/follow");
 
         $this->assertResponseCode($response, 401);
-        $this->assertTrue($user->isFollowing($collection->id));
+        $this->assertTrue($user->isFollowing($collection));
         $this->assertApiResponse($response, [
             'error' => 'The request is not authenticated.',
         ]);

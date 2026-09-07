@@ -37,8 +37,8 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
             'feed_url' => $feed_url,
         ]);
-        $user->follow($collection->id);
-        $user->follow($feed->id);
+        $user->follow($collection);
+        $user->follow($feed);
 
         $response = $this->appRun('GET', '/sources');
 
@@ -62,7 +62,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'name' => $collection_name,
             'is_public' => false,
         ]);
-        $user->follow($collection->id);
+        $user->follow($collection);
 
         $response = $this->appRun('GET', '/sources');
 
@@ -106,7 +106,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
                 'is_public' => true,
                 'feed_url' => $feed_url,
             ]);
-            $user->follow($feed->id);
+            $user->follow($feed);
             $stream->addSource($feed);
 
             // The collections are listed as well: contrary to the feeds, they
@@ -116,7 +116,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
                 'type' => 'collection',
                 'is_public' => true,
             ]);
-            $user->follow($collection->id);
+            $user->follow($collection);
             $stream->addSource($collection);
         }
 

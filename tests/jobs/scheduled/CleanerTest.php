@@ -6,7 +6,6 @@ use App\http;
 use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\FetchLogFactory;
-use tests\factories\FollowedCollectionFactory;
 use tests\factories\LinkFactory;
 use tests\factories\SessionFactory;
 use tests\factories\TokenFactory;
@@ -374,10 +373,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'user_id' => null,
         ]);
-        FollowedCollectionFactory::create([
-            'collection_id' => $collection->id,
-            'user_id' => $user->id,
-        ]);
+        $user->follow($collection);
 
         $cleaner_job->perform();
 
@@ -507,9 +503,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $collection->addLinks([$link_1], at: $published_at_1);
         $collection->addLinks([$link_2], at: $published_at_2);
         // follow the feed, otherwise the cleaner may delete it
-        FollowedCollectionFactory::create([
-            'collection_id' => $collection->id,
-        ]);
+        UserFactory::create()->follow($collection);
 
         $cleaner_job->perform();
 
@@ -538,9 +532,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection->addLinks([$link], at: $published_at);
         // follow the feed, otherwise the cleaner may delete it
-        FollowedCollectionFactory::create([
-            'collection_id' => $collection->id,
-        ]);
+        UserFactory::create()->follow($collection);
 
         $cleaner_job->perform();
 
@@ -571,9 +563,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $collection->addLinks([$link_1], at: $published_at_1);
         $collection->addLinks([$link_2], at: $published_at_2);
         // follow the feed, otherwise the cleaner may delete it
-        FollowedCollectionFactory::create([
-            'collection_id' => $collection->id,
-        ]);
+        UserFactory::create()->follow($collection);
 
         $cleaner_job->perform();
 
@@ -600,9 +590,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection->addLinks([$link], at: $published_at);
         // follow the feed, otherwise the cleaner may delete it
-        FollowedCollectionFactory::create([
-            'collection_id' => $collection->id,
-        ]);
+        UserFactory::create()->follow($collection);
 
         $cleaner_job->perform();
 
@@ -646,12 +634,9 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         // deletion is done per feed and not globally.
         $collection_2->addLinks([$link_3], at: $published_at_older);
         // follow the feeds, otherwise the cleaner may delete them
-        FollowedCollectionFactory::create([
-            'collection_id' => $collection_1->id,
-        ]);
-        FollowedCollectionFactory::create([
-            'collection_id' => $collection_2->id,
-        ]);
+        $follower = UserFactory::create();
+        $follower->follow($collection_1);
+        $follower->follow($collection_2);
 
         $cleaner_job->perform();
 

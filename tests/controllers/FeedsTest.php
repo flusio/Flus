@@ -6,7 +6,6 @@ use App\forms;
 use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\GroupFactory;
-use tests\factories\FollowedCollectionFactory;
 use tests\factories\UserFactory;
 
 class FeedsTest extends \PHPUnit\Framework\TestCase
@@ -33,10 +32,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
             'feed_url' => $feed_url,
         ]);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $user->follow($collection);
 
         $response = $this->appRun('GET', '/feeds');
 
@@ -61,11 +57,9 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
             'feed_url' => $feed_url,
         ]);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-            'group_id' => $group->id
-        ]);
+        $followed_collection = $user->follow($collection);
+        $followed_collection->group_id = $group->id;
+        $followed_collection->save();
 
         $response = $this->appRun('GET', '/feeds');
 
@@ -86,7 +80,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
             'feed_url' => $feed_url,
         ]);
-        $user->follow($collection->id);
+        $user->follow($collection);
 
         $response = $this->appRun('GET', '/feeds');
 
@@ -108,10 +102,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'is_public' => false,
             'feed_url' => $feed_url,
         ]);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $user->follow($collection);
 
         $response = $this->appRun('GET', '/feeds');
 
@@ -131,10 +122,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
             'feed_url' => $feed_url,
         ]);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $user->follow($collection);
 
         $response = $this->appRun('GET', '/feeds');
 
@@ -177,7 +165,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($collection);
         $this->assertResponseCode($response, 302, "/collections/{$collection->id}");
         $this->assertSame($feed_url, $collection->feed_url);
-        $this->assertTrue($user->isFollowing($collection->id));
+        $this->assertTrue($user->isFollowing($collection));
     }
 
     public function testCreateAutodetectsFeedUrls(): void

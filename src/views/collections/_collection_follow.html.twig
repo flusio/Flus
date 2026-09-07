@@ -29,7 +29,7 @@
     </a>
 
     <div class="collection__footer">
-        {% if app.user.isFollowing(collection.id) %}
+        {% if app.user.isFollowing(collection) %}
             {{ include('collections/_unfollow_form.html.twig', {
                 button_class: 'button--big',
                 preserve_scroll: true,

@@ -232,7 +232,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         ]);
         $this->assertNotNull($user);
         $this->assertNotNull($feed);
-        $this->assertTrue($user->isFollowing($feed->id));
+        $this->assertTrue($user->isFollowing($feed));
     }
 
     public function testCreateImportsBookmarksIfDefaultBookmarksExist(): void

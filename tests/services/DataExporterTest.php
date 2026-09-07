@@ -5,7 +5,6 @@ namespace App\services;
 use App\utils;
 use tests\factories\CollectionFactory;
 use tests\factories\CollectionToTopicFactory;
-use tests\factories\FollowedCollectionFactory;
 use tests\factories\GroupFactory;
 use tests\factories\LinkFactory;
 use tests\factories\NoteFactory;
@@ -119,21 +118,11 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection_1->id,
-            'time_filter' => 'all',
-        ]);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection_2->id,
-            'time_filter' => 'strict',
-        ]);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection_3->id,
-            'group_id' => $group->id,
-        ]);
+        $user->follow($collection_1, time_filter: 'all');
+        $user->follow($collection_2, time_filter: 'strict');
+        $followed_collection_3 = $user->follow($collection_3);
+        $followed_collection_3->group_id = $group->id;
+        $followed_collection_3->save();
 
         $filepath = $data_exporter->export($user->id);
 

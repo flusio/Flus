@@ -61,7 +61,7 @@ class PreloaderTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'type' => 'feed',
         ]);
-        $user->follow($collection->id);
+        $user->follow($collection);
         $stream_1 = StreamFactory::create([
             'user_id' => $user->id,
         ]);
@@ -85,7 +85,7 @@ class PreloaderTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'type' => 'feed',
         ]);
-        $user->follow($collection->id);
+        $user->follow($collection);
 
         Preloader::for([$collection])->countStreamsFor($user);
 
@@ -99,8 +99,8 @@ class PreloaderTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'type' => 'feed',
         ]);
-        $user->follow($collection->id);
-        $other_user->follow($collection->id);
+        $user->follow($collection);
+        $other_user->follow($collection);
         $stream = StreamFactory::create([
             'user_id' => $other_user->id,
         ]);
@@ -128,14 +128,14 @@ class PreloaderTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'type' => 'feed',
         ]);
-        $user->follow($collection->id);
-        $follow = $user->followedCollection($collection->id);
+        $user->follow($collection);
+        $follow = $user->followedCollection($collection);
         $follow->time_filter = 'strict';
         $follow->save();
 
         Preloader::for([$collection])->followsFor($user);
 
-        $user->unfollow($collection->id);
+        $user->unfollow($collection);
 
         $this->assertSame('strict', $collection->timeFilterByUser($user));
     }
@@ -159,8 +159,8 @@ class PreloaderTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'type' => 'feed',
         ]);
-        $other_user->follow($collection->id);
-        $follow = $other_user->followedCollection($collection->id);
+        $other_user->follow($collection);
+        $follow = $other_user->followedCollection($collection);
         $follow->time_filter = 'strict';
         $follow->save();
 
@@ -175,11 +175,11 @@ class PreloaderTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'type' => 'feed',
         ]);
-        $user->follow($collection->id);
+        $user->follow($collection);
 
         Preloader::for([$collection])->followsFor($user);
 
-        $user->unfollow($collection->id);
+        $user->unfollow($collection);
 
         $this->assertTrue($collection->isFollowedBy($user));
     }

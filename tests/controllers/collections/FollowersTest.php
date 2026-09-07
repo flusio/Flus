@@ -7,7 +7,6 @@ use App\models;
 use App\utils;
 use tests\factories\CollectionFactory;
 use tests\factories\CollectionShareFactory;
-use tests\factories\FollowedCollectionFactory;
 use tests\factories\StreamFactory;
 use tests\factories\UserFactory;
 
@@ -32,7 +31,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
             'name' => $collection_name,
         ]);
-        $user->follow($collection->id);
+        $user->follow($collection);
         /** @var string */
         $stream_name = $this->fake('text', 50);
         StreamFactory::create([
@@ -59,7 +58,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             // At least one link per day.
             'publication_frequency_per_year' => 400,
         ]);
-        $user->follow($collection->id);
+        $user->follow($collection);
 
         $response = $this->appRun('GET', "/collections/{$collection->id}/follow/edit");
 
@@ -81,7 +80,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             // At least three links per day.
             'publication_frequency_per_year' => 3 * 365,
         ]);
-        $user->follow($collection->id);
+        $user->follow($collection);
 
         $response = $this->appRun('GET', "/collections/{$collection->id}/follow/edit");
 
@@ -100,7 +99,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
             'publication_frequency_per_year' => 0,
         ]);
-        $user->follow($collection->id);
+        $user->follow($collection);
 
         $response = $this->appRun('GET', "/collections/{$collection->id}/follow/edit");
 
@@ -132,7 +131,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => false,
         ]);
-        $user->follow($collection->id);
+        $user->follow($collection);
 
         $response = $this->appRun('GET', "/collections/{$collection->id}/follow/edit");
 
@@ -163,8 +162,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $user->follow($collection->id);
-        $followed_collection = $user->followedCollection($collection->id);
+        $followed_collection = $user->follow($collection);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/follow/edit", [
             'csrf_token' => $this->csrfToken(forms\collections\EditFollow::class),
@@ -185,7 +183,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $user->follow($collection->id);
+        $user->follow($collection);
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
@@ -259,7 +257,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $user->follow($collection->id);
+        $user->follow($collection);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/follow/edit", [
             'csrf_token' => $this->csrfToken(forms\collections\EditFollow::class),
@@ -283,7 +281,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $user->follow($collection->id);
+        $user->follow($collection);
         $stream = StreamFactory::create([
             'user_id' => $user->id,
             'name' => 'My stream',
@@ -309,7 +307,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $user->follow($collection->id);
+        $user->follow($collection);
         $stream = StreamFactory::create([
             'user_id' => $user->id,
             'name' => 'My stream',
@@ -336,7 +334,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $user->follow($collection->id);
+        $user->follow($collection);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/follow/edit", [
             'csrf_token' => $this->csrfToken(forms\collections\EditFollow::class),
@@ -357,8 +355,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $user->follow($collection->id);
-        $followed_collection = $user->followedCollection($collection->id);
+        $followed_collection = $user->follow($collection);
         $stream_name = str_repeat('a', models\Stream::NAME_MAX_LENGTH + 1);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/follow/edit", [
@@ -383,7 +380,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $user->follow($collection->id);
+        $user->follow($collection);
         $stream = StreamFactory::create([
             'user_id' => $other_user->id,
         ]);
@@ -407,8 +404,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $user->follow($collection->id);
-        $followed_collection = $user->followedCollection($collection->id);
+        $followed_collection = $user->follow($collection);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/follow/edit", [
             'csrf_token' => $this->csrfToken(forms\collections\EditFollow::class),
@@ -430,8 +426,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $user->follow($collection->id);
-        $followed_collection = $user->followedCollection($collection->id);
+        $followed_collection = $user->follow($collection);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/follow/edit", [
             'csrf_token' => 'not the token',
@@ -576,10 +571,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $user->follow($collection);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/unfollow", [
             'csrf_token' => $this->csrfToken(forms\collections\UnfollowCollection::class),
@@ -598,10 +590,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => false,
         ]);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $user->follow($collection);
         CollectionShareFactory::create([
             'user_id' => $user->id,
             'collection_id' => $collection->id,
@@ -626,10 +615,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => false,
         ]);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $user->follow($collection);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/unfollow", [
             'csrf_token' => $this->csrfToken(forms\collections\UnfollowCollection::class),
@@ -648,10 +634,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $user->follow($collection);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/unfollow", [
             'csrf_token' => $this->csrfToken(forms\collections\UnfollowCollection::class),
@@ -670,10 +653,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $user->follow($collection);
 
         $response = $this->appRun('POST', '/collections/unknown/unfollow', [
             'csrf_token' => $this->csrfToken(forms\collections\UnfollowCollection::class),
@@ -692,10 +672,7 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'is_public' => true,
         ]);
-        FollowedCollectionFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection->id,
-        ]);
+        $user->follow($collection);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/unfollow", [
             'csrf_token' => 'not the token',
