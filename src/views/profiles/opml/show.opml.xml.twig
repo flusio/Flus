@@ -7,7 +7,7 @@
 
     <body>
         {% for collection in collections %}
-            {{ include('collections/_collection.opml.xml.twig') }}
+            {{ include('collections/_collection.opml.xml.twig', { with_time_filter: false }) }}
         {% endfor %}
     </body>
 </opml>
