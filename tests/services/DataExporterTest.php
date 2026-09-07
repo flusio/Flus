@@ -11,6 +11,7 @@ use tests\factories\NoteFactory;
 use tests\factories\StreamFactory;
 use tests\factories\TopicFactory;
 use tests\factories\UserFactory;
+use tests\factories\ViewFactory;
 
 class DataExporterTest extends \PHPUnit\Framework\TestCase
 {
@@ -269,6 +270,73 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, count($feed->entries));
         $entry = $feed->entries[0];
         $this->assertSame($link_url, $entry->link);
+    }
+
+    public function testExportCreatesStreamsFiles(): void
+    {
+        $data_exporter = new DataExporter($this->exportations_path);
+        $user = UserFactory::create();
+        $other_user = UserFactory::create();
+        /** @var string */
+        $stream_name = $this->fake('sentence');
+        /** @var string */
+        $stream_description = $this->fake('paragraph');
+        /** @var string */
+        $feed_url = $this->fake('url');
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+            'name' => $stream_name,
+            'description' => $stream_description,
+            'is_public' => true,
+            'display_unread_in_sidenav' => false,
+        ]);
+        $collection_1 = CollectionFactory::create([
+            'type' => 'collection',
+            'name' => 'A collection',
+            'is_public' => true,
+        ]);
+        $collection_2 = CollectionFactory::create([
+            'type' => 'feed',
+            'name' => 'B feed',
+            'is_public' => true,
+            'feed_url' => $feed_url,
+        ]);
+        $stream->addSource($collection_1);
+        $stream->addSource($collection_2);
+        ViewFactory::create([
+            'user_id' => $user->id,
+            'stream_id' => $stream->id,
+            'name' => 'My view',
+            'parameters' => ['status' => 'unread'],
+        ]);
+        $stream->shareWith($other_user);
+
+        $filepath = $data_exporter->export($user->id);
+
+        $stream_content = $this->zipGetContents($filepath, "streams/{$stream->id}.json");
+        $stream_json = json_decode($stream_content, true);
+        $this->assertIsArray($stream_json);
+        $this->assertSame($stream->id, $stream_json['id']);
+        $this->assertSame($stream_name, $stream_json['name']);
+        $this->assertSame($stream_description, $stream_json['description']);
+        $this->assertTrue($stream_json['is_public']);
+        $this->assertFalse($stream_json['display_unread_in_sidenav']);
+        $collection_1_url_feed = \Minz\Url::absoluteFor('collection feed', [
+            'id' => $collection_1->id,
+            'direct' => 'true',
+        ]);
+        $this->assertIsArray($stream_json['sources']);
+        $this->assertContains($collection_1_url_feed, $stream_json['sources']);
+        $this->assertContains($feed_url, $stream_json['sources']);
+        $views = $stream_json['views'];
+        $this->assertIsArray($views);
+        $this->assertSame(1, count($views));
+        $this->assertIsArray($views[0]);
+        $this->assertSame('My view', $views[0]['name']);
+        $this->assertFalse($views[0]['is_default']);
+        $this->assertSame(['status' => 'unread'], $views[0]['parameters']);
+        $other_user_profile_url = \Minz\Url::absoluteFor('profile', ['id' => $other_user->id]);
+        $this->assertSame([$other_user_profile_url], $stream_json['shares']);
     }
 
     public function testExportCreatesCollectionsFiles(): void

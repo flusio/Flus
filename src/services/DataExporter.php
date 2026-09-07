@@ -47,6 +47,11 @@ class DataExporter
         $files['bookmarks.atom.xml'] = $this->generateSource($user->readLaterSource());
         $files['read.atom.xml'] = $this->generateSource($user->readSource());
 
+        $streams = $user->streams();
+        foreach ($streams as $stream) {
+            $files["streams/{$stream->id}.json"] = $this->generateStream($stream, $user);
+        }
+
         $collections = $user->collections();
         foreach ($collections as $collection) {
             $files["collections/{$collection->id}.atom.xml"] = $this->generateCollection($collection);
@@ -133,6 +138,51 @@ class DataExporter
         ]);
 
         return self::formatXML($view->render());
+    }
+
+    /**
+     * Return a JSON representation of the given stream.
+     *
+     * @throws \RuntimeException
+     *     If the JSON cannot be generated.
+     */
+    private function generateStream(models\Stream $stream, models\User $user): string
+    {
+        $sources = $stream->sources(['context_user' => $user]);
+
+        $source_urls = array_map(function (models\Collection $source): string {
+            return $source->feedUrl(direct: true);
+        }, $sources);
+
+        $views = array_map(function (models\View $view): array {
+            return [
+                'name' => $view->name,
+                'is_default' => $view->is_default,
+                'parameters' => $view->parameters,
+            ];
+        }, models\View::listByStream($stream));
+
+        $shares = array_map(function (models\StreamShare $share): string {
+            return \Minz\Url::absoluteFor('profile', ['id' => $share->user_id]);
+        }, $stream->shares());
+
+        $json = json_encode([
+            'id' => $stream->id,
+            'created_at' => $stream->created_at->format(\DateTimeInterface::ATOM),
+            'name' => $stream->name,
+            'description' => $stream->description,
+            'is_public' => $stream->is_public,
+            'display_unread_in_sidenav' => $stream->display_unread_in_sidenav,
+            'sources' => $source_urls,
+            'views' => $views,
+            'shares' => $shares,
+        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
+        if (!$json) {
+            throw new \RuntimeException('Cannot generate the stream file');
+        }
+
+        return $json;
     }
 
     /**
