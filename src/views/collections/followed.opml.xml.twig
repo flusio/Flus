@@ -6,16 +6,18 @@
     </head>
 
     <body>
-        {% set collections = groups_to_collections[null] ?? [] %}
-        {% for collection in collections %}
-            {{ include('collections/_collection.opml.xml.twig') }}
+        {% for source in no_stream_sources %}
+            {{ include('collections/_collection.opml.xml.twig', {
+                collection: source,
+            }) }}
         {% endfor %}
 
-        {% for group in groups %}
-            <outline text="{{ group.name }}">
-                {% set collections = groups_to_collections[group.id] ?? [] %}
-                {% for collection in collections %}
-                    {{ include('collections/_collection.opml.xml.twig') }}
+        {% for stream in streams %}
+            <outline text="{{ stream.name }}">
+                {% for source in sources_by_streams[stream.id] ?? [] %}
+                    {{ include('collections/_collection.opml.xml.twig', {
+                        collection: source,
+                    }) }}
                 {% endfor %}
             </outline>
         {% endfor %}

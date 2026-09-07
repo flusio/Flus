@@ -8,6 +8,7 @@ use tests\factories\CollectionToTopicFactory;
 use tests\factories\GroupFactory;
 use tests\factories\LinkFactory;
 use tests\factories\NoteFactory;
+use tests\factories\StreamFactory;
 use tests\factories\TopicFactory;
 use tests\factories\UserFactory;
 
@@ -95,34 +96,36 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $data_exporter = new DataExporter($this->exportations_path);
         $user = UserFactory::create();
         /** @var string */
-        $group_name = $this->fake('sentence');
+        $stream_name = $this->fake('sentence');
         /** @var string */
         $feed_url = $this->fake('url');
         /** @var string */
         $feed_site_url = $this->fake('url');
-        $group = GroupFactory::create([
-            'name' => $group_name,
+        $stream = StreamFactory::create([
+            'name' => $stream_name,
             'user_id' => $user->id,
         ]);
         $collection_1 = CollectionFactory::create([
             'type' => 'collection',
+            'name' => 'A collection',
             'is_public' => true,
         ]);
         $collection_2 = CollectionFactory::create([
             'type' => 'feed',
+            'name' => 'B feed',
             'is_public' => true,
             'feed_url' => $feed_url,
             'feed_site_url' => $feed_site_url,
         ]);
         $collection_3 = CollectionFactory::create([
             'type' => 'collection',
+            'name' => 'C collection',
             'is_public' => true,
         ]);
         $user->follow($collection_1, time_filter: 'all');
         $user->follow($collection_2, time_filter: 'strict');
-        $followed_collection_3 = $user->follow($collection_3);
-        $followed_collection_3->group_id = $group->id;
-        $followed_collection_3->save();
+        $user->follow($collection_3);
+        $stream->addSource($collection_3);
 
         $filepath = $data_exporter->export($user->id);
 
@@ -143,7 +146,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($feed_site_url, $opml->outlines[1]['htmlUrl']);
         $this->assertSame('/Flus/filters/strict', $opml->outlines[1]['category']);
 
-        $this->assertSame($group_name, $opml->outlines[2]['text']);
+        $this->assertSame($stream_name, $opml->outlines[2]['text']);
         $this->assertIsArray($opml->outlines[2]['outlines']);
         $this->assertSame(1, count($opml->outlines[2]['outlines']));
 
@@ -152,10 +155,51 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
             'direct' => 'true',
         ]);
         $collection_3_url = \Minz\Url::absoluteFor('collection', ['id' => $collection_3->id]);
-        $group_outlines = $opml->outlines[2]['outlines'];
-        $this->assertIsArray($group_outlines[0]);
-        $this->assertSame($collection_3_url_feed, $group_outlines[0]['xmlUrl']);
-        $this->assertSame($collection_3_url, $group_outlines[0]['htmlUrl']);
+        $stream_outlines = $opml->outlines[2]['outlines'];
+        $this->assertIsArray($stream_outlines[0]);
+        $this->assertSame($collection_3_url_feed, $stream_outlines[0]['xmlUrl']);
+        $this->assertSame($collection_3_url, $stream_outlines[0]['htmlUrl']);
+    }
+
+    public function testExportDuplicatesSourceInSeveralStreamsInOpmlFile(): void
+    {
+        $data_exporter = new DataExporter($this->exportations_path);
+        $user = UserFactory::create();
+        /** @var string */
+        $feed_url = $this->fake('url');
+        $stream_1 = StreamFactory::create([
+            'name' => 'A stream',
+            'user_id' => $user->id,
+        ]);
+        $stream_2 = StreamFactory::create([
+            'name' => 'B stream',
+            'user_id' => $user->id,
+        ]);
+        $collection = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+            'feed_url' => $feed_url,
+        ]);
+        $stream_1->addSource($collection);
+        $stream_2->addSource($collection);
+
+        $filepath = $data_exporter->export($user->id);
+
+        $opml_content = $this->zipGetContents($filepath, 'followed.opml.xml');
+        $opml = \SpiderBits\Opml::fromText($opml_content);
+        $this->assertSame(2, count($opml->outlines));
+
+        $this->assertSame('A stream', $opml->outlines[0]['text']);
+        $this->assertIsArray($opml->outlines[0]['outlines']);
+        $this->assertSame(1, count($opml->outlines[0]['outlines']));
+        $this->assertIsArray($opml->outlines[0]['outlines'][0]);
+        $this->assertSame($feed_url, $opml->outlines[0]['outlines'][0]['xmlUrl']);
+
+        $this->assertSame('B stream', $opml->outlines[1]['text']);
+        $this->assertIsArray($opml->outlines[1]['outlines']);
+        $this->assertSame(1, count($opml->outlines[1]['outlines']));
+        $this->assertIsArray($opml->outlines[1]['outlines'][0]);
+        $this->assertSame($feed_url, $opml->outlines[1]['outlines'][0]['xmlUrl']);
     }
 
     public function testExportCreatesBookmarksFile(): void

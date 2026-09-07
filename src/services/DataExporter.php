@@ -97,16 +97,39 @@ class DataExporter
      */
     private function generateOpml(models\User $user): string
     {
-        $groups = models\Group::listBy(['user_id' => $user->id]);
-        $collections = $user->followedCollections();
-        $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
+        $streams = $user->streams();
+        $sources_by_streams = models\Collection::listByStreams($streams, [
+            'context_user' => $user,
+        ]);
+        $all_sources = $user->followedSources();
 
-        models\collections\Preloader::for($collections)->followsFor($user);
+        $sources_in_stream = [];
+        foreach ($sources_by_streams as $stream_id => $stream_sources) {
+            $stream_sources = utils\Sorter::localeSort($stream_sources, 'name');
+            $sources_by_streams[$stream_id] = $stream_sources;
+
+            foreach ($stream_sources as $source) {
+                $sources_in_stream[$source->id] = true;
+            }
+        }
+
+        $no_stream_sources = array_filter(
+            $all_sources,
+            function (models\Collection $source) use ($sources_in_stream): bool {
+                return !isset($sources_in_stream[$source->id]);
+            },
+        );
+
+        // Rebuild the list of all sources before preloading data as objects are
+        // not the same in the initial $all_sources array.
+        $all_sources = array_merge($no_stream_sources, ...array_values($sources_by_streams));
+        models\collections\Preloader::for($all_sources)->followsFor($user);
 
         $view = new \Minz\Template\Twig('collections/followed.opml.xml.twig', [
             'user' => $user,
-            'groups' => $groups,
-            'groups_to_collections' => $groups_to_collections,
+            'streams' => $streams,
+            'sources_by_streams' => $sources_by_streams,
+            'no_stream_sources' => $no_stream_sources,
         ]);
 
         return self::formatXML($view->render());
