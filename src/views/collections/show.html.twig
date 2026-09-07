@@ -16,12 +16,11 @@
     {% set current_url_params = { id: collection.id, page: pagination.currentPage } %}
 {% endif %}
 
+{% set feed_url = collection.feedUrl %}
 {% if collection.isFeed %}
-    {% set feed_url = collection.feed_url %}
     {% set opengraph_description = t('A feed from %s, on %s.', [collection.feedWebsiteHost, app.brand]) %}
     {% set current_tab = is_alpha ? 'reading' : 'feeds' %}
 {% else %}
-    {% set feed_url = url_full('collection feed', { id: collection.id }) %}
     {% set opengraph_description = t('A collection created by %s on %s.', [owner.username, app.brand]) %}
     {% set current_tab = can_update ? 'links' : 'reading' %}
 {% endif %}
@@ -222,7 +221,7 @@
                 ) }}
 
                 {{ item.clipboard(
-                    value: url_full('collection feed', { id: collection.id }),
+                    value: feed_url,
                     label: t('Copy link to Web feed'),
                     icon: 'feed',
                 ) }}

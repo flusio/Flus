@@ -232,6 +232,29 @@ class Collection
     }
 
     /**
+     * Return the URL of the feed to subscribe to the collection.
+     *
+     * For feeds, it corresponds to the URL of the original feed. For the other
+     * collections, it corresponds to the "collection feed" route. In this
+     * case, $direct indicates if the links of the generated feed should point
+     * directly to the external websites.
+     */
+    public function feedUrl(bool $direct = false): string
+    {
+        if ($this->isFeed() && $this->feed_url) {
+            return $this->feed_url;
+        }
+
+        $parameters = ['id' => $this->id];
+
+        if ($direct) {
+            $parameters['direct'] = 'true';
+        }
+
+        return \Minz\Url::absoluteFor('collection feed', $parameters);
+    }
+
+    /**
      * Return the owner of the collection.
      */
     public function owner(): ?User
