@@ -5,6 +5,7 @@ namespace App\jobs;
 use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\ImportationFactory;
+use tests\factories\StreamFactory;
 use tests\factories\UserFactory;
 
 class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
@@ -32,7 +33,7 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('importators', $importator_job->queue);
     }
 
-    public function testPerformCreatesNewCollectionsAndGroupsFromOpmlFile(): void
+    public function testPerformCreatesNewCollectionsAndStreamsFromOpmlFile(): void
     {
         $example_filepath = \App\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $opml_filepath = $this->tmpCopyFile($example_filepath);
@@ -45,14 +46,17 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertSame(0, models\Collection::count());
-        $this->assertSame(0, models\Group::count());
+        $this->assertSame(0, models\Stream::count());
         $this->assertSame(0, models\FollowedCollection::count());
 
         $importator->perform($importation->id);
 
+        $this->assertSame(3, models\Collection::count());
+        $this->assertSame(1, models\Stream::count());
+        $this->assertSame(3, models\FollowedCollection::count());
+
         $importation = $importation->reload();
         $this->assertSame('finished', $importation->status);
-        $this->assertSame(3, models\Collection::count());
         $collection1 = models\Collection::take(0);
         $this->assertNotNull($collection1);
         $this->assertNull($collection1->user_id);
@@ -65,22 +69,86 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($collection3);
         $this->assertNull($collection3->user_id);
         $this->assertSame('feed', $collection3->type);
-        $this->assertSame(1, models\Group::count());
-        $group = models\Group::take();
-        $this->assertNotNull($group);
-        $this->assertSame('Blogs', $group->name);
-        $this->assertSame($user->id, $group->user_id);
-        $followed_collections = models\FollowedCollection::listAll();
-        $this->assertSame(3, count($followed_collections));
-        $this->assertSame($user->id, $followed_collections[0]->user_id);
-        $this->assertSame($collection1->id, $followed_collections[0]->collection_id);
-        $this->assertSame($group->id, $followed_collections[0]->group_id);
-        $this->assertSame($user->id, $followed_collections[1]->user_id);
-        $this->assertSame($collection2->id, $followed_collections[1]->collection_id);
-        $this->assertSame($group->id, $followed_collections[1]->group_id);
-        $this->assertSame($user->id, $followed_collections[2]->user_id);
-        $this->assertSame($collection3->id, $followed_collections[2]->collection_id);
-        $this->assertSame($group->id, $followed_collections[2]->group_id);
+        $followed_collection1 = models\FollowedCollection::take(0);
+        $this->assertNotNull($followed_collection1);
+        $this->assertSame($user->id, $followed_collection1->user_id);
+        $this->assertSame($collection1->id, $followed_collection1->collection_id);
+        $followed_collection2 = models\FollowedCollection::take(1);
+        $this->assertNotNull($followed_collection2);
+        $this->assertSame($user->id, $followed_collection2->user_id);
+        $this->assertSame($collection2->id, $followed_collection2->collection_id);
+        $followed_collection3 = models\FollowedCollection::take(2);
+        $this->assertNotNull($followed_collection3);
+        $this->assertSame($user->id, $followed_collection3->user_id);
+        $this->assertSame($collection3->id, $followed_collection3->collection_id);
+        $stream = models\Stream::take();
+        $this->assertNotNull($stream);
+        $this->assertSame('Blogs', $stream->name);
+        $this->assertSame($user->id, $stream->user_id);
+        $this->assertTrue($stream->hasSource($collection1));
+        $this->assertTrue($stream->hasSource($collection2));
+        $this->assertTrue($stream->hasSource($collection3));
+    }
+
+    public function testPerformReusesExistingStreamWithSameName(): void
+    {
+        $example_filepath = \App\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
+        $opml_filepath = $this->tmpCopyFile($example_filepath);
+        $importator = new OpmlImportator();
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+            'name' => 'Blogs',
+        ]);
+        $importation = ImportationFactory::create([
+            'type' => 'opml',
+            'user_id' => $user->id,
+            'options' => ['opml_filepath' => $opml_filepath],
+        ]);
+
+        $this->assertSame(1, models\Stream::count());
+        $this->assertSame(0, models\Collection::count());
+
+        $importator->perform($importation->id);
+
+        $this->assertSame(1, models\Stream::count());
+        $this->assertSame(3, models\Collection::count());
+
+        $collection = models\Collection::take(0);
+        $this->assertNotNull($collection);
+        $this->assertTrue($stream->hasSource($collection));
+    }
+
+    public function testPerformIsIdempotent(): void
+    {
+        $example_filepath = \App\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
+        $importator = new OpmlImportator();
+        $user = UserFactory::create();
+        $opml_filepath_1 = $this->tmpCopyFile($example_filepath);
+        $importation_1 = ImportationFactory::create([
+            'type' => 'opml',
+            'user_id' => $user->id,
+            'options' => ['opml_filepath' => $opml_filepath_1],
+        ]);
+        $opml_filepath_2 = $this->tmpCopyFile($example_filepath);
+        $importation_2 = ImportationFactory::create([
+            'type' => 'opml',
+            'user_id' => $user->id,
+            'options' => ['opml_filepath' => $opml_filepath_2],
+        ]);
+
+        $importator->perform($importation_1->id);
+        $importator->perform($importation_2->id);
+
+        $this->assertSame(3, models\Collection::count());
+        $this->assertSame(1, models\Stream::count());
+        $this->assertSame(3, models\FollowedCollection::count());
+        $this->assertSame(3, models\StreamToFollow::count());
+
+        $importation_1 = $importation_1->reload();
+        $this->assertSame('finished', $importation_1->status);
+        $importation_2 = $importation_2->reload();
+        $this->assertSame('finished', $importation_2->status);
     }
 
     public function testPerformRemovesFile(): void

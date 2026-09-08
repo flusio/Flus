@@ -12,6 +12,7 @@ use Minz\Database;
 #[Database\Table(name: 'streams_to_follows')]
 class StreamToFollow
 {
+    use dao\BulkQueries;
     use Database\Recordable;
 
     #[Database\Column]

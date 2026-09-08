@@ -44,30 +44,28 @@ class OpmlImportator
      */
     public function importForUser(models\User $user): void
     {
-        $feed_urls_by_groups = $this->loadUrlsFromOutlines($this->opml->outlines, '');
+        $feed_urls_by_streams = $this->loadUrlsFromOutlines($this->opml->outlines, '');
 
         $collection_ids_by_feed_urls = models\Collection::listFeedUrlsToIds();
         $collections_to_create = [];
         $followed_collections_to_create = [];
+        $collection_ids_by_streams = [];
 
-        foreach ($feed_urls_by_groups as $group_name => $feed_urls) {
-            $group_id = null;
-            if ($group_name) {
-                // If there is a group name, we want to make sure it exists in
-                // database, and get its id to attach it to the followed
-                // collection.
-                $group_name = utils\Belt::cut($group_name, models\Group::NAME_MAX_LENGTH);
-                $group = new models\Group($user->id, $group_name);
-                $existing_group = models\Group::findBy([
-                    'name' => $group->name,
-                    'user_id' => $group->user_id,
+        foreach ($feed_urls_by_streams as $stream_name => $feed_urls) {
+            $stream_id = null;
+            if ($stream_name) {
+                // If there is a stream name, we want to make sure it exists in
+                // database, and get its id to attach the sources to it.
+                $stream_name = utils\Belt::cut($stream_name, models\Stream::NAME_MAX_LENGTH);
+
+                $stream = models\Stream::findOrCreateBy([
+                    'name' => $stream_name,
+                    'user_id' => $user->id,
+                ], [
+                    'id' => \Minz\Random::timebased(),
                 ]);
-                if ($existing_group) {
-                    $group_id = $existing_group->id;
-                } else {
-                    $group->save();
-                    $group_id = $group->id;
-                }
+
+                $stream_id = $stream->id;
             }
 
             foreach ($feed_urls as $feed_url) {
@@ -86,86 +84,122 @@ class OpmlImportator
                 }
 
                 $followed_collection = new models\FollowedCollection($user->id, $collection_id);
-                $followed_collection->group_id = $group_id;
                 $followed_collection->created_at = \Minz\Time::now();
 
                 $followed_collections_to_create[] = $followed_collection;
+
+                if ($stream_id) {
+                    $collection_ids_by_streams[$stream_id][] = $collection_id;
+                }
             }
         }
 
         models\Collection::bulkInsert($collections_to_create);
         models\FollowedCollection::bulkInsert($followed_collections_to_create);
+
+        // Now, create the associated streams. Streams depend on
+        // FollowedCollections, so we get them from the database.
+        $follows = models\FollowedCollection::listBy(['user_id' => $user->id]);
+        $follows_by_collection_ids = array_column($follows, null, 'collection_id');
+
+        $streams_to_follows_to_create = [];
+
+        foreach ($collection_ids_by_streams as $stream_id => $collection_ids) {
+            foreach ($collection_ids as $collection_id) {
+                $follow = $follows_by_collection_ids[$collection_id] ?? null;
+
+                if (!$follow) {
+                    // This should not happen as we created the follows via
+                    // $followed_collections_to_create, which is always
+                    // populated when we populate $collection_ids_by_streams.
+                    // Anyway, better be sure that it doesn't fail.
+                    continue;
+                }
+
+                // We always build a StreamToFollow, without verifying that it
+                // already exists in the database: if it does, `bulkInsert` will
+                // ignore the conflict (uniqueness on stream_id and follow_id).
+                $stream_to_follow = new models\StreamToFollow();
+                $stream_to_follow->created_at = \Minz\Time::now();
+                $stream_to_follow->stream_id = $stream_id;
+                $stream_to_follow->follow_id = $follow->id;
+
+                $streams_to_follows_to_create[] = $stream_to_follow;
+            }
+        }
+
+        models\StreamToFollow::bulkInsert($streams_to_follows_to_create);
     }
 
     /**
-     * Return the list of xmlUrl by group name of OPML outlines and their children.
+     * Return the list of xmlUrl by stream name of OPML outlines and their children.
      *
      * @param Outline[] $outlines
-     * @param string $parent_group_name
+     * @param string $parent_stream_name
      *
      * @return array<string, string[]>
      */
-    private function loadUrlsFromOutlines(array $outlines, string $parent_group_name): array
+    private function loadUrlsFromOutlines(array $outlines, string $parent_stream_name): array
     {
-        $urls_by_groups = [];
+        $urls_by_streams = [];
 
         foreach ($outlines as $outline) {
             // Get the urls from child outline (it may return several urls if
-            // the outline is a group).
-            $outline_urls_by_groups = $this->loadUrlsFromOutline($outline, $parent_group_name);
+            // the outline is a stream).
+            $outline_urls_by_streams = $this->loadUrlsFromOutline($outline, $parent_stream_name);
 
             // Then, we merge the initial array with the array returned by the
             // outline.
-            foreach ($outline_urls_by_groups as $group_name => $urls) {
-                if (!isset($urls_by_groups[$group_name])) {
-                    $urls_by_groups[$group_name] = [];
+            foreach ($outline_urls_by_streams as $stream_name => $urls) {
+                if (!isset($urls_by_streams[$stream_name])) {
+                    $urls_by_streams[$stream_name] = [];
                 }
 
-                $urls_by_groups[$group_name] = array_merge(
-                    $urls_by_groups[$group_name],
+                $urls_by_streams[$stream_name] = array_merge(
+                    $urls_by_streams[$stream_name],
                     $urls
                 );
             }
         }
 
-        return $urls_by_groups;
+        return $urls_by_streams;
     }
 
     /**
      * Return the list of xmlUrl of an OPML outline and its children.
      *
      * @param Outline $outline
-     * @param string $parent_group_name
+     * @param string $parent_stream_name
      *
      * @return array<string, string[]>
      */
-    private function loadUrlsFromOutline(array $outline, string $parent_group_name): array
+    private function loadUrlsFromOutline(array $outline, string $parent_stream_name): array
     {
-        $urls_by_groups = [];
+        $urls_by_streams = [];
 
         if ($outline['outlines'] && is_array($outline['outlines'])) {
-            // The outline has children, it's probably a new group
+            // The outline has children, it's probably a new stream
             $text = $outline['text'] ?? '';
             if (is_string($text) && !empty($text)) {
-                $group_name = trim($text);
+                $stream_name = trim($text);
             } else {
-                $group_name = $parent_group_name;
+                $stream_name = $parent_stream_name;
             }
 
             /** @var Outline[] */
             $outlines = $outline['outlines'];
-            $urls_by_groups = $this->loadUrlsFromOutlines($outlines, $group_name);
+            $urls_by_streams = $this->loadUrlsFromOutlines($outlines, $stream_name);
         }
 
-        if (!isset($urls_by_groups[$parent_group_name])) {
-            $urls_by_groups[$parent_group_name] = [];
+        if (!isset($urls_by_streams[$parent_stream_name])) {
+            $urls_by_streams[$parent_stream_name] = [];
         }
 
         if (is_string($outline['xmlUrl'] ?? null)) {
             // The xmlUrl means it's a feed URL: we add it to the array
-            $urls_by_groups[$parent_group_name][] = $outline['xmlUrl'];
+            $urls_by_streams[$parent_stream_name][] = $outline['xmlUrl'];
         }
 
-        return $urls_by_groups;
+        return $urls_by_streams;
     }
 }
