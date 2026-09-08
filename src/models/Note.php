@@ -124,6 +124,47 @@ class Note
     }
 
     /**
+     * Return the notes attached to the given links, indexed by the ids of
+     * these links and ordered by creation date.
+     *
+     * The links without any note are absent from the returned array.
+     *
+     * @param Link[] $links
+     *
+     * @return array<string, self[]>
+     */
+    public static function listByLinks(array $links): array
+    {
+        if (!$links) {
+            return [];
+        }
+
+        $link_ids = array_column($links, 'id');
+        $ids_as_question_marks = array_fill(0, count($link_ids), '?');
+        $ids_as_question_marks = implode(', ', $ids_as_question_marks);
+
+        $sql = <<<SQL
+            SELECT * FROM notes
+
+            WHERE link_id IN ({$ids_as_question_marks})
+
+            ORDER BY created_at
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute($link_ids);
+
+        $notes = [];
+
+        foreach (self::fromDatabaseRows($statement->fetchAll()) as $note) {
+            $notes[$note->link_id][] = $note;
+        }
+
+        return $notes;
+    }
+
+    /**
      * Return the numbers of notes attached to the given links, indexed by the
      * ids of these links.
      *

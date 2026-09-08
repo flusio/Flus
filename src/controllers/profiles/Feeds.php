@@ -50,6 +50,8 @@ class Feeds extends BaseController
         }
         $links = array_values($links_by_id);
 
+        models\links\Preloader::for($links)->notes();
+
         return Response::ok('profiles/feeds/show.atom.xml.twig', [
             'user' => $user,
             'links' => $links,

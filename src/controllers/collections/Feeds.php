@@ -61,6 +61,8 @@ class Feeds extends BaseController
             'limit' => 30,
         ]);
 
+        models\links\Preloader::for($links)->notes();
+
         return Response::ok('collections/feeds/show.atom.xml.twig', [
             'collection' => $collection,
             'topics' => $topics,

@@ -78,6 +78,20 @@ class Preloader
     }
 
     /**
+     * Preload the notes attached to the links.
+     */
+    public function notes(): self
+    {
+        $notes_by_link_ids = Note::listByLinks($this->links);
+
+        foreach ($this->links as $link) {
+            $link->preloadNotes($notes_by_link_ids[$link->id] ?? []);
+        }
+
+        return $this;
+    }
+
+    /**
      * Preload the number of notes attached to the links.
      */
     public function numberNotes(): self

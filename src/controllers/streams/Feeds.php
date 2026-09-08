@@ -58,6 +58,8 @@ class Feeds extends BaseController
         }
         $links = array_values($links_by_id);
 
+        models\links\Preloader::for($links)->notes();
+
         return Response::ok('streams/feeds/show.atom.xml.twig', [
             'stream' => $stream,
             'links' => $links,

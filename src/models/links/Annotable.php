@@ -27,6 +27,18 @@ trait Annotable
     }
 
     /**
+     * Set the notes without querying the database.
+     *
+     * @param Note[] $notes
+     *
+     * @see Preloader
+     */
+    public function preloadNotes(array $notes): void
+    {
+        $this->memoizeValue('notes', $notes);
+    }
+
+    /**
      * Return the notepad, containing the notes grouped by dates
      *
      * @return array<string, Note[]>
