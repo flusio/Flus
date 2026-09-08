@@ -54,7 +54,7 @@
                     </button>
 
                     <input type="hidden" name="csrf_token" value="{{ csrf_token('importations\\DeleteImportation') }}">
-                    <input type="hidden" name="redirect_to" value="{{ url('feeds') }}">
+                    <input type="hidden" name="redirect_to" value="{{ url('sources') }}">
                 </form>
             </div>
         {% elseif importation and importation.isInError %}
@@ -67,7 +67,7 @@
                     </button>
 
                     <input type="hidden" name="csrf_token" value="{{ csrf_token('importations\\DeleteImportation') }}">
-                    <input type="hidden" name="redirect_to" value="{{ url('feeds') }}">
+                    <input type="hidden" name="redirect_to" value="{{ url('sources') }}">
                 </form>
             </div>
         {% else %}

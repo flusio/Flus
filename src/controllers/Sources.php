@@ -16,8 +16,6 @@ class Sources extends BaseController
     /**
      * List the sources followed by the current user.
      *
-     * @response 302 /feeds
-     *     If the user has not the alpha feature enabled.
      * @response 200
      *     On success.
      *
@@ -27,10 +25,6 @@ class Sources extends BaseController
     public function index(Request $request): Response
     {
         $user = auth\CurrentUser::require();
-
-        if (!$user->isAlphaEnabled()) {
-            return Response::redirect('feeds');
-        }
 
         $sources = $user->followedSources();
 

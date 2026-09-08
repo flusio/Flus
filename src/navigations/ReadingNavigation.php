@@ -22,8 +22,6 @@ class ReadingNavigation extends BaseNavigation
     {
         $current_user = auth\CurrentUser::require();
 
-        $is_alpha_enabled = $current_user->isAlphaEnabled();
-
         $elements = [
             new Item(
                 label: TwigExtension::translate('News'),
@@ -45,16 +43,14 @@ class ReadingNavigation extends BaseNavigation
                 url: \Minz\Url::for('read list'),
                 icon: 'check',
             ),
-        ];
 
-        if ($is_alpha_enabled) {
-            $elements[] = new Item(
+            new Item(
                 label: TwigExtension::translate('Sources'),
                 key: 'sources',
                 url: \Minz\Url::for('sources'),
                 icon: 'feed',
-            );
-        }
+            ),
+        ];
 
         if ($current_user->isBetaEnabled()) {
             $elements[] = new Item(
@@ -78,31 +74,29 @@ class ReadingNavigation extends BaseNavigation
 
         models\streams\Preloader::for($streams_with_unread_dot)->hasUnreadLinksFor($current_user);
 
-        if ($is_alpha_enabled) {
-            $new_stream_action = new ItemAction(
-                label: TwigExtension::translate('New stream'),
-                url: \Minz\Url::for('new stream'),
-                icon: 'plus',
-            );
+        $new_stream_action = new ItemAction(
+            label: TwigExtension::translate('New stream'),
+            url: \Minz\Url::for('new stream'),
+            icon: 'plus',
+        );
 
-            $stream_items = [];
+        $stream_items = [];
 
-            foreach ($streams as $stream) {
-                $stream_items[] = $this->streamItem($stream, $current_user);
-            }
+        foreach ($streams as $stream) {
+            $stream_items[] = $this->streamItem($stream, $current_user);
+        }
 
-            if (count($stream_items) === 0) {
-                $stream_items[] = new ItemPlaceholder(
-                    TwigExtension::translate('Create a stream to get started.'),
-                );
-            }
-
-            $elements[] = new ItemGroup(
-                label: TwigExtension::translate('Streams'),
-                items: $stream_items,
-                action: $new_stream_action,
+        if (count($stream_items) === 0) {
+            $stream_items[] = new ItemPlaceholder(
+                TwigExtension::translate('Create a stream to get started.'),
             );
         }
+
+        $elements[] = new ItemGroup(
+            label: TwigExtension::translate('Streams'),
+            items: $stream_items,
+            action: $new_stream_action,
+        );
 
         if ($shared_streams) {
             $shared_stream_items = [];

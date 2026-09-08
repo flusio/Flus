@@ -2,7 +2,6 @@
 
 namespace App\controllers;
 
-use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\StreamFactory;
 use tests\factories\UserFactory;
@@ -19,7 +18,6 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
     public function testIndexRendersCorrectly(): void
     {
         $user = $this->login();
-        models\FeatureFlag::enable('alpha', $user->id);
         /** @var string */
         $collection_name = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
@@ -52,7 +50,6 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
     public function testIndexDoesNotListTheSourcesTheUserCannotView(): void
     {
         $user = $this->login();
-        models\FeatureFlag::enable('alpha', $user->id);
         $other_user = UserFactory::create();
         /** @var string */
         $collection_name = $this->fake('words', 3, true);
@@ -73,7 +70,6 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
     public function testIndexDoesNotListTheCollectionsThatAreNotFollowed(): void
     {
         $user = $this->login();
-        models\FeatureFlag::enable('alpha', $user->id);
         /** @var string */
         $collection_name = $this->fake('words', 3, true);
         CollectionFactory::create([
@@ -91,7 +87,6 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
     public function testIndexExecutesAConstantNumberOfQueries(): void
     {
         $user = $this->login();
-        models\FeatureFlag::enable('alpha', $user->id);
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
@@ -136,15 +131,6 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         // publishers, the number of streams and the time filters are all
         // loaded in batch by models\collections\Preloader.
         $this->assertLessThanOrEqual(20, $count_queries);
-    }
-
-    public function testIndexRedirectsIfTheUserIsNotAlpha(): void
-    {
-        $user = $this->login();
-
-        $response = $this->appRun('GET', '/sources');
-
-        $this->assertResponseCode($response, 302, '/feeds');
     }
 
     public function testIndexRedirectsIfNotConnected(): void

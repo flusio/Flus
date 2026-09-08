@@ -1,9 +1,8 @@
 {% extends 'layouts/application.html.twig' %}
 
 {% set owner = collection.owner %}
-{% set is_alpha = app.user and app.user.isAlphaEnabled %}
 {% set is_following = app.user and app.user.isFollowing(collection) %}
-{% set count_streams = is_alpha and is_following ? collection.countStreamsByUser(app.user) : null %}
+{% set count_streams = is_following ? collection.countStreamsByUser(app.user) : null %}
 {% set time_filter = app.user ? collection.timeFilterByUser(app.user) : null %}
 {% set is_shared = collection.shares | length > 0 %}
 {% set can_update = can(app.user, 'update', collection) %}
@@ -19,7 +18,7 @@
 {% set feed_url = collection.feedUrl %}
 {% if collection.isFeed %}
     {% set opengraph_description = t('A feed from %s, on %s.', [collection.feedWebsiteHost, app.brand]) %}
-    {% set current_tab = is_alpha ? 'reading' : 'feeds' %}
+    {% set current_tab = 'reading' %}
 {% else %}
     {% set opengraph_description = t('A collection created by %s on %s.', [owner.username, app.brand]) %}
     {% set current_tab = can_update ? 'links' : 'reading' %}
@@ -141,18 +140,16 @@
             {% if is_following %}
                 {{ include('collections/_unfollow_form.html.twig') }}
 
-                {% if is_alpha %}
-                    <button
-                        data-controller="modal-opener"
-                        data-action="modal-opener#fetch"
-                        data-modal-opener-href-value="{{ url('edit collection follow', { id: collection.id }) }}"
-                        aria-haspopup="dialog"
-                        aria-controls="modal"
-                    >
-                        {{ icon('slider') }}
-                        {{ t('Manage the subscription') }}
-                    </button>
-                {% endif %}
+                <button
+                    data-controller="modal-opener"
+                    data-action="modal-opener#fetch"
+                    data-modal-opener-href-value="{{ url('edit collection follow', { id: collection.id }) }}"
+                    aria-haspopup="dialog"
+                    aria-controls="modal"
+                >
+                    {{ icon('slider') }}
+                    {{ t('Manage the subscription') }}
+                </button>
             {% else %}
                 <form method="post" action="{{ url('follow collection', { id: collection.id }) }}">
                     <button class="button--primary">
@@ -197,15 +194,7 @@
             {% block items %}
                 {% import _self as item %}
 
-                {% if is_following and not is_alpha %}
-                    {{ item.modal(
-                        url: url('edit collection filter', { id: collection.id }),
-                        label: t('Adjust for the news'),
-                        icon: 'slider',
-                    ) }}
-                {% endif %}
-
-                {% if can_update or (is_following and not is_alpha) %}
+                {% if can_update %}
                     {{ item.modal(
                         url: url('edit group collection', { id: collection.id }),
                         label: t('Put in a group'),

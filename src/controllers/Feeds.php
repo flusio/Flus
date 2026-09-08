@@ -6,7 +6,6 @@ use App\auth;
 use App\forms;
 use App\models;
 use App\services;
-use App\utils;
 use Minz\Request;
 use Minz\Response;
 
@@ -17,7 +16,7 @@ use Minz\Response;
 class Feeds extends BaseController
 {
     /**
-     * List the followed feeds/collections of the current user.
+     * Display a notice pointing to the Sources page.
      *
      * @response 200
      *     On success.
@@ -27,33 +26,9 @@ class Feeds extends BaseController
      */
     public function index(Request $request): Response
     {
-        $user = auth\CurrentUser::require();
+        auth\CurrentUser::require();
 
-        if ($user->isAlphaEnabled()) {
-            // The page only displays a notice pointing to the Sources page to
-            // these users: there is nothing to list here.
-            return Response::ok('feeds/index.html.twig');
-        }
-
-        $groups = models\Group::listBy(['user_id' => $user->id]);
-        $groups = utils\Sorter::localeSort($groups, 'name');
-
-        // Counting links is optimized for feeds, so we list the collections in
-        // two steps.
-        $feeds = $user->followedCollections(['number_links'], [
-            'type' => 'feed',
-        ]);
-        $collections = $user->followedCollections(['number_links'], [
-            'type' => 'collection',
-        ]);
-        $collections = array_merge($collections, $feeds);
-        $collections = utils\Sorter::localeSort($collections, 'name');
-        $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
-
-        return Response::ok('feeds/index.html.twig', [
-            'groups' => $groups,
-            'groups_to_collections' => $groups_to_collections,
-        ]);
+        return Response::ok('feeds/index.html.twig');
     }
 
     /**

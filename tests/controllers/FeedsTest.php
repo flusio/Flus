@@ -5,7 +5,6 @@ namespace App\controllers;
 use App\forms;
 use App\models;
 use tests\factories\CollectionFactory;
-use tests\factories\GroupFactory;
 use tests\factories\UserFactory;
 
 class FeedsTest extends \PHPUnit\Framework\TestCase
@@ -19,7 +18,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     use \tests\HttpHelper;
     use \tests\LoginHelper;
 
-    public function testIndexRendersCorrectly(): void
+    public function testIndexRendersANoticePointingToTheSources(): void
     {
         $user = $this->login();
         /** @var string */
@@ -38,74 +37,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseTemplateName($response, 'feeds/index.html.twig');
-        $this->assertResponseContains($response, $feed_name);
-    }
-
-    public function testIndexRendersGroups(): void
-    {
-        $user = $this->login();
-        /** @var string */
-        $group_name = $this->fake('words', 3, true);
-        $group = GroupFactory::create([
-            'user_id' => $user->id,
-            'name' => $group_name,
-        ]);
-        /** @var string */
-        $feed_url = $this->fake('url');
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
-            'is_public' => true,
-            'feed_url' => $feed_url,
-        ]);
-        $followed_collection = $user->follow($collection);
-        $followed_collection->group_id = $group->id;
-        $followed_collection->save();
-
-        $response = $this->appRun('GET', '/feeds');
-
-        $this->assertResponseContains($response, $group_name);
-    }
-
-    public function testIndexRendersANoticeForAlphaUsers(): void
-    {
-        $user = $this->login();
-        models\FeatureFlag::enable('alpha', $user->id);
-        /** @var string */
-        $feed_name = $this->fake('words', 3, true);
-        /** @var string */
-        $feed_url = $this->fake('url');
-        $collection = CollectionFactory::create([
-            'name' => $feed_name,
-            'type' => 'feed',
-            'is_public' => true,
-            'feed_url' => $feed_url,
-        ]);
-        $user->follow($collection);
-
-        $response = $this->appRun('GET', '/feeds');
-
-        $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'This page has moved');
-        $this->assertResponseNotContains($response, $feed_name);
-    }
-
-    public function testIndexDoesNotRenderPrivateFollowed(): void
-    {
-        $user = $this->login();
-        /** @var string */
-        $feed_name = $this->fake('words', 3, true);
-        /** @var string */
-        $feed_url = $this->fake('url');
-        $collection = CollectionFactory::create([
-            'name' => $feed_name,
-            'type' => 'feed',
-            'is_public' => false,
-            'feed_url' => $feed_url,
-        ]);
-        $user->follow($collection);
-
-        $response = $this->appRun('GET', '/feeds');
-
         $this->assertResponseNotContains($response, $feed_name);
     }
 

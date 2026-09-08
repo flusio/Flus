@@ -147,8 +147,6 @@ class Router
             'collections/Followers#update',
             'update collection follow'
         );
-        $router->addRoute('GET', '/collections/:id/filter', 'collections/Filters#edit', 'edit collection filter');
-        $router->addRoute('POST', '/collections/:id/filter', 'collections/Filters#update', 'update collection filter');
         $router->addRoute('GET', '/collections/:id/group', 'collections/Groups#edit', 'edit group collection');
         $router->addRoute('POST', '/collections/:id/group', 'collections/Groups#update', 'update group collection');
         $router->addRoute('GET', '/collections/:id/image', 'collections/Images#edit', 'edit image collection');
