@@ -5,6 +5,11 @@
 {% block title %}{{ stream.name }}{% endblock %}
 {% block canonical %}{{ url_full('stream', { id: stream.id }) }}{% endblock %}
 
+{% block alternates %}
+    <link rel="alternate" type="application/atom+xml" title="{{ t('Syndication feed of %s', [stream.name]) }}" href="{{ url_full('stream feed', { id: stream.id }) }}">
+    <link rel="alternate" type="text/x-opml" title="{{ t('Sources OPML of %s', [stream.name]) }}" href="{{ url_full('stream opml', { id: stream.id }) }}">
+{% endblock %}
+
 {% block head_additional_tags %}
     {# Changing the filters refreshes the whole page. Morphing preserves the
      # focus and the scroll positions across these refreshes. #}
@@ -107,8 +112,8 @@
         </div>
     </div>
 
-    {% if can(app.user, 'update', stream) %}
-        <div class="panel panel--rounded stack stack--gap-small">
+    <div class="panel panel--rounded stack stack--gap-small">
+        {% if can(app.user, 'update', stream) %}
             <a class="button" href="{{ url('edit stream sources', { id: stream.id }) }}">
                 {{ t('Manage sources') }}
             </a>
@@ -134,29 +139,42 @@
                 {{ icon('users') }}
                 {{ t('Access') }}
             </button>
+        {% endif %}
 
-            {% if can(app.user, 'delete', stream) %}
-                {% embed 'components/popup.html.twig' %}
-                    {% block opener %}
-                        {{ icon('menu') }}
-                        {{ t('Actions') }}
-                    {% endblock %}
+        {% embed 'components/popup.html.twig' %}
+            {% block opener %}
+                {{ icon('menu') }}
+                {{ t('Actions') }}
+            {% endblock %}
 
-                    {% block items %}
-                        {% import _self as item %}
+            {% block items %}
+                {% import _self as item %}
 
-                        {{ item.action(
-                            url: url('delete stream', { id: stream.id }),
-                            label: t('Delete'),
-                            icon: 'trash',
-                            csrf: 'streams\\DeleteStream',
-                            confirm: t('Are you sure that you want to delete this stream?'),
-                        ) }}
-                    {% endblock %}
-                {% endembed %}
-            {% endif %}
-        </div>
-    {% endif %}
+                {{ item.clipboard(
+                    value: url_full('stream', { id: stream.id }),
+                    label: t('Copy link to stream'),
+                ) }}
+
+                {{ item.clipboard(
+                    value: url_full('stream feed', { id: stream.id }),
+                    label: t('Copy link to Web feed'),
+                    icon: 'feed',
+                ) }}
+
+                {% if can(app.user, 'delete', stream) %}
+                    {{ item.separator() }}
+
+                    {{ item.action(
+                        url: url('delete stream', { id: stream.id }),
+                        label: t('Delete'),
+                        icon: 'trash',
+                        csrf: 'streams\\DeleteStream',
+                        confirm: t('Are you sure that you want to delete this stream?'),
+                    ) }}
+                {% endif %}
+            {% endblock %}
+        {% endembed %}
+    </div>
 
     <div class="flow flow--large" data-controller="stream">
         {{ include('streams/_views.html.twig') }}
