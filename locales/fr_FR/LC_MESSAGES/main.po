@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-09-08 15:18+0200\n"
-"PO-Revision-Date: 2026-09-08 15:18+0200\n"
+"POT-Creation-Date: 2026-09-08 15:47+0200\n"
+"PO-Revision-Date: 2026-09-08 16:01+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -2648,10 +2648,10 @@ msgstr ""
 
 #: views/onboarding/step2.html.twig:20
 msgid ""
-"“News” gives you suggestions of what to read from the websites that you "
+"“News” gives you suggestions of what to read from the sources that you "
 "follow."
 msgstr ""
-"Le « Journal » vous suggère des choses à lire depuis les sites que vous "
+"Le « Journal » vous suggère des choses à lire depuis les sources que vous "
 "suivez."
 
 #: views/onboarding/step2.html.twig:24
@@ -2670,14 +2670,45 @@ msgstr ""
 "« Liens lus »."
 
 #: views/onboarding/step3.html.twig:3 views/onboarding/step3.html.twig:11
+msgid "Organise your monitoring"
+msgstr "Organisez votre veille"
+
+#: views/onboarding/step3.html.twig:15
+msgid ""
+"The <strong>Streams</strong> group the sources that you follow into thematic "
+"timelines."
+msgstr ""
+"Les <strong>Fils</strong> regroupent les sources que vous suivez en "
+"chronologies thématiques."
+
+#: views/onboarding/step3.html.twig:20
+msgid ""
+"A source can be a collection shared by another user, or almost any website "
+"<strong>as long as it offers a Web feed</strong>: news sites, blogs, "
+"podcasts… Even YouTube channels!"
+msgstr ""
+"Une source peut être une collection partagée par un ou une autre "
+"utilisatrice, ou presque n’importe quel site Web <strong>tant qu’il propose "
+"un flux Web</strong> : sites d’actualités, blogs, podcasts… Même les chaînes "
+"YouTube !"
+
+#: views/onboarding/step3.html.twig:24
+msgid ""
+"Create a stream per topic to keep up with your sources at your own pace, "
+"without cluttering your news."
+msgstr ""
+"Créez un fil par sujet pour suivre vos sources à votre rythme, sans "
+"encombrer votre journal."
+
+#: views/onboarding/step4.html.twig:3 views/onboarding/step4.html.twig:11
 msgid "Store your links"
 msgstr "Stockez vos liens"
 
-#: views/onboarding/step3.html.twig:15
+#: views/onboarding/step4.html.twig:15
 msgid "<strong>My links</strong> organises your links into collections."
 msgstr "<strong>Mes liens</strong> organisent vos liens en collections."
 
-#: views/onboarding/step3.html.twig:20
+#: views/onboarding/step4.html.twig:20
 msgid ""
 "All the links you want to be able to find easily have their place in the "
 "collections."
@@ -2685,44 +2716,15 @@ msgstr ""
 "Tous les liens que vous souhaitez retrouver facilement plus tard ont leur "
 "place dans les collections."
 
-#: views/onboarding/step3.html.twig:24
+#: views/onboarding/step4.html.twig:24
 msgid ""
-"By default, you start with 2 collections: <strong>“My favorites” and “My "
-"shares”.</strong> Obviously, you can create as many thematic collections as "
+"By default, you start with 2 collections: <strong>“My favourites” and “My "
+"shares”.</strong> But you can also create as many thematic collections as "
 "you want!"
 msgstr ""
 "Par défaut, vous démarrez avec 2 collections : <strong>« Mes favoris » et "
-"« Mes partages ».</strong> Vous pouvez évidemment créer autant de "
-"collections thématiques que vous voulez !"
-
-#: views/onboarding/step4.html.twig:3 views/onboarding/step4.html.twig:11
-msgid "Follow content from Internet"
-msgstr "Suivez le contenu d’Internet"
-
-#: views/onboarding/step4.html.twig:15
-msgid ""
-"The <strong>Feeds</strong> list the websites and collections that you follow."
-msgstr ""
-"Les <strong>Flux</strong> listent les sites et les collections que vous "
-"suivez."
-
-#: views/onboarding/step4.html.twig:20
-#, php-format
-msgid ""
-"A lot of websites can be followed in %s <strong>as long as they offer a Web "
-"feed</strong>: most news sites, blogs, podcasts… Even YouTube channels!"
-msgstr ""
-"Beaucoup de sites peuvent être suivis dans %s <strong>tant qu’ils proposent "
-"un flux Web</strong> : la plupart des sites d’actualités, les blogs, les "
-"podcasts… Même les chaînes YouTube !"
-
-#: views/onboarding/step4.html.twig:25
-msgid ""
-"This is perfect if you want to be notified when new content is published "
-"without wasting time checking each website individually."
-msgstr ""
-"C’est parfait si vous souhaitez être averti⋅e lorsque de nouveaux contenus "
-"sont publiés sans perdre de temps à vérifier chaque site un par un."
+"« Mes partages ».</strong> Mais vous pouvez créer autant de collections "
+"thématiques que vous voulez !"
 
 #: views/onboarding/step5.html.twig:3 views/onboarding/step5.html.twig:11
 msgid "Share with the rest of Internet"
@@ -2745,6 +2747,14 @@ msgstr ""
 "une touche personnelle.</strong>"
 
 #: views/onboarding/step5.html.twig:24
+msgid ""
+"Your public collections and streams are listed there as well, so anyone can "
+"follow your monitoring."
+msgstr ""
+"Vos collections et fils publics y apparaissent également afin que tout le "
+"monde puisse suivre les détails de votre veille."
+
+#: views/onboarding/step5.html.twig:28
 msgid "Nothing like spreading the address to your Flus profile around!"
 msgstr "Rien de tel que de diffuser l’adresse de votre profil autour de vous !"
 

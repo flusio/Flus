@@ -1,6 +1,6 @@
 {% extends 'layouts/onboarding.html.twig' %}
 
-{% block title %}{{ t('Follow content from Internet') }}{% endblock %}
+{% block title %}{{ t('Store your links') }}{% endblock %}
 {% block canonical %}{{ url_full('onboarding', { step: 4 }) }}{% endblock %}
 
 {% block navigation %}
@@ -8,21 +8,20 @@
 {% endblock %}
 
 {% block body %}
-    <h1 class="text--center">{{ t('Follow content from Internet') }}</h1>
+    <h1 class="text--center">{{ t('Store your links') }}</h1>
 
     <p class="text--center">
-        {{ icon('feed') }}
-        {{ t('The <strong>Feeds</strong> list the websites and collections that you follow.') | raw }}
+        {{ icon('link') }}
+        {{ t('<strong>My links</strong> organises your links into collections.') | raw }}
     </p>
 
     <div class="flow">
         <p>
-            {{ t('A lot of websites can be followed in %s <strong>as long as they offer a Web feed</strong>: most news sites, blogs, podcasts… Even YouTube channels!', [app.brand]) | raw
-        }}
+            {{ t('All the links you want to be able to find easily have their place in the collections.') }}
         </p>
 
         <p>
-            {{ t('This is perfect if you want to be notified when new content is published without wasting time checking each website individually.') }}
+            {{ t('By default, you start with 2 collections: <strong>“My favourites” and “My shares”.</strong> But you can also create as many thematic collections as you want!') | raw }}
         </p>
     </div>
 

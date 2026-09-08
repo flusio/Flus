@@ -1,6 +1,6 @@
 {% extends 'layouts/onboarding.html.twig' %}
 
-{% block title %}{{ t('Store your links') }}{% endblock %}
+{% block title %}{{ t('Organise your monitoring') }}{% endblock %}
 {% block canonical %}{{ url_full('onboarding', { step: 3 }) }}{% endblock %}
 
 {% block navigation %}
@@ -8,20 +8,20 @@
 {% endblock %}
 
 {% block body %}
-    <h1 class="text--center">{{ t('Store your links') }}</h1>
+    <h1 class="text--center">{{ t('Organise your monitoring') }}</h1>
 
     <p class="text--center">
-        {{ icon('link') }}
-        {{ t('<strong>My links</strong> organises your links into collections.') | raw }}
+        {{ icon('stream') }}
+        {{ t('The <strong>Streams</strong> group the sources that you follow into thematic timelines.') | raw }}
     </p>
 
     <div class="flow">
         <p>
-            {{ t('All the links you want to be able to find easily have their place in the collections.') }}
+            {{ t('A source can be a collection shared by another user, or almost any website <strong>as long as it offers a Web feed</strong>: news sites, blogs, podcasts… Even YouTube channels!') | raw }}
         </p>
 
         <p>
-            {{ t('By default, you start with 2 collections: <strong>“My favorites” and “My shares”.</strong> Obviously, you can create as many thematic collections as you want!') | raw }}
+            {{ t('Create a stream per topic to keep up with your sources at your own pace, without cluttering your news.') }}
         </p>
     </div>
 
