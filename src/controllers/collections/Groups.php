@@ -15,9 +15,6 @@ class Groups extends BaseController
     /**
      * @request_param string id
      *
-     * @response 404
-     *     If the user cannot update the collection and is not following the
-     *     collection.
      * @response 200
      *     On success.
      *
@@ -26,22 +23,16 @@ class Groups extends BaseController
      * @throws \Minz\Errors\MissingRecordError
      *     If the collection doesn't exist.
      * @throws auth\AccessDeniedError
-     *     If the user cannot view the collection.
+     *     If the user cannot update the collection group.
      */
     public function edit(Request $request): Response
     {
         $user = auth\CurrentUser::require();
         $collection = models\Collection::requireFromRequest($request);
 
-        auth\Access::require($user, 'view', $collection);
+        auth\Access::require($user, 'updateGroup', $collection);
 
-        $can_update_group = auth\Access::can($user, 'updateGroup', $collection);
-        $is_following = $user->isFollowing($collection);
-        if (!$can_update_group && !$is_following) {
-            return Response::notFound('errors/not_found.html.twig');
-        }
-
-        $group = $collection->groupForUser($user->id);
+        $group = $collection->group();
 
         $form = new forms\collections\EditCollectionGroup([
             'name' => $group ? $group->name : '',
@@ -60,9 +51,6 @@ class Groups extends BaseController
      * @request_param string name
      * @request_param string csrf_token
      *
-     * @response 404
-     *     If the user cannot update the collection and is not following the
-     *     collection.
      * @response 400
      *     If at least one of the parameters is invalid.
      * @response 302 :from
@@ -73,20 +61,14 @@ class Groups extends BaseController
      * @throws \Minz\Errors\MissingRecordError
      *     If the collection doesn't exist.
      * @throws auth\AccessDeniedError
-     *     If the user cannot view the collection.
+     *     If the user cannot update the collection group.
      */
     public function update(Request $request): Response
     {
         $user = auth\CurrentUser::require();
         $collection = models\Collection::requireFromRequest($request);
 
-        auth\Access::require($user, 'view', $collection);
-
-        $can_update_group = auth\Access::can($user, 'updateGroup', $collection);
-        $is_following = $user->isFollowing($collection);
-        if (!$can_update_group && !$is_following) {
-            return Response::notFound('errors/not_found.html.twig');
-        }
+        auth\Access::require($user, 'updateGroup', $collection);
 
         $form = new forms\collections\EditCollectionGroup(options: [
             'user' => $user,
@@ -107,7 +89,8 @@ class Groups extends BaseController
             $group->save();
         }
 
-        $user->setCollectionGroup($collection, $group);
+        $collection->group_id = $group?->id;
+        $collection->save();
 
         return Response::found(utils\RequestHelper::from($request));
     }

@@ -400,27 +400,15 @@ class Collection
     }
 
     /**
-     * Return the group if any for a given user.
-     *
-     * If the collection is owned by the user, the group is the one directly
-     * attached to the current collection. Otherwise, the group is the one
-     * attached to a corresponding FollowedCollection.
+     * Return the group if any.
      */
-    public function groupForUser(string $user_id): ?Group
+    public function group(): ?Group
     {
-        if ($this->user_id === $user_id && $this->group_id) {
-            return Group::find($this->group_id);
-        } else {
-            $followed_collection = FollowedCollection::findBy([
-                'user_id' => $user_id,
-                'collection_id' => $this->id,
-            ]);
-            if ($followed_collection && $followed_collection->group_id) {
-                return Group::find($followed_collection->group_id);
-            }
+        if (!$this->group_id) {
+            return null;
         }
 
-        return null;
+        return Group::require($this->group_id);
     }
 
     /**
@@ -729,7 +717,7 @@ class Collection
                 'id' => $this->id,
                 'name' => $this->name,
                 'description' => $this->description,
-                'group' => $this->groupForUser($context_user->id)?->name,
+                'group' => null,
                 'url' => $this->feed_url,
                 'type' => $this->feed_type,
                 'site_url' => $this->feed_site_url,
@@ -737,11 +725,13 @@ class Collection
                 'publication_frequency_per_year' => $this->publication_frequency_per_year,
             ];
         } else {
+            $group = $context_user->id === $this->user_id ? $this->group() : null;
+
             return [
                 'id' => $this->id,
                 'name' => $this->name,
                 'description' => $this->description,
-                'group' => $this->groupForUser($context_user->id)?->name,
+                'group' => $group?->name,
                 'is_public' => $this->is_public,
                 'is_followed' => $context_user->isFollowing($this),
                 'publication_frequency_per_year' => $this->publication_frequency_per_year,

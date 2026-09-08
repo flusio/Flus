@@ -34,9 +34,6 @@ class FollowedCollection
     public string $collection_id;
 
     #[Database\Column]
-    public ?string $group_id;
-
-    #[Database\Column]
     #[Validable\Presence(
         message: new Translatable('The filter is required.'),
     )]

@@ -56,58 +56,6 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $group_name);
     }
 
-    public function testEditRendersIfCollectionIsFollowed(): void
-    {
-        $user = $this->login();
-        $other_user = UserFactory::create();
-        /** @var string */
-        $collection_name = $this->fake('text', 50);
-        $collection = CollectionFactory::create([
-            'type' => 'collection',
-            'user_id' => $other_user->id,
-            'name' => $collection_name,
-            'is_public' => true,
-        ]);
-        $user->follow($collection);
-
-        $response = $this->appRun('GET', "/collections/{$collection->id}/group");
-
-        $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'collections/groups/edit.html.twig');
-        $this->assertResponseContains($response, $collection_name);
-    }
-
-    public function testEditRendersGroupIfAlreadySetAndCollectionIsFollowed(): void
-    {
-        $user = $this->login();
-        $other_user = UserFactory::create();
-        /** @var string */
-        $group_name = $this->fakeUnique('text', 50);
-        /** @var string */
-        $other_group_name = $this->fakeUnique('text', 50);
-        $group = GroupFactory::create([
-            'user_id' => $user->id,
-            'name' => $group_name,
-        ]);
-        $other_group = GroupFactory::create([
-            'user_id' => $other_user->id,
-            'name' => $other_group_name,
-        ]);
-        $collection = CollectionFactory::create([
-            'user_id' => $other_user->id,
-            'is_public' => true,
-            'group_id' => $other_group->id,
-        ]);
-        $followed_collection = $user->follow($collection);
-        $followed_collection->group_id = $group->id;
-        $followed_collection->save();
-
-        $response = $this->appRun('GET', "/collections/{$collection->id}/group");
-
-        $this->assertResponseContains($response, $group_name);
-        $this->assertResponseNotContains($response, $other_group_name);
-    }
-
     public function testEditRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create();
@@ -134,21 +82,6 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testEditFailsIfCollectionIsNotFollowed(): void
-    {
-        $user = $this->login();
-        $other_user = UserFactory::create();
-        $collection = CollectionFactory::create([
-            'type' => 'collection',
-            'user_id' => $other_user->id,
-            'is_public' => true,
-        ]);
-
-        $response = $this->appRun('GET', "/collections/{$collection->id}/group");
-
-        $this->assertResponseCode($response, 404);
-    }
-
     public function testEditFailsIfCollectionIsSharedWithWriteAccess(): void
     {
         $user = $this->login();
@@ -165,7 +98,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', "/collections/{$collection->id}/group");
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 403);
     }
 
     public function testUpdateRedirectsToFrom(): void
@@ -211,35 +144,6 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($user->id, $group->user_id);
         $collection = $collection->reload();
         $this->assertSame($group->id, $collection->group_id);
-    }
-
-    public function testUpdateSetsGroupIfCollectionIsFollowed(): void
-    {
-        $user = $this->login();
-        $other_user = UserFactory::create();
-        /** @var string */
-        $group_name = $this->fake('text', 50);
-        $collection = CollectionFactory::create([
-            'user_id' => $other_user->id,
-            'is_public' => true,
-            'group_id' => null,
-        ]);
-        $followed_collection = $user->follow($collection);
-
-        $this->assertSame(0, models\Group::count());
-
-        $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
-            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionGroup::class),
-            'name' => $group_name,
-        ]);
-
-        $this->assertSame(1, models\Group::count());
-        $collection = $collection->reload();
-        $this->assertNull($collection->group_id);
-        $group = models\Group::take();
-        $this->assertNotNull($group);
-        $followed_collection = $followed_collection->reload();
-        $this->assertSame($group->id, $followed_collection->group_id);
     }
 
     public function testUpdateUnsetsGroupIfNameIsEmpty(): void
@@ -328,27 +232,6 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Group::count());
     }
 
-    public function testUpdateFailsIfCollectionIsNotFollowed(): void
-    {
-        $user = $this->login();
-        $other_user = UserFactory::create();
-        /** @var string */
-        $group_name = $this->fake('text', 50);
-        $collection = CollectionFactory::create([
-            'type' => 'collection',
-            'user_id' => $other_user->id,
-            'is_public' => true,
-        ]);
-
-        $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
-            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionGroup::class),
-            'name' => $group_name,
-        ]);
-
-        $this->assertResponseCode($response, 404);
-        $this->assertSame(0, models\Group::count());
-    }
-
     public function testUpdateFailsIfCollectionIsSharedWithWriteAccess(): void
     {
         $user = $this->login();
@@ -371,7 +254,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'name' => $group_name,
         ]);
 
-        $this->assertResponseCode($response, 404);
+        $this->assertResponseCode($response, 403);
         $this->assertSame(0, models\Group::count());
     }
 

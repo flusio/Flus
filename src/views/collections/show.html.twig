@@ -194,7 +194,7 @@
             {% block items %}
                 {% import _self as item %}
 
-                {% if can_update %}
+                {% if can(app.user, 'updateGroup', collection) %}
                     {{ item.modal(
                         url: url('edit group collection', { id: collection.id }),
                         label: t('Put in a group'),

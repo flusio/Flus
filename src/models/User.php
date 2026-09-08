@@ -300,30 +300,6 @@ class User
     }
 
     /**
-     * Set the collection's group for the user.
-     *
-     * If the collection is owned by the user, the group is attached to the
-     * current collection. Otherwise, the group is attached to the
-     * corresponding FollowedCollection.
-     *
-     * @throws \Minz\Errors\MissingRecordError
-     *     If the user doesn't own the collection and is not following it.
-     */
-    public function setCollectionGroup(Collection $collection, ?Group $group): void
-    {
-        $group_id = $group ? $group->id : null;
-
-        if ($this->isOwning($collection)) {
-            $collection->group_id = $group_id;
-            $collection->save();
-        } else {
-            $followed_collection = $this->followedCollection($collection);
-            $followed_collection->group_id = $group_id;
-            $followed_collection->save();
-        }
-    }
-
-    /**
      * Return the links of the user.
      *
      * @see Link::listComputedByUser
@@ -381,29 +357,6 @@ class User
     public function collections(array $selected_computed_props = [], array $options = []): array
     {
         return Collection::listComputedByUserId(
-            $this->id,
-            $selected_computed_props,
-            $options
-        );
-    }
-
-    /**
-     * Return the collections followed by the user.
-     *
-     * @deprecated Use followedSources() instead.
-     *
-     * @see Collection::listComputedFollowedByUserId
-     *
-     * @param string[] $selected_computed_props
-     * @param array{
-     *     'type'?: 'collection'|'feed'|'all',
-     * } $options
-     *
-     * @return Collection[]
-     */
-    public function followedCollections(array $selected_computed_props = [], array $options = []): array
-    {
-        return Collection::listComputedFollowedByUserId(
             $this->id,
             $selected_computed_props,
             $options

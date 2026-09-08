@@ -33,8 +33,9 @@
         <category term="Flus:public" />
     {% endif %}
 
-    {% if collection.group_id and owner %}
-        <category term="Flus:group" label="{{ collection.groupForUser(owner.id).name }}" />
+    {% set group = collection.group %}
+    {% if group %}
+        <category term="Flus:group" label="{{ group.name }}" />
     {% endif %}
 
     {% for link in links %}

@@ -226,8 +226,7 @@ CREATE TABLE followed_collections (
     created_at TIMESTAMPTZ NOT NULL,
     time_filter TEXT NOT NULL DEFAULT 'normal',
     user_id TEXT REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE,
-    collection_id TEXT REFERENCES collections ON DELETE CASCADE ON UPDATE CASCADE,
-    group_id TEXT REFERENCES groups ON DELETE SET NULL ON UPDATE CASCADE
+    collection_id TEXT REFERENCES collections ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE UNIQUE INDEX idx_followed_collections ON followed_collections(user_id, collection_id);
