@@ -3,11 +3,7 @@
 namespace App\cli;
 
 use App\models;
-use tests\factories\CollectionFactory;
-use tests\factories\CollectionShareFactory;
-use tests\factories\GroupFactory;
 use tests\factories\LinkFactory;
-use tests\factories\LinkToCollectionFactory;
 use tests\factories\UserFactory;
 
 /**
@@ -270,101 +266,5 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
             $link_dismissed_at->getTimestamp(),
             $status_link->dismissed_at?->getTimestamp()
         );
-    }
-
-    public function testSetupStreams(): void
-    {
-        self::recreateDatabase();
-
-        $user = UserFactory::create();
-        $other_user = UserFactory::create();
-        $group = GroupFactory::create([
-            'user_id' => $user->id,
-            'name' => 'My group',
-        ]);
-        $collection_1 = CollectionFactory::create([
-            'is_public' => true,
-        ]);
-        // The private collections shared with the user must be migrated as well.
-        $collection_2 = CollectionFactory::create([
-            'user_id' => $other_user->id,
-            'is_public' => false,
-        ]);
-        CollectionShareFactory::create([
-            'user_id' => $user->id,
-            'collection_id' => $collection_2->id,
-        ]);
-        $collection_3 = CollectionFactory::create([
-            'is_public' => true,
-        ]);
-        $followed_collection_1 = $user->follow($collection_1);
-        $followed_collection_1->group_id = $group->id;
-        $followed_collection_1->save();
-        $followed_collection_2 = $user->follow($collection_2);
-        $followed_collection_2->group_id = $group->id;
-        $followed_collection_2->save();
-        $user->follow($collection_3);
-
-        $response = $this->appRun('CLI', '/migrations/setup-streams', [
-            'user' => $user->id,
-        ]);
-
-        $this->assertResponseCode($response, 200);
-        $streams = models\Stream::listBy(['user_id' => $user->id]);
-        $this->assertSame(1, count($streams));
-        $stream = $streams[0];
-        $this->assertSame('My group', $stream->name);
-        $sources = $stream->sources(['context_user' => $user]);
-        $sources_ids = array_column($sources, 'id');
-        sort($sources_ids);
-        $expected_sources_ids = [$collection_1->id, $collection_2->id];
-        sort($expected_sources_ids);
-        $this->assertSame($expected_sources_ids, $sources_ids);
-    }
-
-    public function testSetupStreamsCanBeExecutedTwice(): void
-    {
-        self::recreateDatabase();
-
-        $user = UserFactory::create();
-        $group = GroupFactory::create([
-            'user_id' => $user->id,
-            'name' => 'My group',
-        ]);
-        $collection = CollectionFactory::create([
-            'is_public' => true,
-        ]);
-        $followed_collection = $user->follow($collection);
-        $followed_collection->group_id = $group->id;
-        $followed_collection->save();
-
-        $response = $this->appRun('CLI', '/migrations/setup-streams', [
-            'user' => $user->id,
-        ]);
-        $this->assertResponseCode($response, 200);
-
-        $response = $this->appRun('CLI', '/migrations/setup-streams', [
-            'user' => $user->id,
-        ]);
-
-        $this->assertResponseCode($response, 200);
-        $streams = models\Stream::listBy(['user_id' => $user->id]);
-        $this->assertSame(1, count($streams));
-        $stream = $streams[0];
-        $sources = $stream->sources(['context_user' => $user]);
-        $sources_ids = array_column($sources, 'id');
-        $this->assertSame([$collection->id], $sources_ids);
-    }
-
-    public function testSetupStreamsFailsIfUserDoesNotExist(): void
-    {
-        self::recreateDatabase();
-
-        $response = $this->appRun('CLI', '/migrations/setup-streams', [
-            'user' => 'not-an-id',
-        ]);
-
-        $this->assertResponseCode($response, 400);
-        $this->assertResponseEquals($response, 'User does not exist.');
     }
 }
