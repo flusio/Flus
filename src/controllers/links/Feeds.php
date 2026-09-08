@@ -40,13 +40,10 @@ class Feeds extends BaseController
             utils\Locale::setCurrentLocale($owner->locale);
         }
 
-        $response = Response::ok('links/feeds/show.atom.xml.twig', [
+        return Response::ok('links/feeds/show.atom.xml.twig', [
             'link' => $link,
             'notes' => $link->notes(),
-            'user_agent' => utils\UserAgent::get(),
         ]);
-        $response->setHeader('X-Content-Type-Options', 'nosniff');
-        return $response;
     }
 
     /**

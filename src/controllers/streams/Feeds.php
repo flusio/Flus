@@ -1,6 +1,6 @@
 <?php
 
-namespace App\controllers\collections;
+namespace App\controllers\streams;
 
 use App\auth;
 use App\controllers\BaseController;
@@ -16,54 +16,50 @@ use Minz\Response;
 class Feeds extends BaseController
 {
     /**
-     * Show the feed of a collection.
+     * Show the feed of a stream.
      *
      * @request_param string id
      * @request_param boolean direct
      *     Indicate if <link rel=alternate> should point directly to the
      *     external websites (true) or not (false, default).
      *
-     * @response 301 :feed_url
-     *     If the collection is a feed.
      * @response 200
      *     On success.
      *
      * @throws \Minz\Errors\MissingRecordError
-     *     If the collection doesn't exist.
+     *     If the stream doesn't exist.
      * @throws auth\AccessDeniedError
-     *     If the user cannot view the collection.
+     *     If the user cannot view the stream.
      */
     public function show(Request $request): Response
     {
         $user = auth\CurrentUser::get();
-        $collection = models\Collection::requireFromRequest($request);
+        $stream = models\Stream::requireFromRequest($request);
 
         $direct = $request->parameters->getBoolean('direct');
 
-        auth\Access::require($user, 'view', $collection);
+        auth\Access::require($user, 'view', $stream);
 
-        if ($collection->type === 'feed') {
-            /** @var string */
-            $feed_url = $collection->feed_url;
-            return Response::movedPermanently($feed_url);
-        }
+        utils\Locale::setCurrentLocale($stream->owner()->locale);
 
-        $owner = $collection->owner();
-        if ($owner) {
-            utils\Locale::setCurrentLocale($owner->locale);
-        }
-
-        $topics = $collection->topics();
-        $topics = utils\Sorter::localeSort($topics, 'label');
-
-        $links = $collection->links(['published_at'], [
-            'hidden' => false,
+        $links = $stream->links([
+            'context_user' => null,
+            'days' => 'ALL',
             'limit' => 30,
         ]);
 
-        return Response::ok('collections/feeds/show.atom.xml.twig', [
-            'collection' => $collection,
-            'topics' => $topics,
+        // Deduplicate the links by id: a stream can list the same link several
+        // times (e.g. two collections publishing it), while the Atom entries
+        // must have unique ids. The same URL published by different people
+        // (with different notes) is kept though.
+        $links_by_id = [];
+        foreach ($links as $link) {
+            $links_by_id[$link->id] ??= $link;
+        }
+        $links = array_values($links_by_id);
+
+        return Response::ok('streams/feeds/show.atom.xml.twig', [
+            'stream' => $stream,
             'links' => $links,
             'direct' => $direct,
         ]);
@@ -74,12 +70,12 @@ class Feeds extends BaseController
      *
      * @request_param string id
      *
-     * @response 301 /collections/:id/feed.atom.xml
+     * @response 301 /streams/:id/feed.atom.xml
      */
     public function alias(Request $request): Response
     {
-        $collection_id = $request->parameters->getString('id');
-        $url = \Minz\Url::for('collection feed', ['id' => $collection_id]);
+        $stream_id = $request->parameters->getString('id');
+        $url = \Minz\Url::for('stream feed', ['id' => $stream_id]);
 
         $query_string = $request->server->getString('QUERY_STRING');
         if ($query_string) {

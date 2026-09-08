@@ -41,14 +41,20 @@ class Feeds extends BaseController
             'limit' => 30,
         ]);
 
-        $response = Response::ok('profiles/feeds/show.atom.xml.twig', [
+        // Deduplicate the links by id: a profile can list the same link several
+        // times (e.g. two collections publishing it), while the Atom entries
+        // must have unique ids.
+        $links_by_id = [];
+        foreach ($links as $link) {
+            $links_by_id[$link->id] ??= $link;
+        }
+        $links = array_values($links_by_id);
+
+        return Response::ok('profiles/feeds/show.atom.xml.twig', [
             'user' => $user,
             'links' => $links,
-            'user_agent' => utils\UserAgent::get(),
             'direct' => $direct,
         ]);
-        $response->setHeader('X-Content-Type-Options', 'nosniff');
-        return $response;
     }
 
     /**
@@ -63,8 +69,8 @@ class Feeds extends BaseController
         $user_id = $request->parameters->getString('id');
         $url = \Minz\Url::for('profile feed', ['id' => $user_id]);
 
-        $query_string = $_SERVER['QUERY_STRING'] ?? null;
-        if (is_string($query_string) && $query_string) {
+        $query_string = $request->server->getString('QUERY_STRING');
+        if ($query_string) {
             $url .= '?' . $query_string;
         }
 

@@ -300,12 +300,13 @@ class Stream
      * @param array{
      *     context_user?: ?User,
      *     at?: \DateTimeImmutable,
-     *     days?: int,
+     *     days?: int|'ALL',
      *     source?: ?Collection,
      *     status?: string,
      *     with_dismissed?: bool,
      *     query?: ?search_engine\Query,
      *     created_before?: ?\DateTimeImmutable,
+     *     limit?: int|'ALL',
      * } $options
      *
      * @return Link[]

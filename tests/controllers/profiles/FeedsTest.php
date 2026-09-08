@@ -162,11 +162,11 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     public function testAliasRedirectsWithQuery(): void
     {
         $user = UserFactory::create();
-        $_SERVER['QUERY_STRING'] = 'direct=true';
 
-        $response = $this->appRun('GET', "/p/{$user->id}/feed");
+        $response = $this->appRun('GET', "/p/{$user->id}/feed", server: [
+            'QUERY_STRING' => 'direct=true',
+        ]);
 
-        $_SERVER['QUERY_STRING'] = '';
         $this->assertResponseCode($response, 301, "/p/{$user->id}/feed.atom.xml?direct=true");
     }
 }

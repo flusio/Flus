@@ -139,11 +139,11 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     public function testAliasRedirectsWithQuery(): void
     {
         $collection = CollectionFactory::create();
-        $_SERVER['QUERY_STRING'] = 'direct=true';
 
-        $response = $this->appRun('GET', "/collections/{$collection->id}/feed");
+        $response = $this->appRun('GET', "/collections/{$collection->id}/feed", server: [
+            'QUERY_STRING' => 'direct=true',
+        ]);
 
-        $_SERVER['QUERY_STRING'] = '';
         $this->assertResponseCode($response, 301, "/collections/{$collection->id}/feed.atom.xml?direct=true");
     }
 }

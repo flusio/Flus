@@ -24,12 +24,13 @@ trait InStreams
      * @param array{
      *     context_user?: ?User,
      *     at?: \DateTimeImmutable,
-     *     days?: int,
+     *     days?: int|'ALL',
      *     source?: ?Collection,
      *     status?: string,
      *     with_dismissed?: bool,
      *     query?: ?Query,
      *     created_before?: ?\DateTimeImmutable,
+     *     limit?: int|'ALL',
      * } $options
      *
      * @return self[]
@@ -45,6 +46,7 @@ trait InStreams
             'with_dismissed' => false,
             'query' => null,
             'created_before' => null,
+            'limit' => 'ALL',
         ];
         $options = array_merge($default_options, $options);
 
@@ -59,6 +61,12 @@ trait InStreams
         list($sql_where, $where_parameters) = self::buildStreamWhere($sources, $options);
         $parameters = array_merge($parameters, $where_parameters);
 
+        $sql_limit = '';
+        if ($options['limit'] !== 'ALL') {
+            $sql_limit = 'LIMIT :limit';
+            $parameters[':limit'] = $options['limit'];
+        }
+
         $sql = <<<SQL
             SELECT l.*, lc.created_at AS published_at, lc.collection_id AS source_id, true AS group_by_source
             FROM links_to_collections lc
@@ -68,6 +76,8 @@ trait InStreams
             {$sql_where}
 
             ORDER BY published_at DESC, l.id
+
+            {$sql_limit}
         SQL;
 
         $database = Database::get();
@@ -381,7 +391,7 @@ trait InStreams
      * @param array{
      *     context_user: ?User,
      *     at: \DateTimeImmutable,
-     *     days: int,
+     *     days: int|'ALL',
      *     status: string,
      *     with_dismissed: bool,
      *     query: ?Query,
@@ -406,18 +416,24 @@ trait InStreams
         /** @var literal-string */
         $source_ids_statement = implode(', ', $source_ids_placeholders);
 
-        // Calculate the time span interval to get the links.
-        $start = $options['at']->modify('00:00:00');
-        $end = $start->modify('23:59:59');
+        // Calculate the time span interval to get the links, unless all the
+        // links are requested.
+        $date_clause = '';
+        if ($options['days'] !== 'ALL') {
+            $start = $options['at']->modify('00:00:00');
+            $end = $start->modify('23:59:59');
 
-        $days = min(max($options['days'], 1), 30);
-        $days = $days - 1; // the actual interval is already of 1 day.
-        if ($days > 0) {
-            $start = $start->modify("-{$days} days");
+            $days = min(max($options['days'], 1), 30);
+            $days = $days - 1; // the actual interval is already of 1 day.
+            if ($days > 0) {
+                $start = $start->modify("-{$days} days");
+            }
+
+            $parameters[':at_start'] = $start->format(Database\Column::DATETIME_FORMAT);
+            $parameters[':at_end'] = $end->format(Database\Column::DATETIME_FORMAT);
+
+            $date_clause = 'AND lc.created_at >= :at_start AND lc.created_at <= :at_end';
         }
-
-        $parameters[':at_start'] = $start->format(Database\Column::DATETIME_FORMAT);
-        $parameters[':at_end'] = $end->format(Database\Column::DATETIME_FORMAT);
 
         // Create the status clause if status option is set.
         $status_clause = '';
@@ -467,8 +483,8 @@ trait InStreams
         $sql_where = <<<SQL
             WHERE lc.collection_id IN ({$source_ids_statement})
             AND l.is_hidden = false
-            AND lc.created_at >= :at_start AND lc.created_at <= :at_end
 
+            {$date_clause}
             {$status_clause}
             {$dismissed_clause}
             {$search_clause}
