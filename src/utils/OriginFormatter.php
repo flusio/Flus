@@ -102,32 +102,6 @@ class OriginFormatter
     }
 
     /**
-     * Return the (deprecated) source from the origin.
-     *
-     * @deprecated Can be removed in version 3.0.0.
-     */
-    public function sourceFromOrigin(string $origin): ?string
-    {
-        $model = $this->modelFromOrigin($origin);
-
-        if (!$model) {
-            return null;
-        }
-
-        $source_type = match ($model::class) {
-            models\User::class => 'user',
-            models\Collection::class => 'collection',
-            default => '',
-        };
-
-        if (!$source_type) {
-            return null;
-        }
-
-        return "{$source_type}#{$model->id}";
-    }
-
-    /**
      * Load the models matching with the origins of the given links, in a
      * constant number of queries.
      *

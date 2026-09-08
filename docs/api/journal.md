@@ -136,6 +136,7 @@ $ curl -H "Content-Type: application/json" \
 
 - 2.0.0: added
 - 2.5.0: old `source` format (e.g. `collection#<id>`) is deprecated, use `<id>` format instead
+- 3.0.0: old `source` format is no longer supported
 
 ## Mark the links of the journal to read later
 
@@ -178,6 +179,7 @@ $ curl -H "Content-Type: application/json" \
 
 - 2.0.0: added
 - 2.5.0: old `source` format (e.g. `collection#<id>`) is deprecated, use `<id>` format instead
+- 3.0.0: old `source` format is no longer supported
 
 ## Remove the links from the journal
 
@@ -220,6 +222,7 @@ $ curl -H "Content-Type: application/json" \
 
 - 2.0.0: added
 - 2.5.0: old `source` format (e.g. `collection#<id>`) is deprecated, use `<id>` format instead
+- 3.0.0: old `source` format is no longer supported
 
 ## Remove a single link from the journal
 

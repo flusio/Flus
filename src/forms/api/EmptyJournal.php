@@ -36,44 +36,11 @@ class EmptyJournal extends Form
             $options['published_date'] = $this->date;
         }
 
-        $source = $this->normalizedSource();
-        if ($source) {
-            $options['source'] = $source;
+        if ($this->source) {
+            $options['source'] = $this->source;
         }
 
         $news = $this->user->news();
         return $news->links(options: $options);
-    }
-
-    /**
-     * Return the normalized source.
-     *
-     * Before Flus 2.5.0, sources followed the format "<source type>#<source id>",
-     * where "source type" could either be "user" or "collection". Since Flus
-     * 2.5.0, only "collection" source are supported. Thus, the source only
-     * contains the id of the collection.
-     *
-     * This method enables to support both formats by always returning (only)
-     * the source id.
-     *
-     * @deprecated Can be removed in version 3.0.0.
-     */
-    public function normalizedSource(): ?string
-    {
-        if (!$this->source) {
-            return null;
-        }
-
-        if (!str_contains($this->source, '#')) {
-            return $this->source;
-        }
-
-        list($source_type, $source_id) = explode('#', $this->source, 2);
-
-        if ($source_type !== 'collection') {
-            return null;
-        }
-
-        return $source_id;
     }
 }
