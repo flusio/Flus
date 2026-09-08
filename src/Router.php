@@ -241,6 +241,8 @@ class Router
         $router->addRoute('GET', '/streams/:id', 'Streams#show', 'stream');
         $router->addRoute('GET', '/streams/:id/feed.atom.xml', 'streams/Feeds#show', 'stream feed');
         $router->addRoute('GET', '/streams/:id/feed', 'streams/Feeds#alias');
+        $router->addRoute('GET', '/streams/:id/opml.xml', 'streams/Opml#show', 'stream opml');
+        $router->addRoute('GET', '/streams/:id/opml', 'streams/Opml#alias');
         $router->addRoute('GET', '/streams/:id/edit', 'Streams#edit', 'edit stream');
         $router->addRoute('POST', '/streams/:id/edit', 'Streams#update', 'update stream');
         $router->addRoute('POST', '/streams/:id/delete', 'Streams#delete', 'delete stream');

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+    <head>
+        <title>{{ stream.name }}</title>
+        <dateCreated>{{ date().format('D, d M Y H:i:s O') }}</dateCreated>
+    </head>
+
+    <body>
+        <outline text="{{ stream.name }}">
+            {% for collection in sources %}
+                {{ include('collections/_collection.opml.xml.twig', { with_time_filter: false }) }}
+            {% endfor %}
+        </outline>
+    </body>
+</opml>
