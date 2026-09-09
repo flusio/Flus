@@ -1,0 +1,35 @@
+{#
+ # A button integrated in a search field, showing the given search error in
+ # a popup. `id` identifies the message, so that the field can reference it
+ # with aria-errormessage.
+ #}
+{% types {
+    id: 'string',
+    message: 'string',
+} %}
+
+<details
+    class="popup search-field__error"
+    data-controller="popup"
+    data-action="toggle->popup#update click@window->popup#closeOnClickOutside keydown->popup#closeOnEscape"
+>
+    <summary
+        class="popup__opener"
+        aria-expanded="false"
+        title="{{ t('Search error') }}"
+    >
+        <span class="button button--ghost button--icon">
+            {{ icon('error') }}
+            <span class="sr-only">
+                {{ t('Search error') }}
+            </span>
+        </span>
+    </summary>
+
+    <div class="popup__container popup__container--right">
+        <p id="{{ id }}" class="form-group__error">
+            {{ t('Error:') }}
+            {{ message }}
+        </p>
+    </div>
+</details>

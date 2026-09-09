@@ -8,8 +8,12 @@ namespace App\search_engine\Query;
  */
 enum TokenType: string
 {
+    case And = 'and';
+    case CloseBracket = 'close bracket';
     case EndOfQuery = 'end of query';
     case Not = 'not';
+    case OpenBracket = 'open bracket';
+    case Or = 'or';
     case Qualifier = 'qualifier';
     case Tag = 'tag';
     case Text = 'text';

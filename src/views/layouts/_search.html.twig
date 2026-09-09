@@ -1,18 +1,38 @@
-<form class="layout__search" method="get" action="">
-    <input
-        id="query"
-        name="q"
-        type="text"
-        aria-label="{{ t('Search links by words, URL or #tag') }}"
-        placeholder="{{ t('Search links by words, URL or #tag') }}"
-        required
-        value="{{ query }}"
-    >
+{% set search_error = search_error ?? null %}
 
-    <button type="submit" class="button--ghost">
-        {{ icon('search') }}
-        <span class="sr-only">
-            {{ t('Search') }}
-        </span>
-    </button>
+<form class="layout__search" method="get" action="">
+    <div class="search-field{% if search_error %} search-field--with-error{% endif %}">
+        <input
+            id="query"
+            class="search-field__input"
+            name="q"
+            type="text"
+            aria-label="{{ t('Search links by words, URL or #tag') }}"
+            placeholder="{{ t('Search links by words, URL or #tag') }}"
+            required
+            value="{{ query }}"
+            {% if search_error %}
+                aria-errormessage="query-error"
+                aria-invalid="true"
+            {% endif %}
+        >
+
+        <div class="search-field__buttons">
+            {% if search_error %}
+                {{ include('links/_search_error.html.twig', {
+                    id: 'query-error',
+                    message: search_error,
+                }) }}
+            {% endif %}
+
+            {{ include('links/_search_help.html.twig', { context: 'links' }) }}
+
+            <button type="submit" class="button--ghost button--icon">
+                {{ icon('search') }}
+                <span class="sr-only">
+                    {{ t('Search') }}
+                </span>
+            </button>
+        </div>
+    </div>
 </form>

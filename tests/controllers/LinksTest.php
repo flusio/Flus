@@ -82,12 +82,42 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $title_2);
     }
 
-    public function testIndexRendersNoResultWhenQueryIsMalformed(): void
+    public function testIndexRendersResultsWhenQueryCombinesWordsWithOr(): void
+    {
+        $user = $this->login();
+        /** @var string */
+        $title_1 = $this->fakeUnique('words', 3, true);
+        /** @var string */
+        $title_2 = $this->fakeUnique('words', 3, true);
+        /** @var string */
+        $title_3 = $this->fakeUnique('words', 3, true);
+        LinkFactory::create([
+            'title' => $title_1,
+        ]);
+        LinkFactory::create([
+            'title' => $title_2,
+        ]);
+        LinkFactory::create([
+            'title' => $title_3,
+        ]);
+
+        $response = $this->appRun('GET', '/links', [
+            'q' => "\"{$title_1}\" OR \"{$title_2}\"",
+        ]);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $title_1);
+        $this->assertResponseContains($response, $title_2);
+        $this->assertResponseNotContains($response, $title_3);
+    }
+
+    public function testIndexRendersNoLinksWhenQueryIsEmpty(): void
     {
         $user = $this->login();
         /** @var string */
         $title = $this->fakeUnique('words', 3, true);
         LinkFactory::create([
+            'user_id' => $user->id,
             'title' => $title,
         ]);
 
@@ -97,6 +127,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseTemplateName($response, 'links/search.html.twig');
+        $this->assertResponseContains($response, '0 results');
         $this->assertResponseNotContains($response, $title);
     }
 

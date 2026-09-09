@@ -347,6 +347,33 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($user->hasRead($link2), 'The link should not be read.');
     }
 
+    public function testCreateDoesNotMarkLinksIfQueryIsMalformed(): void
+    {
+        $date = new \DateTimeImmutable('2024-03-25');
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link], at: $date);
+        $stream->addSource($source);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/read", [
+            'csrf_token' => $this->csrfToken(forms\streams\MarkStreamAsRead::class),
+            'at' => $date->format('Y-m-d'),
+            'q' => 'duration:abc',
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertFalse($user->hasRead($link), 'The link should not be read.');
+    }
+
     public function testCreateDoesNotMarkLinksCreatedAfterBefore(): void
     {
         $date = new \DateTimeImmutable('2024-03-25');

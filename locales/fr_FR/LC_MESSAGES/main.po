@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-09-09 17:25+0200\n"
-"PO-Revision-Date: 2026-09-09 17:25+0200\n"
+"POT-Creation-Date: 2026-09-10 17:07+0200\n"
+"PO-Revision-Date: 2026-09-10 17:07+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -64,7 +64,7 @@ msgstr "Liens wallabag"
 msgid "All your links imported from wallabag."
 msgstr "Tous vos liens importés depuis wallabag."
 
-#: controllers/Links.php:352
+#: controllers/Links.php:362
 #, php-format
 msgid "The link “%s” has been deleted."
 msgstr "Le lien « %s » a été supprimé."
@@ -561,6 +561,11 @@ msgstr "Fils partagés"
 msgid "Has unread links from the last seven days"
 msgstr "Contient des liens non lus datant des sept derniers jours"
 
+#: search_engine/SyntaxError.php:58
+#, php-format
+msgid "Incorrect qualifier value “%s” at character %d."
+msgstr "Valeur de qualificatif incorrecte « %s » au caractère %d."
+
 #: seeds.php:12
 msgid "Business"
 msgstr "Business"
@@ -800,9 +805,9 @@ msgstr "(max. %d caractères)"
 #: views/collections/shares/index.html.twig:58
 #: views/components/text_editor.html.twig:43 views/feeds/_new_form.html.twig:13
 #: views/groups/edit.html.twig:20 views/importations/opml/show.html.twig:84
-#: views/links/_form_simple.html.twig:15 views/links/edit.html.twig:26
-#: views/links/edit.html.twig:71 views/links/edit.html.twig:91
-#: views/links/images/edit.html.twig:20
+#: views/links/_form_simple.html.twig:15 views/links/_search_error.html.twig:31
+#: views/links/edit.html.twig:26 views/links/edit.html.twig:71
+#: views/links/edit.html.twig:91 views/links/images/edit.html.twig:20
 #: views/links/mastodon_threads/new.html.twig:17 views/links/new.html.twig:27
 #: views/links/repairing/new.html.twig:30
 #: views/links/searches/show.html.twig:39 views/mastodon/show.html.twig:62
@@ -1701,11 +1706,11 @@ msgstr "Page suivante"
 msgid "Next"
 msgstr "Suivant"
 
-#: views/layouts/_search.html.twig:6 views/layouts/_search.html.twig:7
+#: views/layouts/_search.html.twig:10 views/layouts/_search.html.twig:11
 msgid "Search links by words, URL or #tag"
 msgstr "Rechercher des liens par mots, URL ou #tag"
 
-#: views/layouts/_search.html.twig:15 views/links/searches/show.html.twig:64
+#: views/layouts/_search.html.twig:33 views/links/searches/show.html.twig:64
 msgid "Search"
 msgstr "Rechercher"
 
@@ -1891,6 +1896,127 @@ msgstr "par"
 msgid "%s of %s links"
 msgstr "%s sur %s liens"
 
+#: views/links/_search_error.html.twig:19
+#: views/links/_search_error.html.twig:24
+msgid "Search error"
+msgstr "Erreur de recherche"
+
+#: views/links/_search_help.html.twig:20 views/links/_search_help.html.twig:24
+#: views/links/_search_help.html.twig:31
+msgid "Search syntax"
+msgstr "Syntaxe de recherche"
+
+#: views/links/_search_help.html.twig:37
+msgid "Words"
+msgstr "Mots"
+
+#: views/links/_search_help.html.twig:39
+msgid "Links containing all the words, in their title or their URL."
+msgstr "Liens contenant tous les mots, dans leur titre ou leur URL."
+
+#: views/links/_search_help.html.twig:40
+msgid "Links containing at least one of the words."
+msgstr "Liens contenant au moins un des mots."
+
+#: views/links/_search_help.html.twig:41
+msgid "Links containing the first word, but not the second one."
+msgstr "Liens contenant le premier mot, mais pas le second."
+
+#: views/links/_search_help.html.twig:42
+msgid "Links containing the exact phrase."
+msgstr "Liens contenant la phrase exacte."
+
+#: views/links/_search_help.html.twig:43
+msgid "Brackets group the conditions."
+msgstr "Les parenthèses regroupent les conditions."
+
+#: views/links/_search_help.html.twig:51
+msgid "Tags"
+msgstr "Tags"
+
+#: views/links/_search_help.html.twig:53
+msgid "Links with the tag."
+msgstr "Liens avec le tag."
+
+#: views/links/_search_help.html.twig:54
+msgid "Links without the tag."
+msgstr "Liens sans le tag."
+
+#: views/links/_search_help.html.twig:55
+msgid "Links with at least one tag (and “no:tags” for the links without any)."
+msgstr "Liens avec au moins un tag (et « no:tags » pour les liens sans tag)."
+
+#: views/links/_search_help.html.twig:63
+msgid "URL"
+msgstr "URL"
+
+#: views/links/_search_help.html.twig:65
+msgid "Links whose URL contains the text."
+msgstr "Liens dont l’URL contient le texte."
+
+#: views/links/_search_help.html.twig:66
+msgid "Links whose URL does not contain the text."
+msgstr "Liens dont l’URL ne contient pas le texte."
+
+#: views/links/_search_help.html.twig:74
+msgid "Notes"
+msgstr "Notes"
+
+#: views/links/_search_help.html.twig:76
+msgid "Links whose notes contain the word."
+msgstr "Liens dont les notes contiennent le mot."
+
+#: views/links/_search_help.html.twig:77
+msgid ""
+"Links with at least one note (and “no:notes” for the links without any)."
+msgstr ""
+"Liens avec au moins une note (et « no:notes » pour les liens sans note)."
+
+#: views/links/_search_help.html.twig:81
+msgid "Hidden links"
+msgstr "Liens masqués"
+
+#: views/links/_search_help.html.twig:83
+msgid "Hidden links."
+msgstr "Liens masqués."
+
+#: views/links/_search_help.html.twig:84
+msgid "Links which are not hidden."
+msgstr "Liens qui ne sont pas masqués."
+
+#: views/links/_search_help.html.twig:88
+msgid "Dates"
+msgstr "Dates"
+
+#: views/links/_search_help.html.twig:90
+msgid "Links added during the month (or the year, or the day)."
+msgstr "Liens ajoutés pendant le mois (ou l’année, ou le jour)."
+
+#: views/links/_search_help.html.twig:91
+msgid "Links added from the date, with “>”, “>=”, “<” or “<=”."
+msgstr ""
+"Liens ajoutés à partir de la date, avec « > », « >= », « < » ou « <= »."
+
+#: views/links/_search_help.html.twig:92
+msgid "Links added between the two dates."
+msgstr "Liens ajoutés entre les deux dates."
+
+#: views/links/_search_help.html.twig:93
+msgid "Links added today (or “current-month”, “current-year”)."
+msgstr "Liens ajoutés aujourd’hui (ou « current-month », « current-year »)."
+
+#: views/links/_search_help.html.twig:101
+msgid "Durations"
+msgstr "Durées"
+
+#: views/links/_search_help.html.twig:103
+msgid "Links taking more than 10 minutes to read."
+msgstr "Liens prenant plus de 10 minutes à lire."
+
+#: views/links/_search_help.html.twig:104
+msgid "Links taking between 5 and 15 minutes to read."
+msgstr "Liens prenant entre 5 et 15 minutes à lire."
+
 #: views/links/collections/_new_note_form.html.twig:4
 #: views/links/show.html.twig:330
 msgid "What do you retain from this content?"
@@ -2073,7 +2199,7 @@ msgstr "Réparer le lien"
 msgid "Results of the search"
 msgstr "Résultats de la recherche"
 
-#: views/links/search.html.twig:28
+#: views/links/search.html.twig:29
 #, php-format
 msgid "%d result (“%s”)"
 msgid_plural "%d results (“%s”)"
@@ -3267,7 +3393,7 @@ msgstr "Prolifique (3 liens par jour ou plus)"
 msgid "Type"
 msgstr "Type"
 
-#: views/sources/_filters.html.twig:83 views/streams/_views.html.twig:256
+#: views/sources/_filters.html.twig:83 views/streams/_views.html.twig:273
 msgid "All"
 msgstr "Tout"
 
@@ -3426,7 +3552,7 @@ msgstr "Afficher les jours suivants"
 msgid "Date"
 msgstr "Date"
 
-#: views/streams/_views.html.twig:129 views/streams/_views.html.twig:316
+#: views/streams/_views.html.twig:129 views/streams/_views.html.twig:333
 #, php-format
 msgid "%s: %d link"
 msgid_plural "%s: %d links"
@@ -3451,36 +3577,36 @@ msgid_plural "%d days"
 msgstr[0] "%d jour"
 msgstr[1] "%d jours"
 
-#: views/streams/_views.html.twig:231
+#: views/streams/_views.html.twig:232
 msgid "Words or URL"
 msgstr "Mots ou URL"
 
-#: views/streams/_views.html.twig:246
+#: views/streams/_views.html.twig:263
 msgid "Reading status"
 msgstr "Statut de lecture"
 
-#: views/streams/_views.html.twig:257
+#: views/streams/_views.html.twig:274
 msgid "Unread"
 msgstr "Non lus"
 
-#: views/streams/_views.html.twig:291
+#: views/streams/_views.html.twig:308
 msgid "Include the ignored links"
 msgstr "Inclure les liens ignorés"
 
-#: views/streams/_views.html.twig:304
+#: views/streams/_views.html.twig:321
 #, php-format
 msgid "Sources (%d)"
 msgstr "Sources (%d)"
 
-#: views/streams/_views.html.twig:360 views/streams/_views.html.twig:385
+#: views/streams/_views.html.twig:377 views/streams/_views.html.twig:402
 msgid "Save view"
 msgstr "Enregistrer la vue"
 
-#: views/streams/_views.html.twig:370
+#: views/streams/_views.html.twig:387
 msgid "Save to current view"
 msgstr "Enregistrer la vue courante"
 
-#: views/streams/_views.html.twig:378
+#: views/streams/_views.html.twig:395
 msgid "Save changes to new view"
 msgstr "Enregistrer dans une nouvelle vue"
 

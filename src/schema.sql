@@ -299,10 +299,13 @@ CREATE TABLE notes (
     created_at TIMESTAMPTZ NOT NULL,
     content TEXT NOT NULL,
     link_id TEXT REFERENCES links ON DELETE CASCADE ON UPDATE CASCADE,
-    user_id TEXT REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE
+    user_id TEXT REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE,
+
+    search_index TSVECTOR GENERATED ALWAYS AS (to_tsvector('french', content)) STORED
 );
 
 CREATE INDEX idx_notes_link_id ON notes(link_id);
+CREATE INDEX idx_notes_search ON notes USING GIN (search_index);
 
 CREATE TABLE topics (
     id TEXT PRIMARY KEY,

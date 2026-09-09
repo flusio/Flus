@@ -56,7 +56,16 @@ trait StreamLinks
             $status = 'all';
         }
 
-        $search_query = search_engine\Query::fromStringOrNull($this->q);
+        $search_query = null;
+        if ($this->q !== '') {
+            try {
+                $search_query = search_engine\LinksSearcher::buildQuery($this->q, context: 'stream');
+            } catch (search_engine\SyntaxError) {
+                // The query cannot be parsed: no links are displayed to the
+                // user in this case (see StreamView), so none must be marked.
+                return [];
+            }
+        }
 
         $stream_links = $stream->links([
             'context_user' => $user,

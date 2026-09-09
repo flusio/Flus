@@ -44,9 +44,18 @@ class Links extends BaseController
         if ($query) {
             $number_per_page = 30;
 
-            $search_query = search_engine\Query::fromStringOrNull($query);
+            $search_query = null;
+            $search_error = null;
 
-            if ($search_query) {
+            try {
+                $search_query = search_engine\LinksSearcher::buildQuery($query, context: 'links');
+            } catch (search_engine\SyntaxError $e) {
+                $search_error = $e->translatedMessage();
+            }
+
+            // An empty query would list all the links: it is treated as a
+            // search without results.
+            if ($search_query && !$search_query->isEmpty()) {
                 $number_links = search_engine\LinksSearcher::countLinks($user, $search_query);
                 $pagination = new utils\Pagination($number_links, $number_per_page, $pagination_page);
                 $links = search_engine\LinksSearcher::getLinks(
@@ -71,6 +80,7 @@ class Links extends BaseController
             return Response::ok('links/search.html.twig', [
                 'links' => $links,
                 'query' => $query,
+                'search_error' => $search_error,
                 'pagination' => $pagination,
             ]);
         } else {

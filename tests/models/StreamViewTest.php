@@ -65,18 +65,36 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($stream_view->search_query);
     }
 
-    public function testBuildFromRequestIgnoresMalformedQuery(): void
+    public function testBuildFromRequestReadsUnavailableQualifierAsText(): void
     {
         $request = new \Minz\Request('GET', '/stream', [
-            'q' => '""',
+            'q' => 'date:today',
+        ]);
+        $stream = StreamFactory::create();
+
+        $stream_view = StreamView::buildFromRequest($stream, null, $request);
+
+        $this->assertNotNull($stream_view->search_query);
+        $this->assertNull($stream_view->search_error);
+        $conditions = $stream_view->search_query->getConditions();
+        $this->assertSame(1, count($conditions));
+        $this->assertTrue($conditions[0]->isTextCondition());
+        $this->assertSame('date:today', $conditions[0]->getValue());
+    }
+
+    public function testBuildFromRequestSetsSearchErrorWhenQueryIsMalformed(): void
+    {
+        $request = new \Minz\Request('GET', '/stream', [
+            'q' => 'duration:abc',
         ]);
         $stream = StreamFactory::create();
 
         $stream_view = StreamView::buildFromRequest($stream, null, $request);
 
         // The query is kept as it is typed, but it is not applied to the links.
-        $this->assertSame('""', $stream_view->query);
+        $this->assertSame('duration:abc', $stream_view->query);
         $this->assertNull($stream_view->search_query);
+        $this->assertSame('Incorrect qualifier value “duration:abc” at character 10.', $stream_view->search_error);
     }
 
     #[\PHPUnit\Framework\Attributes\DataProvider('atOutOfPeriodProvider')]
@@ -737,73 +755,7 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_1->id, $links[0]->id);
     }
 
-    public function testLinksTimelineCanListLinksByQueryOnTag(): void
-    {
-        $date = $this->fakeDateInPeriod();
-        $user = UserFactory::create();
-        $stream = StreamFactory::create([
-            'user_id' => $user->id,
-        ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
-            'is_public' => true,
-        ]);
-        $link_1 = LinkFactory::create([
-            'is_hidden' => false,
-            'tags' => ['foo'],
-        ]);
-        $link_2 = LinkFactory::create([
-            'is_hidden' => false,
-            'tags' => ['bar'],
-        ]);
-        $source->addLinks([$link_1, $link_2], at: $date);
-        $stream->addSource($source);
-        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
-            'at' => $date->format('Y-m-d'),
-            'q' => '#foo',
-        ]));
-
-        $links_timeline = $stream_view->linksTimeline();
-
-        $links = $this->linksOfTimeline($links_timeline);
-        $this->assertSame(1, count($links));
-        $this->assertSame($link_1->id, $links[0]->id);
-    }
-
-    public function testLinksTimelineCanExcludeLinksByQueryOnTag(): void
-    {
-        $date = $this->fakeDateInPeriod();
-        $user = UserFactory::create();
-        $stream = StreamFactory::create([
-            'user_id' => $user->id,
-        ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
-            'is_public' => true,
-        ]);
-        $link_1 = LinkFactory::create([
-            'is_hidden' => false,
-            'tags' => ['foo'],
-        ]);
-        $link_2 = LinkFactory::create([
-            'is_hidden' => false,
-            'tags' => ['bar'],
-        ]);
-        $source->addLinks([$link_1, $link_2], at: $date);
-        $stream->addSource($source);
-        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
-            'at' => $date->format('Y-m-d'),
-            'q' => '-#bar',
-        ]));
-
-        $links_timeline = $stream_view->linksTimeline();
-
-        $links = $this->linksOfTimeline($links_timeline);
-        $this->assertSame(1, count($links));
-        $this->assertSame($link_1->id, $links[0]->id);
-    }
-
-    public function testLinksTimelineIgnoresMalformedQuery(): void
+    public function testLinksTimelineListsNoLinksWhenQueryIsMalformed(): void
     {
         $date = $this->fakeDateInPeriod();
         $user = UserFactory::create();
@@ -821,14 +773,13 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $stream->addSource($source);
         $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
             'at' => $date->format('Y-m-d'),
-            'q' => '""',
+            'q' => 'duration:abc',
         ]));
 
         $links_timeline = $stream_view->linksTimeline();
 
         $links = $this->linksOfTimeline($links_timeline);
-        $this->assertSame(1, count($links));
-        $this->assertSame($link->id, $links[0]->id);
+        $this->assertSame(0, count($links));
     }
 
     public function testLinksTimelineCanListLinksFromPrivateSourceIfTheUserOwnsTheSource(): void

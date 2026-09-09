@@ -1,0 +1,132 @@
+{#
+# A button integrated in a search field, showing the syntax of the queries
+# in the modal. `context` is the context of the search, "links" or "stream":
+# in a stream, the tags and the qualifiers about the notes, the tags, the
+# visibility and the date are not available.
+#}
+
+{% types {
+    context: 'string',
+} %}
+
+<button
+    type="button"
+    class="button--ghost button--icon"
+    data-controller="modal-opener"
+    data-action="modal-opener#copy"
+    data-modal-opener-selector-value="#search-help"
+    aria-haspopup="dialog"
+    aria-controls="modal"
+    title="{{ t('Search syntax') }}"
+>
+    {{ icon('help') }}
+    <span class="sr-only">
+        {{ t('Search syntax') }}
+    </span>
+</button>
+
+<template id="search-help">
+    <div class="flow flow--large">
+        <h1 class="text--center" id="modal-title">
+            {{ t('Search syntax') }}
+        </h1>
+
+        <div class="wrapper wrapper--small wrapper--center flow flow--large">
+            {% set sections = [
+                {
+                    title: t('Words'),
+                    examples: [
+                        ['climate report', t('Links containing all the words, in their title or their URL.')],
+                        ['report OR study', t('Links containing at least one of the words.')],
+                        ['report NOT draft', t('Links containing the first word, but not the second one.')],
+                        ['"open access"', t('Links containing the exact phrase.')],
+                        ['(report OR study) NOT archived', t('Brackets group the conditions.')],
+                    ],
+                },
+            ] %}
+
+            {% if context == 'links' %}
+                {% set sections = sections | merge([
+                    {
+                        title: t('Tags'),
+                        examples: [
+                            ['#thesis', t('Links with the tag.')],
+                            ['-#thesis', t('Links without the tag.')],
+                            ['has:tags', t('Links with at least one tag (and “no:tags” for the links without any).')],
+                        ],
+                    },
+                ]) %}
+            {% endif %}
+
+            {% set sections = sections | merge([
+                {
+                    title: t('URL'),
+                    examples: [
+                        ['url:arxiv.org', t('Links whose URL contains the text.')],
+                        ['-url:arxiv.org', t('Links whose URL does not contain the text.')],
+                    ],
+                },
+            ]) %}
+
+            {% if context == 'links' %}
+                {% set sections = sections | merge([
+                    {
+                        title: t('Notes'),
+                        examples: [
+                            ['notes:methodology', t('Links whose notes contain the word.')],
+                            ['has:notes', t('Links with at least one note (and “no:notes” for the links without any).')],
+                        ],
+                    },
+                    {
+                        title: t('Hidden links'),
+                        examples: [
+                            ['is:hidden', t('Hidden links.')],
+                            ['-is:hidden', t('Links which are not hidden.')],
+                        ],
+                    },
+                    {
+                        title: t('Dates'),
+                        examples: [
+                            ['date:2026-03', t('Links added during the month (or the year, or the day).')],
+                            ['date:>=2026-01-01', t('Links added from the date, with “>”, “>=”, “<” or “<=”.')],
+                            ['date:2026-01..2026-03', t('Links added between the two dates.')],
+                            ['date:today', t('Links added today (or “current-month”, “current-year”).')],
+                        ],
+                    },
+                ]) %}
+            {% endif %}
+
+            {% set sections = sections | merge([
+                {
+                    title: t('Durations'),
+                    examples: [
+                        ['duration:>10', t('Links taking more than 10 minutes to read.')],
+                        ['duration:5..15', t('Links taking between 5 and 15 minutes to read.')],
+                    ],
+                },
+            ]) %}
+
+            {% for section in sections %}
+                <section class="flow flow--small">
+                    <h2 class="text--normal">{{ section.title }}</h2>
+
+                    <ul class="list--nostyle list--border list--padded">
+                        {% for example in section.examples %}
+                            <li class="cols cols--gap-small cols--center">
+                                <span class="col--size5">
+                                    <code>{{ example[0] }}</code>
+                                </span>
+
+                                <span class="col--extend text--secondary">
+                                    {{ example[1] }}
+                                </span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </section>
+            {% endfor %}
+        </div>
+
+        <div>{# Add a bit of padding at the bottom of the modal. #}</div>
+    </div>
+</template>

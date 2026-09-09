@@ -47,6 +47,12 @@ class StreamView
     public readonly ?search_engine\Query $search_query;
 
     /**
+     * The error to display to the user if the query cannot be parsed. In
+     * this case, no links are listed.
+     */
+    public readonly ?string $search_error;
+
+    /**
      * The date at which the view is rendered. It is passed to the "mark as
      * read" forms so that the links added in background after the rendering
      * are not marked.
@@ -86,7 +92,21 @@ class StreamView
         $this->status = $url_parameters->getString('status', $defaults['status']);
         $this->with_dismissed = $url_parameters->getBoolean('with_dismissed', $defaults['with_dismissed'] !== '');
         $this->query = $url_parameters->getString('q', $defaults['q']);
-        $this->search_query = search_engine\Query::fromStringOrNull($this->query);
+
+        $search_query = null;
+        $search_error = null;
+
+        if ($this->query !== '') {
+            try {
+                $search_query = search_engine\LinksSearcher::buildQuery($this->query, context: 'stream');
+            } catch (search_engine\SyntaxError $e) {
+                $search_error = $e->translatedMessage();
+            }
+        }
+
+        $this->search_query = $search_query;
+        $this->search_error = $search_error;
+
         $this->rendered_at = \Minz\Time::now();
 
         // The source is set last as isSourceCounted() requires the other
@@ -161,6 +181,10 @@ class StreamView
 
     public function linksTimeline(): utils\LinksTimeline
     {
+        if ($this->search_error !== null) {
+            return new utils\LinksTimeline([]);
+        }
+
         $links = $this->stream->links([
             'context_user' => $this->context_user,
             'at' => $this->at,
@@ -185,6 +209,10 @@ class StreamView
     public function countedSources(): array
     {
         return $this->memoize('counted_sources', function (): array {
+            if ($this->search_error !== null) {
+                return [];
+            }
+
             $counts_per_source = $this->stream->countLinksPerSource([
                 'context_user' => $this->context_user,
                 'at' => $this->at,

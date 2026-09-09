@@ -221,21 +221,38 @@
                         {{ t('Keywords') }}
                     </label>
 
-                    <input
-                        id="stream-filter-query"
-                        class="col--size10"
-                        type="search"
-                        name="q"
-                        value="{{ stream_view.query }}"
-                        autocomplete="off"
-                        placeholder="{{ t('Words or URL') }}"
-                        data-controller="morph"
-                        data-action="
-                            input->stream#searchQuery
-                            search->stream#submitForm
-                            turbo:before-morph-attribute->morph#preserveTypedValue
-                        "
-                    >
+                    <div class="col--size10 search-field{% if stream_view.search_error %} search-field--with-error{% endif %}">
+                        <input
+                            id="stream-filter-query"
+                            class="search-field__input"
+                            type="search"
+                            name="q"
+                            value="{{ stream_view.query }}"
+                            autocomplete="off"
+                            placeholder="{{ t('Words or URL') }}"
+                            data-controller="morph"
+                            data-action="
+                                change->stream#submitForm
+                                search->stream#submitForm
+                                turbo:before-morph-attribute->morph#preserveTypedValue
+                            "
+                            {% if stream_view.search_error %}
+                                aria-errormessage="stream-filter-query-error"
+                                aria-invalid="true"
+                            {% endif %}
+                        >
+
+                        <div class="search-field__buttons">
+                            {% if stream_view.search_error %}
+                                {{ include('links/_search_error.html.twig', {
+                                    id: 'stream-filter-query-error',
+                                    message: stream_view.search_error,
+                                }) }}
+                            {% endif %}
+
+                            {{ include('links/_search_help.html.twig', { context: 'stream' }) }}
+                        </div>
+                    </div>
                 </div>
             </div>
 

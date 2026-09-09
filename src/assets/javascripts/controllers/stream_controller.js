@@ -1,10 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
 import * as Turbo from '@hotwired/turbo';
 
-// Delay before submitting the "query" search, so we don't submit the form on
-// each keystroke.
-const SEARCH_DELAY = 500;
-
 export default class extends Controller {
     static targets = [
         'formFilters',
@@ -18,10 +14,6 @@ export default class extends Controller {
         'status',
         'statusInput',
     ];
-
-    disconnect () {
-        clearTimeout(this.searchTimeout);
-    }
 
     selectAt (event) {
         const button = event.currentTarget;
@@ -75,12 +67,6 @@ export default class extends Controller {
         this.submit();
     }
 
-    searchQuery () {
-        clearTimeout(this.searchTimeout);
-
-        this.searchTimeout = setTimeout(() => this.submit(), SEARCH_DELAY);
-    }
-
     press (buttons, pressedButton) {
         buttons.forEach((button) => {
             button.setAttribute('aria-pressed', button === pressedButton ? 'true' : 'false');
@@ -88,8 +74,6 @@ export default class extends Controller {
     }
 
     submit () {
-        clearTimeout(this.searchTimeout);
-
         // The form is a GET form, so submitting it is equivalent to visiting
         // its URL. The "replace" action makes Turbo render the visit with
         // morphing (cf. the meta tags in the show view), preserving the focus

@@ -1,0 +1,80 @@
+/* A search input with buttons integrated on its right side (e.g. submit or
+ * help buttons).
+ *
+ * The `--search-field-buttons` property tells the number of buttons, so that the
+ * input keeps enough room on its right side. The `search-field--with-error`
+ * modifier adds the error button to the count.
+ */
+.search-field {
+    --search-field-buttons: 1;
+
+    position: relative;
+}
+
+.search-field--with-error {
+    --search-field-buttons: 2;
+}
+
+.search-field__input {
+    padding-right: calc(var(--search-field-buttons) * (1.5em + var(--space-medium)) + var(--space-medium));
+}
+
+.search-field__buttons {
+    --search-field-icon-color: var(--color-grey-border);
+    --search-field-icon-hover-color: var(--color-text);
+
+    position: absolute;
+    top: 0;
+    right: var(--space-smaller);
+    bottom: 0;
+
+    display: flex;
+
+    align-items: center;
+}
+
+/* Avoid the focus outline to be hidden by the previous button. */
+.search-field__buttons > * {
+    position: relative;
+}
+
+.search-field__buttons .icon {
+    fill: var(--search-field-icon-color);
+
+    transition: fill 0.2s ease-in-out;
+}
+
+.search-field__buttons .button--ghost:hover {
+    border-color: transparent;
+}
+
+.search-field__buttons .button--ghost:hover .icon {
+    fill: var(--search-field-icon-hover-color);
+}
+
+.search-field__buttons .search-field__error {
+    --search-field-icon-color: currentcolor;
+    --search-field-icon-hover-color: currentcolor;
+}
+
+.search-field__buttons .search-field__error .button--ghost {
+    --button-color: var(--color-danger-text);
+    --button-background-color: var(--color-danger-bg-subtle);
+}
+
+.search-field__buttons .search-field__error .button--ghost:hover:not(:disabled) {
+    --button-background-color: var(--color-danger-bg-hover);
+}
+
+.search-field__buttons .search-field__error .button--ghost:active:not(:disabled),
+.search-field__buttons .search-field__error .popup__opener[aria-expanded="true"] .button--ghost {
+    --button-background-color: var(--color-danger-bg);
+
+    background-color: var(--button-background-color);
+    border-color: transparent;
+}
+
+.search-field__buttons .search-field__error .popup__container {
+    min-width: 20rem;
+    padding: var(--space-medium);
+}

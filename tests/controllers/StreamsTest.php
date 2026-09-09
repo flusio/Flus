@@ -166,6 +166,35 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseTemplateName($response, 'streams/show.html.twig');
     }
 
+    public function testShowRendersErrorWhenQueryIsMalformed(): void
+    {
+        $user = $this->login();
+        /** @var string */
+        $link_title = $this->fake('words', 3, true);
+        $feed = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link = LinkFactory::create([
+            'user_id' => $feed->user_id,
+            'title' => $link_title,
+            'is_hidden' => false,
+        ]);
+        $feed->addLinks([$link], at: \Minz\Time::now());
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $stream->addSource($feed);
+
+        $response = $this->appRun('GET', "/streams/{$stream->id}", [
+            'q' => 'duration:abc',
+        ]);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Incorrect qualifier value “duration:abc” at character 10.');
+        $this->assertResponseNotContains($response, $link_title);
+    }
+
     public function testShowExecutesAConstantNumberOfQueries(): void
     {
         $user = $this->login();

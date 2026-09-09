@@ -3,6 +3,8 @@
 namespace App\search_engine;
 
 /**
+ * @phpstan-import-type Qualifiers from Query\Parser
+ *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
@@ -17,55 +19,41 @@ class Query
     }
 
     /**
-     * @param 'text'|'qualifier'|'tag'|'any' $type
-     *
      * @return Query\Condition[]
      */
-    public function getConditions(string $type = 'any'): array
+    public function getConditions(): array
     {
-        if ($type === 'any') {
-            return $this->conditions;
-        }
-
-        return array_filter($this->conditions, function (Query\Condition $condition) use ($type) {
-            if ($type === 'text') {
-                return $condition->isTextCondition();
-            } elseif ($type === 'qualifier') {
-                return $condition->isQualifierCondition();
-            } elseif ($type === 'tag') {
-                return $condition->isTagCondition();
-            }
-        });
+        return $this->conditions;
     }
 
     /**
-     * Return a Query from the given string, or fail if the string is empty or
-     * cannot be parsed.
-     *
-     * @throws \LogicException
+     * Return whether the query has no condition (i.e. it filters nothing).
      */
-    public static function fromString(string $queryString): Query
+    public function isEmpty(): bool
     {
-        $tokenizer = new Query\Tokenizer();
-        $parser = new Query\Parser();
+        return $this->conditions === [];
+    }
+
+    /**
+     * Return a Query from the given string.
+     *
+     * The syntax is lenient (see Query\Parser): a string without any
+     * condition (e.g. an empty string) gives an empty Query.
+     *
+     * @throws SyntaxError
+     *     Raised if a qualifier is used with a value it doesn't accept.
+     *
+     * @param Qualifiers $qualifiers
+     *     The qualifiers accepted in the query, mapped to the values they
+     *     accept (see Query\Parser).
+     * @param bool $tags
+     *     Whether the "#tags" are searchable (see Query\Tokenizer).
+     */
+    public static function fromString(string $queryString, array $qualifiers, bool $tags = true): Query
+    {
+        $tokenizer = new Query\Tokenizer(array_keys($qualifiers), $tags);
+        $parser = new Query\Parser($qualifiers);
         $tokens = $tokenizer->tokenize($queryString);
         return $parser->parse($tokens);
-    }
-
-    /**
-     * Return a Query from the given string, or null if the string is empty or
-     * cannot be parsed.
-     */
-    public static function fromStringOrNull(string $queryString): ?Query
-    {
-        if (trim($queryString) === '') {
-            return null;
-        }
-
-        try {
-            return self::fromString($queryString);
-        } catch (\LogicException) {
-            return null;
-        }
     }
 }

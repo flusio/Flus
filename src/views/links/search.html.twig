@@ -24,9 +24,11 @@
 {% block body %}
     <h1 class="text--center">{{ t('Results of the search') }}</h1>
 
-    <p class="text--center">
-        {{ t('%d result (“%s”)', '%d results (“%s”)', pagination.numberElements, [pagination.numberElements | format_number, query]) }}
-    </p>
+    {% if not search_error %}
+        <p class="text--center">
+            {{ t('%d result (“%s”)', '%d results (“%s”)', pagination.numberElements, [pagination.numberElements | format_number, query]) }}
+        </p>
+    {% endif %}
 
     <div class="grid">
         {% for link in links %}

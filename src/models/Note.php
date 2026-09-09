@@ -37,6 +37,9 @@ class Note
     #[Database\Column]
     public string $user_id;
 
+    #[Database\Column(computed: true)]
+    public string $search_index;
+
     public function __construct(User $user, string $content = '')
     {
         $this->id = \Minz\Random::hex(32);
