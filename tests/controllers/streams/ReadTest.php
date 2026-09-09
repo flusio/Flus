@@ -767,6 +767,39 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]));
     }
 
+    public function testDismissRemovesLinksFromNewsByUrl(): void
+    {
+        $date = new \DateTimeImmutable('2024-03-25');
+        $user = $this->login();
+        $news = $user->news();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link], at: $date);
+        $stream->addSource($source);
+        $news_link = LinkFactory::create([
+            'user_id' => $user->id,
+            'url' => $link->url,
+        ]);
+        $news->addLinks([$news_link]);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/dismiss", [
+            'csrf_token' => $this->csrfToken(forms\streams\MarkStreamAsDismissed::class),
+            'at' => $date->format('Y-m-d'),
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertTrue($user->hasDismissed($link), 'The link should have been dismissed.');
+        $this->assertFalse($news->hasLink($news_link), 'The link should not be in news.');
+    }
+
     public function testDismissMarksLinksAsDismissedForSpecificDate(): void
     {
         $date1 = new \DateTimeImmutable('2024-03-25');

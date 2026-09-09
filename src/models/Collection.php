@@ -344,20 +344,35 @@ class Collection
     }
 
     /**
-     * Remove the links from the collection.
+     * Remove the links having the same URLs as the given ones from the
+     * collection.
+     *
+     * The given links don't have to be attached to the collection themselves
+     * (e.g. they may be owned by another user): any link of the collection
+     * sharing the same url_hash is detached.
      *
      * @param Link[] $links
+     * @param positive-int $chunk_size
      */
-    public function removeLinks(
-        array $links,
-        bool $sync_publication_frequency = true,
-    ): void {
-        $link_ids = array_column($links, 'id');
-        LinkToCollection::detach($link_ids, [$this->id]);
+    public function removeLinksByUrlHashes(array $links, int $chunk_size = 500): void
+    {
+        $url_hashes = array_unique(array_column($links, 'url_hash'));
 
-        if ($sync_publication_frequency) {
-            $this->syncPublicationFrequencyPerYear();
-            $this->save();
+        foreach (array_chunk($url_hashes, $chunk_size) as $chunk_url_hashes) {
+            $values_as_question_marks = array_fill(0, count($chunk_url_hashes), '?');
+            $values_placeholder = implode(', ', $values_as_question_marks);
+
+            $sql = <<<SQL
+                DELETE FROM links_to_collections lc
+                USING links l
+                WHERE lc.link_id = l.id
+                AND lc.collection_id = ?
+                AND l.url_hash IN ({$values_placeholder})
+            SQL;
+
+            $database = Database::get();
+            $statement = $database->prepare($sql);
+            $statement->execute([$this->id, ...$chunk_url_hashes]);
         }
     }
 

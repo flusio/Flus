@@ -628,7 +628,7 @@ class User
         $this->unmemoizeUrlStatusesOfLinks($links);
 
         $news = $this->news();
-        $news->removeLinks($links, sync_publication_frequency: false);
+        $news->removeLinksByUrlHashes($links);
     }
 
     /**
@@ -661,7 +661,7 @@ class User
         $this->unmemoizeUrlStatusesOfLinks($links);
 
         $news = $this->news();
-        $news->removeLinks($links, sync_publication_frequency: false);
+        $news->removeLinksByUrlHashes($links);
     }
 
     /**
@@ -679,7 +679,7 @@ class User
         $this->unmemoizeUrlStatusesOfLinks($links);
 
         $news = $this->news();
-        $news->removeLinks($links, sync_publication_frequency: false);
+        $news->removeLinksByUrlHashes($links);
     }
 
     /**

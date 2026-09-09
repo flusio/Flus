@@ -415,6 +415,33 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]));
     }
 
+    public function testNeverRemovesLinkFromNewsByUrl(): void
+    {
+        $user = $this->login();
+        $news = $user->news();
+        $other_user = UserFactory::create();
+        /** @var string */
+        $url = $this->fake('url');
+        $link = LinkFactory::create([
+            'user_id' => $other_user->id,
+            'url' => $url,
+            'is_hidden' => false,
+        ]);
+        $news_link = LinkFactory::create([
+            'user_id' => $user->id,
+            'url' => $url,
+        ]);
+        $news->addLinks([$news_link]);
+
+        $response = $this->appRun('POST', "/links/{$link->id}/read/never", [
+            'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsNever::class),
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertTrue($user->hasDismissed($link));
+        $this->assertFalse($news->hasLink($news_link));
+    }
+
     public function testNeverRedirectsToLoginIfNotConnected(): void
     {
         $user = UserFactory::create();
