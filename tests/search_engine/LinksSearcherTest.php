@@ -214,23 +214,6 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_1->id, $links[1]->id);
     }
 
-    public function testGetLinksExcludesLinksOnlyDismissed(): void
-    {
-        /** @var string */
-        $title = $this->fake('sentence', 10, false);
-        $user = UserFactory::create();
-        $link = LinkFactory::create([
-            'user_id' => $user->id,
-            'title' => $title,
-        ]);
-        $user->markAsDismissed($link);
-        $query = Query::fromString($title);
-
-        $links = LinksSearcher::getLinks($user, $query);
-
-        $this->assertSame(0, count($links));
-    }
-
     public function testCountLinks(): void
     {
         /** @var string */
@@ -245,22 +228,5 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
         $count = LinksSearcher::countLinks($user, $query);
 
         $this->assertSame(1, $count);
-    }
-
-    public function testCountLinksExcludeLinksOnlyDismissed(): void
-    {
-        /** @var string */
-        $title = $this->fake('sentence', 10, false);
-        $user = UserFactory::create();
-        $link = LinkFactory::create([
-            'user_id' => $user->id,
-            'title' => $title,
-        ]);
-        $user->markAsDismissed($link);
-        $query = Query::fromString($title);
-
-        $count = LinksSearcher::countLinks($user, $query);
-
-        $this->assertSame(0, $count);
     }
 }

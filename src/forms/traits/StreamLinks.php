@@ -36,7 +36,7 @@ trait StreamLinks
     /**
      * @return models\Link[]
      */
-    public function links(): array
+    public function links(bool $obtain_links = true): array
     {
         $user = $this->optionAs('user', models\User::class);
         $stream = $this->optionAs('stream', models\Stream::class);
@@ -74,6 +74,10 @@ trait StreamLinks
         // obtainLinks() would create duplicated user links (the index on
         // (user_id, url_hash) is not unique).
         $stream_links = array_values(array_column($stream_links, null, 'url_hash'));
+
+        if (!$obtain_links) {
+            return $stream_links;
+        }
 
         $source_ids_by_url_hash = [];
         foreach ($stream_links as $stream_link) {

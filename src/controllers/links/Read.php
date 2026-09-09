@@ -150,11 +150,6 @@ class Read extends BaseController
             return Response::found($from);
         }
 
-        $link = $user->obtainLink($link);
-        if (!$link->isPersisted()) {
-            $link->save();
-        }
-
         $user->markAsDismissed($link);
 
         return Response::found($from);

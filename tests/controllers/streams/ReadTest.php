@@ -761,11 +761,10 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
         $this->assertTrue($user->hasDismissed($link), 'The link should have been dismissed.');
         $this->assertFalse($user->hasRead($link), 'The link should not be read.');
-        $links = models\Link::listBy([
+        // Link is not copied in case of dismissing.
+        $this->assertSame(0, models\Link::countBy([
             'user_id' => $user->id,
-        ]);
-        $this->assertSame(1, count($links));
-        $this->assertSame($link->url, $links[0]->url);
+        ]));
     }
 
     public function testDismissMarksLinksAsDismissedForSpecificDate(): void
