@@ -40,4 +40,32 @@ class TagTest extends \PHPUnit\Framework\TestCase
             ['#', []],
         ];
     }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('validTags')]
+    public function testIsValid(string $tag, bool $expected_valid): void
+    {
+        $valid = Tag::isValid($tag);
+
+        $this->assertSame($expected_valid, $valid);
+    }
+
+    /**
+     * @return array<array{string, bool}>
+     */
+    public static function validTags(): array
+    {
+        return [
+            ['#foo', true],
+            ['#123', true],
+            ['#féè', true],
+            ['#foo_', true],
+
+            ['foo', false],
+            ['#', false],
+            ['#foo-bar', false],
+            ['#foo bar', false],
+            ['#foo🤖', false],
+            ['-#foo', false],
+        ];
+    }
 }
