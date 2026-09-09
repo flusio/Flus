@@ -1,3 +1,10 @@
-.accessibility-nav.button {
+.accessibility-nav .button {
     --button-border-color: currentcolor;
+    --outline-color: currentcolor;
+}
+
+/* Targets of the skip links. */
+#content:focus,
+#navigation:focus {
+    outline: none;
 }

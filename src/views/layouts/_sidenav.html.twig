@@ -1,4 +1,4 @@
-<div class="sidenav" data-controller="sidenav">
+<div id="navigation" class="sidenav" data-controller="sidenav" tabindex="-1">
     <button
         type="button"
         class="sidenav__open-button button--big button--block"
@@ -11,7 +11,7 @@
     </button>
 
     <div class="sidenav__container" data-action="click->sidenav#closeOnMask">
-        <nav class="sidenav__menu">
+        <nav class="sidenav__menu" aria-label="{{ navigation.title }}">
             <div class="sidenav__inner">
                 <div class="text--right">
                     <button

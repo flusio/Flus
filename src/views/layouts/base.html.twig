@@ -44,14 +44,33 @@
     </head>
 
     <body>
-        <a
-            class="accessibility-nav button button--primary"
-            href="#main-content"
-            tabindex="0"
-            data-turbo="false"
-        >
-            {{ t('Skip to main content') }}
-        </a>
+        {# The sidenav is captured here so we can know whether the page has
+         # one. It is then displayed by the application layout. #}
+        {% set layout_sidenav %}
+            {% if block('layout_sidenav') is defined %}
+                {{ block('layout_sidenav') }}
+            {% endif %}
+        {% endset %}
+
+        <div class="accessibility-nav stack stack--gap-small">
+            <a
+                class="button button--primary"
+                href="#content"
+                data-turbo="false"
+            >
+                {{ t('Skip to main content') }}
+            </a>
+
+            {% if layout_sidenav | trim %}
+                <a
+                    class="button button--primary"
+                    href="#navigation"
+                    data-turbo="false"
+                >
+                    {{ t('Skip to navigation') }}
+                </a>
+            {% endif %}
+        </div>
 
         <div class="layout {{ app.user ? 'layout--connected' : 'layout--disconnected' }} {{ app.user and app.user.isBlocked ? 'layout--blocked' : '' }}" id="layout">
             {{ include('layouts/_notifications.html.twig') }}
@@ -59,7 +78,7 @@
             {% block layout_header %}
             {% endblock %}
 
-            <main id="main-content" class="layout__main" tabindex="-1">
+            <main class="layout__main">
                 {% block layout_body %}
                 {% endblock %}
             </main>

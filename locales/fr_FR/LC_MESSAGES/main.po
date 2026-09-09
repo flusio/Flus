@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-09-09 16:24+0200\n"
-"PO-Revision-Date: 2026-09-09 16:24+0200\n"
+"POT-Creation-Date: 2026-09-09 17:25+0200\n"
+"PO-Revision-Date: 2026-09-09 17:25+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -1721,11 +1721,15 @@ msgstr ""
 "Collectez, organisez, annotez et partagez les liens<br><strong>provenant de "
 "l’ensemble du Web.</strong>"
 
-#: views/layouts/base.html.twig:53
+#: views/layouts/base.html.twig:61
 msgid "Skip to main content"
 msgstr "Accéder au contenu principal"
 
-#: views/layouts/base.html.twig:70 views/pages/about.html.twig:3
+#: views/layouts/base.html.twig:70
+msgid "Skip to navigation"
+msgstr "Accéder à la navigation"
+
+#: views/layouts/base.html.twig:89 views/pages/about.html.twig:3
 #: views/pages/about.html.twig:11 views/pages/about.html.twig:15
 #: views/support/show.html.twig:124
 #, php-format

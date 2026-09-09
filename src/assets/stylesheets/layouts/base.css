@@ -19,10 +19,6 @@
     justify-content: stretch;
 }
 
-.layout__main:focus {
-    outline: none;
-}
-
 .layout__content {
     --layout-content-padding: var(--space-smaller);
     --layout-content-width: var(--width-large);
