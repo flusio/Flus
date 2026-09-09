@@ -109,11 +109,11 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($user->hasRead($link), 'The link should be read.');
     }
 
-    public function testCreateRemovesLinksFromNews(): void
+    public function testCreateRemovesLinksFromJournal(): void
     {
         $date = new \DateTimeImmutable('2024-03-25');
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
@@ -126,11 +126,11 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
         $source->addLinks([$link], at: $date);
         $stream->addSource($source);
-        $news_link = LinkFactory::create([
+        $journal_link = LinkFactory::create([
             'user_id' => $user->id,
             'url' => $link->url,
         ]);
-        $news->addLinks([$news_link]);
+        $journal->addLinks([$journal_link]);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/read", [
             'csrf_token' => $this->csrfToken(forms\streams\MarkStreamAsRead::class),
@@ -139,7 +139,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/');
         $this->assertTrue($user->hasRead($link), 'The link should be read.');
-        $this->assertFalse($news->hasLink($news_link), 'The link should not be in news.');
+        $this->assertFalse($journal->hasLink($journal_link), 'The link should not be in the journal.');
     }
 
     public function testCreateMarksLinksAsReadForSpecificDate(): void
@@ -767,11 +767,11 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]));
     }
 
-    public function testDismissRemovesLinksFromNewsByUrl(): void
+    public function testDismissRemovesLinksFromJournalByUrl(): void
     {
         $date = new \DateTimeImmutable('2024-03-25');
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
@@ -784,11 +784,11 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
         $source->addLinks([$link], at: $date);
         $stream->addSource($source);
-        $news_link = LinkFactory::create([
+        $journal_link = LinkFactory::create([
             'user_id' => $user->id,
             'url' => $link->url,
         ]);
-        $news->addLinks([$news_link]);
+        $journal->addLinks([$journal_link]);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/dismiss", [
             'csrf_token' => $this->csrfToken(forms\streams\MarkStreamAsDismissed::class),
@@ -797,7 +797,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/');
         $this->assertTrue($user->hasDismissed($link), 'The link should have been dismissed.');
-        $this->assertFalse($news->hasLink($news_link), 'The link should not be in news.');
+        $this->assertFalse($journal->hasLink($journal_link), 'The link should not be in the journal.');
     }
 
     public function testDismissMarksLinksAsDismissedForSpecificDate(): void

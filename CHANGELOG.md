@@ -6,9 +6,11 @@
 
 The file to import default "read later" links has been renamed: `data/default-bookmarks.atom.xml` becomes `data/default-read-later.atom.xml`.
 
-In the archives exported by the users, `bookmarks.atom.xml` is renamed to `read-later.atom.xml`.
+The `/bookmarks` page is now served at `/read/later`.
+The `/news` page is now served at `/journal`.
+The old URLs redirect permanently.
 
-The `/bookmarks` page is now served at `/read/later` (the old URL redirects permanently).
+In the archives exported by the users, `bookmarks.atom.xml` is renamed to `read-later.atom.xml` and `news.atom.xml` is renamed to `journal.atom.xml`.
 
 Reminder: **a migration must have been applied manually when you upgraded to Flus 2.5.0.**
 If you didn't yet, please run **before upgrading to Flus 3.0.0:**

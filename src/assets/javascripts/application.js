@@ -21,7 +21,7 @@ import LinkSuggestionController from './controllers/link_suggestion_controller.j
 import ModalController from './controllers/modal_controller.js';
 import ModalOpenerController from './controllers/modal_opener_controller.js';
 import MorphController from './controllers/morph_controller.js';
-import NewsRefresherController from './controllers/news_refresher_controller.js';
+import JournalRefresherController from './controllers/journal_refresher_controller.js';
 import NotificationController from './controllers/notification_controller.js';
 import PopupController from './controllers/popup_controller.js';
 import ScrollerController from './controllers/scroller_controller.js';
@@ -54,7 +54,7 @@ application.register('link-suggestion', LinkSuggestionController);
 application.register('modal', ModalController);
 application.register('modal-opener', ModalOpenerController);
 application.register('morph', MorphController);
-application.register('news-refresher', NewsRefresherController);
+application.register('journal-refresher', JournalRefresherController);
 application.register('notification', NotificationController);
 application.register('popup', PopupController);
 application.register('scroller', ScrollerController);

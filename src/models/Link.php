@@ -24,7 +24,7 @@ class Link
     use Fetchable;
     use links\Annotable;
     use links\InCollections;
-    use links\InFollowedCollections;
+    use links\InJournal;
     use links\InStreams;
     use links\OwnedByUser;
     use links\Prunable;

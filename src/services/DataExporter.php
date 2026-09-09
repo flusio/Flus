@@ -43,7 +43,7 @@ class DataExporter
         $files = [];
         $files['metadata.json'] = $this->generateMetadata();
         $files['followed.opml.xml'] = $this->generateOpml($user);
-        $files['news.atom.xml'] = $this->generateCollection($user->news());
+        $files['journal.atom.xml'] = $this->generateCollection($user->journal());
         $files['read-later.atom.xml'] = $this->generateSource($user->readLaterSource());
         $files['read.atom.xml'] = $this->generateSource($user->readSource());
 

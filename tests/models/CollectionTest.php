@@ -102,7 +102,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
             [364, 'normal'],
             [52, 'normal'],
             // Less than one link per week ("all" could theoretically be
-            // suggested, but it would flood the news too easily then).
+            // suggested, but it would flood the journal too easily then).
             [51, 'normal'],
             [1, 'normal'],
             [0, 'normal'],

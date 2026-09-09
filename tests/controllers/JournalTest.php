@@ -9,7 +9,7 @@ use tests\factories\CollectionFactory;
 use tests\factories\LinkFactory;
 use tests\factories\UserFactory;
 
-class NewsTest extends \PHPUnit\Framework\TestCase
+class JournalTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\CsrfHelper;
@@ -18,22 +18,22 @@ class NewsTest extends \PHPUnit\Framework\TestCase
     use \tests\FakerHelper;
     use \tests\LoginHelper;
 
-    public function testIndexRendersNewsLinksCorrectly(): void
+    public function testIndexRendersJournalLinksCorrectly(): void
     {
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         /** @var string */
         $title = $this->fakeUnique('sentence');
         $link = LinkFactory::create([
             'title' => $title,
             'user_id' => $user->id,
         ]);
-        $news->addLinks([$link]);
+        $journal->addLinks([$link]);
 
-        $response = $this->appRun('GET', '/news');
+        $response = $this->appRun('GET', '/journal');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'news/index.html.twig');
+        $this->assertResponseTemplateName($response, 'journal/index.html.twig');
         $this->assertResponseContains($response, $title);
     }
 
@@ -53,15 +53,15 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'name' => $collection_name,
             'is_public' => true,
         ]);
-        $news = $user->news();
+        $journal = $user->journal();
         $origin = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
         $link = LinkFactory::create([
             'user_id' => $user->id,
             'origin' => $origin,
         ]);
-        $news->addLinks([$link]);
+        $journal->addLinks([$link]);
 
-        $response = $this->appRun('GET', '/news');
+        $response = $this->appRun('GET', '/journal');
 
         $this->assertResponseCode($response, 200);
         $collection_url = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
@@ -87,33 +87,33 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
             'name' => $collection_name,
         ]);
-        $news = $user->news();
+        $journal = $user->journal();
         $origin = 'Internet';
         $link = LinkFactory::create([
             'user_id' => $user->id,
             'origin' => $origin,
         ]);
-        $news->addLinks([$link]);
+        $journal->addLinks([$link]);
 
-        $response = $this->appRun('GET', '/news');
+        $response = $this->appRun('GET', '/journal');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, "via <strong>{$origin}</strong>");
     }
 
-    public function testIndexRendersTipsIfNoNewsFlash(): void
+    public function testIndexRendersTipsIfNoCandidatesFlash(): void
     {
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         /** @var string */
         $title = $this->fakeUnique('sentence');
         $link = LinkFactory::create([
             'title' => $title,
             'user_id' => $user->id,
         ]);
-        \Minz\Flash::set('no_news', true);
+        \Minz\Flash::set('no_candidates', true);
 
-        $response = $this->appRun('GET', '/news');
+        $response = $this->appRun('GET', '/journal');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'There are no relevant links to suggest at this time.');
@@ -122,16 +122,16 @@ class NewsTest extends \PHPUnit\Framework\TestCase
     public function testIndexHidesAddToCollectionsIfUserHasNoCollections(): void
     {
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         /** @var string */
         $title = $this->fakeUnique('sentence');
         $link = LinkFactory::create([
             'title' => $title,
             'user_id' => $user->id,
         ]);
-        $news->addLinks([$link]);
+        $journal->addLinks([$link]);
 
-        $response = $this->appRun('GET', '/news');
+        $response = $this->appRun('GET', '/journal');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseNotContains($response, 'Add to collections');
@@ -140,24 +140,25 @@ class NewsTest extends \PHPUnit\Framework\TestCase
     public function testIndexRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create();
-        $news = $user->news();
+        $journal = $user->journal();
         /** @var string */
         $title = $this->fakeUnique('sentence');
         $link = LinkFactory::create([
             'title' => $title,
             'user_id' => $user->id,
         ]);
-        $news->addLinks([$link]);
+        $journal->addLinks([$link]);
 
-        $response = $this->appRun('GET', '/news');
+        $response = $this->appRun('GET', '/journal');
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fnews');
+        $redirect_to = urlencode('/journal');
+        $this->assertResponseCode($response, 302, "/login?redirect_to={$redirect_to}");
     }
 
     public function testCreateSelectsLinksFromFollowed(): void
     {
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         $other_user = UserFactory::create();
         /** @var int */
         $days = $this->fake('numberBetween', 0, 2);
@@ -177,26 +178,26 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $collection->addLinks([$link], at: $created_at);
         $user->follow($collection);
 
-        $response = $this->appRun('POST', '/news', [
-            'csrf_token' => $this->csrfToken(forms\FillNews::class),
+        $response = $this->appRun('POST', '/journal', [
+            'csrf_token' => $this->csrfToken(forms\FillJournal::class),
         ]);
 
-        $this->assertResponseCode($response, 302, '/news');
-        $news_links = $news->links();
-        $this->assertSame(1, count($news_links));
-        $news_link = $news_links[0];
-        $this->assertNotSame($link->id, $news_link->id);
-        $this->assertSame($link->url, $news_link->url);
-        $this->assertSame($user->id, $news_link->user_id);
-        $this->assertSame($link->title, $news_link->title);
+        $this->assertResponseCode($response, 302, '/journal');
+        $journal_links = $journal->links();
+        $this->assertSame(1, count($journal_links));
+        $journal_link = $journal_links[0];
+        $this->assertNotSame($link->id, $journal_link->id);
+        $this->assertSame($link->url, $journal_link->url);
+        $this->assertSame($user->id, $journal_link->user_id);
+        $this->assertSame($link->title, $journal_link->title);
         $origin = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
-        $this->assertSame($origin, $news_link->origin);
+        $this->assertSame($origin, $journal_link->origin);
     }
 
     public function testCreateGroupsLinksBySourcesGroups(): void
     {
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         $other_user = UserFactory::create();
         $link1 = LinkFactory::create([
             'user_id' => $other_user->id,
@@ -219,23 +220,23 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $collection->addLinks([$link3], at: \Minz\Time::ago(2, 'days'));
         $user->follow($collection);
 
-        $response = $this->appRun('POST', '/news', [
-            'csrf_token' => $this->csrfToken(forms\FillNews::class),
+        $response = $this->appRun('POST', '/journal', [
+            'csrf_token' => $this->csrfToken(forms\FillJournal::class),
         ]);
 
-        $this->assertResponseCode($response, 302, '/news');
-        $news_links = $news->links(['published_at']);
-        $this->assertSame(3, count($news_links));
-        $this->assertTrue($news_links[0]->group_by_source);
-        $this->assertTrue($news_links[1]->group_by_source);
+        $this->assertResponseCode($response, 302, '/journal');
+        $journal_links = $journal->links(['published_at']);
+        $this->assertSame(3, count($journal_links));
+        $this->assertTrue($journal_links[0]->group_by_source);
+        $this->assertTrue($journal_links[1]->group_by_source);
         // This one is published a different day, so it's not grouped.
-        $this->assertFalse($news_links[2]->group_by_source);
+        $this->assertFalse($journal_links[2]->group_by_source);
     }
 
     public function testCreateDoesNotDuplicatesLink(): void
     {
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         $other_user = UserFactory::create();
         /** @var int */
         $days = $this->fake('numberBetween', 0, 2);
@@ -259,34 +260,34 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $collection->addLinks([$link], at: $created_at);
         $user->follow($collection);
 
-        $response = $this->appRun('POST', '/news', [
-            'csrf_token' => $this->csrfToken(forms\FillNews::class),
+        $response = $this->appRun('POST', '/journal', [
+            'csrf_token' => $this->csrfToken(forms\FillJournal::class),
         ]);
 
-        $this->assertResponseCode($response, 302, '/news');
-        $news_links = $news->links();
-        $this->assertSame(1, count($news_links));
-        $news_link = $news_links[0];
-        $this->assertSame($owned_link->id, $news_link->id);
-        $this->assertSame($user->id, $news_link->user_id);
-        $this->assertSame($link_url, $news_link->url);
+        $this->assertResponseCode($response, 302, '/journal');
+        $journal_links = $journal->links();
+        $this->assertSame(1, count($journal_links));
+        $journal_link = $journal_links[0];
+        $this->assertSame($owned_link->id, $journal_link->id);
+        $this->assertSame($user->id, $journal_link->user_id);
+        $this->assertSame($link_url, $journal_link->url);
     }
 
-    public function testCreateSetsFlashNoNewsIfNoSuggestions(): void
+    public function testCreateSetsFlashIfNoCandidates(): void
     {
         $user = $this->login();
 
-        $response = $this->appRun('POST', '/news', [
-            'csrf_token' => $this->csrfToken(forms\FillNews::class),
+        $response = $this->appRun('POST', '/journal', [
+            'csrf_token' => $this->csrfToken(forms\FillJournal::class),
         ]);
 
-        $this->assertTrue(\Minz\Flash::get('no_news'));
+        $this->assertTrue(\Minz\Flash::get('no_candidates'));
     }
 
     public function testCreateRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create();
-        $news = $user->news();
+        $journal = $user->journal();
         $other_user = UserFactory::create();
         /** @var int */
         $days = $this->fake('numberBetween', 0, 2);
@@ -306,11 +307,12 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $collection->addLinks([$link], at: $created_at);
         $user->follow($collection);
 
-        $response = $this->appRun('POST', '/news', [
-            'csrf_token' => $this->csrfToken(forms\FillNews::class),
+        $response = $this->appRun('POST', '/journal', [
+            'csrf_token' => $this->csrfToken(forms\FillJournal::class),
         ]);
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fnews');
+        $redirect_to = urlencode('/journal');
+        $this->assertResponseCode($response, 302, "/login?redirect_to={$redirect_to}");
         $this->assertFalse(models\Link::existsBy([
             'user_id' => $user->id,
             'url' => $link_url,
@@ -320,7 +322,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         $other_user = UserFactory::create();
         /** @var int */
         $days = $this->fake('numberBetween', 0, 2);
@@ -340,7 +342,7 @@ class NewsTest extends \PHPUnit\Framework\TestCase
         $collection->addLinks([$link], at: $created_at);
         $user->follow($collection);
 
-        $response = $this->appRun('POST', '/news', [
+        $response = $this->appRun('POST', '/journal', [
             'csrf_token' => 'not the token',
         ]);
 
@@ -350,5 +352,13 @@ class NewsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'url' => $link_url,
         ]));
+    }
+    public function testNewsRedirectsToJournal(): void
+    {
+        $this->login();
+
+        $response = $this->appRun('GET', '/news');
+
+        $this->assertResponseCode($response, 301, '/journal');
     }
 }

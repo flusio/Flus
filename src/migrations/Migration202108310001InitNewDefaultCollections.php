@@ -18,10 +18,10 @@ class Migration202108310001InitNewDefaultCollections
         foreach ($users as $user) {
             utils\Locale::setCurrentLocale($user->locale);
 
-            $news = models\Collection::initNews($user->id);
-            $news->created_at = $now;
+            $journal = new models\Journal($user);
+            $journal->created_at = $now;
 
-            $collections_to_create[] = $news;
+            $collections_to_create[] = $journal;
         }
 
         if ($collections_to_create) {

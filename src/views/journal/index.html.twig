@@ -1,22 +1,22 @@
 {% extends 'layouts/application.html.twig' %}
 
-{% block title %}{{ t('News') }}{% endblock %}
-{% block canonical %}{{ url_full('news') }}{% endblock %}
+{% block title %}{{ t('Journal') }}{% endblock %}
+{% block canonical %}{{ url_full('journal') }}{% endblock %}
 
 {% block layout_header %}
-    {{ include('layouts/_header.html.twig', { page: 'news', tab: 'reading' }) }}
+    {{ include('layouts/_header.html.twig', { page: 'journal', tab: 'reading' }) }}
 {% endblock %}
 
 {% block layout_sidenav %}
-    {{ include('layouts/_sidenav.html.twig', { navigation: reading_navigation(current: 'news') }) }}
+    {{ include('layouts/_sidenav.html.twig', { navigation: reading_navigation(current: 'journal') }) }}
 {% endblock %}
 
 {% block back %}
-    {{ include('layouts/_back.html.twig', { title: t('News'), reset: true }) }}
+    {{ include('layouts/_back.html.twig', { title: t('Journal'), reset: true }) }}
 {% endblock %}
 
 {% block body %}
-    <h1 class="text--center">{{ t('News') }}</h1>
+    <h1 class="text--center">{{ t('Journal') }}</h1>
 
     <div class="flow flow--larger">
         <div class="flow flow--large">
@@ -55,7 +55,7 @@
                                     {% endblock %}
 
                                     {% block items %}
-                                        {{ include('news/_popup_actions.html.twig', {
+                                        {{ include('journal/_popup_actions.html.twig', {
                                             heading: t('Actions on the day'),
                                             params: { date: date_group.date.format('Y-m-d') },
                                         }) }}
@@ -71,7 +71,7 @@
                                         {% for link in date_group.links %}
                                             {{ include('links/_link.html.twig', {
                                                 link: link,
-                                                from: url('news'),
+                                                from: url('journal'),
                                                 display_edit: true,
                                                 display_repair: true,
                                                 display_origin: true,
@@ -107,7 +107,7 @@
                                                 {% endblock %}
 
                                                 {% block items %}
-                                                    {{ include('news/_popup_actions.html.twig', {
+                                                    {{ include('journal/_popup_actions.html.twig', {
                                                         heading: t('Actions on the feed'),
                                                         params: {
                                                             date: date_group.date.format('Y-m-d'),
@@ -123,7 +123,7 @@
                                             {% for link in source_group.links %}
                                                 {{ include('links/_link.html.twig', {
                                                     link: link,
-                                                    from: url('news'),
+                                                    from: url('journal'),
                                                     display_edit: true,
                                                     display_repair: true,
                                                     display_origin: true,
@@ -141,7 +141,7 @@
                     {% endfor %}
                 </div>
 
-                <div class="news__postpone text--center flow">
+                <div class="journal__postpone text--center flow">
                     {% embed 'components/popup.html.twig' with {
                         opener_class: 'button button--primary button--big',
                         drop_up: true,
@@ -152,23 +152,23 @@
                         {% endblock %}
 
                         {% block items %}
-                            {{ include('news/_popup_actions.html.twig', {
-                                heading: t('Empty the news'),
+                            {{ include('journal/_popup_actions.html.twig', {
+                                heading: t('Empty the journal'),
                             }) }}
                         {% endblock %}
                     {% endembed %}
 
                     <p class="wrapper wrapper--small wrapper--center text--secondary">
-                        {{ t('Note: you will need to clear the news before you can refresh it. Mark the links as read, to be read later, or remove them with the appropriate actions.') }}
+                        {{ t('Note: you will need to clear the journal before you can refresh it. Mark the links as read, to be read later, or remove them with the appropriate actions.') }}
                     </p>
                 </div>
             {% else %}
                 <p class="text--center">
-                    {{ t('Fill your news feed with the content published by the feeds that you follow.') }}
+                    {{ t('Fill your journal with the content published by the feeds that you follow.') }}
                 </p>
 
                 <div class="wrapper wrapper--small wrapper--center">
-                    {% if no_news %}
+                    {% if no_candidates %}
                         {{ include('alerts/_info.html.twig', {
                             message: t('There are no relevant links to suggest at this time.'),
                         }) }}
@@ -176,20 +176,20 @@
 
                     <form
                         method="post"
-                        action="{{ url('fill news') }}"
-                        data-controller="news-refresher"
-                        data-news-refresher-url-value="{{ url('news available') }}"
+                        action="{{ url('fill journal') }}"
+                        data-controller="journal-refresher"
+                        data-journal-refresher-url-value="{{ url('journal candidates') }}"
                     >
                         {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
 
                         <div class="text--center">
                             <button
                                 class="button--big"
-                                data-action="news-refresher#refresh"
-                                data-news-refresher-target="button"
+                                data-action="journal-refresher#refresh"
+                                data-journal-refresher-target="button"
                             >
                                 {{ icon('sync') }}
-                                {{ t('Refresh the news') }}
+                                {{ t('Refresh the journal') }}
                             </button>
                         </div>
 

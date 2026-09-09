@@ -115,10 +115,11 @@ class Router
         $router->addRoute('POST', '/exportations', 'Exportations#create', 'create exportation');
         $router->addRoute('GET', '/exportations/download', 'Exportations#download', 'download exportation');
 
-        // News page
-        $router->addRoute('GET', '/news', 'News#index', 'news');
-        $router->addRoute('POST', '/news', 'News#create', 'fill news');
-        $router->addRoute('GET', '/news/available.json', 'News#showAvailable', 'news available');
+        // Journal page
+        $router->addRoute('GET', '/journal', 'Journal#index', 'journal');
+        $router->addRoute('POST', '/journal', 'Journal#create', 'fill journal');
+        $router->addRoute('GET', '/journal/candidates.json', 'Journal#hasCandidates', 'journal candidates');
+        $router->addRoute('GET', '/news', 'Journal#news', 'news');
 
         // Collections
         $router->addRoute('GET', '/collections', 'Collections#index', 'collections');

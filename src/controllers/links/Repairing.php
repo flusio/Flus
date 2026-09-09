@@ -107,7 +107,7 @@ class Repairing extends BaseController
             $user->transferUrlStatus($old_link, $link);
 
             // Mark the old URL as dismissed to avoid the link reappearing in
-            // the news.
+            // the journal.
             $user->markAsDismissed($old_link);
         }
 

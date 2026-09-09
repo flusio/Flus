@@ -30,7 +30,7 @@ class Migration202108310003MigrateNewsLinksToCollections
 
                 assert($user !== null);
 
-                $news_id = $user->news()->id;
+                $news_id = $user->journal()->id;
                 $cache_users[$user_id] = [$user, $news_id];
             }
 

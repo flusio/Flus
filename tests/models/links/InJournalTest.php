@@ -8,7 +8,7 @@ use tests\factories\CollectionShareFactory;
 use tests\factories\LinkFactory;
 use tests\factories\UserFactory;
 
-class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
+class InJournalTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\TimeHelper;
@@ -24,7 +24,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
         $this->other_user = UserFactory::create();
     }
 
-    public function testListFromFollowedCollectionsSelectsFromFollowed(): void
+    public function testListCandidatesForJournalSelectsFromFollowed(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -48,7 +48,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
         $collection->addLinks([$link2], at: $published_at2);
         $this->user->follow($collection);
 
-        $links = models\Link::listFromFollowedCollections($this->user, max: 50);
+        $links = models\Link::listCandidatesForJournal($this->user->journal(), max: 50);
 
         $this->assertSame(2, count($links));
         $this->assertSame($link2->id, $links[0]->id);
@@ -57,7 +57,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($collection->id, $links[1]->source_id);
     }
 
-    public function testListFromFollowedCollectionsSelectsHiddenLinkIfCollectionIsShared(): void
+    public function testListCandidatesForJournalSelectsHiddenLinkIfCollectionIsShared(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -81,14 +81,14 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
 
-        $links = models\Link::listFromFollowedCollections($this->user, max: 50);
+        $links = models\Link::listCandidatesForJournal($this->user->journal(), max: 50);
 
         $this->assertSame(1, count($links));
         $this->assertSame($link->id, $links[0]->id);
         $this->assertSame($collection->id, $links[0]->source_id);
     }
 
-    public function testListFromFollowedCollectionsSelectsFromPrivateCollectionIfShared(): void
+    public function testListCandidatesForJournalSelectsFromPrivateCollectionIfShared(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -112,14 +112,14 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
 
-        $links = models\Link::listFromFollowedCollections($this->user, max: 50);
+        $links = models\Link::listCandidatesForJournal($this->user->journal(), max: 50);
 
         $this->assertSame(1, count($links));
         $this->assertSame($link->id, $links[0]->id);
         $this->assertSame($collection->id, $links[0]->source_id);
     }
 
-    public function testListFromFollowedCollectionsRespectsFromFollowedIfOldLinksButWithTimeFilterAll(): void
+    public function testListCandidatesForJournalRespectsFromFollowedIfOldLinksButWithTimeFilterAll(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -146,14 +146,14 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
         $followed_collection->created_at = $followed_at;
         $followed_collection->save();
 
-        $links = models\Link::listFromFollowedCollections($this->user, max: 50);
+        $links = models\Link::listCandidatesForJournal($this->user->journal(), max: 50);
 
         $this->assertSame(1, count($links));
         $this->assertSame($link->id, $links[0]->id);
         $this->assertSame($collection->id, $links[0]->source_id);
     }
 
-    public function testListFromFollowedCollectionsConsidersLinksFromFeeds(): void
+    public function testListCandidatesForJournalConsidersLinksFromFeeds(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -177,7 +177,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
         $link2->addCollection($collection, at: $published_at2);
         $this->user->follow($collection);
 
-        $links = models\Link::listFromFollowedCollections($this->user, max: 50);
+        $links = models\Link::listCandidatesForJournal($this->user->journal(), max: 50);
 
         $this->assertSame(2, count($links));
         $this->assertSame($link2->id, $links[0]->id);
@@ -186,7 +186,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($collection->id, $links[1]->source_id);
     }
 
-    public function testListFromFollowedCollectionsDoesNotPickFromFollowedIfTooOld(): void
+    public function testListCandidatesForJournalDoesNotPickFromFollowedIfTooOld(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -206,12 +206,12 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
         $collection->addLinks([$link], at: $published_at);
         $this->user->follow($collection);
 
-        $links = models\Link::listFromFollowedCollections($this->user, max: 50);
+        $links = models\Link::listCandidatesForJournal($this->user->journal(), max: 50);
 
         $this->assertSame(0, count($links));
     }
 
-    public function testListFromFollowedCollectionsDoesNotSelectFromFollowedIfTooOldWithTimeFilterStrict(): void
+    public function testListCandidatesForJournalDoesNotSelectFromFollowedIfTooOldWithTimeFilterStrict(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -231,12 +231,12 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
         $collection->addLinks([$link], at: $published_at);
         $this->user->follow($collection, time_filter: 'strict');
 
-        $links = models\Link::listFromFollowedCollections($this->user, max: 50);
+        $links = models\Link::listCandidatesForJournal($this->user->journal(), max: 50);
 
         $this->assertSame(0, count($links));
     }
 
-    public function testListFromFollowedCollectionsDoesNotSelectFromFollowedIfTimeFilterNone(): void
+    public function testListCandidatesForJournalDoesNotSelectFromFollowedIfTimeFilterNone(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -255,12 +255,12 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
         $collection->addLinks([$link], at: $published_at);
         $this->user->follow($collection, time_filter: 'none');
 
-        $links = models\Link::listFromFollowedCollections($this->user, max: 50);
+        $links = models\Link::listCandidatesForJournal($this->user->journal(), max: 50);
 
         $this->assertSame(0, count($links));
     }
 
-    public function testListFromFollowedCollectionsDoesNotSelectFromFollowedIfLinkIsHidden(): void
+    public function testListCandidatesForJournalDoesNotSelectFromFollowedIfLinkIsHidden(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -280,12 +280,12 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
         $collection->addLinks([$link], at: $published_at);
         $this->user->follow($collection);
 
-        $links = models\Link::listFromFollowedCollections($this->user, max: 50);
+        $links = models\Link::listCandidatesForJournal($this->user->journal(), max: 50);
 
         $this->assertSame(0, count($links));
     }
 
-    public function testListFromFollowedCollectionsDoesNotSelectFromFollowedIfCollectionIsPrivate(): void
+    public function testListCandidatesForJournalDoesNotSelectFromFollowedIfCollectionIsPrivate(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -305,12 +305,12 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
         $collection->addLinks([$link], at: $published_at);
         $this->user->follow($collection);
 
-        $links = models\Link::listFromFollowedCollections($this->user, max: 50);
+        $links = models\Link::listCandidatesForJournal($this->user->journal(), max: 50);
 
         $this->assertSame(0, count($links));
     }
 
-    public function testListFromFollowedCollectionsDoesNotSelectFromFollowedIfUrlIsToReadLater(): void
+    public function testListCandidatesForJournalDoesNotSelectFromFollowedIfUrlIsToReadLater(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -337,12 +337,12 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
         $this->user->markAsReadLater($owned_link);
         $this->user->follow($collection);
 
-        $links = models\Link::listFromFollowedCollections($this->user, max: 50);
+        $links = models\Link::listCandidatesForJournal($this->user->journal(), max: 50);
 
         $this->assertSame(0, count($links));
     }
 
-    public function testListFromFollowedCollectionsDoesNotSelectFromFollowedIfUrlIsRead(): void
+    public function testListCandidatesForJournalDoesNotSelectFromFollowedIfUrlIsRead(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -369,12 +369,12 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
         $this->user->markAsRead($owned_link);
         $this->user->follow($collection);
 
-        $links = models\Link::listFromFollowedCollections($this->user, max: 50);
+        $links = models\Link::listCandidatesForJournal($this->user->journal(), max: 50);
 
         $this->assertSame(0, count($links));
     }
 
-    public function testListFromFollowedCollectionsDoesNotSelectFromFollowedIfUrlIsDismissed(): void
+    public function testListCandidatesForJournalDoesNotSelectFromFollowedIfUrlIsDismissed(): void
     {
         /** @var \DateTimeImmutable */
         $now = $this->fake('dateTime');
@@ -401,16 +401,16 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
         $this->user->markAsDismissed($owned_link);
         $this->user->follow($collection);
 
-        $links = models\Link::listFromFollowedCollections($this->user, max: 50);
+        $links = models\Link::listCandidatesForJournal($this->user->journal(), max: 50);
 
         $this->assertSame(0, count($links));
     }
 
-    public function testListFromFollowedCollectionsDoesNotSelectFromFollowedIfLinkIsOwned(): void
+    public function testListCandidatesForJournalDoesNotSelectFromFollowedIfLinkIsOwned(): void
     {
         // This is a very particular use case where the user got write access
         // to a collection while he was following it (or followed it
-        // afterwards). This link should not appear in the news link.
+        // afterwards). This link should not appear in the journal.
         // We don't create a CollectionShare because it doesn't matter whether
         // the permission still exists or not.
         /** @var \DateTimeImmutable */
@@ -431,12 +431,12 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
         $collection->addLinks([$link], at: $published_at);
         $this->user->follow($collection);
 
-        $links = models\Link::listFromFollowedCollections($this->user, max: 50);
+        $links = models\Link::listCandidatesForJournal($this->user->journal(), max: 50);
 
         $this->assertSame(0, count($links));
     }
 
-    public function testAnyFromFollowedCollectionsCanReturnTrue(): void
+    public function testAnyCandidateForJournalCanReturnTrue(): void
     {
         $published_at = \Minz\Time::ago(1, 'day');
         $link = LinkFactory::create([
@@ -451,12 +451,12 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
         $collection->addLinks([$link], at: $published_at);
         $this->user->follow($collection);
 
-        $result = models\Link::anyFromFollowedCollections($this->user);
+        $result = models\Link::anyCandidateForJournal($this->user->journal());
 
         $this->assertTrue($result);
     }
 
-    public function testAnyFromFollowedCollectionsCanReturnFalse(): void
+    public function testAnyCandidateForJournalCanReturnFalse(): void
     {
         $published_at = \Minz\Time::ago(1, 'day');
         $link = LinkFactory::create([
@@ -471,12 +471,12 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
         $collection->addLinks([$link], at: $published_at);
         $this->user->follow($collection);
 
-        $result = models\Link::anyFromFollowedCollections($this->user);
+        $result = models\Link::anyCandidateForJournal($this->user->journal());
 
         $this->assertFalse($result);
     }
 
-    public function testAnyFromFollowedCollectionsCanReturnFalseIfTimeFilterNone(): void
+    public function testAnyCandidateForJournalCanReturnFalseIfTimeFilterNone(): void
     {
         $published_at = \Minz\Time::ago(1, 'day');
         $link = LinkFactory::create([
@@ -491,7 +491,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
         $collection->addLinks([$link], at: $published_at);
         $this->user->follow($collection, time_filter: 'none');
 
-        $result = models\Link::anyFromFollowedCollections($this->user);
+        $result = models\Link::anyCandidateForJournal($this->user->journal());
 
         $this->assertFalse($result);
     }
@@ -511,7 +511,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
         $link->addCollection($collection, at: $published_at);
         $this->user->follow($collection);
 
-        $result = models\Link::anyFromFollowedCollections($this->user);
+        $result = models\Link::anyCandidateForJournal($this->user->journal());
 
         $this->assertTrue($result);
     }
@@ -531,7 +531,7 @@ class InFollowedCollectionsTest extends \PHPUnit\Framework\TestCase
         $link->addCollection($collection, at: $published_at);
         $this->user->follow($collection);
 
-        $result = models\Link::anyFromFollowedCollections($this->user);
+        $result = models\Link::anyCandidateForJournal($this->user->journal());
 
         $this->assertFalse($result);
     }

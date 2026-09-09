@@ -683,11 +683,11 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(models\User::DEMO_EMAIL, $demo_user->email);
         $this->assertTrue($demo_user->verifyPassword(models\User::DEMO_PASSWORD));
         $this->assertFalse(models\Collection::exists($collection->id));
-        $news = models\Collection::findBy([
+        $journal = models\Journal::findBy([
             'user_id' => $demo_user->id,
-            'type' => 'news',
+            'type' => 'journal',
         ]);
-        $this->assertNotNull($news);
+        $this->assertNotNull($journal);
     }
 
     public function testPerformKeepsDataIfDemoIsDisabled(): void

@@ -223,21 +223,21 @@ class User
     }
 
     /**
-     * Return the user' news collection
+     * Return the journal of the user (it is created if it doesn't exist yet).
      */
-    public function news(): Collection
+    public function journal(): Journal
     {
-        $news = Collection::findBy([
+        $journal = Journal::findBy([
             'user_id' => $this->id,
-            'type' => 'news',
+            'type' => 'journal',
         ]);
 
-        if (!$news) {
-            $news = Collection::initNews($this->id);
-            $news->save();
+        if (!($journal instanceof Journal)) {
+            $journal = new Journal($this);
+            $journal->save();
         }
 
-        return $news;
+        return $journal;
     }
 
     public function initCollection(): Collection
@@ -614,7 +614,7 @@ class User
     }
 
     /**
-     * Mark the links as read for the user.
+     * Mark the links as read for the user and remove them from their journal.
      *
      * @param Link|Link[] $links
      */
@@ -627,8 +627,7 @@ class User
         UrlStatus::markAsRead($this, $links);
         $this->unmemoizeUrlStatusesOfLinks($links);
 
-        $news = $this->news();
-        $news->removeLinksByUrlHashes($links);
+        $this->journal()->removeLinks($links);
     }
 
     /**
@@ -647,7 +646,8 @@ class User
     }
 
     /**
-     * Mark the links to read later for the user.
+     * Mark the links to read later for the user and remove them from their
+     * journal.
      *
      * @param Link|Link[] $links
      */
@@ -660,12 +660,12 @@ class User
         UrlStatus::markAsReadLater($this, $links);
         $this->unmemoizeUrlStatusesOfLinks($links);
 
-        $news = $this->news();
-        $news->removeLinksByUrlHashes($links);
+        $this->journal()->removeLinks($links);
     }
 
     /**
-     * Mark the links as dismissed and remove them from the journal of the user.
+     * Mark the links as dismissed for the user and remove them from their
+     * journal.
      *
      * @param Link|Link[] $links
      */
@@ -678,8 +678,7 @@ class User
         UrlStatus::markAsDismissed($this, $links);
         $this->unmemoizeUrlStatusesOfLinks($links);
 
-        $news = $this->news();
-        $news->removeLinksByUrlHashes($links);
+        $this->journal()->removeLinks($links);
     }
 
     /**

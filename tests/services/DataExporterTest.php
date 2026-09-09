@@ -224,11 +224,11 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_url, $entry->link);
     }
 
-    public function testExportCreatesNewsFile(): void
+    public function testExportCreatesJournalFile(): void
     {
         $data_exporter = new DataExporter($this->exportations_path);
         $user = UserFactory::create();
-        $news = $user->news();
+        $journal = $user->journal();
         /** @var string */
         $link_url = $this->fake('url');
         /** @var \DateTimeImmutable */
@@ -237,14 +237,14 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'url' => $link_url,
         ]);
-        $news->addLinks([$link], at: $published_at);
+        $journal->addLinks([$link], at: $published_at);
 
         $filepath = $data_exporter->export($user->id);
 
-        $feed_content = $this->zipGetContents($filepath, 'news.atom.xml');
+        $feed_content = $this->zipGetContents($filepath, 'journal.atom.xml');
         $feed = \SpiderBits\feeds\Feed::fromText($feed_content);
         $this->assertSame(1, count($feed->categories));
-        $this->assertSame('Flus:type:news', $feed->categories['Flus:type:news']);
+        $this->assertSame('Flus:type:journal', $feed->categories['Flus:type:journal']);
         $this->assertSame(1, count($feed->entries));
         $entry = $feed->entries[0];
         $this->assertSame($link_url, $entry->link);

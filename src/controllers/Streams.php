@@ -178,7 +178,7 @@ class Streams extends BaseController
      * @response 302 :from
      * @flash notification.error
      *     If the CSRF token is invalid.
-     * @response 302 /news
+     * @response 302 /journal
      * @flash notification.success
      *     On success.
      *
@@ -210,6 +210,6 @@ class Streams extends BaseController
 
         utils\Notification::success(_('The stream has been deleted.'));
 
-        return Response::redirect('news');
+        return Response::redirect('journal');
     }
 }

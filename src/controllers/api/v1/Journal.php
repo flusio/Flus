@@ -23,8 +23,8 @@ class Journal extends BaseController
     {
         $user = auth\CurrentUser::require();
 
-        $news = $user->news();
-        $links = $news->links(['published_at']);
+        $journal = $user->journal();
+        $links = $journal->links(['published_at']);
 
         models\links\Preloader::for($links)
             ->collections()
@@ -46,7 +46,7 @@ class Journal extends BaseController
     {
         $user = auth\CurrentUser::require();
 
-        $journal = new models\Journal($user);
+        $journal = $user->journal();
         $count = $journal->fill(max: 50);
 
         return Response::json(200, [

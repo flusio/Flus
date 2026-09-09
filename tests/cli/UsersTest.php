@@ -101,11 +101,11 @@ class UsersTest extends \PHPUnit\Framework\TestCase
         $this->assertGreaterThan(0, models\Collection::count());
         $user = models\User::take();
         $this->assertNotNull($user);
-        $news = models\Collection::findBy([
+        $journal = models\Journal::findBy([
             'user_id' => $user->id,
-            'type' => 'news',
+            'type' => 'journal',
         ]);
-        $this->assertNotNull($news);
+        $this->assertNotNull($journal);
     }
 
     public function testCreateFailsIfAnArgumentIsInvalid(): void

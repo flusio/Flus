@@ -691,7 +691,7 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
             'csrf_token' => $this->csrfToken(forms\streams\DeleteStream::class),
         ]);
 
-        $this->assertResponseCode($response, 302, '/news');
+        $this->assertResponseCode($response, 302, '/journal');
         $this->assertFalse(models\Stream::exists($stream->id));
         $success = utils\Notification::popSuccess();
         $this->assertStringContainsString('The stream has been deleted.', $success);

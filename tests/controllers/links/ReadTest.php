@@ -22,12 +22,12 @@ class ReadTest extends \PHPUnit\Framework\TestCase
     public function testCreateMarksAsRead(): void
     {
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
         $user->markAsReadLater($link);
-        $news->addLinks([$link]);
+        $journal->addLinks([$link]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsRead::class),
@@ -36,7 +36,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
         $this->assertFalse($user->hasReadLater($link));
         $this->assertTrue($user->hasRead($link));
-        $this->assertFalse($news->hasLink($link));
+        $this->assertFalse($journal->hasLink($link));
     }
 
     public function testCreateWorksIfNotOwnedAndNotHidden(): void
@@ -133,7 +133,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
         $source->addLinks([$link]);
-        $from = \Minz\Url::absoluteFor('news');
+        $from = \Minz\Url::absoluteFor('journal');
 
         $response = $this->appRun('POST', "/links/{$link->id}/read", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsRead::class),
@@ -155,12 +155,12 @@ class ReadTest extends \PHPUnit\Framework\TestCase
     public function testCreateRedirectsToLoginIfNotConnected(): void
     {
         $user = UserFactory::create();
-        $news = $user->news();
+        $journal = $user->journal();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
         $user->markAsReadLater($link);
-        $news->addLinks([$link]);
+        $journal->addLinks([$link]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsRead::class),
@@ -169,18 +169,18 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
         $this->assertTrue($user->hasReadLater($link));
         $this->assertFalse($user->hasRead($link));
-        $this->assertTrue($news->hasLink($link));
+        $this->assertTrue($journal->hasLink($link));
     }
 
     public function testCreateFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
         $user->markAsReadLater($link);
-        $news->addLinks([$link]);
+        $journal->addLinks([$link]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read", [
             'csrf_token' => 'not the token',
@@ -191,7 +191,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('A security verification failed', $error);
         $this->assertTrue($user->hasReadLater($link));
         $this->assertFalse($user->hasRead($link));
-        $this->assertTrue($news->hasLink($link));
+        $this->assertTrue($journal->hasLink($link));
     }
 
     public function testCreateFailsIfNotOwnedAndHidden(): void
@@ -218,11 +218,11 @@ class ReadTest extends \PHPUnit\Framework\TestCase
     public function testLaterMarksToBeReadLater(): void
     {
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $news->addLinks([$link]);
+        $journal->addLinks([$link]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/later", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsReadLater::class),
@@ -230,7 +230,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/');
         $this->assertTrue($user->hasReadLater($link));
-        $this->assertFalse($news->hasLink($link));
+        $this->assertFalse($journal->hasLink($link));
     }
 
     public function testLaterWorksIfNotOwnedAndNotHidden(): void
@@ -313,11 +313,11 @@ class ReadTest extends \PHPUnit\Framework\TestCase
     public function testLaterRedirectsToLoginIfNotConnected(): void
     {
         $user = UserFactory::create();
-        $news = $user->news();
+        $journal = $user->journal();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $news->addLinks([$link]);
+        $journal->addLinks([$link]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/later", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsReadLater::class),
@@ -325,17 +325,17 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
         $this->assertFalse($user->hasReadLater($link));
-        $this->assertTrue($news->hasLink($link));
+        $this->assertTrue($journal->hasLink($link));
     }
 
     public function testLaterFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $news->addLinks([$link]);
+        $journal->addLinks([$link]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/later", [
             'csrf_token' => 'not the token',
@@ -345,7 +345,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
         $this->assertFalse($user->hasReadLater($link));
-        $this->assertTrue($news->hasLink($link));
+        $this->assertTrue($journal->hasLink($link));
     }
 
     public function testLaterFailsIfNotOwnedAndHidden(): void
@@ -372,11 +372,11 @@ class ReadTest extends \PHPUnit\Framework\TestCase
     public function testDismissMarksToDismiss(): void
     {
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $news->addLinks([$link]);
+        $journal->addLinks([$link]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/dismiss", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsDismissed::class),
@@ -384,7 +384,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/');
         $this->assertTrue($user->hasDismissed($link));
-        $this->assertFalse($news->hasLink($link));
+        $this->assertFalse($journal->hasLink($link));
     }
 
     public function testDismissWorksIfNotOwnedAndNotHidden(): void
@@ -415,10 +415,10 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]));
     }
 
-    public function testDismissRemovesLinkFromNewsByUrl(): void
+    public function testDismissRemovesLinkFromJournalByUrl(): void
     {
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         $other_user = UserFactory::create();
         /** @var string */
         $url = $this->fake('url');
@@ -427,11 +427,11 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
             'is_hidden' => false,
         ]);
-        $news_link = LinkFactory::create([
+        $journal_link = LinkFactory::create([
             'user_id' => $user->id,
             'url' => $url,
         ]);
-        $news->addLinks([$news_link]);
+        $journal->addLinks([$journal_link]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/dismiss", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsDismissed::class),
@@ -439,17 +439,17 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/');
         $this->assertTrue($user->hasDismissed($link));
-        $this->assertFalse($news->hasLink($news_link));
+        $this->assertFalse($journal->hasLink($journal_link));
     }
 
     public function testDismissRedirectsToLoginIfNotConnected(): void
     {
         $user = UserFactory::create();
-        $news = $user->news();
+        $journal = $user->journal();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $news->addLinks([$link]);
+        $journal->addLinks([$link]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/dismiss", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsDismissed::class),
@@ -457,17 +457,17 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
         $this->assertFalse($user->hasDismissed($link));
-        $this->assertTrue($news->hasLink($link));
+        $this->assertTrue($journal->hasLink($link));
     }
 
     public function testDismissFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $news->addLinks([$link]);
+        $journal->addLinks([$link]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/dismiss", [
             'csrf_token' => 'not the token',
@@ -477,7 +477,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
         $this->assertFalse($user->hasDismissed($link));
-        $this->assertTrue($news->hasLink($link));
+        $this->assertTrue($journal->hasLink($link));
     }
 
     public function testDismissFailsIfNotOwnedAndHidden(): void

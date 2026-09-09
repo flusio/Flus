@@ -24,10 +24,10 @@ class ReadingNavigation extends BaseNavigation
 
         $elements = [
             new Item(
-                label: TwigExtension::translate('News'),
-                key: 'news',
-                url: \Minz\Url::for('news'),
-                icon: 'news',
+                label: TwigExtension::translate('Journal'),
+                key: 'journal',
+                url: \Minz\Url::for('journal'),
+                icon: 'journal',
             ),
 
             new Item(

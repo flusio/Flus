@@ -24,7 +24,7 @@ class Collection
     use utils\Memoizer;
     use Validable;
 
-    public const VALID_TYPES = ['news', 'collection', 'feed'];
+    public const VALID_TYPES = ['journal', 'collection', 'feed'];
 
     public const NAME_MAX_LENGTH = 100;
 
@@ -130,17 +130,6 @@ class Collection
         return $collection;
     }
 
-    public static function initNews(string $user_id): self
-    {
-        $collection = new self();
-
-        $collection->name = _('News');
-        $collection->type = 'news';
-        $collection->user_id = $user_id;
-
-        return $collection;
-    }
-
     public static function initFeed(string $feed_url): self
     {
         $collection = new self();
@@ -182,12 +171,12 @@ class Collection
     /**
      * Return the name of the collection.
      *
-     * If the collection is of news type, the localized version is returned.
+     * If the collection is the journal, the localized version is returned.
      */
     public function name(): string
     {
-        if ($this->type === 'news') {
-            return _('News');
+        if ($this->type === 'journal') {
+            return _('Journal');
         } else {
             return $this->name;
         }
@@ -340,39 +329,6 @@ class Collection
         if ($sync_publication_frequency) {
             $this->syncPublicationFrequencyPerYear();
             $this->save();
-        }
-    }
-
-    /**
-     * Remove the links having the same URLs as the given ones from the
-     * collection.
-     *
-     * The given links don't have to be attached to the collection themselves
-     * (e.g. they may be owned by another user): any link of the collection
-     * sharing the same url_hash is detached.
-     *
-     * @param Link[] $links
-     * @param positive-int $chunk_size
-     */
-    public function removeLinksByUrlHashes(array $links, int $chunk_size = 500): void
-    {
-        $url_hashes = array_unique(array_column($links, 'url_hash'));
-
-        foreach (array_chunk($url_hashes, $chunk_size) as $chunk_url_hashes) {
-            $values_as_question_marks = array_fill(0, count($chunk_url_hashes), '?');
-            $values_placeholder = implode(', ', $values_as_question_marks);
-
-            $sql = <<<SQL
-                DELETE FROM links_to_collections lc
-                USING links l
-                WHERE lc.link_id = l.id
-                AND lc.collection_id = ?
-                AND l.url_hash IN ({$values_placeholder})
-            SQL;
-
-            $database = Database::get();
-            $statement = $database->prepare($sql);
-            $statement->execute([$this->id, ...$chunk_url_hashes]);
         }
     }
 
@@ -634,17 +590,17 @@ class Collection
 
     /**
      * Return the time filter suggested to receive the links of this collection
-     * in the news.
+     * in the journal.
      *
      * With the "normal" filter, a collection publishing more than one link a
-     * day would flood the news, while a collection publishing less than one
+     * day would flood the journal, while a collection publishing less than one
      * link a week would often bring nothing.
      *
-     * Above a few links a day, no filter can keep the news readable: the
+     * Above a few links a day, no filter can keep the journal readable: the
      * collection is better followed in a stream, so "none" is suggested.
      *
      * "all" is never suggested as it would be too easy to get overwhelmed
-     * by the news.
+     * by the journal.
      */
     public function suggestedTimeFilter(): string
     {

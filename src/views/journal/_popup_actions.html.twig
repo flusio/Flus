@@ -1,7 +1,7 @@
 {#
- # The actions on the news links, to be included in the `items` block of a
- # popup. `params` is added as hidden inputs to each form, to restrict the
- # actions to a subset of the news.
+ # The actions on the journal links, to be included in the `items` block of
+ # a popup. `params` is added as hidden inputs to each form, to restrict the
+ # actions to a subset of the journal.
  #}
 {% import 'components/popup.html.twig' as item %}
 
@@ -17,7 +17,7 @@
 {{ item.heading(heading) }}
 
 {{ item.action(
-    url: url('mark collection as read', { id: news.id }),
+    url: url('mark collection as read', { id: journal.id }),
     label: t('Mark all as read'),
     icon: 'check',
     csrf: 'collections\\MarkCollectionAsRead',
@@ -26,7 +26,7 @@
 ) }}
 
 {{ item.action(
-    url: url('read collection later', { id: news.id }),
+    url: url('read collection later', { id: journal.id }),
     label: t('Read the links later'),
     icon: 'bookmark',
     csrf: 'collections\\MarkCollectionAsReadLater',
@@ -37,11 +37,11 @@
 {{ item.separator() }}
 
 {{ item.action(
-    url: url('dismiss collection', { id: news.id }),
+    url: url('dismiss collection', { id: journal.id }),
     label: t('Ignore the links'),
     icon: 'times',
     csrf: 'collections\\MarkCollectionAsDismissed',
     params: params,
     preserve_scroll: preserve_scroll,
-    confirm: t('The links will no longer be counted as unread and won’t be suggested in your news. Are you sure?'),
+    confirm: t('The links will no longer be counted as unread and won’t be suggested in your journal. Are you sure?'),
 ) }}

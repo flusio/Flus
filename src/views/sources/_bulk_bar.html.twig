@@ -60,15 +60,15 @@
             <div data-selection-target="popup" inert>
                 {% embed 'components/popup.html.twig' %}
                     {% block opener %}
-                        {{ icon('news') }}
-                        {{ t('News filter') }}
+                        {{ icon('journal') }}
+                        {{ t('Journal filter') }}
                         {{ icon('angle-down') }}
                     {% endblock %}
 
                     {% block items %}
                         {% import _self as item %}
 
-                        {{ item.heading(t('Which links to receive in the news?')) }}
+                        {{ item.heading(t('Which links to receive in the journal?')) }}
 
                         {% for time_filter, label in {
                             'none': t('No link'),

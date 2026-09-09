@@ -18,15 +18,15 @@ class JournalTest extends \PHPUnit\Framework\TestCase
     {
         $this->freeze();
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         $link1 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link1->addCollection($news, at: \Minz\Time::ago(5, 'minutes'));
-        $link2->addCollection($news, at: \Minz\Time::ago(10, 'minutes'));
+        $link1->addCollection($journal, at: \Minz\Time::ago(5, 'minutes'));
+        $link2->addCollection($journal, at: \Minz\Time::ago(10, 'minutes'));
 
         $response = $this->apiRun('GET', '/api/v1/journal');
 
@@ -43,7 +43,7 @@ class JournalTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $other_user = UserFactory::create();
-        $news = $user->news();
+        $journal = $user->journal();
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
             'name' => 'My collection',
@@ -55,7 +55,7 @@ class JournalTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'origin' => $origin,
         ]);
-        $link->addCollection($news);
+        $link->addCollection($journal);
 
         $response = $this->apiRun('GET', '/api/v1/journal');
 
@@ -75,15 +75,15 @@ class JournalTest extends \PHPUnit\Framework\TestCase
     public function testIndexFailsIfNotConnected(): void
     {
         $user = UserFactory::create();
-        $news = $user->news();
+        $journal = $user->journal();
         $link1 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link1->addCollection($news, at: \Minz\Time::ago(5, 'minutes'));
-        $link2->addCollection($news, at: \Minz\Time::ago(10, 'minutes'));
+        $link1->addCollection($journal, at: \Minz\Time::ago(5, 'minutes'));
+        $link2->addCollection($journal, at: \Minz\Time::ago(10, 'minutes'));
 
         $response = $this->apiRun('GET', '/api/v1/journal');
 
@@ -97,7 +97,7 @@ class JournalTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $other_user = UserFactory::create();
-        $news = $user->news();
+        $journal = $user->journal();
         $link1 = LinkFactory::create([
             'user_id' => $other_user->id,
             'is_hidden' => false,
@@ -127,7 +127,7 @@ class JournalTest extends \PHPUnit\Framework\TestCase
     {
         $user = UserFactory::create();
         $other_user = UserFactory::create();
-        $news = $user->news();
+        $journal = $user->journal();
         $link1 = LinkFactory::create([
             'user_id' => $other_user->id,
             'is_hidden' => false,

@@ -14,15 +14,15 @@ class LaterTest extends \PHPUnit\Framework\TestCase
     public function testCreateMarksTheLinksOfTheJournalAsReadLater(): void
     {
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         $link1 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link1->addCollection($news);
-        $link2->addCollection($news);
+        $link1->addCollection($journal);
+        $link2->addCollection($journal);
 
         $this->assertFalse($user->hasReadLater($link1));
         $this->assertFalse($user->hasReadLater($link2));
@@ -37,15 +37,15 @@ class LaterTest extends \PHPUnit\Framework\TestCase
     public function testCreateCanMakAsReadLaterByDate(): void
     {
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         $link1 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link1->addCollection($news, at: new \DateTimeImmutable('2025-08-22'));
-        $link2->addCollection($news, at: new \DateTimeImmutable('2025-08-23'));
+        $link1->addCollection($journal, at: new \DateTimeImmutable('2025-08-22'));
+        $link2->addCollection($journal, at: new \DateTimeImmutable('2025-08-23'));
 
         $this->assertFalse($user->hasReadLater($link1));
         $this->assertFalse($user->hasReadLater($link2));
@@ -62,7 +62,7 @@ class LaterTest extends \PHPUnit\Framework\TestCase
     public function testCreateCanMakAsReadLaterByOrigin(): void
     {
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         $collection = CollectionFactory::create();
         $link1 = LinkFactory::create([
             'user_id' => $user->id,
@@ -71,8 +71,8 @@ class LaterTest extends \PHPUnit\Framework\TestCase
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link1->addCollection($news);
-        $link2->addCollection($news);
+        $link1->addCollection($journal);
+        $link2->addCollection($journal);
 
         $this->assertFalse($user->hasReadLater($link1));
         $this->assertFalse($user->hasReadLater($link2));
@@ -89,15 +89,15 @@ class LaterTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfNotConnected(): void
     {
         $user = UserFactory::create();
-        $news = $user->news();
+        $journal = $user->journal();
         $link1 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link1->addCollection($news);
-        $link2->addCollection($news);
+        $link1->addCollection($journal);
+        $link2->addCollection($journal);
 
         $this->assertFalse($user->hasReadLater($link1));
         $this->assertFalse($user->hasReadLater($link2));

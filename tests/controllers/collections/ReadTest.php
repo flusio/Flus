@@ -21,21 +21,21 @@ class ReadTest extends \PHPUnit\Framework\TestCase
     public function testCreateMarksLinksAsReadAndRedirects(): void
     {
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
         $user->markAsReadLater($link);
-        $news->addLinks([$link]);
+        $journal->addLinks([$link]);
 
-        $response = $this->appRun('POST', "/collections/{$news->id}/read", [
+        $response = $this->appRun('POST', "/collections/{$journal->id}/read", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsRead::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/');
         $this->assertTrue($user->hasRead($link), 'The link should be read.');
         $this->assertFalse($user->hasReadLater($link), 'The link should not be to read later.');
-        $this->assertFalse($news->hasLink($link), 'The link should not be in news.');
+        $this->assertFalse($journal->hasLink($link), 'The link should not be in the journal.');
     }
 
     public function testCreateMarksLinksAsReadFromPublicCollection(): void
@@ -105,32 +105,32 @@ class ReadTest extends \PHPUnit\Framework\TestCase
     public function testCreateMarksLinksAsReadForSpecificDate(): void
     {
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         $link1 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $news->addLinks([$link1], at: new \DateTimeImmutable('2024-03-25'));
-        $news->addLinks([$link2], at: new \DateTimeImmutable('2024-03-26'));
+        $journal->addLinks([$link1], at: new \DateTimeImmutable('2024-03-25'));
+        $journal->addLinks([$link2], at: new \DateTimeImmutable('2024-03-26'));
 
-        $response = $this->appRun('POST', "/collections/{$news->id}/read", [
+        $response = $this->appRun('POST', "/collections/{$journal->id}/read", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsRead::class),
             'date' => '2024-03-25',
         ]);
 
         $this->assertResponseCode($response, 302, '/');
         $this->assertTrue($user->hasRead($link1), 'The link should be read.');
-        $this->assertFalse($news->hasLink($link1), 'The link should not be in news.');
+        $this->assertFalse($journal->hasLink($link1), 'The link should not be in the journal.');
         $this->assertFalse($user->hasRead($link2), 'The link should not be read.');
-        $this->assertTrue($news->hasLink($link2), 'The link should be in news.');
+        $this->assertTrue($journal->hasLink($link2), 'The link should be in the journal.');
     }
 
     public function testCreateMarksLinksAsReadForSpecificOrigin(): void
     {
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         $collection1 = CollectionFactory::create();
         $collection2 = CollectionFactory::create();
         $link1 = LinkFactory::create([
@@ -141,36 +141,36 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'source_id' => $collection2->id,
         ]);
-        $news->addLinks([$link1, $link2]);
+        $journal->addLinks([$link1, $link2]);
 
-        $response = $this->appRun('POST', "/collections/{$news->id}/read", [
+        $response = $this->appRun('POST', "/collections/{$journal->id}/read", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsRead::class),
             'source' => $collection1->id,
         ]);
 
         $this->assertResponseCode($response, 302, '/');
         $this->assertTrue($user->hasRead($link1), 'The link should be read.');
-        $this->assertFalse($news->hasLink($link1), 'The link should not be in news.');
+        $this->assertFalse($journal->hasLink($link1), 'The link should not be in the journal.');
         $this->assertFalse($user->hasRead($link2), 'The link should not be read.');
-        $this->assertTrue($news->hasLink($link2), 'The link should be in news.');
+        $this->assertTrue($journal->hasLink($link2), 'The link should be in the journal.');
     }
 
     public function testCreateRedirectsToLoginIfNotConnected(): void
     {
         $user = UserFactory::create();
-        $news = $user->news();
+        $journal = $user->journal();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $news->addLinks([$link]);
+        $journal->addLinks([$link]);
 
-        $response = $this->appRun('POST', "/collections/{$news->id}/read", [
+        $response = $this->appRun('POST', "/collections/{$journal->id}/read", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsRead::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
         $this->assertFalse($user->hasRead($link), 'The link should not be read.');
-        $this->assertTrue($news->hasLink($link), 'The link should be in news.');
+        $this->assertTrue($journal->hasLink($link), 'The link should be in the journal.');
     }
 
     public function testCreateFailsIfCollectionIsInaccessible(): void
@@ -198,13 +198,13 @@ class ReadTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $news->addLinks([$link]);
+        $journal->addLinks([$link]);
 
-        $response = $this->appRun('POST', "/collections/{$news->id}/read", [
+        $response = $this->appRun('POST', "/collections/{$journal->id}/read", [
             'csrf_token' => 'not the token',
         ]);
 
@@ -212,25 +212,25 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
         $this->assertFalse($user->hasRead($link), 'The link should not be read.');
-        $this->assertTrue($news->hasLink($link), 'The link should be in news.');
+        $this->assertTrue($journal->hasLink($link), 'The link should be in the journal.');
     }
 
-    public function testLaterMarksNewsLinksToReadLaterAndRedirects(): void
+    public function testLaterMarksJournalLinksToReadLaterAndRedirects(): void
     {
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $news->addLinks([$link]);
+        $journal->addLinks([$link]);
 
-        $response = $this->appRun('POST', "/collections/{$news->id}/read/later", [
+        $response = $this->appRun('POST', "/collections/{$journal->id}/read/later", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsReadLater::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/');
         $this->assertTrue($user->hasReadLater($link), 'The link should be to read later.');
-        $this->assertFalse($news->hasLink($link), 'The link should not be in news.');
+        $this->assertFalse($journal->hasLink($link), 'The link should not be in the journal.');
     }
 
     public function testLaterMarksLinksToReadLaterFromPublicCollection(): void
@@ -295,35 +295,35 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($user->hasReadLater($link), 'The link should be to read later.');
     }
 
-    public function testLaterMarksNewsLinksToReadLaterForSpecificDate(): void
+    public function testLaterMarksJournalLinksToReadLaterForSpecificDate(): void
     {
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         $link1 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $news->addLinks([$link1], at: new \DateTimeImmutable('2024-03-25'));
-        $news->addLinks([$link2], at: new \DateTimeImmutable('2024-03-26'));
+        $journal->addLinks([$link1], at: new \DateTimeImmutable('2024-03-25'));
+        $journal->addLinks([$link2], at: new \DateTimeImmutable('2024-03-26'));
 
-        $response = $this->appRun('POST', "/collections/{$news->id}/read/later", [
+        $response = $this->appRun('POST', "/collections/{$journal->id}/read/later", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsReadLater::class),
             'date' => '2024-03-25',
         ]);
 
         $this->assertResponseCode($response, 302, '/');
         $this->assertTrue($user->hasReadLater($link1), 'The link should be to read later.');
-        $this->assertFalse($news->hasLink($link1), 'The link should not be in news.');
+        $this->assertFalse($journal->hasLink($link1), 'The link should not be in the journal.');
         $this->assertFalse($user->hasReadLater($link2), 'The link should not be to read later.');
-        $this->assertTrue($news->hasLink($link2), 'The link should be in news.');
+        $this->assertTrue($journal->hasLink($link2), 'The link should be in the journal.');
     }
 
-    public function testLaterMarksNewsLinksToReadLaterForSpecificOrigin(): void
+    public function testLaterMarksJournalLinksToReadLaterForSpecificOrigin(): void
     {
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         $collection1 = CollectionFactory::create();
         $collection2 = CollectionFactory::create();
         $link1 = LinkFactory::create([
@@ -334,36 +334,36 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'source_id' => $collection2->id,
         ]);
-        $news->addLinks([$link1, $link2]);
+        $journal->addLinks([$link1, $link2]);
 
-        $response = $this->appRun('POST', "/collections/{$news->id}/read/later", [
+        $response = $this->appRun('POST', "/collections/{$journal->id}/read/later", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsReadLater::class),
             'source' => $collection1->id,
         ]);
 
         $this->assertResponseCode($response, 302, '/');
         $this->assertTrue($user->hasReadLater($link1), 'The link should be to read later.');
-        $this->assertFalse($news->hasLink($link1), 'The link should not be in news.');
+        $this->assertFalse($journal->hasLink($link1), 'The link should not be in the journal.');
         $this->assertFalse($user->hasReadLater($link2), 'The link should not be to read later.');
-        $this->assertTrue($news->hasLink($link2), 'The link should be in news.');
+        $this->assertTrue($journal->hasLink($link2), 'The link should be in the journal.');
     }
 
     public function testLaterRedirectsToLoginIfNotConnected(): void
     {
         $user = UserFactory::create();
-        $news = $user->news();
+        $journal = $user->journal();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $news->addLinks([$link]);
+        $journal->addLinks([$link]);
 
-        $response = $this->appRun('POST', "/collections/{$news->id}/read/later", [
+        $response = $this->appRun('POST', "/collections/{$journal->id}/read/later", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsReadLater::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
         $this->assertFalse($user->hasReadLater($link), 'The link should not be to read later.');
-        $this->assertTrue($news->hasLink($link), 'The link should be in news.');
+        $this->assertTrue($journal->hasLink($link), 'The link should be in the journal.');
     }
 
     public function testLaterFailsIfCollectionIsInaccessible(): void
@@ -391,13 +391,13 @@ class ReadTest extends \PHPUnit\Framework\TestCase
     public function testLaterFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $news->addLinks([$link]);
+        $journal->addLinks([$link]);
 
-        $response = $this->appRun('POST', "/collections/{$news->id}/read/later", [
+        $response = $this->appRun('POST', "/collections/{$journal->id}/read/later", [
             'csrf_token' => 'not the token',
         ]);
 
@@ -405,25 +405,25 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
         $this->assertFalse($user->hasReadLater($link), 'The link should not be to read later.');
-        $this->assertTrue($news->hasLink($link), 'The link should be in news.');
+        $this->assertTrue($journal->hasLink($link), 'The link should be in the journal.');
     }
 
-    public function testDismissMarksNewsLinksToBeDismissedAndRedirects(): void
+    public function testDismissMarksJournalLinksToBeDismissedAndRedirects(): void
     {
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $news->addLinks([$link]);
+        $journal->addLinks([$link]);
 
-        $response = $this->appRun('POST', "/collections/{$news->id}/dismiss", [
+        $response = $this->appRun('POST', "/collections/{$journal->id}/dismiss", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsDismissed::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/');
         $this->assertTrue($user->hasDismissed($link), 'The link should be has been dismissed.');
-        $this->assertFalse($news->hasLink($link), 'The link should not be in news.');
+        $this->assertFalse($journal->hasLink($link), 'The link should not be in the journal.');
     }
 
     public function testDismissMarksLinksToBeDismissedFromPublicCollection(): void
@@ -485,35 +485,35 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]));
     }
 
-    public function testDismissMarksNewsLinksToBeDismissedForSpecificDate(): void
+    public function testDismissMarksJournalLinksToBeDismissedForSpecificDate(): void
     {
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         $link1 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $news->addLinks([$link1], at: new \DateTimeImmutable('2024-03-25'));
-        $news->addLinks([$link2], at: new \DateTimeImmutable('2024-03-26'));
+        $journal->addLinks([$link1], at: new \DateTimeImmutable('2024-03-25'));
+        $journal->addLinks([$link2], at: new \DateTimeImmutable('2024-03-26'));
 
-        $response = $this->appRun('POST', "/collections/{$news->id}/dismiss", [
+        $response = $this->appRun('POST', "/collections/{$journal->id}/dismiss", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsDismissed::class),
             'date' => '2024-03-25',
         ]);
 
         $this->assertResponseCode($response, 302, '/');
         $this->assertTrue($user->hasDismissed($link1), 'The link should has been dismissed.');
-        $this->assertFalse($news->hasLink($link1), 'The link should not be in news.');
+        $this->assertFalse($journal->hasLink($link1), 'The link should not be in the journal.');
         $this->assertFalse($user->hasDismissed($link2), 'The link should not has been dismissed.');
-        $this->assertTrue($news->hasLink($link2), 'The link should be in news.');
+        $this->assertTrue($journal->hasLink($link2), 'The link should be in the journal.');
     }
 
-    public function testDismissMarksNewsLinksToBeDismissedForSpecificOrigin(): void
+    public function testDismissMarksJournalLinksToBeDismissedForSpecificOrigin(): void
     {
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         $collection1 = CollectionFactory::create();
         $collection2 = CollectionFactory::create();
         $link1 = LinkFactory::create([
@@ -524,36 +524,36 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'source_id' => $collection2->id,
         ]);
-        $news->addLinks([$link1, $link2]);
+        $journal->addLinks([$link1, $link2]);
 
-        $response = $this->appRun('POST', "/collections/{$news->id}/dismiss", [
+        $response = $this->appRun('POST', "/collections/{$journal->id}/dismiss", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsDismissed::class),
             'source' => $collection1->id,
         ]);
 
         $this->assertResponseCode($response, 302, '/');
         $this->assertTrue($user->hasDismissed($link1), 'The link should has been dismissed.');
-        $this->assertFalse($news->hasLink($link1), 'The link should not be in news.');
+        $this->assertFalse($journal->hasLink($link1), 'The link should not be in the journal.');
         $this->assertFalse($user->hasDismissed($link2), 'The link should not has been dismissed.');
-        $this->assertTrue($news->hasLink($link2), 'The link should be in news.');
+        $this->assertTrue($journal->hasLink($link2), 'The link should be in the journal.');
     }
 
     public function testDismissRedirectsToLoginIfNotConnected(): void
     {
         $user = UserFactory::create();
-        $news = $user->news();
+        $journal = $user->journal();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $news->addLinks([$link]);
+        $journal->addLinks([$link]);
 
-        $response = $this->appRun('POST', "/collections/{$news->id}/dismiss", [
+        $response = $this->appRun('POST', "/collections/{$journal->id}/dismiss", [
             'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsDismissed::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
         $this->assertFalse($user->hasDismissed($link), 'The link should not has been dismissed.');
-        $this->assertTrue($news->hasLink($link), 'The link should be in news.');
+        $this->assertTrue($journal->hasLink($link), 'The link should be in the journal.');
     }
 
     public function testDismissFailsIfCollectionIsInaccessible(): void
@@ -581,13 +581,13 @@ class ReadTest extends \PHPUnit\Framework\TestCase
     public function testDismissFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $news->addLinks([$link]);
+        $journal->addLinks([$link]);
 
-        $response = $this->appRun('POST', "/collections/{$news->id}/dismiss", [
+        $response = $this->appRun('POST', "/collections/{$journal->id}/dismiss", [
             'csrf_token' => 'not the token',
         ]);
 
@@ -595,6 +595,6 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
         $this->assertFalse($user->hasDismissed($link), 'The link should not has been dismissed.');
-        $this->assertTrue($news->hasLink($link), 'The link should be in news.');
+        $this->assertTrue($journal->hasLink($link), 'The link should be in the journal.');
     }
 }

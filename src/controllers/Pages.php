@@ -19,13 +19,13 @@ class Pages extends BaseController
      *
      * @response 302 /login
      *     If the user is not connected.
-     * @response 302 /news
+     * @response 302 /journal
      *     If the user is connected.
      */
     public function home(): Response
     {
         if (auth\CurrentUser::get()) {
-            return Response::redirect('news');
+            return Response::redirect('journal');
         } else {
             return Response::redirect('login');
         }

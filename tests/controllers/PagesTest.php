@@ -17,13 +17,13 @@ class PagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/login');
     }
 
-    public function testHomeRedirectsToNewsIfConnected(): void
+    public function testHomeRedirectsToJournalIfConnected(): void
     {
         $this->login();
 
         $response = $this->appRun('GET', '/');
 
-        $this->assertResponseCode($response, 302, '/news');
+        $this->assertResponseCode($response, 302, '/journal');
     }
 
     public function testTermsRendersCorrectlyWhenTermsExist(): void

@@ -83,7 +83,7 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
         $user = $this->login([
             'last_activity_at' => $last_activity,
         ]);
-        $request = new \Minz\Request('GET', '/news');
+        $request = new \Minz\Request('GET', '/journal');
 
         $application = new Application();
         $response = $application->run($request);
@@ -102,7 +102,7 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
             'created_at' => $created_at,
             'validated_at' => null,
         ]);
-        $request = new \Minz\Request('GET', '/news');
+        $request = new \Minz\Request('GET', '/journal');
 
         $application = new Application();
         $response = $application->run($request);
@@ -119,7 +119,7 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
         $this->login([
             'subscription_expired_at' => $expired_at,
         ]);
-        $request = new \Minz\Request('GET', '/news');
+        $request = new \Minz\Request('GET', '/journal');
 
         $application = new Application();
         $response = $application->run($request);

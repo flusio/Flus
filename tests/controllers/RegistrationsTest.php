@@ -307,11 +307,11 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertGreaterThan(0, models\Collection::count());
         $user = auth\CurrentUser::get();
         $this->assertNotNull($user);
-        $news = models\Collection::findBy([
+        $journal = models\Journal::findBy([
             'user_id' => $user->id,
-            'type' => 'news',
+            'type' => 'journal',
         ]);
-        $this->assertNotNull($news);
+        $this->assertNotNull($journal);
     }
 
     public function testCreateRedirectsIfRegistrationsAreClosed(): void

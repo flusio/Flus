@@ -317,10 +317,10 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($is_hidden, $link->is_hidden);
     }
 
-    public function testUpdateDoesNotRemoveFromNews(): void
+    public function testUpdateDoesNotRemoveFromJournal(): void
     {
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
@@ -328,7 +328,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'type' => 'collection',
         ]);
-        $news->addLinks([$link]);
+        $journal->addLinks([$link]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
@@ -337,7 +337,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, "/links/{$link->id}/collections");
         $this->assertTrue($collection->hasLink($link));
-        $this->assertTrue($news->hasLink($link));
+        $this->assertTrue($journal->hasLink($link));
     }
 
     public function testUpdateCreatesNote(): void
@@ -394,7 +394,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     public function testUpdateCanMarkAsRead(): void
     {
         $user = $this->login();
-        $news = $user->news();
+        $journal = $user->journal();
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
@@ -414,7 +414,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, "/links/{$link->id}/collections");
         $this->assertTrue($user->hasRead($link));
         $this->assertFalse($user->hasReadLater($link));
-        $this->assertFalse($news->hasLink($link));
+        $this->assertFalse($journal->hasLink($link));
     }
 
     public function testUpdateCopiesNotOwnedAndAccessibleLinks(): void

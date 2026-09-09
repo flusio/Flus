@@ -10,14 +10,14 @@ export default class extends Controller {
     }
 
     connect () {
-        this.checkAvailableNews();
-        setInterval(this.checkAvailableNews.bind(this), 5 * 60 * 1000);
+        this.checkCandidates();
+        setInterval(this.checkCandidates.bind(this), 5 * 60 * 1000);
     }
 
-    async checkAvailableNews () {
+    async checkCandidates () {
         const response = await fetch(this.urlValue);
         const data = await response.json();
-        if (data.available) {
+        if (data.candidates) {
             this.buttonTarget.classList.add('button--primary');
         } else {
             this.buttonTarget.classList.remove('button--primary');

@@ -2,32 +2,32 @@
 
 namespace App\models\links;
 
-use App\models\User;
+use App\models\Journal;
 use Minz\Database;
 
 /**
- * Add methods to list the links published in the collections that a user
- * follows.
- *
- * These links are the ones that feed the journal of the user. A link is only
- * considered if the user can see it: the collection must be public, owned by
- * the user or shared with them.
+ * Add methods to fill and manipulate the links of a journal.
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-trait InFollowedCollections
+trait InJournal
 {
     /**
-     * Return public links listed in followed collections of the given user,
-     * ordered by publication date.
+     * Return the links that can be added to the given journal, ordered by
+     * publication date.
+     *
+     * The candidates are the links published in the collections followed by
+     * the owner of the journal. A link is only considered if the owner can
+     * see it: the collection must be public, owned by the owner or shared
+     * with them.
      *
      * @return self[]
      */
-    public static function listFromFollowedCollections(User $user, int $max): array
+    public static function listCandidatesForJournal(Journal $journal, int $max): array
     {
         $values = [
-            ':user_id' => $user->id,
+            ':user_id' => $journal->owner()->id,
             ':until_hard_limit' => \Minz\Time::ago(1, 'year')->format(Database\Column::DATETIME_FORMAT),
             ':until_strict' => \Minz\Time::ago(1, 'day')->format(Database\Column::DATETIME_FORMAT),
             ':until_normal' => \Minz\Time::ago(1, 'week')->format(Database\Column::DATETIME_FORMAT),
@@ -90,13 +90,15 @@ trait InFollowedCollections
     }
 
     /**
-     * Return whether there are any public links listed in followed collections
-     * of the given user.
+     * Return whether there are any links that can be added to the given
+     * journal.
+     *
+     * @see self::listCandidatesForJournal
      */
-    public static function anyFromFollowedCollections(User $user): bool
+    public static function anyCandidateForJournal(Journal $journal): bool
     {
         $values = [
-            ':user_id' => $user->id,
+            ':user_id' => $journal->owner()->id,
             ':until_hard_limit' => \Minz\Time::ago(1, 'year')->format(Database\Column::DATETIME_FORMAT),
             ':until_strict' => \Minz\Time::ago(1, 'day')->format(Database\Column::DATETIME_FORMAT),
             ':until_normal' => \Minz\Time::ago(1, 'week')->format(Database\Column::DATETIME_FORMAT),
@@ -147,5 +149,54 @@ trait InFollowedCollections
         $statement->execute($values);
 
         return $statement->fetch() !== false;
+    }
+
+    /**
+     * Mark the relevant links to be grouped by sources in the given journal.
+     *
+     * Links are grouped if there are several links in the journal
+     * corresponding to the same source and the same day.
+     */
+    public static function groupLinksBySources(Journal $journal): bool
+    {
+        $sql = <<<SQL
+            UPDATE links
+            SET group_by_source = true
+            WHERE links.id IN (
+                -- Create a "temporary table" to select the available sources
+                -- from the journal (e.g. sources that are referenced by more
+                -- than 1 link).
+                WITH sources AS (
+                    SELECT date_trunc('day', slc.created_at) AS published_day,
+                           sl.source_id
+                    FROM links sl, links_to_collections slc
+
+                    WHERE sl.id = slc.link_id
+                    AND slc.collection_id = :collection_id
+
+                    GROUP BY published_day, sl.source_id
+                    HAVING COUNT(sl.id) > 1
+                )
+
+                -- Select the ids of links which have a source corresponding to
+                -- one of the selected sources.
+                SELECT l.id
+                FROM links l, links_to_collections lc, sources s
+
+                WHERE l.id = lc.link_id
+                AND lc.collection_id = :collection_id
+
+                AND l.source_id = s.source_id
+                AND date_trunc('day', lc.created_at) = s.published_day
+            );
+        SQL;
+
+        $parameters = [
+            ':collection_id' => $journal->id,
+        ];
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        return $statement->execute($parameters);
     }
 }

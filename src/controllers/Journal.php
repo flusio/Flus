@@ -10,15 +10,15 @@ use Minz\Request;
 use Minz\Response;
 
 /**
- * Handle the requests related to the news.
+ * Handle the requests related to the journal.
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class News extends BaseController
+class Journal extends BaseController
 {
     /**
-     * Show the news page.
+     * Show the journal page.
      *
      * @response 200
      *     On success.
@@ -30,8 +30,8 @@ class News extends BaseController
     {
         $user = auth\CurrentUser::require();
 
-        $news = $user->news();
-        $links = $news->links(['published_at']);
+        $journal = $user->journal();
+        $links = $journal->links(['published_at']);
 
         models\links\Preloader::for($links)
             ->sources()
@@ -41,24 +41,24 @@ class News extends BaseController
 
         $links_timeline = new utils\LinksTimeline($links);
 
-        $form = new forms\FillNews();
+        $form = new forms\FillJournal();
 
-        return Response::ok('news/index.html.twig', [
-            'news' => $news,
+        return Response::ok('journal/index.html.twig', [
+            'journal' => $journal,
             'links_timeline' => $links_timeline,
-            'no_news' => \Minz\Flash::pop('no_news'),
+            'no_candidates' => \Minz\Flash::pop('no_candidates'),
             'form' => $form,
         ]);
     }
 
     /**
-     * Fill the news page with links to read from followed collections.
+     * Fill the journal with links to read from followed collections.
      *
      * @request_param string csrf_token
      *
      * @response 400
      *     If the CSRF token is invalid.
-     * @response 302 /news
+     * @response 302 /journal
      *     On success.
      *
      * @throws auth\MissingCurrentUserError
@@ -68,30 +68,30 @@ class News extends BaseController
     {
         $user = auth\CurrentUser::require();
 
-        $form = new forms\FillNews();
+        $form = new forms\FillJournal();
         $form->handleRequest($request);
 
         if (!$form->validate()) {
-            return Response::badRequest('news/index.html.twig', [
-                'news' => $user->news(),
+            return Response::badRequest('journal/index.html.twig', [
+                'journal' => $user->journal(),
                 'links_timeline' => new utils\LinksTimeline([]),
-                'no_news' => false,
+                'no_candidates' => false,
                 'form' => $form,
             ]);
         }
 
-        $journal = new models\Journal($user);
+        $journal = $user->journal();
         $count = $journal->fill(max: 50);
 
         if ($count === 0) {
-            \Minz\Flash::set('no_news', true);
+            \Minz\Flash::set('no_candidates', true);
         }
 
-        return Response::redirect('news');
+        return Response::redirect('journal');
     }
 
     /**
-     * Return a JSON telling if there are new links available for the news.
+     * Return a JSON telling if there are candidate links for the journal.
      *
      * @response 200
      *     On success.
@@ -99,12 +99,29 @@ class News extends BaseController
      * @throws auth\MissingCurrentUserError
      *     If the user is not connected.
      */
-    public function showAvailable(Request $request): Response
+    public function hasCandidates(Request $request): Response
     {
         $user = auth\CurrentUser::require();
 
         return Response::json(200, [
-            'available' => models\Link::anyFromFollowedCollections($user),
+            'candidates' => $user->journal()->hasCandidates(),
         ]);
+    }
+
+    /**
+     * Handle old /news URL and redirect to /journal
+     *
+     * @response 301 /journal
+     */
+    public function news(Request $request): Response
+    {
+        $url = \Minz\Url::for('journal');
+
+        $query_string = $request->server->getString('QUERY_STRING');
+        if ($query_string) {
+            $url .= '?' . $query_string;
+        }
+
+        return Response::movedPermanently($url);
     }
 }

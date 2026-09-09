@@ -10,7 +10,7 @@ class RequestHelperTest extends \PHPUnit\Framework\TestCase
 
     public function testFromWithStandardGetRequest(): void
     {
-        $self_uri = '/news';
+        $self_uri = '/journal';
         $referer = '/read/later';
         $request = new Request('GET', $self_uri, headers: [
             'Referer' => $referer,
@@ -23,7 +23,7 @@ class RequestHelperTest extends \PHPUnit\Framework\TestCase
 
     public function testFromWithPostRequest(): void
     {
-        $self_uri = '/news';
+        $self_uri = '/journal';
         $referer = '/read/later';
         $request = new Request('POST', $self_uri, headers: [
             'Referer' => $referer,
@@ -36,7 +36,7 @@ class RequestHelperTest extends \PHPUnit\Framework\TestCase
 
     public function testFromWithRequestedModal(): void
     {
-        $self_uri = '/news';
+        $self_uri = '/journal';
         $referer = '/read/later';
         $request = new Request('GET', $self_uri, headers: [
             'Referer' => $referer,
@@ -50,7 +50,7 @@ class RequestHelperTest extends \PHPUnit\Framework\TestCase
 
     public function testFromWithNoRefererButPreviousUrlInSession(): void
     {
-        $self_uri = '/news';
+        $self_uri = '/journal';
         $previous_url = '/read/later';
         $_SESSION['_previous_url'] = $previous_url;
         $request = new Request('POST', $self_uri);
@@ -63,7 +63,7 @@ class RequestHelperTest extends \PHPUnit\Framework\TestCase
 
     public function testFromWithNoReferer(): void
     {
-        $self_uri = '/news';
+        $self_uri = '/journal';
         $request = new Request('POST', $self_uri);
 
         $from = RequestHelper::from($request);
@@ -73,7 +73,7 @@ class RequestHelperTest extends \PHPUnit\Framework\TestCase
 
     public function testFromWithNotRedirectableReferer(): void
     {
-        $self_uri = '/news';
+        $self_uri = '/journal';
         $referer = 'https://bad.example.com';
         $request = new Request('POST', $self_uri, headers: [
             'Referer' => $referer,
@@ -86,7 +86,7 @@ class RequestHelperTest extends \PHPUnit\Framework\TestCase
 
     public function testSetPreviousUrlWithStandardGetRequest(): void
     {
-        $self_uri = '/news';
+        $self_uri = '/journal';
         $request = new Request('GET', $self_uri);
 
         RequestHelper::setPreviousUrl($request);
@@ -97,7 +97,7 @@ class RequestHelperTest extends \PHPUnit\Framework\TestCase
 
     public function testSetPreviousUrlWithRequestedModal(): void
     {
-        $self_uri = '/news';
+        $self_uri = '/journal';
         $request = new Request('GET', $self_uri, headers: [
             'Turbo-Frame' => 'modal-content',
         ]);
@@ -109,7 +109,7 @@ class RequestHelperTest extends \PHPUnit\Framework\TestCase
 
     public function testSetPreviousUrlWithPostRequest(): void
     {
-        $self_uri = '/news';
+        $self_uri = '/journal';
         $request = new Request('POST', $self_uri);
 
         RequestHelper::setPreviousUrl($request);

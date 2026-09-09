@@ -40,7 +40,7 @@ class EmptyJournal extends Form
             $options['source'] = $this->source;
         }
 
-        $news = $this->user->news();
-        return $news->links(options: $options);
+        $journal = $this->user->journal();
+        return $journal->links(options: $options);
     }
 }

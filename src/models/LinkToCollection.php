@@ -37,7 +37,7 @@ class LinkToCollection
      * Attach the collections to the given link and remove old ones if any.
      *
      * This method detaches the link from only collections of type 'collection'
-     * (i.e. not 'news'), even if their ids are missing from $collection_ids.
+     * (i.e. not the journal), even if their ids are missing from $collection_ids.
      * This is because only these collections appear in the collections
      * selector, when a user changes the collections of a link.
      *

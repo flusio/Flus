@@ -12,7 +12,7 @@ It comes with four main features:
 
 - the **feeds aggregation** (<abbr>RSS</abbr> and Atom) to follow any website, podcast or video channel in one place;
 - the **bookmarks and collections** to save your favourites articles for later and to organise them;
-- the **news** to keep control over your newsfeed;
+- the **journal** to keep control over your newsfeed;
 - the **profile** to share links with others.
 
 You can try Flus for free at [demo.flus.fr](https://demo.flus.fr/).
@@ -23,7 +23,7 @@ You can help to fund the development by taking a subscription to the service.
 
 Flus is licensed under [AGPL 3](/LICENSE.txt).
 
-![Screenshot of the news page with 3 links](/public/static/screenshot.webp)
+![Screenshot of the journal page with 3 links](/public/static/screenshot.webp)
 
 ## Credits and dependencies
 
