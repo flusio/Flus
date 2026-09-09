@@ -87,7 +87,7 @@ class OriginHelperTest extends \PHPUnit\Framework\TestCase
 
     public function testExtractOriginFromPathWithUnsupportedPath(): void
     {
-        $path = \Minz\Url::for('bookmarks');
+        $path = \Minz\Url::for('read later');
 
         list($origin_type, $origin_id) = OriginHelper::extractFromPath($path);
 

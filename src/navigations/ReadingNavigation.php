@@ -32,8 +32,8 @@ class ReadingNavigation extends BaseNavigation
 
             new Item(
                 label: TwigExtension::translate('To read'),
-                key: 'bookmarks',
-                url: \Minz\Url::for('bookmarks'),
+                key: 'read later',
+                url: \Minz\Url::for('read later'),
                 icon: 'bookmark',
             ),
 
