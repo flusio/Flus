@@ -133,7 +133,7 @@ class Read extends BaseController
      * @throws auth\AccessDeniedError
      *     If the user cannot view the collection.
      */
-    public function never(Request $request): Response
+    public function dismiss(Request $request): Response
     {
         $user = auth\CurrentUser::require();
         $collection = models\Collection::requireFromRequest($request);
@@ -142,7 +142,7 @@ class Read extends BaseController
 
         $from = utils\RequestHelper::from($request);
 
-        $form = new forms\collections\MarkCollectionAsNever(options: [
+        $form = new forms\collections\MarkCollectionAsDismissed(options: [
             'collection' => $collection,
             'user' => $user,
         ]);

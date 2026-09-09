@@ -408,7 +408,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($news->hasLink($link), 'The link should be in news.');
     }
 
-    public function testNeverMarksNewsLinksToBeDismissedAndRedirects(): void
+    public function testDismissMarksNewsLinksToBeDismissedAndRedirects(): void
     {
         $user = $this->login();
         $news = $user->news();
@@ -417,8 +417,8 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
         $news->addLinks([$link]);
 
-        $response = $this->appRun('POST', "/collections/{$news->id}/read/never", [
-            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsNever::class),
+        $response = $this->appRun('POST', "/collections/{$news->id}/dismiss", [
+            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsDismissed::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/');
@@ -426,7 +426,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($news->hasLink($link), 'The link should not be in news.');
     }
 
-    public function testNeverMarksLinksToBeDismissedFromPublicCollection(): void
+    public function testDismissMarksLinksToBeDismissedFromPublicCollection(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -444,8 +444,8 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection->addLinks([$public_link, $hidden_link]);
 
-        $response = $this->appRun('POST', "/collections/{$collection->id}/read/never", [
-            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsNever::class),
+        $response = $this->appRun('POST', "/collections/{$collection->id}/dismiss", [
+            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsDismissed::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/');
@@ -457,7 +457,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]));
     }
 
-    public function testNeverMarksHiddenLinksToBeDismissedIfCollectionIsShared(): void
+    public function testDismissMarksHiddenLinksToBeDismissedIfCollectionIsShared(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -472,8 +472,8 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $collection->addLinks([$link]);
         $collection->shareWith($user, 'read');
 
-        $response = $this->appRun('POST', "/collections/{$collection->id}/read/never", [
-            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsNever::class),
+        $response = $this->appRun('POST', "/collections/{$collection->id}/dismiss", [
+            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsDismissed::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/');
@@ -485,7 +485,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]));
     }
 
-    public function testNeverMarksNewsLinksToBeDismissedForSpecificDate(): void
+    public function testDismissMarksNewsLinksToBeDismissedForSpecificDate(): void
     {
         $user = $this->login();
         $news = $user->news();
@@ -498,8 +498,8 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $news->addLinks([$link1], at: new \DateTimeImmutable('2024-03-25'));
         $news->addLinks([$link2], at: new \DateTimeImmutable('2024-03-26'));
 
-        $response = $this->appRun('POST', "/collections/{$news->id}/read/never", [
-            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsNever::class),
+        $response = $this->appRun('POST', "/collections/{$news->id}/dismiss", [
+            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsDismissed::class),
             'date' => '2024-03-25',
         ]);
 
@@ -510,7 +510,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($news->hasLink($link2), 'The link should be in news.');
     }
 
-    public function testNeverMarksNewsLinksToBeDismissedForSpecificOrigin(): void
+    public function testDismissMarksNewsLinksToBeDismissedForSpecificOrigin(): void
     {
         $user = $this->login();
         $news = $user->news();
@@ -526,8 +526,8 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
         $news->addLinks([$link1, $link2]);
 
-        $response = $this->appRun('POST', "/collections/{$news->id}/read/never", [
-            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsNever::class),
+        $response = $this->appRun('POST', "/collections/{$news->id}/dismiss", [
+            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsDismissed::class),
             'source' => $collection1->id,
         ]);
 
@@ -538,7 +538,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($news->hasLink($link2), 'The link should be in news.');
     }
 
-    public function testNeverRedirectsToLoginIfNotConnected(): void
+    public function testDismissRedirectsToLoginIfNotConnected(): void
     {
         $user = UserFactory::create();
         $news = $user->news();
@@ -547,8 +547,8 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
         $news->addLinks([$link]);
 
-        $response = $this->appRun('POST', "/collections/{$news->id}/read/never", [
-            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsNever::class),
+        $response = $this->appRun('POST', "/collections/{$news->id}/dismiss", [
+            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsDismissed::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
@@ -556,7 +556,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($news->hasLink($link), 'The link should be in news.');
     }
 
-    public function testNeverFailsIfCollectionIsInaccessible(): void
+    public function testDismissFailsIfCollectionIsInaccessible(): void
     {
         $user = $this->login();
         $other_user = UserFactory::create();
@@ -570,15 +570,15 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection->addLinks([$link]);
 
-        $response = $this->appRun('POST', "/collections/{$collection->id}/read/never", [
-            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsNever::class),
+        $response = $this->appRun('POST', "/collections/{$collection->id}/dismiss", [
+            'csrf_token' => $this->csrfToken(forms\collections\MarkCollectionAsDismissed::class),
         ]);
 
         $this->assertResponseCode($response, 403);
         $this->assertFalse($user->hasDismissed($link), 'The link should not has been dismissed.');
     }
 
-    public function testNeverFailsIfCsrfIsInvalid(): void
+    public function testDismissFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
         $news = $user->news();
@@ -587,7 +587,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
         $news->addLinks([$link]);
 
-        $response = $this->appRun('POST', "/collections/{$news->id}/read/never", [
+        $response = $this->appRun('POST', "/collections/{$news->id}/dismiss", [
             'csrf_token' => 'not the token',
         ]);
 

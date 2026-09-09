@@ -10,7 +10,7 @@
 {% set display_read_later = display_read_later ?? false %}
 {% set display_mark_as_read = display_mark_as_read ?? false %}
 {% set display_mark_as_unread = display_mark_as_unread ?? false %}
-{% set display_never = display_never ?? false %}
+{% set display_dismiss = display_dismiss ?? false %}
 {% set display_origin = display_origin ?? false %}
 {% set storing_must_mark_as_read = storing_must_mark_as_read ?? false %}
 
@@ -41,10 +41,10 @@
 {% endif %}
 
 {% set is_dismissed = app.user and app.user.hasDismissed(link) %}
-{% if display_never === 'auto' and is_dismissed %}
-    {% set display_never = false %}
-{% elseif display_never === 'auto' %}
-    {% set display_never = true %}
+{% if display_dismiss === 'auto' and is_dismissed %}
+    {% set display_dismiss = false %}
+{% elseif display_dismiss === 'auto' %}
+    {% set display_dismiss = true %}
 {% endif %}
 
 {% set origin = link.origin %}
@@ -225,12 +225,12 @@
             {% block items %}
                 {% import _self as item %}
 
-                {% if display_never %}
+                {% if display_dismiss %}
                     {{ item.action(
-                        url: url('mark link to never read', { id: link.id }),
+                        url: url('dismiss link', { id: link.id }),
                         label: t('Ignore the link'),
                         icon: 'times',
-                        csrf: 'links\\MarkLinkAsNever',
+                        csrf: 'links\\MarkLinkAsDismissed',
                         preserve_scroll: true,
                     ) }}
 

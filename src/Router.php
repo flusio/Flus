@@ -153,7 +153,7 @@ class Router
         $router->addRoute('POST', '/collections/:id/image', 'collections/Images#update', 'update image collection');
         $router->addRoute('POST', '/collections/:id/read', 'collections/Read#create', 'mark collection as read');
         $router->addRoute('POST', '/collections/:id/read/later', 'collections/Read#later', 'read collection later');
-        $router->addRoute('POST', '/collections/:id/read/never', 'collections/Read#never', 'never read collection');
+        $router->addRoute('POST', '/collections/:id/dismiss', 'collections/Read#dismiss', 'dismiss collection');
         $router->addRoute('GET', '/collections/:id/share', 'collections/Shares#index', 'collection shares');
         $router->addRoute('POST', '/collections/:id/share', 'collections/Shares#create', 'share collection');
         $router->addRoute('POST', '/collections/:id/unshare', 'collections/Shares#delete', 'unshare collection');
@@ -182,7 +182,7 @@ class Router
         $router->addRoute('POST', '/links/:id/delete', 'Links#delete', 'delete link');
         $router->addRoute('POST', '/links/:id/read', 'links/Read#create', 'mark link as read');
         $router->addRoute('POST', '/links/:id/read/later', 'links/Read#later', 'read link later');
-        $router->addRoute('POST', '/links/:id/read/never', 'links/Read#never', 'mark link to never read');
+        $router->addRoute('POST', '/links/:id/dismiss', 'links/Read#dismiss', 'dismiss link');
         $router->addRoute('POST', '/links/:id/read/delete', 'links/Read#delete', 'mark link as unread');
         $router->addRoute(
             'GET',

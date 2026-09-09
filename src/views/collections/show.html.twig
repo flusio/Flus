@@ -226,10 +226,10 @@
                     ) }}
 
                     {{ item.action(
-                        url: url('never read collection', { id: collection.id }),
+                        url: url('dismiss collection', { id: collection.id }),
                         label: t('Ignore the links'),
                         icon: 'times',
-                        csrf: 'collections\\MarkCollectionAsNever',
+                        csrf: 'collections\\MarkCollectionAsDismissed',
                     ) }}
                 {% endif %}
 

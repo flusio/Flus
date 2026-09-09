@@ -114,10 +114,10 @@
 
                 {% if display_dismiss %}
                     {{ item.action(
-                        url: url('mark link to never read', { id: link.id }),
+                        url: url('dismiss link', { id: link.id }),
                         label: t('Ignore the link'),
                         icon: 'times',
-                        csrf: 'links\\MarkLinkAsNever',
+                        csrf: 'links\\MarkLinkAsDismissed',
                         preserve_scroll: true,
                     ) }}
 

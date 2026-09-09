@@ -133,7 +133,7 @@ class Read extends BaseController
      * @throws auth\AccessDeniedError
      *     If the user cannot view the link.
      */
-    public function never(Request $request): Response
+    public function dismiss(Request $request): Response
     {
         $user = auth\CurrentUser::require();
         $link = models\Link::requireFromRequest($request);
@@ -142,7 +142,7 @@ class Read extends BaseController
 
         $from = utils\RequestHelper::from($request);
 
-        $form = new forms\links\MarkLinkAsNever();
+        $form = new forms\links\MarkLinkAsDismissed();
         $form->handleRequest($request);
 
         if (!$form->validate()) {

@@ -9,7 +9,7 @@ use App\forms\traits;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class MarkCollectionAsNever extends BaseForm
+class MarkCollectionAsDismissed extends BaseForm
 {
     use traits\CollectionLinks;
 }
