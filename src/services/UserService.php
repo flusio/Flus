@@ -16,11 +16,8 @@ class UserService
      */
     public static function initializeData(models\User $user): void
     {
-        // Init default collections
-        $user->bookmarks();
+        // Init the default collections.
         $user->news();
-        $user->readList();
-        $user->neverList();
 
         $favourites = models\Collection::init($user->id, _('My favourites'), '', false);
         $favourites->save();

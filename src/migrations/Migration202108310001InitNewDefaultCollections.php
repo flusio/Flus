@@ -19,12 +19,9 @@ class Migration202108310001InitNewDefaultCollections
             utils\Locale::setCurrentLocale($user->locale);
 
             $news = models\Collection::initNews($user->id);
-            $read_list = models\Collection::initReadList($user->id);
             $news->created_at = $now;
-            $read_list->created_at = $now;
 
             $collections_to_create[] = $news;
-            $collections_to_create[] = $read_list;
         }
 
         if ($collections_to_create) {
