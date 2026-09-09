@@ -95,8 +95,9 @@ class Repairing extends BaseController
         }
 
         if ($link->url !== $form->url) {
+            // The copy is not saved: it only keeps the old URL in memory so
+            // that its status can be transferred and dismissed.
             $old_link = models\Link::copy($link, $user);
-            $old_link->save();
 
             $link->url = $form->url;
             $link->save();
@@ -105,7 +106,7 @@ class Repairing extends BaseController
             // read later" lists after its URL changed.
             $user->transferUrlStatus($old_link, $link);
 
-            // Mark the old link as dismissed to avoid the link reappearing in
+            // Mark the old URL as dismissed to avoid the link reappearing in
             // the news.
             $user->markAsDismissed($old_link);
         }

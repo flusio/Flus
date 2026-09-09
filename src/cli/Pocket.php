@@ -72,7 +72,6 @@ class Pocket
      */
     public function importPocketItems(models\User $user, array $items, bool $import_read_later): void
     {
-        $bookmarks_collection = $user->bookmarks();
         $pocket_collection = models\Collection::findOrCreateBy([
             'name' => _('Pocket links'),
             'user_id' => $user->id,
@@ -98,12 +97,6 @@ class Pocket
 
             if (!\SpiderBits\Url::isValid($url)) {
                 continue;
-            }
-
-            $collection_ids = [];
-            $collection_ids[] = $pocket_collection->id;
-            if ($item['status'] === 'unread' && $import_read_later) {
-                $collection_ids[] = $bookmarks_collection->id;
             }
 
             $tags = explode('|', $item['tags']);
@@ -149,13 +142,9 @@ class Pocket
                 $published_at = \Minz\Time::now();
             }
 
-            // We now have a link_id and a list of collection ids. We store
-            // here the relations in the last _to_create array.
-            foreach ($collection_ids as $collection_id) {
-                $link_to_collection = new models\LinkToCollection($link_id, $collection_id);
-                $link_to_collection->created_at = $published_at;
-                $links_to_collections_to_create[] = $link_to_collection;
-            }
+            $link_to_collection = new models\LinkToCollection($link_id, $pocket_collection->id);
+            $link_to_collection->created_at = $published_at;
+            $links_to_collections_to_create[] = $link_to_collection;
 
             if ($item['status'] === 'unread' && $import_read_later) {
                 if (isset($urls_to_url_statuses_to_create[$url])) {

@@ -84,8 +84,6 @@ class Wallabag
      */
     public function importWallabagItems(models\User $user, array $items, bool $import_read_later): void
     {
-        $bookmarks_collection = $user->bookmarks();
-        $read_list_collection = $user->readList();
         $wallabag_collection = models\Collection::findOrCreateBy([
             'name' => _('wallabag links'),
             'user_id' => $user->id,
@@ -111,14 +109,6 @@ class Wallabag
 
             if (!\SpiderBits\Url::isValid($url)) {
                 continue;
-            }
-
-            $collection_ids = [];
-            $collection_ids[] = $wallabag_collection->id;
-            if ($item['is_archived']) {
-                $collection_ids[] = $read_list_collection->id;
-            } elseif ($import_read_later) {
-                $collection_ids[] = $bookmarks_collection->id;
             }
 
             $tags = array_map(function (string $tag): string {
@@ -160,13 +150,9 @@ class Wallabag
                 $published_at = \Minz\Time::now();
             }
 
-            // We now have a link_id and a list of collection ids. We store
-            // here the relations in the last _to_create array.
-            foreach ($collection_ids as $collection_id) {
-                $link_to_collection = new models\LinkToCollection($link_id, $collection_id);
-                $link_to_collection->created_at = $published_at;
-                $links_to_collections_to_create[] = $link_to_collection;
-            }
+            $link_to_collection = new models\LinkToCollection($link_id, $wallabag_collection->id);
+            $link_to_collection->created_at = $published_at;
+            $links_to_collections_to_create[] = $link_to_collection;
 
             if (isset($urls_to_url_statuses_to_create[$url])) {
                 $url_status = $urls_to_url_statuses_to_create[$url];

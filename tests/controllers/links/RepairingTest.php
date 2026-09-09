@@ -209,6 +209,10 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, "/links/{$link->id}/repair");
         $this->assertTrue($user->hasDismissed($link));
+        // The old URL is not copied in case of dismissing.
+        $this->assertSame(1, models\Link::countBy([
+            'user_id' => $user->id,
+        ]));
     }
 
     public function testCreateTransfersTheReadLaterStatusToTheNewUrl(): void

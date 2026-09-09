@@ -678,9 +678,6 @@ class User
             $links = [$links];
         }
 
-        $link_ids = array_column($links, 'id');
-        LinkToCollection::markAsRead($this, $link_ids);
-
         UrlStatus::markAsRead($this, $links);
         $this->unmemoizeUrlStatusesOfLinks($links);
 
@@ -699,9 +696,6 @@ class User
             $links = [$links];
         }
 
-        $link_ids = array_column($links, 'id');
-        LinkToCollection::markAsUnread($this, $link_ids);
-
         UrlStatus::unmarkAsRead($this, $links);
         $this->unmemoizeUrlStatusesOfLinks($links);
     }
@@ -716,9 +710,6 @@ class User
         if ($links instanceof Link) {
             $links = [$links];
         }
-
-        $link_ids = array_column($links, 'id');
-        LinkToCollection::markToReadLater($this, $link_ids);
 
         UrlStatus::markAsReadLater($this, $links);
         $this->unmemoizeUrlStatusesOfLinks($links);
@@ -737,9 +728,6 @@ class User
         if ($links instanceof Link) {
             $links = [$links];
         }
-
-        $link_ids = array_column($links, 'id');
-        LinkToCollection::markToNeverRead($this, $link_ids);
 
         UrlStatus::markAsDismissed($this, $links);
         $this->unmemoizeUrlStatusesOfLinks($links);
