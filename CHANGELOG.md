@@ -1,5 +1,21 @@
 # Changelog of Flus
 
+## unreleased
+
+### Migration notes
+
+Reminder: **a migration must have been applied manually when you upgraded to Flus 2.5.0.**
+If you didn't yet, please run **before upgrading to Flus 3.0.0:**
+
+```console
+flus# sudo -u www-data php cli migrations setup-url-statuses
+```
+
+This command takes two optional parameters:
+
+- `--batch-size=INT` to change the size of the batches (1000 by default)
+- `--dry-run` to not apply the migration immediately, but to get how many data will be migrated.
+
 ## 2026-08-19 - v2.5.4
 
 ### Developers
