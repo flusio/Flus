@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-09-08 17:20+0200\n"
-"PO-Revision-Date: 2026-09-08 17:20+0200\n"
+"POT-Creation-Date: 2026-09-09 14:12+0200\n"
+"PO-Revision-Date: 2026-09-09 14:13+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -48,19 +48,19 @@ msgstr "Cacher"
 msgid "Show"
 msgstr "Afficher"
 
-#: cli/Pocket.php:77
+#: cli/Pocket.php:76
 msgid "Pocket links"
 msgstr "Liens Pocket"
 
-#: cli/Pocket.php:81
+#: cli/Pocket.php:80
 msgid "All your links imported from Pocket."
 msgstr "Tous vos liens importés depuis Pocket."
 
-#: cli/Wallabag.php:90
+#: cli/Wallabag.php:88
 msgid "wallabag links"
 msgstr "Liens wallabag"
 
-#: cli/Wallabag.php:94
+#: cli/Wallabag.php:92
 msgid "All your links imported from wallabag."
 msgstr "Tous vos liens importés depuis wallabag."
 
@@ -366,21 +366,7 @@ msgstr "Le nom est obligatoire."
 msgid "The name must be less than {max} characters."
 msgstr "Le nom ne doit pas faire plus de {max} caractères."
 
-#: models/Collection.php:137 models/Collection.php:224
-#: models/ReadLaterSource.php:20 navigations/ReadingNavigation.php:34
-msgid "To read"
-msgstr "À lire"
-
-#: models/Collection.php:148 models/Collection.php:226 models/ReadSource.php:20
-#: navigations/ReadingNavigation.php:41
-msgid "Links read"
-msgstr "Liens lus"
-
-#: models/Collection.php:159
-msgid "Links never to read"
-msgstr "Liens à ne jamais lire"
-
-#: models/Collection.php:170 models/Collection.php:228
+#: models/Collection.php:137 models/Collection.php:190
 #: navigations/ReadingNavigation.php:27
 msgid "News"
 msgstr "Journal"
@@ -405,9 +391,17 @@ msgstr "L’origine ne doit pas faire plus de {max} caractères."
 msgid "The content is required."
 msgstr "Le contenu est obligatoire."
 
+#: models/ReadLaterSource.php:20 navigations/ReadingNavigation.php:34
+msgid "To read"
+msgstr "À lire"
+
 #: models/ReadLaterSource.php:25
 msgid "Place here the links you want to consult later on."
 msgstr "Placez ici les liens que vous souhaitez consulter plus tard."
+
+#: models/ReadSource.php:20 navigations/ReadingNavigation.php:41
+msgid "Links read"
+msgstr "Liens lus"
 
 #: models/ReadSource.php:25
 msgid "Find here all the links you’ve marked as read."
@@ -604,11 +598,11 @@ msgstr "Tech"
 msgid "%s on Twitter: %s"
 msgstr "%s sur Twitter : %s"
 
-#: services/UserService.php:25
+#: services/UserService.php:22
 msgid "My favourites"
 msgstr "Mes favoris"
 
-#: services/UserService.php:28
+#: services/UserService.php:25
 msgid "My shares"
 msgstr "Mes partages"
 
@@ -681,16 +675,6 @@ msgstr "Info"
 #: views/alerts/_success.html.twig:3
 msgid "Success"
 msgstr "Succès"
-
-#: views/bookmarks/index.html.twig:45 views/collections/show.html.twig:265
-msgid "Add a link"
-msgstr "Ajouter un lien"
-
-#: views/bookmarks/new.html.twig:3 views/collections/links/new.html.twig:3
-#: views/links/new.html.twig:3 views/links/new.html.twig:11
-#: views/links/new.html.twig:15
-msgid "New link"
-msgstr "Nouveau lien"
 
 #: views/collections/_collection.html.twig:18
 #: views/collections/_collection_follow.html.twig:13
@@ -1085,6 +1069,12 @@ msgstr ""
 msgid "The minimum recommended dimensions are %sx%spx."
 msgstr "Les dimensions minimales recommandées sont de %sx%spx."
 
+#: views/collections/links/new.html.twig:3 views/links/new.html.twig:3
+#: views/links/new.html.twig:11 views/links/new.html.twig:15
+#: views/read_later/new.html.twig:3
+msgid "New link"
+msgstr "Nouveau lien"
+
 #: views/collections/new.html.twig:3
 msgid "New collection"
 msgstr "Nouvelle collection"
@@ -1269,6 +1259,10 @@ msgid ""
 msgstr ""
 "Êtes-vous sur·e de vouloir supprimer cette collection ? Vous pourriez perdre "
 "les liens qui lui sont attachés."
+
+#: views/collections/show.html.twig:265 views/read_later/index.html.twig:45
+msgid "Add a link"
+msgstr "Ajouter un lien"
 
 #: views/collections/show.html.twig:289
 msgid "This collection is empty."
