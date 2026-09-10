@@ -4,7 +4,7 @@
 }
 
 /* Targets of the skip links. */
-#content:focus,
-#navigation:focus {
+#main-content:focus,
+#main-navigation:focus {
     outline: none;
 }
