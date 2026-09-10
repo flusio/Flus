@@ -138,6 +138,25 @@ trait User
     }
 
     /**
+     * Return the number of users active since the given date.
+     */
+    public static function countActiveSince(\DateTimeImmutable $since): int
+    {
+        $sql = <<<'SQL'
+            SELECT COUNT(*) FROM users
+            WHERE last_activity_at >= ?
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute([
+            $since->format(Database\Column::DATETIME_FORMAT),
+        ]);
+
+        return intval($statement->fetchColumn());
+    }
+
+    /**
      * Delete the inactive users that have been notified about it.
      *
      * If $except_subscribed is true, the users with an active subscription are

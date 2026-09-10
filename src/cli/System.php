@@ -117,7 +117,7 @@ class System
                 'percent_users_validated' => $percent_users_validated,
                 'count_users_week' => models\User::countSince(\Minz\Time::ago(1, 'week')),
                 'count_users_month' => models\User::countSince(\Minz\Time::ago(1, 'month')),
-                'count_users_active_month' => models\Session::countUsersActiveSince(\Minz\Time::ago(1, 'month')),
+                'count_users_active_month' => models\User::countActiveSince(\Minz\Time::ago(1, 'month')),
                 'count_links' => models\Link::countEstimated(),
                 'count_links_to_fetch' => models\Link::countToFetch(),
                 'count_collections' => models\Collection::countCollections(),

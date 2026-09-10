@@ -79,25 +79,4 @@ trait Session
         $statement = $database->prepare($sql);
         return $statement->execute($values);
     }
-
-    /**
-     * Return the number of active sessions (1 max per users) since the given
-     * date.
-     */
-    public static function countUsersActiveSince(\DateTimeImmutable $since): int
-    {
-        $sql = <<<'SQL'
-            SELECT COUNT(DISTINCT user_id) FROM sessions
-            WHERE token IS NOT NULL
-            AND created_at >= :since
-        SQL;
-
-        $database = Database::get();
-        $statement = $database->prepare($sql);
-        $statement->execute([
-            ':since' => $since->format(Database\Column::DATETIME_FORMAT),
-        ]);
-
-        return intval($statement->fetchColumn());
-    }
 }
