@@ -906,9 +906,9 @@ class User
     }
 
     /**
-     * Change the last activity attribute. Return true if the date changed,
-     * false otherwise. Only the day is remembered to not track the user too
-     * much and to avoid to save the user at each request.
+     * Change the last activity attribute and save the user if it changed.
+     * Only the day is remembered to not track the user too much and to avoid
+     * to save the user at each request.
      */
     public function refreshLastActivity(): bool
     {
@@ -923,6 +923,10 @@ class User
         if ($this->deletion_notified_at !== null) {
             $this->deletion_notified_at = null;
             $changed = true;
+        }
+
+        if ($changed) {
+            $this->save();
         }
 
         return $changed;

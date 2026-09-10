@@ -104,10 +104,7 @@ class Application
             }
 
             // Track the last activity of the user
-            $changed = $current_user->refreshLastActivity();
-            if ($changed) {
-                $current_user->save();
-            }
+            $current_user->refreshLastActivity();
         }
 
         \Minz\Template\Twig::addGlobals([
