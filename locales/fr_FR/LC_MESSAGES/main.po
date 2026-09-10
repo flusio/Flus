@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-09-10 17:07+0200\n"
-"PO-Revision-Date: 2026-09-10 17:07+0200\n"
+"POT-Creation-Date: 2026-09-10 18:50+0200\n"
+"PO-Revision-Date: 2026-09-10 18:51+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -2654,6 +2654,11 @@ msgstr "expirée"
 #, php-format
 msgid "connected on %s"
 msgstr "connecté‧e le %s"
+
+#: views/my/sessions/index.html.twig:58
+#, php-format
+msgid "last active on %s"
+msgstr "dernière activité le %s"
 
 #: views/my/validation/new.html.twig:15
 #, php-format

@@ -124,6 +124,27 @@ class Session
     }
 
     /**
+     * Return the approximate date of the last activity of the session.
+     *
+     * The date is derived from the expiration of the token which is renewed
+     * on use (see renew()), so it is accurate to within a day. It is capped
+     * to now since the expiration cannot exceed the maximum lifetime of the
+     * session.
+     */
+    public function lastActivityAt(): \DateTimeImmutable
+    {
+        [$number, $unit] = self::INACTIVITY_DURATIONS[$this->scope];
+        $last_activity_at = $this->token()->expired_at->modify("-{$number} {$unit}");
+
+        $now = \Minz\Time::now();
+        if ($last_activity_at > $now) {
+            $last_activity_at = $now;
+        }
+
+        return $last_activity_at;
+    }
+
+    /**
      * Extend the expiration of the token to keep the session alive while it
      * is used.
      *
