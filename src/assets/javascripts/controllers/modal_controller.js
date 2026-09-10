@@ -33,7 +33,8 @@ export default class extends Controller {
             const openModalEvent = new CustomEvent('open-modal', {
                 detail: {
                     target: this.element,
-                    href: this.autoloadValue,
+                    mode: 'fetch',
+                    selector: this.autoloadValue,
                 },
             });
             this.element.dispatchEvent(openModalEvent);
@@ -100,13 +101,23 @@ export default class extends Controller {
         layout.setAttribute('aria-hidden', true);
         document.body.classList.add('modal-opened');
 
-        // Load the modal content via turbo-frame. The id of the frame is set
-        // here and not in the HTML, or Turbo would try to load its content
-        // when a form in the modal redirects to a new page (instead of
-        // showing the full HTML). It's not set in connect() either, as a
-        // morphing refresh would remove it (the server never renders it).
-        this.contentTarget.setAttribute('id', 'modal-content');
-        this.contentTarget.setAttribute('src', event.detail.href);
+        if (event.detail.mode === 'copy') {
+            // Copy the content of a <template> element of the page. It must
+            // have the same structure as the content of a fetched page (see
+            // layouts/modal.html.twig).
+            const template = document.querySelector(event.detail.selector);
+            this.contentTarget.replaceChildren(template.content.cloneNode(true));
+            this.focusContent();
+        } else {
+            // Load the modal content via turbo-frame. The id of the frame is
+            // set here and not in the HTML, or Turbo would try to load its
+            // content when a form in the modal redirects to a new page
+            // (instead of showing the full HTML). It's not set in connect()
+            // either, as a morphing refresh would remove it (the server never
+            // renders it).
+            this.contentTarget.setAttribute('id', 'modal-content');
+            this.contentTarget.setAttribute('src', event.detail.selector);
+        }
 
         // remember the current element to give it the focus back on close
         this.focusBackElement = event.detail.target;

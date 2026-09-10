@@ -41,7 +41,7 @@
                             class="button--edit-image"
                             data-controller="modal-opener"
                             data-action="modal-opener#fetch"
-                            data-modal-opener-href-value="{{ url('edit image link', { id: link.id }) }}"
+                            data-modal-opener-selector-value="{{ url('edit image link', { id: link.id }) }}"
                             aria-haspopup="dialog"
                             aria-controls="modal"
                             title="{{ t('Change the illustration') }}"
@@ -206,7 +206,7 @@
                     <button
                         data-controller="modal-opener"
                         data-action="modal-opener#fetch"
-                        data-modal-opener-href-value="{{ url('link collections', { id: link.id }) }}"
+                        data-modal-opener-selector-value="{{ url('link collections', { id: link.id }) }}"
                         aria-haspopup="dialog"
                         aria-controls="modal"
                     >
@@ -222,7 +222,7 @@
                         <button
                             data-controller="modal-opener"
                             data-action="modal-opener#fetch"
-                            data-modal-opener-href-value="{{ url('new link mastodon thread', { id: link.id }) }}"
+                            data-modal-opener-selector-value="{{ url('new link mastodon thread', { id: link.id }) }}"
                             aria-haspopup="dialog"
                             aria-controls="modal"
                             aria-label="{{ t('Share on Mastodon') }}"
