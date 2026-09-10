@@ -62,6 +62,7 @@ $ curl -H "Content-Type: application/json" \
 ### Changelog
 
 - 2.0.0: added
+- 3.0.0: the user last activity is now tracked on each request
 - 3.0.0: the validity of the token is extended on each request
 
 ## Delete current session

@@ -33,6 +33,12 @@ class BaseController
 
         if ($user) {
             auth\CurrentUser::session()->renew();
+
+            // Track the last activity of the user
+            $changed = $user->refreshLastActivity();
+            if ($changed) {
+                $user->save();
+            }
         }
     }
 
