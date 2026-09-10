@@ -22,6 +22,19 @@ class Session
 
     public const SCOPES = ['browser', 'api'];
 
+    /**
+     * Duration of inactivity after which a session expires, by scope.
+     */
+    public const INACTIVITY_DURATIONS = [
+        'browser' => [2, 'weeks'],
+        'api' => [1, 'month'],
+    ];
+
+    /**
+     * Maximum lifetime of a session since its creation, whatever its activity.
+     */
+    public const MAX_LIFETIME = [1, 'year'];
+
     #[Database\Column]
     public string $id;
 
@@ -108,5 +121,40 @@ class Session
     public function isValid(): bool
     {
         return $this->token()->isValid();
+    }
+
+    /**
+     * Extend the expiration of the token to keep the session alive while it
+     * is used.
+     *
+     * The expiration is postponed by the inactivity duration of the scope,
+     * but never later than the maximum lifetime of the session. To avoid
+     * saving the token at each request, it is saved only if the expiration
+     * gains at least one day.
+     *
+     * Return true if the expiration changed, false otherwise.
+     */
+    public function renew(): bool
+    {
+        $token = $this->token();
+
+        [$number, $unit] = self::INACTIVITY_DURATIONS[$this->scope];
+        $expired_at = \Minz\Time::fromNow($number, $unit);
+
+        [$number, $unit] = self::MAX_LIFETIME;
+        $max_expired_at = $this->created_at->modify("+{$number} {$unit}");
+
+        if ($expired_at > $max_expired_at) {
+            $expired_at = $max_expired_at;
+        }
+
+        if ($expired_at <= $token->expired_at->modify('+1 day')) {
+            return false;
+        }
+
+        $token->expired_at = $expired_at;
+        $token->save();
+
+        return true;
     }
 }

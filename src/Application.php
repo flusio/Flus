@@ -67,8 +67,13 @@ class Application
         utils\RequestHelper::setPreviousUrl($request);
 
         $session_token = $request->cookies->getString('session_token');
+        $session_renewed = false;
         if ($session_token) {
-            auth\CurrentUser::authenticate($session_token, scope: 'browser');
+            $user = auth\CurrentUser::authenticate($session_token, scope: 'browser');
+
+            if ($user) {
+                $session_renewed = auth\CurrentUser::session()->renew();
+            }
         }
 
         $current_user = auth\CurrentUser::get();
@@ -119,6 +124,12 @@ class Application
         $response = \Minz\Engine::run($request);
 
         if ($response instanceof \Minz\Response) {
+            // The user may have logged out during the request, in which case
+            // the cookie must not be set again.
+            if ($session_renewed && auth\CurrentUser::isLoggedIn()) {
+                auth\SessionCookie::set($response, auth\CurrentUser::session());
+            }
+
             $response->setHeader('Referrer-Policy', 'same-origin');
             $response->setHeader('X-Content-Type-Options', 'nosniff');
             $response->setHeader('X-Frame-Options', 'deny');

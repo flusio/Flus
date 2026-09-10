@@ -43,6 +43,32 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('127.0.0.XXX', $session->ip);
         $token = $session->token();
         $this->assertEquals(
+            \Minz\Time::fromNow(2, 'weeks')->getTimestamp(),
+            $token->expired_at->getTimestamp(),
+        );
+    }
+
+    public function testCreateApiSessionCreatesASession(): void
+    {
+        $this->freeze();
+        $user = UserFactory::create();
+        $request = new Request(
+            'GET',
+            '/',
+            server: [
+                'REMOTE_ADDR' => '127.0.0.1',
+            ],
+        );
+
+        $session = CurrentUser::createApiSession($user, 'my app', $request);
+
+        $this->assertTrue($session->isPersisted());
+        $this->assertSame($user->id, $session->user_id);
+        $this->assertSame('api', $session->scope);
+        $this->assertSame('my app', $session->name);
+        $this->assertSame('127.0.0.XXX', $session->ip);
+        $token = $session->token();
+        $this->assertEquals(
             \Minz\Time::fromNow(1, 'month')->getTimestamp(),
             $token->expired_at->getTimestamp(),
         );

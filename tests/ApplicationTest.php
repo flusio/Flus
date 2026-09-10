@@ -74,6 +74,91 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($user->id, $current_user->id);
     }
 
+    public function testRunRenewsSession(): void
+    {
+        $this->freeze();
+        $token = TokenFactory::create([
+            'expired_at' => \Minz\Time::fromNow(3, 'days'),
+        ]);
+        $user = UserFactory::create();
+        SessionFactory::create([
+            'user_id' => $user->id,
+            'token' => $token->token,
+            'scope' => 'browser',
+            'created_at' => \Minz\Time::ago(10, 'days'),
+        ]);
+        $request = new \Minz\Request('GET', '/', cookies: [
+            'session_token' => $token->token,
+        ]);
+
+        $application = new Application();
+        /** @var \Minz\Response */
+        $response = $application->run($request);
+
+        $expected_expired_at = \Minz\Time::fromNow(2, 'weeks');
+        $token = $token->reload();
+        $this->assertSame($expected_expired_at->getTimestamp(), $token->expired_at->getTimestamp());
+        $cookie = $response->cookies()['session_token'];
+        $this->assertSame($token->token, $cookie['value']);
+        $this->assertSame($expected_expired_at->getTimestamp(), $cookie['options']['expires']);
+        $this->assertSame('Lax', $cookie['options']['samesite']);
+    }
+
+    public function testRunDoesNotRenewSessionRenewedRecently(): void
+    {
+        $this->freeze();
+        $expired_at = \Minz\Time::fromNow(2, 'weeks')->modify('-1 hour');
+        $token = TokenFactory::create([
+            'expired_at' => $expired_at,
+        ]);
+        $user = UserFactory::create();
+        SessionFactory::create([
+            'user_id' => $user->id,
+            'token' => $token->token,
+            'scope' => 'browser',
+            'created_at' => \Minz\Time::ago(10, 'days'),
+        ]);
+        $request = new \Minz\Request('GET', '/', cookies: [
+            'session_token' => $token->token,
+        ]);
+
+        $application = new Application();
+        /** @var \Minz\Response */
+        $response = $application->run($request);
+
+        $token = $token->reload();
+        $this->assertSame($expired_at->getTimestamp(), $token->expired_at->getTimestamp());
+        $this->assertArrayNotHasKey('session_token', $response->cookies());
+    }
+
+    public function testRunRenewsSessionUpToOneYearAfterItsCreation(): void
+    {
+        $this->freeze();
+        $created_at = \Minz\Time::ago(360, 'days');
+        $token = TokenFactory::create([
+            'expired_at' => \Minz\Time::fromNow(1, 'day'),
+        ]);
+        $user = UserFactory::create();
+        SessionFactory::create([
+            'user_id' => $user->id,
+            'token' => $token->token,
+            'scope' => 'browser',
+            'created_at' => $created_at,
+        ]);
+        $request = new \Minz\Request('GET', '/', cookies: [
+            'session_token' => $token->token,
+        ]);
+
+        $application = new Application();
+        $response = $application->run($request);
+
+        $token = $token->reload();
+        $this->assertSame(
+            $created_at->modify('+1 year')->getTimestamp(),
+            $token->expired_at->getTimestamp(),
+        );
+    }
+
     public function testRunRefreshesLastActivity(): void
     {
         $last_activity = new \DateTimeImmutable('2024-11-01');

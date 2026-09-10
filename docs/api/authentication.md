@@ -2,6 +2,10 @@
 
 ## Get an access token
 
+The token is valid for 1 month.
+Each authenticated request extends its validity by 1 month, up to 1 year after its creation.
+After that, or if the token is not used for 1 month, a new token must be requested.
+
 ```http
 POST /api/v1/sessions
 ```
@@ -58,6 +62,7 @@ $ curl -H "Content-Type: application/json" \
 ### Changelog
 
 - 2.0.0: added
+- 3.0.0: the validity of the token is extended on each request
 
 ## Delete current session
 

@@ -154,13 +154,9 @@ class Passwords extends BaseController
         // also, the user might be connected with a different account so we
         // make sure to log him in with the current one.
         $session = auth\CurrentUser::createBrowserSession($user);
-        $session_token = $session->token();
 
         $response = Response::redirect('home');
-        $response->setCookie('session_token', $session_token->token, [
-            'expires' => $session_token->expired_at->getTimestamp(),
-            'samesite' => 'Lax',
-        ]);
+        auth\SessionCookie::set($response, $session);
         return $response;
     }
 }

@@ -109,7 +109,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('Lax', $cookie['options']['samesite']);
     }
 
-    public function testCreateCreatesASessionValidForOneMonth(): void
+    public function testCreateCreatesASessionValidForTwoWeeks(): void
     {
         $this->freeze();
 
@@ -152,7 +152,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('Firefox on Linux', $session->name);
         $this->assertSame(utils\Ip::mask($ip), $session->ip);
         $this->assertEquals(
-            \Minz\Time::fromNow(1, 'month')->getTimestamp(),
+            \Minz\Time::fromNow(2, 'weeks')->getTimestamp(),
             $token->expired_at->getTimestamp(),
         );
     }
@@ -362,6 +362,29 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
             'csrf_token' => $this->csrfToken(forms\Logout::class),
         ]);
 
+        $this->assertInstanceOf(\Minz\Response::class, $response);
+        $cookie = $response->cookies()['session_token'];
+        $this->assertSame('', $cookie['value']);
+        $this->assertTrue($cookie['options']['expires'] < \Minz\Time::now()->getTimestamp());
+    }
+
+    public function testDeleteDoesNotRenewTheCookieOfTheDeletedSession(): void
+    {
+        $this->freeze();
+        $this->login();
+        $session = auth\CurrentUser::session();
+        $token = $session->token();
+        $token->expired_at = \Minz\Time::fromNow(3, 'days');
+        $token->save();
+
+        $response = $this->appRun('POST', '/logout', [
+            'csrf_token' => $this->csrfToken(forms\Logout::class),
+        ], cookies: [
+            'session_token' => $token->token,
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertSame(0, models\Session::count());
         $this->assertInstanceOf(\Minz\Response::class, $response);
         $cookie = $response->cookies()['session_token'];
         $this->assertSame('', $cookie['value']);

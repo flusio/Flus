@@ -103,16 +103,12 @@ class Registrations extends BaseController
 
         // Initialize the current session
         $session = auth\CurrentUser::createBrowserSession($user);
-        $session_token = $session->token();
 
         $mailer_job = new Mailer\Job();
         $mailer_job->performAsap(mailers\Users::class, 'sendAccountValidationEmail', $user->id);
 
         $response = Response::redirect('onboarding');
-        $response->setCookie('session_token', $session_token->token, [
-            'expires' => $session_token->expired_at->getTimestamp(),
-            'samesite' => 'Lax',
-        ]);
+        auth\SessionCookie::set($response, $session);
         return $response;
     }
 

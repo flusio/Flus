@@ -22,7 +22,10 @@ class CurrentUser
     private static ?models\Session $session = null;
 
     /**
-     * Create a new session (valid for 1 month) connected to the given user.
+     * Create a new browser session connected to the given user.
+     *
+     * The session is valid for 2 weeks, renewed on each use, for 1 year
+     * maximum (see models\Session::renew()).
      *
      * If a Request is passed, it is used to store the IP address and the
      * session name built from the user agent.
@@ -47,7 +50,10 @@ class CurrentUser
     }
 
     /**
-     * Create a new session (valid for 1 month) connected to the given user.
+     * Create a new API session connected to the given user.
+     *
+     * The session is valid for 1 month, renewed on each use, for 1 year
+     * maximum (see models\Session::renew()).
      *
      * If a Request is passed, it is used to store the IP address of the user.
      */
@@ -66,7 +72,10 @@ class CurrentUser
     }
 
     /**
-     * Create a new session (valid for 1 month) connected to the given user.
+     * Create a new session connected to the given user.
+     *
+     * The initial validity of the session depends on its scope (see
+     * models\Session::INACTIVITY_DURATIONS).
      *
      * @param Scope $scope
      */
@@ -76,7 +85,8 @@ class CurrentUser
         string $session_name,
         string $session_ip,
     ): models\Session {
-        $token = new models\Token(1, 'month');
+        [$number, $unit] = models\Session::INACTIVITY_DURATIONS[$scope];
+        $token = new models\Token($number, $unit);
         $token->save();
 
         $session = new models\Session($user, $token, $scope, $session_name, $session_ip);

@@ -29,7 +29,11 @@ class BaseController
         }
 
         $token = $matches['token'];
-        auth\CurrentUser::authenticate($token, scope: 'api');
+        $user = auth\CurrentUser::authenticate($token, scope: 'api');
+
+        if ($user) {
+            auth\CurrentUser::session()->renew();
+        }
     }
 
     #[Controller\ErrorHandler(auth\MissingCurrentUserError::class)]

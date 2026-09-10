@@ -79,12 +79,7 @@ class Sessions extends BaseController
             $user = $form->user();
 
             $session = auth\CurrentUser::createBrowserSession($user, $request);
-            $session_token = $session->token();
-
-            $response->setCookie('session_token', $session_token->token, [
-                'expires' => $session_token->expired_at->getTimestamp(),
-                'samesite' => 'Lax',
-            ]);
+            auth\SessionCookie::set($response, $session);
         }
 
         return $response;
