@@ -372,20 +372,7 @@ class Collection
      */
     public function followByUser(User $user): ?FollowedCollection
     {
-        return $this->memoize("follow_{$user->id}", function () use ($user): ?FollowedCollection {
-            $follows = FollowedCollection::listByUserAndCollections($user, [$this]);
-            return $follows[$this->id] ?? null;
-        });
-    }
-
-    /**
-     * Set the follow of a user without querying the database.
-     *
-     * @see collections\Preloader
-     */
-    public function preloadFollowByUser(User $user, ?FollowedCollection $follow): void
-    {
-        $this->memoizeValue("follow_{$user->id}", $follow);
+        return $user->followedCollection($this);
     }
 
     /**

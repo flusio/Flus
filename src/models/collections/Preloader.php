@@ -4,7 +4,6 @@ namespace App\models\collections;
 
 use App\models\Collection;
 use App\models\CollectionShare;
-use App\models\FollowedCollection;
 use App\models\StreamToFollow;
 use App\models\User;
 use App\utils\Sorter;
@@ -20,8 +19,7 @@ use App\utils\Sorter;
  *
  *     Preloader::for($sources)
  *         ->publishers()
- *         ->countStreamsFor($user)
- *         ->followsFor($user);
+ *         ->countStreamsFor($user);
  *
  * The methods taking a user accept a null one, so that they can be chained
  * without condition when the current user is optional.
@@ -115,24 +113,6 @@ class Preloader
 
         foreach ($this->collections as $collection) {
             $collection->preloadCountStreamsByUser($user, $counts[$collection->id] ?? 0);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Preload the follows of the given user on the collections.
-     */
-    public function followsFor(?User $user): self
-    {
-        if (!$user) {
-            return $this;
-        }
-
-        $follows = FollowedCollection::listByUserAndCollections($user, $this->collections);
-
-        foreach ($this->collections as $collection) {
-            $collection->preloadFollowByUser($user, $follows[$collection->id] ?? null);
         }
 
         return $this;

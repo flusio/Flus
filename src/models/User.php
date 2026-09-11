@@ -392,17 +392,12 @@ class User
     }
 
     /**
-     * Return the corresponding FollowedCollection.
-     *
-     * @throws \Minz\Errors\MissingRecordError
-     *     If the user is not following the collection.
+     * Return the follow of the user on the given collection, or null if the
+     * user doesn't follow it.
      */
-    public function followedCollection(Collection $collection): FollowedCollection
+    public function followedCollection(Collection $collection): ?FollowedCollection
     {
-        return FollowedCollection::requireBy([
-            'user_id' => $this->id,
-            'collection_id' => $collection->id,
-        ]);
+        return $this->follows()[$collection->id] ?? null;
     }
 
     /**
@@ -410,10 +405,20 @@ class User
      */
     public function isFollowing(Collection $collection): bool
     {
-        return FollowedCollection::existsBy([
-            'user_id' => $this->id,
-            'collection_id' => $collection->id,
-        ]);
+        return $this->followedCollection($collection) !== null;
+    }
+
+    /**
+     * Return the follows of the user, indexed by collection ids.
+     *
+     * @return array<string, FollowedCollection>
+     */
+    public function follows(): array
+    {
+        return $this->memoize('follows', function (): array {
+            $follows = FollowedCollection::listBy(['user_id' => $this->id]);
+            return array_column($follows, null, 'collection_id');
+        });
     }
 
     /**
@@ -427,6 +432,9 @@ class User
         $followed_collection = new FollowedCollection($this->id, $collection->id);
         $followed_collection->time_filter = $time_filter;
         $followed_collection->save();
+
+        $this->unmemoize('follows');
+
         return $followed_collection;
     }
 
@@ -439,6 +447,8 @@ class User
             'user_id' => $this->id,
             'collection_id' => $collection->id,
         ]);
+
+        $this->unmemoize('follows');
     }
 
     /**
@@ -456,6 +466,8 @@ class User
             'user_id' => $this->id,
             'collection_id' => array_column($collections, 'id'),
         ]);
+
+        $this->unmemoize('follows');
     }
 
     /**

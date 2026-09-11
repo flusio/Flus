@@ -125,11 +125,6 @@ class DataExporter
             },
         );
 
-        // Rebuild the list of all sources before preloading data as objects are
-        // not the same in the initial $all_sources array.
-        $all_sources = array_merge($no_stream_sources, ...array_values($sources_by_streams));
-        models\collections\Preloader::for($all_sources)->followsFor($user);
-
         $view = new \Minz\Template\Twig('collections/followed.opml.xml.twig', [
             'user' => $user,
             'streams' => $streams,

@@ -38,6 +38,10 @@ class Followers extends BaseController
 
         $followed_collection = $user->followedCollection($collection);
 
+        if (!$followed_collection) {
+            throw new \Minz\Errors\MissingRecordError('The user does not follow the collection.');
+        }
+
         $form = new forms\collections\EditFollow(model: $followed_collection, options: [
             'user' => $user,
         ]);
@@ -77,6 +81,10 @@ class Followers extends BaseController
         auth\Access::require($user, 'view', $collection);
 
         $followed_collection = $user->followedCollection($collection);
+
+        if (!$followed_collection) {
+            throw new \Minz\Errors\MissingRecordError('The user does not follow the collection.');
+        }
 
         $form = new forms\collections\EditFollow(model: $followed_collection, options: [
             'user' => $user,

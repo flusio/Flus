@@ -625,6 +625,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, "/streams/{$stream->id}/sources/edit");
         $this->assertTrue($stream->hasSource($source));
+        $user = $user->reload();
         $this->assertTrue($user->isFollowing($source));
     }
 

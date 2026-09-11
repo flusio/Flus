@@ -243,8 +243,8 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertSame('strict', $user->followedCollection($source_1)->time_filter);
-        $this->assertSame('strict', $user->followedCollection($source_2)->time_filter);
+        $this->assertSame('strict', $user->followedCollection($source_1)?->time_filter);
+        $this->assertSame('strict', $user->followedCollection($source_2)?->time_filter);
     }
 
     public function testUpdateTimeFilterDoesNotChangeUnselectedSources(): void
@@ -271,8 +271,8 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertSame('all', $user->followedCollection($selected_source)->time_filter);
-        $this->assertSame('normal', $user->followedCollection($other_source)->time_filter);
+        $this->assertSame('all', $user->followedCollection($selected_source)?->time_filter);
+        $this->assertSame('normal', $user->followedCollection($other_source)?->time_filter);
     }
 
     public function testUpdateTimeFilterDoesNotChangeSourcesOfOtherUsers(): void
@@ -294,7 +294,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertSame('normal', $other_user->followedCollection($source)->time_filter);
+        $this->assertSame('normal', $other_user->followedCollection($source)?->time_filter);
     }
 
     public function testUpdateTimeFilterDoesNothingIfSourceIdsIsEmpty(): void
@@ -314,7 +314,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertSame('normal', $user->followedCollection($source)->time_filter);
+        $this->assertSame('normal', $user->followedCollection($source)?->time_filter);
     }
 
     public function testUpdateTimeFilterFailsIfTimeFilterIsInvalid(): void
@@ -337,7 +337,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
         $error = utils\Notification::popError();
         $this->assertStringContainsString('The filter is invalid', $error);
-        $this->assertSame('normal', $user->followedCollection($source)->time_filter);
+        $this->assertSame('normal', $user->followedCollection($source)?->time_filter);
     }
 
     public function testUpdateTimeFilterFailsIfTimeFilterIsMissing(): void
@@ -359,7 +359,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
         $error = utils\Notification::popError();
         $this->assertStringContainsString('The filter is required', $error);
-        $this->assertSame('normal', $user->followedCollection($source)->time_filter);
+        $this->assertSame('normal', $user->followedCollection($source)?->time_filter);
     }
 
     public function testUpdateTimeFilterRedirectsIfNotConnected(): void
@@ -380,7 +380,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
-        $this->assertSame('normal', $user->followedCollection($source)->time_filter);
+        $this->assertSame('normal', $user->followedCollection($source)?->time_filter);
     }
 
     public function testUpdateTimeFilterFailsIfCsrfIsInvalid(): void
@@ -403,6 +403,6 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
         $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
-        $this->assertSame('normal', $user->followedCollection($source)->time_filter);
+        $this->assertSame('normal', $user->followedCollection($source)?->time_filter);
     }
 }
