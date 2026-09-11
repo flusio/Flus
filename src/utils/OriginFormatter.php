@@ -69,7 +69,7 @@ class OriginFormatter
         } elseif ($model instanceof models\Link) {
             return $model->title;
         } elseif ($model instanceof models\Collection) {
-            return $model->name();
+            return $model->nameByUser($this->context_user);
         } else {
             return utils\Belt::host($origin);
         }

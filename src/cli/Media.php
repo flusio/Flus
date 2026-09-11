@@ -70,6 +70,7 @@ class Media
                 models\Link::listImageFilenamesStartingWith($subdir_name),
                 models\Collection::listImageFilenamesStartingWith($subdir_name),
                 models\Stream::listImageFilenamesStartingWith($subdir_name),
+                models\FollowedCollection::listImageFilenamesStartingWith($subdir_name),
             );
 
             // do the diff between those 2 arrays to get the list of files to

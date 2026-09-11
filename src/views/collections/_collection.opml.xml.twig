@@ -1,5 +1,8 @@
+{# The context user is the one the OPML is generated for: the names and
+ # filters are theirs. The public OPML files are generated for nobody. #}
+{% set context_user = context_user ?? null %}
 {% set with_time_filter = with_time_filter ?? true %}
-{% set time_filter = with_time_filter ? collection.timeFilterByUser(user) : null %}
+{% set time_filter = with_time_filter and context_user ? collection.timeFilterByUser(context_user) : null %}
 {% set display_time_filter = time_filter and time_filter != 'normal' %}
 
 {% if collection.isFeed %}
@@ -10,7 +13,7 @@
 
 <outline
     type="rss"
-    text="{{ collection.name() }}"
+    text="{{ collection.nameByUser(context_user) }}"
     xmlUrl="{{ collection.feedUrl(true) }}"
     htmlUrl="{{ html_url }}"
     {% if display_time_filter %}

@@ -27,6 +27,11 @@ class EditFollow extends BaseForm
     #[Form\Field(bind: false, transform: 'trim')]
     public string $new_stream_name = '';
 
+    #[Form\Field(transform: 'trim')]
+    public string $name = '';
+
+    public int $name_max_length = models\Collection::NAME_MAX_LENGTH;
+
     public int $stream_name_max_length = models\Stream::NAME_MAX_LENGTH;
 
     /**

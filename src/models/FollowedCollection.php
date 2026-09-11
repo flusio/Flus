@@ -15,6 +15,7 @@ use Minz\Validable;
 class FollowedCollection
 {
     use dao\BulkQueries;
+    use dao\MediaQueries;
     use Database\Recordable;
     use Validable;
     use utils\Memoizer;
@@ -42,6 +43,16 @@ class FollowedCollection
         message: new Translatable('The filter is invalid.'),
     )]
     public string $time_filter;
+
+    #[Database\Column]
+    #[Validable\Length(
+        max: Collection::NAME_MAX_LENGTH,
+        message: new Translatable('The name must be less than {max} characters.'),
+    )]
+    public string $name = '';
+
+    #[Database\Column]
+    public ?string $image_filename = null;
 
     public function __construct(string $user_id, string $collection_id)
     {

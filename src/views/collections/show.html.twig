@@ -1,6 +1,8 @@
 {% extends 'layouts/application.html.twig' %}
 
 {% set owner = collection.owner %}
+{% set collection_name = collection.nameByUser(app.user) %}
+{% set collection_image_filename = collection.imageFilenameByUser(app.user) %}
 {% set is_following = app.user and app.user.isFollowing(collection) %}
 {% set count_streams = is_following ? collection.countStreamsByUser(app.user) : null %}
 {% set time_filter = app.user ? collection.timeFilterByUser(app.user) : null %}
@@ -24,20 +26,20 @@
     {% set current_tab = can_update ? 'links' : 'reading' %}
 {% endif %}
 
-{% block title %}{{ collection.name() }}{% endblock %}
+{% block title %}{{ collection_name }}{% endblock %}
 {% block canonical %}{{ url_full('collection', current_url_params) }}{% endblock %}
 
 {% block alternates %}
-    <link rel="alternate" type="application/atom+xml" title="{{ t('Syndication feed of %s', [collection.name()]) }}" href="{{ feed_url }}">
+    <link rel="alternate" type="application/atom+xml" title="{{ t('Syndication feed of %s', [collection_name]) }}" href="{{ feed_url }}">
 {% endblock %}
 
 {% block opengraph %}
     {{ include('layouts/_opengraph.html.twig', {
-        title: collection.name(),
+        title: collection_name,
         description: opengraph_description,
         locale: owner?.locale ?? app.locale,
         url: url_full('collection', { id: collection.id }),
-        image: url_media_full('covers', collection.image_filename, 'collection-card.png'),
+        image: url_media_full('covers', collection_image_filename, 'collection-card.png'),
     }) }}
 {% endblock %}
 
@@ -46,18 +48,26 @@
 {% endblock %}
 
 {% block back %}
-    {{ include('layouts/_back.html.twig', { title: collection.name() }) }}
+    {{ include('layouts/_back.html.twig', { title: collection_name }) }}
 {% endblock %}
 
 {% block body %}
+    {% if can_update %}
+        {% set edit_image_url = url('edit image collection', { id: collection.id }) %}
+    {% elseif is_following %}
+        {% set edit_image_url = url('edit collection follow image', { id: collection.id }) %}
+    {% else %}
+        {% set edit_image_url = null %}
+    {% endif %}
+
     <div class="cols cols--gap-large">
         <div class="col--size3 text--center">
-            {% if can(app.user, 'update', collection) %}
+            {% if edit_image_url %}
                 <button
                     class="button--edit-image"
                     data-controller="modal-opener"
                     data-action="modal-opener#fetch"
-                    data-modal-opener-selector-value="{{ url('edit image collection', { id: collection.id }) }}"
+                    data-modal-opener-selector-value="{{ edit_image_url }}"
                     aria-haspopup="dialog"
                     aria-controls="modal"
                     title="{{ t('Change the illustration') }}"
@@ -65,7 +75,7 @@
                     <img
                         class="illustration"
                         alt=""
-                        src="{{ url_media('covers', collection.image_filename, 'collection-card.png') }}"
+                        src="{{ url_media('covers', collection_image_filename, 'collection-card.png') }}"
                     >
 
                     <span class="sr-only">
@@ -76,13 +86,19 @@
                 <img
                     class="illustration"
                     alt=""
-                    src="{{ url_media('covers', collection.image_filename, 'collection-card.png') }}"
+                    src="{{ url_media('covers', collection_image_filename, 'collection-card.png') }}"
                 >
             {% endif %}
         </div>
 
         <div class="col--extend flow">
-            <h1 class="text--break">{{ collection.name() }}</h1>
+            <h1 class="text--break">{{ collection_name }}</h1>
+
+            {% if collection_name != collection.name() %}
+                <p class="text--secondary text--break">
+                    {{ t('Original name: %s', [collection.name()]) }}
+                </p>
+            {% endif %}
 
             <p class="stack stack--gap">
                 {% if collection.isFeed %}

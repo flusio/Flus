@@ -9,6 +9,7 @@
         {% for source in no_stream_sources %}
             {{ include('collections/_collection.opml.xml.twig', {
                 collection: source,
+                context_user: user,
             }) }}
         {% endfor %}
 
@@ -17,6 +18,7 @@
                 {% for source in sources_by_streams[stream.id] ?? [] %}
                     {{ include('collections/_collection.opml.xml.twig', {
                         collection: source,
+                        context_user: user,
                     }) }}
                 {% endfor %}
             </outline>

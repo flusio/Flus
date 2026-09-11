@@ -225,6 +225,8 @@ CREATE TABLE followed_collections (
     id BIGSERIAL PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,
     time_filter TEXT NOT NULL DEFAULT 'normal',
+    name TEXT NOT NULL DEFAULT '',
+    image_filename TEXT,
     user_id TEXT REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE,
     collection_id TEXT REFERENCES collections ON DELETE CASCADE ON UPDATE CASCADE
 );

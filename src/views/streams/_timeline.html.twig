@@ -69,11 +69,11 @@
                                 </div>
                             {% endif %}
 
-                            {% for source_group in date_group.sourceGroups %}
+                            {% for source_group in date_group.sourceGroups(app.user) %}
                                 <div class="source-group flow flow--small">
                                     <div class="source-group__header cols cols--always cols--gap cols--center">
                                         <h3 class="source-group__title">
-                                            {{ source_group.source.name() }}
+                                            {{ source_group.source.nameByUser(app.user) }}
                                         </h3>
 
                                         <span class="col--noshrink text--secondary">

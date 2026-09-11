@@ -54,15 +54,19 @@ class DateGroup
     }
 
     /**
-     * Return the source groups sorted by titles.
+     * Return the source groups sorted by the names of the sources, as the
+     * given user sees them.
      *
      * @return SourceGroup[]
      */
-    public function sourceGroups(): array
+    public function sourceGroups(?models\User $user = null): array
     {
-        return utils\Sorter::localeSort($this->source_groups, function (SourceGroup $sourceGroup): string {
-            return $sourceGroup->source->name();
-        });
+        return utils\Sorter::localeSort(
+            $this->source_groups,
+            function (SourceGroup $sourceGroup) use ($user): string {
+                return $sourceGroup->source->nameByUser($user);
+            },
+        );
     }
 
     public function count(): int

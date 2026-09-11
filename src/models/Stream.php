@@ -118,7 +118,13 @@ class Stream
             $collections = Collection::listByStream($this, [
                 'context_user' => $context_user,
             ]);
-            return utils\Sorter::localeSort($collections, 'name');
+
+            return utils\Sorter::localeSort(
+                $collections,
+                function (Collection $collection) use ($context_user): string {
+                    return $collection->nameByUser($context_user);
+                }
+            );
         });
     }
 

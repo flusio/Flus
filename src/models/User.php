@@ -322,7 +322,12 @@ class User
     {
         $sources = Collection::listSourcesByUser($this);
 
-        return utils\Sorter::localeSort($sources, 'name');
+        return utils\Sorter::localeSort(
+            $sources,
+            function (Collection $source): string {
+                return $source->nameByUser($this);
+            },
+        );
     }
 
     /**

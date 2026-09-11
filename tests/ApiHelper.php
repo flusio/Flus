@@ -96,10 +96,13 @@ trait ApiHelper
     }
 
     /**
+     * Return the JSON array rendered by the response.
+     *
      * @param ResponseReturnable $response
-     * @param array{string, string} $error
+     *
+     * @return mixed[]
      */
-    public function assertApiError(mixed $response, string $field, array $error): void
+    public function responseToJson(mixed $response): array
     {
         if ($response instanceof \Generator) {
             $response = $response->current();
@@ -108,6 +111,17 @@ trait ApiHelper
         $content = $response->render();
         $json = json_decode($content, associative: true);
         $this->assertIsArray($json, 'The response does not render a valid JSON array');
+
+        return $json;
+    }
+
+    /**
+     * @param ResponseReturnable $response
+     * @param array{string, string} $error
+     */
+    public function assertApiError(mixed $response, string $field, array $error): void
+    {
+        $json = $this->responseToJson($response);
         $this->assertArrayHasKey('errors', $json, 'The JSON response does not contain an "errors" key');
         $errors = $json['errors'];
         $this->assertIsArray($errors, 'The errors is not a valid JSON array');

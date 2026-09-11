@@ -184,6 +184,25 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertApiResponse($response, $collection->toJson($user));
     }
 
+    public function testShowReturnsTheNameGivenByTheUser(): void
+    {
+        $user = $this->login();
+        $collection = CollectionFactory::create([
+            'type' => 'feed',
+            'name' => 'Carnet de Flus',
+            'is_public' => true,
+        ]);
+        $followed_collection = $user->follow($collection);
+        $followed_collection->name = 'Flus news';
+        $followed_collection->save();
+
+        $response = $this->apiRun('GET', "/api/v1/collections/{$collection->id}");
+
+        $this->assertResponseCode($response, 200);
+        $json = $this->responseToJson($response);
+        $this->assertSame('Flus news', $json['name']);
+    }
+
     public function testShowFailsIfTheCollectionDoesNotExist(): void
     {
         $user = $this->login();

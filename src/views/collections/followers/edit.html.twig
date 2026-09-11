@@ -193,6 +193,45 @@
                 </div>
             </fieldset>
 
+            {# The owner and the collaborators already edit the name of the
+             # collection itself, a custom name would only confuse them. #}
+            {% if not can(app.user, 'update', collection) %}
+                <div class="form-group">
+                    <label for="name">
+                        {{ t('Custom name') }}
+
+                        <span class="label__help">
+                            {{ t('(optional, max. %d characters)', [form.name_max_length]) }}
+                        </span>
+                    </label>
+
+                    {% if form.isInvalid('name') %}
+                        <p id="name-error" class="form-group__error">
+                            {{ t('Error:') }}
+                            {{ form.error('name') }}
+                        </p>
+                    {% endif %}
+
+                    <input
+                        id="name"
+                        name="name"
+                        type="text"
+                        value="{{ form.name }}"
+                        maxlength="{{ form.name_max_length }}"
+                        autocomplete="off"
+                        aria-describedby="name-caption"
+                        {% if form.isInvalid('name') %}
+                            aria-errormessage="name-error"
+                            aria-invalid="true"
+                        {% endif %}
+                    >
+
+                    <p class="form-group__caption" id="name-caption">
+                        {{ t('Leave empty to keep the name given by the source.') }}
+                    </p>
+                </div>
+            {% endif %}
+
             <div class="text--center">
                 <button type="submit" class="button--primary button--big">
                     {{ t('Save changes') }}

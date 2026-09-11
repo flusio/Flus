@@ -166,6 +166,44 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseTemplateName($response, 'streams/show.html.twig');
     }
 
+    public function testShowDisplaysTheNamesGivenByTheVisitor(): void
+    {
+        $user = $this->login();
+        $owner = UserFactory::create();
+        /** @var string */
+        $feed_url = $this->fake('url');
+        $feed = CollectionFactory::create([
+            'type' => 'feed',
+            'name' => 'Carnet de Flus',
+            'is_public' => true,
+            'feed_url' => $feed_url,
+        ]);
+        $link = LinkFactory::create([
+            'user_id' => $feed->user_id,
+            'is_hidden' => false,
+        ]);
+        $feed->addLinks([$link], at: \Minz\Time::now());
+        $stream = StreamFactory::create([
+            'user_id' => $owner->id,
+            'is_public' => true,
+        ]);
+        $stream->addSource($feed);
+        $owner_followed_collection = $owner->followedCollection($feed);
+        $this->assertNotNull($owner_followed_collection);
+        $owner_followed_collection->name = 'Owner name';
+        $owner_followed_collection->save();
+        $followed_collection = $user->follow($feed);
+        $followed_collection->name = 'Visitor name';
+        $followed_collection->save();
+
+        $response = $this->appRun('GET', "/streams/{$stream->id}");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Visitor name');
+        $this->assertResponseNotContains($response, 'Owner name');
+        $this->assertResponseNotContains($response, 'Carnet de Flus');
+    }
+
     public function testShowRendersErrorWhenQueryIsMalformed(): void
     {
         $user = $this->login();

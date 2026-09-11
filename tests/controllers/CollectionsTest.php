@@ -229,6 +229,28 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseTemplateName($response, 'collections/show.html.twig');
     }
 
+    public function testShowDisplaysTheNameGivenByTheUser(): void
+    {
+        $user = $this->login();
+        /** @var string */
+        $feed_url = $this->fake('url');
+        $feed = CollectionFactory::create([
+            'type' => 'feed',
+            'name' => 'Carnet de Flus',
+            'is_public' => true,
+            'feed_url' => $feed_url,
+        ]);
+        $followed_collection = $user->follow($feed);
+        $followed_collection->name = 'Flus news';
+        $followed_collection->save();
+
+        $response = $this->appRun('GET', "/collections/{$feed->id}");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, '<h1 class="text--break">Flus news</h1>');
+        $this->assertResponseContains($response, 'Original name: Carnet de Flus');
+    }
+
     public function testShowRendersCorrectlyIfPublicAndNotConnected(): void
     {
         $user = UserFactory::create();

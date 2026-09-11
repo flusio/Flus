@@ -1,11 +1,11 @@
 <div
     class="collection"
-    style="background-image: url('{{ url_media('covers', collection.image_filename, 'collection-card.png') }}');"
+    style="background-image: url('{{ url_media('covers', collection.imageFilenameByUser(app.user), 'collection-card.png') }}');"
     data-color-scheme="dark"
 >
     <a class="collection__body collection__body--large flow" href="{{ url('collection', { id: collection.id }) }}">
         <div class="collection__title">
-            {{ collection.name() }}
+            {{ collection.nameByUser(app.user) }}
         </div>
 
         <div class="flow flow--small">

@@ -47,6 +47,28 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $feed_name);
     }
 
+    public function testIndexDisplaysTheNamesGivenByTheUser(): void
+    {
+        $user = $this->login();
+        /** @var string */
+        $feed_url = $this->fake('url');
+        $feed = CollectionFactory::create([
+            'type' => 'feed',
+            'name' => 'Carnet de Flus',
+            'is_public' => true,
+            'feed_url' => $feed_url,
+        ]);
+        $followed_collection = $user->follow($feed);
+        $followed_collection->name = 'Flus news';
+        $followed_collection->save();
+
+        $response = $this->appRun('GET', '/sources');
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Flus news');
+        $this->assertResponseNotContains($response, 'Carnet de Flus');
+    }
+
     public function testIndexDoesNotListTheSourcesTheUserCannotView(): void
     {
         $user = $this->login();

@@ -330,7 +330,7 @@
                         {% for source_and_count in sources_and_counts %}
                             {% set source = source_and_count[0] %}
                             {% set count_links = source_and_count[1] %}
-                            {% set source_title = t('%s: %d link', '%s: %d links', count_links, [source.name, count_links]) %}
+                            {% set source_title = t('%s: %d link', '%s: %d links', count_links, [source.nameByUser(app.user), count_links]) %}
 
                             <div class="filters__option filters__option--light">
                                 <button
@@ -346,11 +346,11 @@
                                     <img
                                         class="filters__option-image"
                                         alt=""
-                                        src="{{ url_media('covers', source.image_filename, 'collection-card.png') }}"
+                                        src="{{ url_media('covers', source.imageFilenameByUser(app.user), 'collection-card.png') }}"
                                     >
 
                                     <span class="filters__option-label">
-                                        {{ source.name }}
+                                        {{ source.nameByUser(app.user) }}
                                     </span>
 
                                     <span class="filters__option-count">

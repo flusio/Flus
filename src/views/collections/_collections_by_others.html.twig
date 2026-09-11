@@ -8,9 +8,9 @@
                 <img class="avatar" src="{{ url_avatar(link_owner.avatar_filename) }}" alt="">
 
                 {% if collection_owner.id === app.user.id %}
-                    {{ t('<strong>%s</strong> added this link to <strong>%s</strong>.', [link_owner.username | escape, collection.name() | escape]) | raw }}
+                    {{ t('<strong>%s</strong> added this link to <strong>%s</strong>.', [link_owner.username | escape, collection.nameByUser(app.user) | escape]) | raw }}
                 {% else %}
-                    {{ t('<strong>%s</strong> added this link to <strong>%s</strong> (shared by %s).', [link_owner.username | escape, collection.name() | escape, collection_owner.username | escape]) | raw }}
+                    {{ t('<strong>%s</strong> added this link to <strong>%s</strong> (shared by %s).', [link_owner.username | escape, collection.nameByUser(app.user) | escape, collection_owner.username | escape]) | raw }}
                 {% endif %}
             </li>
         {% endif %}

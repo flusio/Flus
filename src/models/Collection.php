@@ -385,6 +385,36 @@ class Collection
     }
 
     /**
+     * Return the name of the collection as given by the user.
+     *
+     * It defaults to the collection's name if the user didn't rename it.
+     */
+    public function nameByUser(?User $user): string
+    {
+        if (!$user) {
+            return $this->name();
+        }
+
+        $name_by_user = $this->followByUser($user)?->name;
+        return $name_by_user ?: $this->name();
+    }
+
+    /**
+     * Return the image filename of the collection as given by the user.
+     *
+     * It defaults to the collection's image if the user didn't change it.
+     */
+    public function imageFilenameByUser(?User $user): ?string
+    {
+        if (!$user) {
+            return $this->image_filename;
+        }
+
+        $image_filename_by_user = $this->followByUser($user)?->image_filename;
+        return $image_filename_by_user ?: $this->image_filename;
+    }
+
+    /**
      * Return whether the given user follows this collection.
      */
     public function isFollowedBy(User $user): bool
@@ -635,7 +665,7 @@ class Collection
         if ($this->type === 'feed') {
             return [
                 'id' => $this->id,
-                'name' => $this->name,
+                'name' => $this->nameByUser($context_user),
                 'description' => $this->description,
                 'group' => null,
                 'url' => $this->feed_url,
@@ -649,7 +679,7 @@ class Collection
 
             return [
                 'id' => $this->id,
-                'name' => $this->name,
+                'name' => $this->nameByUser($context_user),
                 'description' => $this->description,
                 'group' => $group?->name,
                 'is_public' => $this->is_public,

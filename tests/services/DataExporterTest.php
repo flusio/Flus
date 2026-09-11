@@ -162,6 +162,27 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($collection_3_url, $stream_outlines[0]['htmlUrl']);
     }
 
+    public function testExportUsesTheNamesGivenByTheUserInOpmlFile(): void
+    {
+        $data_exporter = new DataExporter($this->exportations_path);
+        $user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'type' => 'feed',
+            'name' => 'Carnet de Flus',
+            'is_public' => true,
+        ]);
+        $followed_collection = $user->follow($collection);
+        $followed_collection->name = 'Flus news';
+        $followed_collection->save();
+
+        $filepath = $data_exporter->export($user->id);
+
+        $opml_content = $this->zipGetContents($filepath, 'followed.opml.xml');
+        $opml = \SpiderBits\Opml::fromText($opml_content);
+        $this->assertSame(1, count($opml->outlines));
+        $this->assertSame('Flus news', $opml->outlines[0]['text']);
+    }
+
     public function testExportDuplicatesSourceInSeveralStreamsInOpmlFile(): void
     {
         $data_exporter = new DataExporter($this->exportations_path);

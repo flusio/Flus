@@ -1,3 +1,5 @@
+{% set source_name = source.nameByUser(app.user) %}
+
 {% set action = action ?? null %}
 {% set focused_source_id = focused_source_id ?? null %}
 
@@ -12,9 +14,9 @@
 {# A source can be searched by everything that is displayed about it: its name,
  # and the website of a feed or the publishers of a collection. #}
 {% if source.isFeed %}
-    {% set search_terms = [source.name, source.feedWebsiteHost] %}
+    {% set search_terms = [source_name, source.feedWebsiteHost] %}
 {% else %}
-    {% set search_terms = [source.name] | merge(source.publishers | column('username')) %}
+    {% set search_terms = [source_name] | merge(source.publishers | column('username')) %}
 {% endif %}
 
 <article
@@ -35,14 +37,14 @@
             <img
                 class="source__image"
                 alt=""
-                src="{{ url_media('covers', source.image_filename, 'collection-card.png') }}"
+                src="{{ url_media('covers', source.imageFilenameByUser(app.user), 'collection-card.png') }}"
             >
         </a>
 
         <div class="source__content col--extend flow flow--smaller">
             <h3 class="text--bold text--normal">
                 <a class="anchor--nostyle" href="{{ url('collection', { id: source.id }) }}">
-                    {{ source.name }}
+                    {{ source_name }}
                 </a>
             </h3>
 

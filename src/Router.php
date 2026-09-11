@@ -148,6 +148,18 @@ class Router
             'collections/Followers#update',
             'update collection follow'
         );
+        $router->addRoute(
+            'GET',
+            '/collections/:id/follow/image',
+            'collections/followers/Images#edit',
+            'edit collection follow image'
+        );
+        $router->addRoute(
+            'POST',
+            '/collections/:id/follow/image',
+            'collections/followers/Images#update',
+            'update collection follow image'
+        );
         $router->addRoute('GET', '/collections/:id/group', 'collections/Groups#edit', 'edit group collection');
         $router->addRoute('POST', '/collections/:id/group', 'collections/Groups#update', 'update group collection');
         $router->addRoute('GET', '/collections/:id/image', 'collections/Images#edit', 'edit image collection');

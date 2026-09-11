@@ -45,6 +45,23 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseTemplateName($response, 'collections/followers/edit.html.twig');
         $this->assertResponseContains($response, $collection_name);
         $this->assertResponseContains($response, $stream_name);
+        $this->assertResponseContains($response, 'Custom name');
+    }
+
+    public function testEditHidesTheCustomNameIfTheUserOwnsTheCollection(): void
+    {
+        $user = $this->login();
+        $collection = CollectionFactory::create([
+            'type' => 'collection',
+            'user_id' => $user->id,
+            'is_public' => true,
+        ]);
+        $user->follow($collection);
+
+        $response = $this->appRun('GET', "/collections/{$collection->id}/follow/edit");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseNotContains($response, 'Custom name');
     }
 
     public function testEditSuggestsATimeFilterBasedOnThePublicationRate(): void
@@ -172,6 +189,51 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, "/collections/{$collection->id}/follow/edit");
         $followed_collection = $followed_collection->reload();
         $this->assertSame('strict', $followed_collection->time_filter);
+    }
+
+    public function testUpdateRenamesTheSource(): void
+    {
+        $user = $this->login();
+        $collection = CollectionFactory::create([
+            'type' => 'feed',
+            'name' => 'Carnet de Flus',
+            'is_public' => true,
+        ]);
+        $followed_collection = $user->follow($collection);
+
+        $response = $this->appRun('POST', "/collections/{$collection->id}/follow/edit", [
+            'csrf_token' => $this->csrfToken(forms\collections\EditFollow::class),
+            'name' => 'Flus news',
+            'time_filter' => 'normal',
+        ]);
+
+        $this->assertResponseCode($response, 302, "/collections/{$collection->id}/follow/edit");
+        $user = $user->reload();
+        $this->assertSame('Flus news', $collection->nameByUser($user));
+        $this->assertSame('Carnet de Flus', $collection->name);
+    }
+
+    public function testUpdateResetsTheNameIfEmpty(): void
+    {
+        $user = $this->login();
+        $collection = CollectionFactory::create([
+            'type' => 'feed',
+            'name' => 'Carnet de Flus',
+            'is_public' => true,
+        ]);
+        $followed_collection = $user->follow($collection);
+        $followed_collection->name = 'Flus news';
+        $followed_collection->save();
+
+        $response = $this->appRun('POST', "/collections/{$collection->id}/follow/edit", [
+            'csrf_token' => $this->csrfToken(forms\collections\EditFollow::class),
+            'name' => '',
+            'time_filter' => 'normal',
+        ]);
+
+        $this->assertResponseCode($response, 302, "/collections/{$collection->id}/follow/edit");
+        $user = $user->reload();
+        $this->assertSame('Carnet de Flus', $collection->nameByUser($user));
     }
 
     public function testUpdateAttachesTheSelectedStreams(): void
@@ -393,6 +455,28 @@ class FollowersTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'One of the selected streams doesn’t exist.');
         $this->assertFalse($stream->hasSource($collection));
+    }
+
+    public function testUpdateFailsIfNameIsTooLong(): void
+    {
+        $user = $this->login();
+        $collection = CollectionFactory::create([
+            'type' => 'feed',
+            'name' => 'Carnet de Flus',
+            'is_public' => true,
+        ]);
+        $user->follow($collection);
+
+        $response = $this->appRun('POST', "/collections/{$collection->id}/follow/edit", [
+            'csrf_token' => $this->csrfToken(forms\collections\EditFollow::class),
+            'name' => str_repeat('a', models\Collection::NAME_MAX_LENGTH + 1),
+            'time_filter' => 'normal',
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The name must be less than');
+        $user = $user->reload();
+        $this->assertSame('Carnet de Flus', $collection->nameByUser($user));
     }
 
     public function testUpdateFailsIfTimeFilterIsInvalid(): void
