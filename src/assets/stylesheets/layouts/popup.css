@@ -1,7 +1,11 @@
 .popup__items {
+    position: relative;
+
     overflow-y: auto;
 
     max-height: min(60vh, 25rem);
+    margin: calc(-1 * var(--space-small)) calc(-1 * var(--space-smaller));
+    padding: var(--space-small) var(--space-smaller);
 }
 
 @media (max-width: 799px) {
