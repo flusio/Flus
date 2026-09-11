@@ -37,7 +37,7 @@ class LinksTimeline
             // formatted "2026-06-24" with DateTime::format, and "2026-06-25"
             // with TwigExtension::translateDate. As we display the dates in
             // the interface using the latter, the key MUST be coherent.
-            $date_key = \Minz\Template\TwigExtension::translateDate($link->published_at, 'Y-MM-dd');
+            $date_key = \Minz\Template\TwigExtension::translateDate($link->published_at, 'y-MM-dd');
 
             if (isset($this->dates_groups[$date_key])) {
                 $date_group = $this->dates_groups[$date_key];

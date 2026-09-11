@@ -111,11 +111,11 @@
             {% if display_published_at %}
                 <div class="col--extend"></div>
 
-                <time class="badge" datetime="{{ link.published_at | date_iso }}" title="{{ d(link.published_at, 'dd MMM Y, HH:mm') }}">
+                <time class="badge" datetime="{{ link.published_at | date_iso }}" title="{{ d(link.published_at, 'd MMM y') }}, {{ link.published_at | format_time }}">
                     {% if date().format('Y') === link.published_at.format('Y') %}
-                        {{ d(link.published_at, 'dd MMM') }}
+                        {{ d(link.published_at, 'd MMM') }}
                     {% else %}
-                        {{ d(link.published_at, 'dd MMM Y') }}
+                        {{ d(link.published_at, 'd MMM y') }}
                     {% endif %}
                 </time>
             {% endif %}

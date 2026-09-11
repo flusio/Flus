@@ -34,6 +34,24 @@ class LinksTimelineTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link2->id, $group2->links[0]->id);
     }
 
+    public function testConstructGroupsLinksByCalendarYear(): void
+    {
+        // Around New Year, the week-based year differs from the calendar
+        // year on one side or the other, depending on the locale.
+        $link1 = LinkFactory::create();
+        $link1->published_at = new \DateTimeImmutable('2026-12-31 12:00');
+        $link2 = LinkFactory::create();
+        $link2->published_at = new \DateTimeImmutable('2027-01-01 12:00');
+        $links = [$link1, $link2];
+
+        $timeline = new LinksTimeline($links);
+
+        $dates_groups = $timeline->datesGroups();
+        $this->assertSame(['2026-12-31', '2027-01-01'], array_keys($dates_groups));
+        $this->assertEquals($link1->published_at->modify('00:00:00'), $dates_groups['2026-12-31']->date);
+        $this->assertEquals($link2->published_at->modify('00:00:00'), $dates_groups['2027-01-01']->date);
+    }
+
     public function testEmptyReturnsTrue(): void
     {
         $links = [];
