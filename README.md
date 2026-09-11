@@ -1,29 +1,35 @@
 <h1 align="center">Flus</h1>
 
 <p align="center">
-    <strong>Collect, organise, annotate on and share links from around the Web.</strong>
+    <strong>Collect, organise, annotate and share links from around the Web.</strong>
 </p>
 
 ---
 
-Flus brings together news feed aggregation and social bookmarking in a modern way.
-It is designed as a simple, yet complete tool for organising the links you gather around the Web.
-It comes with four main features:
+Flus brings together feed aggregation, read-later lists and social bookmarking so you don’t have to juggle between multiple tools.
+It lets you:
 
-- the **feeds aggregation** (<abbr>RSS</abbr> and Atom) to follow any website, podcast or video channel in one place;
-- the **bookmarks and collections** to save your favourites articles for later and to organise them;
-- the **journal** to keep control over your newsfeed;
-- the **profile** to share links with others.
+- **follow** sources such as blogs, podcasts or video channels (RSS/Atom/JSON feeds) and collections shared on Flus, organised into thematic streams;
+- **read** at your own pace with the “Journal”, which suggests links from the sources you follow, and with the “To read” and “Links read” lists;
+- **keep** your links in collections to easily find them again, and annotate them with your thoughts and tags;
+- **share** your links, collections and streams publicly on your profile so other people can follow you, or privately to collaborate with specific people.
+
+It also comes with many other features:
+
+- search and privacy: a powerful search engine, detection of tracking parameters in URLs…
+- interoperability: sharing via Atom feeds and Mastodon, OPML import, full data export, an API for developers…
+- tools: a web app you can install on your phone, a browser extension for Firefox, Firefox Mobile and Chrome (or a bookmarklet).
 
 You can try Flus for free at [demo.flus.fr](https://demo.flus.fr/).
 
 It’s [free/libre software](https://en.wikipedia.org/wiki/Free_software) (politically speaking) while being supported by a micro-enterprise to ensure its viability.
 The main service is available to French people at [flus.fr](https://flus.fr).
-You can help to fund the development by taking a subscription to the service.
+You can help to fund the development by subscribing to the service.
+You can also host and operate Flus by yourself: [it’s all documented](#administrator-guide).
 
 Flus is licensed under [AGPL 3](/LICENSE.txt).
 
-![Screenshot of the journal page with 3 links](/public/static/screenshot.webp)
+![Screenshot of the “Web accessibility” stream, showing links from several sources grouped by day.](/public/static/screenshot.webp)
 
 ## Credits and dependencies
 
@@ -55,7 +61,7 @@ It’s also based on other projects:
 I sincerely appreciate if you want to contribute.
 Here’s a few things you can do:
 
-- taking a subscription at [flus.fr](https://flus.fr) (French);
+- subscribing to the service at [flus.fr](https://flus.fr) (French);
 - reporting bugs or make feature requests [in issues](https://github.com/flusio/Flus/issues);
 - writing blog posts to speak about the project.
 

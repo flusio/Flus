@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-09-10 18:50+0200\n"
-"PO-Revision-Date: 2026-09-10 18:51+0200\n"
+"POT-Creation-Date: 2026-09-11 12:12+0200\n"
+"PO-Revision-Date: 2026-09-11 12:15+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -3098,14 +3098,20 @@ msgstr ""
 "du Web."
 
 #: views/pages/webmanifest.json.twig:25
-#, php-format
-msgid "“To read” screen of %s on desktop"
-msgstr "L’écran « À lire » de %s sur ordinateur"
+msgid ""
+"Screenshot of the “Web accessibility” stream, showing links from several "
+"sources grouped by day."
+msgstr ""
+"Capture d’écran du fil « Web accessibility », affichant des liens provenant "
+"de plusieurs sources regroupés par jour."
 
 #: views/pages/webmanifest.json.twig:32
-#, php-format
-msgid "“To read” screen of %s on mobile"
-msgstr "L’écran « À lire » de %s sur mobile"
+msgid ""
+"Screenshot of the “Web accessibility” stream on mobile, showing links from "
+"several sources grouped by day."
+msgstr ""
+"Capture d’écran du fil « Web accessibility » sur mobile, affichant des liens "
+"provenant de plusieurs sources regroupés par jour."
 
 #: views/passwords/edit.html.twig:3
 msgid "Change your password"
