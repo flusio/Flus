@@ -14,6 +14,9 @@ If it becomes necessary, more complex rules could apply in the future.
 A `make` target is provided to release a new version.
 It writes the new version in the [`VERSION.txt` file](/VERSION.txt), it bundles and minifies the assets under the `public/assets/` folder (via the [`npm run build` command](/package.json)), opens the [changelog](/CHANGELOG.md) in your editor so you can document the changes (at least to set the release date) and commits these changes.
 
+The changelog only lists the versions of the current major version.
+When releasing a new major version, move the entries of the previous one in a dedicated file under the [`docs/changelogs/` folder](/docs/changelogs/) and link it at the end of the changelog.
+
 You must run this command in a new branch, and push it on GitHub to create a new pull request:
 
 ```console
