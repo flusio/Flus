@@ -41,14 +41,20 @@ class Cleaner extends \Minz\Job
         http\FetchLog::deleteOlderThan(\Minz\Time::ago(3, 'days'));
         models\Token::deleteExpired();
         models\Session::deleteExpired();
+
         models\User::deleteNotValidatedOlderThan(\Minz\Time::ago(1, 'month'));
         models\User::deleteInactiveAndNotified(
             inactive_since: \Minz\Time::ago(12, 'months'),
             notified_since: \Minz\Time::ago(1, 'month'),
             except_subscribed: \App\Configuration::areSubscriptionsEnabled(),
         );
+
         models\Collection::deleteUnfollowedFeedsOlderThan(\Minz\Time::ago(7, 'days'));
+
         models\Link::deleteDetachedOlderThan(\Minz\Time::ago(7, 'days'));
+
+        models\MastodonStatus::deletePendingOlderThan(\Minz\Time::ago(7, 'days'));
+
         $feeds_links_keep_period = \App\Configuration::$application['feeds_links_keep_period'];
         $feeds_links_keep_minimum = \App\Configuration::$application['feeds_links_keep_minimum'];
         $feeds_links_keep_maximum = \App\Configuration::$application['feeds_links_keep_maximum'];

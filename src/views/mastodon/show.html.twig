@@ -100,26 +100,18 @@
                 <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}">
             </form>
 
-            <hr>
+        {% elseif mastodon_account and mastodon_account.isAccessTokenInvalidated %}
+            {{ include('alerts/_error.html.twig', {
+                message: t('Your Mastodon server revoked the access of %s to your account. Please reconnect to share your links again.', [app.brand]),
+            }) }}
 
-            <div class="panel panel--rounded cols cols--center cols--gap-small text--small">
-                <p class="col--extend">
-                    {{ t('Connected with account <em>%s</em>', [mastodon_account.username | escape]) | raw }}
-                </p>
+            <form method="post" action="{{ url('reconnect mastodon') }}" data-turbo="false" class="text--center">
+                <button type="submit" class="button--primary button--big">
+                    {{ t('Reconnect to Mastodon') }}
+                </button>
 
-                <form
-                    method="post"
-                    action="{{ url('disconnect mastodon') }}"
-                    data-turbo-confirm="{{ t('Are you sure that you want to disconnect your Mastodon account?') }}"
-                    class="text--center"
-                >
-                    <button type="submit" class="button--smaller">
-                        {{ t('disconnect') }}
-                    </button>
-
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token('mastodon\\DeleteMastodonAccount') }}">
-                </form>
-            </div>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token('mastodon\\ReconnectMastodonAccount') }}">
+            </form>
         {% else %}
             <form
                 method="post"
@@ -172,6 +164,29 @@
 
                 <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}">
             </form>
+        {% endif %}
+
+        {% if mastodon_account and (mastodon_account.isSetup or mastodon_account.isAccessTokenInvalidated) %}
+            <hr>
+
+            <div class="panel panel--rounded cols cols--center cols--gap-small text--small">
+                <p class="col--extend">
+                    {{ t('Account <em>%s</em>', [mastodon_account.username | escape]) | raw }}
+                </p>
+
+                <form
+                    method="post"
+                    action="{{ url('disconnect mastodon') }}"
+                    data-turbo-confirm="{{ t('Are you sure that you want to disconnect your Mastodon account?') }}"
+                    class="text--center"
+                >
+                    <button type="submit" class="button--smaller">
+                        {{ t('disconnect') }}
+                    </button>
+
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token('mastodon\\DeleteMastodonAccount') }}">
+                </form>
+            </div>
         {% endif %}
     </div>
 {% endblock %}

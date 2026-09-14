@@ -205,6 +205,11 @@ class Mastodon
      * Post a status to the given account.
      *
      * It returns true if the status has already been posted.
+     *
+     * @throws MastodonInvalidAccessTokenError
+     *     If the host rejects the access token of the account.
+     * @throws MastodonError
+     *     If the host returns any other error.
      */
     public function postStatus(models\MastodonStatus $status): bool
     {
@@ -243,6 +248,11 @@ class Mastodon
             }
             $status->posted_at = \Minz\Time::now();
             $status->save();
+        } elseif ($response->status === 401) {
+            $data = $response->utf8Data();
+            throw new MastodonInvalidAccessTokenError(
+                "Mastodon host {$host} rejected the access token: {$data}"
+            );
         } else {
             $data = $response->utf8Data();
             throw new MastodonError(

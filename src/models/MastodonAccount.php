@@ -36,6 +36,9 @@ class MastodonAccount
     public string $access_token = '';
 
     #[Database\Column]
+    public ?\DateTimeImmutable $access_token_invalidated_at = null;
+
+    #[Database\Column]
     public string $username;
 
     /** @var Options */
@@ -106,6 +109,20 @@ class MastodonAccount
     public function isSetup(): bool
     {
         return $this->access_token !== '';
+    }
+
+    /**
+     * Forget the access token, e.g. when the Mastodon host revoked it.
+     */
+    public function invalidateAccessToken(): void
+    {
+        $this->access_token = '';
+        $this->access_token_invalidated_at = \Minz\Time::now();
+    }
+
+    public function isAccessTokenInvalidated(): bool
+    {
+        return $this->access_token_invalidated_at !== null;
     }
 
     /**

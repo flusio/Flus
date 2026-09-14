@@ -342,6 +342,7 @@ CREATE TABLE mastodon_accounts (
 
     username TEXT NOT NULL,
     access_token TEXT NOT NULL,
+    access_token_invalidated_at TIMESTAMPTZ,
     options JSON NOT NULL,
 
     mastodon_server_id INT NOT NULL REFERENCES mastodon_servers ON DELETE CASCADE ON UPDATE CASCADE,

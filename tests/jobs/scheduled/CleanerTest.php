@@ -7,6 +7,7 @@ use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\FetchLogFactory;
 use tests\factories\LinkFactory;
+use tests\factories\MastodonAccountFactory;
 use tests\factories\SessionFactory;
 use tests\factories\TokenFactory;
 use tests\factories\UserFactory;
@@ -17,6 +18,13 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\TimeHelper;
     use \tests\FakerHelper;
     use \tests\HttpHelper;
+
+    #[\PHPUnit\Framework\Attributes\BeforeClass]
+    public static function initEngine(): void
+    {
+        $router = \App\Router::load();
+        \Minz\Engine::init($router);
+    }
 
     #[\PHPUnit\Framework\Attributes\After]
     public function resetSubscriptionConfiguration(): void
@@ -647,6 +655,55 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(models\Link::exists($link_1->id));
         $this->assertTrue(models\Link::exists($link_2->id));
         $this->assertTrue(models\Link::exists($link_3->id));
+    }
+
+    public function testPerformDeletesOldPendingMastodonStatuses(): void
+    {
+        $cleaner_job = new Cleaner();
+        $link = LinkFactory::create();
+        $mastodon_account = MastodonAccountFactory::create();
+        $mastodon_status = $mastodon_account->buildMastodonStatus($link);
+        /** @var int */
+        $days = $this->fake('numberBetween', 8, 9000);
+        $mastodon_status->created_at = \Minz\Time::ago($days, 'days');
+        $mastodon_status->save();
+
+        $cleaner_job->perform();
+
+        $this->assertFalse(models\MastodonStatus::exists($mastodon_status->id));
+    }
+
+    public function testPerformKeepsRecentPendingMastodonStatuses(): void
+    {
+        $cleaner_job = new Cleaner();
+        $link = LinkFactory::create();
+        $mastodon_account = MastodonAccountFactory::create();
+        $mastodon_status = $mastodon_account->buildMastodonStatus($link);
+        /** @var int */
+        $days = $this->fake('numberBetween', 0, 7);
+        $mastodon_status->created_at = \Minz\Time::ago($days, 'days');
+        $mastodon_status->save();
+
+        $cleaner_job->perform();
+
+        $this->assertTrue(models\MastodonStatus::exists($mastodon_status->id));
+    }
+
+    public function testPerformKeepsOldPostedMastodonStatuses(): void
+    {
+        $cleaner_job = new Cleaner();
+        $link = LinkFactory::create();
+        $mastodon_account = MastodonAccountFactory::create();
+        $mastodon_status = $mastodon_account->buildMastodonStatus($link);
+        /** @var int */
+        $days = $this->fake('numberBetween', 8, 9000);
+        $mastodon_status->created_at = \Minz\Time::ago($days, 'days');
+        $mastodon_status->posted_at = \Minz\Time::ago($days, 'days');
+        $mastodon_status->save();
+
+        $cleaner_job->perform();
+
+        $this->assertTrue(models\MastodonStatus::exists($mastodon_status->id));
     }
 
     public function testPerformDeletesDataIfDemoIsEnabled(): void

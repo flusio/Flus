@@ -115,6 +115,26 @@ class MastodonStatus
     }
 
     /**
+     * Delete the statuses that are not posted yet and created before the
+     * given date.
+     */
+    public static function deletePendingOlderThan(\DateTimeImmutable $created_before): void
+    {
+        $sql = <<<SQL
+            DELETE FROM mastodon_statuses
+
+            WHERE posted_at IS NULL
+            AND created_at < :created_before
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute([
+            ':created_before' => $created_before->format(Database\Column::DATETIME_FORMAT),
+        ]);
+    }
+
+    /**
      * Return the default content value, built from link information.
      */
     private function buildDefaultContent(): string

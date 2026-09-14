@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-09-14 15:28+0200\n"
-"PO-Revision-Date: 2026-09-14 15:29+0200\n"
+"POT-Creation-Date: 2026-09-14 18:00+0200\n"
+"PO-Revision-Date: 2026-09-14 18:00+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -69,11 +69,11 @@ msgstr "Tous vos liens importés depuis wallabag."
 msgid "The link “%s” has been deleted."
 msgstr "Le lien « %s » a été supprimé."
 
-#: controllers/Mastodon.php:87 controllers/Mastodon.php:171
+#: controllers/Mastodon.php:87 controllers/Mastodon.php:172
 msgid "The Mastodon host returned an error, please try later."
 msgstr "Le serveur Mastodon a renvoyé une erreur, veuillez essayer plus tard."
 
-#: controllers/Mastodon.php:222 controllers/my/Preferences.php:80
+#: controllers/Mastodon.php:223 controllers/my/Preferences.php:80
 #: controllers/my/Security.php:89
 msgid "Your changes have been successfully saved."
 msgstr "Vos changements ont été sauvegardés avec succès."
@@ -817,7 +817,7 @@ msgstr "(max. %d caractères)"
 #: views/links/mastodon_threads/new.html.twig:17 views/links/new.html.twig:27
 #: views/links/repairing/new.html.twig:30
 #: views/links/searches/show.html.twig:39 views/mastodon/show.html.twig:62
-#: views/mastodon/show.html.twig:139 views/my/account/deletion.html.twig:38
+#: views/mastodon/show.html.twig:131 views/my/account/deletion.html.twig:38
 #: views/my/avatar/edit.html.twig:20 views/my/preferences/edit.html.twig:35
 #: views/my/preferences/edit.html.twig:66
 #: views/my/preferences/edit.html.twig:97
@@ -2464,34 +2464,47 @@ msgstr "#veille"
 msgid "Add the postscript in all the posts of the thread"
 msgstr "Ajouter le post-scriptum à tous les messages du fil"
 
-#: views/mastodon/show.html.twig:107
+#: views/mastodon/show.html.twig:105
 #, php-format
-msgid "Connected with account <em>%s</em>"
-msgstr "Connecté‧e avec le compte <em>%s</em>"
+msgid ""
+"Your Mastodon server revoked the access of %s to your account. Please "
+"reconnect to share your links again."
+msgstr ""
+"Votre serveur Mastodon a révoqué l’accès de %s à votre compte. Veuillez vous "
+"reconnecter pour partager à nouveau vos liens."
 
-#: views/mastodon/show.html.twig:113
-msgid "Are you sure that you want to disconnect your Mastodon account?"
-msgstr "Êtes-vous sur·e de vouloir déconnecter votre compte Mastodon ?"
+#: views/mastodon/show.html.twig:110
+msgid "Reconnect to Mastodon"
+msgstr "Se reconnecter à Mastodon"
 
-#: views/mastodon/show.html.twig:117 views/my/sessions/index.html.twig:43
-msgid "disconnect"
-msgstr "déconnecter"
-
-#: views/mastodon/show.html.twig:134
+#: views/mastodon/show.html.twig:126
 msgid "What’s the address of your Mastodon server?"
 msgstr "Quelle est l’adresse de votre serveur Mastodon ?"
 
-#: views/mastodon/show.html.twig:159
+#: views/mastodon/show.html.twig:151
 msgid "Not using Mastodon yet?"
 msgstr "Vous n’utilisez pas encore Mastodon ?"
 
-#: views/mastodon/show.html.twig:162
+#: views/mastodon/show.html.twig:154
 msgid "Let’s choose a server."
 msgstr "Choisissez un serveur."
 
-#: views/mastodon/show.html.twig:169
+#: views/mastodon/show.html.twig:161
 msgid "Connect to Mastodon"
 msgstr "Se connecter à Mastodon"
+
+#: views/mastodon/show.html.twig:174
+#, php-format
+msgid "Account <em>%s</em>"
+msgstr "Compte <em>%s</em>"
+
+#: views/mastodon/show.html.twig:180
+msgid "Are you sure that you want to disconnect your Mastodon account?"
+msgstr "Êtes-vous sur·e de vouloir déconnecter votre compte Mastodon ?"
+
+#: views/mastodon/show.html.twig:184 views/my/sessions/index.html.twig:43
+msgid "disconnect"
+msgstr "déconnecter"
 
 #: views/my/account/deletion.html.twig:20
 #, php-format

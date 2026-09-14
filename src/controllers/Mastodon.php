@@ -160,6 +160,7 @@ class Mastodon extends BaseController
         try {
             $mastodon_account->access_token = $form->accessToken();
             $mastodon_account->username = $form->username();
+            $mastodon_account->access_token_invalidated_at = null;
 
             $mastodon_account->save();
         } catch (services\MastodonError $error) {
@@ -222,6 +223,48 @@ class Mastodon extends BaseController
         utils\Notification::success(_('Your changes have been successfully saved.'));
 
         return Response::redirect('mastodon');
+    }
+
+    /**
+     * Redirect the user to its Mastodon host to authorize the app again.
+     *
+     * This is useful when the access token has been invalidated.
+     *
+     * @request_param string csrf_token
+     *
+     * @response 302 /mastodon
+     *     If the MastodonAccount is already authorized.
+     * @response 302 /mastodon
+     * @flash notification.error
+     *     If the CSRF token is invalid.
+     * @response 302 :host
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the user does not have a Mastodon account.
+     */
+    public function reconnect(Request $request): Response
+    {
+        $user = auth\CurrentUser::require();
+        $mastodon_account = $user->mastodonAccount();
+
+        if ($mastodon_account->isSetup()) {
+            return Response::redirect('mastodon');
+        }
+
+        $form = new forms\mastodon\ReconnectMastodonAccount();
+        $form->handleRequest($request);
+
+        if (!$form->validate()) {
+            utils\Notification::error($form->error('@base'));
+            return Response::redirect('mastodon');
+        }
+
+        $mastodon_service = new services\Mastodon($mastodon_account->server());
+
+        return Response::found($mastodon_service->authorizationUrl());
     }
 
     /**

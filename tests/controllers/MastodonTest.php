@@ -31,6 +31,29 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'Configure sharing to Mastodon');
     }
 
+    public function testShowRendersAlertIfAccessTokenIsInvalidated(): void
+    {
+        $user = $this->login();
+        /** @var string */
+        $mastodon_domain = $this->fake('domainName');
+        $mastodon_host = 'https://' . $mastodon_domain;
+        $mastodon_server = MastodonServerFactory::create([
+            'host' => $mastodon_host,
+        ]);
+        $mastodon_account = MastodonAccountFactory::create([
+            'user_id' => $user->id,
+            'mastodon_server_id' => $mastodon_server->id,
+            'access_token' => '',
+            'access_token_invalidated_at' => \Minz\Time::now(),
+        ]);
+
+        $response = $this->appRun('GET', '/mastodon');
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Your Mastodon server revoked the access');
+        $this->assertResponseContains($response, 'Reconnect to Mastodon');
+    }
+
     public function testShowRedirectsToLoginIfNotConnected(): void
     {
         $response = $this->appRun('GET', '/mastodon');
@@ -334,6 +357,58 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         $mastodon_account = $mastodon_account->reload();
         $this->assertSame($mastodon_account->access_token, $access_token);
         $this->assertSame($mastodon_account->username, $username . '@' . $mastodon_domain);
+    }
+
+    public function testAuthorizeResetsAccessTokenInvalidation(): void
+    {
+        $user = $this->login();
+        /** @var string */
+        $code = $this->fake('sha256');
+        /** @var string */
+        $mastodon_domain = $this->fake('domainName');
+        $mastodon_host = 'https://' . $mastodon_domain;
+        $access_token_endpoint = $mastodon_host . '/oauth/token';
+        $username_endpoint = $mastodon_host . '/api/v1/accounts/verify_credentials';
+        $mastodon_server = MastodonServerFactory::create([
+            'host' => $mastodon_host,
+        ]);
+        $mastodon_account = MastodonAccountFactory::create([
+            'user_id' => $user->id,
+            'mastodon_server_id' => $mastodon_server->id,
+            'access_token' => '',
+            'access_token_invalidated_at' => \Minz\Time::now(),
+        ]);
+        /** @var string */
+        $access_token = $this->fake('sha256');
+        $this->mockHttpWithResponse($access_token_endpoint, <<<TEXT
+            HTTP/2 200
+            Content-type: application/json
+
+            {
+                "access_token": "{$access_token}"
+            }
+            TEXT
+        );
+        /** @var string */
+        $username = $this->fake('username');
+        $this->mockHttpWithResponse($username_endpoint, <<<TEXT
+            HTTP/2 200
+            Content-type: application/json
+
+            {
+                "username": "{$username}"
+            }
+            TEXT
+        );
+
+        $response = $this->appRun('POST', '/mastodon/auth', [
+            'csrf_token' => $this->csrfToken(forms\mastodon\AuthorizeMastodonAccount::class),
+            'code' => $code,
+        ]);
+
+        $this->assertResponseCode($response, 302, '/mastodon');
+        $mastodon_account = $mastodon_account->reload();
+        $this->assertFalse($mastodon_account->isAccessTokenInvalidated());
     }
 
     public function testAuthorizeRedirectsIfUserIsNotConnected(): void
@@ -656,6 +731,81 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'The text must be less than 100 characters.');
         $mastodon_account = $mastodon_account->reload();
         $this->assertSame($mastodon_account->options['post_scriptum'], $old_post_scriptum);
+    }
+
+    public function testReconnectRedirectsToAuthorizationUrl(): void
+    {
+        $user = $this->login();
+        /** @var string */
+        $mastodon_domain = $this->fake('domainName');
+        $mastodon_host = 'https://' . $mastodon_domain;
+        $authorization_endpoint = $mastodon_host . '/oauth/authorize';
+        $mastodon_server = MastodonServerFactory::create([
+            'host' => $mastodon_host,
+        ]);
+        $mastodon_account = MastodonAccountFactory::create([
+            'user_id' => $user->id,
+            'mastodon_server_id' => $mastodon_server->id,
+            'access_token' => '',
+            'access_token_invalidated_at' => \Minz\Time::now(),
+        ]);
+        $authorization_params = http_build_query([
+            'client_id' => $mastodon_server->client_id,
+            'scope' => services\Mastodon::SCOPES,
+            'redirect_uri' => \Minz\Url::absoluteFor('mastodon auth'),
+            'response_type' => 'code',
+        ]);
+        $authorization_url = $authorization_endpoint . '?' . $authorization_params;
+
+        $response = $this->appRun('POST', '/mastodon/reconnect', [
+            'csrf_token' => $this->csrfToken(forms\mastodon\ReconnectMastodonAccount::class),
+        ]);
+
+        $this->assertResponseCode($response, 302, $authorization_url);
+    }
+
+    public function testReconnectRedirectsIfAlreadyAuthorized(): void
+    {
+        $user = $this->login();
+        $mastodon_account = MastodonAccountFactory::create([
+            'user_id' => $user->id,
+            'access_token' => 'a token',
+        ]);
+
+        $response = $this->appRun('POST', '/mastodon/reconnect', [
+            'csrf_token' => $this->csrfToken(forms\mastodon\ReconnectMastodonAccount::class),
+        ]);
+
+        $this->assertResponseCode($response, 302, '/mastodon');
+    }
+
+    public function testReconnectFailsIfMastodonAccountDoesNotExist(): void
+    {
+        $user = $this->login();
+
+        $response = $this->appRun('POST', '/mastodon/reconnect', [
+            'csrf_token' => $this->csrfToken(forms\mastodon\ReconnectMastodonAccount::class),
+        ]);
+
+        $this->assertResponseCode($response, 404);
+    }
+
+    public function testReconnectFailsIfCsrfIsInvalid(): void
+    {
+        $user = $this->login();
+        $mastodon_account = MastodonAccountFactory::create([
+            'user_id' => $user->id,
+            'access_token' => '',
+            'access_token_invalidated_at' => \Minz\Time::now(),
+        ]);
+
+        $response = $this->appRun('POST', '/mastodon/reconnect', [
+            'csrf_token' => 'not the token',
+        ]);
+
+        $this->assertResponseCode($response, 302, '/mastodon');
+        $error = utils\Notification::popError();
+        $this->assertSame('A security verification failed: you should retry to submit the form.', $error);
     }
 
     public function testDisconnectRemovesTheMastodonAccount(): void
