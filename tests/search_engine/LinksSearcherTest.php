@@ -213,6 +213,44 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_2->id, $links[0]->id);
     }
 
+    public function testGetLinksSearchesByOrigin(): void
+    {
+        $user = UserFactory::create();
+        $link_1 = LinkFactory::create([
+            'user_id' => $user->id,
+            'origin' => 'https://example.com',
+        ]);
+        $link_2 = LinkFactory::create([
+            'user_id' => $user->id,
+            'origin' => 'https://example.org',
+        ]);
+        $query = LinksSearcher::buildQuery('origin:example.com', 'links');
+
+        $links = LinksSearcher::getLinks($user, $query);
+
+        $this->assertSame(1, count($links));
+        $this->assertSame($link_1->id, $links[0]->id);
+    }
+
+    public function testGetLinksCanExcludeByOrigin(): void
+    {
+        $user = UserFactory::create();
+        $link_1 = LinkFactory::create([
+            'user_id' => $user->id,
+            'origin' => 'https://example.com',
+        ]);
+        $link_2 = LinkFactory::create([
+            'user_id' => $user->id,
+            'origin' => 'https://example.org',
+        ]);
+        $query = LinksSearcher::buildQuery('-origin:example.com', 'links');
+
+        $links = LinksSearcher::getLinks($user, $query);
+
+        $this->assertSame(1, count($links));
+        $this->assertSame($link_2->id, $links[0]->id);
+    }
+
     public function testGetLinksSearchesByHidden(): void
     {
         $user = UserFactory::create();

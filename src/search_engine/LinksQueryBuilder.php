@@ -20,6 +20,7 @@ class LinksQueryBuilder extends QueryBuilder
      */
     public const LINKS_QUALIFIERS = [
         'url' => '@text',
+        'origin' => '@text',
         'is' => ['hidden'],
         'has' => ['notes', 'tags'],
         'no' => ['notes', 'tags'],
@@ -32,8 +33,9 @@ class LinksQueryBuilder extends QueryBuilder
      * The qualifiers accepted to search the links of a stream.
      *
      * The links of a stream are the ones of its sources, not (necessarily) the
-     * copies of the user: the qualifiers about the notes, the tags and the
-     * visibility would search in the data of the sources, which is confusing.
+     * copies of the user: the qualifiers about the origin, the notes, the tags
+     * and the visibility would search in the data of the sources, which is
+     * confusing.
      * The qualifier about the date is redundant with the period of the stream.
      * They are not listed, so they are read as text. For the same reason, the
      * "#tags" are not searchable in a stream (see LinksSearcher::buildQuery()).
@@ -83,6 +85,8 @@ class LinksQueryBuilder extends QueryBuilder
 
         if ($qualifier === 'url') {
             return $this->buildUrlQualifierExpr($condition);
+        } elseif ($qualifier === 'origin') {
+            return $this->buildOriginQualifierExpr($condition);
         } elseif ($qualifier === 'is' && $value === 'hidden') {
             return $this->buildIsHiddenQualifierExpr($condition);
         } elseif ($qualifier === 'has' && $value === 'notes') {
@@ -112,6 +116,22 @@ class LinksQueryBuilder extends QueryBuilder
     private function buildUrlQualifierExpr(Query\Condition $condition): string
     {
         return $this->buildExprLike("{$this->alias}.url", $condition->getValue(), $condition->not());
+    }
+
+    /**
+     * @return literal-string
+     */
+    private function buildOriginQualifierExpr(Query\Condition $condition): string
+    {
+        $expr = $this->buildExprLike("{$this->alias}.origin", $condition->getValue(), $condition->not());
+
+        if ($condition->not()) {
+            return $expr;
+        }
+
+        // The index on the origin is partial (WHERE origin != ''): the
+        // condition must be repeated so that PostgreSQL can use it.
+        return "({$this->alias}.origin != '' AND {$expr})";
     }
 
     /**

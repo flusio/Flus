@@ -189,6 +189,7 @@ CREATE TABLE links (
 CREATE INDEX idx_links_user_id_url_hash ON links USING btree(user_id, url_hash);
 CREATE INDEX idx_links_url_hash ON links USING hash(url_hash);
 CREATE INDEX idx_links_url ON links USING gin (url gin_trgm_ops);
+CREATE INDEX idx_links_origin ON links USING gin (origin gin_trgm_ops) WHERE origin != '';
 CREATE INDEX idx_links_source_id ON links(source_id) WHERE source_id IS NOT NULL;
 CREATE INDEX idx_links_fetched_at ON links(fetched_at) WHERE fetched_at IS NULL;
 CREATE INDEX idx_links_fetched_retry_at ON links(fetched_retry_at) WHERE fetched_retry_at IS NOT NULL;

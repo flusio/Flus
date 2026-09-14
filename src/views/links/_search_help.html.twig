@@ -1,8 +1,8 @@
 {#
 # A button integrated in a search field, showing the syntax of the queries
 # in the modal. `context` is the context of the search, "links" or "stream":
-# in a stream, the tags and the qualifiers about the notes, the tags, the
-# visibility and the date are not available.
+# in a stream, the tags and the qualifiers about the origin, the notes, the
+# tags, the visibility and the date are not available.
 #}
 
 {% types {
@@ -75,6 +75,13 @@
                         examples: [
                             ['notes:methodology', t('Links whose notes contain the word.')],
                             ['has:notes', t('Links with at least one note (and “no:notes” for the links without any).')],
+                        ],
+                    },
+                    {
+                        title: t('Origin'),
+                        examples: [
+                            ['origin:newsletter', t('Links whose origin contains the text.')],
+                            ['-origin:newsletter', t('Links whose origin does not contain the text.')],
                         ],
                     },
                     {
