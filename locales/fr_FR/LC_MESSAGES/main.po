@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-09-14 15:18+0200\n"
-"PO-Revision-Date: 2026-09-14 15:19+0200\n"
+"POT-Creation-Date: 2026-09-14 15:28+0200\n"
+"PO-Revision-Date: 2026-09-14 15:29+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -1600,8 +1600,8 @@ msgid "Actions on the day"
 msgstr "Actions pour la journée"
 
 #: views/journal/index.html.twig:111 views/streams/_timeline.html.twig:97
-msgid "Actions on the feed"
-msgstr "Actions pour le flux"
+msgid "Actions on the source"
+msgstr "Actions sur la source"
 
 #: views/journal/index.html.twig:156
 msgid "Empty the journal"
@@ -1618,9 +1618,10 @@ msgstr ""
 
 #: views/journal/index.html.twig:167
 msgid ""
-"Fill your journal with the content published by the feeds that you follow."
+"Fill your journal with the content published by the sources that you follow."
 msgstr ""
-"Remplissez votre journal avec le contenu publié par les flux que vous suivez."
+"Remplissez votre journal avec le contenu publié par les sources que vous "
+"suivez."
 
 #: views/journal/index.html.twig:173
 msgid "There are no relevant links to suggest at this time."

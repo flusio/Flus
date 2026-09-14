@@ -108,7 +108,7 @@
 
                                                 {% block items %}
                                                     {{ include('journal/_popup_actions.html.twig', {
-                                                        heading: t('Actions on the feed'),
+                                                        heading: t('Actions on the source'),
                                                         params: {
                                                             date: date_group.date.format('Y-m-d'),
                                                             source: source_group.source.id,
@@ -164,7 +164,7 @@
                 </div>
             {% else %}
                 <p class="text--center">
-                    {{ t('Fill your journal with the content published by the feeds that you follow.') }}
+                    {{ t('Fill your journal with the content published by the sources that you follow.') }}
                 </p>
 
                 <div class="wrapper wrapper--small wrapper--center">
