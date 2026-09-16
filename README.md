@@ -59,18 +59,7 @@ It’s also based on other projects:
 ## How to contribute?
 
 I sincerely appreciate if you want to contribute.
-Here’s a few things you can do:
-
-- subscribing to the service at [flus.fr](https://flus.fr) (French);
-- reporting bugs or make feature requests [in issues](https://github.com/flusio/Flus/issues);
-- writing blog posts to speak about the project.
-
-I don’t accept Pull Requests on this project.
-A code contribution requires a lot of time to review, to comment and to maintain.
-Even the smallest one can require hours of my time.
-Also, code isn’t where I need help.
-
-If you have any question, feel free to [send me a message](https://flus.fr/contact).
+Please read the [CONTRIBUTING file](/CONTRIBUTING.md) first.
 
 ## Administrator guide
 
