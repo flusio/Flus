@@ -174,9 +174,7 @@
                 {{ label }}
             </button>
 
-            {% for param_name, param_value in params %}
-                <input type="hidden" name="{{ param_name }}" value="{{ param_value }}">
-            {% endfor %}
+            {{ include('components/hidden_inputs.html.twig', { params: params }) }}
 
             <input type="hidden" name="csrf_token" value="{{ csrf_token(csrf) }}">
         </form>

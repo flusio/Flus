@@ -1,0 +1,17 @@
+{#
+ # Render the given params as a list of hidden inputs. The array values are
+ # rendered as repeated `name[]` inputs.
+ #}
+{% types {
+    params: 'array',
+} %}
+
+{% for param_name, param_value in params %}
+    {% if param_value is iterable %}
+        {% for value in param_value %}
+            <input type="hidden" name="{{ param_name }}[]" value="{{ value }}">
+        {% endfor %}
+    {% else %}
+        <input type="hidden" name="{{ param_name }}" value="{{ param_value }}">
+    {% endif %}
+{% endfor %}

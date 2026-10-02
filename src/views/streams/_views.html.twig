@@ -458,9 +458,7 @@
             action="{{ url('save stream view', { id: stream.id, view_id: stream_view.view.routeId }) }}"
             data-turbo-preserve-scroll
         >
-            {% for param_name, param_value in stream_view.view.current_url_parameters %}
-                <input type="hidden" name="{{ param_name }}" value="{{ param_value }}">
-            {% endfor %}
+            {{ include('components/hidden_inputs.html.twig', { params: stream_view.view.current_url_parameters }) }}
 
             <input type="hidden" name="csrf_token" value="{{ csrf_token('views\\SaveView') }}">
         </form>
