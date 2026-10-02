@@ -252,22 +252,34 @@ class View
     }
 
     /**
-     * Get current parameters from their URL form to their stored form.
+     * Get current parameters in their stored form.
+     *
+     * @return ViewParameters
+     */
+    public function currentParameters(): array
+    {
+        return $this->toStoredParameters($this->current_url_parameters);
+    }
+
+    /**
+     * Convert parameters from their URL form to their stored form.
      *
      * The parameters whose stored form is suffixed by "_offset" are dates:
      * they are stored as a number of days relative to today, so that a view
      * keeps its meaning over time instead of pointing at a frozen date.
      *
+     * @param ViewParameters $url_parameters
+     *
      * @return ViewParameters
      */
-    public function currentParameters(): array
+    private function toStoredParameters(array $url_parameters): array
     {
         $today = \Minz\Time::relative('today midnight');
         $supported_parameters = $this->supportedParameters();
 
         $parameters = [];
 
-        foreach ($this->current_url_parameters as $name => $value) {
+        foreach ($url_parameters as $name => $value) {
             if (in_array("{$name}_offset", $supported_parameters, true)) {
                 $date = \DateTimeImmutable::createFromFormat('Y-m-d', $value);
                 $offset = $date ? (int) $today->diff($date->setTime(0, 0))->format('%r%a') : 0;
@@ -314,10 +326,19 @@ class View
     /**
      * Return whether the current parameters differ from the saved ones, i.e.
      * whether there is something to save.
+     *
+     * The saved parameters are normalized before the comparison, as the
+     * current ones are: a view saved with outdated parameters (e.g. a source
+     * removed from the stream, or a parameter which no longer exists) is not
+     * modified as long as it applies the same filters.
      */
     public function isModified(): bool
     {
-        return $this->currentParameters() != $this->parameters;
+        $saved_url_parameters = $this->toUrlParameters($this->parameters);
+        $saved_url_parameters = $this->normalizeUrlParameters($saved_url_parameters);
+        $saved_parameters = $this->toStoredParameters($saved_url_parameters);
+
+        return $this->currentParameters() != $saved_parameters;
     }
 
     /**

@@ -1763,6 +1763,65 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($stream_view->view->isModified());
     }
 
+    public function testBuildFromRequestDoesNotConsiderAViewWithARemovedSourceAsModified(): void
+    {
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $removed_source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $view = ViewFactory::create([
+            'stream_id' => $stream->id,
+            'user_id' => $user->id,
+            'parameters' => [
+                'at_offset' => '0',
+                'days' => '1',
+                'source' => $removed_source->id,
+                'status' => 'all',
+                'with_dismissed' => '',
+                'q' => '',
+            ],
+        ]);
+        $request = new \Minz\Request('GET', '/stream', [
+            'view' => $view->id,
+        ]);
+
+        $stream_view = StreamView::buildFromRequest($stream, $user, $request);
+
+        $this->assertFalse($stream_view->view->isModified());
+    }
+
+    public function testBuildFromRequestDoesNotConsiderAViewWithAnObsoleteParameterAsModified(): void
+    {
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $view = ViewFactory::create([
+            'stream_id' => $stream->id,
+            'user_id' => $user->id,
+            'parameters' => [
+                'at_offset' => '0',
+                'days' => '1',
+                'source' => '',
+                'status' => 'all',
+                'with_dismissed' => '',
+                'q' => '',
+                'obsolete' => 'value',
+            ],
+        ]);
+        $request = new \Minz\Request('GET', '/stream', [
+            'view' => $view->id,
+        ]);
+
+        $stream_view = StreamView::buildFromRequest($stream, $user, $request);
+
+        $this->assertFalse($stream_view->view->isModified());
+    }
+
     public function testBuildFromRequestUnsetsWithDismissedWhenTheFormSubmitsItEmpty(): void
     {
         $user = UserFactory::create();
