@@ -88,7 +88,9 @@
                                     <div class="source-group flow flow--small">
                                         <div class="source-group__header cols cols--always cols--gap cols--center">
                                             <h3 class="source-group__title">
-                                                {{ source_group.source.nameByUser(app.user) }}
+                                                <a class="anchor--nostyle" href="{{ url('collection', { id: source_group.source.id }) }}">
+                                                    {{ source_group.source.nameByUser(app.user) }}
+                                                </a>
                                             </h3>
 
                                             <span class="col--noshrink text--secondary">
