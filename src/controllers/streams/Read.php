@@ -22,7 +22,7 @@ class Read extends BaseController
      * @request_param string id
      * @request_param date at
      * @request_param integer days
-     * @request_param string source
+     * @request_param string[] sources
      * @request_param string status
      * @request_param string q
      * @request_param datetime before
@@ -74,7 +74,7 @@ class Read extends BaseController
      * @request_param string id
      * @request_param date at
      * @request_param integer days
-     * @request_param string source
+     * @request_param string[] sources
      * @request_param string status
      * @request_param string q
      * @request_param datetime before
@@ -126,7 +126,7 @@ class Read extends BaseController
      * @request_param string id
      * @request_param date at
      * @request_param integer days
-     * @request_param string source
+     * @request_param string[] sources
      * @request_param string status
      * @request_param string q
      * @request_param datetime before

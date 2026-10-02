@@ -25,7 +25,8 @@ class StreamView
 
     public readonly int $days;
 
-    public readonly ?Collection $source;
+    /** @var Collection[] */
+    public readonly array $sources;
 
     public readonly string $status;
 
@@ -81,16 +82,16 @@ class StreamView
         // The view carries normalized parameters (cf. View::loadUrlParameters()):
         // they are interpreted here, not checked again.
         $url_parameters = new ParameterBag($view->current_url_parameters);
-        $defaults = $view->defaultUrlParameters();
+        $defaults = View::STREAM_PARAMETERS;
 
         $this->stream = $stream;
         $this->context_user = $context_user;
         $this->view = $view;
-        $default_at = new \DateTimeImmutable($defaults['at']);
+        $default_at = \Minz\Time::relative("{$defaults['at_offset']} days midnight");
         $this->at = $url_parameters->getDatetime('at', $default_at, 'Y-m-d');
         $this->days = $url_parameters->getInteger('days', (int) $defaults['days']);
         $this->status = $url_parameters->getString('status', $defaults['status']);
-        $this->with_dismissed = $url_parameters->getBoolean('with_dismissed', $defaults['with_dismissed'] !== '');
+        $this->with_dismissed = $url_parameters->getBoolean('with_dismissed');
         $this->query = $url_parameters->getString('q', $defaults['q']);
 
         $search_query = null;
@@ -109,18 +110,17 @@ class StreamView
 
         $this->rendered_at = \Minz\Time::now();
 
-        // The source is set last as isSourceCounted() requires the other
-        // properties. It is more restricted here as we don't display sources
-        // without any link, but we want to keep it in the view as it may be
-        // used to save the filters.
-        $source_id = $url_parameters->getString('source', '');
-        $source = $source_id ? Collection::find($source_id) : null;
+        // The selected sources are checked against the sources of the stream,
+        // as seen by its *owner* to verify that they belong to the stream.
+        $selected_source_ids = $url_parameters->getArray('sources');
+        $stream_sources = $stream->sources(['context_user' => $stream->owner()]);
 
-        if ($source && !$this->isSourceCounted($source)) {
-            $source = null;
-        }
-
-        $this->source = $source;
+        $this->sources = array_values(array_filter(
+            $stream_sources,
+            function (Collection $source) use ($selected_source_ids): bool {
+                return in_array($source->id, $selected_source_ids);
+            },
+        ));
     }
 
     public function isViewSelected(View $view): bool
@@ -150,7 +150,8 @@ class StreamView
 
     public function isSourceSelected(Collection $source): bool
     {
-        return $this->source?->id === $source->id;
+        $selected_source_ids = array_column($this->sources, 'id');
+        return in_array($source->id, $selected_source_ids);
     }
 
     public function isStatusSelected(string $status): bool
@@ -189,7 +190,7 @@ class StreamView
             'context_user' => $this->context_user,
             'at' => $this->at,
             'days' => $this->days,
-            'source' => $this->source,
+            'sources' => $this->sources,
             'status' => $this->status,
             'with_dismissed' => $this->with_dismissed,
             'query' => $this->search_query,
@@ -229,27 +230,20 @@ class StreamView
             $sources_and_counts = [];
 
             foreach ($sources as $source) {
-                // The sources without links over the period are not counted.
-                if (!isset($counts_per_source[$source->id])) {
+                $count = $counts_per_source[$source->id] ?? 0;
+
+                // The sources without links over the period are not counted,
+                // unless they are selected: they must be displayed so they can
+                // be unselected.
+                if ($count === 0 && !$this->isSourceSelected($source)) {
                     continue;
                 }
 
-                $sources_and_counts[] = [$source, $counts_per_source[$source->id]];
+                $sources_and_counts[] = [$source, $count];
             }
 
             return $sources_and_counts;
         });
-    }
-
-    private function isSourceCounted(Collection $source): bool
-    {
-        foreach ($this->countedSources() as $source_and_count) {
-            if ($source_and_count[0]->id === $source->id) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     public function countByDay(\DateTimeImmutable $day): int

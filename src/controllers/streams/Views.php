@@ -20,7 +20,7 @@ class Views extends BaseController
      * @request_param string id
      *
      * The request can also carry the string filters parameters (at, days,
-     * source, status, with_dismissed, q): they are then used to set the
+     * sources, status, with_dismissed, q): they are then used to set the
      * parameters of the new view instead of the default ones.
      *
      * @response 200
@@ -58,7 +58,7 @@ class Views extends BaseController
      * @request_param string name
      * @request_param string at
      * @request_param string days
-     * @request_param string source
+     * @request_param string[] sources
      * @request_param string status
      * @request_param string with_dismissed
      * @request_param string q
@@ -114,7 +114,7 @@ class Views extends BaseController
      *     first time.
      * @request_param string at
      * @request_param string days
-     * @request_param string source
+     * @request_param string[] sources
      * @request_param string status
      * @request_param string with_dismissed
      * @request_param string q

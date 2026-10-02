@@ -113,7 +113,7 @@ class ViewsTest extends \PHPUnit\Framework\TestCase
             'name' => 'My view',
             'at' => $at->format('Y-m-d'),
             'days' => '7',
-            'source' => '',
+            'sources' => [],
             'status' => 'unread',
             'with_dismissed' => '1',
             'q' => 'foo',
@@ -130,7 +130,7 @@ class ViewsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame([
             'at_offset' => '-3',
             'days' => '7',
-            'source' => '',
+            'sources' => [],
             'status' => 'unread',
             'with_dismissed' => '1',
             'q' => 'foo',
@@ -150,7 +150,7 @@ class ViewsTest extends \PHPUnit\Framework\TestCase
             'name' => 'My view',
             'at' => \Minz\Time::relative('-3 days')->format('Y-m-d'),
             'days' => '99',
-            'source' => $not_a_source->id,
+            'sources' => [$not_a_source->id],
             'status' => 'bogus',
             'with_dismissed' => '',
             'q' => '',
@@ -161,11 +161,41 @@ class ViewsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame([
             'at_offset' => '-3',
             'days' => '7',
-            'source' => '',
+            'sources' => [],
             'status' => 'all',
             'with_dismissed' => '',
             'q' => '',
         ], $view->parameters);
+    }
+
+    public function testCreateSavesSeveralSources(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source1 = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $source2 = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $stream->addSource($source1);
+        $stream->addSource($source2);
+        $expected_source_ids = [$source1->id, $source2->id];
+        sort($expected_source_ids);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/views/new", [
+            'csrf_token' => $this->csrfToken(forms\views\View::class),
+            'name' => 'My view',
+            'sources' => [$source2->id, $source1->id, $source2->id],
+        ]);
+
+        $view = models\View::take();
+        $this->assertNotNull($view);
+        $this->assertSame($expected_source_ids, $view->parameters['sources']);
     }
 
     public function testCreateWorksIfStreamIsSharedWithUser(): void
@@ -355,7 +385,7 @@ class ViewsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame([
             'at_offset' => '0',
             'days' => '1',
-            'source' => '',
+            'sources' => [],
             'status' => 'unread',
             'with_dismissed' => '',
             'q' => '',
@@ -431,7 +461,7 @@ class ViewsTest extends \PHPUnit\Framework\TestCase
             'csrf_token' => $this->csrfToken(forms\views\SaveView::class),
             'at' => \Minz\Time::relative('-3 days')->format('Y-m-d'),
             'days' => '99',
-            'source' => $not_a_source->id,
+            'sources' => [$not_a_source->id],
             'status' => 'bogus',
         ]);
 
@@ -439,7 +469,7 @@ class ViewsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame([
             'at_offset' => '-3',
             'days' => '7',
-            'source' => '',
+            'sources' => [],
             'status' => 'all',
             'with_dismissed' => '',
             'q' => '',

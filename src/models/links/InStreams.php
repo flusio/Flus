@@ -25,7 +25,7 @@ trait InStreams
      *     context_user?: ?User,
      *     at?: \DateTimeImmutable,
      *     days?: int|'ALL',
-     *     source?: ?Collection,
+     *     sources?: Collection[],
      *     status?: string,
      *     with_dismissed?: bool,
      *     query?: ?Query,
@@ -41,7 +41,7 @@ trait InStreams
             'context_user' => null,
             'at' => \Minz\Time::now(),
             'days' => 1,
-            'source' => null,
+            'sources' => [],
             'status' => 'all',
             'with_dismissed' => false,
             'query' => null,
@@ -115,7 +115,7 @@ trait InStreams
         // The counts per day are the ones of the whole activity of the stream:
         // they must not depend on the other filters. The dismissed links are
         // counted in the total (they are excluded from the unread count below).
-        $options['source'] = null;
+        $options['sources'] = [];
         $options['status'] = 'all';
         $options['with_dismissed'] = true;
         $options['query'] = null;
@@ -202,7 +202,7 @@ trait InStreams
             'query' => null,
         ];
         $options = array_merge($default_options, $options);
-        $options['source'] = null;
+        $options['sources'] = [];
         $options['created_before'] = null;
 
         $sources = self::listStreamSources($stream, $options);
@@ -303,15 +303,15 @@ trait InStreams
 
     /**
      * Return the sources of the stream to consider, i.e. the collections that
-     * the context user can view, limited to the selected source if there is
-     * one.
+     * the context user can view, limited to the selected sources if there are
+     * some.
      *
      * The sources are memoized by the Stream model: the different queries of a
      * same page share a single request to the database.
      *
      * @param array{
      *     context_user: ?User,
-     *     source: ?Collection,
+     *     sources: Collection[],
      * } $options
      *
      * @return Collection[]
@@ -322,18 +322,20 @@ trait InStreams
             'context_user' => $options['context_user'],
         ]);
 
-        $selected_source = $options['source'];
+        $selected_sources = $options['sources'];
 
-        if ($selected_source) {
-            // The selected source can come straight from a request parameter,
-            // without being checked (see forms\traits\StreamLinks::links()):
-            // it must be one of the sources that the user can view.
-            $source_ids = array_column($sources, 'id');
-            if (!in_array($selected_source->id, $source_ids, strict: true)) {
-                return [];
-            }
+        if ($selected_sources) {
+            // The selected sources are not necessarily viewable by the user
+            // (e.g. a view saved by another user can select a private
+            // collection): only the ones that the user can view are kept. If
+            // none is left, no sources are returned rather than all of them.
+            $selected_source_ids = array_column($selected_sources, 'id');
 
-            return [$selected_source];
+            $sources = array_filter($sources, function (Collection $source) use ($selected_source_ids): bool {
+                return in_array($source->id, $selected_source_ids);
+            });
+
+            return array_values($sources);
         }
 
         return $sources;

@@ -184,7 +184,7 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $stream->addSource($source_2);
         $stream_view = StreamView::buildFromRequest($stream, null, new \Minz\Request('GET', '/stream', [
             'at' => $date->format('Y-m-d'),
-            'source' => $source_1->id,
+            'sources' => [$source_1->id],
         ]));
 
         $is_source_1_selected = $stream_view->isSourceSelected($source_1);
@@ -210,72 +210,12 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $stream->addSource($source);
         $stream_view = StreamView::buildFromRequest($stream, null, new \Minz\Request('GET', '/stream', [
             'at' => $date->format('Y-m-d'),
-            'source' => $source->id,
+            'sources' => [$source->id],
         ]));
 
         $is_source_selected = $stream_view->isSourceSelected($source);
 
-        $this->assertFalse($is_source_selected);
-        $this->assertNull($stream_view->source);
-    }
-
-    public function testIsSourceSelectedIfSourceHasNoLinkMatchingTheStatus(): void
-    {
-        $date = $this->fakeDateInPeriod();
-        $user = UserFactory::create();
-        $stream = StreamFactory::create([
-            'user_id' => $user->id,
-        ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
-            'is_public' => true,
-        ]);
-        $link = LinkFactory::create([
-            'is_hidden' => false,
-        ]);
-        $source->addLinks([$link], at: $date);
-        $stream->addSource($source);
-        $user->markAsRead($link);
-        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
-            'at' => $date->format('Y-m-d'),
-            'source' => $source->id,
-            'status' => 'unread',
-        ]));
-
-        $is_source_selected = $stream_view->isSourceSelected($source);
-
-        $this->assertFalse($is_source_selected);
-        $this->assertNull($stream_view->source);
-    }
-
-    public function testIsSourceSelectedIfSourceHasNoLinkMatchingTheQuery(): void
-    {
-        $date = $this->fakeDateInPeriod();
-        $user = UserFactory::create();
-        $stream = StreamFactory::create([
-            'user_id' => $user->id,
-        ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
-            'is_public' => true,
-        ]);
-        $link = LinkFactory::create([
-            'title' => 'Another subject',
-            'url' => 'https://example.com/other',
-            'is_hidden' => false,
-        ]);
-        $source->addLinks([$link], at: $date);
-        $stream->addSource($source);
-        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
-            'at' => $date->format('Y-m-d'),
-            'source' => $source->id,
-            'q' => 'foos',
-        ]));
-
-        $is_source_selected = $stream_view->isSourceSelected($source);
-
-        $this->assertFalse($is_source_selected);
-        $this->assertNull($stream_view->source);
+        $this->assertTrue($is_source_selected);
     }
 
     public function testIsStatusSelected(): void
@@ -442,7 +382,7 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $stream->addSource($source_2);
         $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
             'at' => $date->format('Y-m-d'),
-            'source' => $source_1->id,
+            'sources' => [$source_1->id],
         ]));
 
         $links_timeline = $stream_view->linksTimeline();
@@ -1240,6 +1180,32 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($source_1->id, $sources_and_counts[0][0]->id);
     }
 
+    public function testCountedSourcesIncludesSelectedSourcesWithoutLinks(): void
+    {
+        $date = $this->fakeDateInPeriod();
+        $other_date = $date->modify('-1 day');
+        $stream = StreamFactory::create();
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link], at: $other_date);
+        $stream->addSource($source);
+        $stream_view = StreamView::buildFromRequest($stream, null, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'sources' => [$source->id],
+        ]));
+
+        $sources_and_counts = $stream_view->countedSources();
+
+        $this->assertSame(1, count($sources_and_counts));
+        $this->assertSame($source->id, $sources_and_counts[0][0]->id);
+        $this->assertSame(0, $sources_and_counts[0][1]);
+    }
+
     public function testCountedSourcesSortsSourcesByName(): void
     {
         $date = $this->fakeDateInPeriod();
@@ -1687,7 +1653,7 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'parameters' => [
                 'at_offset' => '-3',
                 'days' => '7',
-                'source' => '',
+                'sources' => [],
                 'status' => 'unread',
                 'with_dismissed' => '',
                 'q' => '',
@@ -1744,7 +1710,7 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'parameters' => [
                 'at_offset' => '0',
                 'days' => '1',
-                'source' => '',
+                'sources' => [],
                 'status' => 'unread',
                 'with_dismissed' => '',
                 'q' => '',
@@ -1779,7 +1745,7 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'parameters' => [
                 'at_offset' => '0',
                 'days' => '1',
-                'source' => $removed_source->id,
+                'sources' => [$removed_source->id],
                 'status' => 'all',
                 'with_dismissed' => '',
                 'q' => '',
@@ -1806,7 +1772,7 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'parameters' => [
                 'at_offset' => '0',
                 'days' => '1',
-                'source' => '',
+                'sources' => [],
                 'status' => 'all',
                 'with_dismissed' => '',
                 'q' => '',
@@ -1999,7 +1965,7 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $this->assertSame([
             'at_offset' => '-3',
             'days' => '7',
-            'source' => '',
+            'sources' => [],
             'status' => 'unread',
             'with_dismissed' => '',
             'q' => '',

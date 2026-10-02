@@ -18,8 +18,9 @@ trait StreamLinks
     #[Form\Field]
     public int $days = 1;
 
+    /** @var string[] */
     #[Form\Field]
-    public string $source = '';
+    public array $sources = [];
 
     #[Form\Field]
     public string $status = 'all';
@@ -41,12 +42,17 @@ trait StreamLinks
         $user = $this->optionAs('user', models\User::class);
         $stream = $this->optionAs('stream', models\Stream::class);
 
-        $source = null;
-        if ($this->source) {
-            $source = models\Collection::find($this->source);
-            if (!$source) {
-                // The source no longer exists: better mark no link at all
-                // than marking the links of the other sources.
+        $sources = [];
+        if ($this->sources) {
+            $sources = $stream->sources(['context_user' => $user]);
+            $sources = array_filter($sources, function (models\Collection $source): bool {
+                return in_array($source->id, $this->sources);
+            });
+            $sources = array_values($sources);
+
+            if (!$sources) {
+                // The sources no longer exist or cannot be viewed. Better mark
+                // no link at all than marking the links of all the sources.
                 return [];
             }
         }
@@ -71,7 +77,7 @@ trait StreamLinks
             'context_user' => $user,
             'at' => $this->at ?? \Minz\Time::now(),
             'days' => $this->days,
-            'source' => $source,
+            'sources' => $sources,
             'status' => $status,
             'with_dismissed' => $this->with_dismissed,
             'query' => $search_query,

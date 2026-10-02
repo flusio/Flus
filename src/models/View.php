@@ -15,7 +15,8 @@ use Minz\Validable;
  * views pass their whole state through the URL, so restoring a view is just a
  * matter of visiting the right URL.
  *
- * @phpstan-type ViewParameters array<string, string>
+ * @phpstan-import-type Parameters from ParameterBag
+ * @phpstan-type ViewParameters array<string, string|list<string>>
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
@@ -37,7 +38,7 @@ class View
     public const STREAM_PARAMETERS = [
         'at_offset' => '0',
         'days' => '1',
-        'source' => '',
+        'sources' => [],
         'status' => 'all',
         'with_dismissed' => '',
         'q' => '',
@@ -177,7 +178,11 @@ class View
 
         if ($has_supported_parameter) {
             foreach ($default_url_parameters as $name => $default_value) {
-                $current_url_parameters[$name] = $url_parameters->getString($name, $default_value);
+                if (is_array($default_value)) {
+                    $current_url_parameters[$name] = $url_parameters->getArray($name, $default_value);
+                } else {
+                    $current_url_parameters[$name] = $url_parameters->getString($name, $default_value);
+                }
             }
         } elseif ($this->parameters) {
             $current_url_parameters = $this->toUrlParameters($this->parameters);
@@ -192,7 +197,7 @@ class View
      * Normalize the given URL parameters against the rules of the view type:
      * out-of-range or invalid values fall back to acceptable ones.
      *
-     * @param ViewParameters $url_parameters
+     * @param Parameters $url_parameters
      *
      * @return ViewParameters
      */
@@ -280,7 +285,7 @@ class View
         $parameters = [];
 
         foreach ($url_parameters as $name => $value) {
-            if (in_array("{$name}_offset", $supported_parameters, true)) {
+            if (is_string($value) && in_array("{$name}_offset", $supported_parameters, true)) {
                 $date = \DateTimeImmutable::createFromFormat('Y-m-d', $value);
                 $offset = $date ? (int) $today->diff($date->setTime(0, 0))->format('%r%a') : 0;
 
@@ -396,19 +401,16 @@ class View
     /**
      * Normalize the parameters of a view on the streams filters.
      *
-     * @param ViewParameters $url_parameters
+     * @param Parameters $url_parameters
      *
      * @return ViewParameters
      */
     private function normalizeStreamUrlParameters(array $url_parameters): array
     {
-        // Starting from the defaults guarantees that the result carries
-        // exactly the supported parameters: unknown parameters are dropped and
-        // missing ones fall back to their default value.
-        $defaults = $this->defaultUrlParameters();
-        $normalized = array_merge($defaults, array_intersect_key($url_parameters, $defaults));
-
-        $parameters = new ParameterBag($normalized);
+        // Each supported parameter is set explicitly below: unknown parameters
+        // are dropped and missing ones fall back to their default value.
+        $parameters = new ParameterBag($url_parameters);
+        $normalized = [];
 
         $today = \Minz\Time::relative('today midnight');
         $period_days = self::STREAM_PERIOD_DAYS - 1;
@@ -421,6 +423,24 @@ class View
         $days = min(max($days, 1), 7);
         $normalized['days'] = (string) $days;
 
+        // Only the sources of the stream are kept. They are sorted so that the
+        // order of selection doesn't matter when comparing the parameters (cf.
+        // isModified()).
+        $stream_source_ids = [];
+        $stream = $this->stream();
+        if ($stream) {
+            $stream_sources = $stream->sources(['context_user' => $stream->owner()]);
+            $stream_source_ids = array_column($stream_sources, 'id');
+        }
+
+        $source_ids = $parameters->getArray('sources');
+        $source_ids = array_filter($source_ids, 'is_string');
+        $source_ids = array_intersect($source_ids, $stream_source_ids);
+        $source_ids = array_unique($source_ids);
+        sort($source_ids);
+
+        $normalized['sources'] = $source_ids;
+
         $status = $parameters->getString('status', 'all');
         if (!in_array($status, self::STREAM_STATUSES)) {
             $status = 'all';
@@ -430,15 +450,6 @@ class View
         $normalized['with_dismissed'] = $parameters->getBoolean('with_dismissed') ? '1' : '';
 
         $normalized['q'] = trim($parameters->getString('q', ''));
-
-        $source_id = $parameters->getString('source', '');
-        $source = $source_id ? Collection::find($source_id) : null;
-
-        if (!$source || !$this->stream()?->hasSource($source)) {
-            $source_id = '';
-        }
-
-        $normalized['source'] = $source_id;
 
         return $normalized;
     }

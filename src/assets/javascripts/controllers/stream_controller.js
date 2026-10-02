@@ -44,12 +44,29 @@ export default class extends Controller {
     selectSource (event) {
         const button = event.currentTarget;
 
-        // Contrary to the other types of buttons, the sources are toggle buttons:
-        // clicking the selected one unselects it.
+        // Contrary to the other types of buttons, the sources are toggle buttons
+        // that can be selected together.
         const willBeSelected = button.getAttribute('aria-pressed') !== 'true';
 
-        this.sourceInputTarget.value = willBeSelected ? button.value : '';
-        this.press(this.sourceTargets, willBeSelected ? button : null);
+        button.setAttribute('aria-pressed', willBeSelected ? 'true' : 'false');
+
+        // The inputs are added or removed one by one rather than rebuilt from
+        // the buttons: a selected source can have no button (e.g. a source of
+        // a saved view that the user cannot view), and it must be kept.
+        if (willBeSelected) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'sources[]';
+            input.value = button.value;
+            input.setAttribute('data-stream-target', 'sourceInput');
+            this.formFiltersTarget.append(input);
+        } else {
+            this.sourceInputTargets.forEach((input) => {
+                if (input.value === button.value) {
+                    input.remove();
+                }
+            });
+        }
 
         this.submit();
     }

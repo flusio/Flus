@@ -423,15 +423,14 @@
             data-stream-target="daysInput"
         >
 
-        {# The source is read from the view, not from stream_view.source: the
-         # latter is null when the source has no link under the current
-         # filters, and the view must not lose its source on submit. #}
-        <input
-            type="hidden"
-            name="source"
-            value="{{ stream_view.view.current_url_parameters['source'] }}"
-            data-stream-target="sourceInput"
-        >
+        {% for source in stream_view.sources %}
+            <input
+                type="hidden"
+                name="sources[]"
+                value="{{ source.id }}"
+                data-stream-target="sourceInput"
+            >
+        {% endfor %}
 
         <input
             type="hidden"

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-09-14 18:00+0200\n"
-"PO-Revision-Date: 2026-09-14 18:00+0200\n"
+"POT-Creation-Date: 2026-10-02 21:13+0200\n"
+"PO-Revision-Date: 2026-10-02 21:13+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -361,12 +361,12 @@ msgid "[%s] Your account will be deleted soon due to inactivity"
 msgstr "[%s] Votre compte sera bientôt supprimé pour cause d’inactivité"
 
 #: models/Collection.php:42 models/Group.php:30 models/Stream.php:34
-#: models/View.php:64
+#: models/View.php:65
 msgid "The name is required."
 msgstr "Le nom est obligatoire."
 
 #: models/Collection.php:46 models/FollowedCollection.php:50
-#: models/Group.php:34 models/Stream.php:38 models/View.php:67
+#: models/Group.php:34 models/Stream.php:38 models/View.php:68
 msgid "The name must be less than {max} characters."
 msgstr "Le nom ne doit pas faire plus de {max} caractères."
 
@@ -473,15 +473,15 @@ msgid "The theme is invalid. Please select an option from the list."
 msgstr ""
 "Le thème est invalide. Veuillez sélectionner une valeur depuis la liste."
 
-#: models/View.php:93
+#: models/View.php:94
 msgid "The user is required."
 msgstr "L’utilisateur·ice est obligatoire."
 
-#: models/View.php:353
+#: models/View.php:379
 msgid "Main view"
 msgstr "Vue principale"
 
-#: models/View.php:439
+#: models/View.php:471
 msgid "A view with this name already exists, please choose another one."
 msgstr "Une vue avec ce nom existe déjà, veuillez choisir un autre nom."
 

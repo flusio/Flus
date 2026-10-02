@@ -307,7 +307,7 @@ class Stream
      *     context_user?: ?User,
      *     at?: \DateTimeImmutable,
      *     days?: int|'ALL',
-     *     source?: ?Collection,
+     *     sources?: Collection[],
      *     status?: string,
      *     with_dismissed?: bool,
      *     query?: ?search_engine\Query,

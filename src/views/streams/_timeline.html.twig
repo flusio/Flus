@@ -45,7 +45,7 @@
                                             params: {
                                                 at: date_group.date.format('Y-m-d'),
                                                 days: 1,
-                                                source: stream_view.source ? stream_view.source.id : '',
+                                                sources: stream_view.sources | column('id'),
                                             },
                                         }) }}
                                     {% endblock %}
@@ -98,7 +98,7 @@
                                                         params: {
                                                             at: date_group.date.format('Y-m-d'),
                                                             days: 1,
-                                                            source: source_group.source.id,
+                                                            sources: [source_group.source.id],
                                                         },
                                                         preserve_scroll: true,
                                                     }) }}
@@ -141,7 +141,7 @@
                                 params: {
                                     at: stream_view.at.format('Y-m-d'),
                                     days: stream_view.days,
-                                    source: stream_view.source ? stream_view.source.id : '',
+                                    sources: stream_view.sources | column('id'),
                                 },
                             }) }}
                         {% endblock %}

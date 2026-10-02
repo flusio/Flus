@@ -389,7 +389,7 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
             'parameters' => [
                 'at_offset' => '0',
                 'days' => '1',
-                'source' => '',
+                'sources' => [],
                 'status' => 'all',
                 'with_dismissed' => '',
                 'q' => 'a very specific query',
@@ -519,6 +519,106 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseNotContains($response, $link_title);
+    }
+
+    public function testShowCanFilterLinksBySeveralSources(): void
+    {
+        $user = $this->login();
+        /** @var string */
+        $link_title_1 = $this->fake('words', 3, true);
+        /** @var string */
+        $link_title_2 = $this->fake('words', 3, true);
+        /** @var string */
+        $link_title_3 = $this->fake('words', 3, true);
+        $feed_1 = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $feed_2 = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $feed_3 = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link_1 = LinkFactory::create([
+            'title' => $link_title_1,
+            'is_hidden' => false,
+        ]);
+        $link_2 = LinkFactory::create([
+            'title' => $link_title_2,
+            'is_hidden' => false,
+        ]);
+        $link_3 = LinkFactory::create([
+            'title' => $link_title_3,
+            'is_hidden' => false,
+        ]);
+        $feed_1->addLinks([$link_1], at: \Minz\Time::now());
+        $feed_2->addLinks([$link_2], at: \Minz\Time::now());
+        $feed_3->addLinks([$link_3], at: \Minz\Time::now());
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $stream->addSource($feed_1);
+        $stream->addSource($feed_2);
+        $stream->addSource($feed_3);
+
+        $response = $this->appRun('GET', "/streams/{$stream->id}", [
+            'sources' => [$feed_1->id, $feed_2->id],
+        ]);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $link_title_1);
+        $this->assertResponseContains($response, $link_title_2);
+        $this->assertResponseNotContains($response, $link_title_3);
+    }
+
+    public function testShowListsNoLinksIfTheSharedUserCannotViewTheSelectedSources(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        /** @var string */
+        $feed_link_title = $this->fake('words', 3, true);
+        /** @var string */
+        $collection_link_title = $this->fake('words', 3, true);
+        $feed = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        // The source is a private collection of the owner of the stream: the
+        // user the stream is shared with cannot view it.
+        $collection = CollectionFactory::create([
+            'type' => 'collection',
+            'user_id' => $other_user->id,
+            'is_public' => false,
+        ]);
+        $feed_link = LinkFactory::create([
+            'title' => $feed_link_title,
+            'is_hidden' => false,
+        ]);
+        $collection_link = LinkFactory::create([
+            'user_id' => $other_user->id,
+            'title' => $collection_link_title,
+            'is_hidden' => false,
+        ]);
+        $feed->addLinks([$feed_link], at: \Minz\Time::now());
+        $collection->addLinks([$collection_link], at: \Minz\Time::now());
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+            'is_public' => false,
+        ]);
+        $stream->addSource($feed);
+        $stream->addSource($collection);
+        $stream->shareWith($user);
+
+        $response = $this->appRun('GET', "/streams/{$stream->id}", [
+            'sources' => [$collection->id],
+        ]);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseNotContains($response, $feed_link_title);
+        $this->assertResponseNotContains($response, $collection_link_title);
     }
 
     public function testShowRedirectsIfPrivateAndNotConnected(): void

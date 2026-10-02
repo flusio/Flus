@@ -213,7 +213,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($user->hasRead($link3), 'The link should not be read.');
     }
 
-    public function testCreateMarksLinksAsReadForSpecificSource(): void
+    public function testCreateMarksLinksAsReadForSpecificSources(): void
     {
         $date = new \DateTimeImmutable('2024-03-25');
         $user = $this->login();
@@ -228,29 +228,39 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
             'is_public' => true,
         ]);
+        $source3 = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
         $link1 = LinkFactory::create([
             'is_hidden' => false,
         ]);
         $link2 = LinkFactory::create([
             'is_hidden' => false,
         ]);
+        $link3 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
         $source1->addLinks([$link1], at: $date);
         $source2->addLinks([$link2], at: $date);
+        $source3->addLinks([$link3], at: $date);
         $stream->addSource($source1);
         $stream->addSource($source2);
+        $stream->addSource($source3);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/read", [
             'csrf_token' => $this->csrfToken(forms\streams\MarkStreamAsRead::class),
             'at' => $date->format('Y-m-d'),
-            'source' => $source1->id,
+            'sources' => [$source1->id, $source2->id],
         ]);
 
         $this->assertResponseCode($response, 302, '/');
         $this->assertTrue($user->hasRead($link1), 'The link should be read.');
-        $this->assertFalse($user->hasRead($link2), 'The link should not be read.');
+        $this->assertTrue($user->hasRead($link2), 'The link should be read.');
+        $this->assertFalse($user->hasRead($link3), 'The link should not be read.');
     }
 
-    public function testCreateDoesNotMarkLinksIfSourceIsNotAViewableSourceOfTheStream(): void
+    public function testCreateDoesNotMarkLinksIfNoSourcesAreViewableSourcesOfTheStream(): void
     {
         $date = new \DateTimeImmutable('2024-03-25');
         $user = $this->login();
@@ -273,11 +283,64 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', "/streams/{$stream->id}/read", [
             'csrf_token' => $this->csrfToken(forms\streams\MarkStreamAsRead::class),
             'at' => $date->format('Y-m-d'),
-            'source' => $source->id,
+            'sources' => [$source->id],
         ]);
 
         $this->assertResponseCode($response, 302, '/');
         $this->assertFalse($user->hasRead($link), 'The link should not be read.');
+    }
+
+    public function testCreateIgnoresTheSourcesThatTheUserCannotView(): void
+    {
+        $date = new \DateTimeImmutable('2024-03-25');
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+            'is_public' => false,
+        ]);
+        $stream_source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $other_stream_source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        // The source is a private collection of the owner of the stream: the
+        // user the stream is shared with cannot view it.
+        $private_source = CollectionFactory::create([
+            'type' => 'collection',
+            'user_id' => $other_user->id,
+            'is_public' => false,
+        ]);
+        $stream_link = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $other_stream_link = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $private_link = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $stream_source->addLinks([$stream_link], at: $date);
+        $other_stream_source->addLinks([$other_stream_link], at: $date);
+        $private_source->addLinks([$private_link], at: $date);
+        $stream->addSource($stream_source);
+        $stream->addSource($other_stream_source);
+        $stream->addSource($private_source);
+        $stream->shareWith($user);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/read", [
+            'csrf_token' => $this->csrfToken(forms\streams\MarkStreamAsRead::class),
+            'at' => $date->format('Y-m-d'),
+            'sources' => [$stream_source->id, $private_source->id],
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertTrue($user->hasRead($stream_link), 'The link should be read.');
+        $this->assertFalse($user->hasRead($other_stream_link), 'The link should not be read.');
+        $this->assertFalse($user->hasRead($private_link), 'The link should not be read.');
     }
 
     public function testCreateMarksLinksAsReadForSpecificStatus(): void
