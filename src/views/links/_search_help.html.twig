@@ -2,7 +2,8 @@
 # A button integrated in a search field, showing the syntax of the queries
 # in the modal. `context` is the context of the search, "links" or "stream":
 # in a stream, the tags and the qualifiers about the origin, the notes, the
-# tags, the visibility and the date are not available.
+# tags, the visibility and the date are not available, while the qualifier
+# about the source is only available in a stream.
 #}
 
 {% types {
@@ -74,6 +75,18 @@
                     ],
                 },
             ]) %}
+
+            {% if context == 'stream' %}
+                {% set sections = sections | merge([
+                    {
+                        title: t('Sources'),
+                        examples: [
+                            ['source:arxiv', t('Links whose source name contains the text.')],
+                            ['-source:arxiv', t('Links whose source name does not contain the text.')],
+                        ],
+                    },
+                ]) %}
+            {% endif %}
 
             {% if context == 'links' %}
                 {% set sections = sections | merge([

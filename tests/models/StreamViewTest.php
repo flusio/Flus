@@ -730,6 +730,165 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_1->id, $links[0]->id);
     }
 
+    public function testLinksTimelineCanListLinksBySourceName(): void
+    {
+        $date = $this->fakeDateInPeriod();
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source_1 = CollectionFactory::create([
+            'type' => 'feed',
+            'name' => 'arXiv computer science',
+            'is_public' => true,
+        ]);
+        $source_2 = CollectionFactory::create([
+            'type' => 'feed',
+            'name' => 'Open access journal',
+            'is_public' => true,
+        ]);
+        $link_1 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $link_2 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source_1->addLinks([$link_1], at: $date);
+        $source_2->addLinks([$link_2], at: $date);
+        $stream->addSource($source_1);
+        $stream->addSource($source_2);
+        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'q' => 'source:ARXIV',
+        ]));
+
+        $links_timeline = $stream_view->linksTimeline();
+
+        $links = $this->linksOfTimeline($links_timeline);
+        $this->assertSame(1, count($links));
+        $this->assertSame($link_1->id, $links[0]->id);
+    }
+
+    public function testLinksTimelineCanListLinksBySourceId(): void
+    {
+        $date = $this->fakeDateInPeriod();
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source_1 = CollectionFactory::create([
+            'type' => 'feed',
+            'name' => 'arXiv computer science',
+            'is_public' => true,
+        ]);
+        $source_2 = CollectionFactory::create([
+            'type' => 'feed',
+            'name' => 'Open access journal',
+            'is_public' => true,
+        ]);
+        $link_1 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $link_2 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source_1->addLinks([$link_1], at: $date);
+        $source_2->addLinks([$link_2], at: $date);
+        $stream->addSource($source_1);
+        $stream->addSource($source_2);
+        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'q' => "source:{$source_2->id}",
+        ]));
+
+        $links_timeline = $stream_view->linksTimeline();
+
+        $links = $this->linksOfTimeline($links_timeline);
+        $this->assertSame(1, count($links));
+        $this->assertSame($link_2->id, $links[0]->id);
+    }
+
+    public function testLinksTimelineCanListLinksBySourceNameGivenByTheUser(): void
+    {
+        $date = $this->fakeDateInPeriod();
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source_1 = CollectionFactory::create([
+            'type' => 'feed',
+            'name' => 'arXiv computer science',
+            'is_public' => true,
+        ]);
+        $source_2 = CollectionFactory::create([
+            'type' => 'feed',
+            'name' => 'Open access journal',
+            'is_public' => true,
+        ]);
+        $followed_collection = $user->follow($source_2);
+        $followed_collection->name = 'My favourite reports';
+        $followed_collection->save();
+        $link_1 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $link_2 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source_1->addLinks([$link_1], at: $date);
+        $source_2->addLinks([$link_2], at: $date);
+        $stream->addSource($source_1);
+        $stream->addSource($source_2);
+        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'q' => 'source:"favourite reports"',
+        ]));
+
+        $links_timeline = $stream_view->linksTimeline();
+
+        $links = $this->linksOfTimeline($links_timeline);
+        $this->assertSame(1, count($links));
+        $this->assertSame($link_2->id, $links[0]->id);
+    }
+
+    public function testLinksTimelineCanExcludeLinksBySource(): void
+    {
+        $date = $this->fakeDateInPeriod();
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source_1 = CollectionFactory::create([
+            'type' => 'feed',
+            'name' => 'arXiv computer science',
+            'is_public' => true,
+        ]);
+        $source_2 = CollectionFactory::create([
+            'type' => 'feed',
+            'name' => 'Open access journal',
+            'is_public' => true,
+        ]);
+        $link_1 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $link_2 = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source_1->addLinks([$link_1], at: $date);
+        $source_2->addLinks([$link_2], at: $date);
+        $stream->addSource($source_1);
+        $stream->addSource($source_2);
+        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'q' => '-source:arxiv',
+        ]));
+
+        $links_timeline = $stream_view->linksTimeline();
+
+        $links = $this->linksOfTimeline($links_timeline);
+        $this->assertSame(1, count($links));
+        $this->assertSame($link_2->id, $links[0]->id);
+    }
+
     public function testLinksTimelineListsNoLinksWhenQueryIsMalformed(): void
     {
         $date = $this->fakeDateInPeriod();

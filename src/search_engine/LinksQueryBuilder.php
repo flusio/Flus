@@ -2,6 +2,8 @@
 
 namespace App\search_engine;
 
+use App\models;
+
 /**
  * Build the SQL conditions matching a Query, for a request on the links
  * table.
@@ -39,14 +41,35 @@ class LinksQueryBuilder extends QueryBuilder
      * The qualifier about the date is redundant with the period of the stream.
      * They are not listed, so they are read as text. For the same reason, the
      * "#tags" are not searchable in a stream (see LinksSearcher::buildQuery()).
+     * The qualifier about the source requires the sources of the stream to be
+     * given to the builder (see self::__construct()).
      *
      * @var Qualifiers
      */
     public const STREAM_QUALIFIERS = [
         'url' => '@text',
+        'source' => '@text',
         'is' => ['up', 'down'],
         'duration' => self::NUMBER_VALUE_REGEX,
     ];
+
+    /**
+     * @param literal-string $alias
+     *     The alias given to the searched table in the request.
+     * @param models\Collection[] $sources
+     *     The sources in which the links can be searched with the "source"
+     *     qualifier.
+     * @param ?models\User $context_user
+     *     The user performing the search, used to search the data as it is
+     *     displayed to them.
+     */
+    public function __construct(
+        string $alias,
+        private array $sources = [],
+        private ?models\User $context_user = null,
+    ) {
+        parent::__construct($alias);
+    }
 
     /**
      * @return literal-string
@@ -88,6 +111,8 @@ class LinksQueryBuilder extends QueryBuilder
             return $this->buildUrlQualifierExpr($condition);
         } elseif ($qualifier === 'origin') {
             return $this->buildOriginQualifierExpr($condition);
+        } elseif ($qualifier === 'source') {
+            return $this->buildSourceQualifierExpr($condition);
         } elseif ($qualifier === 'is' && $value === 'hidden') {
             return $this->buildIsHiddenQualifierExpr($condition);
         } elseif ($qualifier === 'is' && $value === 'up') {
@@ -137,6 +162,38 @@ class LinksQueryBuilder extends QueryBuilder
         // The index on the origin is partial (WHERE origin != ''): the
         // condition must be repeated so that PostgreSQL can use it.
         return "({$this->alias}.origin != '' AND {$expr})";
+    }
+
+    /**
+     * Return an expression matching the links published in the sources whose
+     * id is the given value, or whose name contains it.
+     *
+     * The request must join the links_to_collections table, aliased "lc".
+     *
+     * @return literal-string
+     */
+    private function buildSourceQualifierExpr(Query\Condition $condition): string
+    {
+        $value = $condition->getValue();
+        $parameter_names = [];
+
+        foreach ($this->sources as $source) {
+            $source_name = $source->nameByUser($this->context_user);
+
+            if ($source->id === $value || mb_stripos($source_name, $value) !== false) {
+                $parameter_names[] = $this->registerParameter($source->id);
+            }
+        }
+
+        if (!$parameter_names) {
+            return $condition->not() ? 'TRUE' : 'FALSE';
+        }
+
+        /** @var literal-string */
+        $parameters_statement = implode(', ', $parameter_names);
+        $expr = "lc.collection_id IN ({$parameters_statement})";
+
+        return $condition->not() ? "NOT ({$expr})" : $expr;
     }
 
     /**

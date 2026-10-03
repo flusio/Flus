@@ -119,14 +119,22 @@ class LinksSearcher
      * the WHERE clause of a request on the links table (see LinksQueryBuilder::build()).
      *
      * `$alias` is the alias given to the links table in the request.
+     * `$sources` are the sources searchable with the "source" qualifier, and
+     * `$context_user` is the user performing the search (see
+     * LinksQueryBuilder::__construct()).
      *
      * @param literal-string $alias
+     * @param models\Collection[] $sources
      *
      * @return array{literal-string, array<string, mixed>}
      */
-    public static function buildWhereQuery(Query $query, string $alias = 'l'): array
-    {
-        $queryBuilder = new LinksQueryBuilder($alias);
+    public static function buildWhereQuery(
+        Query $query,
+        string $alias = 'l',
+        array $sources = [],
+        ?models\User $context_user = null,
+    ): array {
+        $queryBuilder = new LinksQueryBuilder($alias, $sources, $context_user);
         return $queryBuilder->build($query);
     }
 }

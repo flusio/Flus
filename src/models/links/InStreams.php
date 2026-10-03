@@ -465,7 +465,11 @@ trait InStreams
         // Create the search clause to limit the links matching the query.
         $search_clause = '';
         if ($options['query']) {
-            list($search_clause, $search_parameters) = LinksSearcher::buildWhereQuery($options['query']);
+            list($search_clause, $search_parameters) = LinksSearcher::buildWhereQuery(
+                $options['query'],
+                sources: $sources,
+                context_user: $options['context_user'],
+            );
 
             $parameters = array_merge($parameters, $search_parameters);
         }

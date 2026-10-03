@@ -289,7 +289,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_2->id, $links[0]->id);
     }
 
-    public function testGetLinksSearchesByIsDown(): void
+    public function testGetLinksSearchesByDown(): void
     {
         $user = UserFactory::create();
         $link_down = LinkFactory::create([
@@ -320,7 +320,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_down->id, $links[0]->id);
     }
 
-    public function testGetLinksSearchesByIsUp(): void
+    public function testGetLinksSearchesByUp(): void
     {
         $user = UserFactory::create();
         $link_down = LinkFactory::create([
