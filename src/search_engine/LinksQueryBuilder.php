@@ -21,7 +21,7 @@ class LinksQueryBuilder extends QueryBuilder
     public const LINKS_QUALIFIERS = [
         'url' => '@text',
         'origin' => '@text',
-        'is' => ['hidden'],
+        'is' => ['hidden', 'up', 'down'],
         'has' => ['notes', 'tags'],
         'no' => ['notes', 'tags'],
         'date' => self::DATE_VALUE_REGEX,
@@ -44,6 +44,7 @@ class LinksQueryBuilder extends QueryBuilder
      */
     public const STREAM_QUALIFIERS = [
         'url' => '@text',
+        'is' => ['up', 'down'],
         'duration' => self::NUMBER_VALUE_REGEX,
     ];
 
@@ -89,6 +90,10 @@ class LinksQueryBuilder extends QueryBuilder
             return $this->buildOriginQualifierExpr($condition);
         } elseif ($qualifier === 'is' && $value === 'hidden') {
             return $this->buildIsHiddenQualifierExpr($condition);
+        } elseif ($qualifier === 'is' && $value === 'up') {
+            return $this->buildIsUpQualifierExpr($condition);
+        } elseif ($qualifier === 'is' && $value === 'down') {
+            return $this->buildIsDownQualifierExpr($condition);
         } elseif ($qualifier === 'has' && $value === 'notes') {
             return $this->buildHasNotesQualifierExpr($condition);
         } elseif ($qualifier === 'no' && $value === 'notes') {
@@ -140,6 +145,46 @@ class LinksQueryBuilder extends QueryBuilder
     private function buildIsHiddenQualifierExpr(Query\Condition $condition): string
     {
         return $condition->not() ? "{$this->alias}.is_hidden = false" : "{$this->alias}.is_hidden = true";
+    }
+
+    /**
+     * Return an expression matching the links fetched by the server, and
+     * accessible to the server or to the user.
+     *
+     * The links that have never been fetched are not considered as up.
+     *
+     * @return literal-string
+     */
+    private function buildIsUpQualifierExpr(Query\Condition $condition): string
+    {
+        $expr = <<<SQL
+            {$this->alias}.fetched_at IS NOT NULL
+            AND (
+                ({$this->alias}.fetched_code >= 200 AND {$this->alias}.fetched_code < 400)
+                OR {$this->alias}.user_fetched_status = 'ok'
+            )
+        SQL;
+
+        return $condition->not() ? "NOT ({$expr})" : "({$expr})";
+    }
+
+    /**
+     * Return an expression matching the links inaccessible to the server, and
+     * not marked as accessible by the user (see models\links\Reachable::isInaccessible()).
+     *
+     * The links that have never been fetched are not considered as down.
+     *
+     * @return literal-string
+     */
+    private function buildIsDownQualifierExpr(Query\Condition $condition): string
+    {
+        $expr = <<<SQL
+            {$this->alias}.fetched_at IS NOT NULL
+            AND ({$this->alias}.fetched_code < 200 OR {$this->alias}.fetched_code >= 400)
+            AND {$this->alias}.user_fetched_status != 'ok'
+        SQL;
+
+        return $condition->not() ? "NOT ({$expr})" : "({$expr})";
     }
 
     /**

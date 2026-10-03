@@ -66,6 +66,13 @@
                         ['-url:arxiv.org', t('Links whose URL does not contain the text.')],
                     ],
                 },
+                {
+                    title: t('Availability'),
+                    examples: [
+                        ['is:down', t('Inaccessible links.')],
+                        ['is:up', t('Accessible links.')],
+                    ],
+                },
             ]) %}
 
             {% if context == 'links' %}

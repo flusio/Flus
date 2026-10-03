@@ -695,6 +695,41 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_1->id, $links[0]->id);
     }
 
+    public function testLinksTimelineCanListInaccessibleLinks(): void
+    {
+        $date = $this->fakeDateInPeriod();
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link_1 = LinkFactory::create([
+            'fetched_at' => \Minz\Time::now(),
+            'fetched_code' => 404,
+            'is_hidden' => false,
+        ]);
+        $link_2 = LinkFactory::create([
+            'fetched_at' => \Minz\Time::now(),
+            'fetched_code' => 200,
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link_1, $link_2], at: $date);
+        $stream->addSource($source);
+        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'q' => 'is:down',
+        ]));
+
+        $links_timeline = $stream_view->linksTimeline();
+
+        $links = $this->linksOfTimeline($links_timeline);
+        $this->assertSame(1, count($links));
+        $this->assertSame($link_1->id, $links[0]->id);
+    }
+
     public function testLinksTimelineListsNoLinksWhenQueryIsMalformed(): void
     {
         $date = $this->fakeDateInPeriod();

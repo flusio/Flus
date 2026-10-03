@@ -289,6 +289,97 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link_2->id, $links[0]->id);
     }
 
+    public function testGetLinksSearchesByIsDown(): void
+    {
+        $user = UserFactory::create();
+        $link_down = LinkFactory::create([
+            'user_id' => $user->id,
+            'fetched_at' => \Minz\Time::now(),
+            'fetched_code' => 404,
+        ]);
+        $link_up = LinkFactory::create([
+            'user_id' => $user->id,
+            'fetched_at' => \Minz\Time::now(),
+            'fetched_code' => 200,
+        ]);
+        $link_marked_accessible = LinkFactory::create([
+            'user_id' => $user->id,
+            'fetched_at' => \Minz\Time::now(),
+            'fetched_code' => 404,
+            'user_fetched_status' => 'ok',
+        ]);
+        $link_not_fetched = LinkFactory::create([
+            'user_id' => $user->id,
+            'fetched_at' => null,
+        ]);
+        $query = LinksSearcher::buildQuery('is:down', 'links');
+
+        $links = LinksSearcher::getLinks($user, $query);
+
+        $this->assertSame(1, count($links));
+        $this->assertSame($link_down->id, $links[0]->id);
+    }
+
+    public function testGetLinksSearchesByIsUp(): void
+    {
+        $user = UserFactory::create();
+        $link_down = LinkFactory::create([
+            'user_id' => $user->id,
+            'fetched_at' => \Minz\Time::now(),
+            'fetched_code' => 404,
+        ]);
+        $link_up = LinkFactory::create([
+            'user_id' => $user->id,
+            'fetched_at' => \Minz\Time::now(),
+            'fetched_code' => 200,
+        ]);
+        $link_marked_accessible = LinkFactory::create([
+            'user_id' => $user->id,
+            'fetched_at' => \Minz\Time::now(),
+            'fetched_code' => 404,
+            'user_fetched_status' => 'ok',
+        ]);
+        $link_not_fetched = LinkFactory::create([
+            'user_id' => $user->id,
+            'fetched_at' => null,
+        ]);
+        $query = LinksSearcher::buildQuery('is:up', 'links');
+
+        $links = LinksSearcher::getLinks($user, $query);
+
+        $this->assertEqualsCanonicalizing(
+            [$link_up->id, $link_marked_accessible->id],
+            array_column($links, 'id'),
+        );
+    }
+
+    public function testGetLinksCanExcludeUp(): void
+    {
+        $user = UserFactory::create();
+        $link_down = LinkFactory::create([
+            'user_id' => $user->id,
+            'fetched_at' => \Minz\Time::now(),
+            'fetched_code' => 404,
+        ]);
+        $link_up = LinkFactory::create([
+            'user_id' => $user->id,
+            'fetched_at' => \Minz\Time::now(),
+            'fetched_code' => 200,
+        ]);
+        $link_not_fetched = LinkFactory::create([
+            'user_id' => $user->id,
+            'fetched_at' => null,
+        ]);
+        $query = LinksSearcher::buildQuery('-is:up', 'links');
+
+        $links = LinksSearcher::getLinks($user, $query);
+
+        $this->assertEqualsCanonicalizing(
+            [$link_down->id, $link_not_fetched->id],
+            array_column($links, 'id'),
+        );
+    }
+
     public function testGetLinksSearchesByHasNotes(): void
     {
         $user = UserFactory::create();

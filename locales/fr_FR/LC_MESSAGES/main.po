@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-10-02 21:13+0200\n"
-"PO-Revision-Date: 2026-10-02 21:18+0200\n"
+"POT-Creation-Date: 2026-10-03 15:20+0200\n"
+"PO-Revision-Date: 2026-10-03 15:21+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -704,9 +704,9 @@ msgstr "aucun lien"
 
 #: views/collections/_collection.html.twig:26
 #: views/collections/_collection_follow.html.twig:18
-#: views/journal/index.html.twig:26 views/journal/index.html.twig:95
+#: views/journal/index.html.twig:26 views/journal/index.html.twig:97
 #: views/links/_pagination_count.html.twig:7
-#: views/streams/_timeline.html.twig:9 views/streams/_timeline.html.twig:80
+#: views/streams/_timeline.html.twig:9 views/streams/_timeline.html.twig:82
 #, php-format
 msgid "%s link"
 msgid_plural "%s links"
@@ -1251,13 +1251,13 @@ msgid "Access"
 msgstr "Accès"
 
 #: views/collections/show.html.twig:207 views/journal/index.html.twig:53
-#: views/journal/index.html.twig:105 views/journal/index.html.twig:151
+#: views/journal/index.html.twig:107 views/journal/index.html.twig:153
 #: views/links/_link.html.twig:215 views/links/_link.html.twig:221
 #: views/links/_link_row.html.twig:102 views/links/_link_row.html.twig:108
 #: views/links/show.html.twig:237 views/links/show.html.twig:241
 #: views/notes/_notepad.html.twig:27 views/notes/_notepad.html.twig:33
 #: views/profiles/layout.html.twig:88 views/streams/_timeline.html.twig:38
-#: views/streams/_timeline.html.twig:91 views/streams/_timeline.html.twig:135
+#: views/streams/_timeline.html.twig:93 views/streams/_timeline.html.twig:137
 #: views/streams/show.html.twig:147
 msgid "Actions"
 msgstr "Actions"
@@ -1599,15 +1599,15 @@ msgstr "hier"
 msgid "Actions on the day"
 msgstr "Actions pour la journée"
 
-#: views/journal/index.html.twig:111 views/streams/_timeline.html.twig:97
+#: views/journal/index.html.twig:113 views/streams/_timeline.html.twig:99
 msgid "Actions on the source"
 msgstr "Actions sur la source"
 
-#: views/journal/index.html.twig:156
+#: views/journal/index.html.twig:158
 msgid "Empty the journal"
 msgstr "Vider le journal"
 
-#: views/journal/index.html.twig:162
+#: views/journal/index.html.twig:164
 msgid ""
 "Note: you will need to clear the journal before you can refresh it. Mark the "
 "links as read, to be read later, or remove them with the appropriate actions."
@@ -1616,18 +1616,18 @@ msgstr ""
 "Marquez les liens comme lus, à lire plus tard, ou retirez-les avec les "
 "actions adéquats."
 
-#: views/journal/index.html.twig:167
+#: views/journal/index.html.twig:169
 msgid ""
 "Fill your journal with the content published by the sources that you follow."
 msgstr ""
 "Remplissez votre journal avec le contenu publié par les sources que vous "
 "suivez."
 
-#: views/journal/index.html.twig:173
+#: views/journal/index.html.twig:175
 msgid "There are no relevant links to suggest at this time."
 msgstr "Il n’y a aucun lien pertinent à vous proposer pour le moment."
 
-#: views/journal/index.html.twig:192
+#: views/journal/index.html.twig:194
 msgid "Refresh the journal"
 msgstr "Rafraichir le journal"
 
@@ -1994,74 +1994,86 @@ msgstr "Liens dont l’URL contient le texte."
 msgid "Links whose URL does not contain the text."
 msgstr "Liens dont l’URL ne contient pas le texte."
 
-#: views/links/_search_help.html.twig:74
+#: views/links/_search_help.html.twig:70
+msgid "Availability"
+msgstr "Disponibilité"
+
+#: views/links/_search_help.html.twig:72
+msgid "Inaccessible links."
+msgstr "Liens inaccessibles."
+
+#: views/links/_search_help.html.twig:73
+msgid "Accessible links."
+msgstr "Liens accessibles."
+
+#: views/links/_search_help.html.twig:81
 msgid "Notes"
 msgstr "Notes"
 
-#: views/links/_search_help.html.twig:76
+#: views/links/_search_help.html.twig:83
 msgid "Links whose notes contain the word."
 msgstr "Liens dont les notes contiennent le mot."
 
-#: views/links/_search_help.html.twig:77
+#: views/links/_search_help.html.twig:84
 msgid ""
 "Links with at least one note (and “no:notes” for the links without any)."
 msgstr ""
 "Liens avec au moins une note (et « no:notes » pour les liens sans note)."
 
-#: views/links/_search_help.html.twig:81 views/links/edit.html.twig:78
+#: views/links/_search_help.html.twig:88 views/links/edit.html.twig:78
 msgid "Origin"
 msgstr "Origine"
 
-#: views/links/_search_help.html.twig:83
+#: views/links/_search_help.html.twig:90
 msgid "Links whose origin contains the text."
 msgstr "Liens dont l’origine contient le texte."
 
-#: views/links/_search_help.html.twig:84
+#: views/links/_search_help.html.twig:91
 msgid "Links whose origin does not contain the text."
 msgstr "Liens dont l’origine ne contient pas le texte."
 
-#: views/links/_search_help.html.twig:88
+#: views/links/_search_help.html.twig:95
 msgid "Hidden links"
 msgstr "Liens masqués"
 
-#: views/links/_search_help.html.twig:90
+#: views/links/_search_help.html.twig:97
 msgid "Hidden links."
 msgstr "Liens masqués."
 
-#: views/links/_search_help.html.twig:91
+#: views/links/_search_help.html.twig:98
 msgid "Links which are not hidden."
 msgstr "Liens qui ne sont pas masqués."
 
-#: views/links/_search_help.html.twig:95
+#: views/links/_search_help.html.twig:102
 msgid "Dates"
 msgstr "Dates"
 
-#: views/links/_search_help.html.twig:97
+#: views/links/_search_help.html.twig:104
 msgid "Links added during the month (or the year, or the day)."
 msgstr "Liens ajoutés pendant le mois (ou l’année, ou le jour)."
 
-#: views/links/_search_help.html.twig:98
+#: views/links/_search_help.html.twig:105
 msgid "Links added from the date, with “>”, “>=”, “<” or “<=”."
 msgstr ""
 "Liens ajoutés à partir de la date, avec « > », « >= », « < » ou « <= »."
 
-#: views/links/_search_help.html.twig:99
+#: views/links/_search_help.html.twig:106
 msgid "Links added between the two dates."
 msgstr "Liens ajoutés entre les deux dates."
 
-#: views/links/_search_help.html.twig:100
+#: views/links/_search_help.html.twig:107
 msgid "Links added today (or “current-month”, “current-year”)."
 msgstr "Liens ajoutés aujourd’hui (ou « current-month », « current-year »)."
 
-#: views/links/_search_help.html.twig:108
+#: views/links/_search_help.html.twig:115
 msgid "Durations"
 msgstr "Durées"
 
-#: views/links/_search_help.html.twig:110
+#: views/links/_search_help.html.twig:117
 msgid "Links taking more than 10 minutes to read."
 msgstr "Liens prenant plus de 10 minutes à lire."
 
-#: views/links/_search_help.html.twig:111
+#: views/links/_search_help.html.twig:118
 msgid "Links taking between 5 and 15 minutes to read."
 msgstr "Liens prenant entre 5 et 15 minutes à lire."
 
@@ -3556,11 +3568,11 @@ msgstr ""
 "Un point s’affiche à côté du fil lorsqu’il contient des liens non lus datant "
 "des sept derniers jours."
 
-#: views/streams/_timeline.html.twig:140
+#: views/streams/_timeline.html.twig:142
 msgid "Actions on the links"
 msgstr "Actions sur les liens"
 
-#: views/streams/_timeline.html.twig:154
+#: views/streams/_timeline.html.twig:156
 msgid "There is no link matching your filters."
 msgstr "Il n’y a aucun lien qui correspond à vos filtres."
 
