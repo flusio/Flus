@@ -135,15 +135,33 @@ trait Fetchable
 
         $table_name = self::tableName();
 
+        // Each part of the union matches one of the partial indexes, with an
+        // ORDER BY following the index order. This leads PostgreSQL to use
+        // index scans (rather than a bitmap scan as with a OR), which mark the
+        // dead index entries as they go. Otherwise, the dead entries left by
+        // the fetched models are read again and again until the next vacuum.
         $sql = <<<SQL
-            SELECT * FROM {$table_name}
+            SELECT * FROM (
+                (
+                    SELECT * FROM {$table_name}
+                    WHERE fetched_at IS NULL
+                    {$clause_serie}
+                    ORDER BY fetched_at
+                    LIMIT :max
+                )
 
-            WHERE (
-                fetched_at IS NULL
-                OR (fetched_retry_at IS NOT NULL AND fetched_retry_at <= :now)
-            )
+                UNION ALL
 
-            {$clause_serie}
+                (
+                    SELECT * FROM {$table_name}
+                    WHERE fetched_retry_at IS NOT NULL
+                    AND fetched_retry_at <= :now
+                    AND fetched_at IS NOT NULL
+                    {$clause_serie}
+                    ORDER BY fetched_retry_at
+                    LIMIT :max
+                )
+            ) candidates
 
             ORDER BY fetched_at NULLS FIRST
             LIMIT :max
@@ -162,13 +180,17 @@ trait Fetchable
     public static function countToFetch(): int
     {
         $table_name = self::tableName();
-        $sql = <<<SQL
-            SELECT COUNT(*) FROM {$table_name}
 
-            WHERE fetched_at IS NULL
-            OR (
-                fetched_retry_at IS NOT NULL
+        // See listToFetch() for the reasons of this structure.
+        $sql = <<<SQL
+            SELECT (
+                SELECT COUNT(*) FROM {$table_name}
+                WHERE fetched_at IS NULL
+            ) + (
+                SELECT COUNT(*) FROM {$table_name}
+                WHERE fetched_retry_at IS NOT NULL
                 AND fetched_retry_at <= :now
+                AND fetched_at IS NOT NULL
             )
         SQL;
 
@@ -177,7 +199,7 @@ trait Fetchable
         $database = Database::get();
         $statement = $database->prepare($sql);
         $statement->execute([
-            $now->format(Database\Column::DATETIME_FORMAT),
+            ':now' => $now->format(Database\Column::DATETIME_FORMAT),
         ]);
 
         return intval($statement->fetchColumn());
