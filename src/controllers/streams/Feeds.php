@@ -19,6 +19,10 @@ class Feeds extends BaseController
      * Show the feed of a stream.
      *
      * @request_param string id
+     * @request_param string view
+     *     The id of the view to apply, or "default" for the main view. If
+     *     not given, no view is applied and the feed lists the links of all
+     *     the sources.
      * @request_param boolean direct
      *     Indicate if <link rel=alternate> should point directly to the
      *     external websites (true) or not (false, default).
@@ -27,7 +31,7 @@ class Feeds extends BaseController
      *     On success.
      *
      * @throws \Minz\Errors\MissingRecordError
-     *     If the stream doesn't exist.
+     *     If the stream or the view doesn't exist.
      * @throws auth\AccessDeniedError
      *     If the user cannot view the stream.
      */
@@ -42,11 +46,32 @@ class Feeds extends BaseController
 
         utils\Locale::setCurrentLocale($stream->owner()->locale);
 
-        $links = $stream->links([
+        $view = null;
+        $links_options = [
             'context_user' => null,
-            'days' => 'ALL',
-            'limit' => 30,
-        ]);
+        ];
+
+        if ($request->parameters->has('view')) {
+            $view = $this->requireView($stream, $request);
+
+            // Only the saved parameters of the view are applied: the
+            // parameters of the URL must not change the content of the feed.
+            $view->setStream($stream);
+            $view->loadUrlParameters(new \Minz\ParameterBag([]));
+
+            $stream_view = new models\StreamView($stream, null, $view);
+            $links_options = $stream_view->linksOptions();
+        }
+
+        if ($links_options === null) {
+            $links = [];
+        } else {
+            // The dates of the view are ignored as a feed slides anyway.
+            $links = $stream->links(array_merge($links_options, [
+                'days' => 'ALL',
+                'limit' => 30,
+            ]));
+        }
 
         // Deduplicate the links by id: a stream can list the same link several
         // times (e.g. two collections publishing it), while the Atom entries
@@ -62,9 +87,34 @@ class Feeds extends BaseController
 
         return Response::ok('streams/feeds/show.atom.xml.twig', [
             'stream' => $stream,
+            'view' => $view,
             'links' => $links,
             'direct' => $direct,
         ]);
+    }
+
+    /**
+     * Return the view of the stream designated by the "view" parameter.
+     *
+     * The main view is designated by "default" rather than by its id: it is
+     * deleted when it is reset, while its feed must keep working.
+     *
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the view doesn't exist or doesn't belong to the stream.
+     */
+    private function requireView(models\Stream $stream, Request $request): models\View
+    {
+        if ($request->parameters->getString('view') === 'default') {
+            return $stream->defaultView();
+        }
+
+        $view = models\View::loadFromRequest($request, parameter: 'view');
+
+        if (!$view || $view->stream_id !== $stream->id) {
+            throw new \Minz\Errors\MissingRecordError('The view does not exist.');
+        }
+
+        return $view;
     }
 
     /**

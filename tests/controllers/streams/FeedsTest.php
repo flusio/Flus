@@ -6,6 +6,7 @@ use tests\factories\CollectionFactory;
 use tests\factories\LinkFactory;
 use tests\factories\StreamFactory;
 use tests\factories\UserFactory;
+use tests\factories\ViewFactory;
 
 class FeedsTest extends \PHPUnit\Framework\TestCase
 {
@@ -191,6 +192,96 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseNotContains($response, $link_title);
+    }
+
+    public function testShowWithViewFiltersBySources(): void
+    {
+        $feed_1 = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $feed_2 = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link_1 = LinkFactory::create([
+            'user_id' => $feed_1->user_id,
+            'title' => 'A report about the ocean',
+            'is_hidden' => false,
+        ]);
+        $link_2 = LinkFactory::create([
+            'user_id' => $feed_2->user_id,
+            'title' => 'A study about the forest',
+            'is_hidden' => false,
+        ]);
+        $feed_1->addLinks([$link_1], at: \Minz\Time::now());
+        $feed_2->addLinks([$link_2], at: \Minz\Time::now());
+        $stream = StreamFactory::create([
+            'is_public' => true,
+        ]);
+        $stream->addSource($feed_1);
+        $stream->addSource($feed_2);
+        $view = ViewFactory::create([
+            'stream_id' => $stream->id,
+            'name' => 'Ocean',
+            'parameters' => [
+                'sources' => [$feed_1->id],
+            ],
+        ]);
+
+        $response = $this->appRun('GET', "/streams/{$stream->id}/feed.atom.xml", [
+            'view' => $view->id,
+        ]);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'A report about the ocean');
+        $this->assertResponseNotContains($response, 'A study about the forest');
+        $this->assertResponseContains($response, "{$stream->name} – Ocean");
+    }
+
+    public function testShowWithDefaultViewFiltersBySources(): void
+    {
+        $feed_1 = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $feed_2 = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link_1 = LinkFactory::create([
+            'user_id' => $feed_1->user_id,
+            'title' => 'A report about the ocean',
+            'is_hidden' => false,
+        ]);
+        $link_2 = LinkFactory::create([
+            'user_id' => $feed_2->user_id,
+            'title' => 'A study about the forest',
+            'is_hidden' => false,
+        ]);
+        $feed_1->addLinks([$link_1], at: \Minz\Time::now());
+        $feed_2->addLinks([$link_2], at: \Minz\Time::now());
+        $stream = StreamFactory::create([
+            'is_public' => true,
+        ]);
+        $stream->addSource($feed_1);
+        $stream->addSource($feed_2);
+        ViewFactory::create([
+            'stream_id' => $stream->id,
+            'user_id' => $stream->user_id,
+            'is_default' => true,
+            'parameters' => [
+                'sources' => [$feed_1->id],
+            ],
+        ]);
+
+        $response = $this->appRun('GET', "/streams/{$stream->id}/feed.atom.xml", [
+            'view' => 'default',
+        ]);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'A report about the ocean');
+        $this->assertResponseNotContains($response, 'A study about the forest');
     }
 
     public function testShowFailsIfStreamIsInaccessible(): void

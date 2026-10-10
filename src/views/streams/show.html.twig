@@ -6,7 +6,20 @@
 {% block canonical %}{{ url_full('stream', { id: stream.id }) }}{% endblock %}
 
 {% block alternates %}
-    <link rel="alternate" type="application/atom+xml" title="{{ t('Syndication feed of %s', [stream.name]) }}" href="{{ url_full('stream feed', { id: stream.id }) }}">
+    {# The feed of the current view comes first, so that it is the one picked by
+     # the feed readers. #}
+    {% set feed_views = [stream_view.view] | merge(stream.views({ context_user: app.user }) | filter(view => not stream_view.isViewSelected(view))) %}
+
+    {% for view in feed_views %}
+        {% if view.isPersisted %}
+            {% set feed_title = t('Syndication feed of %s (%s)', [stream.name, view.name]) %}
+        {% else %}
+            {% set feed_title = t('Syndication feed of %s', [stream.name]) %}
+        {% endif %}
+
+        <link rel="alternate" type="application/atom+xml" title="{{ feed_title }}" href="{{ url_full('stream feed', { id: stream.id, view: view.is_default ? 'default' : view.id }) }}">
+    {% endfor %}
+
     <link rel="alternate" type="text/x-opml" title="{{ t('Sources OPML of %s', [stream.name]) }}" href="{{ url_full('stream opml', { id: stream.id }) }}">
 {% endblock %}
 
@@ -156,7 +169,7 @@
                 ) }}
 
                 {{ item.clipboard(
-                    value: url_full('stream feed', { id: stream.id }),
+                    value: url_full('stream feed', { id: stream.id, view: stream_view.view.is_default ? 'default' : stream_view.view.id }),
                     label: t('Copy link to Web feed'),
                     icon: 'feed',
                 ) }}

@@ -513,12 +513,23 @@ class Stream
     /**
      * Return a tag URI that can be used as Atom id
      *
+     * If a view is given, the tag URI identifies the feed of this view. The
+     * main view is identified by "default" rather than by its id, as it is
+     * deleted when it is reset.
+     *
      * @see https://www.rfc-editor.org/rfc/rfc4151.txt
      */
-    public function tagUri(): string
+    public function tagUri(?View $view = null): string
     {
         $host = \App\Configuration::$url_options['host'];
         $date = $this->created_at->format('Y-m-d');
-        return "tag:{$host},{$date}:streams/{$this->id}";
+        $tag_uri = "tag:{$host},{$date}:streams/{$this->id}";
+
+        if ($view) {
+            $view_id = $view->is_default ? 'default' : $view->id;
+            $tag_uri .= "/views/{$view_id}";
+        }
+
+        return $tag_uri;
     }
 }

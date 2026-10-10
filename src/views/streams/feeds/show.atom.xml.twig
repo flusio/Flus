@@ -1,16 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <?xml-stylesheet href="{{ url('feeds xsl') }}" type="text/xsl"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <title>{{ stream.name }}</title>
+    {% if view and view.isPersisted %}
+        <title>{{ stream.name }} – {{ view.name }}</title>
+    {% else %}
+        <title>{{ stream.name }}</title>
+    {% endif %}
 
     {% if stream.description %}
         <subtitle type="html"><![CDATA[{{ stream.descriptionAsHtml | raw }}]]></subtitle>
     {% endif %}
 
-    <link href="{{ url_full('stream', { id: stream.id }) }}" rel="alternate" type="text/html" />
-    <link href="{{ url_full('stream feed', { id: stream.id }) }}" rel="self" type="application/atom+xml" />
+    {% if view %}
+        {% set view_route_id = view.is_default ? 'default' : view.id %}
 
-    <id>{{ stream.tagUri }}</id>
+        <link href="{{ view.is_default ? url_full('stream', { id: stream.id }) : url_full('stream', { id: stream.id, view: view.id }) }}" rel="alternate" type="text/html" />
+        <link href="{{ url_full('stream feed', { id: stream.id, view: view_route_id }) }}" rel="self" type="application/atom+xml" />
+    {% else %}
+        <link href="{{ url_full('stream', { id: stream.id }) }}" rel="alternate" type="text/html" />
+        <link href="{{ url_full('stream feed', { id: stream.id }) }}" rel="self" type="application/atom+xml" />
+    {% endif %}
+
+    <id>{{ stream.tagUri(view) }}</id>
     <author>
         <name>{{ stream.owner.username }}</name>
     </author>

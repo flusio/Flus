@@ -182,19 +182,13 @@ class StreamView
 
     public function linksTimeline(): utils\LinksTimeline
     {
-        if ($this->search_error !== null) {
+        $links_options = $this->linksOptions();
+
+        if ($links_options === null) {
             return new utils\LinksTimeline([]);
         }
 
-        $links = $this->stream->links([
-            'context_user' => $this->context_user,
-            'at' => $this->at,
-            'days' => $this->days,
-            'sources' => $this->sources,
-            'status' => $this->status,
-            'with_dismissed' => $this->with_dismissed,
-            'query' => $this->search_query,
-        ]);
+        $links = $this->stream->links($links_options);
 
         links\Preloader::for($links)
             ->sources()
@@ -202,6 +196,39 @@ class StreamView
             ->numberCollectionsFor($this->context_user);
 
         return new utils\LinksTimeline($links);
+    }
+
+    /**
+     * Return the options to pass to Stream::links() to list the links of the
+     * view, or null if the query cannot be parsed. In this case, no links
+     * must be listed (rather than all the links, which would ignore the
+     * query).
+     *
+     * @return ?array{
+     *     context_user: ?User,
+     *     at: \DateTimeImmutable,
+     *     days: int,
+     *     sources: Collection[],
+     *     status: string,
+     *     with_dismissed: bool,
+     *     query: ?search_engine\Query,
+     * }
+     */
+    public function linksOptions(): ?array
+    {
+        if ($this->search_error !== null) {
+            return null;
+        }
+
+        return [
+            'context_user' => $this->context_user,
+            'at' => $this->at,
+            'days' => $this->days,
+            'sources' => $this->sources,
+            'status' => $this->status,
+            'with_dismissed' => $this->with_dismissed,
+            'query' => $this->search_query,
+        ];
     }
 
     /**
