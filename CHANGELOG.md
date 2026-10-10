@@ -12,6 +12,10 @@ The old URLs redirect permanently.
 
 In the archives exported by the users, `bookmarks.atom.xml` is renamed to `read-later.atom.xml` and `news.atom.xml` is renamed to `journal.atom.xml`.
 
+A new `DB_CLEANER_WORK_MEM` environment variable allows you to increase the memory used by PostgreSQL when deleting the old links.
+With a lot of links, it avoids writing big temporary files on disk every night.
+See `env.sample` for more information.
+
 Reminder: **a migration must have been applied manually when you upgraded to Flus 2.5.0.**
 If you didn't yet, please run **before upgrading to Flus 3.0.0:**
 

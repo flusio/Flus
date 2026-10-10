@@ -50,6 +50,7 @@ return [
         'feeds_links_keep_maximum' => 0,
         'job_feeds_sync_count' => 1,
         'job_links_sync_count' => 1,
+        'cleaner_work_mem' => '64MB',
         'server_ips' => [],
         'cli_locale' => 'en_GB',
         'plausible_url' => '',

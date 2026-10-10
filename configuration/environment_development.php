@@ -22,6 +22,8 @@ $feeds_links_keep_period = max(0, intval($dotenv->pop('FEEDS_LINKS_KEEP_PERIOD',
 $job_feeds_sync_count = max(1, intval($dotenv->pop('JOB_FEEDS_SYNC_COUNT', '1')));
 $job_links_sync_count = max(1, intval($dotenv->pop('JOB_LINKS_SYNC_COUNT', '1')));
 
+$cleaner_work_mem = trim($dotenv->pop('DB_CLEANER_WORK_MEM', ''));
+
 $server_ips = array_map('trim', explode(',', $dotenv->pop('APP_SERVER_IPS', '')));
 
 $tmp_path = sys_get_temp_dir() . '/Flus/' . md5($flus_version);
@@ -61,6 +63,7 @@ return [
         'feeds_links_keep_period' => $feeds_links_keep_period,
         'job_feeds_sync_count' => $job_feeds_sync_count,
         'job_links_sync_count' => $job_links_sync_count,
+        'cleaner_work_mem' => $cleaner_work_mem,
         'server_ips' => $server_ips,
         'cli_locale' => $dotenv->pop('CLI_LOCALE', ''),
         'plausible_url' => $dotenv->pop('APP_PLAUSIBLE_URL', ''),

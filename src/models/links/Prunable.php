@@ -33,10 +33,32 @@ trait Prunable
         SQL;
 
         $database = Database::get();
-        $statement = $database->prepare($sql);
-        return $statement->execute([
-            ':date' => $date->format(Database\Column::DATETIME_FORMAT),
-        ]);
+        $database->beginTransaction();
+
+        try {
+            // This query scans all the links and can generate big temporary
+            // files on disk with the default work_mem. The setting only
+            // applies to the current transaction.
+            $work_mem = \App\Configuration::$application['cleaner_work_mem'];
+            if ($work_mem) {
+                $statement = $database->prepare("SELECT set_config('work_mem', :work_mem, true)");
+                $statement->execute([
+                    ':work_mem' => $work_mem,
+                ]);
+            }
+
+            $statement = $database->prepare($sql);
+            $result = $statement->execute([
+                ':date' => $date->format(Database\Column::DATETIME_FORMAT),
+            ]);
+
+            $database->commit();
+        } catch (\Exception $e) {
+            $database->rollBack();
+            throw $e;
+        }
+
+        return $result;
     }
 
     /**
@@ -131,7 +153,29 @@ trait Prunable
         SQL;
 
         $database = Database::get();
-        $statement = $database->prepare($sql);
-        return $statement->execute($parameters);
+        $database->beginTransaction();
+
+        try {
+            // This query scans all the links and can generate big temporary
+            // files on disk with the default work_mem. The setting only
+            // applies to the current transaction.
+            $work_mem = \App\Configuration::$application['cleaner_work_mem'];
+            if ($work_mem) {
+                $statement = $database->prepare("SELECT set_config('work_mem', :work_mem, true)");
+                $statement->execute([
+                    ':work_mem' => $work_mem,
+                ]);
+            }
+
+            $statement = $database->prepare($sql);
+            $result = $statement->execute($parameters);
+
+            $database->commit();
+        } catch (\Exception $e) {
+            $database->rollBack();
+            throw $e;
+        }
+
+        return $result;
     }
 }

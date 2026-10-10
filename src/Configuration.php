@@ -22,6 +22,7 @@ namespace App;
  *     'feeds_links_keep_period': int,
  *     'job_feeds_sync_count': int,
  *     'job_links_sync_count': int,
+ *     'cleaner_work_mem': string,
  *     'server_ips': non-empty-string[],
  *     'cli_locale': string,
  *     'plausible_url': string,
