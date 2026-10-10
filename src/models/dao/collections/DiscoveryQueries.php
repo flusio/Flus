@@ -23,7 +23,7 @@ trait DiscoveryQueries
         int $pagination_limit
     ): array {
         $sql = <<<'SQL'
-            SELECT c.*, COUNT(lc.*) AS number_links
+            SELECT c.*, COUNT(*) AS number_links
             FROM collections c, collections_to_topics ct, links_to_collections lc, links l
 
             WHERE c.id = ct.collection_id

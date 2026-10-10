@@ -162,7 +162,7 @@ trait Collection
         $join_clause = '';
         $group_by_clause = '';
         if (in_array('number_links', $selected_computed_props)) {
-            $number_links_clause = ', COUNT(lc.*) AS number_links';
+            $number_links_clause = ', COUNT(lc.id) AS number_links';
             $join_clause = <<<SQL
                 LEFT JOIN links_to_collections lc
                 ON lc.collection_id = c.id
@@ -170,7 +170,7 @@ trait Collection
             $group_by_clause = 'GROUP BY c.id';
 
             if (!$options['count_hidden']) {
-                $number_links_clause = ', COUNT(l.*) AS number_links';
+                $number_links_clause = ', COUNT(l.id) AS number_links';
 
                 $join_clause .= <<<SQL
                     \n
@@ -187,10 +187,10 @@ trait Collection
             $private_clause = 'AND c.is_public = true';
 
             if (in_array('number_links', $selected_computed_props)) {
-                $non_empty_clause = 'HAVING COUNT(lc.*) > 0';
+                $non_empty_clause = 'HAVING COUNT(lc.id) > 0';
 
                 if (!$options['count_hidden']) {
-                    $non_empty_clause = 'HAVING COUNT(l.*) > 0';
+                    $non_empty_clause = 'HAVING COUNT(l.id) > 0';
                 }
             }
         }
@@ -254,7 +254,7 @@ trait Collection
         $join_clause = '';
         $group_by_clause = '';
         if (in_array('number_links', $selected_computed_props)) {
-            $number_links_clause = ', COUNT(lc.*) AS number_links';
+            $number_links_clause = ', COUNT(lc.id) AS number_links';
             $join_clause = <<<SQL
                 LEFT JOIN links_to_collections lc
                 ON lc.collection_id = c.id
@@ -323,7 +323,7 @@ trait Collection
         $join_clause = '';
         $group_by_clause = '';
         if (in_array('number_links', $selected_computed_props)) {
-            $number_links_clause = ', COUNT(lc.*) AS number_links';
+            $number_links_clause = ', COUNT(lc.id) AS number_links';
             $join_clause = <<<SQL
                 LEFT JOIN links_to_collections lc
                 ON lc.collection_id = c.id

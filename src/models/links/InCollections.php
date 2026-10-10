@@ -345,8 +345,10 @@ trait InCollections
             ':collection_id' => $collection->id,
         ];
 
+        $visibility_join_clause = '';
         $visibility_clause = '';
         if (!$options['hidden']) {
+            $visibility_join_clause = 'INNER JOIN links l ON l.id = lc.link_id';
             $visibility_clause = 'AND l.is_hidden = false';
         }
 
@@ -357,11 +359,12 @@ trait InCollections
         }
 
         $sql = <<<SQL
-            SELECT COUNT(l.*)
-            FROM links l, links_to_collections lc
+            SELECT COUNT(*)
+            FROM links_to_collections lc
 
-            WHERE l.id = lc.link_id
-            AND lc.collection_id = :collection_id
+            {$visibility_join_clause}
+
+            WHERE lc.collection_id = :collection_id
 
             {$since_clause}
 

@@ -58,7 +58,7 @@ trait Readable
     public static function countReadLater(User $user): int
     {
         $sql = <<<SQL
-            SELECT COUNT(l.*)
+            SELECT COUNT(*)
             FROM links l
             INNER JOIN url_statuses us ON us.user_id = :user_id AND l.url_hash = us.url_hash
 
@@ -119,7 +119,7 @@ trait Readable
     public static function countRead(User $user): int
     {
         $sql = <<<SQL
-            SELECT COUNT(l.*)
+            SELECT COUNT(*)
             FROM links l
             INNER JOIN url_statuses us ON us.user_id = :user_id AND l.url_hash = us.url_hash
 

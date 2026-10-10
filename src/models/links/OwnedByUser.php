@@ -386,7 +386,7 @@ trait OwnedByUser
             $parameters[] = $user->id;
 
             $sql = <<<SQL
-                SELECT l.url_hash, COUNT(c.*) AS number_collections
+                SELECT l.url_hash, COUNT(*) AS number_collections
                 FROM collections c, links_to_collections lc, links l
 
                 WHERE l.url_hash IN ({$hashes_where_statement})
