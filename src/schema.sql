@@ -231,6 +231,8 @@ CREATE TABLE url_statuses (
 );
 
 CREATE UNIQUE INDEX idx_url_statuses_user_id_url_hash ON url_statuses(user_id, url_hash);
+CREATE INDEX idx_url_statuses_user_id_read_at ON url_statuses(user_id, read_at DESC) WHERE read_at IS NOT NULL;
+CREATE INDEX idx_url_statuses_user_id_read_later_at ON url_statuses(user_id, read_later_at DESC) WHERE read_later_at IS NOT NULL;
 
 CREATE TABLE followed_collections (
     id BIGSERIAL PRIMARY KEY,
