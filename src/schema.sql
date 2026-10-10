@@ -208,6 +208,16 @@ CREATE UNIQUE INDEX idx_links_to_collections ON links_to_collections(link_id, co
 CREATE INDEX idx_links_to_collections_collection_id_created_at ON links_to_collections(collection_id, created_at);
 CREATE INDEX idx_links_to_collections_created_at ON links_to_collections(created_at);
 
+CREATE TABLE fetch_errors (
+    id BIGSERIAL PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL,
+
+    link_id TEXT NOT NULL REFERENCES links ON DELETE CASCADE ON UPDATE CASCADE,
+    content TEXT NOT NULL
+);
+
+CREATE UNIQUE INDEX idx_fetch_errors_link_id ON fetch_errors(link_id);
+
 CREATE TABLE url_statuses (
     id BIGSERIAL PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,

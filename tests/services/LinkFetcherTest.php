@@ -276,6 +276,43 @@ class LinkFetcherTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(404, $link->fetched_code);
     }
 
+    public function testFetchSavesFetchErrorIfUnreachable(): void
+    {
+        $link_fetcher_service = new LinkFetcher();
+        $url = 'https://flus.fr/does_not_exist.html';
+        $this->mockHttpWithResponse($url, <<<TEXT
+            HTTP/2 404
+            content-type: text/plain
+
+            Page not found
+            TEXT
+        );
+        $link = LinkFactory::create([
+            'url' => $url,
+        ]);
+
+        $link_fetcher_service->fetch($link);
+
+        $fetch_error = $link->fetchError();
+        $this->assertNotNull($fetch_error);
+        $this->assertSame('Page not found', $fetch_error->content);
+    }
+
+    public function testFetchClearsFetchErrorIfReachable(): void
+    {
+        $link_fetcher_service = new LinkFetcher();
+        $url = 'https://flus.fr/carnet/';
+        $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
+        $link = LinkFactory::create([
+            'url' => $url,
+        ]);
+        $link->setFetchError('Page not found');
+
+        $link_fetcher_service->fetch($link);
+
+        $this->assertNull($link->fetchError());
+    }
+
     public function testFetchDoesNotChangeReadingTimeIfAlreadySet(): void
     {
         $link_fetcher_service = new LinkFetcher();

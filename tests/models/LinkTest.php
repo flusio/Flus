@@ -15,7 +15,6 @@ class LinkTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(\Minz\Time::now(), $link->fetched_at);
         $this->assertSame(200, $link->fetched_code);
-        $this->assertNull($link->fetched_error);
         $this->assertNull($link->fetched_retry_at);
         $this->assertSame(1, $link->fetched_count);
     }
@@ -25,11 +24,10 @@ class LinkTest extends \PHPUnit\Framework\TestCase
         $this->freeze();
         $link = new Link('https://example.com', is_hidden: true);
 
-        $link->fetch(code: 404, error: 'Page not found');
+        $link->fetch(code: 404);
 
         $this->assertEquals(\Minz\Time::now(), $link->fetched_at);
         $this->assertSame(404, $link->fetched_code);
-        $this->assertSame('Page not found', $link->fetched_error);
         $this->assertNull($link->fetched_retry_at);
         $this->assertSame(1, $link->fetched_count);
     }
@@ -39,11 +37,10 @@ class LinkTest extends \PHPUnit\Framework\TestCase
         $this->freeze();
         $link = new Link('https://example.com', is_hidden: true);
 
-        $link->fetch(code: 500, error: 'Internal server error');
+        $link->fetch(code: 500);
 
         $this->assertEquals(\Minz\Time::now(), $link->fetched_at);
         $this->assertSame(500, $link->fetched_code);
-        $this->assertSame('Internal server error', $link->fetched_error);
         $this->assertEquals(\Minz\Time::fromNow(60, 'seconds'), $link->fetched_retry_at);
         $this->assertSame(1, $link->fetched_count);
     }
@@ -54,11 +51,10 @@ class LinkTest extends \PHPUnit\Framework\TestCase
         $link = new Link('https://example.com', is_hidden: true);
         $link->fetched_count = 1;
 
-        $link->fetch(code: 500, error: 'Internal server error');
+        $link->fetch(code: 500);
 
         $this->assertEquals(\Minz\Time::now(), $link->fetched_at);
         $this->assertSame(500, $link->fetched_code);
-        $this->assertSame('Internal server error', $link->fetched_error);
         $this->assertEquals(\Minz\Time::fromNow(61, 'seconds'), $link->fetched_retry_at);
         $this->assertSame(2, $link->fetched_count);
     }
@@ -70,13 +66,11 @@ class LinkTest extends \PHPUnit\Framework\TestCase
 
         $link->fetch(
             code: 500,
-            error: 'Internal server error',
             retry_after: \Minz\Time::fromNow(120, 'seconds'),
         );
 
         $this->assertEquals(\Minz\Time::now(), $link->fetched_at);
         $this->assertSame(500, $link->fetched_code);
-        $this->assertSame('Internal server error', $link->fetched_error);
         $this->assertEquals(\Minz\Time::fromNow(120, 'seconds'), $link->fetched_retry_at);
         $this->assertSame(1, $link->fetched_count);
     }
@@ -88,13 +82,11 @@ class LinkTest extends \PHPUnit\Framework\TestCase
 
         $link->fetch(
             code: 500,
-            error: 'Internal server error',
             retry_after: \Minz\Time::fromNow(30, 'seconds'),
         );
 
         $this->assertEquals(\Minz\Time::now(), $link->fetched_at);
         $this->assertSame(500, $link->fetched_code);
-        $this->assertSame('Internal server error', $link->fetched_error);
         $this->assertEquals(\Minz\Time::fromNow(60, 'seconds'), $link->fetched_retry_at);
         $this->assertSame(1, $link->fetched_count);
     }
@@ -104,7 +96,6 @@ class LinkTest extends \PHPUnit\Framework\TestCase
         $this->freeze();
         $link = new Link('https://example.com', is_hidden: true);
         $link->fetched_code = 500;
-        $link->fetched_error = 'Internal server error';
         $link->fetched_retry_at = \Minz\Time::now();
         $link->fetched_count = 1;
 
@@ -112,7 +103,6 @@ class LinkTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(\Minz\Time::now(), $link->fetched_at);
         $this->assertSame(200, $link->fetched_code);
-        $this->assertNull($link->fetched_error);
         $this->assertNull($link->fetched_retry_at);
         $this->assertSame(2, $link->fetched_count);
     }
@@ -123,11 +113,10 @@ class LinkTest extends \PHPUnit\Framework\TestCase
         $link = new Link('https://example.com', is_hidden: true);
         $link->fetched_count = Link::FETCHED_RETRIES_MAX_TRIES - 1;
 
-        $link->fetch(code: 500, error: 'Internal server error');
+        $link->fetch(code: 500);
 
         $this->assertEquals(\Minz\Time::now(), $link->fetched_at);
         $this->assertSame(500, $link->fetched_code);
-        $this->assertSame('Internal server error', $link->fetched_error);
         $this->assertSame(Link::FETCHED_RETRIES_MAX_TRIES, $link->fetched_count);
         $this->assertNull($link->fetched_retry_at);
     }

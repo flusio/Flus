@@ -51,12 +51,10 @@ trait Fetchable
      */
     public function fetch(
         int $code,
-        ?string $error = null,
         ?\DateTimeImmutable $retry_after = null,
     ): void {
         $this->fetched_at = \Minz\Time::now();
         $this->fetched_code = $code;
-        $this->fetched_error = $error;
 
         // shouldBeFetchedLater() depends on fetched_count, which *must* be
         // incremented *before*.
@@ -71,6 +69,37 @@ trait Fetchable
         } else {
             $this->fetched_retry_at = null;
         }
+    }
+
+    /**
+     * Return the fetch error of the model, if any.
+     */
+    public function fetchError(): ?FetchError
+    {
+        return FetchError::findBy([
+            'link_id' => $this->id,
+        ]);
+    }
+
+    /**
+     * Save the content of the fetch error of the model (e.g. the content of
+     * the HTTP response), replacing the previous one if any.
+     *
+     * The model must be saved in database before calling this method.
+     */
+    public function setFetchError(string $content): void
+    {
+        FetchError::store($this, $content);
+    }
+
+    /**
+     * Delete the fetch error of the model, if any.
+     */
+    public function clearFetchError(): void
+    {
+        FetchError::deleteBy([
+            'link_id' => $this->id,
+        ]);
     }
 
     /**
