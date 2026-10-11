@@ -5,6 +5,7 @@ namespace App\jobs\scheduled;
 use App\http;
 use App\models;
 use tests\factories\CollectionFactory;
+use tests\factories\FetchErrorFactory;
 use tests\factories\FetchLogFactory;
 use tests\factories\LinkFactory;
 use tests\factories\MastodonAccountFactory;
@@ -107,6 +108,38 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $cleaner_job->perform();
 
         $this->assertTrue(http\FetchLog::exists($fetch_log->id));
+    }
+
+    public function testPerformDeletesOldFetchErrors(): void
+    {
+        $this->freeze();
+        $cleaner_job = new Cleaner();
+        /** @var int */
+        $days = $this->fake('numberBetween', 8, 9000);
+        $created_at = \Minz\Time::ago($days, 'days');
+        $fetch_error = FetchErrorFactory::create([
+            'created_at' => $created_at,
+        ]);
+
+        $cleaner_job->perform();
+
+        $this->assertFalse(http\FetchError::exists($fetch_error->id));
+    }
+
+    public function testPerformKeepsFreshFetchErrors(): void
+    {
+        $this->freeze();
+        $cleaner_job = new Cleaner();
+        /** @var int */
+        $days = $this->fake('numberBetween', 0, 7);
+        $created_at = \Minz\Time::ago($days, 'days');
+        $fetch_error = FetchErrorFactory::create([
+            'created_at' => $created_at,
+        ]);
+
+        $cleaner_job->perform();
+
+        $this->assertTrue(http\FetchError::exists($fetch_error->id));
     }
 
     public function testPerformDeletesExpiredSession(): void

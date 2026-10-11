@@ -72,37 +72,6 @@ trait Fetchable
     }
 
     /**
-     * Return the fetch error of the model, if any.
-     */
-    public function fetchError(): ?FetchError
-    {
-        return FetchError::findBy([
-            'link_id' => $this->id,
-        ]);
-    }
-
-    /**
-     * Save the content of the fetch error of the model (e.g. the content of
-     * the HTTP response), replacing the previous one if any.
-     *
-     * The model must be saved in database before calling this method.
-     */
-    public function setFetchError(string $content): void
-    {
-        FetchError::store($this, $content);
-    }
-
-    /**
-     * Delete the fetch error of the model, if any.
-     */
-    public function clearFetchError(): void
-    {
-        FetchError::deleteBy([
-            'link_id' => $this->id,
-        ]);
-    }
-
-    /**
      * Returns the date after which we can fetch the model again, or null if it
      * shouldn't be fetched.
      */

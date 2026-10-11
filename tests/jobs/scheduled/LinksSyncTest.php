@@ -109,6 +109,33 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('flus.fr', $fetch_log->host);
     }
 
+    public function testPerformLogsFetchError(): void
+    {
+        $url = 'https://flus.fr/does_not_exist.html';
+        $this->mockHttpWithResponse($url, <<<TEXT
+            HTTP/2 404
+            content-type: text/plain
+
+            Page not found
+            TEXT
+        );
+        $link = LinkFactory::create([
+            'url' => $url,
+            'title' => $url,
+            'fetched_at' => null,
+        ]);
+        $links_fetcher_job = new LinksSync();
+
+        $links_fetcher_job->perform();
+
+        $fetch_error = http\FetchError::take();
+        $this->assertNotNull($fetch_error);
+        $this->assertSame($url, $fetch_error->url);
+        $this->assertSame('link', $fetch_error->type);
+        $this->assertSame(404, $fetch_error->code);
+        $this->assertSame('Page not found', $fetch_error->content);
+    }
+
     public function testPerformSavesResponseInCache(): void
     {
         $url = 'https://flus.fr/carnet/';

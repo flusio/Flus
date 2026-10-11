@@ -78,7 +78,12 @@ class Fetcher
         try {
             $response = $this->http->get($url, options: $options);
         } catch (\SpiderBits\HttpError $e) {
+            FetchError::log($url, $type, 0, $e->getMessage());
             throw new UnexpectedHttpError($url, $e);
+        }
+
+        if (!$response->success) {
+            FetchError::log($url, $type, $response->status, $response->utf8Data());
         }
 
         $this->cacheResponse($url, $response);

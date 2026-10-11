@@ -39,6 +39,7 @@ class Cleaner extends \Minz\Job
         $http_cache->clearExpiredItems();
 
         http\FetchLog::deleteOlderThan(\Minz\Time::ago(3, 'days'));
+        http\FetchError::deleteOlderThan(\Minz\Time::ago(7, 'days'));
         models\Token::deleteExpired();
         models\Session::deleteExpired();
 

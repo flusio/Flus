@@ -113,6 +113,19 @@ CREATE TABLE fetch_logs (
 CREATE INDEX idx_fetch_logs_host_created_at ON fetch_logs(host, created_at);
 CREATE INDEX idx_fetch_logs_created_at ON fetch_logs(created_at);
 
+CREATE TABLE fetch_errors (
+    id BIGSERIAL PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL,
+
+    url TEXT NOT NULL,
+    type TEXT NOT NULL,
+    code INTEGER NOT NULL,
+    content TEXT NOT NULL
+);
+
+CREATE INDEX idx_fetch_errors_url ON fetch_errors USING hash(url);
+CREATE INDEX idx_fetch_errors_created_at ON fetch_errors(created_at);
+
 CREATE TABLE groups (
     id TEXT PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,
@@ -207,16 +220,6 @@ CREATE TABLE links_to_collections (
 CREATE UNIQUE INDEX idx_links_to_collections ON links_to_collections(link_id, collection_id);
 CREATE INDEX idx_links_to_collections_collection_id_created_at ON links_to_collections(collection_id, created_at);
 CREATE INDEX idx_links_to_collections_created_at ON links_to_collections(created_at);
-
-CREATE TABLE fetch_errors (
-    id BIGSERIAL PRIMARY KEY,
-    created_at TIMESTAMPTZ NOT NULL,
-
-    link_id TEXT NOT NULL REFERENCES links ON DELETE CASCADE ON UPDATE CASCADE,
-    content TEXT NOT NULL
-);
-
-CREATE UNIQUE INDEX idx_fetch_errors_link_id ON fetch_errors(link_id);
 
 CREATE TABLE url_statuses (
     id BIGSERIAL PRIMARY KEY,
