@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-10-10 14:06+0200\n"
-"PO-Revision-Date: 2026-10-10 14:06+0200\n"
+"POT-Creation-Date: 2026-10-13 22:22+0200\n"
+"PO-Revision-Date: 2026-10-13 22:22+0200\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -2265,10 +2265,10 @@ msgstr "Résultats de la recherche"
 
 #: views/links/search.html.twig:29
 #, php-format
-msgid "%d result (“%s”)"
-msgid_plural "%d results (“%s”)"
-msgstr[0] "%d résultat (« %s »)"
-msgstr[1] "%d résultats (« %s »)"
+msgid "%s result (“%s”)"
+msgid_plural "%s results (“%s”)"
+msgstr[0] "%s résultat (« %s »)"
+msgstr[1] "%s résultats (« %s »)"
 
 #: views/links/searches/show.html.twig:34
 msgid "What’s the address of the link or feed?"
