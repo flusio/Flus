@@ -111,13 +111,11 @@ class FeedFetcher
 
         $collection->save();
 
-        $link_ids_by_urls = models\Link::listUrlsToIdsByCollection($collection);
-        $link_urls_by_entry_ids = models\Link::listEntryIdsToUrlsByCollection($collection);
-        $initial_links_count = count($link_ids_by_urls);
-        $owner = $collection->owner();
-
-        $links_to_create = [];
-        $links_to_collections_to_create = [];
+        // Extract the URLs and the ids of the entries first, so we only load
+        // the existing links of the collection that match these entries.
+        $entries = [];
+        $urls = [];
+        $feed_entry_ids = [];
 
         foreach ($feed->entries as $entry) {
             if (!$entry->link && \SpiderBits\Url::isValid($entry->id)) {
@@ -135,6 +133,29 @@ class FeedFetcher
                 continue;
             }
 
+            if ($entry->id) {
+                $feed_entry_id = $entry->id;
+            } else {
+                $feed_entry_id = $url;
+            }
+
+            $entries[] = $entry;
+            $urls[] = $url;
+            $feed_entry_ids[] = $feed_entry_id;
+        }
+
+        $link_ids_by_urls = models\Link::listUrlsToIdsByCollection($collection, $urls);
+        $link_urls_by_entry_ids = models\Link::listEntryIdsToUrlsByCollection($collection, $feed_entry_ids);
+        $initial_links_count = models\Link::countByCollection($collection);
+        $owner = $collection->owner();
+
+        $links_to_create = [];
+        $links_to_collections_to_create = [];
+
+        foreach ($entries as $index => $entry) {
+            $url = $urls[$index];
+            $feed_entry_id = $feed_entry_ids[$index];
+
             if (isset($link_ids_by_urls[$url])) {
                 // The URL is already associated to the collection, we have
                 // nothing more to do.
@@ -145,12 +166,6 @@ class FeedFetcher
                 $published_at = $entry->published_at;
             } else {
                 $published_at = \Minz\Time::now();
-            }
-
-            if ($entry->id) {
-                $feed_entry_id = $entry->id;
-            } else {
-                $feed_entry_id = $url;
             }
 
             if (

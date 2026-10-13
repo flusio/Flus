@@ -42,18 +42,28 @@ class AtomImportator
      */
     public function importForCollection(models\Collection $collection): void
     {
-        $link_ids_by_urls = models\Link::listUrlsToIdsByCollection($collection);
-        $owner = $collection->owner();
-
-        $links_to_create = [];
-        $links_to_collections_to_create = [];
+        // Extract the URLs of the entries first, so we only load the existing
+        // links of the collection that match these entries.
+        $entries = [];
+        $urls = [];
 
         foreach ($this->feed->entries as $entry) {
             if (!$entry->link) {
                 continue;
             }
 
-            $url = \SpiderBits\Url::sanitize($entry->link);
+            $entries[] = $entry;
+            $urls[] = \SpiderBits\Url::sanitize($entry->link);
+        }
+
+        $link_ids_by_urls = models\Link::listUrlsToIdsByCollection($collection, $urls);
+        $owner = $collection->owner();
+
+        $links_to_create = [];
+        $links_to_collections_to_create = [];
+
+        foreach ($entries as $index => $entry) {
+            $url = $urls[$index];
 
             if (isset($link_ids_by_urls[$url])) {
                 // The URL is already associated to the collection, we have

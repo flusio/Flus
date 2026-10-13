@@ -201,6 +201,7 @@ CREATE TABLE links (
 
 CREATE INDEX idx_links_user_id_url_hash ON links USING btree(user_id, url_hash);
 CREATE INDEX idx_links_url_hash ON links USING hash(url_hash);
+CREATE INDEX idx_links_feed_entry_id ON links USING hash(feed_entry_id);
 CREATE INDEX idx_links_url ON links USING gin (url gin_trgm_ops);
 CREATE INDEX idx_links_origin ON links USING gin (origin gin_trgm_ops) WHERE origin != '';
 CREATE INDEX idx_links_source_id ON links(source_id) WHERE source_id IS NOT NULL;

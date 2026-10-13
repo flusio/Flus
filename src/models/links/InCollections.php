@@ -6,6 +6,7 @@ use App\models\Collection;
 use App\models\CollectionShare;
 use App\models\LinkToCollection;
 use App\models\User;
+use App\utils\Belt;
 use Minz\Database;
 
 /**
@@ -459,52 +460,85 @@ trait InCollections
     /**
      * Return the list of url ids indexed by urls for the given collection.
      *
+     * Only the links matching the given URLs are returned.
+     *
+     * @param string[] $urls
+     * @param positive-int $chunk_size
+     *
      * @return array<string, string>
      */
-    public static function listUrlsToIdsByCollection(Collection $collection): array
-    {
-        $sql = <<<SQL
-            SELECT l.url, l.id FROM links l, links_to_collections lc
-            WHERE lc.link_id = l.id
-            AND lc.collection_id = :collection_id
-        SQL;
+    public static function listUrlsToIdsByCollection(
+        Collection $collection,
+        array $urls,
+        int $chunk_size = 500,
+    ): array {
+        $url_hashes = array_unique(array_map([Belt::class, 'hashUrl'], $urls));
+        $link_ids_by_urls = [];
 
-        $database = Database::get();
-        $statement = $database->prepare($sql);
-        $statement->execute([
-            ':collection_id' => $collection->id,
-        ]);
+        foreach (array_chunk($url_hashes, $chunk_size) as $chunk_url_hashes) {
+            $values_as_question_marks = array_fill(0, count($chunk_url_hashes), '?');
+            $values_placeholder = implode(', ', $values_as_question_marks);
 
-        return $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+            $sql = <<<SQL
+                SELECT l.url, l.id FROM links l, links_to_collections lc
+                WHERE lc.link_id = l.id
+                AND lc.collection_id = ?
+                AND l.url_hash IN ({$values_placeholder})
+            SQL;
+
+            $database = Database::get();
+            $statement = $database->prepare($sql);
+            $statement->execute([$collection->id, ...$chunk_url_hashes]);
+
+            $link_ids_by_urls += $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+        }
+
+        return $link_ids_by_urls;
     }
 
     /**
      * Return the list of urls indexed by entry ids for the given collection.
+     *
+     * Only the links matching the given entry ids are returned.
+     *
+     * @param string[] $feed_entry_ids
+     * @param positive-int $chunk_size
      *
      * @return array<string, array{
      *     'id': string,
      *     'url': string,
      * }>
      */
-    public static function listEntryIdsToUrlsByCollection(Collection $collection): array
-    {
-        $sql = <<<SQL
-            SELECT l.feed_entry_id, l.id, l.url
-            FROM links l, links_to_collections lc
+    public static function listEntryIdsToUrlsByCollection(
+        Collection $collection,
+        array $feed_entry_ids,
+        int $chunk_size = 500,
+    ): array {
+        $feed_entry_ids = array_unique($feed_entry_ids);
+        $link_urls_by_entry_ids = [];
 
-            WHERE l.id = lc.link_id
-            AND lc.collection_id = :collection_id
+        foreach (array_chunk($feed_entry_ids, $chunk_size) as $chunk_feed_entry_ids) {
+            $values_as_question_marks = array_fill(0, count($chunk_feed_entry_ids), '?');
+            $values_placeholder = implode(', ', $values_as_question_marks);
 
-            ORDER BY lc.created_at DESC, l.id
-            LIMIT 200
-        SQL;
+            $sql = <<<SQL
+                SELECT l.feed_entry_id, l.id, l.url
+                FROM links l, links_to_collections lc
 
-        $database = Database::get();
-        $statement = $database->prepare($sql);
-        $statement->execute([
-            ':collection_id' => $collection->id,
-        ]);
+                WHERE l.id = lc.link_id
+                AND lc.collection_id = ?
+                AND l.feed_entry_id IN ({$values_placeholder})
 
-        return $statement->fetchAll(\PDO::FETCH_UNIQUE);
+                ORDER BY lc.created_at DESC, l.id
+            SQL;
+
+            $database = Database::get();
+            $statement = $database->prepare($sql);
+            $statement->execute([$collection->id, ...$chunk_feed_entry_ids]);
+
+            $link_urls_by_entry_ids += $statement->fetchAll(\PDO::FETCH_UNIQUE);
+        }
+
+        return $link_urls_by_entry_ids;
     }
 }
