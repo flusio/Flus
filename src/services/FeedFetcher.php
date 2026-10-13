@@ -144,9 +144,15 @@ class FeedFetcher
             $feed_entry_ids[] = $feed_entry_id;
         }
 
+        // Exclude the entries that don't match the minimum/maximum or period
+        // constraints. The keys are preserved, so the URLs and the ids can be
+        // filtered as well.
+        $entries = $this->filterEntries($entries);
+        $urls = array_intersect_key($urls, $entries);
+        $feed_entry_ids = array_intersect_key($feed_entry_ids, $entries);
+
         $link_ids_by_urls = models\Link::listUrlsToIdsByCollection($collection, $urls);
         $link_urls_by_entry_ids = models\Link::listEntryIdsToUrlsByCollection($collection, $feed_entry_ids);
-        $initial_links_count = models\Link::countByCollection($collection);
         $owner = $collection->owner();
 
         $links_to_create = [];
@@ -228,22 +234,6 @@ class FeedFetcher
                 $links_to_collections_to_create[] = $link_to_collection;
             }
         }
-
-        // Filter the links to collections to exclude old ones
-        $links_to_collections_to_create = $this->filterLinksToCollections(
-            $links_to_collections_to_create,
-            $initial_links_count
-        );
-
-        // Because some links_to_collections may have been excluded, we don't
-        // want to create the associated links.
-        // First, we get the list of link_ids that should be created.
-        $link_ids_to_keep = array_column($links_to_collections_to_create, 'link_id');
-        // Then we do an intersection between links_to_create and link_ids_to_keep.
-        // links_to_create is already indexed by link ids, and array_flip
-        // returns an array where keys are the values of link_ids_to_keep (i.e.
-        // link ids). The resting links are those that we want to create, tada!
-        $links_to_create = array_intersect_key($links_to_create, array_flip($link_ids_to_keep));
 
         // We now can insert the links and links_to_collections via a bulkInsert
         models\Link::bulkInsert($links_to_create);
@@ -363,69 +353,64 @@ class FeedFetcher
     }
 
     /**
-     * Filter the links_to_collections list in order to create them.
+     * Filter the entries of a feed in order to keep only the ones that match
+     * the minimum/maximum and period constraints as they would be deleted by
+     * the Cleaner otherwise.
      *
-     * In normal case, it should return the full list. But if the administrator
-     * has configured retention policy (keep_period or keep_maximum), the list
-     * is limited to the recent enough links_to_collections (or until there are
-     * enough of them, i.e. links_count is more than feeds_links_keep_minimum)
-     * and to a maximum of feeds_links_keep_maximum.
+     * The keys of the array are preserved.
      *
-     * Note that the maximum policy doesn't take into account the initial
-     * $links_count. Indeed, the database may already contain the maximum of
-     * links, but we want to create the newest links (which should be in the
-     * feed that we’re processing). The links in database are probably older
-     * and will be deleted later by the Cleaner. However, the method will not
-     * return more links_to_collections than the policy.
+     * @see \App\models\links\Prunable::deleteFromFeeds()
      *
-     * @param models\LinkToCollection[] $links_to_collections
+     * @param array<int, \SpiderBits\feeds\Entry> $entries
      *
-     * @return models\LinkToCollection[]
+     * @return array<int, \SpiderBits\feeds\Entry>
      */
-    private function filterLinksToCollections(array $links_to_collections, int $initial_links_count): array
+    private function filterEntries(array $entries): array
     {
         $feeds_links_keep_minimum = \App\Configuration::$application['feeds_links_keep_minimum'];
         $feeds_links_keep_maximum = \App\Configuration::$application['feeds_links_keep_maximum'];
         $feeds_links_keep_period = \App\Configuration::$application['feeds_links_keep_period'];
 
-        $feeds_keep_links_date = \Minz\Time::ago($feeds_links_keep_period, 'months');
-
         if ($feeds_links_keep_period === 0 && $feeds_links_keep_maximum === 0) {
-            // If no retention policy, we return all the links_to_collections
-            return $links_to_collections;
+            // If no retention policy, we return all the entries
+            return $entries;
         }
 
-        // sort the links_to_collections by their publication dates (newest first)
-        usort($links_to_collections, function ($lc1, $lc2): int {
-            return $lc2->created_at <=> $lc1->created_at;
+        $feeds_keep_links_date = \Minz\Time::ago($feeds_links_keep_period, 'months');
+        $now = \Minz\Time::now();
+
+        // Sort the entries by their publication dates (newest first). The
+        // sort is stable, so the entries without publication date keep the
+        // order of the feed.
+        uasort($entries, function ($entry1, $entry2) use ($now): int {
+            return ($entry2->published_at ?? $now) <=> ($entry1->published_at ?? $now);
         });
 
-        $to_create = [];
-        foreach ($links_to_collections as $link_to_collection) {
-            $published_at = $link_to_collection->created_at;
+        $kept_entries = [];
+        foreach ($entries as $index => $entry) {
+            $published_at = $entry->published_at ?? $now;
             $recent_enough = (
                 $feeds_links_keep_period === 0 ||
                 $published_at >= $feeds_keep_links_date
             );
-            $links_count = $initial_links_count + count($to_create);
-            $enough_links = $links_count >= $feeds_links_keep_minimum;
-            $too_many_links = (
+            $enough_entries = count($kept_entries) >= $feeds_links_keep_minimum;
+            $too_many_entries = (
                 $feeds_links_keep_maximum > 0 &&
-                count($to_create) >= $feeds_links_keep_maximum
+                count($kept_entries) >= $feeds_links_keep_maximum
             );
-            $should_be_created = ($recent_enough || !$enough_links) && !$too_many_links;
+            $should_be_kept = ($recent_enough || !$enough_entries) && !$too_many_entries;
 
-            if ($should_be_created) {
-                $to_create[] = $link_to_collection;
+            if ($should_be_kept) {
+                $kept_entries[$index] = $entry;
             } else {
-                // Because the links are sorted by publication date, we know
+                // Because the entries are sorted by publication date, we know
                 // that either the next will also be too old, or we already
-                // reached the limit of links. So we can stop here.
+                // reached the limit of entries. So we can stop here.
                 break;
             }
         }
 
-        return $to_create;
+        return $kept_entries;
     }
 
     /**

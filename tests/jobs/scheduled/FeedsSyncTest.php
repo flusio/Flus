@@ -684,6 +684,74 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('Les nouveautés de mars 2021', $links[0]->title);
     }
 
+    public function testPerformDoesNotRecreateEntriesIfOverKeepMaximum(): void
+    {
+        \App\Configuration::$application['feeds_links_keep_maximum'] = 1;
+
+        /** @var \DateTimeImmutable */
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        $published_at_1 = \Minz\Time::ago(1, 'months');
+        $published_at_2 = \Minz\Time::ago(2, 'months');
+        $collection = CollectionFactory::create([
+            'type' => 'feed',
+            'feed_url' => $feed_url,
+            'feed_fetched_next_at' => \Minz\Time::now(),
+        ]);
+        // Only the newest entry is in the collection: the oldest one has been
+        // deleted by the Cleaner.
+        $link = LinkFactory::create([
+            'url' => 'https://flus.fr/carnet/nouveautes-mars-2021.html',
+            'user_id' => null,
+        ]);
+        $collection->addLinks([$link]);
+        UserFactory::create()->follow($collection);
+        $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
+        $this->cacheHttpResponse($feed_url, <<<TEXT
+            HTTP/2 200 OK
+            Content-Type: application/xml
+
+            <?xml version='1.0' encoding='UTF-8'?>
+            <feed xmlns="http://www.w3.org/2005/Atom">
+                <title>carnet de flus</title>
+                <link href="https://flus.fr/carnet/feeds/all.atom.xml" rel="self" type="application/atom+xml" />
+                <link href="https://flus.fr/carnet/" rel="alternate" type="text/html" />
+                <id>urn:uuid:4c04fe8e-c966-5b7e-af89-74d092a6ccb0</id>
+                <updated>2021-03-30T11:26:00+02:00</updated>
+                <entry>
+                    <title>Les nouveautés de mars 2021</title>
+                    <id>urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d</id>
+                    <author><name>Marien</name></author>
+                    <link href="https://flus.fr/carnet/nouveautes-mars-2021.html" rel="alternate" type="text/html"/>
+                    <published>{$published_at_1->format(DATE_ATOM)}</published>
+                    <updated>2021-03-30T11:26:00+02:00</updated>
+                    <content type="html"></content>
+                </entry>
+                <entry>
+                    <title>Bilan 2021</title>
+                    <id>urn:uuid:d4281ca0-f103-529b-9a47-adee05477c31</id>
+                    <author><name>Marien</name></author>
+                    <link href="https://flus.fr/carnet/bilan-2021.html" rel="alternate" type="text/html" />
+                    <published>{$published_at_2->format(DATE_ATOM)}</published>
+                    <updated>2022-01-05T17:30:00+01:00</updated>
+                    <content type="html"></content>
+                </entry>
+            </feed>
+            TEXT);
+        $feeds_sync_job = new FeedsSync();
+
+        $feeds_sync_job->perform();
+
+        \App\Configuration::$application['feeds_links_keep_maximum'] = 0;
+
+        $this->assertSame(1, models\Link::count());
+        $collection = $collection->reload();
+        $links = $collection->links();
+        $this->assertSame(1, count($links));
+        $this->assertSame($link->id, $links[0]->id);
+    }
+
     public function testPerformIgnoresEntriesIfOlderThanKeepPeriod(): void
     {
         \App\Configuration::$application['feeds_links_keep_period'] = 6;
