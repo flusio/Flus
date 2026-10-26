@@ -114,23 +114,24 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('Can’t parse the given string', $collection->feed_fetched_error);
     }
 
-    public function testAddCreatesCollectionButFailsIfUrlIsNotSuccessful(): void
+    public function testAddCreatesCollectionButFailsIfUrlIsUnreachable(): void
     {
+        $url = 'https://flus.fr/carnet/feeds/all.atom.xml';
+        $this->mockHttpAsUnreachable($url);
+
         $response = $this->appRun('CLI', '/feeds/add', [
-            'url' => 'https://not.a.domain.flus.fr/',
+            'url' => $url,
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseContains($response, 'Could not resolve host: not.a.domain.flus.fr');
         $this->assertSame(1, models\Collection::count());
         $this->assertSame(0, models\Link::count());
         $collection = models\Collection::take();
         $this->assertNotNull($collection);
-        $this->assertSame('https://not.a.domain.flus.fr/', $collection->name);
-        $this->assertSame('https://not.a.domain.flus.fr/', $collection->feed_url);
+        $this->assertSame($url, $collection->name);
+        $this->assertSame($url, $collection->feed_url);
         $this->assertSame(0, $collection->feed_fetched_code);
-        $this->assertIsString($collection->feed_fetched_error);
-        $this->assertStringEndsWith('Could not resolve host: not.a.domain.flus.fr', $collection->feed_fetched_error);
+        $this->assertNotEmpty($collection->feed_fetched_error);
     }
 
     public function testAddFailsIfUrlIsInvalid(): void

@@ -115,4 +115,21 @@ trait HttpHelper
             'mock' => 'echo',
         ]);
     }
+
+    /**
+     * Indicate to the mock server that it must simulate an unreachable host
+     * when url is called (i.e. the HTTP client fails with a network error).
+     */
+    public function mockHttpAsUnreachable(string $url): void
+    {
+        $mock_host = \App\Configuration::$application['mock_host'] ?? '';
+        \SpiderBits\Http::$mock_host = $mock_host;
+
+        $http = new \SpiderBits\Http();
+        $http->post('/', [
+            'url' => urlencode($url),
+            'action' => 'mock',
+            'mock' => 'unreachable',
+        ]);
+    }
 }

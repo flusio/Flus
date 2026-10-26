@@ -14,11 +14,12 @@
  * environment via the MOCK_HOST environment variable. It is passed to the
  * \SpiderBits\Http::$mock_host when calling a mockHttpWith* methods.
  *
- * The server can answer in 3 different ways:
+ * The server can answer in 4 different ways:
  *
  * - with a full HTTP response (i.e. including headers and body);
  * - with a file from the filesystem;
- * - by echoing the information about the HTTP request.
+ * - by echoing the information about the HTTP request;
+ * - by simulating an unreachable host.
  *
  * To start using the mock server, the \SpiderBits\Http::$mock_host is set to
  * point to the mock host. All requests are transfered to the mock server then.
@@ -28,7 +29,8 @@
  * - url: the URL to mock;
  * - action: it must be set to `mock`;
  * - mock: a string indicating how to answer, it can either be a full HTTP
- *   response body, a path to a file (under app_path), or the 'echo' string.
+ *   response body, a path to a file (under app_path), the 'echo' string, or
+ *   the 'unreachable' string.
  *
  * It can be used with the mockHttpWith* methods this way:
  *
@@ -167,6 +169,21 @@ if (!isset($http_parameters['action'])) {
         header('Content-type: application/json');
 
         echo json_encode($info);
+
+        return;
+    }
+
+    if ($content === 'unreachable') {
+        // The host must look unreachable to the HTTP client. As it follows the
+        // redirections, we redirect it to a port where nothing listens. The
+        // connection is refused immediately, so the client fails with a
+        // network error (e.g. as with a DNS failure or a timeout) without
+        // slowing down the tests.
+
+        \Minz\Log::notice('UNREACHABLE');
+
+        http_response_code(302);
+        header('Location: http://127.0.0.1:1/');
 
         return;
     }
