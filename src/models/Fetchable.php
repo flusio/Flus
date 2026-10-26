@@ -38,9 +38,6 @@ trait Fetchable
     public int $fetched_code = 0;
 
     #[Database\Column]
-    public ?string $fetched_error = null;
-
-    #[Database\Column]
     public int $fetched_count = 0;
 
     #[Database\Column]

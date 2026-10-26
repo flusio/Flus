@@ -180,7 +180,6 @@ CREATE TABLE links (
 
     fetched_at TIMESTAMPTZ,
     fetched_code INTEGER NOT NULL DEFAULT 0,
-    fetched_error TEXT,
     fetched_count INTEGER NOT NULL DEFAULT 0,
     fetched_retry_at TIMESTAMPTZ DEFAULT NULL,
 

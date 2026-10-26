@@ -49,7 +49,6 @@ class LinkFetcher
             // In case of a rate limit error, try to fetch it again in the next
             // few minutes. Don't call $link->fetch() as we didn't even try to
             // get a result.
-            $link->fetched_error = 'Reached rate limit';
             $link->fetched_retry_at = \Minz\Time::fromNow(rand(1, 5), 'minutes');
             $link->save();
 
@@ -59,7 +58,6 @@ class LinkFetcher
                 code: 0,
                 retry_after: \Minz\Time::fromNow(rand(15, 60), 'minutes'),
             );
-            $link->fetched_error = "Unexpected HTTP error: {$e->getMessage()}";
             $link->save();
 
             return;
@@ -69,7 +67,6 @@ class LinkFetcher
             code: $info['status'],
             retry_after: $info['retry_after'],
         );
-        $link->fetched_error = $info['error'];
 
         // we set the title only if it wasn't changed yet
         $title_never_changed = $link->title === $link->url;
@@ -120,7 +117,6 @@ class LinkFetcher
      * @return array{
      *     'status': int,
      *     'retry_after': \DateTimeImmutable,
-     *     'error': ?string,
      *     'title': ?string,
      *     'reading_time': ?int,
      *     'url_illustration': ?string,
@@ -138,7 +134,6 @@ class LinkFetcher
         $info = [
             'status' => $response->status,
             'retry_after' => $response->getRetryAfter(),
-            'error' => null,
             'title' => null,
             'reading_time' => null,
             'url_illustration' => null,
@@ -150,7 +145,6 @@ class LinkFetcher
         if (!$response->success) {
             // Okay, Houston, we've had a problem here. Return early, there's
             // nothing more to do.
-            $info['error'] = $data;
             return $info;
         }
 
