@@ -38,6 +38,9 @@ class Mastodon
      * This method instantiates the service with a MastodonServer.
      * If there is no MastodonServer (i.e. the app is not known by the Mastodon
      * host), it is created.
+     *
+     * @throws MastodonError
+     *     If the app cannot be created on the host.
      */
     public static function get(string $host): self
     {
@@ -55,6 +58,9 @@ class Mastodon
     /**
      * Create the app on the Mastodon host, and return the corresponding
      * MastodonServer.
+     *
+     * @throws MastodonError
+     *     If the host fails to respond or returns an error.
      */
     public static function createApp(string $host): models\MastodonServer
     {
@@ -63,12 +69,19 @@ class Mastodon
 
         $http = self::http();
 
-        $response = $http->post($host . '/api/v1/apps', [
-            'client_name' => \App\Configuration::$application['brand'],
-            'redirect_uris' => $redirect_uris,
-            'scopes' => self::SCOPES,
-            'website' => $website,
-        ]);
+        try {
+            $response = $http->post($host . '/api/v1/apps', [
+                'client_name' => \App\Configuration::$application['brand'],
+                'redirect_uris' => $redirect_uris,
+                'scopes' => self::SCOPES,
+                'website' => $website,
+            ]);
+        } catch (\SpiderBits\HttpError $e) {
+            throw new MastodonError(
+                "Mastodon host {$host} failed to respond: {$e->getMessage()}",
+                previous: $e,
+            );
+        }
 
         if ($response->status !== 200) {
             $data = $response->utf8Data();
@@ -125,6 +138,9 @@ class Mastodon
 
     /**
      * Get an access token for a user.
+     *
+     * @throws MastodonError
+     *     If the host fails to respond or returns an error.
      */
     public function accessToken(string $code): string
     {
@@ -132,14 +148,22 @@ class Mastodon
 
         $host = $this->server->host;
         $endpoint = $host . '/oauth/token';
-        $response = $this->http->post($endpoint, [
-            'client_id' => $this->server->client_id,
-            'client_secret' => $this->server->client_secret,
-            'redirect_uri' => $redirect_uri,
-            'code' => $code,
-            'grant_type' => 'authorization_code',
-            'scope' => self::SCOPES,
-        ]);
+
+        try {
+            $response = $this->http->post($endpoint, [
+                'client_id' => $this->server->client_id,
+                'client_secret' => $this->server->client_secret,
+                'redirect_uri' => $redirect_uri,
+                'code' => $code,
+                'grant_type' => 'authorization_code',
+                'scope' => self::SCOPES,
+            ]);
+        } catch (\SpiderBits\HttpError $e) {
+            throw new MastodonError(
+                "Mastodon host {$host} failed to respond: {$e->getMessage()}",
+                previous: $e,
+            );
+        }
 
         if ($response->status !== 200) {
             $data = $response->utf8Data();
@@ -165,6 +189,9 @@ class Mastodon
 
     /**
      * Get the username of the account.
+     *
+     * @throws MastodonError
+     *     If the host fails to respond or returns an error.
      */
     public function getUsername(models\MastodonAccount $account): string
     {
@@ -172,11 +199,19 @@ class Mastodon
 
         $host = $this->server->host;
         $endpoint = $host . '/api/v1/accounts/verify_credentials';
-        $response = $this->http->get($endpoint, [], [
-            'headers' => [
-                'Authorization' => "Bearer {$account->access_token}",
-            ],
-        ]);
+
+        try {
+            $response = $this->http->get($endpoint, [], [
+                'headers' => [
+                    'Authorization' => "Bearer {$account->access_token}",
+                ],
+            ]);
+        } catch (\SpiderBits\HttpError $e) {
+            throw new MastodonError(
+                "Mastodon host {$host} failed to respond: {$e->getMessage()}",
+                previous: $e,
+            );
+        }
 
         if ($response->status !== 200) {
             $data = $response->utf8Data();
@@ -231,12 +266,20 @@ class Mastodon
 
         $host = $this->server->host;
         $endpoint = $host . '/api/v1/statuses';
-        $response = $this->http->post($endpoint, $parameters, [
-            'headers' => [
-                'Authorization' => "Bearer {$account->access_token}",
-                'Idempotency-Key' => $status->id,
-            ]
-        ]);
+
+        try {
+            $response = $this->http->post($endpoint, $parameters, [
+                'headers' => [
+                    'Authorization' => "Bearer {$account->access_token}",
+                    'Idempotency-Key' => $status->id,
+                ]
+            ]);
+        } catch (\SpiderBits\HttpError $e) {
+            throw new MastodonError(
+                "Mastodon host {$host} failed to respond: {$e->getMessage()}",
+                previous: $e,
+            );
+        }
 
         $success = $response->success;
 
@@ -288,21 +331,31 @@ class Mastodon
 
     /**
      * Return the max number of characters for the statuses of this server.
+     *
+     * @throws MastodonError
+     *     If the host fails to respond or returns an error.
      */
     public function getServerMaxCharacters(): int
     {
         $host = $this->server->host;
-        $endpoint = $host . '/api/v2/instance';
-        $response = $this->http->get($endpoint);
 
-        if (!$response->success) {
-            $endpoint = $host . '/api/v1/instance';
-            $response = $this->http->get($endpoint);
+        try {
+            $response = $this->http->get($host . '/api/v2/instance');
 
             if (!$response->success) {
-                $data = $response->utf8Data();
-                throw new MastodonError("Mastodon host {$host} returned error: {$data}");
+                // Older servers don't implement the v2 of the endpoint.
+                $response = $this->http->get($host . '/api/v1/instance');
             }
+        } catch (\SpiderBits\HttpError $e) {
+            throw new MastodonError(
+                "Mastodon host {$host} failed to respond: {$e->getMessage()}",
+                previous: $e,
+            );
+        }
+
+        if (!$response->success) {
+            $data = $response->utf8Data();
+            throw new MastodonError("Mastodon host {$host} returned error: {$data}");
         }
 
         $json = json_decode($response->data, associative: true);

@@ -39,14 +39,12 @@ class MastodonServersSync extends \Minz\Job
             $mastodon_service = new services\Mastodon($server);
 
             try {
-                $max_characters = $mastodon_service->getServerMaxCharacters();
+                $server->statuses_max_characters = $mastodon_service->getServerMaxCharacters();
+                $server->save();
             } catch (services\MastodonError $e) {
+                // Keep the current value, the error is probably temporary.
                 \Minz\Log::error("[MastodonServersSync] {$e->getMessage()}");
-                $max_characters = 500;
             }
-
-            $server->statuses_max_characters = $max_characters;
-            $server->save();
         }
     }
 }

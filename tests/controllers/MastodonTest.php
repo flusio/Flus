@@ -225,6 +225,27 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\MastodonAccount::count());
     }
 
+    public function testRequestAccessFailsIfHostIsUnreachable(): void
+    {
+        $user = $this->login();
+        /** @var string */
+        $mastodon_host = $this->fake('domainName');
+        $mastodon_host = 'https://' . $mastodon_host;
+        $create_app_endpoint = $mastodon_host . '/api/v1/apps';
+        $this->mockHttpAsUnreachable($create_app_endpoint);
+
+        $response = $this->appRun('POST', '/mastodon/request', [
+            'csrf_token' => $this->csrfToken(forms\mastodon\RequestMastodonAccount::class),
+            'host' => $mastodon_host,
+        ]);
+
+        $this->assertResponseCode($response, 302, '/mastodon');
+        $error = utils\Notification::popError();
+        $this->assertSame('The Mastodon host returned an error, please try later.', $error);
+        $this->assertSame(0, models\MastodonServer::count());
+        $this->assertSame(0, models\MastodonAccount::count());
+    }
+
     public function testRequestAccessFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
@@ -550,6 +571,36 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
             This is not JSON!
             TEXT
         );
+
+        $response = $this->appRun('POST', '/mastodon/auth', [
+            'csrf_token' => $this->csrfToken(forms\mastodon\AuthorizeMastodonAccount::class),
+            'code' => $code,
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'The Mastodon host returned an error, please try later.');
+        $mastodon_account = $mastodon_account->reload();
+        $this->assertSame($mastodon_account->access_token, '');
+    }
+
+    public function testAuthorizeFailsIfHostIsUnreachable(): void
+    {
+        $user = $this->login();
+        /** @var string */
+        $code = $this->fake('sha256');
+        /** @var string */
+        $mastodon_domain = $this->fake('domainName');
+        $mastodon_host = 'https://' . $mastodon_domain;
+        $access_token_endpoint = $mastodon_host . '/oauth/token';
+        $mastodon_server = MastodonServerFactory::create([
+            'host' => $mastodon_host,
+        ]);
+        $mastodon_account = MastodonAccountFactory::create([
+            'user_id' => $user->id,
+            'mastodon_server_id' => $mastodon_server->id,
+            'access_token' => '',
+        ]);
+        $this->mockHttpAsUnreachable($access_token_endpoint);
 
         $response = $this->appRun('POST', '/mastodon/auth', [
             'csrf_token' => $this->csrfToken(forms\mastodon\AuthorizeMastodonAccount::class),
