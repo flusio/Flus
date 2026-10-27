@@ -127,6 +127,14 @@
                 {{ icon('slider') }}
                 {{ t('Manage the subscription') }}
             </button>
+        {% elseif app.user %}
+            <form method="post" action="{{ url('follow collection', { id: source.id }) }}">
+                <button>
+                    {{ t('Follow') }}
+                </button>
+
+                <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\FollowCollection') }}">
+            </form>
         {% endif %}
 
         {% embed 'components/popup.html.twig' with {

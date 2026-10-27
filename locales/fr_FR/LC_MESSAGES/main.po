@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-10-13 22:22+0200\n"
-"PO-Revision-Date: 2026-10-13 22:22+0200\n"
+"POT-Creation-Date: 2026-10-27 10:23+0100\n"
+"PO-Revision-Date: 2026-10-27 10:23+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.9\n"
+"X-Generator: Poedit 3.10\n"
 "X-Poedit-Basepath: ../../../src\n"
 "X-Poedit-KeywordsList: t:1,2;t;translate:1,2;translate:1;Translatable\n"
 "X-Poedit-SearchPath-0: .\n"
@@ -602,7 +602,7 @@ msgstr "Sport"
 msgid "Tech"
 msgstr "Tech"
 
-#: services/LinkFetcher.php:195
+#: services/LinkFetcher.php:189
 #, php-format
 msgid "%s on Twitter: %s"
 msgstr "%s sur Twitter : %s"
@@ -733,7 +733,7 @@ msgid "Publication frequency"
 msgstr "Fréquence de publication"
 
 #: views/collections/_collection_follow.html.twig:40
-#: views/collections/show.html.twig:172
+#: views/collections/show.html.twig:172 views/sources/_source.html.twig:133
 msgid "Follow"
 msgstr "Suivre"
 
@@ -891,7 +891,7 @@ msgid "Unselect"
 msgstr "Désélectionner"
 
 #: views/collections/_unfollow_form.html.twig:13
-#: views/sources/_source.html.twig:169
+#: views/sources/_source.html.twig:177
 #, php-format
 msgid ""
 "Are you sure that you want to unfollow this source? It will be removed from "
@@ -907,7 +907,7 @@ msgstr[1] ""
 "retirée de %d fils."
 
 #: views/collections/_unfollow_form.html.twig:21
-#: views/sources/_bulk_bar.html.twig:169 views/sources/_source.html.twig:166
+#: views/sources/_bulk_bar.html.twig:169 views/sources/_source.html.twig:174
 msgid "Unfollow"
 msgstr "Ne plus suivre"
 
@@ -1266,12 +1266,12 @@ msgstr "Actions"
 msgid "Put in a group"
 msgstr "Placer dans un groupe"
 
-#: views/collections/show.html.twig:225 views/sources/_source.html.twig:150
+#: views/collections/show.html.twig:225 views/sources/_source.html.twig:158
 msgid "Copy link to collection"
 msgstr "Copier le lien de la collection"
 
 #: views/collections/show.html.twig:230 views/links/show.html.twig:260
-#: views/profiles/layout.html.twig:101 views/sources/_source.html.twig:155
+#: views/profiles/layout.html.twig:101 views/sources/_source.html.twig:163
 #: views/streams/show.html.twig:173
 msgid "Copy link to Web feed"
 msgstr "Copier le lien du flux Web"
@@ -3513,7 +3513,7 @@ msgstr "Sélectionner %s"
 msgid "By"
 msgstr "Par"
 
-#: views/sources/_source.html.twig:135 views/sources/_source.html.twig:141
+#: views/sources/_source.html.twig:143 views/sources/_source.html.twig:149
 #, php-format
 msgid "Actions on %s"
 msgstr "Actions sur %s"
