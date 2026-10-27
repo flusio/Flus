@@ -3,6 +3,7 @@
 namespace App\controllers;
 
 use App\auth;
+use App\forms;
 use App\models;
 use Minz\Request;
 use Minz\Response;
@@ -32,8 +33,13 @@ class Sources extends BaseController
             ->publishers()
             ->countStreamsFor($user);
 
+        $importation_form = new forms\importations\OpmlImportation(options: [
+            'user' => $user,
+        ]);
+
         return Response::ok('sources/index.html.twig', [
             'sources' => $sources,
+            'importation_form' => $importation_form,
         ]);
     }
 }

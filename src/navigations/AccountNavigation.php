@@ -49,15 +49,6 @@ class AccountNavigation extends BaseNavigation
             );
         }
 
-        if (!$current_user->isBlocked()) {
-            $data_items[] = new Item(
-                label: TwigExtension::translate('OPML import'),
-                key: 'opml',
-                url: \Minz\Url::for('opml'),
-                icon: 'upload',
-            );
-        }
-
         $data_items[] = new Item(
             label: TwigExtension::translate('Data export'),
             key: 'exportation',

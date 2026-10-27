@@ -1,0 +1,66 @@
+/* A task running in background (e.g. an importation), and its outcome. */
+
+.task {
+    --task-border-style: dashed;
+    --task-border-color: var(--color-grey-border);
+
+    display: flex;
+    padding: var(--space-small) var(--space-medium);
+
+    align-items: center;
+
+    background-color: var(--color-background);
+    border: 1px var(--task-border-style) var(--task-border-color);
+    border-radius: var(--border-radius);
+
+    gap: var(--space-medium);
+}
+
+.task--success {
+    --task-border-style: solid;
+    --task-border-color: var(--color-accent-border);
+    --task-icon-background: var(--color-accent-bg);
+}
+
+.task--error {
+    --task-border-style: solid;
+    --task-border-color: var(--color-danger-border);
+    --task-icon-background: var(--color-danger-bg);
+}
+
+.task__spinner,
+.task__icon {
+    width: 2rem;
+    height: 2rem;
+
+    flex-shrink: 0;
+}
+
+.task__icon {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: var(--color-gable);
+
+    background-color: var(--task-icon-background);
+    border-radius: 100%;
+}
+
+.task__icon .icon {
+    width: 1.25rem;
+}
+
+.task__body {
+    flex: 1;
+}
+
+.task__label {
+    font-weight: bold;
+}
+
+.task__description {
+    color: var(--color-grey-text);
+    font-size: var(--font-size-small);
+}

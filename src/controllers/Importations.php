@@ -16,6 +16,35 @@ use Minz\Response;
 class Importations extends BaseController
 {
     /**
+     * Show the state of an importation.
+     *
+     * It renders a Turbo frame, refreshed until the importation is over.
+     *
+     * @request_param string id
+     *
+     * @response 200
+     *     On success.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the importation doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the user cannot view the importation.
+     */
+    public function show(Request $request): Response
+    {
+        $user = auth\CurrentUser::require();
+        $importation = models\Importation::requireFromRequest($request);
+
+        auth\Access::require($user, 'view', $importation);
+
+        return Response::ok('importations/show.html.twig', [
+            'importation' => $importation,
+        ]);
+    }
+
+    /**
      * Delete an importation
      *
      * @request_param string id

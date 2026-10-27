@@ -21,15 +21,17 @@
 {% endblock %}
 
 {% block body %}
+    {% set importation = importation_form.currentImportation %}
+
     <h1 class="text--center">{{ t('Sources') }}</h1>
 
     <p class="text--center">
         {{ t('The collections and the feeds that you follow feed both your journal and your streams.') }}
     </p>
 
-    <p class="text--center">
+    <div class="panel panel--rounded stack stack--gap-small">
         <button
-            class="button--primary button--big"
+            class="button--primary"
             data-controller="modal-opener"
             data-action="modal-opener#fetch"
             data-modal-opener-selector-value="{{ url('new feed') }}"
@@ -39,7 +41,60 @@
             {{ icon('plus-circle') }}
             {{ t('Add a feed') }}
         </button>
-    </p>
+
+        {% embed 'components/popup.html.twig' %}
+            {% block opener %}
+                {{ icon('menu') }}
+                {{ t('Actions') }}
+            {% endblock %}
+
+            {% block items %}
+                {% import _self as item %}
+
+                <form
+                    role="none"
+                    method="post"
+                    action="{{ url('import sources opml') }}"
+                    enctype="multipart/form-data"
+                    data-controller="autosubmit form-file"
+                >
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token(importation_form) }}">
+
+                    <input
+                        type="file"
+                        name="opml"
+                        accept="{{ importation_form.acceptedMimetypes }}"
+                        data-action="autosubmit#submit"
+                        data-form-file-target="file"
+                        hidden
+                    >
+
+                    <button
+                        type="button"
+                        class="popup__item"
+                        role="menuitem"
+                        data-action="form-file#openFile"
+                        data-autosubmit-target="actionButton"
+                        {{ importation ? 'disabled' }}
+                    >
+                        {{ icon('upload') }}
+                        {{ t('Import OPML') }}
+                    </button>
+                </form>
+
+                {% if sources %}
+                    {{ item.link(
+                        url: url('sources opml'),
+                        label: t('Download OPML'),
+                        icon: 'cloud-download',
+                        attrs: { download: '', 'data-turbo': 'false' },
+                    ) }}
+                {% endif %}
+            {% endblock %}
+        {% endembed %}
+    </div>
+
+    {{ include('importations/_importation.html.twig') }}
 
     <section
         class="sources flow"

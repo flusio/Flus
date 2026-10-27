@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-10-27 11:28+0100\n"
-"PO-Revision-Date: 2026-10-27 11:28+0100\n"
+"POT-Creation-Date: 2026-10-27 21:21+0100\n"
+"PO-Revision-Date: 2026-10-27 21:21+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -86,10 +86,6 @@ msgstr "Le fil a été supprimé."
 msgid "The message could not be sent due to a server-side problem."
 msgstr "Le message n’a pas pu être envoyé à cause d’un problème côté serveur."
 
-#: controllers/importations/Opml.php:76
-msgid "This file cannot be uploaded."
-msgstr "Ce fichier ne peut pas être téléversé."
-
 #: controllers/my/Account.php:102
 msgid "Your account and your data are now deleted."
 msgstr "Votre compte et vos données sont désormais supprimées."
@@ -105,6 +101,10 @@ msgid ""
 msgstr ""
 "Une erreur est survenue pendant que nous récupérions les informations de "
 "votre compte, merci de contacter le support."
+
+#: controllers/sources/Opml.php:77
+msgid "This file cannot be uploaded."
+msgstr "Ce fichier ne peut pas être téléversé."
 
 #: controllers/streams/Views.php:286
 msgid "The default view has been reset."
@@ -501,35 +501,31 @@ msgstr "Validation du compte"
 msgid "Mastodon"
 msgstr "Mastodon"
 
-#: navigations/AccountNavigation.php:54
-msgid "OPML import"
-msgstr "Importation OPML"
-
-#: navigations/AccountNavigation.php:62
+#: navigations/AccountNavigation.php:53
 msgid "Data export"
 msgstr "Exportation des données"
 
-#: navigations/AccountNavigation.php:69
+#: navigations/AccountNavigation.php:60
 msgid "Credentials"
 msgstr "Identifiants"
 
-#: navigations/AccountNavigation.php:76
+#: navigations/AccountNavigation.php:67
 msgid "Sessions"
 msgstr "Sessions"
 
-#: navigations/AccountNavigation.php:83
+#: navigations/AccountNavigation.php:74
 msgid "Account deletion"
 msgstr "Suppression du compte"
 
-#: navigations/AccountNavigation.php:90
+#: navigations/AccountNavigation.php:81
 msgid "Account"
 msgstr "Compte"
 
-#: navigations/AccountNavigation.php:91
+#: navigations/AccountNavigation.php:82
 msgid "Data"
 msgstr "Données"
 
-#: navigations/AccountNavigation.php:92
+#: navigations/AccountNavigation.php:83
 msgid "Security"
 msgstr "Sécurité"
 
@@ -606,6 +602,16 @@ msgstr "Tech"
 #, php-format
 msgid "%s on Twitter: %s"
 msgstr "%s sur Twitter : %s"
+
+#: services/OpmlGenerator.php:69
+#, php-format
+msgid "%s’s sources"
+msgstr "Sources de %s"
+
+#: services/OpmlGenerator.php:103
+#, php-format
+msgid "%s’s collections"
+msgstr "Collections de %s"
 
 #: services/UserService.php:22
 msgid "My favourites"
@@ -810,10 +816,10 @@ msgstr "(max. %d caractères)"
 #: views/collections/shares/index.html.twig:25
 #: views/collections/shares/index.html.twig:58
 #: views/components/text_editor.html.twig:43 views/feeds/_new_form.html.twig:13
-#: views/groups/edit.html.twig:20 views/importations/opml/show.html.twig:84
-#: views/links/_form_simple.html.twig:15 views/links/_search_error.html.twig:31
-#: views/links/edit.html.twig:26 views/links/edit.html.twig:71
-#: views/links/edit.html.twig:91 views/links/images/edit.html.twig:20
+#: views/groups/edit.html.twig:20 views/links/_form_simple.html.twig:15
+#: views/links/_search_error.html.twig:31 views/links/edit.html.twig:26
+#: views/links/edit.html.twig:71 views/links/edit.html.twig:91
+#: views/links/images/edit.html.twig:20
 #: views/links/mastodon_threads/new.html.twig:17 views/links/new.html.twig:27
 #: views/links/repairing/new.html.twig:30
 #: views/links/searches/show.html.twig:39 views/mastodon/show.html.twig:62
@@ -1256,9 +1262,10 @@ msgstr "Accès"
 #: views/links/_link_row.html.twig:102 views/links/_link_row.html.twig:108
 #: views/links/show.html.twig:237 views/links/show.html.twig:241
 #: views/notes/_notepad.html.twig:27 views/notes/_notepad.html.twig:33
-#: views/profiles/layout.html.twig:88 views/streams/_timeline.html.twig:38
-#: views/streams/_timeline.html.twig:93 views/streams/_timeline.html.twig:137
-#: views/streams/show.html.twig:160
+#: views/profiles/layout.html.twig:88 views/sources/index.html.twig:48
+#: views/streams/_timeline.html.twig:38 views/streams/_timeline.html.twig:93
+#: views/streams/_timeline.html.twig:137 views/streams/show.html.twig:160
+#: views/streams/sources/index.html.twig:44
 msgid "Actions"
 msgstr "Actions"
 
@@ -1438,7 +1445,6 @@ msgid "We’re creating your archive…"
 msgstr "Nous créons votre archive…"
 
 #: views/exportations/show.html.twig:35
-#: views/importations/opml/show.html.twig:33
 msgid "This might take several minutes, please wait."
 msgstr "Cela pourrait prendre plusieurs minutes, merci d’attendre."
 
@@ -1538,40 +1544,36 @@ msgstr ""
 msgid "Delete the group"
 msgstr "Supprimer le groupe"
 
-#: views/importations/opml/show.html.twig:3
-msgid "Importation from an OPML file"
-msgstr "Importation depuis un fichier OPML"
+#: views/importations/_importation.html.twig:18
+msgid "We’re importing your OPML file…"
+msgstr "Nous importons votre fichier OPML…"
 
-#: views/importations/opml/show.html.twig:18
-msgid "Importation from an <abbr>OPML</abbr> file"
-msgstr "Importation depuis un fichier <abbr>OPML</abbr>"
-
-#: views/importations/opml/show.html.twig:21
+#: views/importations/_importation.html.twig:22
 msgid ""
-"<abbr>OPML</abbr> enables you to import your feeds from another software."
+"This may take a few minutes. You can keep using the page in the meantime."
 msgstr ""
-"<abbr>OPML</abbr> vous permet d’importer vos flux depuis un autre logiciel."
+"Cela peut prendre quelques minutes. Vous pouvez continuer à utiliser la page "
+"en attendant."
 
-#: views/importations/opml/show.html.twig:27
-msgid "We’re importing your data…"
-msgstr "Nous importons vos données…"
+#: views/importations/_importation.html.twig:44
+msgid "We’ve imported your OPML file."
+msgstr "Nous avons importé votre fichier OPML."
 
-#: views/importations/opml/show.html.twig:48
+#: views/importations/_importation.html.twig:48
 msgid ""
-"We’ve imported your data from your OPML file. We’re now going to fetch their "
-"links in background."
+"We’re now going to fetch the links of your new sources in the background."
 msgstr ""
-"Nous venons d’importer vos données depuis votre fichier OPML. Nous allons "
-"désormais télécharger leurs liens en tâche de fond."
+"Nous allons maintenant récupérer les liens de vos nouvelles sources en "
+"arrière-plan."
 
-#: views/importations/opml/show.html.twig:53
-#: views/importations/opml/show.html.twig:66
-msgid "Ok!"
-msgstr "Ok !"
+#: views/importations/_importation.html.twig:52
+msgid "Your OPML file cannot be imported."
+msgstr "Votre fichier OPML ne peut pas être importé."
 
-#: views/importations/opml/show.html.twig:106
-msgid "Import a file"
-msgstr "Importer un fichier"
+#: views/importations/_importation.html.twig:73
+#: views/layouts/_modal_dialog.html.twig:22 views/layouts/_sidenav.html.twig:25
+msgid "Close"
+msgstr "Fermer"
 
 #: views/journal/_popup_actions.html.twig:30
 #: views/streams/_popup_actions.html.twig:37
@@ -1708,10 +1710,6 @@ msgstr "Langue"
 #: views/sessions/new.html.twig:104
 msgid "Login"
 msgstr "Se connecter"
-
-#: views/layouts/_modal_dialog.html.twig:22 views/layouts/_sidenav.html.twig:25
-msgid "Close"
-msgstr "Fermer"
 
 #: views/layouts/_modal_dialog.html.twig:23
 msgid "Close this window"
@@ -3518,7 +3516,7 @@ msgstr "Par"
 msgid "Actions on %s"
 msgstr "Actions sur %s"
 
-#: views/sources/index.html.twig:27
+#: views/sources/index.html.twig:29
 msgid ""
 "The collections and the feeds that you follow feed both your journal and "
 "your streams."
@@ -3526,30 +3524,38 @@ msgstr ""
 "Les collections et les flux que vous suivez alimentent votre journal et vos "
 "fils."
 
-#: views/sources/index.html.twig:40
+#: views/sources/index.html.twig:42
 #: views/streams/sources/_selector.html.twig:119
 msgid "Add a feed"
 msgstr "Ajouter un flux"
 
-#: views/sources/index.html.twig:65 views/streams/_stream.html.twig:21
+#: views/sources/index.html.twig:81
+msgid "Import OPML"
+msgstr "Importer un OPML"
+
+#: views/sources/index.html.twig:88 views/streams/sources/index.html.twig:52
+msgid "Download OPML"
+msgstr "Télécharger l’OPML"
+
+#: views/sources/index.html.twig:120 views/streams/_stream.html.twig:21
 #: views/streams/show.html.twig:108
 #: views/streams/sources/_selector.html.twig:40
-#: views/streams/sources/index.html.twig:49
+#: views/streams/sources/index.html.twig:85
 #, php-format
 msgid "%d source"
 msgid_plural "%d sources"
 msgstr[0] "%d source"
 msgstr[1] "%d sources"
 
-#: views/sources/index.html.twig:78
+#: views/sources/index.html.twig:133
 #: views/streams/sources/_selector.html.twig:93
-#: views/streams/sources/index.html.twig:64
+#: views/streams/sources/index.html.twig:100
 msgid "No source matches your filters."
 msgstr "Aucune source ne correspond à vos filtres."
 
-#: views/sources/index.html.twig:83
+#: views/sources/index.html.twig:138
 #: views/streams/sources/_selector.html.twig:104
-#: views/streams/sources/index.html.twig:69
+#: views/streams/sources/index.html.twig:105
 msgid "This list is empty."
 msgstr "Cette liste est vide."
 
@@ -3752,7 +3758,7 @@ msgstr "Sources OPML de %s"
 msgid "A stream created by %s on %s."
 msgstr "Un fil créé par %s sur %s."
 
-#: views/streams/show.html.twig:131
+#: views/streams/show.html.twig:131 views/streams/sources/index.html.twig:36
 msgid "Manage sources"
 msgstr "Gérer les sources"
 
@@ -3810,6 +3816,10 @@ msgstr "Sources suggérées"
 #: views/streams/sources/edit.html.twig:50
 msgid "Sources of the stream"
 msgstr "Sources du fil"
+
+#: views/streams/sources/index.html.twig:59
+msgid "Copy link to OPML"
+msgstr "Copier le lien vers l’OPML"
 
 #: views/streams/views/_form.html.twig:8
 msgid "What’s the name of the view?"

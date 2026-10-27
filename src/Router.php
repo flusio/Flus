@@ -106,10 +106,8 @@ class Router
         $router->addRoute('POST', '/mastodon/disconnect', 'Mastodon#disconnect', 'disconnect mastodon');
 
         // Importations
+        $router->addRoute('GET', '/importations/:id', 'Importations#show', 'importation');
         $router->addRoute('POST', '/importations/:id/delete', 'Importations#delete', 'delete importation');
-
-        $router->addRoute('GET', '/opml', 'importations/Opml#show', 'opml');
-        $router->addRoute('POST', '/opml', 'importations/Opml#import', 'import opml');
 
         // Exportations
         $router->addRoute('GET', '/exportations', 'Exportations#show', 'exportation');
@@ -242,6 +240,9 @@ class Router
 
         // Sources
         $router->addRoute('GET', '/sources', 'Sources#index', 'sources');
+        $router->addRoute('GET', '/sources/opml.xml', 'sources/Opml#show', 'sources opml');
+        $router->addRoute('POST', '/sources/opml', 'sources/Opml#import', 'import sources opml');
+        $router->addRoute('GET', '/opml', 'sources/Opml#alias');
         $router->addRoute('POST', '/sources/unfollow', 'sources/Follows#delete', 'unfollow sources');
         $router->addRoute(
             'POST',

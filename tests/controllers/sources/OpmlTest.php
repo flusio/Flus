@@ -1,11 +1,14 @@
 <?php
 
-namespace App\controllers\importations;
+namespace App\controllers\sources;
 
 use App\forms;
 use App\jobs;
 use App\models;
+use App\utils;
+use tests\factories\CollectionFactory;
 use tests\factories\ImportationFactory;
+use tests\factories\StreamFactory;
 
 class OpmlTest extends \PHPUnit\Framework\TestCase
 {
@@ -14,73 +17,57 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\FilesHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
+    use \Minz\Tests\TimeHelper;
     use \tests\FakerHelper;
     use \tests\LoginHelper;
 
     public function testShowRendersCorrectly(): void
     {
-        $user = $this->login();
-
-        $response = $this->appRun('GET', '/opml');
-
-        $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, 'Importation from an OPML file');
-        $this->assertResponseTemplateName($response, 'importations/opml/show.html.twig');
-    }
-
-    public function testShowRendersIfImportationIsOngoing(): void
-    {
-        $user = $this->login();
-        ImportationFactory::create([
-            'type' => 'opml',
-            'user_id' => $user->id,
-            'status' => 'ongoing',
-        ]);
-
-        $response = $this->appRun('GET', '/opml');
-
-        $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, 'We’re importing your data');
-    }
-
-    public function testShowRendersIfImportationIsFinished(): void
-    {
-        $user = $this->login();
-        ImportationFactory::create([
-            'type' => 'opml',
-            'user_id' => $user->id,
-            'status' => 'finished',
-        ]);
-
-        $response = $this->appRun('GET', '/opml');
-
-        $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, 'We’ve imported your data from your OPML file.');
-    }
-
-    public function testShowRendersIfImportationIsInError(): void
-    {
+        $this->freeze(new \DateTimeImmutable('2026-10-27'));
         $user = $this->login();
         /** @var string */
-        $error = $this->fake('sentence');
-        ImportationFactory::create([
-            'type' => 'opml',
+        $stream_name = $this->fake('words', 3, true);
+        $stream = StreamFactory::create([
             'user_id' => $user->id,
-            'status' => 'error',
-            'error' => $error,
+            'name' => $stream_name,
         ]);
+        /** @var string */
+        $collection_name = $this->fake('words', 3, true);
+        $collection = CollectionFactory::create([
+            'type' => 'collection',
+            'name' => $collection_name,
+            'is_public' => true,
+        ]);
+        /** @var string */
+        $feed_name = $this->fake('words', 3, true);
+        $feed = CollectionFactory::create([
+            'type' => 'feed',
+            'name' => $feed_name,
+            'is_public' => true,
+        ]);
+        $user->follow($collection);
+        $user->follow($feed);
+        $stream->addSource($feed);
 
-        $response = $this->appRun('GET', '/opml');
+        $response = $this->appRun('GET', '/sources/opml.xml');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, $error);
+        $this->assertResponseHeaders($response, [
+            'Content-Type' => 'text/x-opml',
+            'Content-Disposition' => 'inline; filename="2026-10-27_Flus_sources.opml.xml"',
+        ]);
+        $this->assertResponseContains($response, $collection_name);
+        $this->assertResponseContains($response, $stream_name);
+        $this->assertResponseContains($response, $feed_name);
     }
 
-    public function testShowRedirectsToLoginIfNotConnected(): void
+    public function testShowRedirectsIfNotConnected(): void
     {
-        $response = $this->appRun('GET', '/opml');
+        $redirect_to = urlencode('/sources/opml.xml');
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fopml');
+        $response = $this->appRun('GET', '/sources/opml.xml');
+
+        $this->assertResponseCode($response, 302, "/login?redirect_to={$redirect_to}");
     }
 
     public function testImportRegistersAnOpmlImportatorJobAndRedirects(): void
@@ -98,14 +85,14 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Importation::count());
         $this->assertSame(0, \Minz\Job::count());
 
-        $response = $this->appRun('POST', '/opml', [
+        $response = $this->appRun('POST', '/sources/opml', [
             'csrf_token' => $this->csrfToken(forms\importations\OpmlImportation::class),
             'opml' => $file,
         ]);
 
         \App\Configuration::$jobs_adapter = 'test';
 
-        $this->assertResponseCode($response, 302, '/opml');
+        $this->assertResponseCode($response, 302, '/sources');
         $this->assertSame(1, models\Importation::count());
         $this->assertSame(1, \Minz\Job::count());
         $importation = models\Importation::take();
@@ -128,7 +115,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
             'error' => UPLOAD_ERR_OK,
         ];
 
-        $response = $this->appRun('POST', '/opml', [
+        $response = $this->appRun('POST', '/sources/opml', [
             'csrf_token' => $this->csrfToken(forms\importations\OpmlImportation::class),
             'opml' => $file,
         ]);
@@ -150,14 +137,14 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
             'error' => UPLOAD_ERR_OK,
         ];
 
-        $response = $this->appRun('POST', '/opml', [
+        $response = $this->appRun('POST', '/sources/opml', [
             'csrf_token' => $this->csrfToken(forms\importations\OpmlImportation::class),
             'opml' => $file,
         ]);
 
         \App\Configuration::$jobs_adapter = 'test';
 
-        $this->assertResponseCode($response, 302, '/login?redirect_to=%2Fopml');
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
         $this->assertSame(0, models\Importation::count());
         $this->assertSame(0, \Minz\Job::count());
     }
@@ -178,14 +165,15 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
 
-        $response = $this->appRun('POST', '/opml', [
+        $response = $this->appRun('POST', '/sources/opml', [
             'csrf_token' => $this->csrfToken(forms\importations\OpmlImportation::class),
             'opml' => $file,
         ]);
 
         \App\Configuration::$jobs_adapter = 'test';
 
-        $this->assertResponseCode($response, 400);
+        $this->assertResponseCode($response, 302, '/sources');
+        $this->assertSame('You already have an ongoing OPML importation.', utils\Notification::popError());
         $this->assertSame(1, models\Importation::count());
         $this->assertSame(0, \Minz\Job::count());
     }
@@ -205,15 +193,15 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Importation::count());
         $this->assertSame(0, \Minz\Job::count());
 
-        $response = $this->appRun('POST', '/opml', [
+        $response = $this->appRun('POST', '/sources/opml', [
             'csrf_token' => 'not the token',
             'opml' => $file,
         ]);
 
         \App\Configuration::$jobs_adapter = 'test';
 
-        $this->assertResponseCode($response, 400);
-        $this->assertResponseContains($response, 'A security verification failed');
+        $this->assertResponseCode($response, 302, '/sources');
+        $this->assertStringContainsString('A security verification failed', utils\Notification::popError());
         $this->assertSame(0, models\Importation::count());
         $this->assertSame(0, \Minz\Job::count());
     }
@@ -233,14 +221,14 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Importation::count());
         $this->assertSame(0, \Minz\Job::count());
 
-        $response = $this->appRun('POST', '/opml', [
+        $response = $this->appRun('POST', '/sources/opml', [
             'csrf_token' => $this->csrfToken(forms\importations\OpmlImportation::class),
         ]);
 
         \App\Configuration::$jobs_adapter = 'test';
 
-        $this->assertResponseCode($response, 400);
-        $this->assertResponseContains($response, 'The file is required');
+        $this->assertResponseCode($response, 302, '/sources');
+        $this->assertStringContainsString('The file is required', utils\Notification::popError());
         $this->assertSame(0, models\Importation::count());
         $this->assertSame(0, \Minz\Job::count());
     }
@@ -258,15 +246,15 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
             'error' => $error,
         ];
 
-        $response = $this->appRun('POST', '/opml', [
+        $response = $this->appRun('POST', '/sources/opml', [
             'csrf_token' => $this->csrfToken(forms\importations\OpmlImportation::class),
             'opml' => $file,
         ]);
 
         \App\Configuration::$jobs_adapter = 'test';
 
-        $this->assertResponseCode($response, 400);
-        $this->assertResponseContains($response, 'This file is too large');
+        $this->assertResponseCode($response, 302, '/sources');
+        $this->assertStringContainsString('This file is too large', utils\Notification::popError());
         $this->assertSame(0, models\Importation::count());
         $this->assertSame(0, \Minz\Job::count());
     }
@@ -284,15 +272,18 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
             'error' => $error,
         ];
 
-        $response = $this->appRun('POST', '/opml', [
+        $response = $this->appRun('POST', '/sources/opml', [
             'csrf_token' => $this->csrfToken(forms\importations\OpmlImportation::class),
             'opml' => $file,
         ]);
 
         \App\Configuration::$jobs_adapter = 'test';
 
-        $this->assertResponseCode($response, 400);
-        $this->assertResponseContains($response, "This file cannot be uploaded (error {$error}).");
+        $this->assertResponseCode($response, 302, '/sources');
+        $this->assertStringContainsString(
+            "This file cannot be uploaded (error {$error}).",
+            utils\Notification::popError(),
+        );
         $this->assertSame(0, models\Importation::count());
         $this->assertSame(0, \Minz\Job::count());
     }
@@ -309,15 +300,15 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
             'is_uploaded_file' => false, // this is possible only during tests!
         ];
 
-        $response = $this->appRun('POST', '/opml', [
+        $response = $this->appRun('POST', '/sources/opml', [
             'csrf_token' => $this->csrfToken(forms\importations\OpmlImportation::class),
             'opml' => $file,
         ]);
 
         \App\Configuration::$jobs_adapter = 'test';
 
-        $this->assertResponseCode($response, 400);
-        $this->assertResponseContains($response, 'This file cannot be uploaded (error -1).');
+        $this->assertResponseCode($response, 302, '/sources');
+        $this->assertStringContainsString('This file cannot be uploaded (error -1).', utils\Notification::popError());
         $this->assertSame(0, models\Importation::count());
         $this->assertSame(0, \Minz\Job::count());
     }
@@ -345,5 +336,12 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
             [UPLOAD_ERR_CANT_WRITE],
             [UPLOAD_ERR_EXTENSION],
         ];
+    }
+
+    public function testAliasRedirectsToSources(): void
+    {
+        $response = $this->appRun('GET', '/opml');
+
+        $this->assertResponseCode($response, 301, '/sources');
     }
 }

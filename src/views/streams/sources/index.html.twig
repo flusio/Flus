@@ -28,6 +28,42 @@
         </a>
     </p>
 
+    {% set can_update_stream = can(app.user, 'update', stream) %}
+    {% if sources or can_update_stream %}
+        <div class="panel panel--rounded stack stack--gap-small">
+            {% if can_update_stream %}
+                <a class="button" href="{{ url('edit stream sources', { id: stream.id }) }}">
+                    {{ t('Manage sources') }}
+                </a>
+            {% endif %}
+
+            {% if sources %}
+                {% embed 'components/popup.html.twig' %}
+                    {% block opener %}
+                        {{ icon('menu') }}
+                        {{ t('Actions') }}
+                    {% endblock %}
+
+                    {% block items %}
+                        {% import _self as item %}
+
+                        {{ item.link(
+                            url: url('stream opml', { id: stream.id }),
+                            label: t('Download OPML'),
+                            icon: 'cloud-download',
+                            attrs: { download: '', 'data-turbo': 'false' },
+                        ) }}
+
+                        {{ item.clipboard(
+                            value: url_full('stream opml', { id: stream.id }),
+                            label: t('Copy link to OPML'),
+                        ) }}
+                    {% endblock %}
+                {% endembed %}
+            {% endif %}
+        </div>
+    {% endif %}
+
     <section
         class="sources flow"
         data-controller="filter focus morph selection"
