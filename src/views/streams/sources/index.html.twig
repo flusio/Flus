@@ -28,6 +28,24 @@
         </a>
     </p>
 
+    {% set can_update_stream = can(app.user, 'update', stream) %}
+    {% if sources or can_update_stream %}
+        <div class="panel panel--rounded stack stack--gap-small">
+            {% if can_update_stream %}
+                <a class="button" href="{{ url('edit stream sources', { id: stream.id }) }}">
+                    {{ t('Manage sources') }}
+                </a>
+            {% endif %}
+
+            {% if sources %}
+                <a class="button" href="{{ url('stream opml', { id: stream.id }) }}" download data-turbo="false">
+                    {{ icon('cloud-download') }}
+                    {{ t('Download OPML') }}
+                </a>
+            {% endif %}
+        </div>
+    {% endif %}
+
     <section
         class="sources flow"
         data-controller="filter focus morph selection"
