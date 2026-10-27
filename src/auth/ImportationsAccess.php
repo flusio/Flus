@@ -10,6 +10,11 @@ use App\models;
  */
 class ImportationsAccess
 {
+    public static function canView(?models\User $user, models\Importation $importation): bool
+    {
+        return $user && $user->id === $importation->user_id;
+    }
+
     public static function canDelete(?models\User $user, models\Importation $importation): bool
     {
         return $user && $user->id === $importation->user_id;

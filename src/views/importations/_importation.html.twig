@@ -1,0 +1,81 @@
+{# The Turbo frame displaying the state of an importation.
+ #
+ # While the importation is ongoing, the frame refreshes itself. Once it is
+ # over, closing the alert deletes the importation and refreshes the whole
+ # page. #}
+
+{% set importation = importation ?? null %}
+
+{% if importation %}
+    <div>
+        <turbo-frame id="importation" role="status">
+            {% if importation.isOngoing %}
+                <div class="task">
+                    <span class="spinner task__spinner"></span>
+
+                    <div class="task__body flow flow--smaller">
+                        <p class="task__label">
+                            {{ t('We’re importing your OPML file…') }}
+                        </p>
+
+                        <p class="task__description">
+                            {{ t('This may take a few minutes. You can keep using the page in the meantime.') }}
+                        </p>
+                    </div>
+                </div>
+
+                <form
+                    method="get"
+                    action="{{ url('importation', { id: importation.id }) }}"
+                    data-controller="autosubmit"
+                    data-autosubmit-mode-value="timeout"
+                    data-autosubmit-timeout-value="4000"
+                >
+                </form>
+            {% else %}
+                <div class="task {{ importation.isFinished ? 'task--success' : 'task--error' }}">
+                    <span class="task__icon">
+                        {{ icon(importation.isFinished ? 'check' : 'error') }}
+                    </span>
+
+                    <div class="task__body flow flow--smaller">
+                        {% if importation.isFinished %}
+                            <p class="task__label">
+                                {{ t('We’ve imported your OPML file.') }}
+                            </p>
+
+                            <p class="task__description">
+                                {{ t('We’re now going to fetch the links of your new sources in the background.') }}
+                            </p>
+                        {% else %}
+                            <p class="task__label">
+                                {{ t('Your OPML file cannot be imported.') }}
+                            </p>
+
+                            <p class="task__description">
+                                {{ importation.error }}
+                            </p>
+                        {% endif %}
+                    </div>
+
+                    <form
+                        method="post"
+                        action="{{ url('delete importation', { id: importation.id }) }}"
+                        data-turbo-frame="_top"
+                    >
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token('importations\\DeleteImportation') }}">
+                        <input type="hidden" name="redirect_to" value="{{ url('sources') }}">
+
+                        <button type="submit" class="button--icon button--ghost">
+                            {{ icon('times') }}
+
+                            <span class="sr-only">
+                                {{ t('Close') }}
+                            </span>
+                        </button>
+                    </form>
+                </div>
+            {% endif %}
+        </turbo-frame>
+    </div>
+{% endif %}

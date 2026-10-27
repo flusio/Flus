@@ -3,6 +3,7 @@
 namespace App\controllers;
 
 use tests\factories\CollectionFactory;
+use tests\factories\ImportationFactory;
 use tests\factories\StreamFactory;
 use tests\factories\UserFactory;
 
@@ -153,6 +154,22 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         // publishers, the number of streams and the time filters are all
         // loaded in batch by models\collections\Preloader.
         $this->assertLessThanOrEqual(20, $count_queries);
+    }
+
+    public function testIndexRendersTheOngoingImportation(): void
+    {
+        $user = $this->login();
+        $importation = ImportationFactory::create([
+            'type' => 'opml',
+            'user_id' => $user->id,
+            'status' => 'ongoing',
+        ]);
+
+        $response = $this->appRun('GET', '/sources');
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'We’re importing your OPML file');
+        $this->assertResponseContains($response, "/importations/{$importation->id}");
     }
 
     public function testIndexRedirectsIfNotConnected(): void

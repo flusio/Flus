@@ -21,6 +21,8 @@
 {% endblock %}
 
 {% block body %}
+    {% set importation = importation_form.currentImportation %}
+
     <h1 class="text--center">{{ t('Sources') }}</h1>
 
     <p class="text--center">
@@ -40,6 +42,34 @@
             {{ t('Add a feed') }}
         </button>
 
+        <form
+            method="post"
+            action="{{ url('import sources opml') }}"
+            enctype="multipart/form-data"
+            data-controller="autosubmit form-file"
+        >
+            <input type="hidden" name="csrf_token" value="{{ csrf_token(importation_form) }}">
+
+            <input
+                type="file"
+                name="opml"
+                accept="{{ importation_form.acceptedMimetypes }}"
+                data-action="autosubmit#submit"
+                data-form-file-target="file"
+                hidden
+            >
+
+            <button
+                type="button"
+                data-action="form-file#openFile"
+                data-autosubmit-target="actionButton"
+                {{ importation ? 'disabled' }}
+            >
+                {{ icon('upload') }}
+                {{ t('Import OPML') }}
+            </button>
+        </form>
+
         {% if sources %}
             <a class="button" href="{{ url('sources opml') }}" download data-turbo="false">
                 {{ icon('cloud-download') }}
@@ -47,6 +77,8 @@
             </a>
         {% endif %}
     </div>
+
+    {{ include('importations/_importation.html.twig') }}
 
     <section
         class="sources flow"
