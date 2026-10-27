@@ -2,8 +2,10 @@
 
 namespace App\controllers\profiles;
 
+use App\auth;
 use App\controllers\BaseController;
 use App\models;
+use App\services;
 use App\utils;
 use Minz\Request;
 use Minz\Response;
@@ -14,6 +16,8 @@ use Minz\Response;
  */
 class Opml extends BaseController
 {
+    use \App\controllers\traits\OpmlResponder;
+
     /**
      * Show the collections of a user as an OPML file.
      *
@@ -27,18 +31,17 @@ class Opml extends BaseController
      */
     public function show(Request $request): Response
     {
+        $current_user = auth\CurrentUser::get();
         $user = models\User::requireFromRequest($request);
 
         utils\Locale::setCurrentLocale($user->locale);
-        $collections = $user->collections([], [
-            'private' => false,
-        ]);
-        $collections = utils\Sorter::localeSort($collections, 'name');
 
-        return Response::ok('profiles/opml/show.opml.xml.twig', [
-            'user' => $user,
-            'collections' => $collections,
+        $opml_generator = new services\OpmlGenerator();
+        $opml = $opml_generator->renderCollections($user, [
+            'context_user' => $current_user,
         ]);
+
+        return $this->opmlResponse($opml, $user->username);
     }
 
     /**

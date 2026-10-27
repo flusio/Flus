@@ -5,6 +5,7 @@ namespace App\controllers\streams;
 use App\auth;
 use App\controllers\BaseController;
 use App\models;
+use App\services;
 use App\utils;
 use Minz\Request;
 use Minz\Response;
@@ -15,6 +16,8 @@ use Minz\Response;
  */
 class Opml extends BaseController
 {
+    use \App\controllers\traits\OpmlResponder;
+
     /**
      * Show the sources of a stream as an OPML file.
      *
@@ -37,14 +40,12 @@ class Opml extends BaseController
 
         utils\Locale::setCurrentLocale($stream->owner()->locale);
 
-        $sources = $stream->sources([
-            'context_user' => null,
+        $opml_generator = new services\OpmlGenerator();
+        $opml = $opml_generator->renderStream($stream, [
+            'context_user' => $user,
         ]);
 
-        return Response::ok('streams/opml/show.opml.xml.twig', [
-            'stream' => $stream,
-            'sources' => $sources,
-        ]);
+        return $this->opmlResponse($opml, $stream->name);
     }
 
     /**

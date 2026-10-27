@@ -1,0 +1,23 @@
+{# The context user is the one the OPML is generated for: the names and
+ # filters are theirs. Without context user (e.g. a feed reader fetching a
+ # public OPML), the original names are rendered. #}
+{% set context_user = context_user ?? null %}
+{% set with_time_filter = with_time_filter ?? false %}
+{% set time_filter = with_time_filter and context_user ? source.timeFilterByUser(context_user) : null %}
+{% set display_time_filter = time_filter and time_filter != 'normal' %}
+
+{% if source.isFeed %}
+    {% set html_url = source.feed_site_url %}
+{% else %}
+    {% set html_url = url_full('collection', { id: source.id }) %}
+{% endif %}
+
+<outline
+    type="rss"
+    text="{{ source.nameByUser(context_user) }}"
+    xmlUrl="{{ source.feedUrl(true) }}"
+    htmlUrl="{{ html_url }}"
+    {% if display_time_filter %}
+        category="/Flus/filters/{{ time_filter }}"
+    {% endif %}
+/>

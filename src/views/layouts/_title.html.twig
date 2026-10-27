@@ -1,8 +1,8 @@
-{# response_code is declared on AfterAction in the BaseController.
- # However, it can be undefined on some errors (e.g. a user tries to access an
+{# response_code is set on AfterAction in the BaseController.
+ # However, it can be null on some errors (e.g. a user tries to access an
  # non existing page), so we add "Error:" in this situation too.
  #}
-{%- if response_code is not defined or response_code >= 400 -%}
+{%- if response_code is not defined or response_code is null or response_code >= 400 -%}
     {%- set title = t('Error: ') ~ title -%}
 {%- endif -%}
 {%- if is_environment('development') -%}

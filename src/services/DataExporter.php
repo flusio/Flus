@@ -102,37 +102,11 @@ class DataExporter
      */
     private function generateOpml(models\User $user): string
     {
-        $streams = $user->streams();
-        $sources_by_streams = models\Collection::listByStreams($streams, [
+        $opml_generator = new OpmlGenerator();
+        return $opml_generator->renderFollows($user, [
             'context_user' => $user,
+            'with_time_filter' => true,
         ]);
-        $all_sources = $user->followedSources();
-
-        $sources_in_stream = [];
-        foreach ($sources_by_streams as $stream_id => $stream_sources) {
-            $stream_sources = utils\Sorter::localeSort($stream_sources, 'name');
-            $sources_by_streams[$stream_id] = $stream_sources;
-
-            foreach ($stream_sources as $source) {
-                $sources_in_stream[$source->id] = true;
-            }
-        }
-
-        $no_stream_sources = array_filter(
-            $all_sources,
-            function (models\Collection $source) use ($sources_in_stream): bool {
-                return !isset($sources_in_stream[$source->id]);
-            },
-        );
-
-        $view = new \Minz\Template\Twig('collections/followed.opml.xml.twig', [
-            'user' => $user,
-            'streams' => $streams,
-            'sources_by_streams' => $sources_by_streams,
-            'no_stream_sources' => $no_stream_sources,
-        ]);
-
-        return self::formatXML($view->render());
     }
 
     /**
@@ -191,7 +165,7 @@ class DataExporter
             'links' => $collection->links(['published_at']),
         ]);
 
-        return self::formatXML($view->render());
+        return utils\Xml::format($view->render());
     }
 
     /**
@@ -204,7 +178,7 @@ class DataExporter
             'links' => $source->links(),
         ]);
 
-        return self::formatXML($view->render());
+        return utils\Xml::format($view->render());
     }
 
     /**
@@ -217,29 +191,6 @@ class DataExporter
             'notes' => $link->notes(),
         ]);
 
-        return self::formatXML($view->render());
-    }
-
-    /**
-     * Return a formatted version of a XML string.
-     *
-     * If an error occurs, the initial XML is returned as is.
-     */
-    private static function formatXML(string $xml_as_string): string
-    {
-        $dom_document = new \DOMDocument();
-        $dom_document->preserveWhiteSpace = false;
-        $dom_document->formatOutput = true;
-        $result = @$dom_document->loadXML($xml_as_string);
-        if (!$result) {
-            return $xml_as_string;
-        }
-
-        $formatted_xml = $dom_document->saveXML();
-        if (!$formatted_xml) {
-            return $xml_as_string;
-        }
-
-        return $formatted_xml;
+        return utils\Xml::format($view->render());
     }
 }

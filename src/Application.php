@@ -41,7 +41,6 @@ class Application
 
         // Automatically declare content types for these views files extensions
         \Minz\Output\Template::$extensions_to_content_types['.atom.xml'] = 'application/xml';
-        \Minz\Output\Template::$extensions_to_content_types['.opml.xml'] = 'text/x-opml';
         \Minz\Output\Template::$extensions_to_content_types['.xsl'] = 'application/xslt+xml';
 
         // Register Twig extensions
@@ -116,6 +115,8 @@ class Application
                 'user_agent' => utils\UserAgent::get(),
                 'demo' => \App\Configuration::$application['demo'],
             ],
+            // The response code is set by the BaseController after the action.
+            'response_code' => null,
         ]);
 
         $response = \Minz\Engine::run($request);

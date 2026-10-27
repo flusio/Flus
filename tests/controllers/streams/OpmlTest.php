@@ -10,10 +10,12 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
+    use \Minz\Tests\TimeHelper;
     use \tests\FakerHelper;
 
     public function testShowRendersCorrectly(): void
     {
+        $this->freeze(new \DateTimeImmutable('2026-10-27'));
         /** @var string */
         $collection_name = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
@@ -22,6 +24,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
             'name' => $collection_name,
         ]);
         $stream = StreamFactory::create([
+            'name' => 'arXiv computer science',
             'is_public' => true,
         ]);
         $stream->addSource($collection);
@@ -29,10 +32,10 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', "/streams/{$stream->id}/opml.xml");
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'streams/opml/show.opml.xml.twig');
         $this->assertResponseContains($response, $collection_name);
         $this->assertResponseHeaders($response, [
             'Content-Type' => 'text/x-opml',
+            'Content-Disposition' => 'inline; filename="2026-10-27_Flus_arXiv-computer-science.opml.xml"',
         ]);
     }
 

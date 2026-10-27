@@ -1,25 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <opml version="2.0">
     <head>
-        <title>{{ app.brand }}</title>
+        <title>{{ title }}</title>
         <dateCreated>{{ date().format('D, d M Y H:i:s O') }}</dateCreated>
     </head>
 
     <body>
-        {% for source in no_stream_sources %}
-            {{ include('collections/_collection.opml.xml.twig', {
-                collection: source,
-                context_user: user,
-            }) }}
+        {% for source in sources %}
+            {{ include('opml/_source.xml.twig') }}
         {% endfor %}
 
         {% for stream in streams %}
             <outline text="{{ stream.name }}">
                 {% for source in sources_by_streams[stream.id] ?? [] %}
-                    {{ include('collections/_collection.opml.xml.twig', {
-                        collection: source,
-                        context_user: user,
-                    }) }}
+                    {{ include('opml/_source.xml.twig') }}
                 {% endfor %}
             </outline>
         {% endfor %}
