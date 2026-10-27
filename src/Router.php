@@ -242,6 +242,7 @@ class Router
 
         // Sources
         $router->addRoute('GET', '/sources', 'Sources#index', 'sources');
+        $router->addRoute('GET', '/sources/opml.xml', 'sources/Opml#show', 'sources opml');
         $router->addRoute('POST', '/sources/unfollow', 'sources/Follows#delete', 'unfollow sources');
         $router->addRoute(
             'POST',

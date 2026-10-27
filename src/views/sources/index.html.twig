@@ -27,9 +27,9 @@
         {{ t('The collections and the feeds that you follow feed both your journal and your streams.') }}
     </p>
 
-    <p class="text--center">
+    <div class="panel panel--rounded stack stack--gap-small">
         <button
-            class="button--primary button--big"
+            class="button--primary"
             data-controller="modal-opener"
             data-action="modal-opener#fetch"
             data-modal-opener-selector-value="{{ url('new feed') }}"
@@ -39,7 +39,14 @@
             {{ icon('plus-circle') }}
             {{ t('Add a feed') }}
         </button>
-    </p>
+
+        {% if sources %}
+            <a class="button" href="{{ url('sources opml') }}" download data-turbo="false">
+                {{ icon('cloud-download') }}
+                {{ t('Download OPML') }}
+            </a>
+        {% endif %}
+    </div>
 
     <section
         class="sources flow"
