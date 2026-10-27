@@ -147,4 +147,18 @@ class BeltTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame('', $subpath);
     }
+
+    public function testSlugify(): void
+    {
+        $result = Belt::slugify('arXiv --- computer science');
+
+        $this->assertSame('arXiv-computer-science', $result);
+    }
+
+    public function testSlugifyTransliteratesToAscii(): void
+    {
+        $result = Belt::slugify('Test ëéàçï');
+
+        $this->assertSame('Test-eeaci', $result);
+    }
 }

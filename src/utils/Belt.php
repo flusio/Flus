@@ -95,4 +95,24 @@ class Belt
 
         return substr($name, 0, 3) . '/' . substr($name, 3, 3) . '/' . substr($name, 6, 3);
     }
+
+    /**
+     * Return a version of the string that can be used safely in a filename.
+     *
+     * The string is transliterated to ASCII, and each sequence of characters
+     * other than letters and digits (dashes included) is replaced by a single
+     * dash (e.g. "arXiv - computer science" becomes "arXiv-computer-science").
+     */
+    public static function slugify(string $string): string
+    {
+        $ascii_string = transliterator_transliterate('Any-Latin; Latin-ASCII', $string);
+
+        if ($ascii_string === false) {
+            $ascii_string = $string;
+        }
+
+        $slug = preg_replace('/[^A-Za-z0-9]+/', '-', $ascii_string) ?? '';
+
+        return trim($slug, '-');
+    }
 }
