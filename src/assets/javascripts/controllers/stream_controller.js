@@ -71,6 +71,18 @@ export default class extends Controller {
         this.submit();
     }
 
+    unselectAllSources () {
+        this.sourceTargets.forEach((button) => {
+            button.setAttribute('aria-pressed', 'false');
+        });
+
+        this.sourceInputTargets.forEach((input) => {
+            input.remove();
+        });
+
+        this.submit();
+    }
+
     selectStatus (event) {
         const button = event.currentTarget;
 

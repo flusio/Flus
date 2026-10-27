@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-10-27 10:23+0100\n"
-"PO-Revision-Date: 2026-10-27 10:23+0100\n"
+"POT-Creation-Date: 2026-10-27 11:28+0100\n"
+"PO-Revision-Date: 2026-10-27 11:28+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -3641,7 +3641,7 @@ msgstr "Afficher les jours suivants"
 msgid "Date"
 msgstr "Date"
 
-#: views/streams/_views.html.twig:129 views/streams/_views.html.twig:333
+#: views/streams/_views.html.twig:129 views/streams/_views.html.twig:347
 #, php-format
 msgid "%s: %d link"
 msgid_plural "%s: %d links"
@@ -3682,20 +3682,24 @@ msgstr "Non lus"
 msgid "Include the ignored links"
 msgstr "Inclure les liens ignorés"
 
-#: views/streams/_views.html.twig:321
+#: views/streams/_views.html.twig:322
 #, php-format
 msgid "Sources (%d)"
 msgstr "Sources (%d)"
 
-#: views/streams/_views.html.twig:377 views/streams/_views.html.twig:402
+#: views/streams/_views.html.twig:334
+msgid "Unselect all"
+msgstr "Tout désélectionner"
+
+#: views/streams/_views.html.twig:391 views/streams/_views.html.twig:416
 msgid "Save view"
 msgstr "Enregistrer la vue"
 
-#: views/streams/_views.html.twig:387
+#: views/streams/_views.html.twig:401
 msgid "Save to current view"
 msgstr "Enregistrer la vue courante"
 
-#: views/streams/_views.html.twig:395
+#: views/streams/_views.html.twig:409
 msgid "Save changes to new view"
 msgstr "Enregistrer dans une nouvelle vue"
 

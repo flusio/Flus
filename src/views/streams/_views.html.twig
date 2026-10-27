@@ -317,9 +317,23 @@
             <div class="filters__section flow flow--small">
                 {% set sources_and_counts = stream_view.countedSources() %}
 
-                <p class="text--bold" id="stream-filter-sources-label">
-                    {{ t('Sources (%d)', [sources_and_counts | length]) }}
-                </p>
+                <div class="stack stack--gap">
+                    <p class="text--bold" id="stream-filter-sources-label">
+                        {{ t('Sources (%d)', [sources_and_counts | length]) }}
+                    </p>
+
+                    <button
+                        type="button"
+                        data-action="stream#unselectAllSources"
+                        {# The button is hidden rather than removed when no sources are selected, so that the layout doesn't shift when it appears. #}
+                        class="button--small {{ stream_view.sources ? '' : 'invisible' }}"
+                        {% if not stream_view.sources %}
+                            disabled
+                        {% endif %}
+                    >
+                        {{ t('Unselect all') }}
+                    </button>
+                </div>
 
                 {% if sources_and_counts %}
                     <div
