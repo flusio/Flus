@@ -42,40 +42,56 @@
             {{ t('Add a feed') }}
         </button>
 
-        <form
-            method="post"
-            action="{{ url('import sources opml') }}"
-            enctype="multipart/form-data"
-            data-controller="autosubmit form-file"
-        >
-            <input type="hidden" name="csrf_token" value="{{ csrf_token(importation_form) }}">
+        {% embed 'components/popup.html.twig' %}
+            {% block opener %}
+                {{ icon('menu') }}
+                {{ t('Actions') }}
+            {% endblock %}
 
-            <input
-                type="file"
-                name="opml"
-                accept="{{ importation_form.acceptedMimetypes }}"
-                data-action="autosubmit#submit"
-                data-form-file-target="file"
-                hidden
-            >
+            {% block items %}
+                {% import _self as item %}
 
-            <button
-                type="button"
-                data-action="form-file#openFile"
-                data-autosubmit-target="actionButton"
-                {{ importation ? 'disabled' }}
-            >
-                {{ icon('upload') }}
-                {{ t('Import OPML') }}
-            </button>
-        </form>
+                <form
+                    role="none"
+                    method="post"
+                    action="{{ url('import sources opml') }}"
+                    enctype="multipart/form-data"
+                    data-controller="autosubmit form-file"
+                >
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token(importation_form) }}">
 
-        {% if sources %}
-            <a class="button" href="{{ url('sources opml') }}" download data-turbo="false">
-                {{ icon('cloud-download') }}
-                {{ t('Download OPML') }}
-            </a>
-        {% endif %}
+                    <input
+                        type="file"
+                        name="opml"
+                        accept="{{ importation_form.acceptedMimetypes }}"
+                        data-action="autosubmit#submit"
+                        data-form-file-target="file"
+                        hidden
+                    >
+
+                    <button
+                        type="button"
+                        class="popup__item"
+                        role="menuitem"
+                        data-action="form-file#openFile"
+                        data-autosubmit-target="actionButton"
+                        {{ importation ? 'disabled' }}
+                    >
+                        {{ icon('upload') }}
+                        {{ t('Import OPML') }}
+                    </button>
+                </form>
+
+                {% if sources %}
+                    {{ item.link(
+                        url: url('sources opml'),
+                        label: t('Download OPML'),
+                        icon: 'cloud-download',
+                        attrs: { download: '', 'data-turbo': 'false' },
+                    ) }}
+                {% endif %}
+            {% endblock %}
+        {% endembed %}
     </div>
 
     {{ include('importations/_importation.html.twig') }}

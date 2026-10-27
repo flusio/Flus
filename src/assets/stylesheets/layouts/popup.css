@@ -41,3 +41,10 @@
         display: none;
     }
 }
+
+/* This is a fix for @flus/design which colours the anchors of the panels with
+ * `.panel a:not(.button)`, which also applies to the link items of the popups
+ * placed in a panel. */
+.panel a.popup__item {
+    color: var(--color-text);
+}

@@ -38,10 +38,28 @@
             {% endif %}
 
             {% if sources %}
-                <a class="button" href="{{ url('stream opml', { id: stream.id }) }}" download data-turbo="false">
-                    {{ icon('cloud-download') }}
-                    {{ t('Download OPML') }}
-                </a>
+                {% embed 'components/popup.html.twig' %}
+                    {% block opener %}
+                        {{ icon('menu') }}
+                        {{ t('Actions') }}
+                    {% endblock %}
+
+                    {% block items %}
+                        {% import _self as item %}
+
+                        {{ item.link(
+                            url: url('stream opml', { id: stream.id }),
+                            label: t('Download OPML'),
+                            icon: 'cloud-download',
+                            attrs: { download: '', 'data-turbo': 'false' },
+                        ) }}
+
+                        {{ item.clipboard(
+                            value: url_full('stream opml', { id: stream.id }),
+                            label: t('Copy link to OPML'),
+                        ) }}
+                    {% endblock %}
+                {% endembed %}
             {% endif %}
         </div>
     {% endif %}
