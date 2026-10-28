@@ -1,5 +1,32 @@
 # Changelog of Flus
 
+## 2026-10-28 - v3.0.1
+
+### Features
+
+- Put OPML actions on the "Sources" pages ([85c5b73a](https://github.com/flusio/Flus/commit/85c5b73a))
+- Allow to follow sources from the stream sources ([f44b9798](https://github.com/flusio/Flus/commit/f44b9798))
+- Add a button to unselect all sources in the stream filters ([42b28356](https://github.com/flusio/Flus/commit/42b28356))
+
+### Bug fixes
+
+- Fix display of the number of results when searching links ([9df39cc1](https://github.com/flusio/Flus/commit/9df39cc1))
+- Handle unreachable Mastodon hosts properly ([95048a03](https://github.com/flusio/Flus/commit/95048a03))
+
+### Maintenance
+
+- Update the dependencies ([867e9c35](https://github.com/flusio/Flus/commit/867e9c35))
+- Load only the feed links matching the fetched entries when synchronizing feeds ([8e03364a](https://github.com/flusio/Flus/commit/8e03364a))
+- Ignore the feed entries that don't match min/max/period constraints when synchronizing feeds ([d17faf58](https://github.com/flusio/Flus/commit/d17faf58))
+- Remove the `links.fetched_error` column ([beb90bfd](https://github.com/flusio/Flus/commit/beb90bfd))
+
+### Developers
+
+- Add a `Belt::slugify` method ([baac9567](https://github.com/flusio/Flus/commit/baac9567))
+- Refactor generating OPML ([67c19b6d](https://github.com/flusio/Flus/commit/67c19b6d))
+- Allow to test unreachable URLs with the mock server ([79497a82](https://github.com/flusio/Flus/commit/79497a82))
+- Fix the target branches on the CI ([27285d8f](https://github.com/flusio/Flus/commit/27285d8f))
+
 ## 2026-10-11 - v3.0.0
 
 ### Migration notes
