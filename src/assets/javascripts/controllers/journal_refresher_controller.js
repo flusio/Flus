@@ -11,7 +11,11 @@ export default class extends Controller {
 
     connect () {
         this.checkCandidates();
-        setInterval(this.checkCandidates.bind(this), 5 * 60 * 1000);
+        this.interval = setInterval(this.checkCandidates.bind(this), 5 * 60 * 1000);
+    }
+
+    disconnect () {
+        clearInterval(this.interval);
     }
 
     async checkCandidates () {
