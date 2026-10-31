@@ -32,17 +32,17 @@ class Links extends BaseController
     {
         $user = auth\CurrentUser::require();
 
-        $collection_id = $request->parameters->getString('collection', '');
+        $source_id = $request->parameters->getString('collection', '');
         $pagination_page = $request->parameters->getInteger('page', 1);
         $pagination_per_page = $request->parameters->getInteger('per_page', 30);
         $pagination_per_page = min(100, max(1, $pagination_per_page));
 
-        if ($collection_id === 'to-read') {
+        if ($source_id === 'to-read') {
             return $this->indexReadingStatusList($user->readLaterList(), $pagination_page, $pagination_per_page);
-        } elseif ($collection_id === 'read') {
+        } elseif ($source_id === 'read') {
             return $this->indexReadingStatusList($user->readList(), $pagination_page, $pagination_per_page);
         } else {
-            return $this->indexCollection($collection_id, $pagination_page, $pagination_per_page);
+            return $this->indexSource($source_id, $pagination_page, $pagination_per_page);
         }
     }
 
@@ -55,32 +55,32 @@ class Links extends BaseController
      *     If the collection does not exist.
      * @response 200
      */
-    private function indexCollection(string $collection_id, int $pagination_page, int $pagination_per_page): Response
+    private function indexSource(string $source_id, int $pagination_page, int $pagination_per_page): Response
     {
         $user = auth\CurrentUser::require();
 
-        $collection = models\Collection::find($collection_id);
+        $source = models\Source::find($source_id);
 
-        if (!$collection) {
+        if (!$source) {
             return Response::json(404, [
                 'error' => 'The collection does not exist.',
             ]);
         }
 
-        if (!auth\CollectionsAccess::canView($user, $collection)) {
+        if (!auth\Access::can($user, 'view', $source)) {
             return Response::json(403, [
                 'error' => 'You cannot access the collection.',
             ]);
         }
 
-        $can_view_hidden_links = auth\CollectionsAccess::canViewHiddenLinks($user, $collection);
+        $can_view_hidden_links = auth\Access::can($user, 'viewHiddenLinks', $source);
 
-        $number_links = models\Link::countByCollection($collection, [
+        $number_links = models\Link::countByCollection($source, [
             'hidden' => $can_view_hidden_links,
         ]);
         $pagination = new utils\Pagination($number_links, $pagination_per_page, $pagination_page);
 
-        $links = $collection->links(
+        $links = $source->links(
             ['published_at'],
             [
                 'hidden' => $can_view_hidden_links,

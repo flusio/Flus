@@ -4,6 +4,7 @@ namespace App\models\links;
 
 use App\models;
 use tests\factories\CollectionFactory;
+use tests\factories\FeedFactory;
 use tests\factories\LinkFactory;
 use tests\factories\UserFactory;
 
@@ -20,9 +21,7 @@ class PreloaderTest extends \PHPUnit\Framework\TestCase
 
     public function testSourcesPreloadsTheSourceOfTheLinks(): void
     {
-        $source = CollectionFactory::create([
-            'type' => 'collection',
-        ]);
+        $source = CollectionFactory::create();
         $link = LinkFactory::create([
             'source_id' => $source->id,
         ]);
@@ -36,9 +35,7 @@ class PreloaderTest extends \PHPUnit\Framework\TestCase
 
     public function testSourcesPreloadsAFeedSource(): void
     {
-        $source = CollectionFactory::create([
-            'type' => 'feed',
-        ]);
+        $source = FeedFactory::create();
         $link = LinkFactory::create([
             'source_id' => $source->id,
         ]);
@@ -63,9 +60,7 @@ class PreloaderTest extends \PHPUnit\Framework\TestCase
 
     public function testSourcesPreloadsNullWhenTheSourceIsDeleted(): void
     {
-        $source = CollectionFactory::create([
-            'type' => 'collection',
-        ]);
+        $source = CollectionFactory::create();
         $link = LinkFactory::create([
             'source_id' => $source->id,
         ]);
@@ -80,9 +75,7 @@ class PreloaderTest extends \PHPUnit\Framework\TestCase
 
     public function testSourcesSharesTheSourceBetweenTheLinks(): void
     {
-        $source = CollectionFactory::create([
-            'type' => 'collection',
-        ]);
+        $source = CollectionFactory::create();
         $link_1 = LinkFactory::create([
             'source_id' => $source->id,
         ]);
@@ -101,20 +94,16 @@ class PreloaderTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create();
         $collection_1 = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         $collection_2 = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         // Only the "collection" type is preloaded, as collections() does.
-        $feed = CollectionFactory::create([
-            'user_id' => $user->id,
-            'type' => 'feed',
-        ]);
+        $feed = FeedFactory::create();
         $link_in_two_collections = LinkFactory::create(['user_id' => $user->id]);
         $link_in_no_collection = LinkFactory::create(['user_id' => $user->id]);
-        $link_in_two_collections->addCollections([$collection_1, $collection_2, $feed]);
+        $link_in_two_collections->addCollections([$collection_1, $collection_2]);
+        $feed->addLinks([$link_in_two_collections]);
 
         Preloader::for([$link_in_two_collections, $link_in_no_collection])->collections();
 
@@ -133,7 +122,6 @@ class PreloaderTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         $link_1 = LinkFactory::create(['user_id' => $user->id]);
         $link_2 = LinkFactory::create(['user_id' => $user->id]);
@@ -195,11 +183,9 @@ class PreloaderTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create();
         $collection_1 = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         $collection_2 = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         $link_in_two_collections = LinkFactory::create(['user_id' => $user->id]);
         $link_in_one_collection = LinkFactory::create(['user_id' => $user->id]);
@@ -224,7 +210,6 @@ class PreloaderTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         $other_collection = CollectionFactory::create([
             'user_id' => $other_user->id,
-            'type' => 'collection',
         ]);
         $other_link = LinkFactory::create([
             'user_id' => $other_user->id,

@@ -11,7 +11,7 @@ use App\models;
 class SourceGroup
 {
     public function __construct(
-        public models\Collection $source,
+        public models\Source $source,
         /** @var models\Link[] */
         public array $links = [],
     ) {

@@ -1,0 +1,309 @@
+{% extends 'layouts/application.html.twig' %}
+
+{% set owner = source.owner %}
+{% set source_name = source.nameByUser(app.user) %}
+{% set source_image_filename = source.imageFilenameByUser(app.user) %}
+{% set is_following = app.user and app.user.isFollowing(source) %}
+{% set count_streams = is_following ? source.countStreamsByUser(app.user) : null %}
+{% set time_filter = app.user ? source.timeFilterByUser(app.user) : null %}
+{% set can_update = can(app.user, 'update', source) %}
+{% set can_delete = can(app.user, 'delete', source) %}
+{% set can_add_links = can(app.user, 'addLinks', source) %}
+
+{% if pagination.isCurrentFirstPage %}
+    {% set current_url_params = { id: source.id } %}
+{% else %}
+    {% set current_url_params = { id: source.id, page: pagination.currentPage } %}
+{% endif %}
+
+{% set feed_url = source.feedUrl %}
+{% if source.isFeed %}
+    {% set opengraph_description = t('A feed from %s, on %s.', [source.feedWebsiteHost, app.brand]) %}
+    {% set current_tab = 'reading' %}
+{% else %}
+    {% set opengraph_description = t('A collection created by %s on %s.', [owner.username, app.brand]) %}
+    {% set current_tab = can_update ? 'links' : 'reading' %}
+{% endif %}
+
+{% block title %}{{ source_name }}{% endblock %}
+{% block canonical %}{{ url_full('source', current_url_params) }}{% endblock %}
+
+{% block alternates %}
+    <link rel="alternate" type="application/atom+xml" title="{{ t('Syndication feed of %s', [source_name]) }}" href="{{ feed_url }}">
+{% endblock %}
+
+{% block opengraph %}
+    {{ include('layouts/_opengraph.html.twig', {
+        title: source_name,
+        description: opengraph_description,
+        locale: owner?.locale ?? app.locale,
+        url: url_full('source', { id: source.id }),
+        image: url_media_full('covers', source_image_filename, 'collection-card.png'),
+    }) }}
+{% endblock %}
+
+{% block layout_header %}
+    {{ include('layouts/_header.html.twig', { page: 'source', tab: current_tab }) }}
+{% endblock %}
+
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: source_name }) }}
+{% endblock %}
+
+{% block body %}
+    {% if can_update %}
+        {% set edit_image_url = url('edit image collection', { id: source.id }) %}
+    {% elseif is_following %}
+        {% set edit_image_url = url('edit source follow image', { id: source.id }) %}
+    {% else %}
+        {% set edit_image_url = null %}
+    {% endif %}
+
+    <div class="cols cols--gap-large">
+        <div class="col--size2 text--center">
+            {% if edit_image_url %}
+                <button
+                    class="button--edit-image"
+                    data-controller="modal-opener"
+                    data-action="modal-opener#fetch"
+                    data-modal-opener-selector-value="{{ edit_image_url }}"
+                    aria-haspopup="dialog"
+                    aria-controls="modal"
+                    title="{{ t('Change the illustration') }}"
+                >
+                    <img
+                        class="illustration"
+                        alt=""
+                        src="{{ url_media('covers', source_image_filename, 'collection-card.png') }}"
+                    >
+
+                    <span class="sr-only">
+                        {{ t('Change the illustration') }}
+                    </span>
+                </button>
+            {% else %}
+                <img
+                    class="illustration"
+                    alt=""
+                    src="{{ url_media('covers', source_image_filename, 'collection-card.png') }}"
+                >
+            {% endif %}
+        </div>
+
+        <div class="col--extend flow">
+            <h1 class="text--break">{{ source_name }}</h1>
+
+            {% if source_name != source.name() %}
+                <p class="text--secondary text--break">
+                    {{ t('Original name: %s', [source.name()]) }}
+                </p>
+            {% endif %}
+
+            <p class="stack stack--gap">
+                {% if source.isFeed %}
+                    <span title="{{ t('Feed of %s website', [source.feedWebsiteHost]) }}">
+                        {{ icon('feed') }}
+                        <a target="_blank" rel="noopener noreferrer" href="{{ source.feedWebsiteUrl }}">
+                            {{ source.feedWebsiteHost }}
+                        </a>
+                    </span>
+                {% endif %}
+
+                {% if source.isCollection %}
+                    <span class="badge badge--accent badge--border">
+                        {{ source.is_public ? t('public') : t('private') }}
+                    </span>
+                {% endif %}
+            </p>
+
+            {{ include('sources/_details.html.twig', {
+                source: source,
+                count_streams: count_streams,
+                time_filter: time_filter,
+            }) }}
+
+            {% if not source.isFeed %}
+                <p>
+                    {{ t('Published by') }}
+                    {%- for user in source.publishers -%}
+                        {% if not loop.first %}, {% endif %}
+                        <a class="username" href="{{ url('profile', { id: user.id }) }}">
+                            <img class="avatar avatar--mini" alt="" src="{{ url_avatar(user.avatar_filename) }}">
+                            {{- user.username -}}
+                        </a>
+                    {%- endfor -%}
+                </p>
+            {% endif %}
+
+            {% if topics %}
+                <p>
+                    {{ t('Topic:', 'Topics:', topics | length, []) }}
+                    {{ topics | column('label') | join(', ') }}
+                </p>
+            {% endif %}
+
+            {% if source.description %}
+                <div class="text-container">
+                    {{ source.descriptionAsHtml | raw }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="panel panel--rounded stack stack--gap-small">
+        {% if app.user %}
+            {% if is_following %}
+                {{ include('sources/_unfollow_form.html.twig') }}
+
+                <button
+                    data-controller="modal-opener"
+                    data-action="modal-opener#fetch"
+                    data-modal-opener-selector-value="{{ url('edit source follow', { id: source.id }) }}"
+                    aria-haspopup="dialog"
+                    aria-controls="modal"
+                >
+                    {{ icon('slider') }}
+                    {{ t('Manage the subscription') }}
+                </button>
+            {% else %}
+                <form method="post" action="{{ url('follow source', { id: source.id }) }}">
+                    <button class="button--primary">
+                        {{ t('Follow') }}
+                    </button>
+
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token('sources\\Follow') }}">
+                </form>
+            {% endif %}
+
+            {% if can_update %}
+                <button
+                    data-controller="modal-opener"
+                    data-action="modal-opener#fetch"
+                    data-modal-opener-selector-value="{{ url('edit collection', { id: source.id }) }}"
+                    aria-haspopup="dialog"
+                    aria-controls="modal"
+                >
+                    {{ icon('pencil') }}
+                    {{ t('Edit') }}
+                </button>
+
+                <button
+                    data-controller="modal-opener"
+                    data-action="modal-opener#fetch"
+                    data-modal-opener-selector-value="{{ url('collection shares', { id: source.id }) }}"
+                    aria-haspopup="dialog"
+                    aria-controls="modal"
+                >
+                    {{ icon('users') }}
+                    {{ t('Access') }}
+                </button>
+            {% endif %}
+        {% endif %}
+
+        {% embed 'components/popup.html.twig' %}
+            {% block opener %}
+                {{ icon('menu') }}
+                {{ t('Actions') }}
+            {% endblock %}
+
+            {% block items %}
+                {% import _self as item %}
+
+                {% if can(app.user, 'updateGroup', source) %}
+                    {{ item.modal(
+                        url: url('edit group collection', { id: source.id }),
+                        label: t('Put in a group'),
+                        icon: 'directory',
+                    ) }}
+
+                    {{ item.separator() }}
+                {% endif %}
+
+                {{ item.clipboard(
+                    value: url_full('source', { id: source.id }),
+                    label: t('Copy link to collection'),
+                ) }}
+
+                {{ item.clipboard(
+                    value: feed_url,
+                    label: t('Copy link to Web feed'),
+                    icon: 'feed',
+                ) }}
+
+                {% if is_following %}
+                    {{ item.separator() }}
+
+                    {{ item.action(
+                        url: url('mark link list as read', { id: source.id }),
+                        label: t('Mark all as read'),
+                        icon: 'check',
+                        csrf: 'link_lists\\MarkAsRead',
+                    ) }}
+
+                    {{ item.action(
+                        url: url('dismiss link list', { id: source.id }),
+                        label: t('Ignore the links'),
+                        icon: 'times',
+                        csrf: 'link_lists\\MarkAsDismissed',
+                    ) }}
+                {% endif %}
+
+                {% if can_delete %}
+                    {{ item.separator() }}
+
+                    {{ item.action(
+                        url: url('delete collection', { id: source.id }),
+                        label: t('Delete'),
+                        icon: 'trash',
+                        csrf: 'collections\\DeleteCollection',
+                        confirm: t('Are you sure that you want to delete this collection? You may lose the links that are attached only to this collection.'),
+                    ) }}
+                {% endif %}
+            {% endblock %}
+        {% endembed %}
+    </div>
+
+    {{ include('links/_pagination_count.html.twig') }}
+
+    {% if links or can_add_links %}
+        <div class="grid">
+            {% if can_add_links %}
+                <button
+                    class="button--card"
+                    data-controller="modal-opener"
+                    data-action="modal-opener#fetch"
+                    data-modal-opener-selector-value="{{ url('new collection link', { id: source.id }) }}"
+                    aria-haspopup="dialog"
+                    aria-controls="modal"
+                >
+                    {{ icon('plus-circle') }}
+                    {{ t('Add a link') }}
+                </button>
+            {% endif %}
+
+            {% for link in links %}
+                {{ include('links/_link.html.twig', {
+                    link: link,
+                    display_origin: can(app.user, 'viewOrigin', link),
+                    display_notes: source.isCollection,
+                    display_hidden: source.is_public and link.is_hidden,
+                    display_edit: can(app.user, 'update', link),
+                    display_repair: can(app.user, 'update', link),
+                    display_delete: can(app.user, 'delete', link),
+                    display_read_later: app.user ? 'auto' : false,
+                    display_mark_as_read: app.user ? 'auto' : false,
+                }) }}
+            {% endfor %}
+
+            {% if can_add_links %}
+                {{ include('grids/_placeholder.html.twig', { count: links | length + 1 }) }}
+            {% endif %}
+        </div>
+    {% else %}
+        <p class="panel panel--grey panel--rounded panel--larger text--bolder text--center">
+            {{ t('This collection is empty.') }}
+        </p>
+    {% endif %}
+
+    {{ include('layouts/_pagination.html.twig', { url: url('source', { id: source.id }) }) }}
+{% endblock %}

@@ -227,7 +227,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         @unlink($default_feeds_path);
         $this->assertResponseCode($response, 302, '/onboarding');
         $user = models\User::findBy(['email' => $email]);
-        $feed = models\Collection::findBy([
+        $feed = models\Feed::findBy([
             'feed_url' => 'https://flus.fr/carnet/feeds/all.atom.xml',
         ]);
         $this->assertNotNull($user);
@@ -294,7 +294,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateCreatesDefaultCollections(): void
     {
-        $this->assertSame(0, models\Collection::count());
+        $this->assertSame(0, models\LinkList::count());
 
         $response = $this->appRun('POST', '/registration', [
             'csrf_token' => $this->csrfToken(forms\Registration::class),
@@ -304,12 +304,11 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/onboarding');
-        $this->assertGreaterThan(0, models\Collection::count());
+        $this->assertGreaterThan(0, models\LinkList::count());
         $user = auth\CurrentUser::get();
         $this->assertNotNull($user);
         $journal = models\Journal::findBy([
             'user_id' => $user->id,
-            'type' => 'journal',
         ]);
         $this->assertNotNull($journal);
     }

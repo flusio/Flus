@@ -7,6 +7,7 @@ use App\jobs;
 use App\models;
 use App\utils;
 use tests\factories\CollectionFactory;
+use tests\factories\FeedFactory;
 use tests\factories\ImportationFactory;
 use tests\factories\StreamFactory;
 
@@ -34,14 +35,12 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $collection_name = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'name' => $collection_name,
             'is_public' => true,
         ]);
         /** @var string */
         $feed_name = $this->fake('words', 3, true);
-        $feed = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'name' => $feed_name,
             'is_public' => true,
         ]);

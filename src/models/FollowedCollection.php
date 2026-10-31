@@ -46,7 +46,7 @@ class FollowedCollection
 
     #[Database\Column]
     #[Validable\Length(
-        max: Collection::NAME_MAX_LENGTH,
+        max: Source::NAME_MAX_LENGTH,
         message: new Translatable('The name must be less than {max} characters.'),
     )]
     public string $name = '';
@@ -61,36 +61,35 @@ class FollowedCollection
         $this->collection_id = $collection_id;
     }
 
-    public static function findOrCreate(User $user, Collection $collection): self
+    public static function findOrCreate(User $user, Source $source): self
     {
         return self::findOrCreateBy([
             'user_id' => $user->id,
-            'collection_id' => $collection->id,
+            'collection_id' => $source->id,
         ], [
             'time_filter' => 'normal',
         ]);
     }
 
     /**
-     * Return the follows of the given user for the given collections, indexed
-     * by the ids of these collections.
+     * Return the follows of the given user for the given sources, indexed
+     * by the ids of these sources.
      *
-     * The collections that the user doesn't follow are absent from the
-     * returned array.
+     * The sources that the user doesn't follow are absent from the returned array.
      *
-     * @param Collection[] $collections
+     * @param Source[] $sources
      *
      * @return array<string, self>
      */
-    public static function listByUserAndCollections(User $user, array $collections): array
+    public static function listByUserAndSources(User $user, array $sources): array
     {
-        if (!$collections) {
+        if (!$sources) {
             return [];
         }
 
         $follows = self::listBy([
             'user_id' => $user->id,
-            'collection_id' => array_column($collections, 'id'),
+            'collection_id' => array_column($sources, 'id'),
         ]);
 
         $follows_by_collection_ids = [];
@@ -103,20 +102,19 @@ class FollowedCollection
     }
 
     /**
-     * Update the time filter of the follows of the given user for the given
-     * collections.
+     * Update the time filter of the follows of the given user for the given sources.
      *
-     * @param Collection[] $collections
+     * @param Source[] $sources
      */
-    public static function updateTimeFilter(User $user, array $collections, string $time_filter): void
+    public static function updateTimeFilter(User $user, array $sources, string $time_filter): void
     {
-        if (!$collections) {
+        if (!$sources) {
             return;
         }
 
-        $collection_ids = array_column($collections, 'id');
+        $source_ids = array_column($sources, 'id');
 
-        $ids_as_question_marks = array_fill(0, count($collection_ids), '?');
+        $ids_as_question_marks = array_fill(0, count($source_ids), '?');
         $ids_as_question_marks = implode(', ', $ids_as_question_marks);
 
         $sql = <<<SQL
@@ -128,7 +126,7 @@ class FollowedCollection
 
         $database = Database::get();
         $statement = $database->prepare($sql);
-        $statement->execute([$time_filter, $user->id, ...$collection_ids]);
+        $statement->execute([$time_filter, $user->id, ...$source_ids]);
     }
 
     /**

@@ -6,6 +6,7 @@ use App\forms;
 use App\models;
 use App\utils;
 use tests\factories\CollectionFactory;
+use tests\factories\FeedFactory;
 use tests\factories\StreamFactory;
 use tests\factories\UserFactory;
 use tests\factories\ViewFactory;
@@ -174,12 +175,10 @@ class ViewsTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
-        $source1 = CollectionFactory::create([
-            'type' => 'feed',
+        $source1 = FeedFactory::create([
             'is_public' => true,
         ]);
-        $source2 = CollectionFactory::create([
-            'type' => 'feed',
+        $source2 = FeedFactory::create([
             'is_public' => true,
         ]);
         $stream->addSource($source1);

@@ -107,7 +107,7 @@ class Stream
      *     context_user?: ?User,
      * } $options
      *
-     * @return Collection[]
+     * @return Source[]
      */
     public function sources(array $options = []): array
     {
@@ -115,14 +115,14 @@ class Stream
         $memoize_key = $this->memoizeKeyFor('sources', $context_user);
 
         return $this->memoize($memoize_key, function () use ($context_user): array {
-            $collections = Collection::listByStream($this, [
+            $sources = Source::listByStream($this, [
                 'context_user' => $context_user,
             ]);
 
             return utils\Sorter::localeSort(
-                $collections,
-                function (Collection $collection) use ($context_user): string {
-                    return $collection->nameByUser($context_user);
+                $sources,
+                function (Source $source) use ($context_user): string {
+                    return $source->nameByUser($context_user);
                 }
             );
         });
@@ -184,18 +184,18 @@ class Stream
         return "{$prefix}_{$suffix}";
     }
 
-    public function hasSource(Collection $source): bool
+    public function hasSource(Source $source): bool
     {
         return StreamToFollow::find($this, $source) !== null;
     }
 
-    public function addSource(Collection $source): void
+    public function addSource(Source $source): void
     {
         StreamToFollow::findOrCreate($this, $source);
         $this->unmemoizePrefixed('sources_');
     }
 
-    public function removeSource(Collection $source): void
+    public function removeSource(Source $source): void
     {
         $stream_to_follow = StreamToFollow::find($this, $source);
         if ($stream_to_follow) {
@@ -207,7 +207,7 @@ class Stream
     /**
      * Add the given sources to the stream.
      *
-     * @param Collection[] $sources
+     * @param Source[] $sources
      */
     public function addSources(array $sources): void
     {
@@ -224,7 +224,7 @@ class Stream
     /**
      * Remove the given sources from the stream.
      *
-     * @param Collection[] $sources
+     * @param Source[] $sources
      */
     public function removeSources(array $sources): void
     {
@@ -307,7 +307,7 @@ class Stream
      *     context_user?: ?User,
      *     at?: \DateTimeImmutable,
      *     days?: int|'ALL',
-     *     sources?: Collection[],
+     *     sources?: Source[],
      *     status?: string,
      *     with_dismissed?: bool,
      *     query?: ?search_engine\Query,
@@ -405,7 +405,7 @@ class Stream
         // unread status) in the classes it belongs instead of duplicating it.
 
         // Get the sources of the streams.
-        $sources_by_stream_ids = Collection::listByStreams($streams, [
+        $sources_by_stream_ids = Source::listByStreams($streams, [
             'context_user' => $context_user,
         ]);
 

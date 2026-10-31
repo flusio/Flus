@@ -43,7 +43,7 @@ class Searches extends BaseController
             'links' => [
                 $link->toJson(context_user: $user)
             ],
-            'feeds' => array_map(function (models\Collection $feed) use ($user): array {
+            'feeds' => array_map(function (models\Feed $feed) use ($user): array {
                 return $feed->toJson(context_user: $user);
             }, $feeds),
         ]);

@@ -23,7 +23,6 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $collection_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
             'name' => $collection_name,
         ]);
@@ -44,7 +43,6 @@ class SharesTest extends \PHPUnit\Framework\TestCase
             'username' => $username,
         ]);
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
         ]);
         $collection->shareWith($other_user, 'read');
@@ -61,7 +59,6 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $collection_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $other_user->id,
             'name' => $collection_name,
         ]);
@@ -78,7 +75,6 @@ class SharesTest extends \PHPUnit\Framework\TestCase
     {
         $user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
         ]);
 
@@ -91,7 +87,6 @@ class SharesTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
         ]);
 
@@ -105,7 +100,6 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $other_user->id,
         ]);
 
@@ -119,7 +113,6 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $other_user->id,
         ]);
         $collection->shareWith($user, 'read');
@@ -134,7 +127,6 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
         ]);
 
@@ -153,7 +145,6 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
         ]);
 
@@ -175,7 +166,6 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
         ]);
 
@@ -198,7 +188,6 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         $yet_another_user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $other_user->id,
         ]);
         $collection->shareWith($user, 'write');
@@ -221,7 +210,6 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
         ]);
 
@@ -244,7 +232,6 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
         ]);
 
@@ -267,7 +254,6 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
         ]);
 
@@ -291,7 +277,6 @@ class SharesTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
         ]);
 
@@ -315,7 +300,6 @@ class SharesTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
         ]);
 
@@ -340,7 +324,6 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
         ]);
         $collection->shareWith($other_user, 'read');
@@ -361,7 +344,6 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
         ]);
 
@@ -386,7 +368,6 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
         ]);
 
@@ -412,7 +393,6 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         $yet_another_user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $other_user->id,
         ]);
 
@@ -436,7 +416,6 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         $yet_another_user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $other_user->id,
         ]);
         $collection->shareWith($user, 'read');
@@ -460,7 +439,6 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
         ]);
         $collection->shareWith($other_user, 'read');
@@ -483,7 +461,6 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         $yet_another_user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
@@ -504,7 +481,6 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
         ]);
         $collection->shareWith($other_user, 'read');
@@ -523,7 +499,6 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
         ]);
         $collection->shareWith($other_user, 'read');
@@ -543,7 +518,6 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         $yet_another_user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
@@ -564,7 +538,6 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         $yet_another_user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
@@ -585,7 +558,6 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
         ]);
         $collection->shareWith($other_user, 'read');
@@ -607,7 +579,6 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
         ]);
         $collection->shareWith($other_user, 'read');

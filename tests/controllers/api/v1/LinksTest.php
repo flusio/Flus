@@ -20,7 +20,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         $link1 = LinkFactory::create([
             'user_id' => $user->id,
@@ -92,7 +91,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         $link1 = LinkFactory::create([
             'user_id' => $user->id,
@@ -121,7 +119,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $link1 = LinkFactory::create([
@@ -149,7 +146,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         $link1 = LinkFactory::create([
             'user_id' => $user->id,
@@ -175,7 +171,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         $link1 = LinkFactory::create([
             'user_id' => $user->id,
@@ -202,7 +197,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
-            'type' => 'collection',
             'is_public' => false,
         ]);
         $link1 = LinkFactory::create([
@@ -229,7 +223,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         $link1 = LinkFactory::create([
             'user_id' => $user->id,

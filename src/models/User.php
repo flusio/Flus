@@ -217,9 +217,13 @@ class User
         });
     }
 
-    public function isOwning(Link|Collection $object): bool
+    public function isOwning(Link|LinkList $subject): bool
     {
-        return $object->user_id === $this->id;
+        if (!($subject instanceof Link || $subject instanceof Collection || $subject instanceof Journal)) {
+            return false;
+        }
+
+        return $subject->user_id === $this->id;
     }
 
     /**
@@ -229,10 +233,9 @@ class User
     {
         $journal = Journal::findBy([
             'user_id' => $this->id,
-            'type' => 'journal',
         ]);
 
-        if (!($journal instanceof Journal)) {
+        if (!$journal) {
             $journal = new Journal($this);
             $journal->save();
         }
@@ -242,7 +245,7 @@ class User
 
     public function initCollection(): Collection
     {
-        return Collection::initCollection($this);
+        return Collection::init($this);
     }
 
     /**
@@ -314,17 +317,17 @@ class User
      *
      * The sources are sorted by name.
      *
-     * @see Collection::listSourcesByUser
+     * @see Source::listFollowedByUser
      *
-     * @return Collection[]
+     * @return Source[]
      */
     public function followedSources(): array
     {
-        $sources = Collection::listSourcesByUser($this);
+        $sources = Source::listFollowedByUser($this);
 
         return utils\Sorter::localeSort(
             $sources,
-            function (Collection $source): string {
+            function (Source $source): string {
                 return $source->nameByUser($this);
             },
         );
@@ -379,24 +382,24 @@ class User
     }
 
     /**
-     * Return the follow of the user on the given collection, or null if the
-     * user doesn't follow it.
+     * Return the follow of the user on the given source, or null if the user
+     * doesn't follow it.
      */
-    public function followedCollection(Collection $collection): ?FollowedCollection
+    public function followedCollection(Source $source): ?FollowedCollection
     {
-        return $this->follows()[$collection->id] ?? null;
+        return $this->follows()[$source->id] ?? null;
     }
 
     /**
-     * Return true if the current user is following the given collection.
+     * Return true if the current user is following the given source.
      */
-    public function isFollowing(Collection $collection): bool
+    public function isFollowing(Source $source): bool
     {
-        return $this->followedCollection($collection) !== null;
+        return $this->followedCollection($source) !== null;
     }
 
     /**
-     * Return the follows of the user, indexed by collection ids.
+     * Return the follows of the user, indexed by source ids.
      *
      * @return array<string, FollowedCollection>
      */
@@ -409,14 +412,14 @@ class User
     }
 
     /**
-     * Make the current user following the given collection.
+     * Make the current user following the given source.
      *
      * Be careful to check isFollowing() is returning false before calling this
      * method.
      */
-    public function follow(Collection $collection, string $time_filter = 'normal'): FollowedCollection
+    public function follow(Source $source, string $time_filter = 'normal'): FollowedCollection
     {
-        $followed_collection = new FollowedCollection($this->id, $collection->id);
+        $followed_collection = new FollowedCollection($this->id, $source->id);
         $followed_collection->time_filter = $time_filter;
         $followed_collection->save();
 
@@ -426,32 +429,32 @@ class User
     }
 
     /**
-     * Make the current user unfollowing the given collection.
+     * Make the current user unfollowing the given source.
      */
-    public function unfollow(Collection $collection): void
+    public function unfollow(Source $source): void
     {
         FollowedCollection::deleteBy([
             'user_id' => $this->id,
-            'collection_id' => $collection->id,
+            'collection_id' => $source->id,
         ]);
 
         $this->unmemoize('follows');
     }
 
     /**
-     * Make the current user unfollowing the given collections.
+     * Make the current user unfollowing the given sources.
      *
-     * @param Collection[] $collections
+     * @param Source[] $sources
      */
-    public function unfollowAll(array $collections): void
+    public function unfollowAll(array $sources): void
     {
-        if (!$collections) {
+        if (!$sources) {
             return;
         }
 
         FollowedCollection::deleteBy([
             'user_id' => $this->id,
-            'collection_id' => array_column($collections, 'id'),
+            'collection_id' => array_column($sources, 'id'),
         ]);
 
         $this->unmemoize('follows');

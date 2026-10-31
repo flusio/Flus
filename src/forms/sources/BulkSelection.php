@@ -35,7 +35,7 @@ class BulkSelection extends BaseForm
      *
      * The sources that the user doesn't follow are ignored.
      *
-     * @return models\Collection[]
+     * @return models\Source[]
      */
     public function selectedSources(): array
     {
@@ -45,12 +45,12 @@ class BulkSelection extends BaseForm
 
         $user = $this->optionAs('user', models\User::class);
 
-        $sources = models\Collection::listBy(['id' => $this->source_ids]);
-        $follows = models\FollowedCollection::listByUserAndCollections($user, $sources);
+        $sources = models\Source::listBy(['id' => $this->source_ids]);
+        $follows = models\FollowedCollection::listByUserAndSources($user, $sources);
 
         return array_values(array_filter(
             $sources,
-            fn (models\Collection $source): bool => isset($follows[$source->id]),
+            fn (models\Source $source): bool => isset($follows[$source->id]),
         ));
     }
 }

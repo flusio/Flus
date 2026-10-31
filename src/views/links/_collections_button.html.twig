@@ -2,17 +2,17 @@
  # current user. It displays the number of collections in which the link
  # already is. It expects a connected user.
  #
- # `source` is the id of the collection from which the link is displayed, so
+ # `source_id` is the id of the collection from which the link is displayed, so
  # the modal can set the origin of the stored link. `mark_as_read` tells the
  # modal to mark the link as read once it is stored. #}
-{% set source = source ?? '' %}
+{% set source_id = source_id ?? '' %}
 {% set mark_as_read = mark_as_read ?? false %}
 
 {% set number_collections = link.numberCollectionsForUser(app.user) %}
 
 {% set params = { id: link.id, mark_as_read: mark_as_read } %}
-{% if source %}
-    {% set params = params | merge({ source: source }) %}
+{% if source_id %}
+    {% set params = params | merge({ source: source_id }) %}
 {% endif %}
 
 <button

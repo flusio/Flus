@@ -68,7 +68,7 @@ class OriginFormatter
             return $model->username;
         } elseif ($model instanceof models\Link) {
             return $model->title;
-        } elseif ($model instanceof models\Collection) {
+        } elseif ($model instanceof models\Source) {
             return $model->nameByUser($this->context_user);
         } else {
             return utils\Belt::host($origin);
@@ -82,7 +82,7 @@ class OriginFormatter
     {
         $model = $this->modelFromOrigin($origin);
 
-        if (!($model instanceof models\Collection) || !$model->isCollection()) {
+        if (!($model instanceof models\Collection)) {
             return null;
         }
 
@@ -142,7 +142,7 @@ class OriginFormatter
             $origin_ids = array_values(array_unique($origin_ids));
 
             $models = match ($origin_type) {
-                'collection' => models\Collection::listBy(['id' => $origin_ids]),
+                'collection' => models\Source::listBy(['id' => $origin_ids]),
                 'link' => models\Link::listBy(['id' => $origin_ids]),
                 'user' => models\User::listBy(['id' => $origin_ids]),
             };
@@ -159,12 +159,12 @@ class OriginFormatter
             // The access is checked here, so the memoized model is the one
             // that modelFromOrigin() would have returned. It costs no query
             // for a public collection or a visible link.
-            $must_check_access = ($model instanceof models\Link) || ($model instanceof models\Collection);
+            $must_check_access = ($model instanceof models\Link) || ($model instanceof models\Source);
             if ($must_check_access && !auth\Access::can($this->context_user, 'view', $model)) {
                 $model = null;
             }
 
-            if ($model instanceof models\Collection && $model->isCollection() && $model->user_id) {
+            if ($model instanceof models\Collection) {
                 $collections_by_owner_ids[$model->user_id][] = $model;
             }
 
@@ -193,17 +193,17 @@ class OriginFormatter
 
         foreach ($collections_by_owner_ids as $owner_id => $collections) {
             foreach ($collections as $collection) {
-                $collection->preloadOwner($owners[$owner_id] ?? null);
+                $collection->preloadOwner($owners[$owner_id]);
             }
         }
     }
 
     /**
-     * Return the model (User, Link, or Collection) matching with the origin if any.
+     * Return the model (User, Link, or Source) matching with the origin if any.
      */
-    private function modelFromOrigin(string $origin): models\User|models\Link|models\Collection|null
+    private function modelFromOrigin(string $origin): models\User|models\Link|models\Source|null
     {
-        return $this->memoize($origin, function () use ($origin): models\User|models\Link|models\Collection|null {
+        return $this->memoize($origin, function () use ($origin): models\User|models\Link|models\Source|null {
             list($origin_type, $origin_id) = utils\OriginHelper::parseFromPath($origin);
 
             $model = null;
@@ -213,10 +213,10 @@ class OriginFormatter
             } elseif ($origin_type === 'link' && $origin_id) {
                 $model = models\Link::find($origin_id);
             } elseif ($origin_type === 'collection' && $origin_id) {
-                $model = models\Collection::find($origin_id);
+                $model = models\Source::find($origin_id);
             }
 
-            $must_check_access = ($model instanceof models\Link) || ($model instanceof models\Collection);
+            $must_check_access = ($model instanceof models\Link) || ($model instanceof models\Source);
             if ($must_check_access && !auth\Access::can($this->context_user, 'view', $model)) {
                 $model = null;
             }

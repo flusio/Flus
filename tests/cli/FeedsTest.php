@@ -4,7 +4,7 @@ namespace App\cli;
 
 use App\http;
 use App\models;
-use tests\factories\CollectionFactory;
+use tests\factories\FeedFactory;
 
 class FeedsTest extends \PHPUnit\Framework\TestCase
 {
@@ -42,12 +42,10 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $feed_url_1 = $this->fake('url');
         /** @var string */
         $feed_url_2 = $this->fake('url');
-        $feed_1 = CollectionFactory::create([
-            'type' => 'feed',
+        $feed_1 = FeedFactory::create([
             'feed_url' => $feed_url_1,
         ]);
-        $feed_2 = CollectionFactory::create([
-            'type' => 'feed',
+        $feed_2 = FeedFactory::create([
             'feed_url' => $feed_url_2,
         ]);
 
@@ -74,7 +72,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
 
-        $this->assertSame(0, models\Collection::count());
+        $this->assertSame(0, models\Feed::count());
         $this->assertSame(0, models\Link::count());
 
         $response = $this->appRun('CLI', '/feeds/add', [
@@ -83,13 +81,13 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseEquals($response, "Feed {$url} (Carnet de Flus) has been added.");
-        $this->assertSame(1, models\Collection::count());
+        $this->assertSame(1, models\Feed::count());
         $this->assertGreaterThan(0, models\Link::count());
-        $collection = models\Collection::take();
-        $this->assertNotNull($collection);
-        $this->assertSame($url, $collection->feed_url);
-        $this->assertSame('Carnet de Flus', $collection->name);
-        $this->assertSame('https://flus.fr/carnet/', $collection->feed_site_url);
+        $feed = models\Feed::take();
+        $this->assertNotNull($feed);
+        $this->assertSame($url, $feed->feed_url);
+        $this->assertSame('Carnet de Flus', $feed->name);
+        $this->assertSame('https://flus.fr/carnet/', $feed->feed_site_url);
     }
 
     public function testAddCreatesCollectionButFailsIfNotAFeed(): void
@@ -103,15 +101,15 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'Can’t parse the given string');
-        $this->assertSame(1, models\Collection::count());
+        $this->assertSame(1, models\Feed::count());
         $this->assertSame(0, models\Link::count());
-        $collection = models\Collection::take();
-        $this->assertNotNull($collection);
-        $this->assertSame('https://flus.fr/carnet/', $collection->name);
-        $this->assertSame('https://flus.fr/carnet/', $collection->feed_url);
-        $this->assertSame(200, $collection->feed_fetched_code);
-        $this->assertNotNull($collection->feed_fetched_error);
-        $this->assertStringContainsString('Can’t parse the given string', $collection->feed_fetched_error);
+        $feed = models\Feed::take();
+        $this->assertNotNull($feed);
+        $this->assertSame('https://flus.fr/carnet/', $feed->name);
+        $this->assertSame('https://flus.fr/carnet/', $feed->feed_url);
+        $this->assertSame(200, $feed->feed_fetched_code);
+        $this->assertNotNull($feed->feed_fetched_error);
+        $this->assertStringContainsString('Can’t parse the given string', $feed->feed_fetched_error);
     }
 
     public function testAddCreatesCollectionButFailsIfUrlIsUnreachable(): void
@@ -124,14 +122,14 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertSame(1, models\Collection::count());
+        $this->assertSame(1, models\Feed::count());
         $this->assertSame(0, models\Link::count());
-        $collection = models\Collection::take();
-        $this->assertNotNull($collection);
-        $this->assertSame($url, $collection->name);
-        $this->assertSame($url, $collection->feed_url);
-        $this->assertSame(0, $collection->feed_fetched_code);
-        $this->assertNotEmpty($collection->feed_fetched_error);
+        $feed = models\Feed::take();
+        $this->assertNotNull($feed);
+        $this->assertSame($url, $feed->name);
+        $this->assertSame($url, $feed->feed_url);
+        $this->assertSame(0, $feed->feed_fetched_code);
+        $this->assertNotEmpty($feed->feed_fetched_error);
     }
 
     public function testAddFailsIfUrlIsInvalid(): void
@@ -142,17 +140,15 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The name is required');
-        $this->assertSame(0, models\Collection::count());
+        $this->assertSame(0, models\Feed::count());
         $this->assertSame(0, models\Link::count());
     }
 
     public function testAddFailsIfFeedAlreadyInDatabase(): void
     {
         $url = 'https://flus.fr/carnet/feeds/all.atom.xml';
-        CollectionFactory::create([
-            'type' => 'feed',
+        FeedFactory::create([
             'feed_url' => $url,
-            'user_id' => null,
         ]);
 
         $response = $this->appRun('CLI', '/feeds/add', [
@@ -160,8 +156,8 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseEquals($response, 'Feed collection already in database.');
-        $this->assertSame(1, models\Collection::count());
+        $this->assertResponseEquals($response, 'Feed already in database.');
+        $this->assertSame(1, models\Feed::count());
         $this->assertSame(0, models\Link::count());
     }
 
@@ -169,20 +165,19 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     {
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'feed_url' => $feed_url,
         ]);
 
         $response = $this->appRun('CLI', '/feeds/sync', [
-            'id' => $collection->id,
+            'id' => $feed->id,
         ]);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseEquals($response, "Feed {$collection->id} ({$feed_url}) has been synchronized.");
-        $collection = $collection->reload();
-        $this->assertSame('Carnet de Flus', $collection->name);
-        $links_number = count($collection->links());
+        $this->assertResponseEquals($response, "Feed {$feed->id} ({$feed_url}) has been synchronized.");
+        $feed = $feed->reload();
+        $this->assertSame('Carnet de Flus', $feed->name);
+        $links_number = count($feed->links());
         $this->assertEquals(3, $links_number);
     }
 
@@ -190,13 +185,12 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     {
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'feed_url' => $feed_url,
         ]);
 
         $response = $this->appRun('CLI', '/feeds/sync', [
-            'id' => $collection->id,
+            'id' => $feed->id,
         ]);
 
         $this->assertTrue(self::$http_cache->hasItem($feed_url));
@@ -205,8 +199,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     public function testSyncUsesCache(): void
     {
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'feed_url' => $feed_url,
         ]);
         /** @var string */
@@ -238,12 +231,12 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             TEXT);
 
         $response = $this->appRun('CLI', '/feeds/sync', [
-            'id' => $collection->id,
+            'id' => $feed->id,
         ]);
 
-        $collection = $collection->reload();
-        $this->assertSame($expected_name, $collection->name);
-        $link = $collection->links()[0];
+        $feed = $feed->reload();
+        $this->assertSame($expected_name, $feed->name);
+        $link = $feed->links()[0];
         $this->assertSame($expected_title, $link->title);
     }
 
@@ -251,8 +244,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     {
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'feed_url' => $feed_url,
         ]);
         /** @var string */
@@ -283,13 +275,13 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             TEXT);
 
         $response = $this->appRun('CLI', '/feeds/sync', [
-            'id' => $collection->id,
+            'id' => $feed->id,
             'nocache' => true,
         ]);
 
-        $collection = $collection->reload();
-        $this->assertNotSame($not_expected_name, $collection->name);
-        $link = $collection->links()[0];
+        $feed = $feed->reload();
+        $this->assertNotSame($not_expected_name, $feed->name);
+        $link = $feed->links()[0];
         $this->assertNotSame($not_expected_title, $link->title);
     }
 
@@ -305,8 +297,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
 
     public function testResetHashesSetsAllFeedLastHashToEmptyString(): void
     {
-        $feed = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'feed_last_hash' => hash('sha256', 'foo'),
         ]);
 

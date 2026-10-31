@@ -6,6 +6,7 @@ use App\forms;
 use App\models;
 use App\utils;
 use tests\factories\CollectionFactory;
+use tests\factories\FeedFactory;
 use tests\factories\LinkFactory;
 use tests\factories\StreamFactory;
 use tests\factories\UserFactory;
@@ -33,8 +34,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $source_name = $this->fake('words', 3, true);
         /** @var string */
         $feed_url = $this->fake('url');
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'name' => $source_name,
             'feed_site_url' => $feed_url,
             'is_public' => true,
@@ -59,7 +59,6 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $public_source_name = $this->fake('words', 3, true);
         $public_source = CollectionFactory::create([
-            'type' => 'collection',
             'name' => $public_source_name,
             'is_public' => true,
             'publication_frequency_per_year' => 52,
@@ -67,7 +66,6 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $private_source_name = $this->fake('words', 3, true);
         $private_source = CollectionFactory::create([
-            'type' => 'collection',
             'name' => $private_source_name,
             'is_public' => false,
             'user_id' => $other_user->id,
@@ -101,8 +99,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $source_name = $this->fake('words', 3, true);
         /** @var string */
         $feed_url = $this->fake('url');
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'name' => $source_name,
             'feed_site_url' => $feed_url,
             'is_public' => true,
@@ -127,8 +124,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $source_name = $this->fake('words', 3, true);
         /** @var string */
         $feed_url = $this->fake('url');
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'name' => $source_name,
             'feed_site_url' => $feed_url,
             'is_public' => true,
@@ -153,14 +149,12 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $public_source_name = $this->fake('words', 3, true);
         $public_source = CollectionFactory::create([
-            'type' => 'collection',
             'name' => $public_source_name,
             'is_public' => true,
         ]);
         /** @var string */
         $private_source_name = $this->fake('words', 3, true);
         $private_source = CollectionFactory::create([
-            'type' => 'collection',
             'name' => $private_source_name,
             'user_id' => $other_user->id,
             'is_public' => false,
@@ -226,8 +220,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $source_name = $this->fake('words', 3, true);
         /** @var string */
         $feed_url = $this->fake('url');
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'name' => $source_name,
             'feed_site_url' => $feed_url,
             'is_public' => true,
@@ -251,13 +244,11 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         ]);
         /** @var string */
         $feed_url = $this->fake('url');
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'feed_site_url' => $feed_url,
             'is_public' => true,
         ]);
-        $other_source = CollectionFactory::create([
-            'type' => 'feed',
+        $other_source = FeedFactory::create([
             'feed_site_url' => $feed_url,
             'is_public' => true,
         ]);
@@ -287,8 +278,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $source_name = $this->fake('words', 3, true);
         /** @var string */
         $feed_url = $this->fake('url');
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'name' => $source_name,
             'feed_site_url' => $feed_url,
             'is_public' => true,
@@ -323,8 +313,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $source_name = $this->fake('words', 3, true);
         /** @var string */
         $feed_url = $this->fake('url');
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'name' => $source_name,
             'feed_site_url' => $feed_url,
             'is_public' => true,
@@ -394,16 +383,16 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
 
-        $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
+        $this->assertSame(0, models\Feed::count());
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/sources/feeds/new", [
-            'csrf_token' => $this->csrfToken(forms\collections\NewFeed::class),
+            'csrf_token' => $this->csrfToken(forms\feeds\NewFeed::class),
             'url' => $feed_url,
         ]);
 
         $this->assertResponseCode($response, 302, "/streams/{$stream->id}/sources/edit");
-        $this->assertSame(1, models\Collection::countBy(['type' => 'feed']));
-        $feed = models\Collection::findBy(['type' => 'feed']);
+        $this->assertSame(1, models\Feed::count());
+        $feed = models\Feed::take();
         $this->assertNotNull($feed);
         $this->assertSame($feed_url, $feed->feed_url);
         $this->assertTrue($user->isFollowing($feed));
@@ -423,13 +412,13 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/sources/feeds/new", [
-            'csrf_token' => $this->csrfToken(forms\collections\NewFeed::class),
+            'csrf_token' => $this->csrfToken(forms\feeds\NewFeed::class),
             'url' => $url,
         ]);
 
         $this->assertResponseCode($response, 302, "/streams/{$stream->id}/sources/edit");
-        $this->assertSame(1, models\Collection::countBy(['type' => 'feed']));
-        $feed = models\Collection::findBy(['type' => 'feed']);
+        $this->assertSame(1, models\Feed::count());
+        $feed = models\Feed::take();
         $this->assertNotNull($feed);
         $this->assertSame($feed_url, $feed->feed_url);
         $this->assertTrue($stream->hasSource($feed));
@@ -442,20 +431,19 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
-        $feed = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'feed_url' => $feed_url,
             'is_public' => true,
         ]);
         $user->follow($feed);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/sources/feeds/new", [
-            'csrf_token' => $this->csrfToken(forms\collections\NewFeed::class),
+            'csrf_token' => $this->csrfToken(forms\feeds\NewFeed::class),
             'url' => $feed_url,
         ]);
 
         $this->assertResponseCode($response, 302, "/streams/{$stream->id}/sources/edit");
-        $this->assertSame(1, models\Collection::countBy(['type' => 'feed']));
+        $this->assertSame(1, models\Feed::count());
         $this->assertTrue($stream->hasSource($feed));
     }
 
@@ -469,13 +457,13 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/sources/feeds/new", [
-            'csrf_token' => $this->csrfToken(forms\collections\NewFeed::class),
+            'csrf_token' => $this->csrfToken(forms\feeds\NewFeed::class),
             'url' => $feed_url,
         ]);
 
         $redirect_to = urlencode("/streams/{$stream->id}/sources/feeds/new");
         $this->assertResponseCode($response, 302, "/login?redirect_to={$redirect_to}");
-        $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
+        $this->assertSame(0, models\Feed::count());
     }
 
     public function testCreateFeedFailsIfTheStreamDoesNotExist(): void
@@ -485,12 +473,12 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
 
         $response = $this->appRun('POST', '/streams/unknown/sources/feeds/new', [
-            'csrf_token' => $this->csrfToken(forms\collections\NewFeed::class),
+            'csrf_token' => $this->csrfToken(forms\feeds\NewFeed::class),
             'url' => $feed_url,
         ]);
 
         $this->assertResponseCode($response, 404);
-        $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
+        $this->assertSame(0, models\Feed::count());
     }
 
     public function testCreateFeedFailsIfTheUserCannotUpdateTheStream(): void
@@ -504,12 +492,12 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/sources/feeds/new", [
-            'csrf_token' => $this->csrfToken(forms\collections\NewFeed::class),
+            'csrf_token' => $this->csrfToken(forms\feeds\NewFeed::class),
             'url' => $feed_url,
         ]);
 
         $this->assertResponseCode($response, 403);
-        $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
+        $this->assertSame(0, models\Feed::count());
     }
 
     public function testCreateFeedFailsIfCsrfIsInvalid(): void
@@ -528,7 +516,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'A security verification failed');
-        $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
+        $this->assertSame(0, models\Feed::count());
         $this->assertSame([], $stream->sources());
     }
 
@@ -541,13 +529,13 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $feed_url = 'ftp://flus.fr/carnet/feeds/all.atom.xml';
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/sources/feeds/new", [
-            'csrf_token' => $this->csrfToken(forms\collections\NewFeed::class),
+            'csrf_token' => $this->csrfToken(forms\feeds\NewFeed::class),
             'url' => $feed_url,
         ]);
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The link is invalid.');
-        $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
+        $this->assertSame(0, models\Feed::count());
         $this->assertSame([], $stream->sources());
     }
 
@@ -573,13 +561,13 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         );
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/sources/feeds/new", [
-            'csrf_token' => $this->csrfToken(forms\collections\NewFeed::class),
+            'csrf_token' => $this->csrfToken(forms\feeds\NewFeed::class),
             'url' => $feed_url,
         ]);
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'There is no valid feeds at this address');
-        $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
+        $this->assertSame(0, models\Feed::count());
         $this->assertSame([], $stream->sources());
     }
 
@@ -589,8 +577,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         $user->follow($source);
@@ -611,8 +598,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
 
@@ -635,8 +621,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         $user->follow($source);
@@ -652,8 +637,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
     public function testAddFailsIfTheStreamDoesNotExist(): void
     {
         $user = $this->login();
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         $user->follow($source);
@@ -686,8 +670,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $other_user->id,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
 
@@ -707,7 +690,6 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $source = CollectionFactory::create([
-            'type' => 'collection',
             'is_public' => false,
             'user_id' => $other_user->id,
         ]);
@@ -726,8 +708,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         $user->follow($source);
@@ -749,8 +730,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         $stream->addSource($source);
@@ -771,8 +751,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
 
@@ -792,8 +771,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         $stream->addSource($source);
@@ -809,8 +787,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
     public function testRemoveFailsIfTheStreamDoesNotExist(): void
     {
         $user = $this->login();
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
 
@@ -842,8 +819,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $other_user->id,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         $stream->addSource($source);
@@ -862,8 +838,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         $stream->addSource($source);
@@ -883,12 +858,10 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
-        $source_1 = CollectionFactory::create([
-            'type' => 'feed',
+        $source_1 = FeedFactory::create([
             'is_public' => true,
         ]);
-        $source_2 = CollectionFactory::create([
-            'type' => 'feed',
+        $source_2 = FeedFactory::create([
             'is_public' => true,
         ]);
         $user->follow($source_1);
@@ -910,8 +883,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         $user->follow($source);
@@ -932,8 +904,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
 
@@ -953,8 +924,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         $user->follow($source);
@@ -973,8 +943,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         $user->follow($source);
@@ -991,8 +960,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
     public function testAddAllFailsIfTheStreamDoesNotExist(): void
     {
         $user = $this->login();
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         $user->follow($source);
@@ -1012,8 +980,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $other_user->id,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         $user->follow($source);
@@ -1033,8 +1000,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         $user->follow($source);
@@ -1055,12 +1021,10 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
-        $source_1 = CollectionFactory::create([
-            'type' => 'feed',
+        $source_1 = FeedFactory::create([
             'is_public' => true,
         ]);
-        $source_2 = CollectionFactory::create([
-            'type' => 'feed',
+        $source_2 = FeedFactory::create([
             'is_public' => true,
         ]);
         $user->follow($source_1);
@@ -1084,8 +1048,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         $user->follow($source);
@@ -1110,8 +1073,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $other_stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         $user->follow($source);
@@ -1134,8 +1096,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         $user->follow($source);
@@ -1155,8 +1116,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         $user->follow($source);
@@ -1174,8 +1134,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
     public function testRemoveAllFailsIfTheStreamDoesNotExist(): void
     {
         $user = $this->login();
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         $user->follow($source);
@@ -1195,8 +1154,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $other_user->id,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         $other_user->follow($source);
@@ -1217,8 +1175,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         $user->follow($source);

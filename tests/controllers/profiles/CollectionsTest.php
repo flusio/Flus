@@ -22,7 +22,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $collection_name = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
             'is_public' => true,
             'name' => $collection_name,
         ]);
@@ -57,7 +56,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $collection_name = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
             'is_public' => true,
             'name' => $collection_name,
         ]);
@@ -81,7 +79,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $collection_name = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
             'is_public' => false,
             'name' => $collection_name,
         ]);

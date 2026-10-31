@@ -68,7 +68,7 @@ class Media
             // in database
             $file_names_from_db = array_merge(
                 models\Link::listImageFilenamesStartingWith($subdir_name),
-                models\Collection::listImageFilenamesStartingWith($subdir_name),
+                models\Source::listImageFilenamesStartingWith($subdir_name),
                 models\Stream::listImageFilenamesStartingWith($subdir_name),
                 models\FollowedCollection::listImageFilenamesStartingWith($subdir_name),
             );

@@ -25,7 +25,6 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $collection_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
             'name' => $collection_name,
         ]);
@@ -44,7 +43,6 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $collection_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $other_user->id,
             'name' => $collection_name,
         ]);
@@ -65,7 +63,6 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
     {
         $user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
         ]);
 
@@ -78,7 +75,6 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
         ]);
 
@@ -92,7 +88,6 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $other_user->id,
         ]);
 
@@ -106,7 +101,6 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $other_user->id,
         ]);
         CollectionShareFactory::create([
@@ -126,7 +120,6 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
             'image_filename' => null,
         ]);
@@ -150,7 +143,6 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
             'image_filename' => null,
         ]);
@@ -180,7 +172,6 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $other_user->id,
             'image_filename' => null,
         ]);
@@ -211,7 +202,6 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
             'image_filename' => null,
         ]);
@@ -237,7 +227,6 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
             'image_filename' => null,
         ]);
@@ -264,7 +253,6 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $other_user->id,
             'image_filename' => null,
         ]);
@@ -291,7 +279,6 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $other_user->id,
             'image_filename' => null,
         ]);
@@ -322,7 +309,6 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
             'image_filename' => null,
         ]);
@@ -348,7 +334,6 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
             'image_filename' => null,
         ]);
@@ -370,7 +355,6 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
             'image_filename' => null,
         ]);
@@ -398,7 +382,6 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
             'image_filename' => null,
         ]);
@@ -428,7 +411,6 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
             'image_filename' => null,
         ]);
@@ -457,7 +439,6 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
             'image_filename' => null,
         ]);

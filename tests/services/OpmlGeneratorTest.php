@@ -3,6 +3,7 @@
 namespace App\services;
 
 use tests\factories\CollectionFactory;
+use tests\factories\FeedFactory;
 use tests\factories\StreamFactory;
 use tests\factories\UserFactory;
 
@@ -29,13 +30,11 @@ class OpmlGeneratorTest extends \PHPUnit\Framework\TestCase
             'name' => 'Private stream',
             'is_public' => false,
         ]);
-        $source_private_stream = CollectionFactory::create([
-            'type' => 'feed',
+        $source_private_stream = FeedFactory::create([
             'name' => 'Source of the private stream',
             'is_public' => true,
         ]);
-        $source_no_stream = CollectionFactory::create([
-            'type' => 'feed',
+        $source_no_stream = FeedFactory::create([
             'name' => 'Source without stream',
             'is_public' => true,
         ]);
@@ -79,23 +78,19 @@ class OpmlGeneratorTest extends \PHPUnit\Framework\TestCase
             'is_public' => false,
         ]);
         $shared_stream->shareWith($context_user);
-        $source_public_stream = CollectionFactory::create([
-            'type' => 'feed',
+        $source_public_stream = FeedFactory::create([
             'name' => 'Source of the public stream',
             'is_public' => true,
         ]);
-        $source_shared_stream = CollectionFactory::create([
-            'type' => 'feed',
+        $source_shared_stream = FeedFactory::create([
             'name' => 'Source of the shared stream',
             'is_public' => true,
         ]);
-        $source_private_stream = CollectionFactory::create([
-            'type' => 'feed',
+        $source_private_stream = FeedFactory::create([
             'name' => 'Source of the private stream',
             'is_public' => true,
         ]);
-        $source_no_stream = CollectionFactory::create([
-            'type' => 'feed',
+        $source_no_stream = FeedFactory::create([
             'name' => 'Source without stream',
             'is_public' => true,
         ]);
@@ -134,8 +129,7 @@ class OpmlGeneratorTest extends \PHPUnit\Framework\TestCase
             'name' => 'Private stream',
             'is_public' => false,
         ]);
-        $source_no_stream = CollectionFactory::create([
-            'type' => 'feed',
+        $source_no_stream = FeedFactory::create([
             'name' => 'Source without stream',
             'is_public' => true,
         ]);
@@ -157,8 +151,7 @@ class OpmlGeneratorTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'is_public' => true,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'name' => 'Carnet de Flus',
             'is_public' => true,
         ]);
@@ -180,8 +173,7 @@ class OpmlGeneratorTest extends \PHPUnit\Framework\TestCase
     {
         $opml_generator = new OpmlGenerator();
         $user = UserFactory::create();
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         $user->follow($source, time_filter: 'strict');
@@ -205,13 +197,11 @@ class OpmlGeneratorTest extends \PHPUnit\Framework\TestCase
             'username' => 'Alix Hambourg',
         ]);
         CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
             'name' => 'Public collection',
             'is_public' => true,
         ]);
         CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
             'name' => 'Private collection',
             'is_public' => false,
@@ -230,13 +220,11 @@ class OpmlGeneratorTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create();
         $context_user = UserFactory::create();
         $shared_collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
             'name' => 'Shared collection',
             'is_public' => false,
         ]);
         CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
             'name' => 'Private collection',
             'is_public' => false,
@@ -261,12 +249,10 @@ class OpmlGeneratorTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $public_source = CollectionFactory::create([
-            'type' => 'collection',
             'name' => 'Public source',
             'is_public' => true,
         ]);
         $private_source = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
             'name' => 'Private source',
             'is_public' => false,
@@ -295,7 +281,6 @@ class OpmlGeneratorTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $private_source = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
             'name' => 'Private source',
             'is_public' => false,
@@ -318,8 +303,7 @@ class OpmlGeneratorTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'is_public' => true,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'name' => 'Carnet de Flus',
             'is_public' => true,
         ]);

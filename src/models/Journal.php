@@ -5,14 +5,16 @@ namespace App\models;
 use Minz\Database;
 
 /**
- * The journal of a user: a system collection filled with the links published
- * in the collections that the user follows.
+ * The journal of a user: a system list filled with the links published in the
+ * sources that the user follows.
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Journal extends Collection
+class Journal extends LinkList
 {
+    use link_lists\OwnedByUser;
+
     public function __construct(User $user)
     {
         parent::__construct();
@@ -23,26 +25,11 @@ class Journal extends Collection
     }
 
     /**
-     * Return the owner of the journal.
+     * Return the localized name of the journal.
      */
-    public function owner(): User
+    public function name(): string
     {
-        return $this->memoize('owner', function (): User {
-            if ($this->user_id === null) {
-                throw new \LogicException('A journal must have an owner');
-            }
-
-            return User::require($this->user_id);
-        });
-    }
-
-    /**
-     * Set the owner of the journal.
-     */
-    public function setOwner(User $user): void
-    {
-        $this->user_id = $user->id;
-        $this->memoizeValue('owner', $user);
+        return _('Journal');
     }
 
     /**
@@ -78,7 +65,7 @@ class Journal extends Collection
             // If the link has already an origin info, we want to keep it.
             // Otherwise, we use the initial source URL.
             if (!$link->origin) {
-                $collection_url = \Minz\Url::absoluteFor('collection', [
+                $collection_url = \Minz\Url::absoluteFor('source', [
                     'id' => $link->source_id,
                 ]);
                 $link->setOrigin($collection_url);
@@ -91,11 +78,7 @@ class Journal extends Collection
             $link->save();
 
             // And don't forget to add the link to the journal!
-            $this->addLinks(
-                [$link],
-                at: $followed_link->published_at,
-                sync_publication_frequency: false,
-            );
+            $this->addLinks([$link], at: $followed_link->published_at);
         }
 
         Link::groupLinksBySources($this);

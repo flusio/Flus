@@ -47,10 +47,9 @@ class JournalTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
             'name' => 'My collection',
-            'type' => 'collection',
             'is_public' => true,
         ]);
-        $origin = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
+        $origin = \Minz\Url::absoluteFor('source', ['id' => $collection->id]);
         $link = LinkFactory::create([
             'user_id' => $user->id,
             'origin' => $origin,
@@ -108,7 +107,6 @@ class JournalTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $link1->addCollection($collection);
@@ -138,7 +136,6 @@ class JournalTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $link1->addCollection($collection);

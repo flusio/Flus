@@ -5,6 +5,7 @@ namespace App\models\links;
 use App\models\Collection;
 use App\models\Link;
 use App\models\Note;
+use App\models\Source;
 use App\models\UrlStatus;
 use App\models\User;
 use App\utils\OriginFormatter;
@@ -49,7 +50,7 @@ class Preloader
      */
     public function sources(): self
     {
-        $sources_by_ids = Collection::listSourcesByLinks($this->links);
+        $sources_by_ids = Source::listFromLinks($this->links);
 
         foreach ($this->links as $link) {
             $source = null;

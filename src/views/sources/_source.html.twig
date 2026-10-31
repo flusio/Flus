@@ -71,7 +71,7 @@
             <a
                 class="source__image-container col--noshrink"
                 tabindex="-1"
-                href="{{ url('collection', { id: source.id }) }}"
+                href="{{ url('source', { id: source.id }) }}"
             >
                 <img
                     class="source__image"
@@ -82,7 +82,7 @@
 
             <div class="source__content col--extend flow flow--smaller">
                 <h3 class="text--bold text--normal">
-                    <a class="anchor--nostyle" href="{{ url('collection', { id: source.id }) }}">
+                    <a class="anchor--nostyle" href="{{ url('source', { id: source.id }) }}">
                         {{ source_name }}
                     </a>
                 </h3>
@@ -104,8 +104,8 @@
                     {% endif %}
                 </p>
 
-                {{ include('collections/_details.html.twig', {
-                    collection: source,
+                {{ include('sources/_details.html.twig', {
+                    source: source,
                     count_streams: count_streams,
                     time_filter: time_filter,
                 }) }}
@@ -120,7 +120,7 @@
             <button
                 data-controller="modal-opener"
                 data-action="modal-opener#fetch focus#remember"
-                data-modal-opener-selector-value="{{ url('edit collection follow', { id: source.id }) }}"
+                data-modal-opener-selector-value="{{ url('edit source follow', { id: source.id }) }}"
                 aria-haspopup="dialog"
                 aria-controls="modal"
             >
@@ -128,12 +128,12 @@
                 {{ t('Manage the subscription') }}
             </button>
         {% elseif app.user %}
-            <form method="post" action="{{ url('follow collection', { id: source.id }) }}">
+            <form method="post" action="{{ url('follow source', { id: source.id }) }}">
                 <button>
                     {{ t('Follow') }}
                 </button>
 
-                <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\FollowCollection') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token('sources\\Follow') }}">
             </form>
         {% endif %}
 
@@ -154,7 +154,7 @@
                 {% import _self as item %}
 
                 {{ item.clipboard(
-                    value: url_full('collection', { id: source.id }),
+                    value: url_full('source', { id: source.id }),
                     label: t('Copy link to collection'),
                 ) }}
 
@@ -170,10 +170,10 @@
                     {# Unfollowing deletes the follow, which removes the source from
                      # the streams as well: better warn the user. #}
                     {{ item.action(
-                        url: url('unfollow collection', { id: source.id }),
+                        url: url('unfollow source', { id: source.id }),
                         label: t('Unfollow'),
                         icon: 'disconnect',
-                        csrf: 'collections\\UnfollowCollection',
+                        csrf: 'sources\\Unfollow',
                         confirm: count_streams > 0 ? t(
                             'Are you sure that you want to unfollow this source? It will be removed from %d stream.',
                             'Are you sure that you want to unfollow this source? It will be removed from %d streams.',

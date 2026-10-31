@@ -50,8 +50,8 @@ class Collections extends BaseController
         }
 
         if (
-            !auth\LinksAccess::canUpdate($user, $link) ||
-            !auth\CollectionsAccess::canAddLinks($user, $collection)
+            !auth\Access::can($user, 'update', $link) ||
+            !auth\Access::can($user, 'addLinks', $collection)
         ) {
             return Response::json(403, [
                 'error' => 'You cannot update the link.',
@@ -99,8 +99,8 @@ class Collections extends BaseController
         }
 
         if (
-            !auth\LinksAccess::canUpdate($user, $link) ||
-            !auth\CollectionsAccess::canAddLinks($user, $collection)
+            !auth\Access::can($user, 'update', $link) ||
+            !auth\Access::can($user, 'addLinks', $collection)
         ) {
             return Response::json(403, [
                 'error' => 'You cannot update the link.',

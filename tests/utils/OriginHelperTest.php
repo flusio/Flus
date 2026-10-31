@@ -14,7 +14,7 @@ class OriginHelperTest extends \PHPUnit\Framework\TestCase
     public function testExtractOriginFromPathWithExistingCollection(): void
     {
         $collection = CollectionFactory::create();
-        $path = \Minz\Url::for('collection', ['id' => $collection->id]);
+        $path = \Minz\Url::for('source', ['id' => $collection->id]);
 
         list($origin_type, $origin_id) = OriginHelper::extractFromPath($path);
 
@@ -25,7 +25,7 @@ class OriginHelperTest extends \PHPUnit\Framework\TestCase
     public function testExtractOriginFromPathWithExistingCollectionAndUrl(): void
     {
         $collection = CollectionFactory::create();
-        $url = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
+        $url = \Minz\Url::absoluteFor('source', ['id' => $collection->id]);
 
         list($origin_type, $origin_id) = OriginHelper::extractFromPath($url);
 
@@ -57,7 +57,7 @@ class OriginHelperTest extends \PHPUnit\Framework\TestCase
 
     public function testExtractOriginFromPathWithNonExistingCollection(): void
     {
-        $path = \Minz\Url::for('collection', ['id' => '12345']);
+        $path = \Minz\Url::for('source', ['id' => '12345']);
 
         list($origin_type, $origin_id) = OriginHelper::extractFromPath($path);
 
@@ -98,7 +98,7 @@ class OriginHelperTest extends \PHPUnit\Framework\TestCase
     public function testExtractOriginFromPathWithUnsupportedBaseUrl(): void
     {
         $collection = CollectionFactory::create();
-        $path = \Minz\Url::for('collection', ['id' => $collection->id]);
+        $path = \Minz\Url::for('source', ['id' => $collection->id]);
         $url = 'https://not-the-domain.org' . $path;
 
         list($origin_type, $origin_id) = OriginHelper::extractFromPath($url);

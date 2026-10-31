@@ -22,12 +22,10 @@ class Feeds
      */
     public function index(Request $request): Response
     {
-        $collections = models\Collection::listBy([
-            'type' => 'feed',
-        ]);
+        $feeds = models\Feed::listAll();
         $feeds_as_text = [];
-        foreach ($collections as $collection) {
-            $feeds_as_text[] = "{$collection->id} {$collection->feed_url}";
+        foreach ($feeds as $feed) {
+            $feeds_as_text[] = "{$feed->id} {$feed->feed_url}";
         }
 
         if (!$feeds_as_text) {
@@ -49,33 +47,32 @@ class Feeds
     public function add(Request $request): Response
     {
         $feed_url = $request->parameters->getString('url', '');
-        $collection = models\Collection::initFeed($feed_url);
+        $feed = models\Feed::init($feed_url);
 
-        if (!$collection->validate()) {
-            $errors = implode(' ', $collection->errors());
-            return Response::text(400, "Feed collection creation failed: {$errors}");
+        if (!$feed->validate()) {
+            $errors = implode(' ', $feed->errors());
+            return Response::text(400, "Feed creation failed: {$errors}");
         }
 
-        $existing_feed = models\Collection::findBy([
-            'type' => 'feed',
-            'feed_url' => $collection->feed_url,
+        $existing_feed = models\Feed::findBy([
+            'feed_url' => $feed->feed_url,
         ]);
         if ($existing_feed) {
-            return Response::text(400, 'Feed collection already in database.');
+            return Response::text(400, 'Feed already in database.');
         }
 
-        // create the collection before fetching it
-        $collection->save();
+        // create the feed before fetching it
+        $feed->save();
 
         $fetch_service = new services\FeedFetcher();
-        $fetch_service->fetch($collection);
+        $fetch_service->fetch($feed);
 
-        if ($collection->feed_fetched_error) {
-            $error = $collection->feed_fetched_error;
-            return Response::text(400, "Feed {$collection->feed_url} has been added but cannot be fetched: {$error}.");
+        if ($feed->feed_fetched_error) {
+            $error = $feed->feed_fetched_error;
+            return Response::text(400, "Feed {$feed->feed_url} has been added but cannot be fetched: {$error}.");
         }
 
-        return Response::text(200, "Feed {$collection->feed_url} ({$collection->name}) has been added.");
+        return Response::text(200, "Feed {$feed->feed_url} ({$feed->name}) has been added.");
     }
 
     /**
@@ -92,20 +89,17 @@ class Feeds
     {
         $id = $request->parameters->getString('id');
         $nocache = $request->parameters->getBoolean('nocache');
-        $collection = models\Collection::findBy([
-            'type' => 'feed',
-            'id' => $id,
-        ]);
-        if (!$collection) {
+        $feed = models\Feed::find($id ?? '');
+        if (!$feed) {
             return Response::text(404, "Feed id `{$id}` does not exist.");
         }
 
         $feed_fetcher_service = new services\FeedFetcher([
             'ignore_cache' => $nocache,
         ]);
-        $feed_fetcher_service->fetch($collection);
+        $feed_fetcher_service->fetch($feed);
 
-        return Response::text(200, "Feed {$id} ({$collection->feed_url}) has been synchronized.");
+        return Response::text(200, "Feed {$id} ({$feed->feed_url}) has been synchronized.");
     }
 
     /**
@@ -115,7 +109,7 @@ class Feeds
      */
     public function resetHashes(Request $request): Response
     {
-        models\Collection::resetHashes();
+        models\Feed::resetHashes();
         return Response::text(200, 'Feeds hashes have been reset.');
     }
 }

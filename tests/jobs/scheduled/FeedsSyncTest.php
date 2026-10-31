@@ -4,7 +4,7 @@ namespace App\jobs\scheduled;
 
 use App\http;
 use App\models;
-use tests\factories\CollectionFactory;
+use tests\factories\FeedFactory;
 use tests\factories\FetchLogFactory;
 use tests\factories\LinkFactory;
 use tests\factories\UserFactory;
@@ -79,8 +79,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
         $this->mockHttpWithFile($card_url, 'public/static/og-card.png');
         $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'name' => $old_name,
             'feed_url' => $feed_url,
             'feed_fetched_next_at' => \Minz\Time::now(),
@@ -88,24 +87,24 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
         ]);
-        $user->follow($collection);
+        $user->follow($feed);
         $feeds_sync_job = new FeedsSync();
 
         $this->assertSame(0, http\FetchLog::count());
 
         $feeds_sync_job->perform();
 
-        $collection = $collection->reload();
-        $this->assertSame('Carnet de Flus', $collection->name);
-        $this->assertSame('atom', $collection->feed_type);
+        $feed = $feed->reload();
+        $this->assertSame('Carnet de Flus', $feed->name);
+        $this->assertSame('atom', $feed->feed_type);
         $this->assertGreaterThanOrEqual(
             \Minz\Time::fromNow(1, 'hour')->getTimestamp(),
-            $collection->feed_fetched_next_at?->getTimestamp(),
+            $feed->feed_fetched_next_at?->getTimestamp(),
         );
-        $this->assertNotNull($collection->image_fetched_at);
-        $this->assertNotEmpty($collection->image_filename);
-        $this->assertNull($collection->locked_at);
-        $links_number = count($collection->links());
+        $this->assertNotNull($feed->image_fetched_at);
+        $this->assertNotEmpty($feed->image_filename);
+        $this->assertNull($feed->locked_at);
+        $links_number = count($feed->links());
         $this->assertSame(3, $links_number);
 
         $this->assertSame(3, http\FetchLog::count());
@@ -129,8 +128,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $old_name = $this->fake('sentence');
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'name' => $old_name,
             'feed_url' => $feed_url,
             'feed_fetched_next_at' => \Minz\Time::now(),
@@ -138,7 +136,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
         ]);
-        $user->follow($collection);
+        $user->follow($feed);
         $feeds_sync_job = new FeedsSync();
 
         $feeds_sync_job->perform();
@@ -155,8 +153,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $expected_name = $this->fakeUnique('sentence');
         /** @var string */
         $expected_title = $this->fakeUnique('sentence');
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'name' => $old_name,
             'feed_url' => $feed_url,
             'feed_fetched_next_at' => \Minz\Time::now(),
@@ -164,7 +161,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
         ]);
-        $user->follow($collection);
+        $user->follow($feed);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $this->cacheHttpResponse($feed_url, <<<TEXT
             HTTP/2 200 OK
@@ -192,9 +189,9 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         $feeds_sync_job->perform();
 
-        $collection = $collection->reload();
-        $this->assertSame($expected_name, $collection->name);
-        $link = $collection->links()[0];
+        $feed = $feed->reload();
+        $this->assertSame($expected_name, $feed->name);
+        $link = $feed->links()[0];
         $this->assertSame($expected_title, $link->title);
     }
 
@@ -207,8 +204,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $expected_name = $this->fakeUnique('sentence');
         /** @var string */
         $expected_title = $this->fakeUnique('sentence');
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'name' => $old_name,
             'feed_url' => $feed_url,
             'feed_fetched_next_at' => \Minz\Time::now(),
@@ -216,7 +212,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
         ]);
-        $user->follow($collection);
+        $user->follow($feed);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $this->cacheHttpResponse($feed_url, <<<TEXT
             HTTP/2 200 OK
@@ -254,8 +250,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         /** @var string */
         $expected_name = $this->fake('sentence');
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'name' => $expected_name,
             'feed_url' => $feed_url,
             'feed_fetched_next_at' => \Minz\Time::fromNow(5, 'minutes'),
@@ -263,14 +258,14 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
         ]);
-        $user->follow($collection);
+        $user->follow($feed);
         $feeds_sync_job = new FeedsSync();
 
         $feeds_sync_job->perform();
 
-        $collection = $collection->reload();
-        $this->assertSame($expected_name, $collection->name);
-        $links_number = count($collection->links());
+        $feed = $feed->reload();
+        $this->assertSame($expected_name, $feed->name);
+        $links_number = count($feed->links());
         $this->assertSame(0, $links_number);
     }
 
@@ -285,8 +280,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         // random content (or we would have to calcule the feed hash, which is
         // a bit tedious here).
         $feed_hash = '38f9e30ef7c4b63def59105bc58d363b5147373beeffd9677a0f9e9d22edaebd';
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'name' => $expected_name,
             'feed_url' => $feed_url,
             'feed_fetched_next_at' => \Minz\Time::now(),
@@ -295,7 +289,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
         ]);
-        $user->follow($collection);
+        $user->follow($feed);
         $this->cacheHttpResponse($feed_url, <<<TEXT
             HTTP/2 200 OK
             Content-Type: application/xml
@@ -322,24 +316,22 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         $feeds_sync_job->perform();
 
-        $collection = $collection->reload();
-        $this->assertSame($feed_hash, $collection->feed_last_hash);
-        $this->assertSame($expected_name, $collection->name);
+        $feed = $feed->reload();
+        $this->assertSame($feed_hash, $feed->feed_last_hash);
+        $this->assertSame($expected_name, $feed->name);
     }
 
     public function testPerformDuplicatesLinkUrlIfNotInCollection(): void
     {
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
-            'user_id' => null,
+        $feed = FeedFactory::create([
             'feed_url' => $feed_url,
             'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
         ]);
-        $user->follow($collection);
+        $user->follow($feed);
         $link_url = 'https://flus.fr/carnet/nouveautes-mars-2021.html';
         $link_entry_id = 'urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d';
         $link_published = '2021-03-30T09:26:00+00:00';
@@ -401,8 +393,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
                 'host' => $host,
             ]);
         }
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'name' => $feed_url,
             'feed_url' => $feed_url,
             'feed_fetched_next_at' => \Minz\Time::now(),
@@ -412,15 +403,15 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
         ]);
-        $user->follow($collection);
+        $user->follow($feed);
         $feeds_sync_job = new FeedsSync();
 
         $feeds_sync_job->perform();
 
-        $collection = $collection->reload();
-        $this->assertSame($feed_url, $collection->name);
-        $this->assertSame(0, $collection->feed_fetched_code);
-        $this->assertNull($collection->feed_fetched_at);
+        $feed = $feed->reload();
+        $this->assertSame($feed_url, $feed->name);
+        $this->assertSame(0, $feed->feed_fetched_code);
+        $this->assertNull($feed->feed_fetched_at);
     }
 
     public function testPerformUsesIdAsLinkIfEntryHasNoLink(): void
@@ -433,8 +424,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $expected_name = $this->fakeUnique('sentence');
         /** @var string */
         $expected_title = $this->fakeUnique('sentence');
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'name' => $old_name,
             'feed_url' => $feed_url,
             'feed_fetched_next_at' => \Minz\Time::now(),
@@ -442,7 +432,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
         ]);
-        $user->follow($collection);
+        $user->follow($feed);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $this->cacheHttpResponse($feed_url, <<<TEXT
             HTTP/2 200 OK
@@ -484,8 +474,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $expected_name = $this->fakeUnique('sentence');
         /** @var string */
         $expected_title = $this->fakeUnique('sentence');
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'name' => $old_name,
             'feed_url' => $feed_url,
             'feed_fetched_next_at' => \Minz\Time::now(),
@@ -493,7 +482,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
         ]);
-        $user->follow($collection);
+        $user->follow($feed);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $this->cacheHttpResponse($feed_url, <<<TEXT
             HTTP/2 200 OK
@@ -520,22 +509,21 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         $feeds_sync_job->perform();
 
-        $collection = $collection->reload();
-        $this->assertEmpty($collection->links());
+        $feed = $feed->reload();
+        $this->assertEmpty($feed->links());
     }
 
     public function testPerformIgnoresEntriesWithInvalidUrl(): void
     {
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'feed_url' => $feed_url,
             'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
         ]);
-        $user->follow($collection);
+        $user->follow($feed);
         $link_url = 'invalid://example.com';
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $this->cacheHttpResponse($feed_url, <<<TEXT
@@ -564,23 +552,21 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         $feeds_sync_job->perform();
 
-        $collection = $collection->reload();
-        $this->assertEmpty($collection->links());
+        $feed = $feed->reload();
+        $this->assertEmpty($feed->links());
     }
 
     public function testPerformIgnoresEntriesIfUrlExistsInCollection(): void
     {
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
-            'user_id' => null,
+        $feed = FeedFactory::create([
             'feed_url' => $feed_url,
             'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
         ]);
-        $user->follow($collection);
+        $user->follow($feed);
         $link_url = 'https://flus.fr/carnet/nouveautes-mars-2021.html';
         $link_entry_id = 'urn:uuid:027e66f5-8137-5040-919d-6377c478ae9d';
         $link_published = '2021-03-30T09:26:00+00:00';
@@ -590,7 +576,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'feed_entry_id' => null,
             'created_at' => \Minz\Time::now(),
         ]);
-        $collection->addLinks([$link]);
+        $feed->addLinks([$link]);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $this->cacheHttpResponse($feed_url, <<<TEXT
             HTTP/2 200 OK
@@ -633,12 +619,11 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $published_at_1 = \Minz\Time::ago(1, 'months');
         $published_at_2 = \Minz\Time::ago(2, 'months');
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'feed_url' => $feed_url,
             'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
-        UserFactory::create()->follow($collection);
+        UserFactory::create()->follow($feed);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $this->cacheHttpResponse($feed_url, <<<TEXT
             HTTP/2 200 OK
@@ -678,8 +663,8 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         \App\Configuration::$application['feeds_links_keep_maximum'] = 0;
 
         $this->assertSame(1, models\Link::count());
-        $collection = $collection->reload();
-        $links = $collection->links();
+        $feed = $feed->reload();
+        $links = $feed->links();
         $this->assertSame(1, count($links));
         $this->assertSame('Les nouveautés de mars 2021', $links[0]->title);
     }
@@ -694,8 +679,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $published_at_1 = \Minz\Time::ago(1, 'months');
         $published_at_2 = \Minz\Time::ago(2, 'months');
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'feed_url' => $feed_url,
             'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
@@ -705,8 +689,8 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'url' => 'https://flus.fr/carnet/nouveautes-mars-2021.html',
             'user_id' => null,
         ]);
-        $collection->addLinks([$link]);
-        UserFactory::create()->follow($collection);
+        $feed->addLinks([$link]);
+        UserFactory::create()->follow($feed);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $this->cacheHttpResponse($feed_url, <<<TEXT
             HTTP/2 200 OK
@@ -746,8 +730,8 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         \App\Configuration::$application['feeds_links_keep_maximum'] = 0;
 
         $this->assertSame(1, models\Link::count());
-        $collection = $collection->reload();
-        $links = $collection->links();
+        $feed = $feed->reload();
+        $links = $feed->links();
         $this->assertSame(1, count($links));
         $this->assertSame($link->id, $links[0]->id);
     }
@@ -763,12 +747,11 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         /** @var int */
         $months = $this->fake('numberBetween', 7, 100);
         $published_at = \Minz\Time::ago($months, 'months');
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'feed_url' => $feed_url,
             'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
-        UserFactory::create()->follow($collection);
+        UserFactory::create()->follow($feed);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $this->cacheHttpResponse($feed_url, <<<TEXT
             HTTP/2 200 OK
@@ -812,12 +795,11 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         /** @var int */
         $months = $this->fake('numberBetween', 0, 6);
         $published_at = \Minz\Time::ago($months, 'months');
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'feed_url' => $feed_url,
             'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
-        UserFactory::create()->follow($collection);
+        UserFactory::create()->follow($feed);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $this->cacheHttpResponse($feed_url, <<<TEXT
             HTTP/2 200 OK
@@ -848,8 +830,8 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         \App\Configuration::$application['feeds_links_keep_period'] = 0;
 
         $this->assertSame(1, models\Link::count());
-        $collection = $collection->reload();
-        $links = $collection->links();
+        $feed = $feed->reload();
+        $links = $feed->links();
         $this->assertSame(1, count($links));
         $this->assertSame('Les nouveautés de mars 2021', $links[0]->title);
     }
@@ -867,12 +849,11 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $months = $this->fake('numberBetween', 7, 100);
         $published_at_old = \Minz\Time::ago($months, 'months');
         $published_at_older = \Minz\Time::ago($months + 1, 'months');
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'feed_url' => $feed_url,
             'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
-        UserFactory::create()->follow($collection);
+        UserFactory::create()->follow($feed);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $this->cacheHttpResponse($feed_url, <<<TEXT
             HTTP/2 200 OK
@@ -912,8 +893,8 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         \App\Configuration::$application['feeds_links_keep_period'] = 0;
         \App\Configuration::$application['feeds_links_keep_minimum'] = 0;
 
-        $collection = $collection->reload();
-        $links = $collection->links();
+        $feed = $feed->reload();
+        $links = $feed->links();
         $this->assertSame(1, count($links));
         $this->assertSame('Les nouveautés de mars 2021', $links[0]->title);
     }
@@ -927,8 +908,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $expected_name = $this->fakeUnique('sentence');
         /** @var string */
         $expected_title = $this->fakeUnique('sentence');
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'name' => $old_name,
             'feed_url' => $feed_url,
             'feed_fetched_next_at' => \Minz\Time::now(),
@@ -936,7 +916,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
         ]);
-        $user->follow($collection);
+        $user->follow($feed);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $this->cacheHttpResponse($feed_url, <<<TEXT
             HTTP/2 200 OK
@@ -963,8 +943,8 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         $feeds_sync_job->perform();
 
-        $collection = $collection->reload();
-        $link = $collection->links()[0];
+        $feed = $feed->reload();
+        $link = $feed->links()[0];
         $this->assertSame($link->url, $link->feed_entry_id);
     }
 
@@ -978,8 +958,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $uuid = $this->fake('uuid');
         $entry_id = 'urn:uuid: ' . $uuid;
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'feed_url' => $feed_url,
             'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
@@ -987,11 +966,11 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'url' => $old_url,
             'feed_entry_id' => $entry_id,
         ]);
-        $collection->addLinks([$link]);
+        $feed->addLinks([$link]);
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
         ]);
-        $user->follow($collection);
+        $user->follow($feed);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $this->cacheHttpResponse($feed_url, <<<TEXT
             HTTP/2 200 OK
@@ -1025,7 +1004,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($link->fetched_at);
         $link_to_collection = models\LinkToCollection::findBy([
             'link_id' => $link->id,
-            'collection_id' => $collection->id,
+            'collection_id' => $feed->id,
         ]);
         $this->assertNotNull($link_to_collection);
         $this->assertSame(1617096360, $link_to_collection->created_at->getTimestamp());
@@ -1034,15 +1013,14 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
     public function testPerformAbsolutizesLinks(): void
     {
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'feed_url' => $feed_url,
             'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
         ]);
-        $user->follow($collection);
+        $user->follow($feed);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $this->cacheHttpResponse($feed_url, <<<TEXT
             HTTP/2 200 OK
@@ -1071,24 +1049,23 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         $feeds_sync_job->perform();
 
-        $collection = $collection->reload();
-        $this->assertSame('https://flus.fr/carnet/', $collection->feed_site_url);
-        $link = $collection->links()[0];
+        $feed = $feed->reload();
+        $this->assertSame('https://flus.fr/carnet/', $feed->feed_site_url);
+        $link = $feed->links()[0];
         $this->assertSame('https://flus.fr/carnet/nouveautes-mars-2021.html', $link->url);
     }
 
     public function testPerformUsesFeedUrlIfSiteUrlIsMissing(): void
     {
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'feed_url' => $feed_url,
             'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
         ]);
-        $user->follow($collection);
+        $user->follow($feed);
         $this->cacheHttpResponse($feed_url, <<<TEXT
             HTTP/2 200 OK
             Content-Type: application/xml
@@ -1115,8 +1092,8 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         $feeds_sync_job->perform();
 
-        $collection = $collection->reload();
-        $this->assertSame($feed_url, $collection->feed_site_url);
+        $feed = $feed->reload();
+        $this->assertSame($feed_url, $feed->feed_site_url);
     }
 
     public function testPerformHandlesLongMultiByteFeedTitle(): void
@@ -1130,15 +1107,14 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         // while mb_substr handles the size correctly.
         $title = str_repeat("\u{0800}", models\Collection::NAME_MAX_LENGTH);
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'feed_url' => $feed_url,
             'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
         ]);
-        $user->follow($collection);
+        $user->follow($feed);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $this->cacheHttpResponse($feed_url, <<<TEXT
             HTTP/2 200 OK
@@ -1158,22 +1134,21 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         $feeds_sync_job->perform();
 
-        $collection = $collection->reload();
-        $this->assertSame($title, $collection->name);
+        $feed = $feed->reload();
+        $this->assertSame($title, $feed->name);
     }
 
     public function testPerformSavesTheLinksUrlReplies(): void
     {
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'feed_url' => $feed_url,
             'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
         ]);
-        $user->follow($collection);
+        $user->follow($feed);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $this->cacheHttpResponse($feed_url, <<<TEXT
             HTTP/2 200 OK
@@ -1203,8 +1178,8 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         $feeds_sync_job->perform();
 
-        $collection = $collection->reload();
-        $link = $collection->links()[0];
+        $feed = $feed->reload();
+        $link = $feed->links()[0];
         $this->assertSame('https://flus.fr/carnet/nouveautes-2021.html#comments', $link->url_replies);
     }
 
@@ -1223,8 +1198,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $old_name = $this->fakeUnique('sentence');
         /** @var string */
         $title = $this->fakeUnique('sentence');
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'name' => $old_name,
             'feed_url' => $feed_url,
             'feed_fetched_next_at' => \Minz\Time::now(),
@@ -1233,7 +1207,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
         ]);
-        $user->follow($collection);
+        $user->follow($feed);
         $this->cacheHttpResponse($feed_url, <<<TEXT
             HTTP/2 200 OK
             Content-Type: application/xml
@@ -1260,9 +1234,9 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         $feeds_sync_job->perform();
 
-        $collection = $collection->reload();
-        $this->assertNotSame($name, $collection->name);
-        $this->assertEmpty($collection->links());
+        $feed = $feed->reload();
+        $this->assertNotSame($name, $feed->name);
+        $this->assertEmpty($feed->links());
     }
 
     public function testPerformFetchesFeedIfLockedAfterAnHour(): void
@@ -1280,8 +1254,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $expected_name = $this->fakeUnique('sentence');
         /** @var string */
         $expected_title = $this->fakeUnique('sentence');
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'name' => $old_name,
             'feed_url' => $feed_url,
             'feed_fetched_next_at' => \Minz\Time::now(),
@@ -1290,7 +1263,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
         ]);
-        $user->follow($collection);
+        $user->follow($feed);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $this->cacheHttpResponse($feed_url, <<<TEXT
             HTTP/2 200 OK
@@ -1318,9 +1291,9 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         $feeds_sync_job->perform();
 
-        $collection = $collection->reload();
-        $this->assertSame($expected_name, $collection->name);
-        $link = $collection->links()[0];
+        $feed = $feed->reload();
+        $this->assertSame($expected_name, $feed->name);
+        $link = $feed->links()[0];
         $this->assertSame($expected_title, $link->title);
     }
 
@@ -1341,15 +1314,14 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         // Setup the feed
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'feed_url' => $feed_url,
             'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
         ]);
-        $user->follow($collection);
+        $user->follow($feed);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $this->cacheHttpResponse($feed_url, <<<TEXT
             HTTP/2 200 OK
@@ -1361,23 +1333,22 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         $feeds_sync_job->perform();
 
-        $collection = $collection->reload();
-        $this->assertSame('My feed with an ?ccent', $collection->name);
+        $feed = $feed->reload();
+        $this->assertSame('My feed with an ?ccent', $feed->name);
     }
 
     public function testPerformSendsAcceptHeader(): void
     {
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $this->mockHttpWithEcho($feed_url);
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'feed_url' => $feed_url,
             'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
         ]);
-        $user->follow($collection);
+        $user->follow($feed);
         $feeds_sync_job = new FeedsSync();
 
         $feeds_sync_job->perform();

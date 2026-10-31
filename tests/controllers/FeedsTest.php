@@ -4,7 +4,7 @@ namespace App\controllers;
 
 use App\forms;
 use App\models;
-use tests\factories\CollectionFactory;
+use tests\factories\FeedFactory;
 use tests\factories\UserFactory;
 
 class FeedsTest extends \PHPUnit\Framework\TestCase
@@ -25,13 +25,12 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $feed_name = $this->fake('words', 3, true);
         /** @var string */
         $feed_url = $this->fake('url');
-        $collection = CollectionFactory::create([
+        $feed = FeedFactory::create([
             'name' => $feed_name,
-            'type' => 'feed',
             'is_public' => true,
             'feed_url' => $feed_url,
         ]);
-        $user->follow($collection);
+        $user->follow($feed);
 
         $response = $this->appRun('GET', '/feeds');
 
@@ -48,13 +47,12 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $feed_name = $this->fake('words', 3, true);
         /** @var string */
         $feed_url = $this->fake('url');
-        $collection = CollectionFactory::create([
+        $feed = FeedFactory::create([
             'name' => $feed_name,
-            'type' => 'feed',
             'is_public' => true,
             'feed_url' => $feed_url,
         ]);
-        $user->follow($collection);
+        $user->follow($feed);
 
         $response = $this->appRun('GET', '/feeds');
 
@@ -85,19 +83,19 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
 
-        $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
+        $this->assertSame(0, models\Feed::count());
 
         $response = $this->appRun('POST', '/feeds/new', [
-            'csrf_token' => $this->csrfToken(forms\collections\NewFeed::class),
+            'csrf_token' => $this->csrfToken(forms\feeds\NewFeed::class),
             'url' => $feed_url,
         ]);
 
-        $this->assertSame(1, models\Collection::countBy(['type' => 'feed']));
-        $collection = models\Collection::findBy(['type' => 'feed']);
-        $this->assertNotNull($collection);
-        $this->assertResponseCode($response, 302, "/collections/{$collection->id}");
-        $this->assertSame($feed_url, $collection->feed_url);
-        $this->assertTrue($user->isFollowing($collection));
+        $this->assertSame(1, models\Feed::count());
+        $feed = models\Feed::take();
+        $this->assertNotNull($feed);
+        $this->assertResponseCode($response, 302, "/collections/{$feed->id}");
+        $this->assertSame($feed_url, $feed->feed_url);
+        $this->assertTrue($user->isFollowing($feed));
     }
 
     public function testCreateAutodetectsFeedUrls(): void
@@ -108,18 +106,18 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
         $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
 
-        $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
+        $this->assertSame(0, models\Feed::count());
 
         $response = $this->appRun('POST', '/feeds/new', [
-            'csrf_token' => $this->csrfToken(forms\collections\NewFeed::class),
+            'csrf_token' => $this->csrfToken(forms\feeds\NewFeed::class),
             'url' => $url,
         ]);
 
-        $this->assertSame(1, models\Collection::countBy(['type' => 'feed']));
-        $collection = models\Collection::findBy(['type' => 'feed']);
-        $this->assertNotNull($collection);
-        $this->assertResponseCode($response, 302, "/collections/{$collection->id}");
-        $this->assertSame($feed_url, $collection->feed_url);
+        $this->assertSame(1, models\Feed::count());
+        $feed = models\Feed::take();
+        $this->assertNotNull($feed);
+        $this->assertResponseCode($response, 302, "/collections/{$feed->id}");
+        $this->assertSame($feed_url, $feed->feed_url);
     }
 
     public function testCreateRedirectsToLoginIfNotConnected(): void
@@ -129,12 +127,12 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
 
         $response = $this->appRun('POST', '/feeds/new', [
-            'csrf_token' => $this->csrfToken(forms\collections\NewFeed::class),
+            'csrf_token' => $this->csrfToken(forms\feeds\NewFeed::class),
             'url' => $feed_url,
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2Ffeeds%2Fnew');
-        $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
+        $this->assertSame(0, models\Feed::count());
     }
 
     public function testCreateFailsIfCsrfIsInvalid(): void
@@ -150,7 +148,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'A security verification failed');
-        $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
+        $this->assertSame(0, models\Feed::count());
     }
 
     public function testCreateFailsIfUrlIsInvalid(): void
@@ -159,13 +157,13 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $feed_url = 'ftp://flus.fr/carnet/feeds/all.atom.xml';
 
         $response = $this->appRun('POST', '/feeds/new', [
-            'csrf_token' => $this->csrfToken(forms\collections\NewFeed::class),
+            'csrf_token' => $this->csrfToken(forms\feeds\NewFeed::class),
             'url' => $feed_url,
         ]);
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The link is invalid.');
-        $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
+        $this->assertSame(0, models\Feed::count());
     }
 
     public function testCreateFailsIfUrlIsMissing(): void
@@ -174,13 +172,13 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $feed_url = '';
 
         $response = $this->appRun('POST', '/feeds/new', [
-            'csrf_token' => $this->csrfToken(forms\collections\NewFeed::class),
+            'csrf_token' => $this->csrfToken(forms\feeds\NewFeed::class),
             'url' => $feed_url,
         ]);
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The link is required');
-        $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
+        $this->assertSame(0, models\Feed::count());
     }
 
     public function testCreateFailsIfNoFeedsCanBeFound(): void
@@ -202,27 +200,25 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         );
 
         $response = $this->appRun('POST', '/feeds/new', [
-            'csrf_token' => $this->csrfToken(forms\collections\NewFeed::class),
+            'csrf_token' => $this->csrfToken(forms\feeds\NewFeed::class),
             'url' => $feed_url,
         ]);
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'There is no valid feeds at this address');
-        $this->assertSame(0, models\Collection::countBy(['type' => 'feed']));
+        $this->assertSame(0, models\Feed::count());
     }
 
     public function testWhatIsNewRedirectsToCollection(): void
     {
         $feed_url = 'https://github.com/flusio/Flus/releases.atom';
-        $collection = CollectionFactory::create([
-            'user_id' => null,
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'feed_url' => $feed_url,
         ]);
 
         $response = $this->appRun('GET', '/about/new');
 
-        $this->assertResponseCode($response, 302, "/collections/{$collection->id}");
+        $this->assertResponseCode($response, 302, "/collections/{$feed->id}");
     }
 
     public function testWhatIsNewCreatesFeedIfItDoesNotExist(): void
@@ -243,15 +239,15 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'public/static/og-card.png'
         );
 
-        $this->assertSame(0, models\Collection::count());
+        $this->assertSame(0, models\Feed::count());
 
         $response = $this->appRun('GET', '/about/new');
 
-        $this->assertSame(1, models\Collection::count());
+        $this->assertSame(1, models\Feed::count());
 
-        $collection = models\Collection::take();
-        $this->assertNotNull($collection);
-        $this->assertSame($feed_url, $collection->feed_url);
-        $this->assertResponseCode($response, 302, "/collections/{$collection->id}");
+        $feed = models\Feed::take();
+        $this->assertNotNull($feed);
+        $this->assertSame($feed_url, $feed->feed_url);
+        $this->assertResponseCode($response, 302, "/collections/{$feed->id}");
     }
 }

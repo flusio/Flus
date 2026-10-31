@@ -25,7 +25,7 @@ class StreamView
 
     public readonly int $days;
 
-    /** @var Collection[] */
+    /** @var Source[] */
     public readonly array $sources;
 
     public readonly string $status;
@@ -117,7 +117,7 @@ class StreamView
 
         $this->sources = array_values(array_filter(
             $stream_sources,
-            function (Collection $source) use ($selected_source_ids): bool {
+            function (Source $source) use ($selected_source_ids): bool {
                 return in_array($source->id, $selected_source_ids);
             },
         ));
@@ -148,7 +148,7 @@ class StreamView
         return $start <= $day && $day <= $end;
     }
 
-    public function isSourceSelected(Collection $source): bool
+    public function isSourceSelected(Source $source): bool
     {
         $selected_source_ids = array_column($this->sources, 'id');
         return in_array($source->id, $selected_source_ids);
@@ -208,7 +208,7 @@ class StreamView
      *     context_user: ?User,
      *     at: \DateTimeImmutable,
      *     days: int,
-     *     sources: Collection[],
+     *     sources: Source[],
      *     status: string,
      *     with_dismissed: bool,
      *     query: ?search_engine\Query,
@@ -232,7 +232,7 @@ class StreamView
     }
 
     /**
-     * @return list<array{Collection, int}>
+     * @return list<array{Source, int}>
      */
     public function countedSources(): array
     {

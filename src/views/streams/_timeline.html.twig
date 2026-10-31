@@ -61,7 +61,7 @@
                                     {% for link in date_group.links %}
                                         {{ include('links/_link_row.html.twig', {
                                             link: link,
-                                            source: link.source_id,
+                                            source_id: link.source_id,
                                             heading_level: 3,
                                             storing_must_mark_as_read: true,
                                         })}}
@@ -73,7 +73,7 @@
                                 <div class="source-group flow flow--small">
                                     <div class="source-group__header cols cols--always cols--gap cols--center">
                                         <h3 class="source-group__title">
-                                            <a class="anchor--nostyle" href="{{ url('collection', { id: source_group.source.id }) }}">
+                                            <a class="anchor--nostyle" href="{{ url('source', { id: source_group.source.id }) }}">
                                                 {{ source_group.source.nameByUser(app.user) }}
                                             </a>
                                         </h3>
@@ -113,7 +113,7 @@
                                         {% for link in source_group.links %}
                                             {{ include('links/_link_row.html.twig', {
                                                 link: link,
-                                                source: link.source_id,
+                                                source_id: link.source_id,
                                                 heading_level: 4,
                                                 storing_must_mark_as_read: true,
                                             }) }}

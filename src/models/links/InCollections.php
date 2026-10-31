@@ -4,7 +4,10 @@ namespace App\models\links;
 
 use App\models\Collection;
 use App\models\CollectionShare;
+use App\models\Feed;
+use App\models\LinkList;
 use App\models\LinkToCollection;
+use App\models\Source;
 use App\models\User;
 use App\utils\Belt;
 use Minz\Database;
@@ -133,13 +136,13 @@ trait InCollections
     /**
      * Return the source of the link.
      */
-    public function source(): ?Collection
+    public function source(): ?Source
     {
-        return $this->memoize('source', function (): ?Collection {
+        return $this->memoize('source', function (): ?Source {
             if (!$this->source_id) {
                 return null;
             }
-            return Collection::find($this->source_id);
+            return Source::find($this->source_id);
         });
     }
 
@@ -149,7 +152,7 @@ trait InCollections
      * The source is memoized so it doesn't have to be loaded from the database
      * by source().
      */
-    public function setSource(?Collection $source): void
+    public function setSource(?Source $source): void
     {
         $this->setSourceId($source?->id);
         $this->memoizeValue('source', $source);
@@ -171,7 +174,7 @@ trait InCollections
      *
      * @see Preloader
      */
-    public function preloadSource(?Collection $source): void
+    public function preloadSource(?Source $source): void
     {
         $this->memoizeValue('source', $source);
     }
@@ -242,7 +245,7 @@ trait InCollections
      * @return self[]
      */
     public static function listComputedByCollection(
-        Collection $collection,
+        LinkList $link_list,
         array $selected_computed_props,
         array $options = [],
     ): array {
@@ -256,7 +259,7 @@ trait InCollections
         $options = array_merge($default_options, $options);
 
         $parameters = [
-            ':collection_id' => $collection->id,
+            ':collection_id' => $link_list->id,
             ':offset' => $options['offset'],
         ];
 
@@ -334,7 +337,7 @@ trait InCollections
      * - since (default to null), counts links that have been added since the
      *   given date only
      */
-    public static function countByCollection(Collection $collection, array $options = []): int
+    public static function countByCollection(LinkList $link_list, array $options = []): int
     {
         $default_options = [
             'hidden' => true,
@@ -343,14 +346,14 @@ trait InCollections
         $options = array_merge($default_options, $options);
 
         $parameters = [
-            ':collection_id' => $collection->id,
+            ':collection_id' => $link_list->id,
         ];
 
         $visibility_join_clause = '';
         $visibility_clause = '';
         // The links of the feeds are never hidden, so no need to check their
         // visibility, allowing to avoid joining the links table.
-        if (!$options['hidden'] && $collection->type !== 'feed') {
+        if (!$options['hidden'] && !($link_list instanceof Feed)) {
             $visibility_join_clause = 'INNER JOIN links l ON l.id = lc.link_id';
             $visibility_clause = 'AND l.is_hidden = false';
         }
@@ -420,7 +423,7 @@ trait InCollections
      * Return the oldest publication date in the collection since the given date.
      */
     public static function getOldestPublicationDateSince(
-        Collection $collection,
+        Source $source,
         \DateTimeImmutable $since
     ): ?\DateTimeImmutable {
         $sql = <<<SQL
@@ -437,7 +440,7 @@ trait InCollections
         $database = Database::get();
         $statement = $database->prepare($sql);
         $statement->execute([
-            ':collection_id' => $collection->id,
+            ':collection_id' => $source->id,
             ':since' => $since->format(Database\Column::DATETIME_FORMAT),
         ]);
 
@@ -470,7 +473,7 @@ trait InCollections
      * @return array<string, string>
      */
     public static function listUrlsToIdsByCollection(
-        Collection $collection,
+        Source $source,
         array $urls,
         int $chunk_size = 500,
     ): array {
@@ -490,7 +493,7 @@ trait InCollections
 
             $database = Database::get();
             $statement = $database->prepare($sql);
-            $statement->execute([$collection->id, ...$chunk_url_hashes]);
+            $statement->execute([$source->id, ...$chunk_url_hashes]);
 
             $link_ids_by_urls += $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
         }
@@ -512,7 +515,7 @@ trait InCollections
      * }>
      */
     public static function listEntryIdsToUrlsByCollection(
-        Collection $collection,
+        Source $source,
         array $feed_entry_ids,
         int $chunk_size = 500,
     ): array {
@@ -536,7 +539,7 @@ trait InCollections
 
             $database = Database::get();
             $statement = $database->prepare($sql);
-            $statement->execute([$collection->id, ...$chunk_feed_entry_ids]);
+            $statement->execute([$source->id, ...$chunk_feed_entry_ids]);
 
             $link_urls_by_entry_ids += $statement->fetchAll(\PDO::FETCH_UNIQUE);
         }

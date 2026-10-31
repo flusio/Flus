@@ -1,0 +1,48 @@
+<div
+    class="collection"
+    style="background-image: url('{{ url_media('covers', feed.imageFilenameByUser(app.user), 'collection-card.png') }}');"
+    data-color-scheme="dark"
+>
+    <a class="collection__body collection__body--large flow" href="{{ url('source', { id: feed.id }) }}">
+        <div class="collection__title">
+            {{ feed.nameByUser(app.user) }}
+        </div>
+
+        <div class="flow flow--small">
+            <p class="text--oneline">
+                {% set feed_label = t('Feed %s', [feed.feedWebsiteHost]) %}
+
+                {% if feed.number_links === 0 %}
+                    {% set number_links = t('no links') %}
+                {% else %}
+                    {% set number_links = t('%s link', '%s links', feed.number_links, [feed.number_links | format_number]) %}
+                {% endif %}
+
+                <span class="text--ellipsis">{{ feed_label }}</span>&nbsp;·&nbsp;{{ number_links }}
+            </p>
+
+            <p title="{{ t('Publication frequency') }}">
+                {{ icon('frequency') }}
+                {{ feed.publication_frequency_per_year | format_publication_frequency }}
+            </p>
+        </div>
+    </a>
+
+    <div class="collection__footer">
+        {% if app.user.isFollowing(feed) %}
+            {{ include('sources/_unfollow_form.html.twig', {
+                source: feed,
+                button_class: 'button--big',
+                preserve_scroll: true,
+            }) }}
+        {% else %}
+            <form data-turbo-preserve-scroll method="post" action="{{ url('follow source', { id: feed.id }) }}">
+                <button class="button--big">
+                    {{ t('Follow') }}
+                </button>
+
+                <input type="hidden" name="csrf_token" value="{{ csrf_token('sources\\Follow') }}" />
+            </form>
+        {% endif %}
+    </div>
+</div>

@@ -1,6 +1,6 @@
 {# A compact representation of a link, displayed as a row.
  #
- # The `source` is the id of the collection from which the link is displayed.
+ # The `source_id` is the id of the collection from which the link is displayed.
  # It is passed to the actions that can copy the link to the user, so they can
  # set its origin.
  #
@@ -9,7 +9,7 @@
  #
  # `storing_must_mark_as_read` tells the collections modal to mark the link as
  # read once it is stored. #}
-{% set source = source ?? '' %}
+{% set source_id = source_id ?? '' %}
 {% set heading_level = heading_level ?? 3 %}
 {% set storing_must_mark_as_read = storing_must_mark_as_read ?? false %}
 
@@ -150,8 +150,8 @@
                     </span>
                 </button>
 
-                {% if source %}
-                    <input type="hidden" name="source" value="{{ source }}" />
+                {% if source_id %}
+                    <input type="hidden" name="source" value="{{ source_id }}" />
                 {% endif %}
 
                 <input type="hidden" name="csrf_token" value="{{ csrf_token('links\\MarkLinkAsRead') }}" />
@@ -167,8 +167,8 @@
                     </span>
                 </button>
 
-                {% if source %}
-                    <input type="hidden" name="source" value="{{ source }}" />
+                {% if source_id %}
+                    <input type="hidden" name="source" value="{{ source_id }}" />
                 {% endif %}
 
                 <input type="hidden" name="csrf_token" value="{{ csrf_token('links\\MarkLinkAsReadLater') }}" />
@@ -178,7 +178,7 @@
         {% if display_collections %}
             {{ include('links/_collections_button.html.twig', {
                 link: link,
-                source: source,
+                source_id: source_id,
                 mark_as_read: storing_must_mark_as_read,
             }) }}
         {% endif %}

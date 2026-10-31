@@ -4,7 +4,7 @@ namespace App\controllers\links;
 
 use App\forms;
 use App\models;
-use tests\factories\CollectionFactory;
+use tests\factories\FeedFactory;
 use tests\factories\LinkFactory;
 
 class SearchesTest extends \PHPUnit\Framework\TestCase
@@ -64,9 +64,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $name = $this->fake('sentence');
         /** @var string */
         $feed_url = $this->fake('url');
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
-            'user_id' => null,
+        $feed = FeedFactory::create([
             'is_public' => true,
             'name' => $name,
             'feed_url' => $feed_url,
@@ -130,21 +128,20 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
         $this->mockHttpWithFixture($url_feed, 'responses/flus.fr_carnet_feeds_all.atom.xml');
 
-        $this->assertSame(0, models\Collection::count());
+        $this->assertSame(0, models\Feed::count());
 
         $response = $this->appRun('POST', '/links/search', [
             'csrf_token' => $this->csrfToken(forms\Search::class),
             'url' => $url,
         ]);
 
-        $this->assertSame(1, models\Collection::count());
-        $collection = models\Collection::findBy(['feed_url' => $url_feed]);
-        $this->assertNotNull($collection);
-        $this->assertNull($collection->user_id);
-        $this->assertSame('feed', $collection->type);
-        $this->assertSame('Carnet de Flus', $collection->name);
-        $this->assertSame(200, $collection->feed_fetched_code);
-        $this->assertTrue($collection->is_public);
+        $this->assertSame(1, models\Feed::count());
+        $feed = models\Feed::findBy(['feed_url' => $url_feed]);
+        $this->assertNotNull($feed);
+        $this->assertSame('feed', $feed->type);
+        $this->assertSame('Carnet de Flus', $feed->name);
+        $this->assertSame(200, $feed->feed_fetched_code);
+        $this->assertTrue($feed->is_public);
     }
 
     public function testCreateHandlesFeedUrl(): void
@@ -163,13 +160,12 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($user->id, $link->user_id);
         $this->assertSame($url, $link->title);
         $this->assertSame([$url], $link->url_feeds);
-        $collection = models\Collection::findBy(['feed_url' => $url]);
-        $this->assertNotNull($collection);
-        $this->assertNull($collection->user_id);
-        $this->assertSame('feed', $collection->type);
-        $this->assertSame('Carnet de Flus', $collection->name);
-        $this->assertSame(200, $collection->feed_fetched_code);
-        $this->assertTrue($collection->is_public);
+        $feed = models\Feed::findBy(['feed_url' => $url]);
+        $this->assertNotNull($feed);
+        $this->assertSame('feed', $feed->type);
+        $this->assertSame('Carnet de Flus', $feed->name);
+        $this->assertSame(200, $feed->feed_fetched_code);
+        $this->assertTrue($feed->is_public);
     }
 
     public function testCreateDiscoversYoutubePlaylistFeed(): void
@@ -195,12 +191,12 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
 
-        $collection = models\Collection::take();
-        $this->assertNotNull($collection);
-        $this->assertSame(200, $collection->feed_fetched_code);
+        $feed = models\Feed::take();
+        $this->assertNotNull($feed);
+        $this->assertSame(200, $feed->feed_fetched_code);
         $this->assertSame(
             'https://www.youtube.com/feeds/videos.xml?playlist_id=PLdhqndoLhA_7mQKanRpMGscqEgejpEWaJ',
-            $collection->feed_url
+            $feed->feed_url
         );
     }
 

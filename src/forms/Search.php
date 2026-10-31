@@ -51,7 +51,7 @@ class Search extends BaseForm
     }
 
     /**
-     * @return models\Collection[]
+     * @return models\Feed[]
      */
     public function existingFeeds(): array
     {
@@ -60,10 +60,7 @@ class Search extends BaseForm
             $feeds = [];
 
             if ($link) {
-                $link_feeds = models\Collection::listComputedFeedsByFeedUrls(
-                    $link->url_feeds,
-                    ['number_links']
-                );
+                $link_feeds = models\Feed::listComputedByFeedUrls($link->url_feeds);
 
                 // Deduplicate feeds with same names
                 foreach ($link_feeds as $feed) {
@@ -78,7 +75,7 @@ class Search extends BaseForm
     }
 
     /**
-     * @return models\Collection[]
+     * @return models\Feed[]
      */
     public function feeds(): array
     {
@@ -87,7 +84,7 @@ class Search extends BaseForm
             $feeds = [];
 
             foreach ($link->url_feeds as $feed_url) {
-                $feeds[] = models\Collection::findOrBuildFeed($feed_url);
+                $feeds[] = models\Feed::findOrBuildByUrl($feed_url);
             }
 
             return $feeds;

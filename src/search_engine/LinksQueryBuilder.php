@@ -58,7 +58,7 @@ class LinksQueryBuilder extends QueryBuilder
      *     The alias given to the searched table in the request.
      * @param literal-string $date_field
      *     The field searched with the "date" qualifier.
-     * @param models\Collection[] $sources
+     * @param models\Source[] $sources
      *     The sources in which the links can be searched with the "source"
      *     qualifier.
      * @param ?models\User $context_user

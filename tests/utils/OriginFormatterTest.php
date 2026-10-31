@@ -28,11 +28,10 @@ class OriginFormatterTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create();
         $collection = CollectionFactory::create([
             'name' => 'My collection',
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $formatter = new OriginFormatter($user);
-        $origin = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
+        $origin = \Minz\Url::absoluteFor('source', ['id' => $collection->id]);
 
         $label = $formatter->labelFromOrigin($origin);
 
@@ -44,11 +43,10 @@ class OriginFormatterTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create();
         $collection = CollectionFactory::create([
             'name' => 'My collection',
-            'type' => 'collection',
             'is_public' => false,
         ]);
         $formatter = new OriginFormatter($user);
-        $origin = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
+        $origin = \Minz\Url::absoluteFor('source', ['id' => $collection->id]);
 
         $label = $formatter->labelFromOrigin($origin);
 
@@ -127,11 +125,10 @@ class OriginFormatterTest extends \PHPUnit\Framework\TestCase
         $owner = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $owner->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $formatter = new OriginFormatter($user);
-        $origin = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
+        $origin = \Minz\Url::absoluteFor('source', ['id' => $collection->id]);
 
         $collection_owner = $formatter->ownerFromOrigin($origin);
 
@@ -144,11 +141,10 @@ class OriginFormatterTest extends \PHPUnit\Framework\TestCase
         $owner = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $owner->id,
-            'type' => 'collection',
             'is_public' => false,
         ]);
         $formatter = new OriginFormatter($user);
-        $origin = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
+        $origin = \Minz\Url::absoluteFor('source', ['id' => $collection->id]);
 
         $collection_owner = $formatter->ownerFromOrigin($origin);
 
@@ -214,10 +210,9 @@ class OriginFormatterTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'user_id' => $owner->id,
             'name' => 'My collection',
-            'type' => 'collection',
             'is_public' => true,
         ]);
-        $origin = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
+        $origin = \Minz\Url::absoluteFor('source', ['id' => $collection->id]);
         // Two links share the same origin: it must be loaded once for both.
         $link_1 = LinkFactory::create(['origin' => $origin]);
         $link_2 = LinkFactory::create(['origin' => $origin]);
@@ -273,10 +268,9 @@ class OriginFormatterTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'user_id' => $owner->id,
             'name' => 'My collection',
-            'type' => 'collection',
             'is_public' => false,
         ]);
-        $origin = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
+        $origin = \Minz\Url::absoluteFor('source', ['id' => $collection->id]);
         $link = LinkFactory::create(['origin' => $origin]);
         $formatter = new OriginFormatter($user);
 

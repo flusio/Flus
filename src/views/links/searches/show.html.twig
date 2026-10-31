@@ -83,8 +83,8 @@
             }) }}
 
             {% for feed in feeds %}
-                {{ include('collections/_collection_follow.html.twig', {
-                    collection: feed,
+                {{ include('feeds/_feed_follow.html.twig', {
+                    feed: feed,
                 }) }}
             {% endfor %}
         </div>

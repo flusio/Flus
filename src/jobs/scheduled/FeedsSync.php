@@ -57,21 +57,21 @@ class FeedsSync extends \Minz\Job
         $feed_fetcher_service = new services\FeedFetcher();
 
         $serie = $this->currentSerie();
-        $collections = models\Collection::listFeedsToFetch(max: 25, serie: $serie);
+        $feeds = models\Feed::listToFetch(max: 25, serie: $serie);
 
-        foreach ($collections as $collection) {
-            $has_lock = $collection->lock();
+        foreach ($feeds as $feed) {
+            $has_lock = $feed->lock();
             if (!$has_lock) {
                 continue;
             }
 
             try {
-                $feed_fetcher_service->fetch($collection);
+                $feed_fetcher_service->fetch($feed);
             } catch (\Exception $e) {
-                \Minz\Log::error("Error while syncing feed {$collection->id}: {$e->getMessage()}");
+                \Minz\Log::error("Error while syncing feed {$feed->id}: {$e->getMessage()}");
             }
 
-            $collection->unlock();
+            $feed->unlock();
         }
     }
 }

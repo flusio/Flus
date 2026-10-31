@@ -5,6 +5,7 @@ namespace App\services;
 use App\utils;
 use tests\factories\CollectionFactory;
 use tests\factories\CollectionToTopicFactory;
+use tests\factories\FeedFactory;
 use tests\factories\GroupFactory;
 use tests\factories\LinkFactory;
 use tests\factories\NoteFactory;
@@ -107,24 +108,21 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $collection_1 = CollectionFactory::create([
-            'type' => 'collection',
             'name' => 'A collection',
             'is_public' => true,
         ]);
-        $collection_2 = CollectionFactory::create([
-            'type' => 'feed',
+        $feed_2 = FeedFactory::create([
             'name' => 'B feed',
             'is_public' => true,
             'feed_url' => $feed_url,
             'feed_site_url' => $feed_site_url,
         ]);
         $collection_3 = CollectionFactory::create([
-            'type' => 'collection',
             'name' => 'C collection',
             'is_public' => true,
         ]);
         $user->follow($collection_1, time_filter: 'all');
-        $user->follow($collection_2, time_filter: 'strict');
+        $user->follow($feed_2, time_filter: 'strict');
         $user->follow($collection_3);
         $stream->addSource($collection_3);
 
@@ -134,11 +132,11 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $opml = \SpiderBits\Opml::fromText($opml_content);
         $this->assertSame(3, count($opml->outlines));
 
-        $collection_1_url_feed = \Minz\Url::absoluteFor('collection feed', [
+        $collection_1_url_feed = \Minz\Url::absoluteFor('source feed', [
             'id' => $collection_1->id,
             'direct' => 'true',
         ]);
-        $collection_1_url = \Minz\Url::absoluteFor('collection', ['id' => $collection_1->id]);
+        $collection_1_url = \Minz\Url::absoluteFor('source', ['id' => $collection_1->id]);
         $this->assertSame($collection_1_url_feed, $opml->outlines[0]['xmlUrl']);
         $this->assertSame($collection_1_url, $opml->outlines[0]['htmlUrl']);
         $this->assertSame('/Flus/filters/all', $opml->outlines[0]['category']);
@@ -151,11 +149,11 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $this->assertIsArray($opml->outlines[2]['outlines']);
         $this->assertSame(1, count($opml->outlines[2]['outlines']));
 
-        $collection_3_url_feed = \Minz\Url::absoluteFor('collection feed', [
+        $collection_3_url_feed = \Minz\Url::absoluteFor('source feed', [
             'id' => $collection_3->id,
             'direct' => 'true',
         ]);
-        $collection_3_url = \Minz\Url::absoluteFor('collection', ['id' => $collection_3->id]);
+        $collection_3_url = \Minz\Url::absoluteFor('source', ['id' => $collection_3->id]);
         $stream_outlines = $opml->outlines[2]['outlines'];
         $this->assertIsArray($stream_outlines[0]);
         $this->assertSame($collection_3_url_feed, $stream_outlines[0]['xmlUrl']);
@@ -166,12 +164,11 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
     {
         $data_exporter = new DataExporter($this->exportations_path);
         $user = UserFactory::create();
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'name' => 'Carnet de Flus',
             'is_public' => true,
         ]);
-        $followed_collection = $user->follow($collection);
+        $followed_collection = $user->follow($feed);
         $followed_collection->name = 'Flus news';
         $followed_collection->save();
 
@@ -197,13 +194,12 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
             'name' => 'B stream',
             'user_id' => $user->id,
         ]);
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'is_public' => true,
             'feed_url' => $feed_url,
         ]);
-        $stream_1->addSource($collection);
-        $stream_2->addSource($collection);
+        $stream_1->addSource($feed);
+        $stream_2->addSource($feed);
 
         $filepath = $data_exporter->export($user->id);
 
@@ -312,18 +308,16 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
             'display_unread_in_sidenav' => false,
         ]);
         $collection_1 = CollectionFactory::create([
-            'type' => 'collection',
             'name' => 'A collection',
             'is_public' => true,
         ]);
-        $collection_2 = CollectionFactory::create([
-            'type' => 'feed',
+        $feed_2 = FeedFactory::create([
             'name' => 'B feed',
             'is_public' => true,
             'feed_url' => $feed_url,
         ]);
         $stream->addSource($collection_1);
-        $stream->addSource($collection_2);
+        $stream->addSource($feed_2);
         ViewFactory::create([
             'user_id' => $user->id,
             'stream_id' => $stream->id,
@@ -342,7 +336,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($stream_description, $stream_json['description']);
         $this->assertTrue($stream_json['is_public']);
         $this->assertFalse($stream_json['display_unread_in_sidenav']);
-        $collection_1_url_feed = \Minz\Url::absoluteFor('collection feed', [
+        $collection_1_url_feed = \Minz\Url::absoluteFor('source feed', [
             'id' => $collection_1->id,
             'direct' => 'true',
         ]);
@@ -385,7 +379,6 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
             'name' => $collection_name,
             'description' => $collection_description,
             'is_public' => true,
@@ -408,7 +401,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $feed = \SpiderBits\feeds\Feed::fromText($feed_content);
         $this->assertSame($collection_name, $feed->title);
         $this->assertSame($collection_description, $feed->description);
-        $this->assertSame(\Minz\Url::absoluteFor('collection', ['id' => $collection->id]), $feed->link);
+        $this->assertSame(\Minz\Url::absoluteFor('source', ['id' => $collection->id]), $feed->link);
         $this->assertSame(4, count($feed->categories));
         $this->assertSame($topic_label, $feed->categories[$topic_label]);
         $this->assertSame('Flus:public', $feed->categories['Flus:public']);

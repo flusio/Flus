@@ -46,10 +46,10 @@ class OpmlImportator
     {
         $feed_urls_by_streams = $this->loadUrlsFromOutlines($this->opml->outlines, '');
 
-        $collection_ids_by_feed_urls = models\Collection::listFeedUrlsToIds();
-        $collections_to_create = [];
+        $feed_ids_by_feed_urls = models\Feed::listFeedUrlsToIds();
+        $feeds_to_create = [];
         $followed_collections_to_create = [];
-        $collection_ids_by_streams = [];
+        $feed_ids_by_streams = [];
 
         foreach ($feed_urls_by_streams as $stream_name => $feed_urls) {
             $stream_id = null;
@@ -71,30 +71,30 @@ class OpmlImportator
             foreach ($feed_urls as $feed_url) {
                 $feed_url = \SpiderBits\Url::sanitize($feed_url);
 
-                if (isset($collection_ids_by_feed_urls[$feed_url])) {
-                    $collection_id = $collection_ids_by_feed_urls[$feed_url];
+                if (isset($feed_ids_by_feed_urls[$feed_url])) {
+                    $feed_id = $feed_ids_by_feed_urls[$feed_url];
                 } else {
-                    $collection = models\Collection::initFeed($feed_url);
-                    $collection->created_at = \Minz\Time::now();
+                    $feed = models\Feed::init($feed_url);
+                    $feed->created_at = \Minz\Time::now();
 
-                    $collections_to_create[] = $collection;
+                    $feeds_to_create[] = $feed;
 
-                    $collection_ids_by_feed_urls[$feed_url] = $collection->id;
-                    $collection_id = $collection->id;
+                    $feed_ids_by_feed_urls[$feed_url] = $feed->id;
+                    $feed_id = $feed->id;
                 }
 
-                $followed_collection = new models\FollowedCollection($user->id, $collection_id);
+                $followed_collection = new models\FollowedCollection($user->id, $feed_id);
                 $followed_collection->created_at = \Minz\Time::now();
 
                 $followed_collections_to_create[] = $followed_collection;
 
                 if ($stream_id) {
-                    $collection_ids_by_streams[$stream_id][] = $collection_id;
+                    $feed_ids_by_streams[$stream_id][] = $feed_id;
                 }
             }
         }
 
-        models\Collection::bulkInsert($collections_to_create);
+        models\Feed::bulkInsert($feeds_to_create);
         models\FollowedCollection::bulkInsert($followed_collections_to_create);
 
         // Now, create the associated streams. Streams depend on
@@ -104,14 +104,14 @@ class OpmlImportator
 
         $streams_to_follows_to_create = [];
 
-        foreach ($collection_ids_by_streams as $stream_id => $collection_ids) {
-            foreach ($collection_ids as $collection_id) {
-                $follow = $follows_by_collection_ids[$collection_id] ?? null;
+        foreach ($feed_ids_by_streams as $stream_id => $feed_ids) {
+            foreach ($feed_ids as $feed_id) {
+                $follow = $follows_by_collection_ids[$feed_id] ?? null;
 
                 if (!$follow) {
                     // This should not happen as we created the follows via
                     // $followed_collections_to_create, which is always
-                    // populated when we populate $collection_ids_by_streams.
+                    // populated when we populate $feed_ids_by_streams.
                     // Anyway, better be sure that it doesn't fail.
                     continue;
                 }

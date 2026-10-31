@@ -6,6 +6,7 @@ use App\forms;
 use App\models;
 use App\utils;
 use tests\factories\CollectionFactory;
+use tests\factories\FeedFactory;
 use tests\factories\LinkFactory;
 use tests\factories\StreamFactory;
 use tests\factories\UserFactory;
@@ -142,12 +143,11 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         /** @var string */
         $link_title = $this->fake('words', 3, true);
-        $feed = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
-            'user_id' => $feed->user_id,
+            'user_id' => null,
             'title' => $link_title,
             'is_hidden' => false,
         ]);
@@ -172,14 +172,13 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
         $owner = UserFactory::create();
         /** @var string */
         $feed_url = $this->fake('url');
-        $feed = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'name' => 'Carnet de Flus',
             'is_public' => true,
             'feed_url' => $feed_url,
         ]);
         $link = LinkFactory::create([
-            'user_id' => $feed->user_id,
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $feed->addLinks([$link], at: \Minz\Time::now());
@@ -209,12 +208,11 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         /** @var string */
         $link_title = $this->fake('words', 3, true);
-        $feed = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
-            'user_id' => $feed->user_id,
+            'user_id' => null,
             'title' => $link_title,
             'is_hidden' => false,
         ]);
@@ -241,15 +239,14 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         foreach (range(1, 3) as $index_source) {
-            $feed = CollectionFactory::create([
-                'type' => 'feed',
+            $feed = FeedFactory::create([
                 'is_public' => true,
             ]);
             $links = [];
 
             foreach (range(1, 10) as $index_link) {
                 $links[] = LinkFactory::create([
-                    'user_id' => $feed->user_id,
+                    'user_id' => null,
                     'is_hidden' => false,
                 ]);
             }
@@ -281,12 +278,11 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         /** @var string */
         $link_title = $this->fake('words', 3, true);
-        $feed = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
-            'user_id' => $feed->user_id,
+            'user_id' => null,
             'title' => $link_title,
             'is_hidden' => true,
         ]);
@@ -306,12 +302,11 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         /** @var string */
         $link_title = $this->fake('words', 3, true);
-        $feed = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
-            'user_id' => $feed->user_id,
+            'user_id' => null,
             'title' => $link_title,
             'is_hidden' => false,
         ]);
@@ -333,12 +328,11 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         /** @var string */
         $link_title = $this->fake('words', 3, true);
-        $feed = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
-            'user_id' => $feed->user_id,
+            'user_id' => null,
             'title' => $link_title,
             'is_hidden' => false,
         ]);
@@ -408,12 +402,11 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         /** @var string */
         $link_title = $this->fake('words', 3, true);
-        $feed = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
-            'user_id' => $feed->user_id,
+            'user_id' => null,
             'title' => $link_title,
             'is_hidden' => false,
         ]);
@@ -436,12 +429,11 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create();
         /** @var string */
         $link_title = $this->fake('words', 3, true);
-        $feed = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
-            'user_id' => $feed->user_id,
+            'user_id' => null,
             'title' => $link_title,
             'is_hidden' => false,
         ]);
@@ -465,12 +457,11 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         /** @var string */
         $link_title = $this->fake('words', 3, true);
-        $feed = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
-            'user_id' => $feed->user_id,
+            'user_id' => null,
             'title' => $link_title,
             'is_hidden' => false,
         ]);
@@ -498,7 +489,6 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
         // The source is a private collection of the owner of the stream: the
         // user the stream is shared with cannot view it.
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $other_user->id,
             'is_public' => false,
         ]);
@@ -530,16 +520,13 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
         $link_title_2 = $this->fake('words', 3, true);
         /** @var string */
         $link_title_3 = $this->fake('words', 3, true);
-        $feed_1 = CollectionFactory::create([
-            'type' => 'feed',
+        $feed_1 = FeedFactory::create([
             'is_public' => true,
         ]);
-        $feed_2 = CollectionFactory::create([
-            'type' => 'feed',
+        $feed_2 = FeedFactory::create([
             'is_public' => true,
         ]);
-        $feed_3 = CollectionFactory::create([
-            'type' => 'feed',
+        $feed_3 = FeedFactory::create([
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
@@ -582,14 +569,12 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
         $feed_link_title = $this->fake('words', 3, true);
         /** @var string */
         $collection_link_title = $this->fake('words', 3, true);
-        $feed = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'is_public' => true,
         ]);
         // The source is a private collection of the owner of the stream: the
         // user the stream is shared with cannot view it.
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $other_user->id,
             'is_public' => false,
         ]);

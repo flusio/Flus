@@ -40,14 +40,11 @@ class FeedFetcher
     }
 
     /**
-     * Fetch a feed collection
+     * Fetch a feed
      */
-    public function fetch(models\Collection $collection): void
+    public function fetch(models\Feed $feed): void
     {
-        $feed_url = $collection->feed_url;
-        if (!$feed_url) {
-            return;
-        }
+        $feed_url = $feed->feed_url;
 
         $info = $this->fetchUrl($feed_url);
 
@@ -61,16 +58,16 @@ class FeedFetcher
         // and the feed can be in error during several days, it's important to
         // sync the frequency at the beginning of the method (and also at then
         // end, once the links have been imported).
-        $collection->syncPublicationFrequencyPerYear();
+        $feed->syncPublicationFrequencyPerYear();
 
-        $collection->feed_fetched_at = \Minz\Time::now();
-        $collection->feed_fetched_next_at = $this->calculateNextFetchedAt($collection);
-        $collection->feed_fetched_code = $info['status'];
-        $collection->feed_fetched_error = null;
+        $feed->feed_fetched_at = \Minz\Time::now();
+        $feed->feed_fetched_next_at = $this->calculateNextFetchedAt($feed);
+        $feed->feed_fetched_code = $info['status'];
+        $feed->feed_fetched_error = null;
 
         if (isset($info['error'])) {
-            $collection->feed_fetched_error = $info['error'];
-            $collection->save();
+            $feed->feed_fetched_error = $info['error'];
+            $feed->save();
             return;
         }
 
@@ -78,46 +75,46 @@ class FeedFetcher
             return;
         }
 
-        $feed = $info['feed'];
-        $feed_hash = $feed->hash();
+        $parsed_feed = $info['feed'];
+        $feed_hash = $parsed_feed->hash();
 
-        if ($feed_hash === $collection->feed_last_hash) {
+        if ($feed_hash === $feed->feed_last_hash) {
             // The feed didn’t change, do nothing
-            $collection->save();
+            $feed->save();
             return;
         }
 
-        $collection->feed_last_hash = $feed_hash;
-        $collection->feed_type = $feed->type;
+        $feed->feed_last_hash = $feed_hash;
+        $feed->feed_type = $parsed_feed->type;
 
-        $title = utils\Belt::cut(trim($feed->title), models\Collection::NAME_MAX_LENGTH);
+        $title = utils\Belt::cut(trim($parsed_feed->title), models\Feed::NAME_MAX_LENGTH);
         if ($title) {
-            $collection->name = $title;
+            $feed->name = $title;
         }
 
-        $description = trim($feed->description);
+        $description = trim($parsed_feed->description);
         if ($description) {
-            $collection->description = $description;
+            $feed->description = $description;
         }
 
-        if ($feed->link) {
-            $feed_site_url = \SpiderBits\Url::absolutize($feed->link, $feed_url);
+        if ($parsed_feed->link) {
+            $feed_site_url = \SpiderBits\Url::absolutize($parsed_feed->link, $feed_url);
             $feed_site_url = \SpiderBits\Url::sanitize($feed_site_url);
         } else {
             $feed_site_url = $feed_url;
         }
 
-        $collection->feed_site_url = $feed_site_url;
+        $feed->feed_site_url = $feed_site_url;
 
-        $collection->save();
+        $feed->save();
 
         // Extract the URLs and the ids of the entries first, so we only load
-        // the existing links of the collection that match these entries.
+        // the existing links of the feed that match these entries.
         $entries = [];
         $urls = [];
         $feed_entry_ids = [];
 
-        foreach ($feed->entries as $entry) {
+        foreach ($parsed_feed->entries as $entry) {
             if (!$entry->link && \SpiderBits\Url::isValid($entry->id)) {
                 $entry->link = $entry->id;
             }
@@ -151,9 +148,8 @@ class FeedFetcher
         $urls = array_intersect_key($urls, $entries);
         $feed_entry_ids = array_intersect_key($feed_entry_ids, $entries);
 
-        $link_ids_by_urls = models\Link::listUrlsToIdsByCollection($collection, $urls);
-        $link_urls_by_entry_ids = models\Link::listEntryIdsToUrlsByCollection($collection, $feed_entry_ids);
-        $owner = $collection->owner();
+        $link_ids_by_urls = models\Link::listUrlsToIdsByCollection($feed, $urls);
+        $link_urls_by_entry_ids = models\Link::listEntryIdsToUrlsByCollection($feed, $feed_entry_ids);
 
         $links_to_create = [];
         $links_to_collections_to_create = [];
@@ -163,7 +159,7 @@ class FeedFetcher
             $feed_entry_id = $feed_entry_ids[$index];
 
             if (isset($link_ids_by_urls[$url])) {
-                // The URL is already associated to the collection, we have
+                // The URL is already associated to the feed, we have
                 // nothing more to do.
                 continue;
             }
@@ -196,7 +192,7 @@ class FeedFetcher
                 // we also update the publication date in case it changed
                 $link_to_collection = models\LinkToCollection::findBy([
                     'link_id' => $link_id,
-                    'collection_id' => $collection->id,
+                    'collection_id' => $feed->id,
                 ]);
                 if ($link_to_collection) {
                     models\LinkToCollection::update($link_to_collection->id, [
@@ -204,9 +200,9 @@ class FeedFetcher
                     ]);
                 }
             } else {
-                // The URL is not associated to the collection in database yet,
+                // The URL is not associated to the feed in database yet,
                 // so we create a new link.
-                $link = new models\Link($url, $owner, false);
+                $link = new models\Link($url);
                 $entry_title = trim($entry->title);
                 if ($entry_title) {
                     $link->title = $entry_title;
@@ -229,7 +225,7 @@ class FeedFetcher
                 ];
                 $link_id = $link->id;
 
-                $link_to_collection = new models\LinkToCollection($link_id, $collection->id);
+                $link_to_collection = new models\LinkToCollection($link_id, $feed->id);
                 $link_to_collection->created_at = $published_at;
                 $links_to_collections_to_create[] = $link_to_collection;
             }
@@ -239,14 +235,14 @@ class FeedFetcher
         models\Link::bulkInsert($links_to_create);
         models\LinkToCollection::bulkInsert($links_to_collections_to_create);
 
-        $collection->syncPublicationFrequencyPerYear();
+        $feed->syncPublicationFrequencyPerYear();
 
-        $collection->feed_fetched_next_at = $this->calculateNextFetchedAt($collection);
-        $collection->save();
+        $feed->feed_fetched_next_at = $this->calculateNextFetchedAt($feed);
+        $feed->save();
 
-        if (!$collection->image_fetched_at && $collection->feed_site_url) {
+        if (!$feed->image_fetched_at && $feed->feed_site_url) {
             try {
-                $response = $this->fetcher->get($collection->feed_site_url, type: 'link');
+                $response = $this->fetcher->get($feed->feed_site_url, type: 'link');
             } catch (http\FetcherError $e) {
                 return;
             }
@@ -258,8 +254,8 @@ class FeedFetcher
             /** @var string */
             $content_type = $response->header('content-type', '');
             if (!str_contains($content_type, 'text/html')) {
-                $collection->image_fetched_at = \Minz\Time::now();
-                $collection->save();
+                $feed->image_fetched_at = \Minz\Time::now();
+                $feed->save();
                 return;
             }
 
@@ -273,16 +269,16 @@ class FeedFetcher
             $url_illustration = \SpiderBits\DomExtractor::illustration($dom);
             $url_illustration = \SpiderBits\Url::sanitize($url_illustration);
             if (!$url_illustration) {
-                $collection->image_fetched_at = \Minz\Time::now();
-                $collection->save();
+                $feed->image_fetched_at = \Minz\Time::now();
+                $feed->save();
                 return;
             }
 
             $image_service = new Image();
             $image_filename = $image_service->generatePreviews($url_illustration);
-            $collection->image_filename = $image_filename;
-            $collection->image_fetched_at = \Minz\Time::now();
-            $collection->save();
+            $feed->image_filename = $image_filename;
+            $feed->image_fetched_at = \Minz\Time::now();
+            $feed->save();
         }
     }
 
@@ -422,7 +418,7 @@ class FeedFetcher
      * This minimal value is 1h in the future, and the maximal value is 24h in
      * the future.
      */
-    private function calculateNextFetchedAt(models\Collection $feed): \DateTimeImmutable
+    private function calculateNextFetchedAt(models\Feed $feed): \DateTimeImmutable
     {
         $min_minutes = 60;
         $max_minutes = 60 * 24;

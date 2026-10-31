@@ -45,7 +45,7 @@ class Collections extends BaseController
 
         $json_request = $this->toJsonRequest($request);
 
-        $collection = models\Collection::initCollection($user);
+        $collection = models\Collection::init($user);
         $form = new forms\Collection(model: $collection);
         $form->handleRequest($json_request);
 
@@ -55,39 +55,6 @@ class Collections extends BaseController
 
         $collection = $form->model();
         $collection->save();
-
-        return Response::json(200, $collection->toJson(context_user: $user));
-    }
-
-    /**
-     * @request_param string id
-     *
-     * @response 401
-     *     If the request is not correctly authenticated.
-     * @response 403
-     *     If the user cannot access the collection.
-     * @response 404
-     *     If the collection does not exist.
-     * @response 200
-     */
-    public function show(Request $request): Response
-    {
-        $user = auth\CurrentUser::require();
-
-        $collection_id = $request->parameters->getString('id', '');
-        $collection = models\Collection::find($collection_id);
-
-        if (!$collection) {
-            return Response::json(404, [
-                'error' => 'The collection does not exist.',
-            ]);
-        }
-
-        if (!auth\CollectionsAccess::canView($user, $collection)) {
-            return Response::json(403, [
-                'error' => 'You cannot access the collection.',
-            ]);
-        }
 
         return Response::json(200, $collection->toJson(context_user: $user));
     }
@@ -123,7 +90,7 @@ class Collections extends BaseController
             ]);
         }
 
-        if (!auth\CollectionsAccess::canUpdate($user, $collection)) {
+        if (!auth\Access::can($user, 'update', $collection)) {
             return Response::json(403, [
                 'error' => 'You cannot update the collection.',
             ]);
@@ -166,7 +133,7 @@ class Collections extends BaseController
             ]);
         }
 
-        if (!auth\CollectionsAccess::canDelete($user, $collection)) {
+        if (!auth\Access::can($user, 'delete', $collection)) {
             return Response::json(403, [
                 'error' => 'You cannot delete the collection.',
             ]);

@@ -5,6 +5,7 @@ namespace App\cli;
 use App\services;
 use App\utils;
 use tests\factories\CollectionFactory;
+use tests\factories\FeedFactory;
 use tests\factories\LinkFactory;
 use tests\factories\StreamFactory;
 use tests\factories\TopicFactory;
@@ -207,10 +208,8 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $image_filename = $image_service->generatePreviews($image_url);
         $subdir_name = substr($image_filename, 0, 3);
         $user = UserFactory::create();
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
-        ]);
-        $followed_collection = $user->follow($collection);
+        $feed = FeedFactory::create();
+        $followed_collection = $user->follow($feed);
         $followed_collection->image_filename = $image_filename;
         $followed_collection->save();
 

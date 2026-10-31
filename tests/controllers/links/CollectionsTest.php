@@ -6,6 +6,7 @@ use App\forms;
 use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\CollectionShareFactory;
+use tests\factories\FeedFactory;
 use tests\factories\LinkFactory;
 use tests\factories\StreamFactory;
 use tests\factories\UserFactory;
@@ -29,12 +30,10 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection_1 = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         $collection_2 = CollectionFactory::create([
             'user_id' => $user->id,
             'name' => $collection_name,
-            'type' => 'collection',
         ]);
         $collection_1->addLinks([$link]);
 
@@ -79,11 +78,9 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection_not_owned = CollectionFactory::create([
             'user_id' => $other_user->id,
-            'type' => 'collection',
         ]);
         $collection_owned = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         $collection_not_owned->addLinks([$link_not_owned]);
         $collection_owned->addLinks([$link_owned]);
@@ -130,7 +127,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         $other_link = LinkFactory::create([
             'user_id' => $other_user->id,
@@ -161,7 +157,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $owner->id,
-            'type' => 'collection',
         ]);
         $owner_link = LinkFactory::create([
             'user_id' => $owner->id,
@@ -217,7 +212,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
-            'type' => 'collection',
             'is_public' => true,
             'name' => $collection_name,
         ]);
@@ -296,11 +290,9 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection_1 = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         $collection_2 = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         $collection_1->addLinks([$link]);
 
@@ -326,7 +318,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         $journal->addLinks([$link]);
 
@@ -348,7 +339,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         /** @var string */
         $content = $this->fake('sentence');
@@ -377,7 +367,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         $content = '#foo #Bar';
 
@@ -400,7 +389,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         $user->markAsReadLater($link);
         $collection->addLinks([$link]);
@@ -430,15 +418,13 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $other_collection = CollectionFactory::create([
             'user_id' => $other_user->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $owned_collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         $other_collection->addLinks([$link]);
-        $from = \Minz\Url::for('collection', ['id' => $other_collection->id]);
+        $from = \Minz\Url::for('source', ['id' => $other_collection->id]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
@@ -457,7 +443,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $new_link = $collection_links[0];
         $this->assertSame($user->id, $new_link->user_id);
         $this->assertSame($url, $new_link->url);
-        $origin = \Minz\Url::absoluteFor('collection', ['id' => $other_collection->id]);
+        $origin = \Minz\Url::absoluteFor('source', ['id' => $other_collection->id]);
         $this->assertSame($origin, $new_link->origin);
         $this->assertFalse($other_collection->hasLink($new_link));
         $this->assertTrue($owned_collection->hasLink($new_link));
@@ -469,8 +455,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         /** @var string */
@@ -481,7 +466,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $owned_collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         $source->addLinks([$link]);
         $stream->addSource($source);
@@ -502,7 +486,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($user->id, $new_link->user_id);
         $this->assertSame($url, $new_link->url);
         $this->assertSame($source->id, $new_link->source_id);
-        $origin = \Minz\Url::absoluteFor('collection', ['id' => $source->id]);
+        $origin = \Minz\Url::absoluteFor('source', ['id' => $source->id]);
         $this->assertSame($origin, $new_link->origin);
     }
 
@@ -519,7 +503,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $other_collection = CollectionFactory::create([
             'user_id' => $other_user->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $origin = 'https://example.com';
@@ -530,10 +513,9 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $owned_collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         $other_collection->addLinks([$link]);
-        $from = \Minz\Url::for('collection', ['id' => $other_collection->id]);
+        $from = \Minz\Url::for('source', ['id' => $other_collection->id]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
@@ -609,11 +591,9 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection_1 = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         $collection_2 = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         $collection_1->addLinks([$link]);
 
@@ -637,11 +617,9 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection_1 = CollectionFactory::create([
             'user_id' => $other_user->id,
-            'type' => 'collection',
         ]);
         $collection_2 = CollectionFactory::create([
             'user_id' => $other_user->id,
-            'type' => 'collection',
         ]);
         $collection_1->addLinks([$link]);
 
@@ -664,7 +642,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
-            'type' => 'collection',
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
@@ -753,7 +730,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [

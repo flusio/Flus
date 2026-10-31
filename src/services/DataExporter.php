@@ -119,7 +119,7 @@ class DataExporter
     {
         $sources = $stream->sources(['context_user' => $user]);
 
-        $source_urls = array_map(function (models\Collection $source): string {
+        $source_urls = array_map(function (models\Source $source): string {
             return $source->feedUrl(direct: true);
         }, $sources);
 

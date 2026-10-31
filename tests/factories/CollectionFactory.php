@@ -35,10 +35,6 @@ class CollectionFactory extends Database\Factory
                 return $faker->words(3, true);
             },
 
-            'type' => function () use ($faker) {
-                return $faker->randomElement(models\Collection::VALID_TYPES);
-            },
-
             'is_public' => function () use ($faker) {
                 return $faker->boolean;
             },

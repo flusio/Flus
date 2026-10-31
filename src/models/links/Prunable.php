@@ -62,8 +62,8 @@ trait Prunable
     }
 
     /**
-     * Delete links that are attached to feeds collections according to the
-     * retention policy.
+     * Delete links that are attached to feeds according to the retention
+     * policy.
      *
      * The retention policy is defined by $keep_period (the number max of
      * months to keep links) and by $keep_maximum (no more links than this

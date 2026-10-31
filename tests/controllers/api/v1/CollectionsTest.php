@@ -2,7 +2,6 @@
 
 namespace App\controllers\api\v1;
 
-use App\auth;
 use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\GroupFactory;
@@ -22,14 +21,12 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection1 = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
             'name' => 'My favourites',
             'description' => 'My favourite links',
             'is_public' => true,
         ]);
         $collection2 = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
             'name' => 'My shares',
             'description' => 'My shared links',
             'group_id' => $group->id,
@@ -50,14 +47,12 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create();
         $collection1 = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
             'name' => 'My favourites',
             'description' => 'My favourite links',
             'is_public' => true,
         ]);
         $collection2 = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
             'name' => 'My shares',
             'description' => 'My shared links',
             'is_public' => false,
@@ -167,99 +162,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
     }
 
-    public function testShowReturnsTheCollection(): void
-    {
-        $user = $this->login();
-        $collection = CollectionFactory::create([
-            'user_id' => UserFactory::create()->id,
-            'type' => 'collection',
-            'name' => 'My shares',
-            'description' => 'My shared links',
-            'is_public' => true,
-        ]);
-
-        $response = $this->apiRun('GET', "/api/v1/collections/{$collection->id}");
-
-        $this->assertResponseCode($response, 200);
-        $this->assertApiResponse($response, $collection->toJson($user));
-    }
-
-    public function testShowReturnsTheNameGivenByTheUser(): void
-    {
-        $user = $this->login();
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
-            'name' => 'Carnet de Flus',
-            'is_public' => true,
-        ]);
-        $followed_collection = $user->follow($collection);
-        $followed_collection->name = 'Flus news';
-        $followed_collection->save();
-
-        $response = $this->apiRun('GET', "/api/v1/collections/{$collection->id}");
-
-        $this->assertResponseCode($response, 200);
-        $json = $this->responseToJson($response);
-        $this->assertSame('Flus news', $json['name']);
-    }
-
-    public function testShowFailsIfTheCollectionDoesNotExist(): void
-    {
-        $user = $this->login();
-        $collection = CollectionFactory::create([
-            'user_id' => UserFactory::create()->id,
-            'type' => 'collection',
-            'name' => 'My shares',
-            'description' => 'My shared links',
-            'is_public' => true,
-        ]);
-
-        $response = $this->apiRun('GET', '/api/v1/collections/not-an-id');
-
-        $this->assertResponseCode($response, 404);
-        $this->assertApiResponse($response, [
-            'error' => 'The collection does not exist.',
-        ]);
-    }
-
-    public function testShowFailsIfPermissionIsNotGiven(): void
-    {
-        $user = $this->login();
-        $collection = CollectionFactory::create([
-            'user_id' => UserFactory::create()->id,
-            'type' => 'collection',
-            'name' => 'My shares',
-            'description' => 'My shared links',
-            'is_public' => false,
-        ]);
-
-        $response = $this->apiRun('GET', "/api/v1/collections/{$collection->id}");
-
-        $this->assertResponseCode($response, 403);
-        $this->assertApiResponse($response, [
-            'error' => 'You cannot access the collection.',
-        ]);
-    }
-
-    public function testShowFailsIfNotConnected(): void
-    {
-        $user = UserFactory::create();
-        $collection = CollectionFactory::create([
-            'user_id' => UserFactory::create()->id,
-            'type' => 'collection',
-            'name' => 'My shares',
-            'description' => 'My shared links',
-            'is_public' => false,
-        ]);
-
-        $response = $this->apiRun('GET', "/api/v1/collections/{$collection->id}");
-
-        $this->assertResponseCode($response, 401);
-        $this->assertApiResponse($response, [
-            'error' => 'The request is not authenticated.',
-        ]);
-    }
-
     public function testUpdateUpdatesTheCollection(): void
     {
         $user = $this->login();
@@ -271,7 +173,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $new_is_public = false;
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
             'name' => $old_name,
             'description' => $old_description,
             'is_public' => $old_is_public,
@@ -302,7 +203,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $new_is_public = false;
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
             'name' => $old_name,
             'description' => $old_description,
             'is_public' => $old_is_public,
@@ -337,7 +237,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $new_is_public = false;
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
             'name' => $old_name,
             'description' => $old_description,
             'is_public' => $old_is_public,
@@ -372,7 +271,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $new_is_public = false;
         $collection = CollectionFactory::create([
             'user_id' => UserFactory::create()->id,
-            'type' => 'collection',
             'name' => $old_name,
             'description' => $old_description,
             'is_public' => $old_is_public,
@@ -405,7 +303,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $new_is_public = false;
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
             'name' => $old_name,
             'description' => $old_description,
             'is_public' => $old_is_public,
@@ -438,7 +335,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $new_is_public = false;
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
             'name' => $old_name,
             'description' => $old_description,
             'is_public' => $old_is_public,
@@ -465,7 +361,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
 
         $response = $this->apiRun('DELETE', "/api/v1/collections/{$collection->id}");
@@ -479,7 +374,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $collection = CollectionFactory::create([
             'user_id' => UserFactory::create()->id,
-            'type' => 'collection',
         ]);
 
         $response = $this->apiRun('DELETE', "/api/v1/collections/{$collection->id}");
@@ -496,7 +390,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
 
         $response = $this->apiRun('DELETE', "/api/v1/collections/not-an-id");
@@ -513,7 +406,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
 
         $response = $this->apiRun('PATCH', "/api/v1/collections/{$collection->id}");

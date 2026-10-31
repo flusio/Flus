@@ -40,7 +40,7 @@ class AtomImportator
     /**
      * Import the feed into the collection.
      */
-    public function importForCollection(models\Collection $collection): void
+    public function importForCollection(models\Source $source): void
     {
         // Extract the URLs of the entries first, so we only load the existing
         // links of the collection that match these entries.
@@ -56,8 +56,8 @@ class AtomImportator
             $urls[] = \SpiderBits\Url::sanitize($entry->link);
         }
 
-        $link_ids_by_urls = models\Link::listUrlsToIdsByCollection($collection, $urls);
-        $owner = $collection->owner();
+        $link_ids_by_urls = models\Link::listUrlsToIdsByCollection($source, $urls);
+        $owner = $source->owner();
 
         $links_to_create = [];
         $links_to_collections_to_create = [];
@@ -90,7 +90,7 @@ class AtomImportator
 
             $link_ids_by_urls[$link->url] = $link->id;
 
-            $link_to_collection = new models\LinkToCollection($link->id, $collection->id);
+            $link_to_collection = new models\LinkToCollection($link->id, $source->id);
             $link_to_collection->created_at = $published_at;
 
             $links_to_collections_to_create[] = $link_to_collection;
@@ -99,8 +99,8 @@ class AtomImportator
         models\Link::bulkInsert($links_to_create);
         models\LinkToCollection::bulkInsert($links_to_collections_to_create);
 
-        $collection->syncPublicationFrequencyPerYear();
-        $collection->save();
+        $source->syncPublicationFrequencyPerYear();
+        $source->save();
     }
 
     /**

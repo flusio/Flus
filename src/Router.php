@@ -125,47 +125,47 @@ class Router
         $router->addRoute('GET', '/collections/new', 'Collections#new', 'new collection');
         $router->addRoute('POST', '/collections/new', 'Collections#create', 'create collection');
         $router->addRoute('GET', '/collections/discover', 'collections/Discovery#show', 'discover collections');
-        $router->addRoute('GET', '/collections/:id', 'Collections#show', 'collection');
+        $router->addRoute('GET', '/collections/:id', 'Sources#show', 'source');
         $router->addRoute('GET', '/collections/:id/links/new', 'collections/Links#new', 'new collection link');
         $router->addRoute('POST', '/collections/:id/links/new', 'collections/Links#create', 'create collection link');
-        $router->addRoute('GET', '/collections/:id/feed.atom.xml', 'collections/Feeds#show', 'collection feed');
-        $router->addRoute('GET', '/collections/:id/feed', 'collections/Feeds#alias');
+        $router->addRoute('GET', '/collections/:id/feed.atom.xml', 'sources/Feeds#show', 'source feed');
+        $router->addRoute('GET', '/collections/:id/feed', 'sources/Feeds#alias');
         $router->addRoute('GET', '/collections/:id/edit', 'Collections#edit', 'edit collection');
         $router->addRoute('POST', '/collections/:id/edit', 'Collections#update', 'update collection');
         $router->addRoute('POST', '/collections/:id/delete', 'Collections#delete', 'delete collection');
-        $router->addRoute('POST', '/collections/:id/follow', 'collections/Followers#create', 'follow collection');
-        $router->addRoute('POST', '/collections/:id/unfollow', 'collections/Followers#delete', 'unfollow collection');
+        $router->addRoute('POST', '/collections/:id/follow', 'sources/Follows#create', 'follow source');
+        $router->addRoute('POST', '/collections/:id/unfollow', 'sources/Follows#delete', 'unfollow source');
         $router->addRoute(
             'GET',
             '/collections/:id/follow/edit',
-            'collections/Followers#edit',
-            'edit collection follow'
+            'sources/Follows#edit',
+            'edit source follow'
         );
         $router->addRoute(
             'POST',
             '/collections/:id/follow/edit',
-            'collections/Followers#update',
-            'update collection follow'
+            'sources/Follows#update',
+            'update source follow'
         );
         $router->addRoute(
             'GET',
             '/collections/:id/follow/image',
-            'collections/followers/Images#edit',
-            'edit collection follow image'
+            'sources/follows/Images#edit',
+            'edit source follow image'
         );
         $router->addRoute(
             'POST',
             '/collections/:id/follow/image',
-            'collections/followers/Images#update',
-            'update collection follow image'
+            'sources/follows/Images#update',
+            'update source follow image'
         );
         $router->addRoute('GET', '/collections/:id/group', 'collections/Groups#edit', 'edit group collection');
         $router->addRoute('POST', '/collections/:id/group', 'collections/Groups#update', 'update group collection');
         $router->addRoute('GET', '/collections/:id/image', 'collections/Images#edit', 'edit image collection');
         $router->addRoute('POST', '/collections/:id/image', 'collections/Images#update', 'update image collection');
-        $router->addRoute('POST', '/collections/:id/read', 'collections/Read#create', 'mark collection as read');
-        $router->addRoute('POST', '/collections/:id/read/later', 'collections/Read#later', 'read collection later');
-        $router->addRoute('POST', '/collections/:id/dismiss', 'collections/Read#dismiss', 'dismiss collection');
+        $router->addRoute('POST', '/collections/:id/read', 'link_lists/Read#create', 'mark link list as read');
+        $router->addRoute('POST', '/collections/:id/read/later', 'link_lists/Read#later', 'read link list later');
+        $router->addRoute('POST', '/collections/:id/dismiss', 'link_lists/Read#dismiss', 'dismiss link list');
         $router->addRoute('GET', '/collections/:id/share', 'collections/Shares#index', 'collection shares');
         $router->addRoute('POST', '/collections/:id/share', 'collections/Shares#create', 'share collection');
         $router->addRoute('POST', '/collections/:id/unshare', 'collections/Shares#delete', 'unshare collection');
@@ -243,11 +243,11 @@ class Router
         $router->addRoute('GET', '/sources/opml.xml', 'sources/Opml#show', 'sources opml');
         $router->addRoute('POST', '/sources/opml', 'sources/Opml#import', 'import sources opml');
         $router->addRoute('GET', '/opml', 'sources/Opml#alias');
-        $router->addRoute('POST', '/sources/unfollow', 'sources/Follows#delete', 'unfollow sources');
+        $router->addRoute('POST', '/sources/unfollow', 'sources/Follows#deleteSelected', 'unfollow sources');
         $router->addRoute(
             'POST',
             '/sources/time-filter',
-            'sources/Follows#updateTimeFilter',
+            'sources/Follows#updateSelectedTimeFilter',
             'update sources time filter',
         );
 
@@ -326,11 +326,11 @@ class Router
 
         $router->addRoute('GET', '/api/v1/collections', 'api/v1/Collections#index');
         $router->addRoute('POST', '/api/v1/collections', 'api/v1/Collections#create');
-        $router->addRoute('GET', '/api/v1/collections/:id', 'api/v1/Collections#show');
+        $router->addRoute('GET', '/api/v1/collections/:id', 'api/v1/Sources#show');
         $router->addRoute('PATCH', '/api/v1/collections/:id', 'api/v1/Collections#update');
         $router->addRoute('DELETE', '/api/v1/collections/:id', 'api/v1/Collections#delete');
-        $router->addRoute('POST', '/api/v1/collections/:id/follow', 'api/v1/collections/Follow#create');
-        $router->addRoute('DELETE', '/api/v1/collections/:id/follow', 'api/v1/collections/Follow#delete');
+        $router->addRoute('POST', '/api/v1/collections/:id/follow', 'api/v1/sources/Follow#create');
+        $router->addRoute('DELETE', '/api/v1/collections/:id/follow', 'api/v1/sources/Follow#delete');
         $router->addRoute('POST', '/api/v1/search', 'api/v1/Searches#create');
         $router->addRoute('GET', '/api/v1/journal', 'api/v1/Journal#show');
         $router->addRoute('POST', '/api/v1/journal', 'api/v1/Journal#create');

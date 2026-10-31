@@ -18,7 +18,7 @@
  # the actions that can copy the link to the user, so they can set its origin.
  # It must only be set when the collection is the one from which the user
  # discovers the link (e.g. a source in a stream). #}
-{% set source = source ?? '' %}
+{% set source_id = source_id ?? '' %}
 
 {% set tag_filter_mode = tag_filter_mode ?? 'profile filter' %}
 
@@ -301,8 +301,8 @@
                         </span>
                     </button>
 
-                    {% if source %}
-                        <input type="hidden" name="source" value="{{ source }}" />
+                    {% if source_id %}
+                        <input type="hidden" name="source" value="{{ source_id }}" />
                     {% endif %}
 
                     <input type="hidden" name="csrf_token" value="{{ csrf_token('links\\MarkLinkAsRead') }}" />
@@ -331,8 +331,8 @@
                         </span>
                     </button>
 
-                    {% if source %}
-                        <input type="hidden" name="source" value="{{ source }}" />
+                    {% if source_id %}
+                        <input type="hidden" name="source" value="{{ source_id }}" />
                     {% endif %}
 
                     <input type="hidden" name="csrf_token" value="{{ csrf_token('links\\MarkLinkAsReadLater') }}" />
@@ -342,7 +342,7 @@
             {% if display_collections %}
                 {{ include('links/_collections_button.html.twig', {
                     link: link,
-                    source: source,
+                    source_id: source_id,
                     mark_as_read: storing_must_mark_as_read,
                 }) }}
             {% endif %}

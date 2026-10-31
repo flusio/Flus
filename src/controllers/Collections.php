@@ -88,74 +88,7 @@ class Collections extends BaseController
 
         $collection->setTopics($form->selectedTopics());
 
-        return Response::redirect('collection', ['id' => $collection->id]);
-    }
-
-    /**
-     * Show a collection page.
-     *
-     * @request_param string id
-     * @request_param integer page
-     *
-     * @response 404
-     *     If the requested page is out of bound.
-     * @response 200
-     *     On success.
-     *
-     * @throws auth\MissingCurrentUserError
-     *     If the collection requires the users to be logged in while they are not.
-     * @throws \Minz\Errors\MissingRecordError
-     *     If the collection doesn't exist.
-     * @throws auth\AccessDeniedError
-     *     If the user cannot view the collection.
-     * @throws utils\PaginationOutOfBoundsError
-     *     If the requested page is out of the pagination bounds.
-     */
-    public function show(Request $request): Response
-    {
-        $user = auth\CurrentUser::get();
-        $collection = models\Collection::requireFromRequest($request);
-
-        if ($user) {
-            auth\Access::require($user, 'view', $collection);
-        } elseif (!auth\Access::can($user, 'view', $collection)) {
-            auth\CurrentUser::require();
-        }
-
-        $can_update = auth\Access::can($user, 'update', $collection);
-
-        $access_is_shared = $user && $collection->sharedWith($user);
-        $number_links = models\Link::countByCollection($collection, [
-            'hidden' => $can_update || $access_is_shared,
-        ]);
-        $number_per_page = $can_update ? 29 : 30; // the button to add a link counts for 1!
-        $pagination_page = $request->parameters->getInteger('page', 1);
-        $pagination = new utils\Pagination($number_links, $number_per_page, $pagination_page);
-
-        $topics = $collection->topics();
-        $topics = utils\Sorter::localeSort($topics, 'label');
-
-        $links = $collection->links(
-            ['published_at'],
-            [
-                'hidden' => $can_update || $access_is_shared,
-                'offset' => $pagination->currentOffset(),
-                'limit' => $pagination->numberPerPage(),
-            ]
-        );
-
-        models\links\Preloader::for($links)
-            ->originsFor($user)
-            ->urlStatusesFor($user)
-            ->numberCollectionsFor($user)
-            ->numberNotes();
-
-        return Response::ok('collections/show.html.twig', [
-            'collection' => $collection,
-            'topics' => $topics,
-            'links' => $links,
-            'pagination' => $pagination,
-        ]);
+        return Response::redirect('source', ['id' => $collection->id]);
     }
 
     /**

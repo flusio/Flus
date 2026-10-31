@@ -24,7 +24,6 @@ class ExploreTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'name' => $collection_name,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $collection->setTopics([$topic]);
@@ -50,7 +49,6 @@ class ExploreTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'name' => $collection_name,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $collection->setTopics([$topic]);
@@ -70,7 +68,6 @@ class ExploreTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'name' => $collection_name,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $collection->setTopics([$topic]);
@@ -94,7 +91,6 @@ class ExploreTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'name' => $collection_name,
-            'type' => 'collection',
             'is_public' => false,
         ]);
         $collection->setTopics([$topic]);
@@ -114,7 +110,6 @@ class ExploreTest extends \PHPUnit\Framework\TestCase
         $collection_name = 'My collection';
         $collection = CollectionFactory::create([
             'name' => $collection_name,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $link = LinkFactory::create([

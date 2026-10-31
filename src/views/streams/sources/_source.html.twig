@@ -32,7 +32,7 @@
         <a
             class="source__image-container col--noshrink"
             tabindex="-1"
-            href="{{ url('collection', { id: source.id }) }}"
+            href="{{ url('source', { id: source.id }) }}"
         >
             <img
                 class="source__image"
@@ -43,7 +43,7 @@
 
         <div class="source__content col--extend flow flow--smaller">
             <h3 class="text--bold text--normal">
-                <a class="anchor--nostyle" href="{{ url('collection', { id: source.id }) }}">
+                <a class="anchor--nostyle" href="{{ url('source', { id: source.id }) }}">
                     {{ source_name }}
                 </a>
             </h3>

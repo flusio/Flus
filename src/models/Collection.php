@@ -4,89 +4,31 @@ namespace App\models;
 
 use App\utils;
 use Minz\Database;
-use Minz\Translatable;
-use Minz\Validable;
 
 /**
- * Represent a list containing a set of links.
+ * A list of links curated by a user.
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-#[Database\Table(name: 'collections')]
-class Collection
+class Collection extends Source
 {
-    use collections\Discoverable;
-    use collections\Fetchable;
-    use collections\Followable;
-    use collections\Groupable;
-    use collections\HasLinks;
-    use collections\InStreams;
-    use collections\OwnedByUser;
-    use collections\Prunable;
-    use collections\Publishing;
-    use collections\Shareable;
-    use collections\Statistics;
-    use dao\BulkQueries;
-    use dao\MediaQueries;
-    use Database\Lockable;
-    use Database\Recordable;
-    use Database\Resource;
-    use utils\Memoizer;
-    use Validable;
-
-    public const VALID_TYPES = ['journal', 'collection', 'feed'];
-
-    public const NAME_MAX_LENGTH = 100;
+    use link_lists\Discoverable;
+    use link_lists\OwnedByUser;
+    use link_lists\Shareable;
 
     #[Database\Column]
-    public string $id;
-
-    #[Database\Column]
-    public \DateTimeImmutable $created_at;
-
-    #[Database\Column]
-    public ?\DateTimeImmutable $locked_at = null;
-
-    #[Database\Column]
-    #[Validable\Presence(
-        message: new Translatable('The name is required.'),
-    )]
-    #[Validable\Length(
-        max: self::NAME_MAX_LENGTH,
-        message: new Translatable('The name must be less than {max} characters.'),
-    )]
-    public string $name = '';
-
-    #[Database\Column]
-    public string $description = '';
-
-    /** @var value-of<self::VALID_TYPES> */
-    #[Database\Column]
-    public string $type = 'collection';
-
-    #[Database\Column]
-    public bool $is_public = false;
-
-    #[Database\Column]
-    public ?string $image_filename = null;
-
-    #[Database\Column]
-    public ?\DateTimeImmutable $image_fetched_at = null;
-
-    public function __construct()
-    {
-        $this->id = \Minz\Random::timebased();
-    }
+    public ?string $group_id = null;
 
     public static function init(
         User $user,
-        string $name,
-        string $description,
-        bool $is_public,
+        string $name = '',
+        string $description = '',
+        bool $is_public = false,
     ): self {
         $collection = new self();
 
+        $collection->type = 'collection';
         $collection->name = trim($name);
         $collection->description = trim($description);
         $collection->is_public = $is_public;
@@ -95,73 +37,22 @@ class Collection
         return $collection;
     }
 
-    public static function initCollection(User $user): self
-    {
-        $collection = new self();
-
-        $collection->type = 'collection';
-        $collection->user_id = $user->id;
-
-        return $collection;
-    }
-
-    public function isFeed(): bool
-    {
-        return $this->type === 'feed';
-    }
-
-    public function isCollection(): bool
-    {
-        return $this->type === 'collection';
-    }
-
-    /**
-     * Return the name of the collection.
-     *
-     * If the collection is the journal, the localized version is returned.
-     */
-    public function name(): string
-    {
-        if ($this->type === 'journal') {
-            return _('Journal');
-        } else {
-            return $this->name;
-        }
-    }
-
     /**
      * Return the URL of the feed to subscribe to the collection.
      *
-     * For feeds, it corresponds to the URL of the original feed. For the other
-     * collections, it corresponds to the "collection feed" route. In this
-     * case, $direct indicates if the links of the generated feed should point
-     * directly to the external websites.
+     * It corresponds to the "source feed" route. $direct indicates if the
+     * links of the generated feed should point directly to the external
+     * websites.
      */
     public function feedUrl(bool $direct = false): string
     {
-        if ($this->isFeed() && $this->feed_url) {
-            return $this->feed_url;
-        }
-
         $parameters = ['id' => $this->id];
 
         if ($direct) {
             $parameters['direct'] = 'true';
         }
 
-        return \Minz\Url::absoluteFor('collection feed', $parameters);
-    }
-
-    /**
-     * Return a tag URI that can be used as Atom id
-     *
-     * @see https://www.rfc-editor.org/rfc/rfc4151.txt
-     */
-    public function tagUri(): string
-    {
-        $host = \App\Configuration::$url_options['host'];
-        $date = $this->created_at->format('Y-m-d');
-        return "tag:{$host},{$date}:collections/{$this->id}";
+        return \Minz\Url::absoluteFor('source feed', $parameters);
     }
 
     /**
@@ -169,20 +60,20 @@ class Collection
      */
     public function descriptionAsHtml(): string
     {
-        if ($this->type === 'collection') {
-            $markdown = new utils\MiniMarkdown(context_user: $this->owner());
-            return $markdown->text($this->description);
-        } else {
-            if ($this->feed_site_url) {
-                $site_url = $this->feed_site_url;
-            } elseif ($this->feed_url) {
-                $site_url = $this->feed_url;
-            } else {
-                $site_url = '';
-            }
+        $markdown = new utils\MiniMarkdown(context_user: $this->owner());
+        return $markdown->text($this->description);
+    }
 
-            return utils\HtmlSanitizer::sanitizeCollectionDescription($this->description, $site_url);
+    /**
+     * Return the group if any.
+     */
+    public function group(): ?Group
+    {
+        if (!$this->group_id) {
+            return null;
         }
+
+        return Group::require($this->group_id);
     }
 
     /**
@@ -190,57 +81,231 @@ class Collection
      */
     public function toJson(User $context_user): array
     {
-        if ($this->type === 'feed') {
-            return [
-                'id' => $this->id,
-                'name' => $this->nameByUser($context_user),
-                'description' => $this->description,
-                'group' => null,
-                'url' => $this->feed_url,
-                'type' => $this->feed_type,
-                'site_url' => $this->feed_site_url,
-                'is_followed' => $context_user->isFollowing($this),
-                'publication_frequency_per_year' => $this->publication_frequency_per_year,
-            ];
-        } else {
-            $group = $context_user->id === $this->user_id ? $this->group() : null;
+        $group = $context_user->isOwning($this) ? $this->group() : null;
 
-            return [
-                'id' => $this->id,
-                'name' => $this->nameByUser($context_user),
-                'description' => $this->description,
-                'group' => $group?->name,
-                'is_public' => $this->is_public,
-                'is_followed' => $context_user->isFollowing($this),
-                'publication_frequency_per_year' => $this->publication_frequency_per_year,
-            ];
-        }
+        return [
+            'id' => $this->id,
+            'name' => $this->nameByUser($context_user),
+            'description' => $this->description,
+            'group' => $group?->name,
+            'is_public' => $this->is_public,
+            'is_followed' => $context_user->isFollowing($this),
+            'publication_frequency_per_year' => $this->publication_frequency_per_year,
+        ];
     }
 
     /**
-     * Return the clause limiting the collections (aliased as "c") to those
-     * that the given user can view, or to the public ones if no user is given.
-     *
-     * The :user_id parameter must be bound when a user is given.
-     *
-     * @see \App\auth\CollectionsAccess::canView
+     * Return a link from this collection with the given URL and not owned by
+     * the given user.
      */
-    private static function buildVisibilityClause(?User $user): string
+    public function linkNotOwnedByUrl(User $user, string $url_hash): ?Link
     {
-        if (!$user) {
-            return 'AND c.is_public = true';
+        return Link::findNotOwnedByCollectionAndUrl(
+            $user,
+            $this,
+            $url_hash,
+        );
+    }
+
+    /**
+     * Return the list of collections attached to the given link.
+     *
+     * @return self[]
+     */
+    public static function listByLink(Link $link): array
+    {
+        return self::listByLinks([$link])[$link->id] ?? [];
+    }
+
+    /**
+     * Return the list of collections attached to the given links, indexed by
+     * the link ids.
+     *
+     * The links without any collection are absent from the returned array. A
+     * collection attached to several links is represented by a single object,
+     * shared by these links.
+     *
+     * @param Link[] $links
+     * @param positive-int $chunk_size
+     *
+     * @return array<string, self[]>
+     */
+    public static function listByLinks(array $links, int $chunk_size = 1000): array
+    {
+        $link_ids = array_column($links, 'id');
+        $link_ids = array_unique($link_ids);
+        $link_ids = array_values($link_ids);
+
+        $collections_by_ids = [];
+        $collections_by_link_ids = [];
+
+        foreach (array_chunk($link_ids, $chunk_size) as $chunk_link_ids) {
+            $ids_as_question_marks = array_fill(0, count($chunk_link_ids), '?');
+            $ids_where_statement = implode(', ', $ids_as_question_marks);
+
+            $sql = <<<SQL
+                SELECT lc.link_id, c.*
+                FROM collections c, links_to_collections lc
+
+                WHERE lc.collection_id = c.id
+                AND lc.link_id IN ({$ids_where_statement})
+                AND c.type = 'collection'
+            SQL;
+
+            $database = Database::get();
+            $statement = $database->prepare($sql);
+            $statement->execute($chunk_link_ids);
+
+            foreach ($statement->fetchAll() as $row) {
+                // link_id is not a column of Collection: it must be removed
+                // from the row before the model is built from it.
+                $link_id = strval($row['link_id']);
+                unset($row['link_id']);
+
+                $collection_id = strval($row['id']);
+                $collection = $collections_by_ids[$collection_id] ?? self::fromDatabaseRow($row);
+                $collections_by_ids[$collection_id] = $collection;
+
+                $collections_by_link_ids[$link_id][] = $collection;
+            }
         }
 
-        return <<<SQL
-            AND (
-                c.is_public = true
-                OR c.user_id = :user_id
-                OR EXISTS (
-                    SELECT 1 FROM collection_shares cs
-                    WHERE cs.user_id = :user_id
-                    AND cs.collection_id = c.id
-                )
+        return $collections_by_link_ids;
+    }
+
+    /**
+     * Return the collections of the given user with its computed properties.
+     *
+     * @param User $user
+     *     The user that the collections must match.
+     * @param string[] $selected_computed_props
+     *     The list of computed properties to return. It is mandatory to
+     *     select specific properties to avoid computing dispensable
+     *     properties.
+     * @param array{
+     *     'private'?: bool,
+     *     'count_hidden'?: bool,
+     * } $options
+     *
+     * Description of the options:
+     * - private (default to true), indicates if private collections must be
+     *   included. If private are excluded and number_links property is
+     *   selected, empty public collections are not returned either.
+     * - count_hidden (default to true), indicates if hidden links must be
+     *   counted
+     *
+     * @return self[]
+     */
+    public static function listComputedByUser(
+        User $user,
+        array $selected_computed_props,
+        array $options = [],
+    ): array {
+        $default_options = [
+            'private' => true,
+            'count_hidden' => true,
+        ];
+        $options = array_merge($default_options, $options);
+
+        $parameters = [
+            ':user_id' => $user->id,
+        ];
+
+        $number_links_clause = '';
+        $join_clause = '';
+        $group_by_clause = '';
+        if (in_array('number_links', $selected_computed_props)) {
+            $number_links_clause = ', COUNT(lc.id) AS number_links';
+            $join_clause = <<<SQL
+                LEFT JOIN links_to_collections lc
+                ON lc.collection_id = c.id
+            SQL;
+            $group_by_clause = 'GROUP BY c.id';
+
+            if (!$options['count_hidden']) {
+                $number_links_clause = ', COUNT(l.id) AS number_links';
+
+                $join_clause .= <<<SQL
+                    \n
+                    LEFT JOIN links l
+                    ON lc.link_id = l.id
+                    AND l.is_hidden = false
+                SQL;
+            }
+        }
+
+        $private_clause = '';
+        $non_empty_clause = '';
+        if (!$options['private']) {
+            $private_clause = 'AND c.is_public = true';
+
+            if (in_array('number_links', $selected_computed_props)) {
+                $non_empty_clause = 'HAVING COUNT(lc.id) > 0';
+
+                if (!$options['count_hidden']) {
+                    $non_empty_clause = 'HAVING COUNT(l.id) > 0';
+                }
+            }
+        }
+
+        $sql = <<<SQL
+            SELECT
+                c.*
+                {$number_links_clause}
+            FROM collections c
+
+            {$join_clause}
+
+            WHERE c.user_id = :user_id
+            AND c.type = 'collection'
+
+            {$private_clause}
+
+            {$group_by_clause}
+
+            {$non_empty_clause}
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute($parameters);
+
+        return self::fromDatabaseRows($statement->fetchAll());
+    }
+
+    /**
+     * Return whether the link is in a collection owned by the given user or not.
+     */
+    public static function existsForUserAndLink(User $user, Link $link): bool
+    {
+        $sql = <<<'SQL'
+            SELECT EXISTS (
+                SELECT 1
+                FROM collections c, links_to_collections lc
+
+                WHERE c.id = lc.collection_id
+                AND c.user_id = :user_id
+                AND lc.link_id = :link_id
+                AND c.type = 'collection'
             )
         SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute([
+            ':user_id' => $user->id,
+            ':link_id' => $link->id,
+        ]);
+        return (bool) $statement->fetchColumn();
+    }
+
+    /**
+     * Return the number of public collections.
+     */
+    public static function countPublic(): int
+    {
+        return self::countBy([
+            'is_public' => true,
+        ]);
     }
 }

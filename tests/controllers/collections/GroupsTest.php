@@ -24,7 +24,6 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $collection_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
             'name' => $collection_name,
         ]);
@@ -46,7 +45,6 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'name' => $group_name,
         ]);
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
             'group_id' => $group->id,
         ]);
@@ -60,7 +58,6 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
     {
         $user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
         ]);
 
@@ -73,7 +70,6 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
         ]);
 
@@ -87,7 +83,6 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $other_user->id,
         ]);
         CollectionShareFactory::create([
@@ -107,7 +102,6 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $group_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
         ]);
 
@@ -125,7 +119,6 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $group_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
             'group_id' => null,
         ]);
@@ -151,7 +144,6 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $group = GroupFactory::create();
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
             'group_id' => $group->id,
         ]);
@@ -172,7 +164,6 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $group_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
             'group_id' => null,
         ]);
@@ -199,7 +190,6 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $group_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
             'group_id' => null,
         ]);
@@ -219,7 +209,6 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $group_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
         ]);
 
@@ -239,7 +228,6 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $group_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $other_user->id,
             'group_id' => null,
         ]);
@@ -266,7 +254,6 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $group_name = $this->fake('regexify', "\w{{$size}}");
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
         ]);
 
@@ -287,7 +274,6 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $group_name = $this->fake('text', 50);
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $user->id,
             'group_id' => null,
         ]);

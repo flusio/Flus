@@ -41,7 +41,7 @@ class OriginHelper
         }
 
         $exists = match ($origin_type) {
-            'collection' => models\Collection::exists($origin_id),
+            'collection' => models\Source::exists($origin_id),
             'link' => models\Link::exists($origin_id),
             'user' => models\User::exists($origin_id),
         };

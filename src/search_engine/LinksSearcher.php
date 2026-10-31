@@ -134,7 +134,7 @@ class LinksSearcher
      *
      * @param literal-string $alias
      * @param literal-string $date_field
-     * @param models\Collection[] $sources
+     * @param models\Source[] $sources
      *
      * @return array{literal-string, array<string, mixed>}
      */

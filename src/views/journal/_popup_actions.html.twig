@@ -17,19 +17,19 @@
 {{ item.heading(heading) }}
 
 {{ item.action(
-    url: url('mark collection as read', { id: journal.id }),
+    url: url('mark link list as read', { id: journal.id }),
     label: t('Mark all as read'),
     icon: 'check',
-    csrf: 'collections\\MarkCollectionAsRead',
+    csrf: 'link_lists\\MarkAsRead',
     params: params,
     preserve_scroll: preserve_scroll,
 ) }}
 
 {{ item.action(
-    url: url('read collection later', { id: journal.id }),
+    url: url('read link list later', { id: journal.id }),
     label: t('Read the links later'),
     icon: 'bookmark',
-    csrf: 'collections\\MarkCollectionAsReadLater',
+    csrf: 'link_lists\\MarkAsReadLater',
     params: params,
     preserve_scroll: preserve_scroll,
 ) }}
@@ -37,10 +37,10 @@
 {{ item.separator() }}
 
 {{ item.action(
-    url: url('dismiss collection', { id: journal.id }),
+    url: url('dismiss link list', { id: journal.id }),
     label: t('Ignore the links'),
     icon: 'times',
-    csrf: 'collections\\MarkCollectionAsDismissed',
+    csrf: 'link_lists\\MarkAsDismissed',
     params: params,
     preserve_scroll: preserve_scroll,
     confirm: t('The links will no longer be counted as unread and won’t be suggested in your journal. Are you sure?'),

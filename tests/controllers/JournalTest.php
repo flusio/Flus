@@ -49,12 +49,11 @@ class JournalTest extends \PHPUnit\Framework\TestCase
         $collection_name = $this->fake('sentence');
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
-            'type' => 'collection',
             'name' => $collection_name,
             'is_public' => true,
         ]);
         $journal = $user->journal();
-        $origin = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
+        $origin = \Minz\Url::absoluteFor('source', ['id' => $collection->id]);
         $link = LinkFactory::create([
             'user_id' => $user->id,
             'origin' => $origin,
@@ -64,7 +63,7 @@ class JournalTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/journal');
 
         $this->assertResponseCode($response, 200);
-        $collection_url = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
+        $collection_url = \Minz\Url::absoluteFor('source', ['id' => $collection->id]);
         $collection_anchor = "<a href=\"{$collection_url}\">{$collection_name}</a>";
         $this->assertResponseContains($response, "via <strong>{$collection_anchor}</strong>");
         $profile_url = \Minz\Url::for('profile', ['id' => $other_user->id]);
@@ -84,7 +83,6 @@ class JournalTest extends \PHPUnit\Framework\TestCase
         $collection_name = $this->fake('sentence');
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
-            'type' => 'collection',
             'name' => $collection_name,
         ]);
         $journal = $user->journal();
@@ -172,7 +170,6 @@ class JournalTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $created_at);
@@ -190,7 +187,7 @@ class JournalTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link->url, $journal_link->url);
         $this->assertSame($user->id, $journal_link->user_id);
         $this->assertSame($link->title, $journal_link->title);
-        $origin = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
+        $origin = \Minz\Url::absoluteFor('source', ['id' => $collection->id]);
         $this->assertSame($origin, $journal_link->origin);
     }
 
@@ -213,7 +210,6 @@ class JournalTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $collection->addLinks([$link1, $link2], at: \Minz\Time::ago(1, 'day'));
@@ -254,7 +250,6 @@ class JournalTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $created_at);
@@ -301,7 +296,6 @@ class JournalTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $created_at);
@@ -336,7 +330,6 @@ class JournalTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $created_at);

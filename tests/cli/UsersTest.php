@@ -90,7 +90,7 @@ class UsersTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateCreatesDefaultCollections(): void
     {
-        $this->assertSame(0, models\Collection::count());
+        $this->assertSame(0, models\LinkList::count());
 
         $response = $this->appRun('CLI', '/users/create', [
             'username' => $this->fake('name'),
@@ -98,12 +98,11 @@ class UsersTest extends \PHPUnit\Framework\TestCase
             'password' => $this->fake('password'),
         ]);
 
-        $this->assertGreaterThan(0, models\Collection::count());
+        $this->assertGreaterThan(0, models\LinkList::count());
         $user = models\User::take();
         $this->assertNotNull($user);
         $journal = models\Journal::findBy([
             'user_id' => $user->id,
-            'type' => 'journal',
         ]);
         $this->assertNotNull($journal);
     }

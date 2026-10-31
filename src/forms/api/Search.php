@@ -46,7 +46,7 @@ class Search extends Form
     }
 
     /**
-     * @return models\Collection[]
+     * @return models\Feed[]
      */
     public function feeds(): array
     {
@@ -57,7 +57,7 @@ class Search extends Form
             $feed_fetcher_service = new services\FeedFetcher();
 
             foreach ($link->url_feeds as $feed_url) {
-                $feed = models\Collection::findOrBuildFeed($feed_url);
+                $feed = models\Feed::findOrBuildByUrl($feed_url);
 
                 if (!$feed->isPersisted()) {
                     $feed_fetcher_service->fetch($feed);

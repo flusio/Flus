@@ -31,7 +31,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         ]);
         $this->assertNotNull($link);
         $this->assertSame($user->id, $link->user_id);
-        $feed = models\Collection::findBy([
+        $feed = models\Feed::findBy([
             'feed_url' => $url_feed,
         ]);
         $this->assertNotNull($feed);

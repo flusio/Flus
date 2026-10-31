@@ -22,7 +22,6 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $link_url = $this->fake('url');
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
@@ -57,7 +56,6 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $link_url = $this->fake('url');
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
@@ -87,7 +85,6 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $link_title = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
@@ -110,7 +107,6 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $link_title = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
             'is_public' => false,
         ]);
         $link = LinkFactory::create([

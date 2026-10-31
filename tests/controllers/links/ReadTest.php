@@ -6,6 +6,7 @@ use App\forms;
 use App\models;
 use App\utils;
 use tests\factories\CollectionFactory;
+use tests\factories\FeedFactory;
 use tests\factories\LinkFactory;
 use tests\factories\StreamFactory;
 use tests\factories\UserFactory;
@@ -44,7 +45,6 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $other_user = UserFactory::create();
         $other_collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
@@ -57,7 +57,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
         $other_user->markAsReadLater($link);
         $other_collection->addLinks([$link]);
-        $from = \Minz\Url::for('collection', ['id' => $other_collection->id]);
+        $from = \Minz\Url::for('source', ['id' => $other_collection->id]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsRead::class),
@@ -77,7 +77,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
         $this->assertNotNull($new_link);
         $this->assertNotSame($link->id, $new_link->id);
-        $origin = \Minz\Url::absoluteFor('collection', ['id' => $other_collection->id]);
+        $origin = \Minz\Url::absoluteFor('source', ['id' => $other_collection->id]);
         $this->assertSame($origin, $new_link->origin);
     }
 
@@ -87,8 +87,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         /** @var string */
@@ -115,7 +114,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
         $this->assertNotNull($new_link);
         $this->assertSame($source->id, $new_link->source_id);
-        $origin = \Minz\Url::absoluteFor('collection', ['id' => $source->id]);
+        $origin = \Minz\Url::absoluteFor('source', ['id' => $source->id]);
         $this->assertSame($origin, $new_link->origin);
     }
 
@@ -123,7 +122,6 @@ class ReadTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $source = CollectionFactory::create([
-            'type' => 'collection',
             'is_public' => false,
         ]);
         /** @var string */
@@ -238,7 +236,6 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $other_user = UserFactory::create();
         $other_collection = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
@@ -250,7 +247,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
         $other_collection->addLinks([$link]);
-        $from = \Minz\Url::for('collection', ['id' => $other_collection->id]);
+        $from = \Minz\Url::for('source', ['id' => $other_collection->id]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/later", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsReadLater::class),
@@ -268,7 +265,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
         $this->assertNotNull($new_link);
-        $origin = \Minz\Url::absoluteFor('collection', ['id' => $other_collection->id]);
+        $origin = \Minz\Url::absoluteFor('source', ['id' => $other_collection->id]);
         $this->assertSame($origin, $new_link->origin);
     }
 
@@ -278,8 +275,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         /** @var string */
@@ -306,7 +302,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
         $this->assertNotNull($new_link);
         $this->assertSame($source->id, $new_link->source_id);
-        $origin = \Minz\Url::absoluteFor('collection', ['id' => $source->id]);
+        $origin = \Minz\Url::absoluteFor('source', ['id' => $source->id]);
         $this->assertSame($origin, $new_link->origin);
     }
 

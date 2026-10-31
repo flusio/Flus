@@ -2,10 +2,12 @@
 
 namespace App\forms\sources;
 
+use App\forms\BaseForm;
+
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Unfollow extends BulkSelection
+class Unfollow extends BaseForm
 {
 }

@@ -45,7 +45,7 @@ trait StreamLinks
         $sources = [];
         if ($this->sources) {
             $sources = $stream->sources(['context_user' => $user]);
-            $sources = array_filter($sources, function (models\Collection $source): bool {
+            $sources = array_filter($sources, function (models\Source $source): bool {
                 return in_array($source->id, $this->sources);
             });
             $sources = array_values($sources);
@@ -112,7 +112,7 @@ trait StreamLinks
                 $source_id = $source_ids_by_url_hash[$link->url_hash] ?? null;
                 if ($source_id) {
                     $link->setSourceId($source_id);
-                    $link->setOrigin(\Minz\Url::absoluteFor('collection', ['id' => $source_id]));
+                    $link->setOrigin(\Minz\Url::absoluteFor('source', ['id' => $source_id]));
                 }
 
                 $links_to_create[] = $link;

@@ -22,7 +22,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $link_title = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
@@ -55,7 +54,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $tag = 'foo';

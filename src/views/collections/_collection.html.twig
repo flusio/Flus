@@ -7,18 +7,14 @@
     style="background-image: url('{{ url_media('covers', collection.imageFilenameByUser(app.user), 'collection-card.png') }}');"
     data-color-scheme="dark"
 >
-    <a class="collection__body flow" href="{{ url('collection', { id: collection.id }) }}">
+    <a class="collection__body flow" href="{{ url('source', { id: collection.id }) }}">
         <div class="collection__title">
             {{ collection.nameByUser(app.user) }}
         </div>
 
         <div class="flow flow--small">
             <p class="text--oneline">
-                {% if collection.isFeed %}
-                    {% set by = t('Feed %s', [collection.feedWebsiteHost]) %}
-                {% else %}
-                    {% set by = t('By %s', [collection.owner.username]) %}
-                {% endif %}
+                {% set by = t('By %s', [collection.owner.username]) %}
 
                 {% if collection.number_links === 0 %}
                     {% set number_links = t('no links') %}

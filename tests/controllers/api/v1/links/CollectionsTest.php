@@ -19,7 +19,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
 
         $response = $this->apiRun('PUT', "/api/v1/links/{$link->id}/collections/{$collection->id}");
@@ -38,7 +37,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
 
         $response = $this->apiRun('PUT', "/api/v1/links/{$link->id}/collections/{$collection->id}");
@@ -56,7 +54,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
 
         $response = $this->apiRun('PUT', "/api/v1/links/not-an-id/collections/{$collection->id}");
@@ -75,7 +72,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => UserFactory::create()->id,
-            'type' => 'collection',
         ]);
 
         $response = $this->apiRun('PUT', "/api/v1/links/{$link->id}/collections/{$collection->id}");
@@ -111,7 +107,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
 
         $response = $this->apiRun('PUT', "/api/v1/links/{$link->id}/collections/{$collection->id}");
@@ -132,7 +127,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         $link->addCollection($collection);
 
@@ -151,7 +145,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         $link->addCollection($collection);
 
@@ -171,7 +164,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
 
         $response = $this->apiRun('DELETE', "/api/v1/links/not-an-id/collections/{$collection->id}");
@@ -190,7 +182,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => UserFactory::create()->id,
-            'type' => 'collection',
         ]);
         $link->addCollection($collection);
 
@@ -228,7 +219,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         $link->addCollection($collection);
 

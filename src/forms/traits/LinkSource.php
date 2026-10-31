@@ -20,28 +20,28 @@ trait LinkSource
     /**
      * Set the origin of a link.
      *
-     * The origin is the collection from which the link is displayed if it is
-     * known (e.g. in a stream, where the referrer doesn't tell where the link
-     * comes from), or the page from which the user comes from otherwise.
+     * The origin is the source from which the link is displayed if it is known
+     * (e.g. in a stream, where the referrer doesn't tell where the link comes
+     * from), or the page from which the user comes from otherwise.
      */
     public function setLinkOrigin(models\Link $link): void
     {
-        $source = $this->sourceCollection();
+        $source = $this->findSource();
 
         if ($source) {
             $link->setSource($source);
-            $link->setOrigin(\Minz\Url::absoluteFor('collection', ['id' => $source->id]));
+            $link->setOrigin(\Minz\Url::absoluteFor('source', ['id' => $source->id]));
         } else {
             $link->setOrigin($this->from);
         }
     }
 
     /**
-     * Return the collection corresponding to the source field.
+     * Return the source corresponding to the source field.
      *
      * It returns null if the source is unknown, or if the user cannot view it.
      */
-    private function sourceCollection(): ?models\Collection
+    private function findSource(): ?models\Source
     {
         if (!$this->source) {
             return null;
@@ -49,7 +49,7 @@ trait LinkSource
 
         $user = $this->optionAs('user', models\User::class);
 
-        $source = models\Collection::find($this->source);
+        $source = models\Source::find($this->source);
 
         if (!$source || !auth\Access::can($user, 'view', $source)) {
             return null;

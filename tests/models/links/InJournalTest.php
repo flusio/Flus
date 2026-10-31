@@ -5,6 +5,7 @@ namespace App\models\links;
 use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\CollectionShareFactory;
+use tests\factories\FeedFactory;
 use tests\factories\LinkFactory;
 use tests\factories\UserFactory;
 
@@ -41,7 +42,6 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $collection->addLinks([$link1], at: $published_at1);
@@ -71,7 +71,6 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $published_at);
@@ -102,7 +101,6 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
-            'type' => 'collection',
             'is_public' => false,
         ]);
         $collection->addLinks([$link], at: $published_at);
@@ -138,7 +136,6 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $published_at);
@@ -168,22 +165,20 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
             'user_id' => null,
             'is_hidden' => false,
         ]);
-        $collection = CollectionFactory::create([
-            'user_id' => null,
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'is_public' => true,
         ]);
-        $link1->addCollection($collection, at: $published_at1);
-        $link2->addCollection($collection, at: $published_at2);
-        $this->user->follow($collection);
+        $feed->addLinks([$link1], at: $published_at1);
+        $feed->addLinks([$link2], at: $published_at2);
+        $this->user->follow($feed);
 
         $links = models\Link::listCandidatesForJournal($this->user->journal(), max: 50);
 
         $this->assertSame(2, count($links));
         $this->assertSame($link2->id, $links[0]->id);
-        $this->assertSame($collection->id, $links[0]->source_id);
+        $this->assertSame($feed->id, $links[0]->source_id);
         $this->assertSame($link1->id, $links[1]->id);
-        $this->assertSame($collection->id, $links[1]->source_id);
+        $this->assertSame($feed->id, $links[1]->source_id);
     }
 
     public function testListCandidatesForJournalDoesNotPickFromFollowedIfTooOld(): void
@@ -200,7 +195,6 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $published_at);
@@ -225,7 +219,6 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $published_at);
@@ -249,7 +242,6 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $published_at);
@@ -274,7 +266,6 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $published_at);
@@ -299,7 +290,6 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
-            'type' => 'collection',
             'is_public' => false,
         ]);
         $collection->addLinks([$link], at: $published_at);
@@ -327,7 +317,6 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $published_at);
@@ -359,7 +348,6 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $published_at);
@@ -391,7 +379,6 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $published_at);
@@ -425,7 +412,6 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $published_at);
@@ -445,7 +431,6 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $published_at);
@@ -465,7 +450,6 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $published_at);
@@ -485,7 +469,6 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $this->other_user->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $published_at);
@@ -503,13 +486,11 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
             'user_id' => null,
             'is_hidden' => false,
         ]);
-        $collection = CollectionFactory::create([
-            'user_id' => null,
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'is_public' => true,
         ]);
-        $link->addCollection($collection, at: $published_at);
-        $this->user->follow($collection);
+        $feed->addLinks([$link], at: $published_at);
+        $this->user->follow($feed);
 
         $result = models\Link::anyCandidateForJournal($this->user->journal());
 
@@ -523,13 +504,11 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
             'user_id' => null,
             'is_hidden' => true,
         ]);
-        $collection = CollectionFactory::create([
-            'user_id' => null,
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'is_public' => true,
         ]);
-        $link->addCollection($collection, at: $published_at);
-        $this->user->follow($collection);
+        $feed->addLinks([$link], at: $published_at);
+        $this->user->follow($feed);
 
         $result = models\Link::anyCandidateForJournal($this->user->journal());
 

@@ -27,7 +27,7 @@ class StreamToFollow
     #[Database\Column]
     public int $follow_id;
 
-    public static function find(Stream $stream, Collection $source): ?self
+    public static function find(Stream $stream, Source $source): ?self
     {
         $sql = <<<SQL
             SELECT sf.*
@@ -57,7 +57,7 @@ class StreamToFollow
         }
     }
 
-    public static function findOrCreate(Stream $stream, Collection $source): self
+    public static function findOrCreate(Stream $stream, Source $source): self
     {
         $follow = FollowedCollection::findOrCreate($stream->owner(), $source);
 
@@ -73,7 +73,7 @@ class StreamToFollow
      *
      * The sources that are in no stream are absent from the returned array.
      *
-     * @param Collection[] $sources
+     * @param Source[] $sources
      *
      * @return array<string, int>
      */

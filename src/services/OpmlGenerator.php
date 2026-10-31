@@ -59,7 +59,7 @@ class OpmlGenerator
         if ($is_owner) {
             $no_stream_sources = array_filter(
                 $user->followedSources(),
-                function (models\Collection $source) use ($sources_in_stream): bool {
+                function (models\Source $source) use ($sources_in_stream): bool {
                     return !isset($sources_in_stream[$source->id]);
                 },
             );
@@ -137,11 +137,11 @@ class OpmlGenerator
      *
      * @param models\Stream[] $streams
      *
-     * @return array<string, models\Collection[]>
+     * @return array<string, models\Source[]>
      */
     private function listSourcesByStreams(array $streams, ?models\User $context_user): array
     {
-        $sources_by_streams = models\Collection::listByStreams($streams, [
+        $sources_by_streams = models\Source::listByStreams($streams, [
             'context_user' => $context_user,
         ]);
 
@@ -149,7 +149,7 @@ class OpmlGenerator
             function (array $sources) use ($context_user): array {
                 return utils\Sorter::localeSort(
                     $sources,
-                    function (models\Collection $source) use ($context_user): string {
+                    function (models\Source $source) use ($context_user): string {
                         return $source->nameByUser($context_user);
                     },
                 );
@@ -163,9 +163,9 @@ class OpmlGenerator
      *
      * @param array{
      *     title: string,
-     *     sources: models\Collection[],
+     *     sources: models\Source[],
      *     streams: models\Stream[],
-     *     sources_by_streams: array<string, models\Collection[]>,
+     *     sources_by_streams: array<string, models\Source[]>,
      *     context_user: ?models\User,
      *     with_time_filter: bool,
      * } $context

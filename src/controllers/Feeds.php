@@ -44,7 +44,7 @@ class Feeds extends BaseController
     {
         $user = auth\CurrentUser::require();
 
-        $form = new forms\collections\NewFeed();
+        $form = new forms\feeds\NewFeed();
 
         return Response::ok('feeds/new.html.twig', [
             'form' => $form,
@@ -69,7 +69,7 @@ class Feeds extends BaseController
     {
         $user = auth\CurrentUser::require();
 
-        $form = new forms\collections\NewFeed();
+        $form = new forms\feeds\NewFeed();
 
         $form->handleRequest($request);
 
@@ -94,7 +94,7 @@ class Feeds extends BaseController
             $user->follow($feed);
         }
 
-        return Response::redirect('collection', ['id' => $feed->id]);
+        return Response::redirect('source', ['id' => $feed->id]);
     }
 
     /**
@@ -106,8 +106,7 @@ class Feeds extends BaseController
     {
         $feed_url = \App\Configuration::$application['feed_what_is_new'];
 
-        $feed = models\Collection::findBy([
-            'type' => 'feed',
+        $feed = models\Feed::findBy([
             'feed_url' => $feed_url,
         ]);
         if (!$feed) {
@@ -116,11 +115,11 @@ class Feeds extends BaseController
                 'ignore_rate_limit' => true,
             ]);
 
-            $feed = models\Collection::initFeed($feed_url);
+            $feed = models\Feed::init($feed_url);
             $feed_fetcher_service->fetch($feed);
         }
 
-        return Response::redirect('collection', ['id' => $feed->id]);
+        return Response::redirect('source', ['id' => $feed->id]);
     }
 
     /**

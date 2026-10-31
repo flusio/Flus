@@ -50,7 +50,7 @@ class Cleaner extends \Minz\Job
             except_subscribed: \App\Configuration::areSubscriptionsEnabled(),
         );
 
-        models\Collection::deleteUnfollowedFeedsOlderThan(\Minz\Time::ago(7, 'days'));
+        models\Feed::deleteUnfollowedOlderThan(\Minz\Time::ago(7, 'days'));
 
         models\Link::deleteDetachedOlderThan(\Minz\Time::ago(7, 'days'));
 

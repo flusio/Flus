@@ -45,7 +45,7 @@ class Sources extends BaseController
             'context_user' => $user,
         ]);
 
-        models\collections\Preloader::for($sources)
+        models\link_lists\Preloader::for($sources)
             ->publishers()
             ->countStreamsFor($user);
 
@@ -81,14 +81,14 @@ class Sources extends BaseController
         ]);
 
         $sources_to_preload = array_merge($followed_sources, $existing_sources);
-        models\collections\Preloader::for($sources_to_preload)
+        models\link_lists\Preloader::for($sources_to_preload)
             ->publishers()
             ->countStreamsFor($user);
 
         $suggested_sources = array_udiff(
             $followed_sources,
             $existing_sources,
-            function (models\Collection $source1, models\Collection $source2): int {
+            function (models\Source $source1, models\Source $source2): int {
                 return $source1->id <=> $source2->id;
             },
         );
@@ -120,7 +120,7 @@ class Sources extends BaseController
 
         auth\Access::require($user, 'update', $stream);
 
-        $form = new forms\collections\NewFeed();
+        $form = new forms\feeds\NewFeed();
 
         return Response::ok('streams/sources/new_feed.html.twig', [
             'stream' => $stream,
@@ -153,7 +153,7 @@ class Sources extends BaseController
 
         auth\Access::require($user, 'update', $stream);
 
-        $form = new forms\collections\NewFeed();
+        $form = new forms\feeds\NewFeed();
         $form->handleRequest($request);
 
         if (!$form->validate()) {
@@ -204,7 +204,7 @@ class Sources extends BaseController
         $user = auth\CurrentUser::require();
 
         $stream = models\Stream::requireFromRequest($request);
-        $source = models\Collection::requireFromRequest($request, parameter: 'source_id');
+        $source = models\Source::requireFromRequest($request, parameter: 'source_id');
 
         auth\Access::require($user, 'update', $stream);
         auth\Access::require($user, 'view', $source);
@@ -245,7 +245,7 @@ class Sources extends BaseController
         $user = auth\CurrentUser::require();
 
         $stream = models\Stream::requireFromRequest($request);
-        $source = models\Collection::requireFromRequest($request, parameter: 'source_id');
+        $source = models\Source::requireFromRequest($request, parameter: 'source_id');
 
         auth\Access::require($user, 'update', $stream);
 

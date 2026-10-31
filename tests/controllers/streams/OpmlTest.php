@@ -19,7 +19,6 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $collection_name = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'is_public' => true,
             'name' => $collection_name,
         ]);
@@ -44,7 +43,6 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $collection_name = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'is_public' => false,
             'name' => $collection_name,
         ]);

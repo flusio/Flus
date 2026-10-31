@@ -2,8 +2,12 @@
 
 namespace App\controllers;
 
+use App\models;
 use tests\factories\CollectionFactory;
+use tests\factories\CollectionShareFactory;
+use tests\factories\FeedFactory;
 use tests\factories\ImportationFactory;
+use tests\factories\LinkFactory;
 use tests\factories\StreamFactory;
 use tests\factories\UserFactory;
 
@@ -22,7 +26,6 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $collection_name = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'name' => $collection_name,
             'is_public' => true,
         ]);
@@ -30,8 +33,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $feed_name = $this->fake('words', 3, true);
         /** @var string */
         $feed_url = $this->fake('url');
-        $feed = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'name' => $feed_name,
             'is_public' => true,
             'feed_url' => $feed_url,
@@ -53,8 +55,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         /** @var string */
         $feed_url = $this->fake('url');
-        $feed = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'name' => 'Carnet de Flus',
             'is_public' => true,
             'feed_url' => $feed_url,
@@ -78,7 +79,6 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $collection_name = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
-            'type' => 'collection',
             'name' => $collection_name,
             'is_public' => false,
         ]);
@@ -90,13 +90,12 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $collection_name);
     }
 
-    public function testIndexDoesNotListTheCollectionsThatAreNotFollowed(): void
+    public function testIndexDoesNotListTheSourcesThatAreNotFollowed(): void
     {
         $user = $this->login();
         /** @var string */
         $collection_name = $this->fake('words', 3, true);
         CollectionFactory::create([
-            'type' => 'collection',
             'name' => $collection_name,
             'is_public' => true,
         ]);
@@ -119,8 +118,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         foreach (range(1, 10) as $index_source) {
             /** @var string */
             $feed_url = $this->fake('url');
-            $feed = CollectionFactory::create([
-                'type' => 'feed',
+            $feed = FeedFactory::create([
                 'is_public' => true,
                 'feed_url' => $feed_url,
             ]);
@@ -131,7 +129,6 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             // display their publishers.
             $collection = CollectionFactory::create([
                 'user_id' => $other_user->id,
-                'type' => 'collection',
                 'is_public' => true,
             ]);
             $user->follow($collection);
@@ -152,7 +149,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 200);
         // The number of queries must not grow with the number of sources: the
         // publishers, the number of streams and the time filters are all
-        // loaded in batch by models\collections\Preloader.
+        // loaded in batch by models\link_lists\Preloader.
         $this->assertLessThanOrEqual(20, $count_queries);
     }
 
@@ -179,5 +176,236 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/sources');
 
         $this->assertResponseCode($response, 302, "/login?redirect_to={$redirect_to}");
+    }
+
+    public function testShowRendersCorrectly(): void
+    {
+        $user = $this->login();
+        /** @var string */
+        $link_title = $this->fake('words', 3, true);
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
+            'description' => '**foo bar**',
+            'is_public' => false,
+        ]);
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'title' => $link_title,
+        ]);
+        $collection->addLinks([$link]);
+
+        $response = $this->appRun('GET', "/collections/{$collection->id}");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $link_title);
+        $this->assertResponseContains($response, '<strong>foo bar</strong>');
+        $this->assertResponseTemplateName($response, 'sources/show.html.twig');
+    }
+
+    public function testShowDisplaysTheNameGivenByTheUser(): void
+    {
+        $user = $this->login();
+        /** @var string */
+        $feed_url = $this->fake('url');
+        $feed = FeedFactory::create([
+            'name' => 'Carnet de Flus',
+            'is_public' => true,
+            'feed_url' => $feed_url,
+        ]);
+        $followed_collection = $user->follow($feed);
+        $followed_collection->name = 'Flus news';
+        $followed_collection->save();
+
+        $response = $this->appRun('GET', "/collections/{$feed->id}");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, '<h1 class="text--break">Flus news</h1>');
+        $this->assertResponseContains($response, 'Original name: Carnet de Flus');
+    }
+
+    public function testShowRendersCorrectlyIfPublicAndNotConnected(): void
+    {
+        $user = UserFactory::create();
+        /** @var string */
+        $link_title = $this->fake('words', 3, true);
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
+            'is_public' => true,
+        ]);
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'title' => $link_title,
+            'is_hidden' => false,
+        ]);
+        $collection->addLinks([$link]);
+
+        $response = $this->appRun('GET', "/collections/{$collection->id}");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $link_title);
+        $this->assertResponseTemplateName($response, 'sources/show.html.twig');
+    }
+
+    public function testShowRendersCorrectlyIfPublicAndDoesNotOwnTheLink(): void
+    {
+        $user = $this->login();
+        $owner = UserFactory::create();
+        /** @var string */
+        $link_title = $this->fake('words', 3, true);
+        $collection = CollectionFactory::create([
+            'user_id' => $owner->id,
+            'is_public' => true,
+        ]);
+        $link = LinkFactory::create([
+            'user_id' => $owner->id,
+            'title' => $link_title,
+            'is_hidden' => false,
+        ]);
+        $collection->addLinks([$link]);
+
+        $response = $this->appRun('GET', "/collections/{$collection->id}");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $link_title);
+        $this->assertResponseTemplateName($response, 'sources/show.html.twig');
+    }
+
+    public function testShowRendersCorrectlyIfSourceIsPrivateAndSharedWithReadAccess(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        /** @var string */
+        $link_title = $this->fake('words', 3, true);
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
+            'is_public' => false,
+        ]);
+        $link = LinkFactory::create([
+            'user_id' => $other_user->id,
+            'title' => $link_title,
+        ]);
+        $collection->addLinks([$link]);
+        CollectionShareFactory::create([
+            'collection_id' => $collection->id,
+            'user_id' => $user->id,
+            'type' => 'read',
+        ]);
+
+        $response = $this->appRun('GET', "/collections/{$collection->id}");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $link_title);
+        $this->assertResponseTemplateName($response, 'sources/show.html.twig');
+    }
+
+    public function testShowRendersCorrectlyIfSourceIsPrivateAndSharedWithWriteAccess(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        /** @var string */
+        $link_title = $this->fake('words', 3, true);
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
+            'is_public' => false,
+        ]);
+        $link = LinkFactory::create([
+            'user_id' => $other_user->id,
+            'title' => $link_title,
+        ]);
+        $collection->addLinks([$link]);
+        CollectionShareFactory::create([
+            'collection_id' => $collection->id,
+            'user_id' => $user->id,
+            'type' => 'write',
+        ]);
+
+        $response = $this->appRun('GET', "/collections/{$collection->id}");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $link_title);
+        $this->assertResponseTemplateName($response, 'sources/show.html.twig');
+    }
+
+    public function testShowHidesHiddenLinksInPublicSources(): void
+    {
+        $user = UserFactory::create();
+        /** @var string */
+        $link_title = $this->fake('words', 3, true);
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
+            'is_public' => true,
+        ]);
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'title' => $link_title,
+            'is_hidden' => true,
+        ]);
+        $collection->addLinks([$link]);
+
+        $response = $this->appRun('GET', "/collections/{$collection->id}");
+
+        $this->assertResponseNotContains($response, $link_title);
+    }
+
+    public function testShowRedirectsIfPrivateAndNotConnected(): void
+    {
+        $user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
+            'is_public' => false,
+        ]);
+
+        $response = $this->appRun('GET', "/collections/{$collection->id}");
+
+        $this->assertResponseCode($response, 302, "/login?redirect_to=%2Fcollections%2F{$collection->id}");
+    }
+
+    public function testShowFailsIfPageIsOutOfBound(): void
+    {
+        $user = $this->login();
+        /** @var string */
+        $link_title = $this->fake('words', 3, true);
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
+            'is_public' => false,
+        ]);
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'title' => $link_title,
+        ]);
+        $collection->addLinks([$link]);
+
+        $response = $this->appRun('GET', "/collections/{$collection->id}", [
+            'page' => 0,
+        ]);
+
+        $this->assertResponseCode($response, 404);
+    }
+
+    public function testShowFailsIfSourceDoesNotExist(): void
+    {
+        $this->login();
+
+        $response = $this->appRun('GET', '/collections/unknown');
+
+        $this->assertResponseCode($response, 404);
+    }
+
+    public function testShowFailsIfPrivateAndNoSharedAccess(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
+            'is_public' => false,
+        ]);
+        $link = LinkFactory::create([
+            'user_id' => $other_user->id,
+        ]);
+        $collection->addLinks([$link]);
+
+        $response = $this->appRun('GET', "/collections/{$collection->id}");
+
+        $this->assertResponseCode($response, 403);
     }
 }

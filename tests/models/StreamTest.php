@@ -3,6 +3,7 @@
 namespace App\models;
 
 use tests\factories\CollectionFactory;
+use tests\factories\FeedFactory;
 use tests\factories\LinkFactory;
 use tests\factories\StreamFactory;
 use tests\factories\UserFactory;
@@ -34,8 +35,7 @@ class StreamTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
@@ -67,8 +67,7 @@ class StreamTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         $stream->addSource($source);
@@ -84,8 +83,7 @@ class StreamTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         $read_link = LinkFactory::create([
@@ -114,8 +112,7 @@ class StreamTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
@@ -135,8 +132,7 @@ class StreamTest extends \PHPUnit\Framework\TestCase
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
@@ -158,7 +154,6 @@ class StreamTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $source = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $other_user->id,
             'is_public' => false,
         ]);
@@ -181,7 +176,6 @@ class StreamTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $source = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $other_user->id,
             'is_public' => false,
         ]);
@@ -209,7 +203,6 @@ class StreamTest extends \PHPUnit\Framework\TestCase
         // other_user: the same stream has unread links for the first and not
         // for the second.
         $source = CollectionFactory::create([
-            'type' => 'collection',
             'user_id' => $third_user->id,
             'is_public' => false,
         ]);
@@ -234,8 +227,7 @@ class StreamTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'display_unread_in_sidenav' => true,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
@@ -256,8 +248,7 @@ class StreamTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'display_unread_in_sidenav' => false,
         ]);
-        $source = CollectionFactory::create([
-            'type' => 'feed',
+        $source = FeedFactory::create([
             'is_public' => true,
         ]);
         $link = LinkFactory::create([

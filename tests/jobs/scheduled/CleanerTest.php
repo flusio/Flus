@@ -5,6 +5,7 @@ namespace App\jobs\scheduled;
 use App\http;
 use App\models;
 use tests\factories\CollectionFactory;
+use tests\factories\FeedFactory;
 use tests\factories\FetchErrorFactory;
 use tests\factories\FetchLogFactory;
 use tests\factories\LinkFactory;
@@ -388,15 +389,13 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         /** @var int */
         $days = $this->fake('numberBetween', 8, 100);
         $created_at = \Minz\Time::ago($days, 'days');
-        $collection = CollectionFactory::create([
+        $feed = FeedFactory::create([
             'created_at' => $created_at,
-            'type' => 'feed',
-            'user_id' => null,
         ]);
 
         $cleaner_job->perform();
 
-        $this->assertFalse(models\Collection::exists($collection->id));
+        $this->assertFalse(models\Feed::exists($feed->id));
     }
 
     public function testPerformKeepsOldEnoughFollowedFeeds(): void
@@ -409,16 +408,14 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         /** @var int */
         $days = $this->fake('numberBetween', 8, 100);
         $created_at = \Minz\Time::ago($days, 'days');
-        $collection = CollectionFactory::create([
+        $feed = FeedFactory::create([
             'created_at' => $created_at,
-            'type' => 'feed',
-            'user_id' => null,
         ]);
-        $user->follow($collection);
+        $user->follow($feed);
 
         $cleaner_job->perform();
 
-        $this->assertTrue(models\Collection::exists($collection->id));
+        $this->assertTrue(models\Feed::exists($feed->id));
     }
 
     public function testPerformKeepsRecentUnfollowedFeeds(): void
@@ -430,15 +427,13 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         /** @var int */
         $days = $this->fake('numberBetween', 0, 7);
         $created_at = \Minz\Time::ago($days, 'days');
-        $collection = CollectionFactory::create([
+        $feed = FeedFactory::create([
             'created_at' => $created_at,
-            'type' => 'feed',
-            'user_id' => null,
         ]);
 
         $cleaner_job->perform();
 
-        $this->assertTrue(models\Collection::exists($collection->id));
+        $this->assertTrue(models\Feed::exists($feed->id));
     }
 
     public function testPerformDeletesOldEnoughNotStoredLinks(): void
@@ -473,9 +468,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
             'created_at' => $created_at,
             'user_id' => null,
         ]);
-        $collection = CollectionFactory::create([
-            'type' => 'collection',
-        ]);
+        $collection = CollectionFactory::create();
         $collection->addLinks([$link]);
 
         $cleaner_job->perform();
@@ -537,14 +530,11 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $link_2 = LinkFactory::create([
             'user_id' => null,
         ]);
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
-            'user_id' => null,
-        ]);
-        $collection->addLinks([$link_1], at: $published_at_1);
-        $collection->addLinks([$link_2], at: $published_at_2);
+        $feed = FeedFactory::create();
+        $feed->addLinks([$link_1], at: $published_at_1);
+        $feed->addLinks([$link_2], at: $published_at_2);
         // follow the feed, otherwise the cleaner may delete it
-        UserFactory::create()->follow($collection);
+        UserFactory::create()->follow($feed);
 
         $cleaner_job->perform();
 
@@ -567,13 +557,10 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => null,
         ]);
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
-            'user_id' => null,
-        ]);
-        $collection->addLinks([$link], at: $published_at);
+        $feed = FeedFactory::create();
+        $feed->addLinks([$link], at: $published_at);
         // follow the feed, otherwise the cleaner may delete it
-        UserFactory::create()->follow($collection);
+        UserFactory::create()->follow($feed);
 
         $cleaner_job->perform();
 
@@ -597,14 +584,11 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $link_2 = LinkFactory::create([
             'user_id' => null,
         ]);
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
-            'user_id' => null,
-        ]);
-        $collection->addLinks([$link_1], at: $published_at_1);
-        $collection->addLinks([$link_2], at: $published_at_2);
+        $feed = FeedFactory::create();
+        $feed->addLinks([$link_1], at: $published_at_1);
+        $feed->addLinks([$link_2], at: $published_at_2);
         // follow the feed, otherwise the cleaner may delete it
-        UserFactory::create()->follow($collection);
+        UserFactory::create()->follow($feed);
 
         $cleaner_job->perform();
 
@@ -625,13 +609,10 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => null,
         ]);
-        $collection = CollectionFactory::create([
-            'type' => 'feed',
-            'user_id' => null,
-        ]);
-        $collection->addLinks([$link], at: $published_at);
+        $feed = FeedFactory::create();
+        $feed->addLinks([$link], at: $published_at);
         // follow the feed, otherwise the cleaner may delete it
-        UserFactory::create()->follow($collection);
+        UserFactory::create()->follow($feed);
 
         $cleaner_job->perform();
 
@@ -661,23 +642,17 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $link_3 = LinkFactory::create([
             'user_id' => null,
         ]);
-        $collection_1 = CollectionFactory::create([
-            'type' => 'feed',
-            'user_id' => null,
-        ]);
-        $collection_2 = CollectionFactory::create([
-            'type' => 'feed',
-            'user_id' => null,
-        ]);
-        $collection_1->addLinks([$link_1], at: $published_at_older);
-        $collection_1->addLinks([$link_2], at: $published_at_old);
+        $feed_1 = FeedFactory::create();
+        $feed_2 = FeedFactory::create();
+        $feed_1->addLinks([$link_1], at: $published_at_older);
+        $feed_1->addLinks([$link_2], at: $published_at_old);
         // Attach the last link to another collection to check that the
         // deletion is done per feed and not globally.
-        $collection_2->addLinks([$link_3], at: $published_at_older);
+        $feed_2->addLinks([$link_3], at: $published_at_older);
         // follow the feeds, otherwise the cleaner may delete them
         $follower = UserFactory::create();
-        $follower->follow($collection_1);
-        $follower->follow($collection_2);
+        $follower->follow($feed_1);
+        $follower->follow($feed_2);
 
         $cleaner_job->perform();
 
@@ -764,7 +739,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         \App\Configuration::$application['demo'] = false;
 
         $this->assertSame(1, models\User::count()); // count the demo user
-        $this->assertGreaterThan(0, models\Collection::count());
+        $this->assertGreaterThan(0, models\LinkList::count());
         $this->assertSame(0, models\Token::count());
         $this->assertSame(0, models\Link::count());
         $demo_user = models\User::take();
@@ -775,7 +750,6 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(models\Collection::exists($collection->id));
         $journal = models\Journal::findBy([
             'user_id' => $demo_user->id,
-            'type' => 'journal',
         ]);
         $this->assertNotNull($journal);
     }
@@ -795,7 +769,6 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         $link = LinkFactory::create([
             'user_id' => $user->id,

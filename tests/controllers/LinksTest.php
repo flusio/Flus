@@ -37,7 +37,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         CollectionFactory::create([
             'name' => $collection_name_1,
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         /** @var string */
         $collection_name_2 = $this->fake('words', 3, true);
@@ -45,7 +44,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'name' => $collection_name_2,
             'group_id' => $group->id,
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
 
         $response = $this->appRun('GET', '/links');
@@ -140,7 +138,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'name' => $collection_name,
             'user_id' => $other_user->id,
-            'type' => 'collection',
         ]);
         CollectionShareFactory::create([
             'user_id' => $user->id,
@@ -163,7 +160,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'name' => $collection_name,
             'user_id' => $other_user->id,
-            'type' => 'collection',
         ]);
         CollectionShareFactory::create([
             'user_id' => $user->id,
@@ -271,7 +267,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $current_user->id,
-            'type' => 'collection',
         ]);
         $collection->addLinks([$link]);
 
@@ -296,7 +291,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
-            'type' => 'collection',
         ]);
         $collection->addLinks([$link]);
         CollectionShareFactory::create([
@@ -386,7 +380,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
-            'type' => 'collection',
         ]);
         CollectionShareFactory::create([
             'collection_id' => $collection->id,
@@ -406,7 +399,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
-            'type' => 'collection',
         ]);
         CollectionShareFactory::create([
             'collection_id' => $collection->id,
@@ -432,7 +424,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         $url = 'https://flus.fr/carnet/';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
@@ -504,7 +495,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -533,7 +523,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         LinkFactory::create([
             'user_id' => $another_user->id,
@@ -562,11 +551,9 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
         $collection_1 = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         $collection_2 = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
         ]);
         $link = LinkFactory::create([
             'user_id' => $user->id,
@@ -596,7 +583,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
-            'type' => 'collection',
         ]);
         CollectionShareFactory::create([
             'collection_id' => $collection->id,
@@ -717,7 +703,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
-            'type' => 'collection',
         ]);
 
         $response = $this->appRun('POST', '/links/new', [
@@ -737,7 +722,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
-            'type' => 'collection',
         ]);
         CollectionShareFactory::create([
             'collection_id' => $collection->id,
@@ -764,7 +748,6 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
-            'type' => 'collection',
         ]);
         $url = 'https://flus.fr/carnet/';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
@@ -1050,7 +1033,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $collection->addLinks([$link]);
-        $from = \Minz\Url::absoluteFor('collection', ['id' => $collection->id]);
+        $from = \Minz\Url::absoluteFor('source', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/delete", [
             'csrf_token' => $this->csrfToken(forms\links\DeleteLink::class),

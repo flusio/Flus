@@ -3,6 +3,7 @@
 namespace App\controllers\streams;
 
 use tests\factories\CollectionFactory;
+use tests\factories\FeedFactory;
 use tests\factories\LinkFactory;
 use tests\factories\StreamFactory;
 use tests\factories\UserFactory;
@@ -21,12 +22,11 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $link_title = $this->fake('words', 3, true);
         /** @var string */
         $link_url = $this->fake('url');
-        $feed = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
-            'user_id' => $feed->user_id,
+            'user_id' => null,
             'title' => $link_title,
             'url' => $link_url,
             'is_hidden' => false,
@@ -58,12 +58,11 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     {
         /** @var string */
         $link_url = $this->fake('url');
-        $feed = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
-            'user_id' => $feed->user_id,
+            'user_id' => null,
             'url' => $link_url,
             'is_hidden' => false,
         ]);
@@ -91,12 +90,10 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create();
         $collection_1 = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $collection_2 = CollectionFactory::create([
             'user_id' => $user->id,
-            'type' => 'collection',
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
@@ -123,12 +120,11 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     {
         /** @var string */
         $link_title = $this->fake('words', 3, true);
-        $feed = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
-            'user_id' => $feed->user_id,
+            'user_id' => null,
             'title' => $link_title,
             'is_hidden' => false,
         ]);
@@ -148,12 +144,11 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
     {
         /** @var string */
         $link_title = $this->fake('words', 3, true);
-        $feed = CollectionFactory::create([
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
-            'user_id' => $feed->user_id,
+            'user_id' => null,
             'title' => $link_title,
             'is_hidden' => true,
         ]);
@@ -174,7 +169,6 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $link_title = $this->fake('words', 3, true);
         $collection = CollectionFactory::create([
-            'type' => 'collection',
             'is_public' => false,
         ]);
         $link = LinkFactory::create([
@@ -196,21 +190,19 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
 
     public function testShowWithViewFiltersBySources(): void
     {
-        $feed_1 = CollectionFactory::create([
-            'type' => 'feed',
+        $feed_1 = FeedFactory::create([
             'is_public' => true,
         ]);
-        $feed_2 = CollectionFactory::create([
-            'type' => 'feed',
+        $feed_2 = FeedFactory::create([
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
-            'user_id' => $feed_1->user_id,
+            'user_id' => null,
             'title' => 'A report about the ocean',
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
-            'user_id' => $feed_2->user_id,
+            'user_id' => null,
             'title' => 'A study about the forest',
             'is_hidden' => false,
         ]);
@@ -241,21 +233,19 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
 
     public function testShowWithDefaultViewFiltersBySources(): void
     {
-        $feed_1 = CollectionFactory::create([
-            'type' => 'feed',
+        $feed_1 = FeedFactory::create([
             'is_public' => true,
         ]);
-        $feed_2 = CollectionFactory::create([
-            'type' => 'feed',
+        $feed_2 = FeedFactory::create([
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
-            'user_id' => $feed_1->user_id,
+            'user_id' => null,
             'title' => 'A report about the ocean',
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
-            'user_id' => $feed_2->user_id,
+            'user_id' => null,
             'title' => 'A study about the forest',
             'is_hidden' => false,
         ]);

@@ -9,7 +9,7 @@
 {% if source.isFeed %}
     {% set html_url = source.feed_site_url %}
 {% else %}
-    {% set html_url = url_full('collection', { id: source.id }) %}
+    {% set html_url = url_full('source', { id: source.id }) %}
 {% endif %}
 
 <outline

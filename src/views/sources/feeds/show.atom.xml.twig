@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?xml-stylesheet href="{{ url('feeds xsl') }}" type="text/xsl"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>{{ source.name() }}</title>
+
+    {% if source.description %}
+        <subtitle type="html"><![CDATA[{{ source.descriptionAsHtml | raw }}]]></subtitle>
+    {% endif %}
+
+    <link href="{{ url_full('source', { id: source.id }) }}" rel="alternate" type="text/html" />
+    <link href="{{ url_full('source feed', { id: source.id }) }}" rel="self" type="application/atom+xml" />
+
+    <id>{{ source.tagUri }}</id>
+    {% set owner = source.owner %}
+    {% if owner %}
+        <author>
+            <name>{{ owner.username }}</name>
+        </author>
+    {% endif %}
+    <generator>{{ app.user_agent }}</generator>
+
+    {% if links %}
+        <updated>{{ (links | first).published_at.format(constant('DATE_ATOM')) }}</updated>
+    {% else %}
+        <updated>{{ date().format(constant('DATE_ATOM')) }}</updated>
+    {% endif %}
+
+    {% for topic in topics %}
+        <category term="{{ topic.label }}"></category>
+    {% endfor %}
+
+    {% for link in links %}
+        {{ include('links/_link.atom.xml.twig') }}
+    {% endfor %}
+</feed>

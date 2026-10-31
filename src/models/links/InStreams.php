@@ -2,7 +2,7 @@
 
 namespace App\models\links;
 
-use App\models\Collection;
+use App\models\Source;
 use App\models\Stream;
 use App\models\User;
 use App\search_engine\LinksSearcher;
@@ -25,7 +25,7 @@ trait InStreams
      *     context_user?: ?User,
      *     at?: \DateTimeImmutable,
      *     days?: int|'ALL',
-     *     sources?: Collection[],
+     *     sources?: Source[],
      *     status?: string,
      *     with_dismissed?: bool,
      *     query?: ?Query,
@@ -249,13 +249,13 @@ trait InStreams
      * place. It is called by models\Stream::hasUnreadLinks() to compute the
      * unread dots of the sidenav.
      *
-     * @param Collection[] $sources
+     * @param Source[] $sources
      * @param array{
      *     at?: \DateTimeImmutable,
      *     days?: int,
      * } $options
      *
-     * @return Collection[]
+     * @return Source[]
      */
     public static function filterSourcesWithUnreadLinks(User $user, array $sources, array $options = []): array
     {
@@ -294,7 +294,7 @@ trait InStreams
 
         $source_ids_with_unread = array_column($statement->fetchAll(), 'source_id');
 
-        $sources = array_filter($sources, function (Collection $source) use ($source_ids_with_unread): bool {
+        $sources = array_filter($sources, function (Source $source) use ($source_ids_with_unread): bool {
             return in_array($source->id, $source_ids_with_unread, strict: true);
         });
 
@@ -311,10 +311,10 @@ trait InStreams
      *
      * @param array{
      *     context_user: ?User,
-     *     sources: Collection[],
+     *     sources: Source[],
      * } $options
      *
-     * @return Collection[]
+     * @return Source[]
      */
     private static function listStreamSources(Stream $stream, array $options): array
     {
@@ -331,7 +331,7 @@ trait InStreams
             // none is left, no sources are returned rather than all of them.
             $selected_source_ids = array_column($selected_sources, 'id');
 
-            $sources = array_filter($sources, function (Collection $source) use ($selected_source_ids): bool {
+            $sources = array_filter($sources, function (Source $source) use ($selected_source_ids): bool {
                 return in_array($source->id, $selected_source_ids);
             });
 
@@ -389,7 +389,7 @@ trait InStreams
      * by listStreamSources(), which only returns the collections that the
      * context user can view.
      *
-     * @param Collection[] $sources
+     * @param Source[] $sources
      * @param array{
      *     context_user: ?User,
      *     at: \DateTimeImmutable,

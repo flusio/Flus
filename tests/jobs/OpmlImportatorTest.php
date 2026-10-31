@@ -3,7 +3,7 @@
 namespace App\jobs;
 
 use App\models;
-use tests\factories\CollectionFactory;
+use tests\factories\FeedFactory;
 use tests\factories\ImportationFactory;
 use tests\factories\StreamFactory;
 use tests\factories\UserFactory;
@@ -45,49 +45,46 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
             'options' => ['opml_filepath' => $opml_filepath],
         ]);
 
-        $this->assertSame(0, models\Collection::count());
+        $this->assertSame(0, models\Feed::count());
         $this->assertSame(0, models\Stream::count());
         $this->assertSame(0, models\FollowedCollection::count());
 
         $importator->perform($importation->id);
 
-        $this->assertSame(3, models\Collection::count());
+        $this->assertSame(3, models\Feed::count());
         $this->assertSame(1, models\Stream::count());
         $this->assertSame(3, models\FollowedCollection::count());
 
         $importation = $importation->reload();
         $this->assertSame('finished', $importation->status);
-        $collection1 = models\Collection::take(0);
-        $this->assertNotNull($collection1);
-        $this->assertNull($collection1->user_id);
-        $this->assertSame('feed', $collection1->type);
-        $collection2 = models\Collection::take(1);
-        $this->assertNotNull($collection2);
-        $this->assertNull($collection2->user_id);
-        $this->assertSame('feed', $collection2->type);
-        $collection3 = models\Collection::take(2);
-        $this->assertNotNull($collection3);
-        $this->assertNull($collection3->user_id);
-        $this->assertSame('feed', $collection3->type);
+        $feed1 = models\Feed::take(0);
+        $this->assertNotNull($feed1);
+        $this->assertSame('feed', $feed1->type);
+        $feed2 = models\Feed::take(1);
+        $this->assertNotNull($feed2);
+        $this->assertSame('feed', $feed2->type);
+        $feed3 = models\Feed::take(2);
+        $this->assertNotNull($feed3);
+        $this->assertSame('feed', $feed3->type);
         $followed_collection1 = models\FollowedCollection::take(0);
         $this->assertNotNull($followed_collection1);
         $this->assertSame($user->id, $followed_collection1->user_id);
-        $this->assertSame($collection1->id, $followed_collection1->collection_id);
+        $this->assertSame($feed1->id, $followed_collection1->collection_id);
         $followed_collection2 = models\FollowedCollection::take(1);
         $this->assertNotNull($followed_collection2);
         $this->assertSame($user->id, $followed_collection2->user_id);
-        $this->assertSame($collection2->id, $followed_collection2->collection_id);
+        $this->assertSame($feed2->id, $followed_collection2->collection_id);
         $followed_collection3 = models\FollowedCollection::take(2);
         $this->assertNotNull($followed_collection3);
         $this->assertSame($user->id, $followed_collection3->user_id);
-        $this->assertSame($collection3->id, $followed_collection3->collection_id);
+        $this->assertSame($feed3->id, $followed_collection3->collection_id);
         $stream = models\Stream::take();
         $this->assertNotNull($stream);
         $this->assertSame('Blogs', $stream->name);
         $this->assertSame($user->id, $stream->user_id);
-        $this->assertTrue($stream->hasSource($collection1));
-        $this->assertTrue($stream->hasSource($collection2));
-        $this->assertTrue($stream->hasSource($collection3));
+        $this->assertTrue($stream->hasSource($feed1));
+        $this->assertTrue($stream->hasSource($feed2));
+        $this->assertTrue($stream->hasSource($feed3));
     }
 
     public function testPerformReusesExistingStreamWithSameName(): void
@@ -107,16 +104,16 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertSame(1, models\Stream::count());
-        $this->assertSame(0, models\Collection::count());
+        $this->assertSame(0, models\Feed::count());
 
         $importator->perform($importation->id);
 
         $this->assertSame(1, models\Stream::count());
-        $this->assertSame(3, models\Collection::count());
+        $this->assertSame(3, models\Feed::count());
 
-        $collection = models\Collection::take(0);
-        $this->assertNotNull($collection);
-        $this->assertTrue($stream->hasSource($collection));
+        $feed = models\Feed::take(0);
+        $this->assertNotNull($feed);
+        $this->assertTrue($stream->hasSource($feed));
     }
 
     public function testPerformIsIdempotent(): void
@@ -140,7 +137,7 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
         $importator->perform($importation_1->id);
         $importator->perform($importation_2->id);
 
-        $this->assertSame(3, models\Collection::count());
+        $this->assertSame(3, models\Feed::count());
         $this->assertSame(1, models\Stream::count());
         $this->assertSame(3, models\FollowedCollection::count());
         $this->assertSame(3, models\StreamToFollow::count());
@@ -176,9 +173,7 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
         $opml_filepath = $this->tmpCopyFile($example_filepath);
         $importator = new OpmlImportator();
         $user = UserFactory::create();
-        $collection = CollectionFactory::create([
-            'user_id' => null,
-            'type' => 'feed',
+        $feed = FeedFactory::create([
             'feed_url' => 'https://flus.fr/carnet/feeds/all.atom.xml',
         ]);
         $importation = ImportationFactory::create([
@@ -187,14 +182,14 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
             'options' => ['opml_filepath' => $opml_filepath],
         ]);
 
-        $this->assertSame(1, models\Collection::count());
+        $this->assertSame(1, models\Feed::count());
         $this->assertSame(0, models\FollowedCollection::count());
 
         $importator->perform($importation->id);
 
-        $this->assertSame(3, models\Collection::count());
+        $this->assertSame(3, models\Feed::count());
         $followed_collection = models\FollowedCollection::findBy([
-            'collection_id' => $collection->id,
+            'collection_id' => $feed->id,
             'user_id' => $user->id,
         ]);
         $this->assertNotNull($followed_collection);
@@ -206,7 +201,7 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
 
         $importator->perform(1);
 
-        $this->assertSame(0, models\Collection::count());
+        $this->assertSame(0, models\Feed::count());
         $this->assertSame(0, models\FollowedCollection::count());
     }
 
@@ -228,7 +223,7 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
         $importation = $importation->reload();
         $this->assertSame('error', $importation->status);
         $this->assertSame('Can’t read the OPML file.', $importation->error);
-        $this->assertSame(0, models\Collection::count());
+        $this->assertSame(0, models\Feed::count());
         $this->assertSame(0, models\FollowedCollection::count());
     }
 
@@ -250,7 +245,7 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
         $importation = $importation->reload();
         $this->assertSame('error', $importation->status);
         $this->assertSame('Can’t parse the given string.', $importation->error);
-        $this->assertSame(0, models\Collection::count());
+        $this->assertSame(0, models\Feed::count());
         $this->assertSame(0, models\FollowedCollection::count());
         $this->assertFalse(file_exists($opml_filepath));
     }

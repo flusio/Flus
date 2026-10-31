@@ -27,8 +27,8 @@ class Access
     {
         $subject_class = $subject::class;
 
-        if ($subject instanceof models\Collection) {
-            $access_class = CollectionsAccess::class;
+        if ($subject instanceof models\LinkList) {
+            $access_class = LinkListsAccess::class;
         } elseif ($subject instanceof models\Group) {
             $access_class = GroupsAccess::class;
         } elseif ($subject instanceof models\Link) {
