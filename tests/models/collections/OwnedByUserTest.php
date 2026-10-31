@@ -19,7 +19,7 @@ class OwnedByUserTest extends \PHPUnit\Framework\TestCase
             'type' => 'collection',
         ]);
 
-        $collections = models\Collection::listComputedByUserId($user->id, []);
+        $collections = models\Collection::listComputedByUser($user, []);
 
         $this->assertSame(1, count($collections));
         $this->assertSame($collection->id, $collections[0]->id);
@@ -33,7 +33,7 @@ class OwnedByUserTest extends \PHPUnit\Framework\TestCase
             'type' => 'feed',
         ]);
 
-        $collections = models\Collection::listComputedByUserId($user->id, []);
+        $collections = models\Collection::listComputedByUser($user, []);
 
         $this->assertSame(0, count($collections));
     }
@@ -47,7 +47,7 @@ class OwnedByUserTest extends \PHPUnit\Framework\TestCase
             'is_public' => false,
         ]);
 
-        $collections = models\Collection::listComputedByUserId($user->id, [], [
+        $collections = models\Collection::listComputedByUser($user, [], [
             'private' => false,
         ]);
 
@@ -66,7 +66,7 @@ class OwnedByUserTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection->addLinks([$link]);
 
-        $collections = models\Collection::listComputedByUserId($user->id, ['number_links']);
+        $collections = models\Collection::listComputedByUser($user, ['number_links']);
 
         $this->assertSame(1, count($collections));
         $this->assertSame($collection->id, $collections[0]->id);
@@ -86,7 +86,7 @@ class OwnedByUserTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection->addLinks([$link]);
 
-        $collections = models\Collection::listComputedByUserId($user->id, ['number_links'], [
+        $collections = models\Collection::listComputedByUser($user, ['number_links'], [
             'count_hidden' => false,
         ]);
 
@@ -104,7 +104,7 @@ class OwnedByUserTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
 
-        $collections = models\Collection::listComputedByUserId($user->id, ['number_links'], [
+        $collections = models\Collection::listComputedByUser($user, ['number_links'], [
             'private' => false,
         ]);
 
@@ -125,7 +125,7 @@ class OwnedByUserTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection->addLinks([$link]);
 
-        $collections = models\Collection::listComputedByUserId($user->id, ['number_links'], [
+        $collections = models\Collection::listComputedByUser($user, ['number_links'], [
             'private' => false,
             'count_hidden' => false,
         ]);

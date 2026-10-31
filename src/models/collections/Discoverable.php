@@ -40,8 +40,8 @@ trait Discoverable
      *
      * @return self[]
      */
-    public static function listPublicByTopicIdWithNumberLinks(
-        string $topic_id,
+    public static function listPublicByTopicWithNumberLinks(
+        Topic $topic,
         int $pagination_offset,
         int $pagination_limit
     ): array {
@@ -67,7 +67,7 @@ trait Discoverable
         $database = Database::get();
         $statement = $database->prepare($sql);
         $statement->execute([
-            ':topic_id' => $topic_id,
+            ':topic_id' => $topic->id,
             ':offset' => $pagination_offset,
             ':limit' => $pagination_limit,
         ]);
@@ -77,7 +77,7 @@ trait Discoverable
     /**
      * Count the public collections attached to the given topic.
      */
-    public static function countPublicByTopicId(string $topic_id): int
+    public static function countPublicByTopic(Topic $topic): int
     {
         $sql = <<<'SQL'
             SELECT COUNT(DISTINCT c.id)
@@ -95,7 +95,7 @@ trait Discoverable
         $database = Database::get();
         $statement = $database->prepare($sql);
         $statement->execute([
-            ':topic_id' => $topic_id,
+            ':topic_id' => $topic->id,
         ]);
         return intval($statement->fetchColumn());
     }

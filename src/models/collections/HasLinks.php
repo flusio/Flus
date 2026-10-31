@@ -186,7 +186,7 @@ trait HasLinks
     /**
      * Return whether the link is in a collection owned by the given user or not.
      */
-    public static function existsForUserIdAndLinkId(string $user_id, string $link_id): bool
+    public static function existsForUserAndLink(User $user, Link $link): bool
     {
         $sql = <<<'SQL'
             SELECT EXISTS (
@@ -202,8 +202,8 @@ trait HasLinks
         $database = Database::get();
         $statement = $database->prepare($sql);
         $statement->execute([
-            ':user_id' => $user_id,
-            ':link_id' => $link_id,
+            ':user_id' => $user->id,
+            ':link_id' => $link->id,
         ]);
         return (bool) $statement->fetchColumn();
     }

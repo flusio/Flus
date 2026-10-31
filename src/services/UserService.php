@@ -19,10 +19,10 @@ class UserService
         // Init the default collections.
         $user->journal();
 
-        $favourites = models\Collection::init($user->id, _('My favourites'), '', false);
+        $favourites = models\Collection::init($user, _('My favourites'), '', false);
         $favourites->save();
 
-        $shares = models\Collection::init($user->id, _('My shares'), '', true);
+        $shares = models\Collection::init($user, _('My shares'), '', true);
         $shares->save();
 
         // Load default feeds

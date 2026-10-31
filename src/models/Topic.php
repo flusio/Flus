@@ -47,6 +47,6 @@ class Topic
      */
     public function countPublicCollections(): int
     {
-        return Collection::countPublicByTopicId($this->id);
+        return Collection::countPublicByTopic($this);
     }
 }

@@ -45,8 +45,8 @@ class Explore extends BaseController
 
         $pagination = new utils\Pagination($number_collections, 30, $page);
 
-        $collections = models\Collection::listPublicByTopicIdWithNumberLinks(
-            $topic->id,
+        $collections = models\Collection::listPublicByTopicWithNumberLinks(
+            $topic,
             $pagination->currentOffset(),
             $pagination->numberPerPage()
         );

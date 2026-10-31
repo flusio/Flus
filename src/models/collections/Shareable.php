@@ -131,8 +131,8 @@ trait Shareable
     /**
      * Return the collections shared to the given user with its computed properties.
      *
-     * @param string $user_id
-     *     The id of the user with who the collections are shared.
+     * @param User $user
+     *     The user with who the collections are shared.
      * @param string[] $selected_computed_props
      *     The list of computed properties to return. It is mandatory to
      *     select specific properties to avoid computing dispensable
@@ -148,8 +148,8 @@ trait Shareable
      *
      * @return self[]
      */
-    public static function listComputedSharedToUserId(
-        string $user_id,
+    public static function listComputedSharedToUser(
+        User $user,
         array $selected_computed_props,
         array $options = [],
     ): array {
@@ -197,7 +197,7 @@ trait Shareable
         $database = Database::get();
         $statement = $database->prepare($sql);
         $statement->execute([
-            ':user_id' => $user_id,
+            ':user_id' => $user->id,
         ]);
 
         return self::fromDatabaseRows($statement->fetchAll());
@@ -206,10 +206,10 @@ trait Shareable
     /**
      * Return the collections shared by a user to another user with their computed properties.
      *
-     * @param string $user_id
-     *     The id of the user who shares the collections.
-     * @param string $to_user_id
-     *     The id of the user with who the collections are shared.
+     * @param User $user
+     *     The user who shares the collections.
+     * @param User $to_user
+     *     The user with who the collections are shared.
      * @param string[] $selected_computed_props
      *     The list of computed properties to return. It is mandatory to
      *     select specific properties to avoid computing dispensable
@@ -217,14 +217,14 @@ trait Shareable
      *
      * @return self[]
      */
-    public static function listComputedSharedByUserIdTo(
-        string $user_id,
-        string $to_user_id,
+    public static function listComputedSharedByUserTo(
+        User $user,
+        User $to_user,
         array $selected_computed_props,
     ): array {
         $parameters = [
-            ':user_id' => $user_id,
-            ':to_user_id' => $to_user_id,
+            ':user_id' => $user->id,
+            ':to_user_id' => $to_user->id,
         ];
 
         $number_links_clause = '';
@@ -269,7 +269,7 @@ trait Shareable
      *
      * @return self[]
      */
-    public static function listWritableContainingNotOwnedLinkWithUrl(string $user_id, string $url_hash): array
+    public static function listWritableContainingNotOwnedLinkWithUrl(User $user, string $url_hash): array
     {
         $sql = <<<'SQL'
             SELECT c.*
@@ -295,7 +295,7 @@ trait Shareable
         $database = Database::get();
         $statement = $database->prepare($sql);
         $statement->execute([
-            ':user_id' => $user_id,
+            ':user_id' => $user->id,
             ':url_hash' => $url_hash,
         ]);
 

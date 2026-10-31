@@ -43,8 +43,8 @@ trait OwnedByUser
     /**
      * Return the collections of the given user with its computed properties.
      *
-     * @param string $user_id
-     *     The user id that the collections must match.
+     * @param User $user
+     *     The user that the collections must match.
      * @param string[] $selected_computed_props
      *     The list of computed properties to return. It is mandatory to
      *     select specific properties to avoid computing dispensable
@@ -63,8 +63,8 @@ trait OwnedByUser
      *
      * @return self[]
      */
-    public static function listComputedByUserId(
-        string $user_id,
+    public static function listComputedByUser(
+        User $user,
         array $selected_computed_props,
         array $options = [],
     ): array {
@@ -75,7 +75,7 @@ trait OwnedByUser
         $options = array_merge($default_options, $options);
 
         $parameters = [
-            ':user_id' => $user_id,
+            ':user_id' => $user->id,
         ];
 
         $number_links_clause = '';

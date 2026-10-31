@@ -242,7 +242,7 @@ class User
 
     public function initCollection(): Collection
     {
-        return Collection::initCollection($this->id);
+        return Collection::initCollection($this);
     }
 
     /**
@@ -290,7 +290,7 @@ class User
     /**
      * Return the collections of the user.
      *
-     * @see Collection::listComputedByUserId
+     * @see Collection::listComputedByUser
      *
      * @param string[] $selected_computed_props
      * @param array{
@@ -302,8 +302,8 @@ class User
      */
     public function collections(array $selected_computed_props = [], array $options = []): array
     {
-        return Collection::listComputedByUserId(
-            $this->id,
+        return Collection::listComputedByUser(
+            $this,
             $selected_computed_props,
             $options
         );
@@ -333,7 +333,7 @@ class User
     /**
      * Return the collections shared to the user.
      *
-     * @see Collection::listComputedSharedToUserId
+     * @see Collection::listComputedSharedToUser
      *
      * @param string[] $selected_computed_props
      * @param array{
@@ -344,8 +344,8 @@ class User
      */
     public function sharedCollections(array $selected_computed_props = [], array $options = []): array
     {
-        return Collection::listComputedSharedToUserId(
-            $this->id,
+        return Collection::listComputedSharedToUser(
+            $this,
             $selected_computed_props,
             $options
         );
@@ -354,17 +354,17 @@ class User
     /**
      * Return the collections shared by the user to the given user.
      *
-     * @see Collection::listComputedSharedByUserIdTo
+     * @see Collection::listComputedSharedByUserTo
      *
      * @param string[] $selected_computed_props
      *
      * @return Collection[]
      */
-    public function sharedCollectionsTo(string $to_user_id, array $selected_computed_props = []): array
+    public function sharedCollectionsTo(User $to_user, array $selected_computed_props = []): array
     {
-        return Collection::listComputedSharedByUserIdTo(
-            $this->id,
-            $to_user_id,
+        return Collection::listComputedSharedByUserTo(
+            $this,
+            $to_user,
             $selected_computed_props
         );
     }

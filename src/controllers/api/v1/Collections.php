@@ -45,7 +45,7 @@ class Collections extends BaseController
 
         $json_request = $this->toJsonRequest($request);
 
-        $collection = models\Collection::initCollection($user->id);
+        $collection = models\Collection::initCollection($user);
         $form = new forms\Collection(model: $collection);
         $form->handleRequest($json_request);
 

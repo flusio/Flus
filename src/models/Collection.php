@@ -80,7 +80,7 @@ class Collection
     }
 
     public static function init(
-        string $user_id,
+        User $user,
         string $name,
         string $description,
         bool $is_public,
@@ -90,17 +90,17 @@ class Collection
         $collection->name = trim($name);
         $collection->description = trim($description);
         $collection->is_public = $is_public;
-        $collection->user_id = $user_id;
+        $collection->user_id = $user->id;
 
         return $collection;
     }
 
-    public static function initCollection(string $user_id): self
+    public static function initCollection(User $user): self
     {
         $collection = new self();
 
         $collection->type = 'collection';
-        $collection->user_id = $user_id;
+        $collection->user_id = $user->id;
 
         return $collection;
     }

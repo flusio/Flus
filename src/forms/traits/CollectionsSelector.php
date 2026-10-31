@@ -138,7 +138,7 @@ trait CollectionsSelector
         $collections = [];
         foreach ($this->new_collection_names as $name) {
             $collections[] = models\Collection::init(
-                $user->id,
+                $user,
                 $name,
                 description: '',
                 is_public: false,
@@ -156,7 +156,7 @@ trait CollectionsSelector
         $user = $this->optionAs('user', models\User::class);
 
         $collections_by_others = models\Collection::listWritableContainingNotOwnedLinkWithUrl(
-            $user->id,
+            $user,
             $this->model()->url_hash,
         );
 
