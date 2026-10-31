@@ -352,24 +352,6 @@ class User
     }
 
     /**
-     * Return the collections shared by the user to the given user.
-     *
-     * @see Collection::listComputedSharedByUserTo
-     *
-     * @param string[] $selected_computed_props
-     *
-     * @return Collection[]
-     */
-    public function sharedCollectionsTo(User $to_user, array $selected_computed_props = []): array
-    {
-        return Collection::listComputedSharedByUserTo(
-            $this,
-            $to_user,
-            $selected_computed_props
-        );
-    }
-
-    /**
      * Return whether the user can write to the given collections or not.
      *
      * @param string[] $collection_ids

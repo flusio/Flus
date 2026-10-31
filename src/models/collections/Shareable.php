@@ -204,66 +204,6 @@ trait Shareable
     }
 
     /**
-     * Return the collections shared by a user to another user with their computed properties.
-     *
-     * @param User $user
-     *     The user who shares the collections.
-     * @param User $to_user
-     *     The user with who the collections are shared.
-     * @param string[] $selected_computed_props
-     *     The list of computed properties to return. It is mandatory to
-     *     select specific properties to avoid computing dispensable
-     *     properties.
-     *
-     * @return self[]
-     */
-    public static function listComputedSharedByUserTo(
-        User $user,
-        User $to_user,
-        array $selected_computed_props,
-    ): array {
-        $parameters = [
-            ':user_id' => $user->id,
-            ':to_user_id' => $to_user->id,
-        ];
-
-        $number_links_clause = '';
-        $join_clause = '';
-        $group_by_clause = '';
-        if (in_array('number_links', $selected_computed_props)) {
-            $number_links_clause = ', COUNT(lc.id) AS number_links';
-            $join_clause = <<<SQL
-                LEFT JOIN links_to_collections lc
-                ON lc.collection_id = c.id
-            SQL;
-            $group_by_clause = 'GROUP BY c.id';
-        }
-
-        $sql = <<<SQL
-            SELECT
-                c.*
-                {$number_links_clause}
-            FROM collection_shares cs, collections c
-
-            {$join_clause}
-
-            WHERE c.user_id = :user_id
-            AND c.type = 'collection'
-
-            AND cs.collection_id = c.id
-            AND cs.user_id = :to_user_id
-
-            {$group_by_clause}
-        SQL;
-
-        $database = Database::get();
-        $statement = $database->prepare($sql);
-        $statement->execute($parameters);
-
-        return self::fromDatabaseRows($statement->fetchAll());
-    }
-
-    /**
      * List collections which are writable by the given user, containing a link
      * not owned by the given user and with the given URL.
      *
