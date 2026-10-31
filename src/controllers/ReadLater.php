@@ -99,14 +99,14 @@ class ReadLater extends BaseController
     public function index(Request $request): Response
     {
         $user = auth\CurrentUser::require();
-        $read_later_source = $user->readLaterSource();
+        $read_later_list = $user->readLaterList();
 
         $page = $request->parameters->getInteger('page', 1);
 
-        $number_links = $read_later_source->countLinks();
+        $number_links = $read_later_list->countLinks();
         $pagination = new utils\Pagination($number_links, 29, $page);
 
-        $links = $read_later_source->links($pagination);
+        $links = $read_later_list->links($pagination);
 
         models\links\Preloader::for($links)
             ->originsFor($user)
@@ -115,7 +115,7 @@ class ReadLater extends BaseController
             ->numberNotes();
 
         return Response::ok('read_later/index.html.twig', [
-            'read_later_source' => $read_later_source,
+            'read_later_list' => $read_later_list,
             'links' => $links,
             'pagination' => $pagination,
         ]);

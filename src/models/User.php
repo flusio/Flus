@@ -570,19 +570,19 @@ class User
     }
 
     /**
-     * Return the source of read links for the current user.
+     * Return the list of read links of the current user.
      */
-    public function readSource(): ReadSource
+    public function readList(): ReadList
     {
-        return new ReadSource($this);
+        return new ReadList($this);
     }
 
     /**
-     * Return the source of links to read later for the current user.
+     * Return the list of links to read later of the current user.
      */
-    public function readLaterSource(): ReadLaterSource
+    public function readLaterList(): ReadLaterList
     {
-        return new ReadLaterSource($this);
+        return new ReadLaterList($this);
     }
 
     /**

@@ -44,8 +44,8 @@ class DataExporter
         $files['metadata.json'] = $this->generateMetadata();
         $files['followed.opml.xml'] = $this->generateOpml($user);
         $files['journal.atom.xml'] = $this->generateCollection($user->journal());
-        $files['read-later.atom.xml'] = $this->generateSource($user->readLaterSource());
-        $files['read.atom.xml'] = $this->generateSource($user->readSource());
+        $files['read-later.atom.xml'] = $this->generateReadingStatusList($user->readLaterList());
+        $files['read.atom.xml'] = $this->generateReadingStatusList($user->readList());
 
         $streams = $user->streams();
         foreach ($streams as $stream) {
@@ -169,13 +169,13 @@ class DataExporter
     }
 
     /**
-     * Return an Atom representation of the given source.
+     * Return an Atom representation of the given reading status list.
      */
-    private function generateSource(models\Source $source): string
+    private function generateReadingStatusList(models\ReadingStatusList $reading_status_list): string
     {
-        $view = new \Minz\Template\Twig('sources/exportation.atom.xml.twig', [
-            'source' => $source,
-            'links' => $source->links(),
+        $view = new \Minz\Template\Twig('reading_status_lists/exportation.atom.xml.twig', [
+            'reading_status_list' => $reading_status_list,
+            'links' => $reading_status_list->links(),
         ]);
 
         return utils\Xml::format($view->render());

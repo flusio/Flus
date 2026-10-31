@@ -30,14 +30,14 @@ class Read extends BaseController
     public function index(Request $request): Response
     {
         $user = auth\CurrentUser::require();
-        $read_source = $user->readSource();
+        $read_list = $user->readList();
 
         $page = $request->parameters->getInteger('page', 1);
 
-        $number_links = $read_source->countLinks();
+        $number_links = $read_list->countLinks();
         $pagination = new utils\Pagination($number_links, 30, $page);
 
-        $links = $read_source->links($pagination);
+        $links = $read_list->links($pagination);
 
         models\links\Preloader::for($links)
             ->originsFor($user)
@@ -46,7 +46,7 @@ class Read extends BaseController
             ->numberNotes();
 
         return Response::ok('read/index.html.twig', [
-            'read_source' => $read_source,
+            'read_list' => $read_list,
             'links' => $links,
             'pagination' => $pagination,
         ]);

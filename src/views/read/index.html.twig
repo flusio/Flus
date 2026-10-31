@@ -6,7 +6,7 @@
     {% set current_url_params = { page: pagination.currentPage } %}
 {% endif %}
 
-{% block title %}{{ read_source.name }}{% endblock %}
+{% block title %}{{ read_list.name }}{% endblock %}
 {% block canonical %}{{ url_full('read list', current_url_params) }}{% endblock %}
 
 {% block layout_header %}
@@ -18,16 +18,16 @@
 {% endblock %}
 
 {% block back %}
-    {{ include('layouts/_back.html.twig', { title: read_source.name, reset: true }) }}
+    {{ include('layouts/_back.html.twig', { title: read_list.name, reset: true }) }}
 {% endblock %}
 
 {% block body %}
-    <h1 class="text--center">{{ read_source.name }}</h1>
+    <h1 class="text--center">{{ read_list.name }}</h1>
 
     <div class="flow flow--larger">
         <div class="flow flow--large">
             <p class="text--center">
-                {{ read_source.description }}
+                {{ read_list.description }}
             </p>
 
             {{ include('links/_pagination_count.html.twig') }}

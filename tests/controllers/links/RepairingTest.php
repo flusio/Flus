@@ -235,8 +235,8 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, "/links/{$link->id}/repair");
-        $read_later_source = $user->readLaterSource();
-        $read_later_links = $read_later_source->links();
+        $read_later_list = $user->readLaterList();
+        $read_later_links = $read_later_list->links();
         $this->assertSame(1, count($read_later_links));
         $this->assertSame($link->id, $read_later_links[0]->id);
         $this->assertSame($new_url, $read_later_links[0]->url);
@@ -263,8 +263,8 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, "/links/{$link->id}/repair");
-        $read_source = $user->readSource();
-        $read_links = $read_source->links();
+        $read_list = $user->readList();
+        $read_links = $read_list->links();
         $this->assertSame(1, count($read_links));
         $this->assertSame($link->id, $read_links[0]->id);
         $this->assertSame($new_url, $read_links[0]->url);

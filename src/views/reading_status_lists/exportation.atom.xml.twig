@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <title>{{ source.name }}</title>
-    {% if source.description %}
-        <subtitle type="text"><![CDATA[{{ source.description }}]]></subtitle>
+    <title>{{ reading_status_list.name }}</title>
+    {% if reading_status_list.description %}
+        <subtitle type="text"><![CDATA[{{ reading_status_list.description }}]]></subtitle>
     {% endif %}
 
-    <link href="{{ source.url }}" rel="alternate" type="text/html" />
+    <link href="{{ reading_status_list.url }}" rel="alternate" type="text/html" />
 
-    <id>{{ source.tagUri }}</id>
+    <id>{{ reading_status_list.tagUri }}</id>
     <author>
-        <name>{{ source.owner.username }}</name>
+        <name>{{ reading_status_list.owner.username }}</name>
     </author>
     <generator>{{ app.user_agent }}</generator>
 

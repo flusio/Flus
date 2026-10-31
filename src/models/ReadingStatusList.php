@@ -5,12 +5,12 @@ namespace App\models;
 use App\utils;
 
 /**
- * A source provides a list of links.
+ * A list of the links having a given reading status for a user.
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-abstract class Source
+abstract class ReadingStatusList
 {
     abstract public function name(): string;
 

@@ -8,26 +8,26 @@ use App\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class ReadLaterSource extends Source
+class ReadList extends ReadingStatusList
 {
     public function __construct(
-        public readonly User $owner,
+        private readonly User $owner,
     ) {
     }
 
     public function name(): string
     {
-        return _('To read');
+        return _('Links read');
     }
 
     public function description(): string
     {
-        return _('Place here the links you want to consult later on.');
+        return _('Find here all the links you’ve marked as read.');
     }
 
     public function url(): string
     {
-        return \Minz\Url::absoluteFor('read later');
+        return \Minz\Url::absoluteFor('read list');
     }
 
     public function owner(): User
@@ -40,12 +40,12 @@ class ReadLaterSource extends Source
      */
     public function links(?utils\Pagination $pagination = null): array
     {
-        return Link::listReadLater($this->owner, $pagination);
+        return Link::listRead($this->owner, $pagination);
     }
 
     public function countLinks(): int
     {
-        return Link::countReadLater($this->owner);
+        return Link::countRead($this->owner);
     }
 
     /**
@@ -57,6 +57,6 @@ class ReadLaterSource extends Source
     {
         $host = \App\Configuration::$url_options['host'];
         $date = $this->owner->created_at->format('Y-m-d');
-        return "tag:{$host},{$date}:{$this->owner->id}/read/later";
+        return "tag:{$host},{$date}:{$this->owner->id}/read";
     }
 }

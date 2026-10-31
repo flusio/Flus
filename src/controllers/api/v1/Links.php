@@ -38,9 +38,9 @@ class Links extends BaseController
         $pagination_per_page = min(100, max(1, $pagination_per_page));
 
         if ($collection_id === 'to-read') {
-            return $this->indexSource($user->readLaterSource(), $pagination_page, $pagination_per_page);
+            return $this->indexReadingStatusList($user->readLaterList(), $pagination_page, $pagination_per_page);
         } elseif ($collection_id === 'read') {
-            return $this->indexSource($user->readSource(), $pagination_page, $pagination_per_page);
+            return $this->indexReadingStatusList($user->readList(), $pagination_page, $pagination_per_page);
         } else {
             return $this->indexCollection($collection_id, $pagination_page, $pagination_per_page);
         }
@@ -103,14 +103,17 @@ class Links extends BaseController
     /**
      * @response 200
      */
-    private function indexSource(models\Source $source, int $pagination_page, int $pagination_per_page): Response
-    {
+    private function indexReadingStatusList(
+        models\ReadingStatusList $reading_status_list,
+        int $pagination_page,
+        int $pagination_per_page,
+    ): Response {
         $user = auth\CurrentUser::require();
 
-        $number_links = $source->countLinks();
+        $number_links = $reading_status_list->countLinks();
         $pagination = new utils\Pagination($number_links, $pagination_per_page, $pagination_page);
 
-        $links = $source->links($pagination);
+        $links = $reading_status_list->links($pagination);
 
         models\links\Preloader::for($links)
             ->collections()
