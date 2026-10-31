@@ -21,8 +21,8 @@ class Link
     use dao\MediaQueries;
     use Database\Recordable;
     use Database\Resource;
-    use Fetchable;
     use links\Annotable;
+    use links\Fetchable;
     use links\InCollections;
     use links\InJournal;
     use links\InStreams;

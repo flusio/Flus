@@ -1,6 +1,6 @@
 <?php
 
-namespace App\models;
+namespace App\models\links;
 
 use Minz\Database;
 
