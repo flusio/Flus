@@ -43,7 +43,7 @@ class DataExporter
         $files = [];
         $files['metadata.json'] = $this->generateMetadata();
         $files['followed.opml.xml'] = $this->generateOpml($user);
-        $files['journal.atom.xml'] = $this->generateCollection($user->journal());
+        $files['journal.atom.xml'] = $this->generateJournal($user->journal());
         $files['read-later.atom.xml'] = $this->generateReadingStatusList($user->readLaterList());
         $files['read.atom.xml'] = $this->generateReadingStatusList($user->readList());
 
@@ -152,6 +152,19 @@ class DataExporter
         }
 
         return $json;
+    }
+
+    /**
+     * Return an Atom representation of the given journal.
+     */
+    private function generateJournal(models\Journal $journal): string
+    {
+        $view = new \Minz\Template\Twig('journal/exportation.atom.xml.twig', [
+            'journal' => $journal,
+            'links' => $journal->links(['published_at']),
+        ]);
+
+        return utils\Xml::format($view->render());
     }
 
     /**

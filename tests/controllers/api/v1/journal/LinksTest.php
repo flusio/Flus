@@ -21,8 +21,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link1->addCollection($journal);
-        $link2->addCollection($journal);
+        $journal->addLinks([$link1, $link2]);
 
         $this->assertFalse($user->hasDismissed($link1));
         $this->assertFalse($user->hasDismissed($link2));
@@ -44,8 +43,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link1->addCollection($journal, at: new \DateTimeImmutable('2025-08-22'));
-        $link2->addCollection($journal, at: new \DateTimeImmutable('2025-08-23'));
+        $journal->addLinks([$link1], at: new \DateTimeImmutable('2025-08-22'));
+        $journal->addLinks([$link2], at: new \DateTimeImmutable('2025-08-23'));
 
         $this->assertFalse($user->hasDismissed($link1));
         $this->assertFalse($user->hasDismissed($link2));
@@ -71,8 +70,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link1->addCollection($journal);
-        $link2->addCollection($journal);
+        $journal->addLinks([$link1, $link2]);
 
         $this->assertFalse($user->hasDismissed($link1));
         $this->assertFalse($user->hasDismissed($link2));
@@ -96,8 +94,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link1->addCollection($journal);
-        $link2->addCollection($journal);
+        $journal->addLinks([$link1, $link2]);
 
         $this->assertFalse($user->hasDismissed($link1));
         $this->assertFalse($user->hasDismissed($link2));

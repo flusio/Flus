@@ -91,8 +91,8 @@ class Journal extends Collection
             $link->save();
 
             // And don't forget to add the link to the journal!
-            $link->addCollection(
-                $this,
+            $this->addLinks(
+                [$link],
                 at: $followed_link->published_at,
                 sync_publication_frequency: false,
             );

@@ -25,8 +25,8 @@ class JournalTest extends \PHPUnit\Framework\TestCase
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link1->addCollection($journal, at: \Minz\Time::ago(5, 'minutes'));
-        $link2->addCollection($journal, at: \Minz\Time::ago(10, 'minutes'));
+        $journal->addLinks([$link1], at: \Minz\Time::ago(5, 'minutes'));
+        $journal->addLinks([$link2], at: \Minz\Time::ago(10, 'minutes'));
 
         $response = $this->apiRun('GET', '/api/v1/journal');
 
@@ -55,7 +55,7 @@ class JournalTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'origin' => $origin,
         ]);
-        $link->addCollection($journal);
+        $journal->addLinks([$link]);
 
         $response = $this->apiRun('GET', '/api/v1/journal');
 
@@ -82,8 +82,8 @@ class JournalTest extends \PHPUnit\Framework\TestCase
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link1->addCollection($journal, at: \Minz\Time::ago(5, 'minutes'));
-        $link2->addCollection($journal, at: \Minz\Time::ago(10, 'minutes'));
+        $journal->addLinks([$link1], at: \Minz\Time::ago(5, 'minutes'));
+        $journal->addLinks([$link2], at: \Minz\Time::ago(10, 'minutes'));
 
         $response = $this->apiRun('GET', '/api/v1/journal');
 

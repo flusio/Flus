@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>{{ journal.name() }}</title>
+
+    <link href="{{ url_full('journal') }}" rel="alternate" type="text/html" />
+
+    <id>{{ journal.tagUri }}</id>
+    <author>
+        <name>{{ journal.owner.username }}</name>
+    </author>
+    <generator>{{ app.user_agent }}</generator>
+
+    {% if links %}
+        <updated>{{ links[0].published_at.format(constant('DATE_ATOM')) }}</updated>
+    {% else %}
+        <updated>{{ date().format(constant('DATE_ATOM')) }}</updated>
+    {% endif %}
+
+    <category term="Flus:type:journal" />
+
+    {% for link in links %}
+        <entry>
+            <title>{{ link.title }}</title>
+            <id>{{ link.tagUri }}</id>
+
+            <link href="{{ link.url }}" rel="alternate" type="text/html" />
+            <link href="{{ url_full('link', { id: link.id }) }}" rel="replies" type="text/html" />
+
+            {% if link.is_hidden %}
+                <category term="Flus:hidden" />
+            {% endif %}
+
+            <published>{{ link.published_at.format(constant('DATE_ATOM')) }}</published>
+            <updated>{{ link.published_at.format(constant('DATE_ATOM')) }}</updated>
+
+            <content type="html"></content>
+        </entry>
+    {% endfor %}
+</feed>
