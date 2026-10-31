@@ -121,3 +121,27 @@ flus$ sudo systemctl restart flus-worker@*
 ```
 
 Flus will soon request Youtube servers with those two addresses.
+
+## Disable JIT compilation in PostgreSQL
+
+PostgreSQL can compile queries to machine code before running them (JIT compilation).
+It speeds up long queries, but Flus mostly runs many short queries.
+For these, the compilation often takes longer than the query itself.
+For these reasons, it is recommended to disable JIT compilation.
+
+To disable it, run the following commands as a PostgreSQL superuser:
+
+```sql
+ALTER SYSTEM SET jit = off;
+SELECT pg_reload_conf();
+```
+
+The change is applied immediately, without restarting PostgreSQL.
+You can revert it with:
+
+```sql
+ALTER SYSTEM RESET jit;
+SELECT pg_reload_conf();
+```
+
+Learn more in [the PostgreSQL documentation](https://www.postgresql.org/docs/current/jit-decision.html).
