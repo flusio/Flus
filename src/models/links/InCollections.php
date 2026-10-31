@@ -348,7 +348,9 @@ trait InCollections
 
         $visibility_join_clause = '';
         $visibility_clause = '';
-        if (!$options['hidden']) {
+        // The links of the feeds are never hidden, so no need to check their
+        // visibility, allowing to avoid joining the links table.
+        if (!$options['hidden'] && $collection->type !== 'feed') {
             $visibility_join_clause = 'INNER JOIN links l ON l.id = lc.link_id';
             $visibility_clause = 'AND l.is_hidden = false';
         }
