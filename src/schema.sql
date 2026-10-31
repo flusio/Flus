@@ -161,7 +161,7 @@ CREATE TABLE collections (
 
 CREATE INDEX idx_collections_user_id ON collections(user_id);
 CREATE INDEX idx_collections_feed_fetched_next_at ON collections(feed_fetched_next_at);
-CREATE INDEX idx_collections_image_filename ON collections(image_filename) WHERE image_filename IS NOT NULL;
+CREATE INDEX idx_collections_image_filename_pattern ON collections(image_filename text_pattern_ops) WHERE image_filename IS NOT NULL;
 
 CREATE TABLE links (
     id TEXT PRIMARY KEY,
@@ -206,7 +206,7 @@ CREATE INDEX idx_links_origin ON links USING gin (origin gin_trgm_ops) WHERE ori
 CREATE INDEX idx_links_source_id ON links(source_id) WHERE source_id IS NOT NULL;
 CREATE INDEX idx_links_fetched_at ON links(fetched_at) WHERE fetched_at IS NULL;
 CREATE INDEX idx_links_fetched_retry_at ON links(fetched_retry_at) WHERE fetched_retry_at IS NOT NULL;
-CREATE INDEX idx_links_image_filename ON links(image_filename) WHERE image_filename IS NOT NULL;
+CREATE INDEX idx_links_image_filename_pattern ON links(image_filename text_pattern_ops) WHERE image_filename IS NOT NULL;
 CREATE INDEX idx_links_search ON links USING GIN (search_index);
 CREATE INDEX idx_links_tags ON links USING GIN (tags);
 
@@ -248,6 +248,7 @@ CREATE TABLE followed_collections (
 );
 
 CREATE UNIQUE INDEX idx_followed_collections ON followed_collections(user_id, collection_id);
+CREATE INDEX idx_followed_collections_image_filename_pattern ON followed_collections(image_filename text_pattern_ops) WHERE image_filename IS NOT NULL;
 
 CREATE TABLE streams (
     id TEXT PRIMARY KEY,
@@ -263,7 +264,7 @@ CREATE TABLE streams (
 );
 
 CREATE INDEX idx_streams_user_id ON streams(user_id);
-CREATE INDEX idx_streams_image_filename ON streams(image_filename) WHERE image_filename IS NOT NULL;
+CREATE INDEX idx_streams_image_filename_pattern ON streams(image_filename text_pattern_ops) WHERE image_filename IS NOT NULL;
 
 CREATE TABLE streams_to_follows (
     id BIGSERIAL PRIMARY KEY,
