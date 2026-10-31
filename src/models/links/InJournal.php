@@ -34,45 +34,61 @@ trait InJournal
             ':limit' => $max,
         ];
 
+        // The candidates are selected first, from the follows of the user. The
+        // lower date limit of each follow is computed as a single expression,
+        // so PostgreSQL can use it as a bound of the links_to_collections
+        // index. The candidates are sorted by publication date, so the main
+        // query stops as soon as it reaches the limit.
+        // The CTE is materialized because PostgreSQL badly estimates the
+        // number of candidates otherwise.
         $sql = <<<SQL
+            WITH candidates AS MATERIALIZED (
+                SELECT lc.link_id, lc.collection_id, lc.created_at
+                FROM followed_collections fc, links_to_collections lc
+
+                WHERE fc.user_id = :user_id
+                AND fc.collection_id = lc.collection_id
+
+                AND fc.time_filter IN ('strict', 'normal', 'all')
+                AND lc.created_at >= GREATEST(
+                    :until_hard_limit,
+                    CASE fc.time_filter
+                        WHEN 'strict' THEN :until_strict
+                        WHEN 'normal' THEN :until_normal
+                        WHEN 'all' THEN fc.created_at - INTERVAL '1 week'
+                    END
+                )
+
+                ORDER BY lc.created_at DESC
+            )
+
             SELECT
                 l.url_hash,
                 l.*,
-                lc.created_at AS published_at,
-                c.id AS source_id
-            FROM collections c, links_to_collections lc, followed_collections fc, links l
+                ca.created_at AS published_at,
+                co.id AS source_id
+            FROM collections co, candidates ca, links l
 
             LEFT JOIN url_statuses us ON us.user_id = :user_id AND us.url_hash = l.url_hash
 
-            WHERE fc.user_id = :user_id
-            AND fc.collection_id = lc.collection_id
-
-            AND lc.link_id = l.id
-            AND lc.collection_id = c.id
+            WHERE ca.link_id = l.id
+            AND ca.collection_id = co.id
 
             AND us.read_at IS NULL
             AND us.read_later_at IS NULL
             AND us.dismissed_at IS NULL
 
             AND (
-                (l.is_hidden = false AND c.is_public = true)
-                OR c.user_id = :user_id
+                (l.is_hidden = false AND co.is_public = true)
+                OR co.user_id = :user_id
                 OR EXISTS (
                     SELECT 1 FROM collection_shares cs
                     WHERE cs.user_id = :user_id
-                    AND cs.collection_id = c.id
+                    AND cs.collection_id = co.id
                 )
             )
 
             AND l.user_id IS DISTINCT FROM :user_id
-
-            AND lc.created_at >= :until_hard_limit
-            AND fc.time_filter != 'none'
-            AND (
-                (fc.time_filter = 'strict' AND lc.created_at >= :until_strict) OR
-                (fc.time_filter = 'normal' AND lc.created_at >= :until_normal) OR
-                (fc.time_filter = 'all' AND lc.created_at >= fc.created_at - INTERVAL '1 week')
-            )
 
             ORDER BY published_at DESC, l.id
 
@@ -134,12 +150,14 @@ trait InJournal
 
                 AND l.user_id IS DISTINCT FROM :user_id
 
-                AND lc.created_at >= :until_hard_limit
-                AND fc.time_filter != 'none'
-                AND (
-                    (fc.time_filter = 'strict' AND lc.created_at >= :until_strict) OR
-                    (fc.time_filter = 'normal' AND lc.created_at >= :until_normal) OR
-                    (fc.time_filter = 'all' AND lc.created_at >= fc.created_at - INTERVAL '1 week')
+                AND fc.time_filter IN ('strict', 'normal', 'all')
+                AND lc.created_at >= GREATEST(
+                    :until_hard_limit,
+                    CASE fc.time_filter
+                        WHEN 'strict' THEN :until_strict
+                        WHEN 'normal' THEN :until_normal
+                        WHEN 'all' THEN fc.created_at - INTERVAL '1 week'
+                    END
                 )
             )
         SQL;
