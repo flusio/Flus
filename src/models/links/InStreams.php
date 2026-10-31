@@ -467,6 +467,8 @@ trait InStreams
         if ($options['query']) {
             list($search_clause, $search_parameters) = LinksSearcher::buildWhereQuery(
                 $options['query'],
+                alias: 'l',
+                date_field: 'lc.created_at',
                 sources: $sources,
                 context_user: $options['context_user'],
             );

@@ -38,7 +38,6 @@ class LinksQueryBuilder extends QueryBuilder
      * copies of the user: the qualifiers about the origin, the notes, the tags
      * and the visibility would search in the data of the sources, which is
      * confusing.
-     * The qualifier about the date is redundant with the period of the stream.
      * They are not listed, so they are read as text. For the same reason, the
      * "#tags" are not searchable in a stream (see LinksSearcher::buildQuery()).
      * The qualifier about the source requires the sources of the stream to be
@@ -51,11 +50,14 @@ class LinksQueryBuilder extends QueryBuilder
         'source' => '@text',
         'is' => ['up', 'down'],
         'duration' => self::NUMBER_VALUE_REGEX,
+        'date' => self::DATE_VALUE_REGEX,
     ];
 
     /**
      * @param literal-string $alias
      *     The alias given to the searched table in the request.
+     * @param literal-string $date_field
+     *     The field searched with the "date" qualifier.
      * @param models\Collection[] $sources
      *     The sources in which the links can be searched with the "source"
      *     qualifier.
@@ -65,6 +67,7 @@ class LinksQueryBuilder extends QueryBuilder
      */
     public function __construct(
         string $alias,
+        private string $date_field,
         private array $sources = [],
         private ?models\User $context_user = null,
     ) {
@@ -281,7 +284,7 @@ class LinksQueryBuilder extends QueryBuilder
      */
     private function buildDateQualifierExpr(Query\Condition $condition): string
     {
-        return $this->buildExprDate("{$this->alias}.created_at", $condition->getValue(), $condition->not());
+        return $this->buildExprDate($this->date_field, $condition->getValue(), $condition->not());
     }
 
     /**

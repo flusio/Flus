@@ -42,7 +42,11 @@ class LinksSearcher
             $parameters[':limit'] = $pagination['limit'];
         }
 
-        list($query_statement, $query_parameters) = self::buildWhereQuery($query);
+        list($query_statement, $query_parameters) = self::buildWhereQuery(
+            $query,
+            alias: 'l',
+            date_field: 'l.created_at',
+        );
         $parameters = array_merge($parameters, $query_parameters);
 
         $sql = <<<SQL
@@ -73,7 +77,11 @@ class LinksSearcher
             ':user_id' => $user->id,
         ];
 
-        list($query_statement, $query_parameters) = self::buildWhereQuery($query);
+        list($query_statement, $query_parameters) = self::buildWhereQuery(
+            $query,
+            alias: 'l',
+            date_field: 'l.created_at',
+        );
         $parameters = array_merge($parameters, $query_parameters);
 
         $sql = <<<SQL
@@ -119,22 +127,25 @@ class LinksSearcher
      * the WHERE clause of a request on the links table (see LinksQueryBuilder::build()).
      *
      * `$alias` is the alias given to the links table in the request.
+     * `$date_field` is the field searched with the "date" qualifier.
      * `$sources` are the sources searchable with the "source" qualifier, and
      * `$context_user` is the user performing the search (see
      * LinksQueryBuilder::__construct()).
      *
      * @param literal-string $alias
+     * @param literal-string $date_field
      * @param models\Collection[] $sources
      *
      * @return array{literal-string, array<string, mixed>}
      */
     public static function buildWhereQuery(
         Query $query,
-        string $alias = 'l',
+        string $alias,
+        string $date_field,
         array $sources = [],
         ?models\User $context_user = null,
     ): array {
-        $queryBuilder = new LinksQueryBuilder($alias, $sources, $context_user);
+        $queryBuilder = new LinksQueryBuilder($alias, $date_field, $sources, $context_user);
         return $queryBuilder->build($query);
     }
 }

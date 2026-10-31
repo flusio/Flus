@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-10-27 21:21+0100\n"
-"PO-Revision-Date: 2026-10-27 21:21+0100\n"
+"POT-Creation-Date: 2026-10-31 15:44+0100\n"
+"PO-Revision-Date: 2026-10-31 15:47+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -2012,74 +2012,95 @@ msgstr "Liens dont le nom de la source contient le texte."
 msgid "Links whose source name does not contain the text."
 msgstr "Liens dont le nom de la source ne contient pas le texte."
 
+#: views/links/_search_help.html.twig:89
+msgid "Dates (within the selected period)"
+msgstr "Dates (dans la période sélectionnée)"
+
+#: views/links/_search_help.html.twig:91
+msgid "Links published on that day (or during that month, or that year)."
+msgstr "Liens publiés ce jour-là (ou durant ce mois-là, ou cette année-là)."
+
+#: views/links/_search_help.html.twig:92
+msgid "Links published from the date, with “>”, “>=”, “<” or “<=”."
+msgstr ""
+"Liens publiés à partir de la date, avec « > », « >= », « < » ou « <= »."
+
+#: views/links/_search_help.html.twig:93
+msgid "Links published between the two dates."
+msgstr "Liens publiés entre les deux dates."
+
 #: views/links/_search_help.html.twig:94
+msgid "Links published today (or “current-month”, “current-year”)."
+msgstr "Liens publiés aujourd’hui (ou « current-month », « current-year »)."
+
+#: views/links/_search_help.html.twig:103
 msgid "Notes"
 msgstr "Notes"
 
-#: views/links/_search_help.html.twig:96
+#: views/links/_search_help.html.twig:105
 msgid "Links whose notes contain the word."
 msgstr "Liens dont les notes contiennent le mot."
 
-#: views/links/_search_help.html.twig:97
+#: views/links/_search_help.html.twig:106
 msgid ""
 "Links with at least one note (and “no:notes” for the links without any)."
 msgstr ""
 "Liens avec au moins une note (et « no:notes » pour les liens sans note)."
 
-#: views/links/_search_help.html.twig:101 views/links/edit.html.twig:78
+#: views/links/_search_help.html.twig:110 views/links/edit.html.twig:78
 msgid "Origin"
 msgstr "Origine"
 
-#: views/links/_search_help.html.twig:103
+#: views/links/_search_help.html.twig:112
 msgid "Links whose origin contains the text."
 msgstr "Liens dont l’origine contient le texte."
 
-#: views/links/_search_help.html.twig:104
+#: views/links/_search_help.html.twig:113
 msgid "Links whose origin does not contain the text."
 msgstr "Liens dont l’origine ne contient pas le texte."
 
-#: views/links/_search_help.html.twig:108
+#: views/links/_search_help.html.twig:117
 msgid "Hidden links"
 msgstr "Liens masqués"
 
-#: views/links/_search_help.html.twig:110
+#: views/links/_search_help.html.twig:119
 msgid "Hidden links."
 msgstr "Liens masqués."
 
-#: views/links/_search_help.html.twig:111
+#: views/links/_search_help.html.twig:120
 msgid "Links which are not hidden."
 msgstr "Liens qui ne sont pas masqués."
 
-#: views/links/_search_help.html.twig:115
+#: views/links/_search_help.html.twig:124
 msgid "Dates"
 msgstr "Dates"
 
-#: views/links/_search_help.html.twig:117
-msgid "Links added during the month (or the year, or the day)."
-msgstr "Liens ajoutés pendant le mois (ou l’année, ou le jour)."
+#: views/links/_search_help.html.twig:126
+msgid "Links added on that day (or during that month, or that year)."
+msgstr "Liens ajoutés ce jour-là (ou durant ce mois-là, ou cette année-là)."
 
-#: views/links/_search_help.html.twig:118
+#: views/links/_search_help.html.twig:127
 msgid "Links added from the date, with “>”, “>=”, “<” or “<=”."
 msgstr ""
 "Liens ajoutés à partir de la date, avec « > », « >= », « < » ou « <= »."
 
-#: views/links/_search_help.html.twig:119
+#: views/links/_search_help.html.twig:128
 msgid "Links added between the two dates."
 msgstr "Liens ajoutés entre les deux dates."
 
-#: views/links/_search_help.html.twig:120
+#: views/links/_search_help.html.twig:129
 msgid "Links added today (or “current-month”, “current-year”)."
 msgstr "Liens ajoutés aujourd’hui (ou « current-month », « current-year »)."
 
-#: views/links/_search_help.html.twig:128
+#: views/links/_search_help.html.twig:137
 msgid "Durations"
 msgstr "Durées"
 
-#: views/links/_search_help.html.twig:130
+#: views/links/_search_help.html.twig:139
 msgid "Links taking more than 10 minutes to read."
 msgstr "Liens prenant plus de 10 minutes à lire."
 
-#: views/links/_search_help.html.twig:131
+#: views/links/_search_help.html.twig:140
 msgid "Links taking between 5 and 15 minutes to read."
 msgstr "Liens prenant entre 5 et 15 minutes à lire."
 

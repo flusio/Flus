@@ -68,7 +68,7 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
     public function testBuildFromRequestReadsUnavailableQualifierAsText(): void
     {
         $request = new \Minz\Request('GET', '/stream', [
-            'q' => 'date:today',
+            'q' => 'origin:newsletter',
         ]);
         $stream = StreamFactory::create();
 
@@ -79,7 +79,7 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $conditions = $stream_view->search_query->getConditions();
         $this->assertSame(1, count($conditions));
         $this->assertTrue($conditions[0]->isTextCondition());
-        $this->assertSame('date:today', $conditions[0]->getValue());
+        $this->assertSame('origin:newsletter', $conditions[0]->getValue());
     }
 
     public function testBuildFromRequestSetsSearchErrorWhenQueryIsMalformed(): void
@@ -693,6 +693,73 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $links = $this->linksOfTimeline($links_timeline);
         $this->assertSame(1, count($links));
         $this->assertSame($link_1->id, $links[0]->id);
+    }
+
+    public function testLinksTimelineCanFilterLinksByPublicationDate(): void
+    {
+        $date = $this->fakeDateInPeriod();
+        $other_date = $date->modify('-1 day');
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        // The creation dates are inverted compared to the publication dates,
+        // to check that the search doesn't apply to the former.
+        $link_1 = LinkFactory::create([
+            'created_at' => $other_date,
+            'is_hidden' => false,
+        ]);
+        $link_2 = LinkFactory::create([
+            'created_at' => $date,
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link_1], at: $date);
+        $source->addLinks([$link_2], at: $other_date);
+        $stream->addSource($source);
+        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'days' => 2,
+            'q' => 'date:' . $date->format('Y-m-d'),
+        ]));
+
+        $links_timeline = $stream_view->linksTimeline();
+
+        $links = $this->linksOfTimeline($links_timeline);
+        $this->assertSame(1, count($links));
+        $this->assertSame($link_1->id, $links[0]->id);
+    }
+
+    public function testLinksTimelineCombinesDateSearchWithPeriod(): void
+    {
+        $date = $this->fakeDateInPeriod();
+        $other_date = $date->modify('-1 day');
+        $user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $source = CollectionFactory::create([
+            'type' => 'feed',
+            'is_public' => true,
+        ]);
+        $link = LinkFactory::create([
+            'is_hidden' => false,
+        ]);
+        $source->addLinks([$link], at: $other_date);
+        $stream->addSource($source);
+        $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
+            'at' => $date->format('Y-m-d'),
+            'days' => 1,
+            'q' => 'date:' . $other_date->format('Y-m-d'),
+        ]));
+
+        $links_timeline = $stream_view->linksTimeline();
+
+        $links = $this->linksOfTimeline($links_timeline);
+        $this->assertSame(0, count($links));
     }
 
     public function testLinksTimelineCanListInaccessibleLinks(): void
