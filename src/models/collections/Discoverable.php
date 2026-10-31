@@ -1,17 +1,40 @@
 <?php
 
-namespace App\models\dao\collections;
+namespace App\models\collections;
 
+use App\models\CollectionToTopic;
+use App\models\Topic;
 use Minz\Database;
 
 /**
- * Add methods providing SQL queries specific to the discovery system.
+ * Add the topics of a collection, which allow to discover the public collections.
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-trait DiscoveryQueries
+trait Discoverable
 {
+    /**
+     * Return the topics attached to the current collection.
+     *
+     * @return Topic[]
+     */
+    public function topics(): array
+    {
+        return Topic::listByCollectionId($this->id);
+    }
+
+    /**
+     * Set the collection's topics.
+     *
+     * @param Topic[] $topics
+     */
+    public function setTopics(array $topics): void
+    {
+        $topic_ids = array_column($topics, 'id');
+        CollectionToTopic::set($this->id, $topic_ids);
+    }
+
     /**
      * Return the list of public collections attached to the given topic.
      *

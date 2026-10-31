@@ -10,15 +10,26 @@ use Minz\Validable;
 /**
  * Represent a list containing a set of links.
  *
- * @phpstan-import-type ShareType from CollectionShare
- *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
 #[Database\Table(name: 'collections')]
 class Collection
 {
-    use dao\Collection;
+    use collections\Discoverable;
+    use collections\Fetchable;
+    use collections\Followable;
+    use collections\Groupable;
+    use collections\HasLinks;
+    use collections\InStreams;
+    use collections\OwnedByUser;
+    use collections\Prunable;
+    use collections\Publishing;
+    use collections\Shareable;
+    use collections\Statistics;
+    use dao\BulkQueries;
+    use dao\MediaQueries;
+    use Database\Lockable;
     use Database\Recordable;
     use Database\Resource;
     use utils\Memoizer;
@@ -63,42 +74,6 @@ class Collection
     #[Database\Column]
     public ?\DateTimeImmutable $image_fetched_at = null;
 
-    #[Database\Column]
-    public ?string $user_id = null;
-
-    #[Database\Column]
-    public ?string $group_id = null;
-
-    #[Database\Column]
-    public int $publication_frequency_per_year = 0;
-
-    #[Database\Column]
-    public ?string $feed_url = null;
-
-    #[Database\Column]
-    public ?string $feed_type = null;
-
-    #[Database\Column]
-    public ?string $feed_site_url = null;
-
-    #[Database\Column]
-    public ?string $feed_last_hash = null;
-
-    #[Database\Column]
-    public int $feed_fetched_code = 0;
-
-    #[Database\Column]
-    public ?\DateTimeImmutable $feed_fetched_at = null;
-
-    #[Database\Column]
-    public ?\DateTimeImmutable $feed_fetched_next_at = null;
-
-    #[Database\Column]
-    public ?string $feed_fetched_error = null;
-
-    #[Database\Column(computed: true)]
-    public ?int $number_links = null;
-
     public function __construct()
     {
         $this->id = \Minz\Random::timebased();
@@ -128,34 +103,6 @@ class Collection
         $collection->user_id = $user_id;
 
         return $collection;
-    }
-
-    public static function initFeed(string $feed_url): self
-    {
-        $collection = new self();
-
-        $collection->name = utils\Belt::cut($feed_url, self::NAME_MAX_LENGTH);
-        $collection->feed_url = \SpiderBits\Url::sanitize($feed_url);
-        $collection->type = 'feed';
-        $collection->is_public = true;
-
-        return $collection;
-    }
-
-    public static function findOrBuildFeed(string $feed_url): self
-    {
-        $feed_url = \SpiderBits\Url::sanitize($feed_url);
-
-        $feed = Collection::findBy([
-            'type' => 'feed',
-            'feed_url' => $feed_url,
-        ]);
-
-        if (!$feed) {
-            $feed = self::initFeed($feed_url);
-        }
-
-        return $feed;
     }
 
     public function isFeed(): bool
@@ -206,320 +153,6 @@ class Collection
     }
 
     /**
-     * Return the owner of the collection.
-     */
-    public function owner(): ?User
-    {
-        return $this->memoize('owner', function (): ?User {
-            if (!$this->user_id) {
-                return null;
-            }
-
-            return User::find($this->user_id);
-        });
-    }
-
-    /**
-     * Set the owner of the collection without querying the database.
-     *
-     * @see utils\OriginFormatter::preloadOrigins
-     */
-    public function preloadOwner(?User $owner): void
-    {
-        $this->memoizeValue('owner', $owner);
-    }
-
-    /**
-     * Set the publishers of the collection without querying the database.
-     *
-     * @see collections\Preloader
-     *
-     * @param User[] $publishers
-     */
-    public function preloadPublishers(array $publishers): void
-    {
-        $this->memoizeValue('publishers', $publishers);
-    }
-
-    /**
-     * Return the list of users with write access.
-     *
-     * @return User[]
-     */
-    public function publishers(): array
-    {
-        return $this->memoize('publishers', function (): array {
-            $owner = $this->owner();
-            $shares = $this->shares(['access_type' => 'write']);
-
-            $publishers = array_map(function (CollectionShare $share): User {
-                return $share->user();
-            }, $shares);
-
-            if ($owner) {
-                array_unshift($publishers, $owner);
-            }
-
-            return $publishers;
-        });
-    }
-
-    /**
-     * Return links of the current collection.
-     *
-     * @see Link::listComputedByCollection
-     *
-     * @param string[] $selected_computed_props
-     * @param array{
-     *     'published_date'?: ?\DateTimeImmutable,
-     *     'source'?: ?string,
-     *     'hidden'?: bool,
-     *     'offset'?: int,
-     *     'limit'?: int|'ALL',
-     * } $options
-     *
-     * @return Link[]
-     */
-    public function links(array $selected_computed_props = [], array $options = []): array
-    {
-        return Link::listComputedByCollection(
-            $this,
-            $selected_computed_props,
-            $options
-        );
-    }
-
-    /**
-     * Return a link from this collection with the given URL and not owned by
-     * the given user.
-     */
-    public function linkNotOwnedByUrl(User $user, string $url_hash): ?Link
-    {
-        return Link::findNotOwnedByCollectionAndUrl(
-            $user,
-            $this,
-            $url_hash,
-        );
-    }
-
-    /**
-     * Return whether the link is in the collection.
-     */
-    public function hasLink(Link $link): bool
-    {
-        return LinkToCollection::existsBy([
-            'link_id' => $link->id,
-            'collection_id' => $this->id,
-        ]);
-    }
-
-    /**
-     * Add the links to the collection.
-     *
-     * @param Link[] $links
-     */
-    public function addLinks(
-        array $links,
-        ?\DateTimeImmutable $at = null,
-        bool $sync_publication_frequency = true,
-    ): void {
-        $link_ids = array_column($links, 'id');
-        LinkToCollection::attach($link_ids, [$this->id], $at);
-
-        if ($sync_publication_frequency) {
-            $this->syncPublicationFrequencyPerYear();
-            $this->save();
-        }
-    }
-
-    /**
-     * Return the group if any.
-     */
-    public function group(): ?Group
-    {
-        if (!$this->group_id) {
-            return null;
-        }
-
-        return Group::require($this->group_id);
-    }
-
-    /**
-     * Return the number of streams of the given user in which this collection
-     * is a source.
-     */
-    public function countStreamsByUser(User $user): int
-    {
-        return $this->memoize("count_streams_{$user->id}", function () use ($user): int {
-            $counts = StreamToFollow::countByUserAndSources($user, [$this]);
-            return $counts[$this->id] ?? 0;
-        });
-    }
-
-    /**
-     * Set the number of streams of a user without querying the database.
-     *
-     * @see collections\Preloader
-     */
-    public function preloadCountStreamsByUser(User $user, int $count): void
-    {
-        $this->memoizeValue("count_streams_{$user->id}", $count);
-    }
-
-    /**
-     * Return the follow of the given user on this collection, or null if the
-     * user doesn't follow it.
-     */
-    public function followByUser(User $user): ?FollowedCollection
-    {
-        return $user->followedCollection($this);
-    }
-
-    /**
-     * Return the time filter applied by the given user to this collection, or
-     * null if the user doesn't follow it.
-     */
-    public function timeFilterByUser(User $user): ?string
-    {
-        return $this->followByUser($user)?->time_filter;
-    }
-
-    /**
-     * Return the name of the collection as given by the user.
-     *
-     * It defaults to the collection's name if the user didn't rename it.
-     */
-    public function nameByUser(?User $user): string
-    {
-        if (!$user) {
-            return $this->name();
-        }
-
-        $name_by_user = $this->followByUser($user)?->name;
-        return $name_by_user ?: $this->name();
-    }
-
-    /**
-     * Return the image filename of the collection as given by the user.
-     *
-     * It defaults to the collection's image if the user didn't change it.
-     */
-    public function imageFilenameByUser(?User $user): ?string
-    {
-        if (!$user) {
-            return $this->image_filename;
-        }
-
-        $image_filename_by_user = $this->followByUser($user)?->image_filename;
-        return $image_filename_by_user ?: $this->image_filename;
-    }
-
-    /**
-     * Return whether the given user follows this collection.
-     */
-    public function isFollowedBy(User $user): bool
-    {
-        return $this->followByUser($user) !== null;
-    }
-
-    /**
-     * Return the topics attached to the current collection.
-     *
-     * @return Topic[]
-     */
-    public function topics(): array
-    {
-        return Topic::listByCollectionId($this->id);
-    }
-
-    /**
-     * Set the collection's topics.
-     *
-     * @param Topic[] $topics
-     */
-    public function setTopics(array $topics): void
-    {
-        $topic_ids = array_column($topics, 'id');
-        CollectionToTopic::set($this->id, $topic_ids);
-    }
-
-    /**
-     * Return the CollectionShares attached to the current collection
-     *
-     * @see CollectionShare::listComputedByCollectionId
-     *
-     * @param array{
-     *     'access_type'?: ShareType|'any',
-     * } $options
-     *
-     * @return CollectionShare[]
-     */
-    public function shares(array $options = []): array
-    {
-        $collection_shares = CollectionShare::listComputedByCollectionId(
-            $this->id,
-            ['username'],
-            $options,
-        );
-        return utils\Sorter::localeSort($collection_shares, 'username');
-    }
-
-    /**
-     * Share the collection with the given user.
-     *
-     * @param ShareType $access_type
-     */
-    public function shareWith(User $user, string $access_type): void
-    {
-        $collection_share = new CollectionShare($user->id, $this->id, $access_type);
-        $collection_share->save();
-
-        $this->unmemoize('publishers');
-    }
-
-    /**
-     * Unshare the collection with the given user.
-     */
-    public function unshareWith(User $user): void
-    {
-        CollectionShare::deleteBy([
-            'collection_id' => $this->id,
-            'user_id' => $user->id,
-        ]);
-
-        $this->unmemoize('publishers');
-    }
-
-    /**
-     * Return whether the collections is shared with the given user.
-     *
-     * If $access_type is 'any' or 'read', the method returns true just if a
-     * collection_share exists for this collection and user.
-     *
-     * If $access_type is 'write', the method will check that the collection
-     * share has a 'write' type.
-     *
-     * @param ShareType|'any' $access_type
-     */
-    public function sharedWith(User $user, string $access_type = 'any'): bool
-    {
-        $existing_collection_share = CollectionShare::findBy([
-            'collection_id' => $this->id,
-            'user_id' => $user->id,
-        ]);
-
-        if (!$existing_collection_share) {
-            return false;
-        }
-
-        return (
-            $access_type === 'any' ||
-            $access_type === 'read' ||
-            $access_type === $existing_collection_share->type
-        );
-    }
-
-    /**
      * Return a tag URI that can be used as Atom id
      *
      * @see https://www.rfc-editor.org/rfc/rfc4151.txt
@@ -529,29 +162,6 @@ class Collection
         $host = \App\Configuration::$url_options['host'];
         $date = $this->created_at->format('Y-m-d');
         return "tag:{$host},{$date}:collections/{$this->id}";
-    }
-
-    /**
-     * Return the feed's site URL if any, or feed URL.
-     */
-    public function feedWebsiteUrl(): string
-    {
-        if ($this->feed_site_url) {
-            return $this->feed_site_url;
-        } elseif ($this->feed_url) {
-            return $this->feed_url;
-        } else {
-            throw new \LogicException('Cannot call this method on non-feed collection');
-        }
-    }
-
-    /**
-     * Return the feed site URL to be displayed
-     */
-    public function feedWebsiteHost(): string
-    {
-        $url = $this->feedWebsiteUrl();
-        return utils\Belt::host($url);
     }
 
     /**
@@ -573,88 +183,6 @@ class Collection
 
             return utils\HtmlSanitizer::sanitizeCollectionDescription($this->description, $site_url);
         }
-    }
-
-    /**
-     * Calculate and set the publication frequency of the collection.
-     */
-    public function syncPublicationFrequencyPerYear(): void
-    {
-        $today = \Minz\Time::now();
-        $one_year_ago = \Minz\Time::ago(1, 'year');
-
-        $count_links = Link::countByCollection($this, [
-            'since' => $one_year_ago,
-        ]);
-
-        if ($count_links === 0) {
-            $this->publication_frequency_per_year = 0;
-            return;
-        }
-
-        $oldest_published_at = Link::getOldestPublicationDateSince($this, $one_year_ago);
-
-        if ($oldest_published_at === null) {
-            $this->publication_frequency_per_year = 0;
-            return;
-        }
-
-        $diff_since_oldest_link = $today->diff($oldest_published_at);
-        $number_of_days = intval($diff_since_oldest_link->format('%a')) + 1;
-
-        $this->publication_frequency_per_year = (int) round($count_links / $number_of_days * 365);
-    }
-
-    /**
-     * Return the time filter suggested to receive the links of this collection
-     * in the journal.
-     *
-     * With the "normal" filter, a collection publishing more than one link a
-     * day would flood the journal, while a collection publishing less than one
-     * link a week would often bring nothing.
-     *
-     * Above a few links a day, no filter can keep the journal readable: the
-     * collection is better followed in a stream, so "none" is suggested.
-     *
-     * "all" is never suggested as it would be too easy to get overwhelmed
-     * by the journal.
-     */
-    public function suggestedTimeFilter(): string
-    {
-        if ($this->publication_frequency_per_year >= 3 * 365) {
-            // At least three links per day.
-            return 'none';
-        }
-
-        if ($this->publication_frequency_per_year >= 365) {
-            // At least one link per day.
-            return 'strict';
-        }
-
-        return 'normal';
-    }
-
-    /**
-     * Return the publication rate of the collection as a group, to be displayed
-     * or filtered on.
-     *
-     * The groups are the ranges delimited by the thresholds of
-     * suggestedTimeFilter(), which doesn't distinguish a collection publishing
-     * nothing from a quiet one.
-     */
-    public function publicationFrequencyGroup(): string
-    {
-        if ($this->publication_frequency_per_year === 0) {
-            return 'inactive';
-        }
-
-        $groups = [
-            'normal' => 'weekly',
-            'strict' => 'daily',
-            'none' => 'prolific',
-        ];
-
-        return $groups[$this->suggestedTimeFilter()];
     }
 
     /**
@@ -687,5 +215,32 @@ class Collection
                 'publication_frequency_per_year' => $this->publication_frequency_per_year,
             ];
         }
+    }
+
+    /**
+     * Return the clause limiting the collections (aliased as "c") to those
+     * that the given user can view, or to the public ones if no user is given.
+     *
+     * The :user_id parameter must be bound when a user is given.
+     *
+     * @see \App\auth\CollectionsAccess::canView
+     */
+    private static function buildVisibilityClause(?User $user): string
+    {
+        if (!$user) {
+            return 'AND c.is_public = true';
+        }
+
+        return <<<SQL
+            AND (
+                c.is_public = true
+                OR c.user_id = :user_id
+                OR EXISTS (
+                    SELECT 1 FROM collection_shares cs
+                    WHERE cs.user_id = :user_id
+                    AND cs.collection_id = c.id
+                )
+            )
+        SQL;
     }
 }

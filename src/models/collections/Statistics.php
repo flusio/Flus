@@ -1,16 +1,16 @@
 <?php
 
-namespace App\models\dao\collections;
+namespace App\models\collections;
 
 use Minz\Database;
 
 /**
- * Add methods providing SQL queries specific to the statistics.
+ * Add methods to count the collections of the instance.
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-trait StatisticsQueries
+trait Statistics
 {
     /**
      * Return the number of collections (type "collection").

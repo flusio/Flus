@@ -1,16 +1,16 @@
 <?php
 
-namespace App\models\dao\collections;
+namespace App\models\collections;
 
 use Minz\Database;
 
 /**
- * Add methods providing SQL queries specific to the Cleaner.
+ * Add methods to delete the collections that don't have to be kept anymore.
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-trait CleanerQueries
+trait Prunable
 {
     /**
      * Delete not followed collections older than the given date.
@@ -37,20 +37,5 @@ trait CleanerQueries
         return $statement->execute([
             ':date' => $date->format(Database\Column::DATETIME_FORMAT),
         ]);
-    }
-
-    /**
-     * Set all the feed_last_hash to empty string.
-     */
-    public static function resetHashes(): int
-    {
-        $sql = <<<SQL
-            UPDATE collections
-            SET feed_last_hash = ''
-            WHERE type = 'feed'
-        SQL;
-
-        $database = Database::get();
-        return $database->exec($sql);
     }
 }

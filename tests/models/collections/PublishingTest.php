@@ -1,13 +1,13 @@
 <?php
 
-namespace App\models;
+namespace App\models\collections;
 
 use App\models;
 use tests\factories\CollectionFactory;
 use tests\factories\LinkFactory;
 use tests\factories\UserFactory;
 
-class CollectionTest extends \PHPUnit\Framework\TestCase
+class PublishingTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\InitializerHelper;
 
