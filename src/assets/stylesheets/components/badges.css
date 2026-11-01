@@ -1,3 +1,7 @@
+.badge--tag {
+    overflow-wrap: anywhere;
+}
+
 .badge--filter {
     --badge-background-color: var(--color-grey-bg-subtle);
     --badge-border-color: var(--color-grey-border);
