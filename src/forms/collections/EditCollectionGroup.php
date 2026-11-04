@@ -67,7 +67,7 @@ class EditCollectionGroup extends BaseForm
         }
 
         $user = $this->optionAs('user', models\User::class);
-        return new models\Group($user->id, $this->name);
+        return new models\Group($user, $this->name);
     }
 
     #[Validable\Check]

@@ -48,10 +48,10 @@ class CollectionShare
     #[Database\Column(computed: true)]
     public ?string $username;
 
-    public function __construct(string $user_id, string $collection_id, string $type)
+    public function __construct(User $user, Collection $collection, string $type)
     {
-        $this->user_id = $user_id;
-        $this->collection_id = $collection_id;
+        $this->user_id = $user->id;
+        $this->collection_id = $collection->id;
         $this->type = $type;
     }
 
@@ -101,12 +101,6 @@ class CollectionShare
      */
     public function user(): User
     {
-        $user = User::find($this->user_id);
-
-        if (!$user) {
-            throw new \Exception("CollectionShare #{$this->id} has invalid user.");
-        }
-
-        return $user;
+        return User::require($this->user_id);
     }
 }

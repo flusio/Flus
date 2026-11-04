@@ -83,13 +83,7 @@ class MastodonAccount
      */
     public function user(): User
     {
-        $user = User::find($this->user_id);
-
-        if (!$user) {
-            throw new \Exception("MastodonAccount #{$this->id} has invalid user.");
-        }
-
-        return $user;
+        return User::require($this->user_id);
     }
 
     /**

@@ -34,12 +34,20 @@ class Exportation
     #[Database\Column]
     public string $user_id;
 
-    public function __construct(string $user_id)
+    public function __construct(User $user)
     {
         $this->status = 'ongoing';
         $this->error = '';
         $this->filepath = '';
-        $this->user_id = $user_id;
+        $this->user_id = $user->id;
+    }
+
+    /**
+     * Return the user who requested the exportation.
+     */
+    public function user(): User
+    {
+        return User::require($this->user_id);
     }
 
     /**

@@ -63,7 +63,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $data_exporter = new DataExporter($this->exportations_path);
         $user = UserFactory::create();
 
-        $filepath = $data_exporter->export($user->id);
+        $filepath = $data_exporter->export($user);
 
         $datetime = \Minz\Time::now()->format('Y-m-d_H\hi');
         $expected_filepath = $this->exportations_path . "/{$datetime}_{$user->id}_data.zip";
@@ -75,7 +75,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $data_exporter = new DataExporter($this->exportations_path);
         $user = UserFactory::create();
 
-        $filepath = $data_exporter->export($user->id);
+        $filepath = $data_exporter->export($user);
 
         $this->assertTrue(file_exists($filepath));
     }
@@ -85,7 +85,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $data_exporter = new DataExporter($this->exportations_path);
         $user = UserFactory::create();
 
-        $filepath = $data_exporter->export($user->id);
+        $filepath = $data_exporter->export($user);
 
         $metadata_content = $this->zipGetContents($filepath, 'metadata.json');
         $metadata = json_decode($metadata_content, true);
@@ -126,7 +126,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $user->follow($collection_3);
         $stream->addSource($collection_3);
 
-        $filepath = $data_exporter->export($user->id);
+        $filepath = $data_exporter->export($user);
 
         $opml_content = $this->zipGetContents($filepath, 'followed.opml.xml');
         $opml = \SpiderBits\Opml::fromText($opml_content);
@@ -172,7 +172,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $followed_collection->name = 'Flus news';
         $followed_collection->save();
 
-        $filepath = $data_exporter->export($user->id);
+        $filepath = $data_exporter->export($user);
 
         $opml_content = $this->zipGetContents($filepath, 'followed.opml.xml');
         $opml = \SpiderBits\Opml::fromText($opml_content);
@@ -201,7 +201,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $stream_1->addSource($feed);
         $stream_2->addSource($feed);
 
-        $filepath = $data_exporter->export($user->id);
+        $filepath = $data_exporter->export($user);
 
         $opml_content = $this->zipGetContents($filepath, 'followed.opml.xml');
         $opml = \SpiderBits\Opml::fromText($opml_content);
@@ -232,7 +232,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         ]);
         $user->markAsReadLater($link);
 
-        $filepath = $data_exporter->export($user->id);
+        $filepath = $data_exporter->export($user);
 
         $feed_content = $this->zipGetContents($filepath, 'read-later.atom.xml');
         $feed = \SpiderBits\feeds\Feed::fromText($feed_content);
@@ -256,7 +256,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         ]);
         $journal->addLinks([$link], at: $published_at);
 
-        $filepath = $data_exporter->export($user->id);
+        $filepath = $data_exporter->export($user);
 
         $feed_content = $this->zipGetContents($filepath, 'journal.atom.xml');
         $feed = \SpiderBits\feeds\Feed::fromText($feed_content);
@@ -280,7 +280,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         ]);
         $user->markAsRead($link);
 
-        $filepath = $data_exporter->export($user->id);
+        $filepath = $data_exporter->export($user);
 
         $feed_content = $this->zipGetContents($filepath, 'read.atom.xml');
         $feed = \SpiderBits\feeds\Feed::fromText($feed_content);
@@ -326,7 +326,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         ]);
         $stream->shareWith($other_user);
 
-        $filepath = $data_exporter->export($user->id);
+        $filepath = $data_exporter->export($user);
 
         $stream_content = $this->zipGetContents($filepath, "streams/{$stream->id}.json");
         $stream_json = json_decode($stream_content, true);
@@ -395,7 +395,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
             'collection_id' => $collection->id,
         ]);
 
-        $filepath = $data_exporter->export($user->id);
+        $filepath = $data_exporter->export($user);
 
         $feed_content = $this->zipGetContents($filepath, "collections/{$collection->id}.atom.xml");
         $feed = \SpiderBits\feeds\Feed::fromText($feed_content);
@@ -434,7 +434,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
             'content' => $note_content,
         ]);
 
-        $filepath = $data_exporter->export($user->id);
+        $filepath = $data_exporter->export($user);
 
         $feed_content = $this->zipGetContents($filepath, "notes/{$link->id}.atom.xml");
         $feed = \SpiderBits\feeds\Feed::fromText($feed_content);
@@ -447,16 +447,6 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $expected_link = \Minz\Url::absoluteFor('link', ['id' => $link->id]) . "#note-{$note->id}";
         $this->assertSame($expected_link, $entry->link);
         $this->assertSame($note_content, trim($entry->content));
-    }
-
-    public function testExportFailsIfUserDoesNotExist(): void
-    {
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('The user does not exist');
-
-        $data_exporter = new DataExporter($this->exportations_path);
-
-        $data_exporter->export('not an id');
     }
 
     private function zipGetContents(string $zip_filepath, string $filename): string

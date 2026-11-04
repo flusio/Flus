@@ -120,7 +120,7 @@ class Users
         }
 
         $data_exporter = new services\DataExporter($exportations_path);
-        $data_filepath = $data_exporter->export($user->id);
+        $data_filepath = $data_exporter->export($user);
 
         return Response::text(200, "User’s data have been exported successfully ({$data_filepath}).");
     }

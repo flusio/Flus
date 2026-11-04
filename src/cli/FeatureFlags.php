@@ -69,7 +69,7 @@ class FeatureFlags
             return Response::text(404, "User {$user_id} doesn’t exist");
         }
 
-        models\FeatureFlag::enable($type, $user->id);
+        models\FeatureFlag::enable($type, $user);
 
         return Response::text(200, "{$type} is enabled for user {$user->id} ({$user->email})");
     }
@@ -93,7 +93,7 @@ class FeatureFlags
             return Response::text(404, "User {$user_id} doesn’t exist");
         }
 
-        models\FeatureFlag::disable($type, $user->id);
+        models\FeatureFlag::disable($type, $user);
 
         return Response::text(200, "{$type} is disabled for user {$user->id} ({$user->email})");
     }

@@ -54,11 +54,11 @@ class FollowedCollection
     #[Database\Column]
     public ?string $image_filename = null;
 
-    public function __construct(string $user_id, string $collection_id)
+    public function __construct(User $user, Source $source)
     {
         $this->time_filter = 'normal';
-        $this->user_id = $user_id;
-        $this->collection_id = $collection_id;
+        $this->user_id = $user->id;
+        $this->collection_id = $source->id;
     }
 
     public static function findOrCreate(User $user, Source $source): self

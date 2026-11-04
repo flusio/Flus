@@ -149,7 +149,7 @@ class Passwords extends BaseController
         if ($user->reset_token) {
             models\Token::delete($user->reset_token);
         }
-        models\Session::deleteByUserId($user->id);
+        models\Session::deleteByUser($user);
 
         // also, the user might be connected with a different account so we
         // make sure to log him in with the current one.

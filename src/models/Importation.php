@@ -45,12 +45,12 @@ class Importation
      * @param value-of<self::VALID_TYPES> $type
      * @param mixed[] $options
      */
-    public function __construct(string $type, string $user_id, array $options = [])
+    public function __construct(string $type, User $user, array $options = [])
     {
         $this->type = $type;
         $this->status = 'ongoing';
         $this->options = $options;
-        $this->user_id = $user_id;
+        $this->user_id = $user->id;
         $this->error = '';
     }
 
@@ -59,13 +59,7 @@ class Importation
      */
     public function user(): User
     {
-        $user = User::find($this->user_id);
-
-        if (!$user) {
-            throw new \Exception("Link #{$this->id} has invalid user.");
-        }
-
-        return $user;
+        return User::require($this->user_id);
     }
 
     /**

@@ -38,11 +38,11 @@ class Group
     #[Database\Column]
     public string $user_id;
 
-    public function __construct(string $user_id, string $name)
+    public function __construct(User $user, string $name)
     {
         $this->id = \Minz\Random::timebased();
         $this->name = trim($name);
-        $this->user_id = $user_id;
+        $this->user_id = $user->id;
     }
 
     #[Validable\Check]

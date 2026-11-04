@@ -54,7 +54,7 @@ class OpmlImportation extends BaseForm
             return null;
         }
 
-        return new models\Importation('opml', $user->id, [
+        return new models\Importation('opml', $user, [
             'opml_filepath' => $opml_filepath,
         ]);
     }

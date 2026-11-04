@@ -29,15 +29,10 @@ class DataExporter
      * Export data of the given user and return the path to the data file.
      *
      * @throws \RuntimeException
-     *     If the user doesn't exist, or if an error happens.
+     *     If an error happens.
      */
-    public function export(string $user_id): string
+    public function export(models\User $user): string
     {
-        $user = models\User::find($user_id);
-        if (!$user) {
-            throw new \RuntimeException('The user does not exist');
-        }
-
         utils\Locale::setCurrentLocale($user->locale);
 
         $files = [];

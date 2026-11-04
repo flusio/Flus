@@ -2,6 +2,7 @@
 
 namespace App\models\dao;
 
+use App\models;
 use Minz\Database;
 
 /**
@@ -55,24 +56,24 @@ trait Session
     }
 
     /**
-     * Delete sessions by user id.
+     * Delete the sessions of the given user.
      *
-     * @param string $except_session_id
+     * @param ?models\Session $except_session
      *     To allow to reset all sessions except the current one.
      */
-    public static function deleteByUserId(string $user_id, ?string $except_session_id = null): bool
+    public static function deleteByUser(models\User $user, ?models\Session $except_session = null): bool
     {
         $sql = <<<'SQL'
             DELETE FROM sessions
             WHERE user_id = :user_id
         SQL;
         $values = [
-            ':user_id' => $user_id,
+            ':user_id' => $user->id,
         ];
 
-        if ($except_session_id) {
+        if ($except_session) {
             $sql .= ' AND id != :session_id';
-            $values[':session_id'] = $except_session_id;
+            $values[':session_id'] = $except_session->id;
         }
 
         $database = Database::get();

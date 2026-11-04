@@ -14,27 +14,27 @@ trait HasFeatureFlags
 {
     public function enableBeta(): void
     {
-        FeatureFlag::enable('beta', $this->id);
+        FeatureFlag::enable('beta', $this);
         $this->unmemoize('feature_flag_beta');
     }
 
     public function disableBeta(): void
     {
-        FeatureFlag::disable('beta', $this->id);
+        FeatureFlag::disable('beta', $this);
         $this->unmemoize('feature_flag_beta');
     }
 
     public function isBetaEnabled(): bool
     {
         return $this->memoize('feature_flag_beta', function (): bool {
-            return FeatureFlag::isEnabled('beta', $this->id);
+            return FeatureFlag::isEnabled('beta', $this);
         });
     }
 
     public function isAlphaEnabled(): bool
     {
         return $this->memoize('feature_flag_alpha', function (): bool {
-            return FeatureFlag::isEnabled('alpha', $this->id);
+            return FeatureFlag::isEnabled('alpha', $this);
         });
     }
 }

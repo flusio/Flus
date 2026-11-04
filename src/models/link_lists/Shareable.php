@@ -78,7 +78,7 @@ trait Shareable
      */
     public function shareWith(User $user, string $access_type): void
     {
-        $collection_share = new CollectionShare($user->id, $this->id, $access_type);
+        $collection_share = new CollectionShare($user, $this, $access_type);
         $collection_share->save();
 
         $this->unmemoize('publishers');

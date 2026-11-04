@@ -32,7 +32,7 @@ class Exportator extends \Minz\Job
 
         try {
             $exportation_service = new services\DataExporter($exportations_path);
-            $filepath = $exportation_service->export($exportation->user_id);
+            $filepath = $exportation_service->export($exportation->user());
             $exportation->finish($filepath);
         } catch (\Exception $e) {
             $exportation->fail($e->getMessage());

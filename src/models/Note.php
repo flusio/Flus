@@ -52,13 +52,7 @@ class Note
      */
     public function user(): User
     {
-        $user = User::find($this->user_id);
-
-        if (!$user) {
-            throw new \Exception("Note #{$this->id} has invalid user.");
-        }
-
-        return $user;
+        return User::require($this->user_id);
     }
 
     /**

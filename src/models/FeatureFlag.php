@@ -33,34 +33,28 @@ class FeatureFlag
      */
     public function user(): User
     {
-        $user = User::find($this->user_id);
-
-        if (!$user) {
-            throw new \Exception("FeatureFlag #{$this->id} has invalid user.");
-        }
-
-        return $user;
+        return User::require($this->user_id);
     }
 
     /**
      * Enable a flag for a user.
      */
-    public static function enable(string $type, string $user_id): void
+    public static function enable(string $type, User $user): void
     {
         self::findOrCreateBy([
             'type' => $type,
-            'user_id' => $user_id,
+            'user_id' => $user->id,
         ]);
     }
 
     /**
      * Disable a flag for a user.
      */
-    public static function disable(string $type, string $user_id): void
+    public static function disable(string $type, User $user): void
     {
         $feature_flag = self::findBy([
             'type' => $type,
-            'user_id' => $user_id,
+            'user_id' => $user->id,
         ]);
 
         if ($feature_flag) {
@@ -71,11 +65,11 @@ class FeatureFlag
     /**
      * Return whether a flag is enabled for the given user
      */
-    public static function isEnabled(string $type, string $user_id): bool
+    public static function isEnabled(string $type, User $user): bool
     {
         return self::existsBy([
             'type' => $type,
-            'user_id' => $user_id,
+            'user_id' => $user->id,
         ]);
     }
 }

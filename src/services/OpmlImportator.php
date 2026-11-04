@@ -46,7 +46,7 @@ class OpmlImportator
     {
         $feed_urls_by_streams = $this->loadUrlsFromOutlines($this->opml->outlines, '');
 
-        $feed_ids_by_feed_urls = models\Feed::listFeedUrlsToIds();
+        $feeds_by_feed_urls = $this->loadFeedsByFeedUrls($feed_urls_by_streams);
         $feeds_to_create = [];
         $followed_collections_to_create = [];
         $feed_ids_by_streams = [];
@@ -71,25 +71,24 @@ class OpmlImportator
             foreach ($feed_urls as $feed_url) {
                 $feed_url = \SpiderBits\Url::sanitize($feed_url);
 
-                if (isset($feed_ids_by_feed_urls[$feed_url])) {
-                    $feed_id = $feed_ids_by_feed_urls[$feed_url];
+                if (isset($feeds_by_feed_urls[$feed_url])) {
+                    $feed = $feeds_by_feed_urls[$feed_url];
                 } else {
                     $feed = models\Feed::init($feed_url);
                     $feed->created_at = \Minz\Time::now();
 
                     $feeds_to_create[] = $feed;
 
-                    $feed_ids_by_feed_urls[$feed_url] = $feed->id;
-                    $feed_id = $feed->id;
+                    $feeds_by_feed_urls[$feed_url] = $feed;
                 }
 
-                $followed_collection = new models\FollowedCollection($user->id, $feed_id);
+                $followed_collection = new models\FollowedCollection($user, $feed);
                 $followed_collection->created_at = \Minz\Time::now();
 
                 $followed_collections_to_create[] = $followed_collection;
 
                 if ($stream_id) {
-                    $feed_ids_by_streams[$stream_id][] = $feed_id;
+                    $feed_ids_by_streams[$stream_id][] = $feed->id;
                 }
             }
         }
@@ -129,6 +128,34 @@ class OpmlImportator
         }
 
         models\StreamToFollow::bulkInsert($streams_to_follows_to_create);
+    }
+
+    /**
+     * Return the existing feeds matching the given feed URLs, indexed by
+     * their feed URLs.
+     *
+     * @param array<string, string[]> $feed_urls_by_streams
+     *
+     * @return array<string, models\Feed>
+     */
+    private function loadFeedsByFeedUrls(array $feed_urls_by_streams): array
+    {
+        $feed_urls = [];
+        foreach ($feed_urls_by_streams as $stream_feed_urls) {
+            foreach ($stream_feed_urls as $feed_url) {
+                $feed_urls[] = \SpiderBits\Url::sanitize($feed_url);
+            }
+        }
+
+        if (!$feed_urls) {
+            return [];
+        }
+
+        $feeds = models\Feed::listBy([
+            'feed_url' => array_values(array_unique($feed_urls)),
+        ]);
+
+        return array_column($feeds, null, 'feed_url');
     }
 
     /**

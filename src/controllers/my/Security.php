@@ -83,7 +83,7 @@ class Security extends BaseController
                 models\Token::delete($user->reset_token);
             }
             $session = auth\CurrentUser::session();
-            models\Session::deleteByUserId($user->id, $session->id);
+            models\Session::deleteByUser($user, $session);
         }
 
         utils\Notification::success(_('Your changes have been successfully saved.'));

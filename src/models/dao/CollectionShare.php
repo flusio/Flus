@@ -2,6 +2,7 @@
 
 namespace App\models\dao;
 
+use App\models;
 use Minz\Database;
 
 /**
@@ -83,15 +84,13 @@ trait CollectionShare
      * Return whether the link is shared with the given user (i.e. it is
      * attached to a shared collection).
      *
-     * @param string $user_id
-     * @param string $link_id
      * @param string $access_type
      *
      * @return boolean
      */
-    public static function existsForUserIdAndLinkId(
-        string $user_id,
-        string $link_id,
+    public static function existsForUserAndLink(
+        models\User $user,
+        models\Link $link,
         string $access_type = 'any',
     ): bool {
         // we don't need the clause if access_type is 'any' (i.e. the type
@@ -118,8 +117,8 @@ trait CollectionShare
         $database = Database::get();
         $statement = $database->prepare($sql);
         $statement->execute([
-            ':user_id' => $user_id,
-            ':link_id' => $link_id,
+            ':user_id' => $user->id,
+            ':link_id' => $link->id,
         ]);
         return (bool) $statement->fetchColumn();
     }

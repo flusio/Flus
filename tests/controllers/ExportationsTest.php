@@ -124,7 +124,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $exportation_service = new services\DataExporter(\App\Configuration::$tmp_path);
-        $filepath = $exportation_service->export($user->id);
+        $filepath = $exportation_service->export($user);
         $exportation = ExportationFactory::create([
             'user_id' => $user->id,
             'status' => 'finished',
@@ -220,7 +220,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $exportation_service = new services\DataExporter(\App\Configuration::$tmp_path);
-        $filepath = $exportation_service->export($user->id);
+        $filepath = $exportation_service->export($user);
         $exportation = ExportationFactory::create([
             'user_id' => $user->id,
             'status' => 'finished',
@@ -247,7 +247,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
     {
         $user = UserFactory::create();
         $exportation_service = new services\DataExporter(\App\Configuration::$tmp_path);
-        $filepath = $exportation_service->export($user->id);
+        $filepath = $exportation_service->export($user);
         $exportation = ExportationFactory::create([
             'user_id' => $user->id,
             'status' => 'finished',
@@ -263,7 +263,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $exportation_service = new services\DataExporter(\App\Configuration::$tmp_path);
-        $filepath = $exportation_service->export($user->id);
+        $filepath = $exportation_service->export($user);
         $exportation = ExportationFactory::create([
             'user_id' => $user->id,
             'status' => 'finished',
@@ -280,7 +280,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $exportation_service = new services\DataExporter(\App\Configuration::$tmp_path);
-        $filepath = $exportation_service->export($user->id);
+        $filepath = $exportation_service->export($user);
 
         $response = $this->appRun('GET', '/exportations/download');
 

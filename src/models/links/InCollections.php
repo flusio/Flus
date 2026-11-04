@@ -211,7 +211,7 @@ trait InCollections
         return $this->memoize($key, function () use ($user, $access_type): bool {
             return (
                 Collection::existsForUserAndLink($user, $this) ||
-                CollectionShare::existsForUserIdAndLinkId($user->id, $this->id, $access_type)
+                CollectionShare::existsForUserAndLink($user, $this, $access_type)
             );
         });
     }

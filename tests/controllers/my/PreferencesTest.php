@@ -58,7 +58,7 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
 
-        $this->assertFalse(models\FeatureFlag::isEnabled('beta', $user->id));
+        $this->assertFalse(models\FeatureFlag::isEnabled('beta', $user));
 
         $response = $this->appRun('POST', '/my/preferences', [
             'csrf_token' => $this->csrfToken(forms\users\Preferences::class),
@@ -67,15 +67,15 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/my/preferences');
-        $this->assertTrue(models\FeatureFlag::isEnabled('beta', $user->id));
+        $this->assertTrue(models\FeatureFlag::isEnabled('beta', $user));
     }
 
     public function testUpdateCanDisableBetaFeatures(): void
     {
         $user = $this->login();
-        models\FeatureFlag::enable('beta', $user->id);
+        models\FeatureFlag::enable('beta', $user);
 
-        $this->assertTrue(models\FeatureFlag::isEnabled('beta', $user->id));
+        $this->assertTrue(models\FeatureFlag::isEnabled('beta', $user));
 
         $response = $this->appRun('POST', '/my/preferences', [
             'csrf_token' => $this->csrfToken(forms\users\Preferences::class),
@@ -84,7 +84,7 @@ class PreferencesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/my/preferences');
-        $this->assertFalse(models\FeatureFlag::isEnabled('beta', $user->id));
+        $this->assertFalse(models\FeatureFlag::isEnabled('beta', $user));
     }
 
     public function testUpdateRedirectsToLoginIfUserNotConnected(): void

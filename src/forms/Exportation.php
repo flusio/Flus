@@ -27,7 +27,7 @@ class Exportation extends BaseForm
             $this->unmemoize('current_exportation');
         }
 
-        return new models\Exportation($user->id);
+        return new models\Exportation($user);
     }
 
     public function currentExportation(): ?models\Exportation

@@ -176,25 +176,6 @@ class Feed extends Source
     }
 
     /**
-     * Return the list of ids indexed by feed urls.
-     *
-     * @return array<string, string>
-     */
-    public static function listFeedUrlsToIds(): array
-    {
-        $sql = <<<SQL
-            SELECT feed_url, id FROM collections
-            WHERE type = 'feed'
-        SQL;
-
-        $database = Database::get();
-        $statement = $database->prepare($sql);
-        $statement->execute();
-
-        return $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
-    }
-
-    /**
      * Return the list of public feeds with the given feed URLs and their
      * number of links.
      *

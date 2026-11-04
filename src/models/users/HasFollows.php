@@ -52,7 +52,7 @@ trait HasFollows
      */
     public function follow(Source $source, string $time_filter = 'normal'): FollowedCollection
     {
-        $followed_collection = new FollowedCollection($this->id, $source->id);
+        $followed_collection = new FollowedCollection($this, $source);
         $followed_collection->time_filter = $time_filter;
         $followed_collection->save();
 
