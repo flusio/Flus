@@ -20,11 +20,15 @@ class LinkListsAccess
             return false;
         }
 
-        if ($user->isOwning($link_list)) {
-            return true;
+        if ($link_list instanceof models\Journal) {
+            return $user->isOwningJournal($link_list);
         }
 
-        return $link_list instanceof models\Collection && $link_list->sharedWith($user);
+        if ($link_list instanceof models\Collection) {
+            return $user->isOwningCollection($link_list) || $link_list->sharedWith($user);
+        }
+
+        return false;
     }
 
     public static function canViewHiddenLinks(?models\User $user, models\LinkList $link_list): bool
@@ -33,11 +37,15 @@ class LinkListsAccess
             return false;
         }
 
-        if ($user->isOwning($link_list)) {
-            return true;
+        if ($link_list instanceof models\Journal) {
+            return $user->isOwningJournal($link_list);
         }
 
-        return $link_list instanceof models\Collection && $link_list->sharedWith($user);
+        if ($link_list instanceof models\Collection) {
+            return $user->isOwningCollection($link_list) || $link_list->sharedWith($user);
+        }
+
+        return false;
     }
 
     public static function canUpdate(?models\User $user, models\LinkList $link_list): bool
@@ -46,7 +54,7 @@ class LinkListsAccess
             return false;
         }
 
-        if ($user->isOwning($link_list)) {
+        if ($user->isOwningCollection($link_list)) {
             return true;
         }
 
@@ -58,7 +66,7 @@ class LinkListsAccess
         return (
             $user &&
             $link_list instanceof models\Collection &&
-            $user->isOwning($link_list)
+            $user->isOwningCollection($link_list)
         );
     }
 
@@ -68,7 +76,7 @@ class LinkListsAccess
             return false;
         }
 
-        if ($user->isOwning($link_list)) {
+        if ($user->isOwningCollection($link_list)) {
             return true;
         }
 
@@ -80,7 +88,7 @@ class LinkListsAccess
         return (
             $user &&
             $link_list instanceof models\Collection &&
-            $user->isOwning($link_list)
+            $user->isOwningCollection($link_list)
         );
     }
 }

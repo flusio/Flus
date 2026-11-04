@@ -43,7 +43,7 @@ class SubscriptionsSync extends \Minz\Job
         // happen if a previous request failed.
         $users = models\User::listBy(['subscription_account_id' => null]);
         foreach ($users as $user) {
-            if (!$user->isValidated()) {
+            if (!$user->isEmailValidated()) {
                 continue;
             }
 

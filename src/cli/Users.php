@@ -45,7 +45,7 @@ class Users
         foreach ($users as $user) {
             $created_at = $user->created_at->format('Y-m-d');
             $validated_label = '';
-            if (!$user->isValidated()) {
+            if (!$user->isEmailValidated()) {
                 $validated_label = ' (not validated)';
             }
             $output[] = "{$user->id} {$created_at} {$user->email}{$validated_label}";
@@ -89,7 +89,7 @@ class Users
         services\UserService::initializeData($user);
 
         // Immediately validate the user since we created it manually
-        $user->validated_at = \Minz\Time::now();
+        $user->validateEmail();
         $user->save();
 
         return Response::text(200, "User {$user->username} ({$user->email}) has been created.");
@@ -146,19 +146,11 @@ class Users
             return Response::text(404, "User {$user_id} doesn’t exist.");
         }
 
-        if ($user->isValidated()) {
+        if ($user->isEmailValidated()) {
             return Response::text(400, "User {$user_id} has already been validated.");
         }
 
-        if ($user->validation_token) {
-            $token = models\Token::find($user->validation_token);
-            if ($token) {
-                models\Token::delete($token->token);
-                $user->validation_token = null;
-            }
-        }
-
-        $user->validated_at = \Minz\Time::now();
+        $user->validateEmail();
 
         if (\App\Configuration::areSubscriptionsEnabled()) {
             $subscriptions_service = new services\Subscriptions();

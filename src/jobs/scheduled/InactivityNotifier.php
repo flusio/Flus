@@ -43,7 +43,7 @@ class InactivityNotifier extends \Minz\Job
         $mailer = new mailers\Users();
 
         foreach ($inactive_users as $user) {
-            if ($user->isValidated()) {
+            if ($user->isEmailValidated()) {
                 $success = $mailer->sendInactivityEmail($user->id);
             } else {
                 $success = true;

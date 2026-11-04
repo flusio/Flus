@@ -31,7 +31,7 @@ class AccountNavigation extends BaseNavigation
             icon: 'cog',
         );
 
-        if (!$current_user->isValidated()) {
+        if (!$current_user->isEmailValidated()) {
             $account_items[] = new Item(
                 label: TwigExtension::translate('Account validation'),
                 key: 'account validation',

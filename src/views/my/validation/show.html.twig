@@ -15,7 +15,7 @@
     <div class="wrapper wrapper--small wrapper--center flow flow--large text--center">
         <h1>{{ t('Account validation') }}</h1>
 
-        {% if app.user.isValidated %}
+        {% if app.user.isEmailValidated %}
             <p class="text--bolder">
                 {{ t('Your account is now validated 🎉') }}
             </p>

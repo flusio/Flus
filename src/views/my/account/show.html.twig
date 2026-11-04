@@ -19,7 +19,7 @@
             {{ t('You are registered since %s.', [d(app.user.created_at, 'd MMMM y')]) }}
         </p>
 
-        {% if not app.user.isValidated %}
+        {% if not app.user.isEmailValidated %}
             <div>
                 <a class="button button--primary button--big" href="{{ url('account validation') }}">
                     {{ t('Validate your account') }}
@@ -27,17 +27,17 @@
             </div>
         {% elseif subscriptions_enabled %}
             <p>
-                {% if app.user.isSubscriptionExempted %}
+                {% if subscription.isExempted %}
                     {{ t('You have a <strong>free subscription</strong>! 😊') | raw }}
-                {% elseif app.user.isSubscriptionOverdue %}
+                {% elseif subscription.isOverdue %}
                     {{ t('<strong>Your subscription expired on %s.</strong>', [d(app.user.subscription_expired_at, 'd MMMM y')]) | raw }}
                 {% else %}
                     {{ t('Your subscription will expire on <strong>%s.</strong>', [d(app.user.subscription_expired_at, 'd MMMM y')]) | raw }}
                 {% endif %}
             </p>
 
-            {% if app.user.hasSubscriptionAccount %}
-                <a class="button button--big {{ app.user.isSubscriptionOverdue ? 'button--primary' : '' }}" href="{{ url('subscription') }}">
+            {% if subscription.hasAccount %}
+                <a class="button button--big {{ subscription.isOverdue ? 'button--primary' : '' }}" href="{{ url('subscription') }}">
                     {{ icon('credit-card') }}
                     {{ t('Manage your subscription') }}
                 </a>

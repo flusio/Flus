@@ -79,10 +79,7 @@ class Validation extends BaseController
 
         $user = $form->user();
 
-        models\Token::delete($form->t);
-
-        $user->validation_token = null;
-        $user->validated_at = \Minz\Time::now();
+        $user->validateEmail();
 
         if (\App\Configuration::areSubscriptionsEnabled()) {
             $subscriptions_service = new services\Subscriptions();
@@ -112,7 +109,7 @@ class Validation extends BaseController
     {
         $user = auth\CurrentUser::require();
 
-        if ($user->isValidated()) {
+        if ($user->isEmailValidated()) {
             // nothing to do, the user is already validated
             return Response::redirect('home');
         }

@@ -178,7 +178,8 @@ class Application
             return false;
         }
 
-        if (!$user->isSubscriptionOverdue()) {
+        $subscription = new models\Subscription($user);
+        if (!$subscription->isOverdue()) {
             return false;
         }
 

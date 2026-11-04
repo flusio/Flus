@@ -81,7 +81,7 @@ class Collection extends Source
      */
     public function toJson(User $context_user): array
     {
-        $group = $context_user->isOwning($this) ? $this->group() : null;
+        $group = $context_user->isOwningCollection($this) ? $this->group() : null;
 
         return [
             'id' => $this->id,

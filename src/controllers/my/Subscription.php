@@ -5,6 +5,7 @@ namespace App\controllers\my;
 use App\auth;
 use App\controllers\BaseController;
 use App\forms;
+use App\models;
 use App\services;
 use App\utils;
 use Minz\Request;
@@ -41,11 +42,12 @@ class Subscription extends BaseController
 
         $user = auth\CurrentUser::require();
 
-        if ($user->hasSubscriptionAccount()) {
+        $subscription = new models\Subscription($user);
+        if ($subscription->hasAccount()) {
             return Response::redirect('account');
         }
 
-        if (!$user->isValidated()) {
+        if (!$user->isEmailValidated()) {
             utils\Notification::error(_('You must verify your account first.'));
             return Response::redirect('account');
         }
@@ -95,7 +97,8 @@ class Subscription extends BaseController
 
         $user = auth\CurrentUser::require();
 
-        if (!$user->hasSubscriptionAccount()) {
+        $subscription = new models\Subscription($user);
+        if (!$subscription->hasAccount()) {
             \Minz\Log::error("User {$user->id} does not have a subscription account.");
             return Response::internalServerError('errors/internal_server_error.html.twig');
         }

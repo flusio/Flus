@@ -14,7 +14,7 @@
     </p>
 {% endif %}
 
-{% if display_validation_banner and not app.user.isValidated %}
+{% if display_validation_banner and not app.user.isEmailValidated %}
     <div class="layout__banner stack stack--center stack--gap">
         <p>
             {{ t('Your account is not validated yet.') }}

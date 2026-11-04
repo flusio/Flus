@@ -44,7 +44,7 @@ class ShareCollection extends BaseForm
     protected function isRecipientOwner(models\User $user): bool
     {
         $collection = $this->optionAs('collection', models\Collection::class);
-        return $user->isOwning($collection);
+        return $user->isOwningCollection($collection);
     }
 
     protected function isAlreadySharedWith(models\User $user): bool

@@ -37,11 +37,12 @@ class Subscriptions
      */
     public function initAccount(models\User $user): bool
     {
-        if ($user->hasSubscriptionAccount()) {
+        $subscription = new models\Subscription($user);
+        if ($subscription->hasAccount()) {
             return true;
         }
 
-        if (!$user->isValidated()) {
+        if (!$user->isEmailValidated()) {
             \Minz\Log::error("Error while requesting subscription account for user {$user->id}: email not validated");
             return false;
         }
@@ -106,7 +107,8 @@ class Subscriptions
      */
     public function loginUrl(models\User $user): ?string
     {
-        if (!$user->hasSubscriptionAccount()) {
+        $subscription = new models\Subscription($user);
+        if (!$subscription->hasAccount()) {
             \Minz\Log::error("Error while requesting a subscription login URL for user {$user->id}: no account");
             return null;
         }
@@ -146,7 +148,8 @@ class Subscriptions
      */
     public function refreshExpiredAt(models\User $user): bool
     {
-        if (!$user->hasSubscriptionAccount()) {
+        $subscription = new models\Subscription($user);
+        if (!$subscription->hasAccount()) {
             \Minz\Log::error("Error while requesting subscription expiration for user {$user->id}: no account");
             return false;
         }

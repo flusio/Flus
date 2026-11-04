@@ -30,8 +30,10 @@ class Account extends BaseController
     {
         $user = auth\CurrentUser::require();
 
+        $subscription = new models\Subscription($user);
+
         $sub_enabled = \App\Configuration::areSubscriptionsEnabled();
-        if ($sub_enabled && $user->hasSubscriptionAccount() && $user->isSubscriptionOverdue()) {
+        if ($sub_enabled && $subscription->hasAccount() && $subscription->isOverdue()) {
             $service = new services\Subscriptions();
             $service->refreshExpiredAt($user);
             $user->save();
@@ -39,6 +41,7 @@ class Account extends BaseController
 
         return Response::ok('my/account/show.html.twig', [
             'subscriptions_enabled' => $sub_enabled,
+            'subscription' => $subscription,
         ]);
     }
 

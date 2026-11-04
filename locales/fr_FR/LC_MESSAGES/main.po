@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-11-01 22:44+0100\n"
-"PO-Revision-Date: 2026-11-01 22:44+0100\n"
+"POT-Creation-Date: 2026-11-05 21:33+0100\n"
+"PO-Revision-Date: 2026-11-05 21:33+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -86,15 +86,15 @@ msgstr "Le fil a été supprimé."
 msgid "The message could not be sent due to a server-side problem."
 msgstr "Le message n’a pas pu être envoyé à cause d’un problème côté serveur."
 
-#: controllers/my/Account.php:102
+#: controllers/my/Account.php:105
 msgid "Your account and your data are now deleted."
 msgstr "Votre compte et vos données sont désormais supprimées."
 
-#: controllers/my/Subscription.php:49
+#: controllers/my/Subscription.php:51
 msgid "You must verify your account first."
 msgstr "Vous devez valider votre compte avant."
 
-#: controllers/my/Subscription.php:66
+#: controllers/my/Subscription.php:68
 msgid ""
 "An error occured when getting you a subscription account, please contact the "
 "support."
@@ -224,11 +224,11 @@ msgstr "L’URL est invalide."
 msgid "You already have configured a Mastodon account."
 msgstr "Vous avez déjà configuré un compte Mastodon."
 
-#: forms/security/AskResetPassword.php:22 models/User.php:64
+#: forms/security/AskResetPassword.php:22 models/User.php:54
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: forms/security/AskResetPassword.php:25 models/User.php:67
+#: forms/security/AskResetPassword.php:25 models/User.php:57
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
@@ -281,11 +281,11 @@ msgstr "L’une des collections associées n’existe pas."
 msgid "Sorry but you cannot do that in the demo 😉"
 msgstr "Désolé mais vous ne pouvez pas faire ça dans la démo 😉"
 
-#: forms/traits/Locale.php:19 models/User.php:96
+#: forms/traits/Locale.php:19 models/users/HasPreferences.php:24
 msgid "The locale is required."
 msgstr "La langue est obligatoire."
 
-#: forms/traits/Locale.php:22 models/User.php:99
+#: forms/traits/Locale.php:22 models/users/HasPreferences.php:27
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
@@ -357,7 +357,7 @@ msgstr "[%s] Confirmer votre compte"
 msgid "[%s] Reset your password"
 msgstr "[%s] Réinitialisation de votre mot de passe"
 
-#: mailers/Users.php:133
+#: mailers/Users.php:134
 #, php-format
 msgid "[%s] Your account will be deleted soon due to inactivity"
 msgstr "[%s] Votre compte sera bientôt supprimé pour cause d’inactivité"
@@ -421,59 +421,21 @@ msgstr "Le nom est obligatoire."
 msgid "The label must be less than {max} characters."
 msgstr "Le nom doit faire moins de {max} caractères."
 
-#: models/User.php:70
+#: models/User.php:60
 msgid "An account already exists with this email address."
 msgstr "Un compte existe déjà avec cette adresse courriel."
 
-#: models/User.php:76
+#: models/User.php:66
 msgid "The username is required."
 msgstr "Le nom d’utilisateur·ice est obligatoire."
 
-#: models/User.php:80
+#: models/User.php:70
 msgid "The username must be less than {max} characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de {max} caractères."
 
-#: models/User.php:84
+#: models/User.php:74
 msgid "The username cannot contain the character ‘@’."
 msgstr "Le nom d’utilisateur·ice ne doit pas contenir le caractère ‘@’."
-
-#: models/User.php:90
-msgid "The password is required."
-msgstr "Le mot de passe est obligatoire."
-
-#: models/User.php:114
-msgid "The font family is required. Please select an option from the list."
-msgstr ""
-"La police d’écriture est obligatoire. Veuillez sélectionner une valeur "
-"depuis la liste."
-
-#: models/User.php:118
-msgid "The font family is invalid. Please select an option from the list."
-msgstr ""
-"La police d’écriture est invalide. Veuillez sélectionner une valeur depuis "
-"la liste."
-
-#: models/User.php:124
-msgid "The text size is required. Please select an option from the list."
-msgstr ""
-"La taille de texte est obligatoire. Veuillez sélectionner une valeur depuis "
-"la liste."
-
-#: models/User.php:128
-msgid "The text size is invalid. Please select an option from the list."
-msgstr ""
-"La taille de texte est invalide. Veuillez sélectionner une valeur depuis la "
-"liste."
-
-#: models/User.php:134
-msgid "The theme is required. Please select an option from the list."
-msgstr ""
-"Le thème est obligatoire. Veuillez sélectionner une valeur depuis la liste."
-
-#: models/User.php:138
-msgid "The theme is invalid. Please select an option from the list."
-msgstr ""
-"Le thème est invalide. Veuillez sélectionner une valeur depuis la liste."
 
 #: models/View.php:94
 msgid "The user is required."
@@ -486,6 +448,44 @@ msgstr "Vue principale"
 #: models/View.php:471
 msgid "A view with this name already exists, please choose another one."
 msgstr "Une vue avec ce nom existe déjà, veuillez choisir un autre nom."
+
+#: models/users/Authenticable.php:20
+msgid "The password is required."
+msgstr "Le mot de passe est obligatoire."
+
+#: models/users/HasPreferences.php:33
+msgid "The font family is required. Please select an option from the list."
+msgstr ""
+"La police d’écriture est obligatoire. Veuillez sélectionner une valeur "
+"depuis la liste."
+
+#: models/users/HasPreferences.php:37
+msgid "The font family is invalid. Please select an option from the list."
+msgstr ""
+"La police d’écriture est invalide. Veuillez sélectionner une valeur depuis "
+"la liste."
+
+#: models/users/HasPreferences.php:43
+msgid "The text size is required. Please select an option from the list."
+msgstr ""
+"La taille de texte est obligatoire. Veuillez sélectionner une valeur depuis "
+"la liste."
+
+#: models/users/HasPreferences.php:47
+msgid "The text size is invalid. Please select an option from the list."
+msgstr ""
+"La taille de texte est invalide. Veuillez sélectionner une valeur depuis la "
+"liste."
+
+#: models/users/HasPreferences.php:53
+msgid "The theme is required. Please select an option from the list."
+msgstr ""
+"Le thème est obligatoire. Veuillez sélectionner une valeur depuis la liste."
+
+#: models/users/HasPreferences.php:57
+msgid "The theme is invalid. Please select an option from the list."
+msgstr ""
+"Le thème est invalide. Veuillez sélectionner une valeur depuis la liste."
 
 #: navigations/AccountNavigation.php:16
 msgid "Account & data menu"

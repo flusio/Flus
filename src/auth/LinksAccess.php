@@ -20,7 +20,7 @@ class LinksAccess
             return false;
         }
 
-        if ($user->id === $link->user_id) {
+        if ($user->isOwningLink($link)) {
             return true;
         }
 
@@ -29,17 +29,17 @@ class LinksAccess
 
     public static function canViewOrigin(?models\User $user, models\Link $link): bool
     {
-        return ($user && $user->id === $link->user_id) || $link->origin_is_public;
+        return ($user && $user->isOwningLink($link)) || $link->origin_is_public;
     }
 
     public static function canUpdate(?models\User $user, models\Link $link): bool
     {
-        return $user && $user->id === $link->user_id;
+        return $user && $user->isOwningLink($link);
     }
 
     public static function canDelete(?models\User $user, models\Link $link): bool
     {
-        return $user && $user->id === $link->user_id;
+        return $user && $user->isOwningLink($link);
     }
 
     public static function canShareOnMastodon(?models\User $user, models\Link $link): bool
