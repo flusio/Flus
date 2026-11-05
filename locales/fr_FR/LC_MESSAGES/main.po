@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-11-05 21:33+0100\n"
-"PO-Revision-Date: 2026-11-05 21:33+0100\n"
+"POT-Creation-Date: 2026-11-05 22:19+0100\n"
+"PO-Revision-Date: 2026-11-05 22:19+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -154,37 +154,28 @@ msgstr "Le sujet est obligatoire."
 msgid "The message is required."
 msgstr "Le message est obligatoire."
 
+#: forms/checks/Image.php:30 forms/importations/OpmlImportation.php:33
+msgid "This file cannot be uploaded (error {code})."
+msgstr "Ce fichier ne peut pas être téléversé (erreur {code})."
+
+#: forms/checks/Image.php:32 forms/importations/OpmlImportation.php:31
+msgid "The file type must be one of the following: {types}."
+msgstr "Le type de fichier doit être l’un des suivants : {types}."
+
+#: forms/checks/Image.php:34 forms/importations/OpmlImportation.php:32
+msgid "This file is too large (max allowed: {max_size})."
+msgstr "Ce fichier est trop gros (max autorisé : {max_size})."
+
 #: forms/collections/Collection.php:99
 msgid "One of the associated topic doesn’t exist."
 msgstr "L’une des thématiques associées n’existe pas."
 
-#: forms/collections/EditCollectionImage.php:25
-#: forms/importations/OpmlImportation.php:27 forms/links/EditLinkImage.php:25
-#: forms/sources/EditFollowImage.php:25 forms/streams/EditStreamImage.php:25
-#: forms/users/EditAvatar.php:25
+#: forms/collections/EditCollectionImage.php:19
+#: forms/importations/OpmlImportation.php:27 forms/links/EditLinkImage.php:19
+#: forms/sources/EditFollowImage.php:19 forms/streams/EditStreamImage.php:19
+#: forms/users/EditAvatar.php:19
 msgid "The file is required."
 msgstr "Le fichier est obligatoire."
-
-#: forms/collections/EditCollectionImage.php:29
-#: forms/importations/OpmlImportation.php:31 forms/links/EditLinkImage.php:29
-#: forms/sources/EditFollowImage.php:29 forms/streams/EditStreamImage.php:29
-#: forms/users/EditAvatar.php:29
-msgid "The file type must be one of the following: {types}."
-msgstr "Le type de fichier doit être l’un des suivants : {types}."
-
-#: forms/collections/EditCollectionImage.php:30
-#: forms/importations/OpmlImportation.php:32 forms/links/EditLinkImage.php:30
-#: forms/sources/EditFollowImage.php:30 forms/streams/EditStreamImage.php:30
-#: forms/users/EditAvatar.php:30
-msgid "This file is too large (max allowed: {max_size})."
-msgstr "Ce fichier est trop gros (max autorisé : {max_size})."
-
-#: forms/collections/EditCollectionImage.php:31
-#: forms/importations/OpmlImportation.php:33 forms/links/EditLinkImage.php:31
-#: forms/sources/EditFollowImage.php:31 forms/streams/EditStreamImage.php:31
-#: forms/users/EditAvatar.php:31
-msgid "This file cannot be uploaded (error {code})."
-msgstr "Ce fichier ne peut pas être téléversé (erreur {code})."
 
 #: forms/collections/ShareCollection.php:24 models/CollectionShare.php:39
 msgid "The type is required."
@@ -762,19 +753,18 @@ msgstr "(max. %d caractères)"
 #: views/collections/_selector.html.twig:27
 #: views/collections/groups/edit.html.twig:29
 #: views/collections/groups/edit.html.twig:65
-#: views/collections/images/edit.html.twig:26
 #: views/collections/shares/index.html.twig:25
 #: views/collections/shares/index.html.twig:58
+#: views/components/image_upload.html.twig:15
 #: views/components/text_editor.html.twig:43 views/feeds/_new_form.html.twig:13
 #: views/groups/edit.html.twig:20 views/links/_form_simple.html.twig:15
 #: views/links/_search_error.html.twig:31 views/links/edit.html.twig:26
 #: views/links/edit.html.twig:71 views/links/edit.html.twig:91
-#: views/links/images/edit.html.twig:20
 #: views/links/mastodon_threads/new.html.twig:17 views/links/new.html.twig:27
 #: views/links/repairing/new.html.twig:30
 #: views/links/searches/show.html.twig:39 views/mastodon/show.html.twig:62
 #: views/mastodon/show.html.twig:131 views/my/account/deletion.html.twig:38
-#: views/my/avatar/edit.html.twig:20 views/my/preferences/edit.html.twig:35
+#: views/my/preferences/edit.html.twig:35
 #: views/my/preferences/edit.html.twig:66
 #: views/my/preferences/edit.html.twig:97
 #: views/my/preferences/edit.html.twig:128 views/my/profile/edit.html.twig:20
@@ -787,9 +777,7 @@ msgstr "(max. %d caractères)"
 #: views/sources/follows/edit.html.twig:21
 #: views/sources/follows/edit.html.twig:75
 #: views/sources/follows/edit.html.twig:166
-#: views/sources/follows/edit.html.twig:210
-#: views/sources/follows/images/edit.html.twig:26
-#: views/streams/_form.html.twig:20 views/streams/images/edit.html.twig:26
+#: views/sources/follows/edit.html.twig:210 views/streams/_form.html.twig:20
 #: views/streams/shares/index.html.twig:25
 #: views/streams/views/_form.html.twig:16 views/support/show.html.twig:41
 #: views/support/show.html.twig:67
@@ -898,29 +886,6 @@ msgid "Illustrations help to distinguish your collection among the others."
 msgstr ""
 "Les illustrations aident à distinguer votre collection parmi les autres."
 
-#: views/collections/images/edit.html.twig:53
-#: views/links/images/edit.html.twig:47
-#: views/sources/follows/images/edit.html.twig:53
-#: views/streams/images/edit.html.twig:53
-msgid "Upload an image"
-msgstr "Téléverser une image"
-
-#: views/collections/images/edit.html.twig:58
-#: views/links/images/edit.html.twig:52 views/my/avatar/edit.html.twig:48
-#: views/sources/follows/images/edit.html.twig:58
-#: views/streams/images/edit.html.twig:58
-msgid "<abbr>PNG</abbr>, <abbr>JPG</abbr> and <abbr>WEBP</abbr> images only."
-msgstr ""
-"Images <abbr>PNG</abbr>, <abbr>JPG</abbr> ou <abbr>WEBP</abbr> seulement."
-
-#: views/collections/images/edit.html.twig:59
-#: views/links/images/edit.html.twig:53 views/my/avatar/edit.html.twig:49
-#: views/sources/follows/images/edit.html.twig:59
-#: views/streams/images/edit.html.twig:59
-#, php-format
-msgid "The minimum recommended dimensions are %sx%spx."
-msgstr "Les dimensions minimales recommandées sont de %sx%spx."
-
 #: views/collections/links/new.html.twig:3 views/links/new.html.twig:3
 #: views/links/new.html.twig:11 views/links/new.html.twig:15
 #: views/read_later/new.html.twig:3
@@ -1011,6 +976,20 @@ msgstr "lecture / écriture"
 #: views/streams/shares/index.html.twig:80
 msgid "Revoke"
 msgstr "Révoquer"
+
+#: views/components/image_upload.html.twig:1
+msgid "Upload an image"
+msgstr "Téléverser une image"
+
+#: views/components/image_upload.html.twig:47
+msgid "<abbr>PNG</abbr>, <abbr>JPG</abbr> and <abbr>WEBP</abbr> images only."
+msgstr ""
+"Images <abbr>PNG</abbr>, <abbr>JPG</abbr> ou <abbr>WEBP</abbr> seulement."
+
+#: views/components/image_upload.html.twig:48
+#, php-format
+msgid "The minimum recommended dimensions are %sx%spx."
+msgstr "Les dimensions minimales recommandées sont de %sx%spx."
 
 #: views/components/text_editor.html.twig:15
 msgid "Heading"
@@ -2375,7 +2354,7 @@ msgstr "Créer votre compte de paiement"
 msgid "Profile picture"
 msgstr "Photo de profil"
 
-#: views/my/avatar/edit.html.twig:43
+#: views/my/avatar/edit.html.twig:15
 msgid "Upload a photo"
 msgstr "Téléverser une photo"
 
