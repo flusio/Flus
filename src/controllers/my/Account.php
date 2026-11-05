@@ -92,15 +92,19 @@ class Account extends BaseController
             ]);
         }
 
-        if ($current_user->avatar_filename) {
-            $media_path = \App\Configuration::$application['media_path'];
-            $filename = $current_user->avatar_filename;
-            $subpath = utils\Belt::filenameToSubpath($filename);
-            @unlink("{$media_path}/avatars/{$subpath}/{$filename}");
-        }
-
         auth\CurrentUser::deleteSession();
         $current_user->remove();
+
+        // The file can be shared with other users, so it is removed only if
+        // nobody uses it anymore.
+        $avatar_filename = $current_user->avatar_filename;
+        if (
+            $avatar_filename &&
+            !models\User::existsBy(['avatar_filename' => $avatar_filename])
+        ) {
+            $image_service = new services\Image();
+            $image_service->remove('avatars', $avatar_filename);
+        }
 
         utils\Notification::success(_('Your account and your data are now deleted.'));
 

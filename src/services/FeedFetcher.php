@@ -275,8 +275,11 @@ class FeedFetcher
             }
 
             $image_service = new Image();
-            $image_filename = $image_service->generatePreviews($url_illustration);
-            $feed->image_filename = $image_filename;
+            try {
+                $feed->image_filename = $image_service->storeFromUrl($url_illustration, 'covers');
+            } catch (ImageError $e) {
+                $feed->image_filename = '';
+            }
             $feed->image_fetched_at = \Minz\Time::now();
             $feed->save();
         }

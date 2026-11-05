@@ -6,7 +6,7 @@ use App\auth;
 use App\controllers\BaseController;
 use App\forms;
 use App\models;
-use App\utils;
+use App\services;
 use Minz\Request;
 use Minz\Response;
 
@@ -69,30 +69,20 @@ class Avatar extends BaseController
         // $form->avatar attribute is set.
         assert($avatar_file !== null);
 
-        $media_path = \App\Configuration::$application['media_path'];
-        $subpath = utils\Belt::filenameToSubpath($user->id);
-        $avatars_path = "{$media_path}/avatars";
-        $avatar_path = "{$avatars_path}/{$subpath}";
-        if (!file_exists($avatar_path)) {
-            @mkdir($avatar_path, 0755, true);
-        }
+        $previous_avatar_filename = $user->avatar_filename;
 
-        $image_data = $avatar_file->content() ?: '';
-
-        $image = models\Image::fromString($image_data);
-
-        $image->resize(400, 400);
-
-        if ($user->avatar_filename) {
-            $subpath = utils\Belt::filenameToSubpath($user->avatar_filename);
-            @unlink("{$avatars_path}/{$subpath}/{$user->avatar_filename}");
-        }
-
-        $image_filename = "{$user->id}.webp";
-        $image->save("{$avatar_path}/{$image_filename}");
-
-        $user->avatar_filename = $image_filename;
+        $image_service = new services\Image();
+        $user->avatar_filename = $image_service->storeFromFile($avatar_file, 'avatars');
         $user->save();
+
+        // The file can be shared with other users (or be the same as the new
+        // one), so it is removed only if nobody uses it anymore.
+        if (
+            $previous_avatar_filename &&
+            !models\User::existsBy(['avatar_filename' => $previous_avatar_filename])
+        ) {
+            $image_service->remove('avatars', $previous_avatar_filename);
+        }
 
         return Response::redirect('profile', ['id' => $user->id]);
     }

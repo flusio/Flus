@@ -6,6 +6,7 @@ use App\auth;
 use App\controllers\BaseController;
 use App\forms;
 use App\models;
+use App\services;
 use App\utils;
 use Minz\Request;
 use Minz\Response;
@@ -85,26 +86,8 @@ class Images extends BaseController
         // $form->image attribute is set.
         assert($image_file !== null);
 
-        $media_path = \App\Configuration::$application['media_path'];
-        $subpath = utils\Belt::filenameToSubpath($collection->id);
-        $path_covers = "{$media_path}/covers/{$subpath}/";
-        if (!file_exists($path_covers)) {
-            @mkdir($path_covers, 0755, true);
-        }
-
-        $image_data = $image_file->content() ?: '';
-
-        $cover_image = models\Image::fromString($image_data);
-        $cover_image->resize(400, 400);
-
-        if ($collection->image_filename) {
-            @unlink($path_covers . $collection->image_filename);
-        }
-
-        $image_filename = "{$collection->id}.webp";
-        $cover_image->save($path_covers . $image_filename);
-
-        $collection->image_filename = $image_filename;
+        $image_service = new services\Image();
+        $collection->image_filename = $image_service->storeFromFile($image_file, 'covers');
         $collection->save();
 
         return Response::found(utils\RequestHelper::from($request));

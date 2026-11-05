@@ -4,7 +4,7 @@ namespace App\controllers\sources\follows;
 
 use App\forms;
 use App\models;
-use App\utils;
+use App\services;
 use tests\factories\CollectionFactory;
 use tests\factories\FeedFactory;
 use tests\factories\UserFactory;
@@ -17,6 +17,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
+    use \tests\FilesystemHelper;
     use \tests\LoginHelper;
 
     public function testEditRendersCorrectly(): void
@@ -100,13 +101,10 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, "/collections/{$feed->id}/follow/image");
         $user = $user->reload();
         $feed = $feed->reload();
-        $image_filename = $feed->imageFilenameByUser($user);
-        $this->assertNotNull($image_filename);
+        $expected_filename = hash_file('sha256', $image_filepath) . '.webp';
+        $this->assertSame($expected_filename, $feed->imageFilenameByUser($user));
         $this->assertNull($feed->image_filename);
-        $media_path = \App\Configuration::$application['media_path'];
-        $subpath = utils\Belt::filenameToSubpath($image_filename);
-        $cover_filepath = "{$media_path}/covers/{$subpath}/{$image_filename}";
-        $this->assertTrue(file_exists($cover_filepath));
+        $this->assertTrue(file_exists(services\Image::filepath('covers', $expected_filename)));
     }
 
     public function testUpdateRedirectsIfNotConnected(): void

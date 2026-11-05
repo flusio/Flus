@@ -5,6 +5,7 @@ namespace App\controllers\my;
 use App\auth;
 use App\forms;
 use App\models;
+use App\services;
 use App\utils;
 
 class AccountTest extends \PHPUnit\Framework\TestCase
@@ -14,6 +15,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
+    use \tests\FilesystemHelper;
     use \tests\HttpHelper;
     use \tests\LoginHelper;
 
@@ -223,34 +225,26 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         $this->assertNull(auth\CurrentUser::get());
     }
 
-    public function testDeleteDeletesAvatarIfSet(): void
+    public function testDeleteRemovesTheAvatar(): void
     {
-        // we copy an existing file as an avatar file.
-        $image_path = \App\Configuration::$app_path . '/public/static/default-card.png';
-        $media_path = \App\Configuration::$application['media_path'];
-        /** @var string */
-        $avatar_filename = $this->fake('md5');
-        $avatar_filename = $avatar_filename . '.png';
-        $subpath = utils\Belt::filenameToSubpath($avatar_filename);
-        $avatar_path = "{$media_path}/avatars/{$subpath}";
-        $avatar_filepath = "{$avatar_path}/{$avatar_filename}";
-        @mkdir($avatar_path, 0755, true);
-        copy($image_path, $avatar_filepath);
-
+        $image_filepath = \App\Configuration::$app_path . '/public/static/og-card.png';
+        $avatar_filename = hash_file('sha256', $image_filepath) . '.webp';
+        $avatar_filepath = services\Image::filepath('avatars', $avatar_filename);
+        @mkdir(dirname($avatar_filepath), 0755, true);
+        copy($image_filepath, $avatar_filepath);
         /** @var string */
         $password = $this->fake('password');
-        $user = $this->login([
+        $this->login([
             'password_hash' => models\User::passwordHash($password),
             'avatar_filename' => $avatar_filename,
         ]);
-
-        $this->assertTrue(file_exists($avatar_filepath));
 
         $response = $this->appRun('POST', '/my/account/deletion', [
             'csrf_token' => $this->csrfToken(forms\users\DeleteAccount::class),
             'password' => $password,
         ]);
 
+        $this->assertResponseCode($response, 302, '/login');
         $this->assertFalse(file_exists($avatar_filepath));
     }
 

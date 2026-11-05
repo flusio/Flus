@@ -4,7 +4,7 @@ namespace App\controllers\collections;
 
 use App\forms;
 use App\models;
-use App\utils;
+use App\services;
 use tests\factories\CollectionFactory;
 use tests\factories\CollectionShareFactory;
 use tests\factories\UserFactory;
@@ -17,6 +17,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
+    use \tests\FilesystemHelper;
     use \tests\LoginHelper;
 
     public function testEditRendersCorrectly(): void
@@ -158,11 +159,9 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $collection = $collection->reload();
-        $this->assertNotNull($collection->image_filename);
-        $media_path = \App\Configuration::$application['media_path'];
-        $subpath = utils\Belt::filenameToSubpath($collection->image_filename);
-        $cover_filepath = "{$media_path}/covers/{$subpath}/{$collection->image_filename}";
-        $this->assertTrue(file_exists($cover_filepath));
+        $expected_filename = hash_file('sha256', $image_filepath) . '.webp';
+        $this->assertSame($expected_filename, $collection->image_filename);
+        $this->assertTrue(file_exists(services\Image::filepath('covers', $expected_filename)));
     }
 
     public function testUpdateWorksIfCollectionIsSharedWithWriteAccess(): void

@@ -22,6 +22,7 @@ class User
     use users\Demo;
     use users\EmailValidable;
     use users\HasActivity;
+    use users\HasAvatar;
     use users\HasCollections;
     use users\HasFeatureFlags;
     use users\HasFollows;
@@ -74,9 +75,6 @@ class User
         message: new Translatable('The username cannot contain the character ‘@’.'),
     )]
     public string $username;
-
-    #[Database\Column]
-    public ?string $avatar_filename;
 
     #[Database\Column]
     public string $biography = '';

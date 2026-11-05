@@ -4,6 +4,9 @@ namespace App\twig;
 
 use Twig\Attribute\AsTwigFunction;
 
+/**
+ * @phpstan-import-type MediaType from \App\services\Image
+ */
 class UrlExtension
 {
     #[AsTwigFunction('url_asset')]
@@ -27,7 +30,7 @@ class UrlExtension
     }
 
     /**
-     * @param 'covers'|'avatars' $type
+     * @param MediaType $type
      */
     #[AsTwigFunction('url_media')]
     public static function urlMedia(string $type, ?string $filename, string $default = 'default-card.png'): string
@@ -36,10 +39,9 @@ class UrlExtension
             return \Minz\Template\TwigExtension::urlStatic("static/{$default}");
         }
 
-        $media_path = \App\Configuration::$application['media_path'];
-        $subpath = \App\utils\Belt::filenameToSubpath($filename);
-        $filepath = "{$media_path}/{$type}/{$subpath}/{$filename}";
+        $filepath = \App\services\Image::filepath($type, $filename);
         $modification_time = @filemtime($filepath);
+        $subpath = \App\utils\Belt::filenameToSubpath($filename);
         $file_url = \Minz\Url::path() . "/media/{$type}/{$subpath}/{$filename}";
         if ($modification_time) {
             return $file_url . '?' . $modification_time;
@@ -49,7 +51,7 @@ class UrlExtension
     }
 
     /**
-     * @param 'covers'|'avatars' $type
+     * @param MediaType $type
      */
     #[AsTwigFunction('url_media_full')]
     public static function urlMediaFull(string $type, ?string $filename, string $default = 'default-card.png'): string

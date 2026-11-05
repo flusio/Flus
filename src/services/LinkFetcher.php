@@ -91,8 +91,11 @@ class LinkFetcher
             ($this->force_sync || $illustration_never_set)
         ) {
             $image_service = new Image();
-            $image_filename = $image_service->generatePreviews($info['url_illustration']);
-            $link->image_filename = $image_filename;
+            try {
+                $link->image_filename = $image_service->storeFromUrl($info['url_illustration'], 'covers');
+            } catch (ImageError $e) {
+                $link->image_filename = '';
+            }
         }
 
         if ($info['url_feeds']) {

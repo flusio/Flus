@@ -4,7 +4,7 @@ namespace App\controllers\links;
 
 use App\forms;
 use App\models;
-use App\utils;
+use App\services;
 use tests\factories\LinkFactory;
 use tests\factories\UserFactory;
 
@@ -16,6 +16,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
+    use \tests\FilesystemHelper;
     use \tests\LoginHelper;
 
     public function testEditRendersCorrectly(): void
@@ -77,11 +78,44 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, "/links/{$link->id}/image");
         $link = $link->reload();
-        $this->assertNotNull($link->image_filename);
-        $media_path = \App\Configuration::$application['media_path'];
-        $subpath = utils\Belt::filenameToSubpath($link->image_filename);
-        $cover_filepath = "{$media_path}/covers/{$subpath}/{$link->image_filename}";
-        $this->assertTrue(file_exists($cover_filepath));
+        $expected_filename = hash_file('sha256', $image_filepath) . '.webp';
+        $this->assertSame($expected_filename, $link->image_filename);
+        $this->assertTrue(file_exists(services\Image::filepath('covers', $expected_filename)));
+    }
+
+    public function testUpdateKeepsTheImageOfCopiedLinks(): void
+    {
+        $previous_image_filepath = \App\Configuration::$app_path . '/public/static/og-card.png';
+        $previous_image_filename = hash_file('sha256', $previous_image_filepath) . '.webp';
+        $previous_cover_filepath = services\Image::filepath('covers', $previous_image_filename);
+        @mkdir(dirname($previous_cover_filepath), 0755, true);
+        copy($previous_image_filepath, $previous_cover_filepath);
+        $image_filepath = \App\Configuration::$app_path . '/public/static/default-card.png';
+        $tmp_filepath = $this->tmpCopyFile($image_filepath);
+        $user = $this->login();
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'image_filename' => $previous_image_filename,
+        ]);
+        $copied_link = models\Link::copy($link, UserFactory::create());
+        $copied_link->save();
+
+        $response = $this->appRun('POST', "/links/{$link->id}/image", [
+            'csrf_token' => $this->csrfToken(forms\links\EditLinkImage::class),
+            'image' => [
+                'tmp_name' => $tmp_filepath,
+                'name' => 'image.png',
+                'error' => UPLOAD_ERR_OK,
+            ],
+        ]);
+
+        $this->assertResponseCode($response, 302, "/links/{$link->id}/image");
+        $link = $link->reload();
+        $copied_link = $copied_link->reload();
+        $image_filename = hash_file('sha256', $image_filepath) . '.webp';
+        $this->assertSame($image_filename, $link->image_filename);
+        $this->assertSame($previous_image_filename, $copied_link->image_filename);
+        $this->assertFileEquals($previous_image_filepath, $previous_cover_filepath);
     }
 
     public function testUpdateRedirectsIfNotConnected(): void

@@ -5,7 +5,7 @@ namespace App\controllers\my;
 use App\auth;
 use App\forms;
 use App\models;
-use App\utils;
+use App\services;
 use tests\factories\UserFactory;
 
 class AvatarTest extends \PHPUnit\Framework\TestCase
@@ -16,6 +16,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
+    use \tests\FilesystemHelper;
     use \tests\LoginHelper;
 
     public function testEditRendersCorrectly(): void
@@ -55,50 +56,58 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, "/p/{$user->id}");
         $user = $user->reload();
-        $this->assertSame($user->id . '.webp', $user->avatar_filename);
-        $media_path = \App\Configuration::$application['media_path'];
-        $subpath = utils\Belt::filenameToSubpath($user->avatar_filename);
-        $avatar_path = "{$media_path}/avatars/{$subpath}/{$user->avatar_filename}";
-        $this->assertTrue(file_exists($avatar_path));
+        $expected_filename = hash_file('sha256', $image_filepath) . '.webp';
+        $this->assertSame($expected_filename, $user->avatar_filename);
+        $this->assertTrue(file_exists(services\Image::filepath('avatars', $expected_filename)));
     }
 
-    public function testUpdateDeletesOldFile(): void
+    public function testUpdateRemovesThePreviousAvatar(): void
     {
+        $previous_avatar_filename = $this->createAvatarFile();
+        $previous_avatar_filepath = services\Image::filepath('avatars', $previous_avatar_filename);
         $image_filepath = \App\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
-        // we also copy the image as the existing avatar. Note the extension is
-        // JPG instead of PNG: we just want to check that the file is deleted.
-        $media_path = \App\Configuration::$application['media_path'];
-        /** @var string */
-        $previous_avatar_filename = $this->fake('md5');
-        $previous_avatar_filename = $previous_avatar_filename . '.jpg';
-        $subpath = utils\Belt::filenameToSubpath($previous_avatar_filename);
-        $previous_avatar_path = "{$media_path}/avatars/{$subpath}";
-        $previous_avatar_filepath = "{$previous_avatar_path}/{$previous_avatar_filename}";
-        @mkdir($previous_avatar_path, 0755, true);
-        copy($image_filepath, $previous_avatar_filepath);
-
         $user = $this->login([
             'avatar_filename' => $previous_avatar_filename,
         ]);
-        $file = [
-            'name' => 'avatar.png',
-            'tmp_name' => $tmp_filepath,
-            'error' => UPLOAD_ERR_OK,
-        ];
 
         $response = $this->appRun('POST', '/my/profile/avatar', [
             'csrf_token' => $this->csrfToken(forms\users\EditAvatar::class),
-            'avatar' => $file,
+            'avatar' => [
+                'name' => 'avatar.png',
+                'tmp_name' => $tmp_filepath,
+                'error' => UPLOAD_ERR_OK,
+            ],
         ]);
 
         $this->assertResponseCode($response, 302, "/p/{$user->id}");
-        $user = $user->reload();
-        $this->assertSame($user->id . '.webp', $user->avatar_filename);
-        $subpath = utils\Belt::filenameToSubpath($user->avatar_filename);
-        $avatar_filepath = "{$media_path}/avatars/{$subpath}/{$user->avatar_filename}";
-        $this->assertTrue(file_exists($avatar_filepath));
         $this->assertFalse(file_exists($previous_avatar_filepath));
+    }
+
+    public function testUpdateKeepsThePreviousAvatarIfUsedByAnotherUser(): void
+    {
+        $previous_avatar_filename = $this->createAvatarFile();
+        $previous_avatar_filepath = services\Image::filepath('avatars', $previous_avatar_filename);
+        $image_filepath = \App\Configuration::$app_path . '/public/static/default-card.png';
+        $tmp_filepath = $this->tmpCopyFile($image_filepath);
+        $user = $this->login([
+            'avatar_filename' => $previous_avatar_filename,
+        ]);
+        UserFactory::create([
+            'avatar_filename' => $previous_avatar_filename,
+        ]);
+
+        $response = $this->appRun('POST', '/my/profile/avatar', [
+            'csrf_token' => $this->csrfToken(forms\users\EditAvatar::class),
+            'avatar' => [
+                'name' => 'avatar.png',
+                'tmp_name' => $tmp_filepath,
+                'error' => UPLOAD_ERR_OK,
+            ],
+        ]);
+
+        $this->assertResponseCode($response, 302, "/p/{$user->id}");
+        $this->assertTrue(file_exists($previous_avatar_filepath));
     }
 
     public function testUpdateRedirectsToLoginIfNotConnected(): void
@@ -286,5 +295,18 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
             [UPLOAD_ERR_CANT_WRITE],
             [UPLOAD_ERR_EXTENSION],
         ];
+    }
+
+    /**
+     * Copy an image in the avatars directory, and return its filename.
+     */
+    private function createAvatarFile(): string
+    {
+        $image_filepath = \App\Configuration::$app_path . '/public/static/og-card.png';
+        $filename = hash_file('sha256', $image_filepath) . '.webp';
+        $filepath = services\Image::filepath('avatars', $filename);
+        @mkdir(dirname($filepath), 0755, true);
+        copy($image_filepath, $filepath);
+        return $filename;
     }
 }

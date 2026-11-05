@@ -4,7 +4,7 @@ namespace App\controllers\streams;
 
 use App\forms;
 use App\models;
-use App\utils;
+use App\services;
 use tests\factories\StreamFactory;
 use tests\factories\UserFactory;
 
@@ -16,6 +16,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ResponseAsserts;
     use \tests\FakerHelper;
+    use \tests\FilesystemHelper;
     use \tests\LoginHelper;
 
     public function testEditRendersCorrectly(): void
@@ -91,11 +92,9 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, "/streams/{$stream->id}/image");
         $stream = $stream->reload();
-        $this->assertNotNull($stream->image_filename);
-        $media_path = \App\Configuration::$application['media_path'];
-        $subpath = utils\Belt::filenameToSubpath($stream->image_filename);
-        $cover_filepath = "{$media_path}/covers/{$subpath}/{$stream->image_filename}";
-        $this->assertTrue(file_exists($cover_filepath));
+        $expected_filename = hash_file('sha256', $image_filepath) . '.webp';
+        $this->assertSame($expected_filename, $stream->image_filename);
+        $this->assertTrue(file_exists(services\Image::filepath('covers', $expected_filename)));
     }
 
     public function testUpdateRedirectsIfNotConnected(): void
