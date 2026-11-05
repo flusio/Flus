@@ -10,6 +10,14 @@ namespace App\models;
  */
 class Image
 {
+    /**
+     * The maximum number of pixels of an image that can be loaded.
+     *
+     * GD needs about 5 bytes per pixel to load an image, so this limit
+     * prevents images from exhausting the memory.
+     */
+    public const MAX_PIXELS = 25_000_000;
+
     private \GdImage $resource;
 
     private int $width;
@@ -25,9 +33,25 @@ class Image
 
     /**
      * Initialize an image from a string
+     *
+     * @throws \DomainException
+     *     If the string cannot be read as an image, or if the image has more
+     *     than MAX_PIXELS pixels.
      */
     public static function fromString(string $string_image): self
     {
+        $size = @getimagesizefromstring($string_image);
+
+        if (!$size) {
+            throw new \DomainException('Cannot read the size of the image');
+        }
+
+        [$width, $height] = $size;
+
+        if ($width * $height > self::MAX_PIXELS) {
+            throw new \DomainException("The image is too large ({$width}x{$height}px)");
+        }
+
         $resource = @imagecreatefromstring($string_image);
 
         if (!$resource) {

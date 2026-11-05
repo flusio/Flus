@@ -241,6 +241,33 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($link->image_filename);
     }
 
+    public function testUpdateFailsIfImageIsCorrupted(): void
+    {
+        $image_filepath = \App\Configuration::$app_path . '/tests/fixtures/images/corrupted.png';
+        $tmp_filepath = $this->tmpCopyFile($image_filepath);
+        $user = $this->login();
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'image_filename' => null,
+        ]);
+        $file = [
+            'tmp_name' => $tmp_filepath,
+            'name' => 'image.png',
+            'error' => UPLOAD_ERR_OK,
+        ];
+
+        $response = $this->appRun('POST', "/links/{$link->id}/image", [
+            'csrf_token' => $this->csrfToken(forms\links\EditLinkImage::class),
+            'image' => $file,
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseTemplateName($response, 'links/images/edit.html.twig');
+        $this->assertResponseContains($response, 'This image cannot be read or its dimensions are too large.');
+        $link = $link->reload();
+        $this->assertNull($link->image_filename);
+    }
+
     public function testUpdateFailsIfIsUploadedFileReturnsFalse(): void
     {
         $image_filepath = \App\Configuration::$app_path . '/public/static/default-card.png';

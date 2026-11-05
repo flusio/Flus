@@ -4,6 +4,41 @@ namespace App\models;
 
 class ImageTest extends \PHPUnit\Framework\TestCase
 {
+    public function testFromString(): void
+    {
+        $image_filepath = \App\Configuration::$app_path . '/public/static/og-card.png';
+        $string_image = file_get_contents($image_filepath);
+        assert($string_image !== false);
+
+        $image = Image::fromString($string_image);
+
+        $this->assertInstanceOf(Image::class, $image);
+    }
+
+    public function testFromStringFailsIfImageIsCorrupted(): void
+    {
+        $this->expectException(\DomainException::class);
+        $this->expectExceptionMessage('Cannot create an image from the given string');
+
+        $image_filepath = \App\Configuration::$app_path . '/tests/fixtures/images/corrupted.png';
+        $string_image = file_get_contents($image_filepath);
+        assert($string_image !== false);
+
+        Image::fromString($string_image);
+    }
+
+    public function testFromStringFailsIfImageDimensionsAreTooLarge(): void
+    {
+        $this->expectException(\DomainException::class);
+        $this->expectExceptionMessage('The image is too large (10000x10000px)');
+
+        $image_filepath = \App\Configuration::$app_path . '/tests/fixtures/images/too-large.png';
+        $string_image = file_get_contents($image_filepath);
+        assert($string_image !== false);
+
+        Image::fromString($string_image);
+    }
+
     /**
      * @param array{int, int} $initial_size
      * @param array{int, int} $destination_size

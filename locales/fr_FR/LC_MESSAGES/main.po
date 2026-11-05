@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-11-05 22:19+0100\n"
-"PO-Revision-Date: 2026-11-05 22:19+0100\n"
+"POT-Creation-Date: 2026-11-06 00:03+0100\n"
+"PO-Revision-Date: 2026-11-06 00:03+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -86,7 +86,7 @@ msgstr "Le fil a été supprimé."
 msgid "The message could not be sent due to a server-side problem."
 msgstr "Le message n’a pas pu être envoyé à cause d’un problème côté serveur."
 
-#: controllers/my/Account.php:105
+#: controllers/my/Account.php:109
 msgid "Your account and your data are now deleted."
 msgstr "Votre compte et vos données sont désormais supprimées."
 
@@ -154,17 +154,21 @@ msgstr "Le sujet est obligatoire."
 msgid "The message is required."
 msgstr "Le message est obligatoire."
 
-#: forms/checks/Image.php:30 forms/importations/OpmlImportation.php:33
+#: forms/checks/Image.php:36 forms/importations/OpmlImportation.php:33
 msgid "This file cannot be uploaded (error {code})."
 msgstr "Ce fichier ne peut pas être téléversé (erreur {code})."
 
-#: forms/checks/Image.php:32 forms/importations/OpmlImportation.php:31
+#: forms/checks/Image.php:38 forms/importations/OpmlImportation.php:31
 msgid "The file type must be one of the following: {types}."
 msgstr "Le type de fichier doit être l’un des suivants : {types}."
 
-#: forms/checks/Image.php:34 forms/importations/OpmlImportation.php:32
+#: forms/checks/Image.php:40 forms/importations/OpmlImportation.php:32
 msgid "This file is too large (max allowed: {max_size})."
 msgstr "Ce fichier est trop gros (max autorisé : {max_size})."
+
+#: forms/checks/Image.php:42
+msgid "This image cannot be read or its dimensions are too large."
+msgstr "Cette image ne peut pas être lue ou ses dimensions sont trop grandes."
 
 #: forms/collections/Collection.php:99
 msgid "One of the associated topic doesn’t exist."
@@ -215,11 +219,11 @@ msgstr "L’URL est invalide."
 msgid "You already have configured a Mastodon account."
 msgstr "Vous avez déjà configuré un compte Mastodon."
 
-#: forms/security/AskResetPassword.php:22 models/User.php:54
+#: forms/security/AskResetPassword.php:22 models/User.php:55
 msgid "The address email is required."
 msgstr "L’adresse courriel est obligatoire."
 
-#: forms/security/AskResetPassword.php:25 models/User.php:57
+#: forms/security/AskResetPassword.php:25 models/User.php:58
 msgid "The address email is invalid."
 msgstr "L’adresse courriel est invalide."
 
@@ -412,19 +416,19 @@ msgstr "Le nom est obligatoire."
 msgid "The label must be less than {max} characters."
 msgstr "Le nom doit faire moins de {max} caractères."
 
-#: models/User.php:60
+#: models/User.php:61
 msgid "An account already exists with this email address."
 msgstr "Un compte existe déjà avec cette adresse courriel."
 
-#: models/User.php:66
+#: models/User.php:67
 msgid "The username is required."
 msgstr "Le nom d’utilisateur·ice est obligatoire."
 
-#: models/User.php:70
+#: models/User.php:71
 msgid "The username must be less than {max} characters."
 msgstr "Le nom d’utilisateur·ice ne doit pas faire plus de {max} caractères."
 
-#: models/User.php:74
+#: models/User.php:75
 msgid "The username cannot contain the character ‘@’."
 msgstr "Le nom d’utilisateur·ice ne doit pas contenir le caractère ‘@’."
 
@@ -591,7 +595,7 @@ msgstr "Sport"
 msgid "Tech"
 msgstr "Tech"
 
-#: services/LinkFetcher.php:189
+#: services/LinkFetcher.php:192
 #, php-format
 msgid "%s on Twitter: %s"
 msgstr "%s sur Twitter : %s"
