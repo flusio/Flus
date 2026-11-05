@@ -161,6 +161,7 @@ CREATE TABLE collections (
 
 CREATE INDEX idx_collections_user_id ON collections(user_id);
 CREATE INDEX idx_collections_feed_fetched_next_at ON collections(feed_fetched_next_at);
+CREATE INDEX idx_collections_feed_url ON collections USING hash (feed_url);
 CREATE INDEX idx_collections_image_filename_pattern ON collections(image_filename text_pattern_ops) WHERE image_filename IS NOT NULL;
 
 CREATE TABLE links (
