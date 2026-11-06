@@ -20,7 +20,7 @@ trait HasLinks
     /**
      * Return the links of the list.
      *
-     * @see Link::listComputedByCollection
+     * @see Link::listComputedByList
      *
      * @param string[] $selected_computed_props
      * @param array{
@@ -35,7 +35,7 @@ trait HasLinks
      */
     public function links(array $selected_computed_props = [], array $options = []): array
     {
-        return Link::listComputedByCollection(
+        return Link::listComputedByList(
             $this,
             $selected_computed_props,
             $options

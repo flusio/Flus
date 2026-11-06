@@ -75,7 +75,7 @@ class Links extends BaseController
 
         $can_view_hidden_links = auth\Access::can($user, 'viewHiddenLinks', $source);
 
-        $number_links = models\Link::countByCollection($source, [
+        $number_links = models\Link::countByList($source, [
             'hidden' => $can_view_hidden_links,
         ]);
         $pagination = new utils\Pagination($number_links, $pagination_per_page, $pagination_page);

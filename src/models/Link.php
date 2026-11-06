@@ -23,7 +23,7 @@ class Link
     use Database\Resource;
     use links\Annotable;
     use links\Fetchable;
-    use links\InCollections;
+    use links\InLists;
     use links\InJournal;
     use links\InStreams;
     use links\OwnedByUser;

@@ -56,7 +56,7 @@ class AtomImportator
             $urls[] = \SpiderBits\Url::sanitize($entry->link);
         }
 
-        $link_ids_by_urls = models\Link::listUrlsToIdsByCollection($source, $urls);
+        $link_ids_by_urls = models\Link::listUrlsToIdsBySource($source, $urls);
         $owner = $source->owner();
 
         $links_to_create = [];

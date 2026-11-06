@@ -195,7 +195,7 @@ class Wallabag
 
         // Delete the collections if they are empty at the end of the
         // importation.
-        $count_wallabag_links = models\Link::countByCollection($wallabag_collection);
+        $count_wallabag_links = models\Link::countByList($wallabag_collection);
         if ($count_wallabag_links === 0) {
             $wallabag_collection->remove();
         } else {

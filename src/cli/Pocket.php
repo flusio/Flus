@@ -184,7 +184,7 @@ class Pocket
 
         // Delete the collections if they are empty at the end of the
         // importation.
-        $count_pocket_links = models\Link::countByCollection($pocket_collection);
+        $count_pocket_links = models\Link::countByList($pocket_collection);
         if ($count_pocket_links === 0) {
             $pocket_collection->remove();
         } else {

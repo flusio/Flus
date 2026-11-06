@@ -148,8 +148,8 @@ class FeedFetcher
         $urls = array_intersect_key($urls, $entries);
         $feed_entry_ids = array_intersect_key($feed_entry_ids, $entries);
 
-        $link_ids_by_urls = models\Link::listUrlsToIdsByCollection($feed, $urls);
-        $link_urls_by_entry_ids = models\Link::listEntryIdsToUrlsByCollection($feed, $feed_entry_ids);
+        $link_ids_by_urls = models\Link::listUrlsToIdsBySource($feed, $urls);
+        $link_urls_by_entry_ids = models\Link::listEntryIdsToUrlsByFeed($feed, $feed_entry_ids);
 
         $links_to_create = [];
         $links_to_lists_to_create = [];

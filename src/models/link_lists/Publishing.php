@@ -24,7 +24,7 @@ trait Publishing
         $today = \Minz\Time::now();
         $one_year_ago = \Minz\Time::ago(1, 'year');
 
-        $count_links = Link::countByCollection($this, [
+        $count_links = Link::countByList($this, [
             'since' => $one_year_ago,
         ]);
 

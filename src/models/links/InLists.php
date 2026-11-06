@@ -13,14 +13,15 @@ use App\utils\Belt;
 use Minz\Database;
 
 /**
- * Add the relation between a link and the collections that contain it.
+ * Add the relation between a link and the lists (collections, feeds and
+ * journals) that contain it.
  *
  * This trait requires utils\Memoizer.
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-trait InCollections
+trait InLists
 {
     /**
      * Return the collections attached to the current link
@@ -171,7 +172,7 @@ trait InCollections
     /**
      * Set the source of the link, by its id.
      *
-     * Prefer setSource() if you already have the collection at hand.
+     * Prefer setSource() if you already have the source at hand.
      */
     public function setSourceId(?string $source_id): void
     {
@@ -227,7 +228,7 @@ trait InCollections
     }
 
     /**
-     * Return links of the given collection with its computed properties.
+     * Return links of the given list with its computed properties.
      *
      * Links are sorted by published_at if the property is included, or by
      * created_at otherwise.
@@ -254,7 +255,7 @@ trait InCollections
      *
      * @return self[]
      */
-    public static function listComputedByCollection(
+    public static function listComputedByList(
         LinkList $link_list,
         array $selected_computed_props,
         array $options = [],
@@ -334,7 +335,7 @@ trait InCollections
     }
 
     /**
-     * Count links of the given collection.
+     * Count links of the given list.
      *
      * @param array{
      *     'hidden'?: bool,
@@ -347,7 +348,7 @@ trait InCollections
      * - since (default to null), counts links that have been added since the
      *   given date only
      */
-    public static function countByCollection(LinkList $link_list, array $options = []): int
+    public static function countByList(LinkList $link_list, array $options = []): int
     {
         $default_options = [
             'hidden' => true,
@@ -430,7 +431,7 @@ trait InCollections
     }
 
     /**
-     * Return the oldest publication date in the collection since the given date.
+     * Return the oldest publication date in the source since the given date.
      */
     public static function getOldestPublicationDateSince(
         Source $source,
@@ -473,7 +474,7 @@ trait InCollections
     }
 
     /**
-     * Return the list of url ids indexed by urls for the given collection.
+     * Return the list of url ids indexed by urls for the given source.
      *
      * Only the links matching the given URLs are returned.
      *
@@ -482,7 +483,7 @@ trait InCollections
      *
      * @return array<string, string>
      */
-    public static function listUrlsToIdsByCollection(
+    public static function listUrlsToIdsBySource(
         Source $source,
         array $urls,
         int $chunk_size = 500,
@@ -512,7 +513,7 @@ trait InCollections
     }
 
     /**
-     * Return the list of urls indexed by entry ids for the given collection.
+     * Return the list of urls indexed by entry ids for the given feed.
      *
      * Only the links matching the given entry ids are returned.
      *
@@ -524,8 +525,8 @@ trait InCollections
      *     'url': string,
      * }>
      */
-    public static function listEntryIdsToUrlsByCollection(
-        Source $source,
+    public static function listEntryIdsToUrlsByFeed(
+        Feed $feed,
         array $feed_entry_ids,
         int $chunk_size = 500,
     ): array {
@@ -549,7 +550,7 @@ trait InCollections
 
             $database = Database::get();
             $statement = $database->prepare($sql);
-            $statement->execute([$source->id, ...$chunk_feed_entry_ids]);
+            $statement->execute([$feed->id, ...$chunk_feed_entry_ids]);
 
             $link_urls_by_entry_ids += $statement->fetchAll(\PDO::FETCH_UNIQUE);
         }
