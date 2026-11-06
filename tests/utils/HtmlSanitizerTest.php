@@ -4,7 +4,7 @@ namespace App\utils;
 
 class HtmlSanitizerTest extends \PHPUnit\Framework\TestCase
 {
-    public function testSanitizeCollectionDescription(): void
+    public function testSanitizeFeedDescription(): void
     {
         $description = <<<HTML
             <h1>Welcome!</h1>
@@ -19,7 +19,7 @@ class HtmlSanitizerTest extends \PHPUnit\Framework\TestCase
             HTML;
         $base_url = 'https://example.com';
 
-        $result = HtmlSanitizer::sanitizeCollectionDescription($description, $base_url);
+        $result = HtmlSanitizer::sanitizeFeedDescription($description, $base_url);
 
         $this->assertSame($expected_description, trim($result));
     }

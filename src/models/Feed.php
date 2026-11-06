@@ -104,7 +104,7 @@ class Feed extends Source
      */
     public function descriptionAsHtml(): string
     {
-        return utils\HtmlSanitizer::sanitizeCollectionDescription($this->description, $this->feedWebsiteUrl());
+        return utils\HtmlSanitizer::sanitizeFeedDescription($this->description, $this->feedWebsiteUrl());
     }
 
     /**

@@ -8,7 +8,7 @@ namespace App\utils;
  */
 class HtmlSanitizer
 {
-    public static function sanitizeCollectionDescription(string $description, string $base_url): string
+    public static function sanitizeFeedDescription(string $description, string $base_url): string
     {
         $html_sanitizer = new \SpiderBits\HtmlSanitizer([
             'abbr' => [],
