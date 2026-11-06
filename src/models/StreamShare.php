@@ -2,6 +2,7 @@
 
 namespace App\models;
 
+use App\utils;
 use Minz\Database;
 
 /**
@@ -12,6 +13,7 @@ use Minz\Database;
 class StreamShare
 {
     use Database\Recordable;
+    use utils\Memoizer;
 
     #[Database\Column]
     public int $id;
@@ -25,10 +27,6 @@ class StreamShare
     #[Database\Column]
     public string $stream_id;
 
-    // used to sort stream shares easily
-    #[Database\Column(computed: true)]
-    public ?string $username;
-
     public function __construct(User $user, Stream $stream)
     {
         $this->user_id = $user->id;
@@ -40,32 +38,18 @@ class StreamShare
      */
     public function user(): User
     {
-        return User::require($this->user_id);
+        return $this->memoize('user', function (): User {
+            return User::require($this->user_id);
+        });
     }
 
     /**
-     * Return the shares of the given stream, with their computed username.
+     * Set the user of the share without querying the database.
      *
-     * @return self[]
+     * @see streams\Preloader::shares
      */
-    public static function listByStream(Stream $stream): array
+    public function preloadUser(User $user): void
     {
-        $sql = <<<SQL
-            SELECT ss.*, u.username
-            FROM stream_shares ss
-
-            INNER JOIN users u
-            ON u.id = ss.user_id
-
-            WHERE ss.stream_id = :stream_id
-        SQL;
-
-        $database = Database::get();
-        $statement = $database->prepare($sql);
-        $statement->execute([
-            'stream_id' => $stream->id,
-        ]);
-
-        return self::fromDatabaseRows($statement->fetchAll());
+        $this->memoizeValue('user', $user);
     }
 }

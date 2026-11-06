@@ -32,6 +32,8 @@ class Shares extends BaseController
 
         auth\Access::require($user, 'update', $collection);
 
+        models\link_lists\Preloader::for([$collection])->shares();
+
         return Response::ok('collections/shares/index.html.twig', [
             'collection' => $collection,
             'form' => new forms\collections\ShareCollection(options: [
@@ -72,6 +74,8 @@ class Shares extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
+            models\link_lists\Preloader::for([$collection])->shares();
+
             return Response::badRequest('collections/shares/index.html.twig', [
                 'collection' => $collection,
                 'form' => $form,
@@ -79,6 +83,8 @@ class Shares extends BaseController
         }
 
         $collection->shareWith($form->user(), $form->type());
+
+        models\link_lists\Preloader::for([$collection])->shares();
 
         return Response::ok('collections/shares/index.html.twig', [
             'collection' => $collection,
@@ -117,6 +123,8 @@ class Shares extends BaseController
 
         if (!$form->validate()) {
             utils\Notification::error($form->error('@base'));
+            models\link_lists\Preloader::for([$collection])->shares();
+
             return Response::badRequest('collections/shares/index.html.twig', [
                 'collection' => $collection,
                 'form' => new forms\collections\ShareCollection(options: [
@@ -126,6 +134,8 @@ class Shares extends BaseController
         }
 
         $collection->unshareWith($form->user());
+
+        models\link_lists\Preloader::for([$collection])->shares();
 
         return Response::ok('collections/shares/index.html.twig', [
             'collection' => $collection,

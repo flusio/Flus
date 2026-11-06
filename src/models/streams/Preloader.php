@@ -3,7 +3,9 @@
 namespace App\models\streams;
 
 use App\models\Stream;
+use App\models\StreamShare;
 use App\models\User;
+use App\utils\Sorter;
 
 /**
  * Load in batch the data that a list of streams would otherwise load one by
@@ -54,6 +56,52 @@ class Preloader
         foreach ($this->streams as $stream) {
             $has_unread_links = isset($streams_with_unread[$stream->id]);
             $stream->preloadHasUnreadLinks($user, $has_unread_links);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Preload the shares of the streams, sorted by the username of the users
+     * they are shared with, as well as these users.
+     */
+    public function shares(): self
+    {
+        if (!$this->streams) {
+            return $this;
+        }
+
+        $shares = StreamShare::listBy([
+            'stream_id' => array_column($this->streams, 'id'),
+        ]);
+
+        $user_ids = array_column($shares, 'user_id');
+        $user_ids = array_unique($user_ids);
+        $user_ids = array_values($user_ids);
+
+        $users_by_ids = [];
+
+        if ($user_ids) {
+            $users = User::listBy(['id' => $user_ids]);
+            $users_by_ids = array_column($users, null, 'id');
+        }
+
+        $shares_by_stream_ids = [];
+
+        foreach ($shares as $share) {
+            $share->preloadUser($users_by_ids[$share->user_id]);
+            $shares_by_stream_ids[$share->stream_id][] = $share;
+        }
+
+        foreach ($this->streams as $stream) {
+            $stream_shares = $shares_by_stream_ids[$stream->id] ?? [];
+
+            $stream_shares = Sorter::localeSort(
+                $stream_shares,
+                fn (StreamShare $share): string => $share->user()->username,
+            );
+
+            $stream->preloadShares($stream_shares);
         }
 
         return $this;

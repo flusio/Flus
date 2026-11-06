@@ -32,6 +32,8 @@ class Shares extends BaseController
 
         auth\Access::require($user, 'update', $stream);
 
+        models\streams\Preloader::for([$stream])->shares();
+
         return Response::ok('streams/shares/index.html.twig', [
             'stream' => $stream,
             'form' => new forms\streams\ShareStream(options: [
@@ -71,6 +73,8 @@ class Shares extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
+            models\streams\Preloader::for([$stream])->shares();
+
             return Response::badRequest('streams/shares/index.html.twig', [
                 'stream' => $stream,
                 'form' => $form,
@@ -78,6 +82,8 @@ class Shares extends BaseController
         }
 
         $stream->shareWith($form->user());
+
+        models\streams\Preloader::for([$stream])->shares();
 
         return Response::ok('streams/shares/index.html.twig', [
             'stream' => $stream,
@@ -116,6 +122,8 @@ class Shares extends BaseController
 
         if (!$form->validate()) {
             utils\Notification::error($form->error('@base'));
+            models\streams\Preloader::for([$stream])->shares();
+
             return Response::badRequest('streams/shares/index.html.twig', [
                 'stream' => $stream,
                 'form' => new forms\streams\ShareStream(options: [
@@ -125,6 +133,8 @@ class Shares extends BaseController
         }
 
         $stream->unshareWith($form->user());
+
+        models\streams\Preloader::for([$stream])->shares();
 
         return Response::ok('streams/shares/index.html.twig', [
             'stream' => $stream,

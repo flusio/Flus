@@ -71,13 +71,9 @@ abstract class Source extends LinkList
     /**
      * Return the shares attached to the source.
      *
-     * @param array{
-     *     'access_type'?: ShareType|'any',
-     * } $options
-     *
      * @return CollectionShare[]
      */
-    public function shares(array $options = []): array
+    public function shares(): array
     {
         return [];
     }

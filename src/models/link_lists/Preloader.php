@@ -102,6 +102,60 @@ class Preloader
     }
 
     /**
+     * Preload the shares of the collections, sorted by the username of the
+     * users they are shared with, as well as these users.
+     */
+    public function shares(): self
+    {
+        $collections = [];
+
+        foreach ($this->sources as $source) {
+            if ($source instanceof Collection) {
+                $collections[] = $source;
+            }
+        }
+
+        if (!$collections) {
+            return $this;
+        }
+
+        $shares = CollectionShare::listBy([
+            'collection_id' => array_column($collections, 'id'),
+        ]);
+
+        $user_ids = array_column($shares, 'user_id');
+        $user_ids = array_unique($user_ids);
+        $user_ids = array_values($user_ids);
+
+        $users_by_ids = [];
+
+        if ($user_ids) {
+            $users = User::listBy(['id' => $user_ids]);
+            $users_by_ids = array_column($users, null, 'id');
+        }
+
+        $shares_by_collection_ids = [];
+
+        foreach ($shares as $share) {
+            $share->preloadUser($users_by_ids[$share->user_id]);
+            $shares_by_collection_ids[$share->collection_id][] = $share;
+        }
+
+        foreach ($collections as $collection) {
+            $collection_shares = $shares_by_collection_ids[$collection->id] ?? [];
+
+            $collection_shares = Sorter::localeSort(
+                $collection_shares,
+                fn (CollectionShare $share): string => $share->user()->username,
+            );
+
+            $collection->preloadShares($collection_shares);
+        }
+
+        return $this;
+    }
+
+    /**
      * Preload the number of streams of the given user in which the collections
      * are sources.
      */

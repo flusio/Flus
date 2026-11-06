@@ -94,6 +94,9 @@ class Sources extends BaseController
             'limit' => $pagination->numberPerPage(),
         ]);
 
+        models\link_lists\Preloader::for([$source])
+            ->publishers();
+
         models\links\Preloader::for($links)
             ->originsFor($user)
             ->urlStatusesFor($user)

@@ -242,8 +242,28 @@ class Stream
      */
     public function shares(): array
     {
-        $stream_shares = StreamShare::listByStream($this);
-        return utils\Sorter::localeSort($stream_shares, 'username');
+        return $this->memoize('shares', function (): array {
+            $stream_shares = StreamShare::listBy([
+                'stream_id' => $this->id,
+            ]);
+
+            return utils\Sorter::localeSort(
+                $stream_shares,
+                fn (StreamShare $share): string => $share->user()->username,
+            );
+        });
+    }
+
+    /**
+     * Set the shares of the stream without querying the database.
+     *
+     * @see streams\Preloader
+     *
+     * @param StreamShare[] $shares
+     */
+    public function preloadShares(array $shares): void
+    {
+        $this->memoizeValue('shares', $shares);
     }
 
     /**
@@ -254,6 +274,7 @@ class Stream
         $stream_share = new StreamShare($user, $this);
         $stream_share->save();
 
+        $this->unmemoize('shares');
         $this->unmemoizePrefixed('shared_with_');
     }
 
@@ -267,6 +288,7 @@ class Stream
             'user_id' => $user->id,
         ]);
 
+        $this->unmemoize('shares');
         $this->unmemoizePrefixed('shared_with_');
     }
 

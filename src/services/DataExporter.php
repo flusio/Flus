@@ -43,6 +43,9 @@ class DataExporter
         $files['read.atom.xml'] = $this->generateReadingStatusList($user->readList());
 
         $streams = $user->streams();
+
+        models\streams\Preloader::for($streams)->shares();
+
         foreach ($streams as $stream) {
             $files["streams/{$stream->id}.json"] = $this->generateStream($stream, $user);
         }

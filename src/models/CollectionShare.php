@@ -17,6 +17,7 @@ use Minz\Validable;
 class CollectionShare
 {
     use Database\Recordable;
+    use utils\Memoizer;
     use Validable;
 
     public const VALID_TYPES = ['read', 'write'];
@@ -43,10 +44,6 @@ class CollectionShare
     )]
     public string $type;
 
-    // used to sort collection shares easily
-    #[Database\Column(computed: true)]
-    public ?string $username;
-
     public function __construct(User $user, Collection $collection, string $type)
     {
         $this->user_id = $user->id;
@@ -55,79 +52,23 @@ class CollectionShare
     }
 
     /**
-     * Return the user attached to the CollectionShare
+     * Return the user the collection is shared with.
      */
     public function user(): User
     {
-        return User::require($this->user_id);
+        return $this->memoize('user', function (): User {
+            return User::require($this->user_id);
+        });
     }
 
     /**
-     * Return the shares of the given collection with their computed
-     * properties.
+     * Set the user of the share without querying the database.
      *
-     * @param string[] $selected_computed_props
-     *     The list of computed properties to return. It is mandatory to
-     *     select specific properties to avoid computing dispensable
-     *     properties.
-     * @param array{
-     *     'access_type'?: 'any'|'read'|'write',
-     * } $options
-     *
-     * Description of the options:
-     *
-     * - access_type (default is 'any'): indicates with which access the
-     *   collection must have been shared.
-     *
-     * @return self[]
+     * @see link_lists\Preloader::shares
      */
-    public static function listComputedByCollection(
-        Collection $collection,
-        array $selected_computed_props,
-        array $options = [],
-    ): array {
-        $default_options = [
-            'access_type' => 'any',
-        ];
-        $options = array_merge($default_options, $options);
-
-        $parameters = [
-            ':collection_id' => $collection->id,
-        ];
-
-        $username_clause = '';
-        $join_clause = '';
-        if (in_array('username', $selected_computed_props)) {
-            $username_clause = ', u.username';
-            $join_clause = 'INNER JOIN users u ON u.id = cs.user_id';
-        }
-
-        // we don't need the clause if access_type is 'any' (i.e. the type
-        // doesn't matter) or 'read' (i.e. read access is included in write
-        // access)
-        $access_type_clause = '';
-        if ($options['access_type'] === 'write') {
-            $access_type_clause = "AND cs.type = 'write'";
-        }
-
-        $sql = <<<SQL
-            SELECT
-                cs.*
-                {$username_clause}
-            FROM collection_shares cs
-
-            {$join_clause}
-
-            WHERE cs.collection_id = :collection_id
-
-            {$access_type_clause}
-        SQL;
-
-        $database = Database::get();
-        $statement = $database->prepare($sql);
-        $statement->execute($parameters);
-
-        return self::fromDatabaseRows($statement->fetchAll());
+    public function preloadUser(User $user): void
+    {
+        $this->memoizeValue('user', $user);
     }
 
     /**

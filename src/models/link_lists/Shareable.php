@@ -26,11 +26,14 @@ trait Shareable
     {
         return $this->memoize('publishers', function (): array {
             $owner = $this->owner();
-            $shares = $this->shares(['access_type' => 'write']);
 
-            $publishers = array_map(function (CollectionShare $share): User {
-                return $share->user();
-            }, $shares);
+            $publishers = [];
+
+            foreach ($this->shares() as $share) {
+                if ($share->type === 'write') {
+                    $publishers[] = $share->user();
+                }
+            }
 
             array_unshift($publishers, $owner);
 
@@ -51,24 +54,36 @@ trait Shareable
     }
 
     /**
-     * Return the CollectionShares attached to the current collection
-     *
-     * @see CollectionShare::listComputedByCollection
-     *
-     * @param array{
-     *     'access_type'?: ShareType|'any',
-     * } $options
+     * Return the shares of the collection, sorted by username.
      *
      * @return CollectionShare[]
      */
-    public function shares(array $options = []): array
+    public function shares(): array
     {
-        $collection_shares = CollectionShare::listComputedByCollection(
-            $this,
-            ['username'],
-            $options,
-        );
-        return Sorter::localeSort($collection_shares, 'username');
+        return $this->memoize('shares', function (): array {
+            $collection_shares = CollectionShare::listBy([
+                'collection_id' => $this->id,
+            ]);
+
+            return Sorter::localeSort(
+                $collection_shares,
+                fn (CollectionShare $share): string => $share->user()->username,
+            );
+        });
+    }
+
+    /**
+     * Set the shares of the collection without querying the database.
+     *
+     * The shares must be sorted by username.
+     *
+     * @see Preloader
+     *
+     * @param CollectionShare[] $shares
+     */
+    public function preloadShares(array $shares): void
+    {
+        $this->memoizeValue('shares', $shares);
     }
 
     /**
@@ -81,6 +96,7 @@ trait Shareable
         $collection_share = new CollectionShare($user, $this, $access_type);
         $collection_share->save();
 
+        $this->unmemoize('shares');
         $this->unmemoize('publishers');
     }
 
@@ -94,6 +110,7 @@ trait Shareable
             'user_id' => $user->id,
         ]);
 
+        $this->unmemoize('shares');
         $this->unmemoize('publishers');
     }
 
