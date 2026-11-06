@@ -47,13 +47,13 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(0, models\Feed::count());
         $this->assertSame(0, models\Stream::count());
-        $this->assertSame(0, models\FollowedCollection::count());
+        $this->assertSame(0, models\Follow::count());
 
         $importator->perform($importation->id);
 
         $this->assertSame(3, models\Feed::count());
         $this->assertSame(1, models\Stream::count());
-        $this->assertSame(3, models\FollowedCollection::count());
+        $this->assertSame(3, models\Follow::count());
 
         $importation = $importation->reload();
         $this->assertSame('finished', $importation->status);
@@ -66,18 +66,18 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
         $feed3 = models\Feed::take(2);
         $this->assertNotNull($feed3);
         $this->assertSame('feed', $feed3->type);
-        $followed_collection1 = models\FollowedCollection::take(0);
-        $this->assertNotNull($followed_collection1);
-        $this->assertSame($user->id, $followed_collection1->user_id);
-        $this->assertSame($feed1->id, $followed_collection1->collection_id);
-        $followed_collection2 = models\FollowedCollection::take(1);
-        $this->assertNotNull($followed_collection2);
-        $this->assertSame($user->id, $followed_collection2->user_id);
-        $this->assertSame($feed2->id, $followed_collection2->collection_id);
-        $followed_collection3 = models\FollowedCollection::take(2);
-        $this->assertNotNull($followed_collection3);
-        $this->assertSame($user->id, $followed_collection3->user_id);
-        $this->assertSame($feed3->id, $followed_collection3->collection_id);
+        $follow1 = models\Follow::take(0);
+        $this->assertNotNull($follow1);
+        $this->assertSame($user->id, $follow1->user_id);
+        $this->assertSame($feed1->id, $follow1->collection_id);
+        $follow2 = models\Follow::take(1);
+        $this->assertNotNull($follow2);
+        $this->assertSame($user->id, $follow2->user_id);
+        $this->assertSame($feed2->id, $follow2->collection_id);
+        $follow3 = models\Follow::take(2);
+        $this->assertNotNull($follow3);
+        $this->assertSame($user->id, $follow3->user_id);
+        $this->assertSame($feed3->id, $follow3->collection_id);
         $stream = models\Stream::take();
         $this->assertNotNull($stream);
         $this->assertSame('Blogs', $stream->name);
@@ -139,7 +139,7 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(3, models\Feed::count());
         $this->assertSame(1, models\Stream::count());
-        $this->assertSame(3, models\FollowedCollection::count());
+        $this->assertSame(3, models\Follow::count());
         $this->assertSame(3, models\StreamToFollow::count());
 
         $importation_1 = $importation_1->reload();
@@ -183,16 +183,16 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertSame(1, models\Feed::count());
-        $this->assertSame(0, models\FollowedCollection::count());
+        $this->assertSame(0, models\Follow::count());
 
         $importator->perform($importation->id);
 
         $this->assertSame(3, models\Feed::count());
-        $followed_collection = models\FollowedCollection::findBy([
+        $follow = models\Follow::findBy([
             'collection_id' => $feed->id,
             'user_id' => $user->id,
         ]);
-        $this->assertNotNull($followed_collection);
+        $this->assertNotNull($follow);
     }
 
     public function testPerformHandlesIfImportationIsMissing(): void
@@ -202,7 +202,7 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
         $importator->perform(1);
 
         $this->assertSame(0, models\Feed::count());
-        $this->assertSame(0, models\FollowedCollection::count());
+        $this->assertSame(0, models\Follow::count());
     }
 
     public function testPerformFailsIfFileIsMissing(): void
@@ -224,7 +224,7 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('error', $importation->status);
         $this->assertSame('Can’t read the OPML file.', $importation->error);
         $this->assertSame(0, models\Feed::count());
-        $this->assertSame(0, models\FollowedCollection::count());
+        $this->assertSame(0, models\Follow::count());
     }
 
     public function testPerformFailsIfFileIsNotOpml(): void
@@ -246,7 +246,7 @@ class OpmlImportatorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('error', $importation->status);
         $this->assertSame('Can’t parse the given string.', $importation->error);
         $this->assertSame(0, models\Feed::count());
-        $this->assertSame(0, models\FollowedCollection::count());
+        $this->assertSame(0, models\Follow::count());
         $this->assertFalse(file_exists($opml_filepath));
     }
 }

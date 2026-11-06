@@ -52,7 +52,7 @@ class Journal extends BaseController
     }
 
     /**
-     * Fill the journal with links to read from followed collections.
+     * Fill the journal with links to read from followed sources.
      *
      * @request_param string csrf_token
      *

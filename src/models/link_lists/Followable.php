@@ -2,7 +2,7 @@
 
 namespace App\models\link_lists;
 
-use App\models\FollowedCollection;
+use App\models\Follow;
 use App\models\Source;
 use App\models\User;
 use Minz\Database;
@@ -19,9 +19,9 @@ trait Followable
      * Return the follow of the given user on this source, or null if the
      * user doesn't follow it.
      */
-    public function followByUser(User $user): ?FollowedCollection
+    public function findFollowBy(User $user): ?Follow
     {
-        return $user->followedCollection($this);
+        return $user->findFollow($this);
     }
 
     /**
@@ -30,7 +30,7 @@ trait Followable
      */
     public function timeFilterByUser(User $user): ?string
     {
-        return $this->followByUser($user)?->time_filter;
+        return $this->findFollowBy($user)?->time_filter;
     }
 
     /**
@@ -44,7 +44,7 @@ trait Followable
             return $this->name();
         }
 
-        $name_by_user = $this->followByUser($user)?->name;
+        $name_by_user = $this->findFollowBy($user)?->name;
         return $name_by_user ?: $this->name();
     }
 
@@ -59,7 +59,7 @@ trait Followable
             return $this->image_filename;
         }
 
-        $image_filename_by_user = $this->followByUser($user)?->image_filename;
+        $image_filename_by_user = $this->findFollowBy($user)?->image_filename;
         return $image_filename_by_user ?: $this->image_filename;
     }
 
@@ -68,7 +68,7 @@ trait Followable
      */
     public function isFollowedBy(User $user): bool
     {
-        return $this->followByUser($user) !== null;
+        return $this->findFollowBy($user) !== null;
     }
 
     /**

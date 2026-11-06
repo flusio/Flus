@@ -157,9 +157,9 @@ class OpmlGeneratorTest extends \PHPUnit\Framework\TestCase
         ]);
         $user->follow($source);
         $stream->addSource($source);
-        $followed_collection = $context_user->follow($source);
-        $followed_collection->name = 'Flus news';
-        $followed_collection->save();
+        $follow = $context_user->follow($source);
+        $follow->name = 'Flus news';
+        $follow->save();
 
         $opml = $opml_generator->renderFollows($user, [
             'context_user' => $context_user,
@@ -308,9 +308,9 @@ class OpmlGeneratorTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $stream->addSource($source);
-        $followed_collection = $context_user->follow($source);
-        $followed_collection->name = 'Flus news';
-        $followed_collection->save();
+        $follow = $context_user->follow($source);
+        $follow->name = 'Flus news';
+        $follow->save();
 
         $opml = $opml_generator->renderStream($stream, [
             'context_user' => $context_user,

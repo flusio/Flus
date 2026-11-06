@@ -141,16 +141,16 @@ class MediaTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(file_exists($cover_filepath));
     }
 
-    public function testCleanKeepsFilesUsedByFollowedCollections(): void
+    public function testCleanKeepsFilesUsedByFollows(): void
     {
         $image_filename = $this->createMediaFile('covers');
         $cover_filepath = services\Image::filepath('covers', $image_filename);
         $subdir_name = substr($image_filename, 0, 3);
         $user = UserFactory::create();
         $feed = FeedFactory::create();
-        $followed_collection = $user->follow($feed);
-        $followed_collection->image_filename = $image_filename;
-        $followed_collection->save();
+        $follow = $user->follow($feed);
+        $follow->image_filename = $image_filename;
+        $follow->save();
 
         $response = $this->appRun('CLI', '/media/clean');
 

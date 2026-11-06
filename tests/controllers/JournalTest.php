@@ -37,7 +37,7 @@ class JournalTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, $title);
     }
 
-    public function testIndexRendersIfViaFollowedCollections(): void
+    public function testIndexRendersIfViaFollows(): void
     {
         $user = $this->login();
         /** @var string */

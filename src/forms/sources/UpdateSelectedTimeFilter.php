@@ -18,7 +18,7 @@ class UpdateSelectedTimeFilter extends BulkSelection
         message: new Translatable('The filter is required.'),
     )]
     #[Validable\Inclusion(
-        in: models\FollowedCollection::VALID_TIME_FILTERS,
+        in: models\Follow::VALID_TIME_FILTERS,
         message: new Translatable('The filter is invalid.'),
     )]
     public string $time_filter = '';

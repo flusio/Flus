@@ -196,7 +196,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/onboarding');
     }
 
-    public function testCreateAddFollowedCollectionsIfDefaultFeedsExist(): void
+    public function testCreateAddFollowsIfDefaultFeedsExist(): void
     {
         $default_feeds_path = \App\Configuration::$data_path . '/default-feeds.opml.xml';
         file_put_contents($default_feeds_path, <<<OPML

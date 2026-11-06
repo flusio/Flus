@@ -10,7 +10,7 @@ use Minz\Validable;
 /**
  * @phpstan-import-type Parameters from \Minz\ParameterBag
  *
- * @extends BaseForm<models\FollowedCollection>
+ * @extends BaseForm<models\Follow>
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
@@ -40,7 +40,7 @@ class EditFollow extends BaseForm
      */
     public function __construct(
         array $default_values = [],
-        ?models\FollowedCollection $model = null,
+        ?models\Follow $model = null,
         array $options = [],
     ) {
         if ($model && !isset($default_values['stream_ids'])) {

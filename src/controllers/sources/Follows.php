@@ -36,13 +36,13 @@ class Follows extends BaseController
 
         auth\Access::require($user, 'view', $source);
 
-        $followed_collection = $user->followedCollection($source);
+        $follow = $user->findFollow($source);
 
-        if (!$followed_collection) {
+        if (!$follow) {
             throw new \Minz\Errors\MissingRecordError('The user does not follow the source.');
         }
 
-        $form = new forms\sources\EditFollow(model: $followed_collection, options: [
+        $form = new forms\sources\EditFollow(model: $follow, options: [
             'user' => $user,
         ]);
 
@@ -80,13 +80,13 @@ class Follows extends BaseController
 
         auth\Access::require($user, 'view', $source);
 
-        $followed_collection = $user->followedCollection($source);
+        $follow = $user->findFollow($source);
 
-        if (!$followed_collection) {
+        if (!$follow) {
             throw new \Minz\Errors\MissingRecordError('The user does not follow the source.');
         }
 
-        $form = new forms\sources\EditFollow(model: $followed_collection, options: [
+        $form = new forms\sources\EditFollow(model: $follow, options: [
             'user' => $user,
         ]);
 
@@ -99,8 +99,8 @@ class Follows extends BaseController
             ]);
         }
 
-        $followed_collection = $form->model();
-        $followed_collection->save();
+        $follow = $form->model();
+        $follow->save();
 
         $streams = $form->selectedStreams();
 
@@ -113,7 +113,7 @@ class Follows extends BaseController
             $streams[] = $named_stream;
         }
 
-        $followed_collection->setStreams($streams);
+        $follow->setStreams($streams);
 
         return Response::found(utils\RequestHelper::from($request));
     }
@@ -270,7 +270,7 @@ class Follows extends BaseController
             return Response::found($from);
         }
 
-        models\FollowedCollection::updateTimeFilter($user, $form->selectedSources(), $form->time_filter);
+        models\Follow::updateTimeFilter($user, $form->selectedSources(), $form->time_filter);
 
         return Response::found($from);
     }

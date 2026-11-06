@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-11-06 00:03+0100\n"
-"PO-Revision-Date: 2026-11-06 00:03+0100\n"
+"POT-Creation-Date: 2026-11-06 18:09+0100\n"
+"PO-Revision-Date: 2026-11-06 18:09+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -86,7 +86,7 @@ msgstr "Le fil a été supprimé."
 msgid "The message could not be sent due to a server-side problem."
 msgstr "Le message n’a pas pu être envoyé à cause d’un problème côté serveur."
 
-#: controllers/my/Account.php:109
+#: controllers/my/Account.php:110
 msgid "Your account and your data are now deleted."
 msgstr "Votre compte et vos données sont désormais supprimées."
 
@@ -137,12 +137,12 @@ msgid "You must accept the terms of service."
 msgstr "Vous devez accepter les conditions générales d’utilisation."
 
 #: forms/Search.php:22 forms/feeds/NewFeed.php:21 forms/links/RepairLink.php:22
-#: models/Link.php:54
+#: models/Link.php:55
 msgid "The link is required."
 msgstr "Le lien est obligatoire."
 
 #: forms/Search.php:25 forms/feeds/NewFeed.php:24 forms/links/RepairLink.php:25
-#: models/Link.php:57
+#: models/Link.php:58
 msgid "The link is invalid."
 msgstr "Le lien est invalide."
 
@@ -181,11 +181,11 @@ msgstr "L’une des thématiques associées n’existe pas."
 msgid "The file is required."
 msgstr "Le fichier est obligatoire."
 
-#: forms/collections/ShareCollection.php:24 models/CollectionShare.php:39
+#: forms/collections/ShareCollection.php:24 models/CollectionShare.php:38
 msgid "The type is required."
 msgstr "Le type est obligatoire."
 
-#: forms/collections/ShareCollection.php:28 models/CollectionShare.php:43
+#: forms/collections/ShareCollection.php:28 models/CollectionShare.php:42
 msgid "The type is invalid."
 msgstr "Le type est invalide."
 
@@ -236,13 +236,11 @@ msgstr ""
 msgid "One of the selected streams doesn’t exist."
 msgstr "L’un des fils sélectionnés n’existe pas."
 
-#: forms/sources/UpdateSelectedTimeFilter.php:18
-#: models/FollowedCollection.php:39
+#: forms/sources/UpdateSelectedTimeFilter.php:18 models/Follow.php:40
 msgid "The filter is required."
 msgstr "Le filtre est obligatoire."
 
-#: forms/sources/UpdateSelectedTimeFilter.php:22
-#: models/FollowedCollection.php:43
+#: forms/sources/UpdateSelectedTimeFilter.php:22 models/Follow.php:44
 msgid "The filter is invalid."
 msgstr "Le filtre est invalide."
 
@@ -357,12 +355,12 @@ msgstr "[%s] Réinitialisation de votre mot de passe"
 msgid "[%s] Your account will be deleted soon due to inactivity"
 msgstr "[%s] Votre compte sera bientôt supprimé pour cause d’inactivité"
 
-#: models/FollowedCollection.php:50 models/Group.php:34 models/LinkList.php:45
+#: models/Follow.php:51 models/Group.php:34 models/LinkList.php:46
 #: models/Stream.php:38 models/View.php:68
 msgid "The name must be less than {max} characters."
 msgstr "Le nom ne doit pas faire plus de {max} caractères."
 
-#: models/Group.php:30 models/LinkList.php:41 models/Stream.php:34
+#: models/Group.php:30 models/LinkList.php:42 models/Stream.php:34
 #: models/View.php:65
 msgid "The name is required."
 msgstr "Le nom est obligatoire."
@@ -376,19 +374,19 @@ msgstr "Vous avez déjà un groupe portant le même nom."
 msgid "Journal"
 msgstr "Journal"
 
-#: models/Link.php:48
+#: models/Link.php:49
 msgid "The title is required."
 msgstr "Le titre est obligatoire."
 
-#: models/Link.php:74
+#: models/Link.php:75
 msgid "The reading time must be greater or equal to 0."
 msgstr "Le temps de lecture doit être supérieur ou égal à 0."
 
-#: models/Link.php:84
+#: models/Link.php:82
 msgid "The origin must be less than {max} characters."
 msgstr "L’origine ne doit pas faire plus de {max} caractères."
 
-#: models/Note.php:30
+#: models/Note.php:31
 msgid "The content is required."
 msgstr "Le contenu est obligatoire."
 
@@ -408,11 +406,11 @@ msgstr "Liens lus"
 msgid "Find here all the links you’ve marked as read."
 msgstr "Retrouvez ici tous les liens que vous avez marqués comme lu."
 
-#: models/Topic.php:31
+#: models/Topic.php:30
 msgid "The label is required."
 msgstr "Le nom est obligatoire."
 
-#: models/Topic.php:35
+#: models/Topic.php:34
 msgid "The label must be less than {max} characters."
 msgstr "Le nom doit faire moins de {max} caractères."
 
@@ -595,7 +593,7 @@ msgstr "Sport"
 msgid "Tech"
 msgstr "Tech"
 
-#: services/LinkFetcher.php:192
+#: services/LinkFetcher.php:193
 #, php-format
 msgid "%s on Twitter: %s"
 msgstr "%s sur Twitter : %s"

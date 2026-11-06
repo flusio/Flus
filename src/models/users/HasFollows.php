@@ -2,7 +2,7 @@
 
 namespace App\models\users;
 
-use App\models\FollowedCollection;
+use App\models\Follow;
 use App\models\Source;
 use App\utils;
 
@@ -18,7 +18,7 @@ trait HasFollows
      * Return the follow of the user on the given source, or null if the user
      * doesn't follow it.
      */
-    public function followedCollection(Source $source): ?FollowedCollection
+    public function findFollow(Source $source): ?Follow
     {
         return $this->follows()[$source->id] ?? null;
     }
@@ -28,18 +28,18 @@ trait HasFollows
      */
     public function isFollowing(Source $source): bool
     {
-        return $this->followedCollection($source) !== null;
+        return $this->findFollow($source) !== null;
     }
 
     /**
      * Return the follows of the user, indexed by source ids.
      *
-     * @return array<string, FollowedCollection>
+     * @return array<string, Follow>
      */
     public function follows(): array
     {
         return $this->memoize('follows', function (): array {
-            $follows = FollowedCollection::listBy(['user_id' => $this->id]);
+            $follows = Follow::listBy(['user_id' => $this->id]);
             return array_column($follows, null, 'collection_id');
         });
     }
@@ -50,15 +50,15 @@ trait HasFollows
      * Be careful to check isFollowing() is returning false before calling this
      * method.
      */
-    public function follow(Source $source, string $time_filter = 'normal'): FollowedCollection
+    public function follow(Source $source, string $time_filter = 'normal'): Follow
     {
-        $followed_collection = new FollowedCollection($this, $source);
-        $followed_collection->time_filter = $time_filter;
-        $followed_collection->save();
+        $follow = new Follow($this, $source);
+        $follow->time_filter = $time_filter;
+        $follow->save();
 
         $this->unmemoize('follows');
 
-        return $followed_collection;
+        return $follow;
     }
 
     /**
@@ -66,7 +66,7 @@ trait HasFollows
      */
     public function unfollow(Source $source): void
     {
-        FollowedCollection::deleteBy([
+        Follow::deleteBy([
             'user_id' => $this->id,
             'collection_id' => $source->id,
         ]);
@@ -85,7 +85,7 @@ trait HasFollows
             return;
         }
 
-        FollowedCollection::deleteBy([
+        Follow::deleteBy([
             'user_id' => $this->id,
             'collection_id' => array_column($sources, 'id'),
         ]);

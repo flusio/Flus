@@ -46,7 +46,7 @@ class BulkSelection extends BaseForm
         $user = $this->optionAs('user', models\User::class);
 
         $sources = models\Source::listBy(['id' => $this->source_ids]);
-        $follows = models\FollowedCollection::listByUserAndSources($user, $sources);
+        $follows = models\Follow::listByUserAndSources($user, $sources);
 
         return array_values(array_filter(
             $sources,

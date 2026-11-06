@@ -18,7 +18,7 @@ class Media
 {
     /**
      * Clean the media files which are unused (i.e. by links, sources,
-     * streams, followed collections or users).
+     * streams, follows or users).
      *
      * Responses are yield because it can take a very long time to perform.
      *
@@ -35,7 +35,7 @@ class Media
                 models\Link::listImageFilenamesStartingWith($prefix),
                 models\Source::listImageFilenamesStartingWith($prefix),
                 models\Stream::listImageFilenamesStartingWith($prefix),
-                models\FollowedCollection::listImageFilenamesStartingWith($prefix),
+                models\Follow::listImageFilenamesStartingWith($prefix),
             );
         });
 

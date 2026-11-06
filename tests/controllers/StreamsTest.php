@@ -187,13 +187,13 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $stream->addSource($feed);
-        $owner_followed_collection = $owner->followedCollection($feed);
-        $this->assertNotNull($owner_followed_collection);
-        $owner_followed_collection->name = 'Owner name';
-        $owner_followed_collection->save();
-        $followed_collection = $user->follow($feed);
-        $followed_collection->name = 'Visitor name';
-        $followed_collection->save();
+        $owner_follow = $owner->findFollow($feed);
+        $this->assertNotNull($owner_follow);
+        $owner_follow->name = 'Owner name';
+        $owner_follow->save();
+        $follow = $user->follow($feed);
+        $follow->name = 'Visitor name';
+        $follow->save();
 
         $response = $this->appRun('GET', "/streams/{$stream->id}");
 

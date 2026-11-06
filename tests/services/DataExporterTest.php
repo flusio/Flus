@@ -168,9 +168,9 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
             'name' => 'Carnet de Flus',
             'is_public' => true,
         ]);
-        $followed_collection = $user->follow($feed);
-        $followed_collection->name = 'Flus news';
-        $followed_collection->save();
+        $follow = $user->follow($feed);
+        $follow->name = 'Flus news';
+        $follow->save();
 
         $filepath = $data_exporter->export($user);
 

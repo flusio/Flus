@@ -435,11 +435,11 @@ class Stream
     }
 
     /**
-     * List the streams in which the followed collection is a source.
+     * List the streams in which the followed source is displayed.
      *
      * @return self[]
      */
-    public static function listByFollow(FollowedCollection $follow): array
+    public static function listByFollow(Follow $follow): array
     {
         $sql = <<<SQL
             SELECT s.*

@@ -66,7 +66,7 @@ class StreamToFollow
 
     public static function findOrCreate(Stream $stream, Source $source): self
     {
-        $follow = FollowedCollection::findOrCreate($stream->owner(), $source);
+        $follow = Follow::findOrCreate($stream->owner(), $source);
 
         return self::findOrCreateBy([
             'stream_id' => $stream->id,

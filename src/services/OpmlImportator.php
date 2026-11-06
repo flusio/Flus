@@ -48,7 +48,7 @@ class OpmlImportator
 
         $feeds_by_feed_urls = $this->loadFeedsByFeedUrls($feed_urls_by_streams);
         $feeds_to_create = [];
-        $followed_collections_to_create = [];
+        $follows_to_create = [];
         $feed_ids_by_streams = [];
 
         foreach ($feed_urls_by_streams as $stream_name => $feed_urls) {
@@ -82,10 +82,10 @@ class OpmlImportator
                     $feeds_by_feed_urls[$feed_url] = $feed;
                 }
 
-                $followed_collection = new models\FollowedCollection($user, $feed);
-                $followed_collection->created_at = \Minz\Time::now();
+                $follow = new models\Follow($user, $feed);
+                $follow->created_at = \Minz\Time::now();
 
-                $followed_collections_to_create[] = $followed_collection;
+                $follows_to_create[] = $follow;
 
                 if ($stream_id) {
                     $feed_ids_by_streams[$stream_id][] = $feed->id;
@@ -94,11 +94,11 @@ class OpmlImportator
         }
 
         models\Feed::bulkInsert($feeds_to_create);
-        models\FollowedCollection::bulkInsert($followed_collections_to_create);
+        models\Follow::bulkInsert($follows_to_create);
 
         // Now, create the associated streams. Streams depend on
-        // FollowedCollections, so we get them from the database.
-        $follows = models\FollowedCollection::listBy(['user_id' => $user->id]);
+        // follows, so we get them from the database.
+        $follows = models\Follow::listBy(['user_id' => $user->id]);
         $follows_by_collection_ids = array_column($follows, null, 'collection_id');
 
         $streams_to_follows_to_create = [];
@@ -109,7 +109,7 @@ class OpmlImportator
 
                 if (!$follow) {
                     // This should not happen as we created the follows via
-                    // $followed_collections_to_create, which is always
+                    // $follows_to_create, which is always
                     // populated when we populate $feed_ids_by_streams.
                     // Anyway, better be sure that it doesn't fail.
                     continue;

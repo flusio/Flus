@@ -37,9 +37,9 @@ class Images extends BaseController
 
         auth\Access::require($user, 'view', $source);
 
-        $followed_collection = $user->followedCollection($source);
+        $follow = $user->findFollow($source);
 
-        if (!$followed_collection) {
+        if (!$follow) {
             throw new \Minz\Errors\MissingRecordError('The user does not follow the source.');
         }
 
@@ -75,9 +75,9 @@ class Images extends BaseController
 
         auth\Access::require($user, 'view', $source);
 
-        $followed_collection = $user->followedCollection($source);
+        $follow = $user->findFollow($source);
 
-        if (!$followed_collection) {
+        if (!$follow) {
             throw new \Minz\Errors\MissingRecordError('The user does not follow the source.');
         }
 
@@ -99,8 +99,8 @@ class Images extends BaseController
         assert($image_file !== null);
 
         $image_service = new services\Image();
-        $followed_collection->image_filename = $image_service->storeFromFile($image_file, 'covers');
-        $followed_collection->save();
+        $follow->image_filename = $image_service->storeFromFile($image_file, 'covers');
+        $follow->save();
 
         return Response::found(utils\RequestHelper::from($request));
     }

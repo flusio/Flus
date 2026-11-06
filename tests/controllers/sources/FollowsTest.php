@@ -171,7 +171,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $followed_collection = $user->follow($collection);
+        $follow = $user->follow($collection);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/follow/edit", [
             'csrf_token' => $this->csrfToken(forms\sources\EditFollow::class),
@@ -179,8 +179,8 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, "/collections/{$collection->id}/follow/edit");
-        $followed_collection = $followed_collection->reload();
-        $this->assertSame('strict', $followed_collection->time_filter);
+        $follow = $follow->reload();
+        $this->assertSame('strict', $follow->time_filter);
     }
 
     public function testUpdateRenamesTheSource(): void
@@ -190,7 +190,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
             'name' => 'Carnet de Flus',
             'is_public' => true,
         ]);
-        $followed_collection = $user->follow($feed);
+        $follow = $user->follow($feed);
 
         $response = $this->appRun('POST', "/collections/{$feed->id}/follow/edit", [
             'csrf_token' => $this->csrfToken(forms\sources\EditFollow::class),
@@ -211,9 +211,9 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
             'name' => 'Carnet de Flus',
             'is_public' => true,
         ]);
-        $followed_collection = $user->follow($feed);
-        $followed_collection->name = 'Flus news';
-        $followed_collection->save();
+        $follow = $user->follow($feed);
+        $follow->name = 'Flus news';
+        $follow->save();
 
         $response = $this->appRun('POST', "/collections/{$feed->id}/follow/edit", [
             'csrf_token' => $this->csrfToken(forms\sources\EditFollow::class),
@@ -399,7 +399,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $followed_collection = $user->follow($collection);
+        $follow = $user->follow($collection);
         $stream_name = str_repeat('a', models\Stream::NAME_MAX_LENGTH + 1);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/follow/edit", [
@@ -411,8 +411,8 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The name must be less than 100 characters.');
         $this->assertSame(0, models\Stream::count());
-        $followed_collection = $followed_collection->reload();
-        $this->assertSame('normal', $followed_collection->time_filter);
+        $follow = $follow->reload();
+        $this->assertSame('normal', $follow->time_filter);
     }
 
     public function testUpdateFailsIfStreamIsOwnedByAnotherUser(): void
@@ -467,7 +467,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $followed_collection = $user->follow($collection);
+        $follow = $user->follow($collection);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/follow/edit", [
             'csrf_token' => $this->csrfToken(forms\sources\EditFollow::class),
@@ -476,8 +476,8 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'The filter is invalid');
-        $followed_collection = $followed_collection->reload();
-        $this->assertSame('normal', $followed_collection->time_filter);
+        $follow = $follow->reload();
+        $this->assertSame('normal', $follow->time_filter);
     }
 
     public function testUpdateFailsIfCsrfIsInvalid(): void
@@ -488,7 +488,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $followed_collection = $user->follow($collection);
+        $follow = $user->follow($collection);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/follow/edit", [
             'csrf_token' => 'not the token',
@@ -497,8 +497,8 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'A security verification failed');
-        $followed_collection = $followed_collection->reload();
-        $this->assertSame('normal', $followed_collection->time_filter);
+        $follow = $follow->reload();
+        $this->assertSame('normal', $follow->time_filter);
     }
 
     public function testCreateMakesUserFollowingAndRedirects(): void
@@ -510,18 +510,18 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
 
-        $this->assertSame(0, models\FollowedCollection::count());
+        $this->assertSame(0, models\Follow::count());
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/follow", [
             'csrf_token' => $this->csrfToken(forms\sources\Follow::class),
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertSame(1, models\FollowedCollection::count());
-        $followed_collection = models\FollowedCollection::take();
-        $this->assertNotNull($followed_collection);
-        $this->assertSame($user->id, $followed_collection->user_id);
-        $this->assertSame($collection->id, $followed_collection->collection_id);
+        $this->assertSame(1, models\Follow::count());
+        $follow = models\Follow::take();
+        $this->assertNotNull($follow);
+        $this->assertSame($user->id, $follow->user_id);
+        $this->assertSame($collection->id, $follow->collection_id);
     }
 
     public function testCreateWorksIfSourceIsShared(): void
@@ -542,11 +542,11 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertSame(1, models\FollowedCollection::count());
-        $followed_collection = models\FollowedCollection::take();
-        $this->assertNotNull($followed_collection);
-        $this->assertSame($user->id, $followed_collection->user_id);
-        $this->assertSame($collection->id, $followed_collection->collection_id);
+        $this->assertSame(1, models\Follow::count());
+        $follow = models\Follow::take();
+        $this->assertNotNull($follow);
+        $this->assertSame($user->id, $follow->user_id);
+        $this->assertSame($collection->id, $follow->collection_id);
     }
 
     public function testCreateRedirectsIfNotConnected(): void
@@ -562,7 +562,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
-        $this->assertSame(0, models\FollowedCollection::count());
+        $this->assertSame(0, models\Follow::count());
     }
 
     public function testCreateFailsIfSourceDoesNotExist(): void
@@ -579,7 +579,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 404);
-        $this->assertSame(0, models\FollowedCollection::count());
+        $this->assertSame(0, models\Follow::count());
     }
 
     public function testCreateFailsIfUserHasNoAccess(): void
@@ -596,7 +596,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 403);
-        $this->assertSame(0, models\FollowedCollection::count());
+        $this->assertSame(0, models\Follow::count());
     }
 
     public function testCreateFailsIfCsrfIsInvalid(): void
@@ -615,7 +615,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
         $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
-        $this->assertSame(0, models\FollowedCollection::count());
+        $this->assertSame(0, models\Follow::count());
     }
 
     public function testDeleteMakesUserUnfollowingAndRedirects(): void
@@ -633,7 +633,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertSame(0, models\FollowedCollection::count());
+        $this->assertSame(0, models\Follow::count());
     }
 
     public function testDeleteWorksIfSourceIsShared(): void
@@ -655,7 +655,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertSame(0, models\FollowedCollection::count());
+        $this->assertSame(0, models\Follow::count());
     }
 
     public function testDeleteWorksIfUserHasNoAccessToTheSource(): void
@@ -675,7 +675,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertSame(0, models\FollowedCollection::count());
+        $this->assertSame(0, models\Follow::count());
     }
 
     public function testDeleteRedirectsIfNotConnected(): void
@@ -693,7 +693,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
-        $this->assertSame(1, models\FollowedCollection::count());
+        $this->assertSame(1, models\Follow::count());
     }
 
     public function testDeleteFailsIfSourceDoesNotExist(): void
@@ -711,7 +711,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 404);
-        $this->assertSame(1, models\FollowedCollection::count());
+        $this->assertSame(1, models\Follow::count());
     }
 
     public function testDeleteFailsIfCsrfIsInvalid(): void
@@ -731,7 +731,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
         $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
-        $this->assertSame(1, models\FollowedCollection::count());
+        $this->assertSame(1, models\Follow::count());
     }
 
     public function testDeleteSelectedMakesUserUnfollowingTheSourcesAndRedirects(): void
@@ -824,7 +824,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertSame(0, models\FollowedCollection::count());
+        $this->assertSame(0, models\Follow::count());
     }
 
     public function testDeleteSelectedDoesNotUnfollowSourcesOfOtherUsers(): void
@@ -946,8 +946,8 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertSame('strict', $user->followedCollection($source_1)?->time_filter);
-        $this->assertSame('strict', $user->followedCollection($source_2)?->time_filter);
+        $this->assertSame('strict', $user->findFollow($source_1)?->time_filter);
+        $this->assertSame('strict', $user->findFollow($source_2)?->time_filter);
     }
 
     public function testUpdateSelectedTimeFilterDoesNotChangeUnselectedSources(): void
@@ -972,8 +972,8 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertSame('all', $user->followedCollection($selected_source)?->time_filter);
-        $this->assertSame('normal', $user->followedCollection($other_source)?->time_filter);
+        $this->assertSame('all', $user->findFollow($selected_source)?->time_filter);
+        $this->assertSame('normal', $user->findFollow($other_source)?->time_filter);
     }
 
     public function testUpdateSelectedTimeFilterDoesNotChangeSourcesOfOtherUsers(): void
@@ -994,7 +994,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertSame('normal', $other_user->followedCollection($source)?->time_filter);
+        $this->assertSame('normal', $other_user->findFollow($source)?->time_filter);
     }
 
     public function testUpdateSelectedTimeFilterDoesNothingIfSourceIdsIsEmpty(): void
@@ -1013,7 +1013,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $this->assertSame('normal', $user->followedCollection($source)?->time_filter);
+        $this->assertSame('normal', $user->findFollow($source)?->time_filter);
     }
 
     public function testUpdateSelectedTimeFilterFailsIfTimeFilterIsInvalid(): void
@@ -1035,7 +1035,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
         $error = utils\Notification::popError();
         $this->assertStringContainsString('The filter is invalid', $error);
-        $this->assertSame('normal', $user->followedCollection($source)?->time_filter);
+        $this->assertSame('normal', $user->findFollow($source)?->time_filter);
     }
 
     public function testUpdateSelectedTimeFilterFailsIfTimeFilterIsMissing(): void
@@ -1056,7 +1056,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
         $error = utils\Notification::popError();
         $this->assertStringContainsString('The filter is required', $error);
-        $this->assertSame('normal', $user->followedCollection($source)?->time_filter);
+        $this->assertSame('normal', $user->findFollow($source)?->time_filter);
     }
 
     public function testUpdateSelectedTimeFilterRedirectsIfNotConnected(): void
@@ -1076,7 +1076,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
-        $this->assertSame('normal', $user->followedCollection($source)?->time_filter);
+        $this->assertSame('normal', $user->findFollow($source)?->time_filter);
     }
 
     public function testUpdateSelectedTimeFilterFailsIfCsrfIsInvalid(): void
@@ -1098,6 +1098,6 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
         $error = utils\Notification::popError();
         $this->assertStringContainsString('A security verification failed', $error);
-        $this->assertSame('normal', $user->followedCollection($source)?->time_filter);
+        $this->assertSame('normal', $user->findFollow($source)?->time_filter);
     }
 }

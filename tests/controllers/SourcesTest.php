@@ -60,9 +60,9 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
             'feed_url' => $feed_url,
         ]);
-        $followed_collection = $user->follow($feed);
-        $followed_collection->name = 'Flus news';
-        $followed_collection->save();
+        $follow = $user->follow($feed);
+        $follow->name = 'Flus news';
+        $follow->save();
 
         $response = $this->appRun('GET', '/sources');
 
@@ -212,9 +212,9 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
             'feed_url' => $feed_url,
         ]);
-        $followed_collection = $user->follow($feed);
-        $followed_collection->name = 'Flus news';
-        $followed_collection->save();
+        $follow = $user->follow($feed);
+        $follow->name = 'Flus news';
+        $follow->save();
 
         $response = $this->appRun('GET', "/collections/{$feed->id}");
 

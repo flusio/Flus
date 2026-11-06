@@ -869,9 +869,9 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'name' => 'Open access journal',
             'is_public' => true,
         ]);
-        $followed_collection = $user->follow($source_2);
-        $followed_collection->name = 'My favourite reports';
-        $followed_collection->save();
+        $follow = $user->follow($source_2);
+        $follow->name = 'My favourite reports';
+        $follow->save();
         $link_1 = LinkFactory::create([
             'is_hidden' => false,
         ]);

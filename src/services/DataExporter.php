@@ -93,7 +93,7 @@ class DataExporter
     }
 
     /**
-     * Return an OPML representation of the followed collections of the given user.
+     * Return an OPML representation of the sources followed by the given user.
      */
     private function generateOpml(models\User $user): string
     {

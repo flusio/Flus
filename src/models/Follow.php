@@ -13,7 +13,7 @@ use Minz\Validable;
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
 #[Database\Table(name: 'followed_collections')]
-class FollowedCollection
+class Follow
 {
     use BulkQueries;
     use Database\Recordable;
@@ -128,7 +128,7 @@ class FollowedCollection
     }
 
     /**
-     * Return the streams in which the followed collection is a source.
+     * Return the streams in which the followed source is displayed.
      *
      * The streams are sorted by name.
      *
@@ -143,7 +143,7 @@ class FollowedCollection
     }
 
     /**
-     * Set the streams in which the followed collection is a source.
+     * Set the streams in which the followed source is displayed.
      *
      * The streams that are not in the given list are detached.
      *

@@ -139,9 +139,9 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $collection->addLinks([$link], at: $published_at);
-        $followed_collection = $this->user->follow($collection, time_filter: 'all');
-        $followed_collection->created_at = $followed_at;
-        $followed_collection->save();
+        $follow = $this->user->follow($collection, time_filter: 'all');
+        $follow->created_at = $followed_at;
+        $follow->save();
 
         $links = models\Link::listCandidatesForJournal($this->user->journal(), max: 50);
 
