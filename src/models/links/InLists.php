@@ -214,6 +214,8 @@ trait InLists
      *
      * $access_type has no effect if a link is in an owned collection (i.e. it
      * implies the user has write effect over it).
+     *
+     * @param 'any'|'read'|'write' $access_type
      */
     public function sharedWith(User $user, string $access_type = 'any'): bool
     {

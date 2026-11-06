@@ -53,7 +53,7 @@ trait Shareable
     /**
      * Return the CollectionShares attached to the current collection
      *
-     * @see CollectionShare::listComputedByCollectionId
+     * @see CollectionShare::listComputedByCollection
      *
      * @param array{
      *     'access_type'?: ShareType|'any',
@@ -63,8 +63,8 @@ trait Shareable
      */
     public function shares(array $options = []): array
     {
-        $collection_shares = CollectionShare::listComputedByCollectionId(
-            $this->id,
+        $collection_shares = CollectionShare::listComputedByCollection(
+            $this,
             ['username'],
             $options,
         );
