@@ -20,9 +20,8 @@ trait HasLinks
     /**
      * Return the links of the list.
      *
-     * @see Link::listComputedByList
+     * @see Link::listByList
      *
-     * @param string[] $selected_computed_props
      * @param array{
      *     'published_date'?: ?\DateTimeImmutable,
      *     'source'?: ?string,
@@ -33,13 +32,9 @@ trait HasLinks
      *
      * @return Link[]
      */
-    public function links(array $selected_computed_props = [], array $options = []): array
+    public function links(array $options = []): array
     {
-        return Link::listComputedByList(
-            $this,
-            $selected_computed_props,
-            $options
-        );
+        return Link::listByList($this, $options);
     }
 
     /**

@@ -36,7 +36,7 @@ class Feeds extends BaseController
         $user = models\User::requireFromRequest($request);
 
         utils\Locale::setCurrentLocale($user->locale);
-        $links = $user->links(['published_at'], [
+        $links = $user->links([
             'unshared' => false,
             'limit' => 30,
         ]);

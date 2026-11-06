@@ -88,14 +88,11 @@ class Sources extends BaseController
         $topics = $source->topics();
         $topics = utils\Sorter::localeSort($topics, 'label');
 
-        $links = $source->links(
-            ['published_at'],
-            [
-                'hidden' => $can_update || $access_is_shared,
-                'offset' => $pagination->currentOffset(),
-                'limit' => $pagination->numberPerPage(),
-            ]
-        );
+        $links = $source->links([
+            'hidden' => $can_update || $access_is_shared,
+            'offset' => $pagination->currentOffset(),
+            'limit' => $pagination->numberPerPage(),
+        ]);
 
         models\links\Preloader::for($links)
             ->originsFor($user)

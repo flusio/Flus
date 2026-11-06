@@ -221,7 +221,7 @@ class JournalTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/journal');
-        $journal_links = $journal->links(['published_at']);
+        $journal_links = $journal->links();
         $this->assertSame(3, count($journal_links));
         $this->assertTrue($journal_links[0]->group_by_source);
         $this->assertTrue($journal_links[1]->group_by_source);

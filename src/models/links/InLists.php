@@ -225,15 +225,11 @@ trait InLists
     }
 
     /**
-     * Return links of the given list with its computed properties.
+     * Return links of the given list.
      *
-     * Links are sorted by published_at if the property is included, or by
-     * created_at otherwise.
+     * The published_at property of the links is set to the date of their
+     * attachment to the list, and the links are sorted by this date.
      *
-     * @param string[] $selected_computed_props
-     *     The list of computed properties to return. It is mandatory to
-     *     select specific properties to avoid computing dispensable
-     *     properties.
      * @param array{
      *     'published_date'?: ?\DateTimeImmutable,
      *     'source'?: ?string,
@@ -252,11 +248,8 @@ trait InLists
      *
      * @return self[]
      */
-    public static function listComputedByList(
-        LinkList $link_list,
-        array $selected_computed_props,
-        array $options = [],
-    ): array {
+    public static function listByList(LinkList $link_list, array $options = []): array
+    {
         $default_options = [
             'published_date' => null,
             'source' => null,
@@ -270,13 +263,6 @@ trait InLists
             ':collection_id' => $link_list->id,
             ':offset' => $options['offset'],
         ];
-
-        $published_at_clause = '';
-        $order_by_clause = 'ORDER BY l.created_at DESC, l.id';
-        if (in_array('published_at', $selected_computed_props)) {
-            $published_at_clause = ', lc.created_at AS published_at';
-            $order_by_clause = 'ORDER BY lc.created_at DESC, l.id';
-        }
 
         $date_clause = '';
         if ($options['published_date'] !== null) {
@@ -308,9 +294,7 @@ trait InLists
         }
 
         $sql = <<<SQL
-            SELECT
-                l.*
-                {$published_at_clause}
+            SELECT l.*, lc.created_at AS published_at
             FROM links l, links_to_collections lc
 
             WHERE l.id = lc.link_id
@@ -319,7 +303,7 @@ trait InLists
             {$source_clause}
             {$visibility_clause}
 
-            {$order_by_clause}
+            ORDER BY lc.created_at DESC, l.id
             OFFSET :offset
             {$limit_clause}
         SQL;

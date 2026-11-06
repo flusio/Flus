@@ -95,12 +95,14 @@ trait OwnedByUser
     }
 
     /**
-     * Return links of the given user with its computed properties.
+     * Return links of the given user.
      *
-     * Links are sorted by published_at if the property is included, or by
-     * created_at otherwise.
+     * The links are sorted by published_at.
      *
-     * Also, if unshared links are excluded, links are returned on the base of
+     * If unshared links are included, published_at is set to the creation
+     * date of the links instead of the date of publication in collections.
+     *
+     * If unshared links are excluded, links are returned on the base of
      * their relation with collections. It means that published_at will be set
      * to the date of attachment of the related collection. If a link is
      * attached to multiple collections, it could potentially return the same
@@ -108,14 +110,6 @@ trait OwnedByUser
      * takes care of it and will return the link only once by taking the most
      * recent attachment.
      *
-     * You may be affraid by this method and you would be right. This is the
-     * price to pay to return not duplicated and ordered links with their
-     * computed properties.
-     *
-     * @param string[] $selected_computed_props
-     *     The list of computed properties to return. It is mandatory to
-     *     select specific properties to avoid computing dispensable
-     *     properties.
      * @param array{
      *     'unshared'?: bool,
      *     'tag'?: string,
@@ -134,11 +128,8 @@ trait OwnedByUser
      *
      * @return self[]
      */
-    public static function listComputedByUser(
-        User $user,
-        array $selected_computed_props,
-        array $options = [],
-    ): array {
+    public static function listByUser(User $user, array $options = []): array
+    {
         $default_options = [
             'unshared' => true,
             'tag' => '',
@@ -152,12 +143,7 @@ trait OwnedByUser
             ':offset' => $options['offset'],
         ];
 
-        $published_at_clause = '';
-        $order_by_clause = 'ORDER BY l.created_at DESC, l.id';
-        if (in_array('published_at', $selected_computed_props)) {
-            $published_at_clause = ', l.created_at AS published_at';
-            $order_by_clause = 'ORDER BY published_at DESC, l.id';
-        }
+        $published_at_clause = 'l.created_at AS published_at';
 
         $visibility_clause = '';
         $join_clause = '';
@@ -174,10 +160,8 @@ trait OwnedByUser
                 AND c.user_id = :user_id
             SQL;
 
-            if (in_array('published_at', $selected_computed_props)) {
-                $published_at_clause = ', MAX(lc.created_at) AS published_at';
-                $group_by_clause = 'GROUP BY l.id';
-            }
+            $published_at_clause = 'MAX(lc.created_at) AS published_at';
+            $group_by_clause = 'GROUP BY l.id';
         }
 
         $tag_clause = '';
@@ -193,9 +177,7 @@ trait OwnedByUser
         }
 
         $sql = <<<SQL
-            SELECT
-                l.*
-                {$published_at_clause}
+            SELECT l.*, {$published_at_clause}
             FROM links l
 
             {$join_clause}
@@ -206,7 +188,7 @@ trait OwnedByUser
             {$tag_clause}
 
             {$group_by_clause}
-            {$order_by_clause}
+            ORDER BY published_at DESC, l.id
             OFFSET :offset
             {$limit_clause}
         SQL;

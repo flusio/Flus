@@ -43,7 +43,7 @@ class Links extends BaseController
         $pagination_page = $request->parameters->getInteger('page', 1);
         $pagination = new utils\Pagination($number_links, 30, $pagination_page);
 
-        $links = $user->links(['published_at'], [
+        $links = $user->links([
             'unshared' => false,
             'tag' => $tag,
             'offset' => $pagination->currentOffset(),

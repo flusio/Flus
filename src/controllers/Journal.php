@@ -31,7 +31,7 @@ class Journal extends BaseController
         $user = auth\CurrentUser::require();
 
         $journal = $user->journal();
-        $links = $journal->links(['published_at']);
+        $links = $journal->links();
 
         models\links\Preloader::for($links)
             ->sources()

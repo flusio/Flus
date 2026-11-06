@@ -51,7 +51,7 @@ class Feeds extends BaseController
         $topics = $source->topics();
         $topics = utils\Sorter::localeSort($topics, 'label');
 
-        $links = $source->links(['published_at'], [
+        $links = $source->links([
             'hidden' => false,
             'limit' => 30,
         ]);

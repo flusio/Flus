@@ -156,7 +156,7 @@ class DataExporter
     {
         $view = new \Minz\Template\Twig('journal/exportation.atom.xml.twig', [
             'journal' => $journal,
-            'links' => $journal->links(['published_at']),
+            'links' => $journal->links(),
         ]);
 
         return utils\Xml::format($view->render());
@@ -170,7 +170,7 @@ class DataExporter
         $view = new \Minz\Template\Twig('collections/exportation.atom.xml.twig', [
             'collection' => $collection,
             'topics' => $collection->topics(),
-            'links' => $collection->links(['published_at']),
+            'links' => $collection->links(),
         ]);
 
         return utils\Xml::format($view->render());

@@ -23,9 +23,8 @@ trait HasLinks
     /**
      * Return the links of the user.
      *
-     * @see Link::listComputedByUser
+     * @see Link::listByUser
      *
-     * @param string[] $selected_computed_props
      * @param array{
      *     'unshared'?: bool,
      *     'tag'?: string,
@@ -35,13 +34,9 @@ trait HasLinks
      *
      * @return Link[]
      */
-    public function links(array $selected_computed_props = [], array $options = []): array
+    public function links(array $options = []): array
     {
-        return Link::listComputedByUser(
-            $this,
-            $selected_computed_props,
-            $options
-        );
+        return Link::listByUser($this, $options);
     }
 
     /**

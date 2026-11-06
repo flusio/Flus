@@ -80,14 +80,11 @@ class Links extends BaseController
         ]);
         $pagination = new utils\Pagination($number_links, $pagination_per_page, $pagination_page);
 
-        $links = $source->links(
-            ['published_at'],
-            [
-                'hidden' => $can_view_hidden_links,
-                'offset' => $pagination->currentOffset(),
-                'limit' => $pagination->numberPerPage(),
-            ]
-        );
+        $links = $source->links([
+            'hidden' => $can_view_hidden_links,
+            'offset' => $pagination->currentOffset(),
+            'limit' => $pagination->numberPerPage(),
+        ]);
 
         models\links\Preloader::for($links)
             ->collections()
