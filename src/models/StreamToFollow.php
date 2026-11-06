@@ -2,7 +2,7 @@
 
 namespace App\models;
 
-use App\utils;
+use App\models\database\Pivot;
 use Minz\Database;
 
 /**
@@ -14,6 +14,7 @@ class StreamToFollow
 {
     use dao\BulkQueries;
     use Database\Recordable;
+    use Pivot;
 
     #[Database\Column]
     public int $id;
@@ -26,6 +27,11 @@ class StreamToFollow
 
     #[Database\Column]
     public int $follow_id;
+
+    public static function pivotColumns(): array
+    {
+        return ['follow_id', 'stream_id'];
+    }
 
     public static function find(Stream $stream, Source $source): ?self
     {
@@ -109,72 +115,5 @@ class StreamToFollow
         }
 
         return $counts;
-    }
-
-    /**
-     * Attach the follow to the given streams, and detach it from the others.
-     *
-     * @param Stream[] $streams
-     */
-    public static function setStreams(FollowedCollection $follow, array $streams): void
-    {
-        // Make sure that the ids are unique to avoid trying to insert the same
-        // values twice.
-        $stream_ids = array_column($streams, 'id');
-        $stream_ids = array_unique($stream_ids);
-        $stream_ids = array_values($stream_ids);
-
-        $database = Database::get();
-        $database->beginTransaction();
-
-        if ($stream_ids) {
-            // First, delete all the streams_to_follow which aren't in the
-            // given list of ids.
-            $ids_as_question_marks = array_fill(0, count($stream_ids), '?');
-            $ids_as_question_marks = implode(', ', $ids_as_question_marks);
-
-            $sql = <<<SQL
-                DELETE FROM streams_to_follows
-                WHERE follow_id = ?
-                AND stream_id NOT IN ({$ids_as_question_marks})
-            SQL;
-
-            $statement = $database->prepare($sql);
-            $statement->execute([$follow->id, ...$stream_ids]);
-
-            // Then, insert the ids in the database. The unique index on
-            // (stream_id, follow_id) allows to insert the streams without
-            // checking first which ones are already attached.
-            $created_at = \Minz\Time::now()->format(Database\Column::DATETIME_FORMAT);
-            $values_as_question_marks = [];
-            $values = [];
-
-            foreach ($stream_ids as $stream_id) {
-                $values_as_question_marks[] = '(?, ?, ?)';
-                $values = array_merge($values, [$created_at, $stream_id, $follow->id]);
-            }
-
-            $values_placeholder = implode(', ', $values_as_question_marks);
-
-            $sql = <<<SQL
-                INSERT INTO streams_to_follows (created_at, stream_id, follow_id)
-                VALUES {$values_placeholder}
-                ON CONFLICT DO NOTHING
-            SQL;
-
-            $statement = $database->prepare($sql);
-            $statement->execute($values);
-        } else {
-            // No ids? Then just delete all the rows associated to the follow.
-            $sql = <<<SQL
-                DELETE FROM streams_to_follows
-                WHERE follow_id = ?
-            SQL;
-
-            $statement = $database->prepare($sql);
-            $statement->execute([$follow->id]);
-        }
-
-        $database->commit();
     }
 }

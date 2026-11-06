@@ -31,8 +31,7 @@ trait Discoverable
      */
     public function setTopics(array $topics): void
     {
-        $topic_ids = array_column($topics, 'id');
-        CollectionToTopic::set($this->id, $topic_ids);
+        CollectionToTopic::set($this, $topics, $this->topics());
     }
 
     /**

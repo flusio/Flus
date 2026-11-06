@@ -153,7 +153,11 @@ class FollowedCollection
      */
     public function setStreams(array $streams): void
     {
-        StreamToFollow::setStreams($this, $streams);
-        $this->unmemoize('streams');
+        StreamToFollow::set($this, $streams, Stream::listByFollow($this));
+
+        // Make sure to deduplicate streams if they are given several times.
+        $streams = array_values(array_column($streams, null, 'id'));
+        $streams = utils\Sorter::localeSort($streams, 'name');
+        $this->memoizeValue('streams', $streams);
     }
 }

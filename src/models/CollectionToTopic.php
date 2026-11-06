@@ -2,7 +2,7 @@
 
 namespace App\models;
 
-use App\utils;
+use App\models\database\Pivot;
 use Minz\Database;
 
 /**
@@ -12,8 +12,8 @@ use Minz\Database;
 #[Database\Table(name: 'collections_to_topics')]
 class CollectionToTopic
 {
-    use dao\CollectionToTopic;
     use Database\Recordable;
+    use Pivot;
 
     #[Database\Column]
     public int $id;
@@ -23,4 +23,9 @@ class CollectionToTopic
 
     #[Database\Column]
     public string $topic_id;
+
+    public static function pivotColumns(): array
+    {
+        return ['collection_id', 'topic_id'];
+    }
 }

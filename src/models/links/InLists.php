@@ -47,22 +47,17 @@ trait InLists
     ): void {
         $previous_collections = Collection::listByLink($this);
 
-        $compare_ids = fn (Collection $c1, Collection $c2): int => strcmp($c1->id, $c2->id);
-        $collections_to_attach = array_udiff($collections, $previous_collections, $compare_ids);
-        $collections_to_detach = array_udiff($previous_collections, $collections, $compare_ids);
-
-        $database = Database::get();
-        $database->beginTransaction();
-
-        LinkToList::attach([$this], $collections_to_attach, $at);
-        LinkToList::detach([$this], $collections_to_detach);
-
-        $database->commit();
+        [$attached_collections, $detached_collections] = LinkToList::set(
+            $this,
+            $collections,
+            $previous_collections,
+            $at,
+        );
 
         $this->unmemoizeCollections();
 
         if ($sync_publication_frequency) {
-            $collections_to_sync = array_merge($collections_to_attach, $collections_to_detach);
+            $collections_to_sync = array_merge($attached_collections, $detached_collections);
             foreach ($collections_to_sync as $collection) {
                 $collection->syncPublicationFrequencyPerYear();
                 $collection->save();
