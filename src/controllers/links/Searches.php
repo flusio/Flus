@@ -5,6 +5,7 @@ namespace App\controllers\links;
 use App\auth;
 use App\controllers\BaseController;
 use App\forms;
+use App\models;
 use App\services;
 use Minz\Request;
 use Minz\Response;
@@ -38,6 +39,9 @@ class Searches extends BaseController
         ]);
         $form->handleRequest($request);
 
+        models\link_lists\Preloader::for($form->existingFeeds())
+            ->countLinksFor($user);
+
         return Response::ok('links/searches/show.html.twig', [
             'form' => $form,
         ]);
@@ -67,6 +71,9 @@ class Searches extends BaseController
         $form->handleRequest($request);
 
         if (!$form->validate()) {
+            models\link_lists\Preloader::for($form->existingFeeds())
+                ->countLinksFor($user);
+
             return Response::badRequest('links/searches/show.html.twig', [
                 'form' => $form,
             ]);

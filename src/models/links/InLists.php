@@ -9,6 +9,7 @@ use App\models\LinkList;
 use App\models\LinkToList;
 use App\models\Source;
 use App\models\User;
+use App\utils\ArrayHelper;
 use App\utils\Belt;
 use Minz\Database;
 
@@ -316,36 +317,60 @@ trait InLists
     }
 
     /**
-     * Count links of the given list.
+     * Return the number of links of the given lists, indexed by the ids of the
+     * lists.
      *
+     * The lists without links are absent from the returned array.
+     *
+     * @param LinkList[] $link_lists
      * @param array{
      *     'hidden'?: bool,
-     *     'since'?: \DateTimeImmutable,
+     *     'since'?: ?\DateTimeImmutable,
      * } $options
      *
      * Description of the options:
      *
-     * - hidden (default to true), indicates if hidden links must be included
+     * - hidden (default to true), indicates if hidden links must be counted
      * - since (default to null), counts links that have been added since the
      *   given date only
+     *
+     * @return array<string, int>
      */
-    public static function countByList(LinkList $link_list, array $options = []): int
+    public static function countByLists(array $link_lists, array $options = []): array
     {
+        if (!$link_lists) {
+            return [];
+        }
+
         $default_options = [
             'hidden' => true,
             'since' => null,
         ];
         $options = array_merge($default_options, $options);
 
-        $parameters = [
-            ':collection_id' => $link_list->id,
-        ];
+        $parameters = [];
+        $ids_placeholders = [];
+
+        foreach (array_values($link_lists) as $index => $link_list) {
+            $placeholder = ":collection_id_{$index}";
+            $ids_placeholders[] = $placeholder;
+            $parameters[$placeholder] = $link_list->id;
+        }
+
+        /** @var literal-string */
+        $ids_statement = implode(', ', $ids_placeholders);
+
+        // The links of the feeds are never hidden, so no need to check their
+        // visibility if all the lists are feeds, allowing to avoid joining the
+        // links table.
+        $has_not_feeds = ArrayHelper::any(
+            $link_lists,
+            fn (LinkList $link_list): bool => !($link_list instanceof Feed),
+        );
 
         $visibility_join_clause = '';
         $visibility_clause = '';
-        // The links of the feeds are never hidden, so no need to check their
-        // visibility, allowing to avoid joining the links table.
-        if (!$options['hidden'] && !($link_list instanceof Feed)) {
+        if (!$options['hidden'] && $has_not_feeds) {
             $visibility_join_clause = 'INNER JOIN links l ON l.id = lc.link_id';
             $visibility_clause = 'AND l.is_hidden = false';
         }
@@ -357,23 +382,41 @@ trait InLists
         }
 
         $sql = <<<SQL
-            SELECT COUNT(*)
+            SELECT lc.collection_id, COUNT(*) AS count
             FROM links_to_collections lc
 
             {$visibility_join_clause}
 
-            WHERE lc.collection_id = :collection_id
+            WHERE lc.collection_id IN ({$ids_statement})
 
             {$since_clause}
 
             {$visibility_clause}
+
+            GROUP BY lc.collection_id
         SQL;
 
         $database = Database::get();
         $statement = $database->prepare($sql);
         $statement->execute($parameters);
 
-        return intval($statement->fetchColumn());
+        return array_map('intval', $statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+    }
+
+    /**
+     * Count links of the given list.
+     *
+     * @see self::countByLists
+     *
+     * @param array{
+     *     'hidden'?: bool,
+     *     'since'?: ?\DateTimeImmutable,
+     * } $options
+     */
+    public static function countByList(LinkList $link_list, array $options = []): int
+    {
+        $counts = self::countByLists([$link_list], $options);
+        return $counts[$link_list->id] ?? 0;
     }
 
     /**

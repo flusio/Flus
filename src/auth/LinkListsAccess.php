@@ -31,6 +31,39 @@ class LinkListsAccess
         return false;
     }
 
+    /**
+     * Return the SQL condition limiting the lists to those that the given user
+     * can view, along with its parameters.
+     *
+     * The condition applies to the collections table aliased as $alias.
+     *
+     * It must be kept in sync with canView().
+     *
+     * @param literal-string $alias
+     *
+     * @return array{literal-string, array<string, mixed>}
+     */
+    public static function viewQuery(?models\User $user, string $alias): array
+    {
+        if (!$user) {
+            return ["({$alias}.is_public = true)", []];
+        }
+
+        $sql = <<<SQL
+            (
+                {$alias}.is_public = true
+                OR {$alias}.user_id = :access_user_id
+                OR EXISTS (
+                    SELECT 1 FROM collection_shares access_cs
+                    WHERE access_cs.user_id = :access_user_id
+                    AND access_cs.collection_id = {$alias}.id
+                )
+            )
+        SQL;
+
+        return [$sql, [':access_user_id' => $user->id]];
+    }
+
     public static function canViewHiddenLinks(?models\User $user, models\LinkList $link_list): bool
     {
         if (!$user) {

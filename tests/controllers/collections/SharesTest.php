@@ -452,6 +452,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseTemplateName($response, 'collections/shares/index.html.twig');
+        $collection = $collection->reload();
         $this->assertFalse($collection->sharedWith($other_user));
     }
 

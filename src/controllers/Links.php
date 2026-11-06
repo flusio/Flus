@@ -87,14 +87,21 @@ class Links extends BaseController
             $groups = models\Group::listBy(['user_id' => $user->id]);
             $groups = utils\Sorter::localeSort($groups, 'name');
 
-            $collections = $user->collections(['number_links']);
+            $collections = $user->collections();
             $collections = utils\Sorter::localeSort($collections, 'name');
+
             $groups_to_collections = utils\Grouper::groupBy($collections, 'group_id');
 
-            $shared_collections = $user->sharedCollections(['number_links'], [
+            $shared_collections = $user->sharedCollections([
                 'access_type' => 'write',
             ]);
             $shared_collections = utils\Sorter::localeSort($shared_collections, 'name');
+
+            models\link_lists\Preloader::for($collections)
+                ->countLinksFor($user);
+
+            models\link_lists\Preloader::for($shared_collections)
+                ->countLinksFor($user);
 
             return Response::ok('links/index.html.twig', [
                 'groups' => $groups,

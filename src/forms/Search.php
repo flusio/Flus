@@ -60,7 +60,7 @@ class Search extends BaseForm
             $feeds = [];
 
             if ($link) {
-                $link_feeds = models\Feed::listComputedByFeedUrls($link->url_feeds);
+                $link_feeds = models\Feed::listByFeedUrls($link->url_feeds);
 
                 // Deduplicate feeds with same names
                 foreach ($link_feeds as $feed) {

@@ -2,6 +2,7 @@
 
 namespace App\models;
 
+use App\auth;
 use Minz\Database;
 
 /**
@@ -99,6 +100,39 @@ abstract class Source extends LinkList
     }
 
     /**
+     * Return the number of links of the source that the given user can view.
+     *
+     * The hidden links are counted only if the user can view them.
+     */
+    public function countLinksByUser(?User $user): int
+    {
+        return $this->memoize(self::countLinksKey($user), function () use ($user): int {
+            $hidden = auth\Access::can($user, 'viewHiddenLinks', $this);
+            return Link::countByList($this, ['hidden' => $hidden]);
+        });
+    }
+
+    /**
+     * Set the number of links that the given user can view without querying
+     * the database.
+     *
+     * @see link_lists\Preloader::countLinksFor
+     */
+    public function preloadCountLinksByUser(?User $user, int $count): void
+    {
+        $this->memoizeValue(self::countLinksKey($user), $count);
+    }
+
+    /**
+     * Return the memoization key of the number of links of the source that
+     * the given user can view.
+     */
+    private static function countLinksKey(?User $user): string
+    {
+        return 'count_links_' . ($user ? $user->id : 'anonymous');
+    }
+
+    /**
      * Add the links to the source.
      *
      * @param Link[] $links
@@ -109,6 +143,8 @@ abstract class Source extends LinkList
         bool $sync_publication_frequency = true,
     ): void {
         parent::addLinks($links, $at);
+
+        $this->unmemoizePrefixed('count_links_');
 
         if ($sync_publication_frequency) {
             $this->syncPublicationFrequencyPerYear();
@@ -145,36 +181,5 @@ abstract class Source extends LinkList
         }
 
         return $sources_by_ids;
-    }
-
-    /**
-     * Return the clause limiting the sources (aliased as "c") to those that the
-     * given user can view, or to the public ones if no user is given.
-     *
-     * The :user_id parameter must be bound when a user is given.
-     *
-     * @see \App\auth\LinkListsAccess::canView
-     */
-    private static function buildVisibilityClause(?User $user): string
-    {
-        if (!$user) {
-            return <<<SQL
-                AND c.type IN ('collection', 'feed')
-                AND c.is_public = true
-            SQL;
-        }
-
-        return <<<SQL
-            AND c.type IN ('collection', 'feed')
-            AND (
-                c.is_public = true
-                OR c.user_id = :user_id
-                OR EXISTS (
-                    SELECT 1 FROM collection_shares cs
-                    WHERE cs.user_id = :user_id
-                    AND cs.collection_id = c.id
-                )
-            )
-        SQL;
     }
 }

@@ -174,101 +174,67 @@ class Collection extends Source
     }
 
     /**
-     * Return the collections of the given user with its computed properties.
+     * Return the collections of the given user.
      *
-     * @param User $user
-     *     The user that the collections must match.
-     * @param string[] $selected_computed_props
-     *     The list of computed properties to return. It is mandatory to
-     *     select specific properties to avoid computing dispensable
-     *     properties.
      * @param array{
      *     'private'?: bool,
-     *     'count_hidden'?: bool,
+     *     'with_visible_links'?: bool,
      * } $options
      *
      * Description of the options:
+     *
      * - private (default to true), indicates if private collections must be
-     *   included. If private are excluded and number_links property is
-     *   selected, empty public collections are not returned either.
-     * - count_hidden (default to true), indicates if hidden links must be
-     *   counted
+     *   included.
+     * - with_visible_links (default to false), indicates if only the
+     *   collections containing at least one visible (i.e. not hidden) link
+     *   must be returned.
      *
      * @return self[]
      */
-    public static function listComputedByUser(
-        User $user,
-        array $selected_computed_props,
-        array $options = [],
-    ): array {
+    public static function listByUser(User $user, array $options = []): array
+    {
         $default_options = [
             'private' => true,
-            'count_hidden' => true,
+            'with_visible_links' => false,
         ];
         $options = array_merge($default_options, $options);
 
-        $parameters = [
-            ':user_id' => $user->id,
-        ];
-
-        $number_links_clause = '';
-        $join_clause = '';
-        $group_by_clause = '';
-        if (in_array('number_links', $selected_computed_props)) {
-            $number_links_clause = ', COUNT(lc.id) AS number_links';
-            $join_clause = <<<SQL
-                LEFT JOIN links_to_collections lc
-                ON lc.collection_id = c.id
-            SQL;
-            $group_by_clause = 'GROUP BY c.id';
-
-            if (!$options['count_hidden']) {
-                $number_links_clause = ', COUNT(l.id) AS number_links';
-
-                $join_clause .= <<<SQL
-                    \n
-                    LEFT JOIN links l
-                    ON lc.link_id = l.id
-                    AND l.is_hidden = false
-                SQL;
-            }
-        }
-
         $private_clause = '';
-        $non_empty_clause = '';
         if (!$options['private']) {
             $private_clause = 'AND c.is_public = true';
+        }
 
-            if (in_array('number_links', $selected_computed_props)) {
-                $non_empty_clause = 'HAVING COUNT(lc.id) > 0';
+        $with_visible_links_clause = '';
+        if ($options['with_visible_links']) {
+            $with_visible_links_clause = <<<SQL
+                AND EXISTS (
+                    SELECT 1
+                    FROM links_to_collections lc, links l
 
-                if (!$options['count_hidden']) {
-                    $non_empty_clause = 'HAVING COUNT(l.id) > 0';
-                }
-            }
+                    WHERE lc.collection_id = c.id
+                    AND lc.link_id = l.id
+                    AND l.is_hidden = false
+                )
+            SQL;
         }
 
         $sql = <<<SQL
-            SELECT
-                c.*
-                {$number_links_clause}
+            SELECT c.*
             FROM collections c
-
-            {$join_clause}
 
             WHERE c.user_id = :user_id
             AND c.type = 'collection'
 
             {$private_clause}
 
-            {$group_by_clause}
-
-            {$non_empty_clause}
+            {$with_visible_links_clause}
         SQL;
 
         $database = Database::get();
         $statement = $database->prepare($sql);
-        $statement->execute($parameters);
+        $statement->execute([
+            ':user_id' => $user->id,
+        ]);
 
         return self::fromDatabaseRows($statement->fetchAll());
     }

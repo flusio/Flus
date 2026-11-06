@@ -20,44 +20,34 @@ trait HasCollections
     /**
      * Return the collections of the user.
      *
-     * @see Collection::listComputedByUser
+     * @see Collection::listByUser
      *
-     * @param string[] $selected_computed_props
      * @param array{
      *     'private'?: bool,
-     *     'count_hidden'?: bool,
+     *     'with_visible_links'?: bool,
      * } $options
      *
      * @return Collection[]
      */
-    public function collections(array $selected_computed_props = [], array $options = []): array
+    public function collections(array $options = []): array
     {
-        return Collection::listComputedByUser(
-            $this,
-            $selected_computed_props,
-            $options
-        );
+        return Collection::listByUser($this, $options);
     }
 
     /**
      * Return the collections shared to the user.
      *
-     * @see Collection::listComputedSharedToUser
+     * @see Collection::listSharedToUser
      *
-     * @param string[] $selected_computed_props
      * @param array{
      *     'access_type'?: 'any'|'read'|'write',
      * } $options
      *
      * @return Collection[]
      */
-    public function sharedCollections(array $selected_computed_props = [], array $options = []): array
+    public function sharedCollections(array $options = []): array
     {
-        return Collection::listComputedSharedToUser(
-            $this,
-            $selected_computed_props,
-            $options
-        );
+        return Collection::listSharedToUser($this, $options);
     }
 
     /**

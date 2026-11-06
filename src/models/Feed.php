@@ -176,41 +176,22 @@ class Feed extends Source
     }
 
     /**
-     * Return the list of public feeds with the given feed URLs and their
-     * number of links.
+     * Return the list of public feeds with the given feed URLs.
      *
      * @param string[] $feed_urls
      *
      * @return self[]
      */
-    public static function listComputedByFeedUrls(array $feed_urls): array
+    public static function listByFeedUrls(array $feed_urls): array
     {
         if (!$feed_urls) {
             return [];
         }
 
-        $urls_as_question_marks = array_fill(0, count($feed_urls), '?');
-        $urls_where_statement = implode(', ', $urls_as_question_marks);
-
-        $sql = <<<SQL
-            SELECT c.*, COUNT(lc.id) AS number_links
-            FROM collections c
-
-            LEFT JOIN links_to_collections lc
-            ON lc.collection_id = c.id
-
-            WHERE c.type = 'feed'
-            AND c.feed_url IN ({$urls_where_statement})
-            AND c.is_public = true
-
-            GROUP BY c.id
-        SQL;
-
-        $database = Database::get();
-        $statement = $database->prepare($sql);
-        $statement->execute($feed_urls);
-
-        return self::fromDatabaseRows($statement->fetchAll());
+        return self::listBy([
+            'feed_url' => $feed_urls,
+            'is_public' => true,
+        ]);
     }
 
     /**

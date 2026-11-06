@@ -30,11 +30,14 @@ class Collections extends BaseController
 
         $current_user = auth\CurrentUser::get();
 
-        $collections = $user->collections(['number_links'], [
+        $collections = $user->collections([
             'private' => false,
-            'count_hidden' => false,
+            'with_visible_links' => true,
         ]);
         $collections = utils\Sorter::localeSort($collections, 'name');
+
+        models\link_lists\Preloader::for($collections)
+            ->countLinksFor($current_user);
 
         return Response::ok('profiles/collections/index.html.twig', [
             'user' => $user,

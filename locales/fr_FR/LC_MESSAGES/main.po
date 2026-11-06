@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-11-06 18:09+0100\n"
-"PO-Revision-Date: 2026-11-06 18:09+0100\n"
+"POT-Creation-Date: 2026-11-06 22:41+0100\n"
+"PO-Revision-Date: 2026-11-06 22:41+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -64,7 +64,7 @@ msgstr "Liens wallabag"
 msgid "All your links imported from wallabag."
 msgstr "Tous vos liens importés depuis wallabag."
 
-#: controllers/Links.php:362
+#: controllers/Links.php:369
 #, php-format
 msgid "The link “%s” has been deleted."
 msgstr "Le lien « %s » a été supprimé."
@@ -181,11 +181,11 @@ msgstr "L’une des thématiques associées n’existe pas."
 msgid "The file is required."
 msgstr "Le fichier est obligatoire."
 
-#: forms/collections/ShareCollection.php:24 models/CollectionShare.php:38
+#: forms/collections/ShareCollection.php:24 models/CollectionShare.php:39
 msgid "The type is required."
 msgstr "Le type est obligatoire."
 
-#: forms/collections/ShareCollection.php:28 models/CollectionShare.php:42
+#: forms/collections/ShareCollection.php:28 models/CollectionShare.php:43
 msgid "The type is invalid."
 msgstr "Le type est invalide."
 
@@ -691,13 +691,13 @@ msgstr "Succès"
 msgid "By %s"
 msgstr "Par %s"
 
-#: views/collections/_collection.html.twig:20
-#: views/feeds/_feed_follow.html.twig:16 views/sources/_details.html.twig:8
+#: views/collections/_collection.html.twig:23
+#: views/feeds/_feed_follow.html.twig:18 views/sources/_details.html.twig:8
 msgid "no links"
 msgstr "aucun lien"
 
-#: views/collections/_collection.html.twig:22
-#: views/feeds/_feed_follow.html.twig:18 views/journal/index.html.twig:26
+#: views/collections/_collection.html.twig:25
+#: views/feeds/_feed_follow.html.twig:20 views/journal/index.html.twig:26
 #: views/journal/index.html.twig:97 views/links/_pagination_count.html.twig:7
 #: views/streams/_timeline.html.twig:9 views/streams/_timeline.html.twig:82
 #, php-format
@@ -706,19 +706,19 @@ msgid_plural "%s links"
 msgstr[0] "%s lien"
 msgstr[1] "%s liens"
 
-#: views/collections/_collection.html.twig:40
+#: views/collections/_collection.html.twig:44
 #: views/collections/_selector.html.twig:90 views/sources/show.html.twig:114
 #: views/streams/show.html.twig:94
 msgid "public"
 msgstr "publique"
 
-#: views/collections/_collection.html.twig:42 views/sources/show.html.twig:114
+#: views/collections/_collection.html.twig:46 views/sources/show.html.twig:114
 #: views/streams/show.html.twig:94
 msgid "private"
 msgstr "privée"
 
-#: views/collections/_collection.html.twig:48
-#: views/feeds/_feed_follow.html.twig:24 views/sources/_details.html.twig:15
+#: views/collections/_collection.html.twig:52
+#: views/feeds/_feed_follow.html.twig:26 views/sources/_details.html.twig:15
 #: views/streams/_stream.html.twig:12 views/streams/show.html.twig:99
 #: views/streams/sources/_selector.html.twig:32
 #: views/streams/sources/_source.html.twig:69
@@ -1138,7 +1138,7 @@ msgstr "générée le %s"
 msgid "Feed %s"
 msgstr "Flux %s"
 
-#: views/feeds/_feed_follow.html.twig:41 views/sources/_source.html.twig:133
+#: views/feeds/_feed_follow.html.twig:43 views/sources/_source.html.twig:133
 #: views/sources/show.html.twig:171
 msgid "Follow"
 msgstr "Suivre"

@@ -2,6 +2,7 @@
 
 namespace App\models\link_lists;
 
+use App\auth;
 use App\models\Follow;
 use App\models\Source;
 use App\models\User;
@@ -78,11 +79,11 @@ trait Followable
      */
     public static function listFollowedByUser(User $user): array
     {
-        $parameters = [
-            ':user_id' => $user->id,
-        ];
+        [$visibility_clause, $visibility_parameters] = auth\LinkListsAccess::viewQuery($user, 'c');
 
-        $visibility_clause = self::buildVisibilityClause($user);
+        $parameters = array_merge([
+            ':user_id' => $user->id,
+        ], $visibility_parameters);
 
         $sql = <<<SQL
             SELECT c.*
@@ -90,8 +91,7 @@ trait Followable
 
             WHERE fc.collection_id = c.id
             AND fc.user_id = :user_id
-
-            {$visibility_clause}
+            AND {$visibility_clause}
         SQL;
 
         $database = Database::get();

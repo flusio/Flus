@@ -16,10 +16,14 @@
             <p class="text--oneline">
                 {% set by = t('By %s', [collection.owner.username]) %}
 
-                {% if collection.number_links === 0 %}
-                    {% set number_links = t('no links') %}
-                {% else %}
-                    {% set number_links = t('%s link', '%s links', collection.number_links, [collection.number_links | format_number]) %}
+                {% if display_number_links %}
+                    {% set count_links = collection.countLinksByUser(app.user) %}
+
+                    {% if count_links === 0 %}
+                        {% set number_links = t('no links') %}
+                    {% else %}
+                        {% set number_links = t('%s link', '%s links', count_links, [count_links | format_number]) %}
+                    {% endif %}
                 {% endif %}
 
                 {% if display_by %}

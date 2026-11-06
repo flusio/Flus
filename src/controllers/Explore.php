@@ -2,6 +2,7 @@
 
 namespace App\controllers;
 
+use App\auth;
 use App\models;
 use App\utils;
 use Minz\Request;
@@ -45,12 +46,17 @@ class Explore extends BaseController
 
         $pagination = new utils\Pagination($number_collections, 30, $page);
 
-        $collections = models\Collection::listPublicByTopicWithNumberLinks(
+        $collections = models\Collection::listPublicByTopic(
             $topic,
             $pagination->currentOffset(),
             $pagination->numberPerPage()
         );
         $collections = utils\Sorter::localeSort($collections, 'name');
+
+        $user = auth\CurrentUser::get();
+
+        models\link_lists\Preloader::for($collections)
+            ->countLinksFor($user);
 
         return Response::ok('explore/show.html.twig', [
             'topics' => $topics,

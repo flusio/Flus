@@ -2,8 +2,11 @@
 
 namespace App\models\link_lists;
 
+use App\auth;
 use App\models\Collection;
 use App\models\CollectionShare;
+use App\models\Feed;
+use App\models\Link;
 use App\models\Source;
 use App\models\StreamToFollow;
 use App\models\User;
@@ -20,6 +23,7 @@ use App\utils\Sorter;
  *
  *     Preloader::for($sources)
  *         ->publishers()
+ *         ->countLinksFor($user)
  *         ->countStreamsFor($user);
  *
  * The methods taking a user accept a null one, so that they can be chained
@@ -150,6 +154,47 @@ class Preloader
             );
 
             $collection->preloadShares($collection_shares);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Preload the number of links of the sources that the given user can view.
+     *
+     * The hidden links are counted only in the sources whose hidden links can
+     * be viewed by the user. This avoids to join the links table for sources
+     * which never have hidden links (i.e. feeds) or which user has access to.
+     */
+    public function countLinksFor(?User $user): self
+    {
+        if (!$this->sources) {
+            return $this;
+        }
+
+        // The access to the hidden links depends on the shares of the
+        // collections, so we preload them (except for visitors).
+        if ($user) {
+            $this->shares();
+        }
+
+        $sources_with_hidden_links = [];
+        $sources_without_hidden_links = [];
+
+        foreach ($this->sources as $source) {
+            if ($source instanceof Feed || auth\Access::can($user, 'viewHiddenLinks', $source)) {
+                $sources_with_hidden_links[] = $source;
+            } else {
+                $sources_without_hidden_links[] = $source;
+            }
+        }
+
+        $counts = Link::countByLists($sources_with_hidden_links, ['hidden' => true]);
+        $counts += Link::countByLists($sources_without_hidden_links, ['hidden' => false]);
+
+        foreach ($this->sources as $source) {
+            $source_count = $counts[$source->id] ?? 0;
+            $source->preloadCountLinksByUser($user, $source_count);
         }
 
         return $this;

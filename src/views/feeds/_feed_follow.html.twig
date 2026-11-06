@@ -12,10 +12,12 @@
             <p class="text--oneline">
                 {% set feed_label = t('Feed %s', [feed.feedWebsiteHost]) %}
 
-                {% if feed.number_links === 0 %}
+                {% set count_links = feed.countLinksByUser(app.user) %}
+
+                {% if count_links === 0 %}
                     {% set number_links = t('no links') %}
                 {% else %}
-                    {% set number_links = t('%s link', '%s links', feed.number_links, [feed.number_links | format_number]) %}
+                    {% set number_links = t('%s link', '%s links', count_links, [count_links | format_number]) %}
                 {% endif %}
 
                 <span class="text--ellipsis">{{ feed_label }}</span>&nbsp;·&nbsp;{{ number_links }}

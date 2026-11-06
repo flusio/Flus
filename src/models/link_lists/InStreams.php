@@ -2,6 +2,7 @@
 
 namespace App\models\link_lists;
 
+use App\auth;
 use App\models\Source;
 use App\models\Stream;
 use App\models\StreamToFollow;
@@ -54,15 +55,11 @@ trait InStreams
     {
         $context_user = $options['context_user'] ?? null;
 
-        $parameters = [
+        [$visibility_clause, $visibility_parameters] = auth\LinkListsAccess::viewQuery($context_user, 'c');
+
+        $parameters = array_merge([
             ':stream_id' => $stream->id,
-        ];
-
-        if ($context_user) {
-            $parameters[':user_id'] = $context_user->id;
-        }
-
-        $visibility_clause = self::buildVisibilityClause($context_user);
+        ], $visibility_parameters);
 
         $sql = <<<SQL
             SELECT c.*
@@ -71,8 +68,7 @@ trait InStreams
             WHERE c.id = fc.collection_id
             AND sf.follow_id = fc.id
             AND sf.stream_id = :stream_id
-
-            {$visibility_clause}
+            AND {$visibility_clause}
         SQL;
 
         $database = Database::get();
@@ -105,10 +101,6 @@ trait InStreams
 
         $parameters = [];
 
-        if ($user) {
-            $parameters[':user_id'] = $user->id;
-        }
-
         $stream_ids_placeholders = [];
 
         foreach (array_values($streams) as $index => $stream) {
@@ -120,7 +112,8 @@ trait InStreams
         /** @var literal-string */
         $stream_ids_statement = implode(', ', $stream_ids_placeholders);
 
-        $visibility_clause = self::buildVisibilityClause($user);
+        [$visibility_clause, $visibility_parameters] = auth\LinkListsAccess::viewQuery($user, 'c');
+        $parameters = array_merge($parameters, $visibility_parameters);
 
         $sql = <<<SQL
             SELECT c.*, sf.stream_id
@@ -129,8 +122,7 @@ trait InStreams
             WHERE c.id = fc.collection_id
             AND sf.follow_id = fc.id
             AND sf.stream_id IN ({$stream_ids_statement})
-
-            {$visibility_clause}
+            AND {$visibility_clause}
         SQL;
 
         $database = Database::get();

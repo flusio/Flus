@@ -4,6 +4,7 @@ namespace App\models\link_lists;
 
 use App\models\CollectionShare;
 use App\models\User;
+use App\utils\ArrayHelper;
 use App\utils\Sorter;
 use Minz\Database;
 
@@ -97,6 +98,7 @@ trait Shareable
         $collection_share->save();
 
         $this->unmemoize('shares');
+        $this->unmemoizePrefixed('count_links_');
         $this->unmemoize('publishers');
     }
 
@@ -111,6 +113,7 @@ trait Shareable
         ]);
 
         $this->unmemoize('shares');
+        $this->unmemoizePrefixed('count_links_');
         $this->unmemoize('publishers');
     }
 
@@ -127,10 +130,10 @@ trait Shareable
      */
     public function sharedWith(User $user, string $access_type = 'any'): bool
     {
-        $existing_collection_share = CollectionShare::findBy([
-            'collection_id' => $this->id,
-            'user_id' => $user->id,
-        ]);
+        $existing_collection_share = ArrayHelper::find(
+            $this->shares(),
+            fn (CollectionShare $collection_share): bool => $collection_share->user_id === $user->id,
+        );
 
         if (!$existing_collection_share) {
             return false;
@@ -144,14 +147,8 @@ trait Shareable
     }
 
     /**
-     * Return the collections shared to the given user with its computed properties.
+     * Return the collections shared to the given user.
      *
-     * @param User $user
-     *     The user with who the collections are shared.
-     * @param string[] $selected_computed_props
-     *     The list of computed properties to return. It is mandatory to
-     *     select specific properties to avoid computing dispensable
-     *     properties.
      * @param array{
      *     'access_type'?: 'any'|'read'|'write',
      * } $options
@@ -163,27 +160,12 @@ trait Shareable
      *
      * @return self[]
      */
-    public static function listComputedSharedToUser(
-        User $user,
-        array $selected_computed_props,
-        array $options = [],
-    ): array {
+    public static function listSharedToUser(User $user, array $options = []): array
+    {
         $default_options = [
             'access_type' => 'any',
         ];
         $options = array_merge($default_options, $options);
-
-        $number_links_clause = '';
-        $join_clause = '';
-        $group_by_clause = '';
-        if (in_array('number_links', $selected_computed_props)) {
-            $number_links_clause = ', COUNT(lc.id) AS number_links';
-            $join_clause = <<<SQL
-                LEFT JOIN links_to_collections lc
-                ON lc.collection_id = c.id
-            SQL;
-            $group_by_clause = 'GROUP BY c.id';
-        }
 
         // we don't need the clause if access_type is 'any' (i.e. the type
         // doesn't matter) or 'read' (i.e. read access is included in write
@@ -194,20 +176,14 @@ trait Shareable
         }
 
         $sql = <<<SQL
-            SELECT
-                c.*
-                {$number_links_clause}
+            SELECT c.*
             FROM collection_shares cs, collections c
-
-            {$join_clause}
 
             WHERE cs.collection_id = c.id
             AND cs.user_id = :user_id
             AND c.type = 'collection'
 
             {$access_type_clause}
-
-            {$group_by_clause}
         SQL;
 
         $database = Database::get();

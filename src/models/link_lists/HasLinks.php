@@ -4,7 +4,6 @@ namespace App\models\link_lists;
 
 use App\models\Link;
 use App\models\LinkToList;
-use Minz\Database;
 
 /**
  * Add the relation between a list and the links that it contains.
@@ -14,9 +13,6 @@ use Minz\Database;
  */
 trait HasLinks
 {
-    #[Database\Column(computed: true)]
-    public ?int $number_links = null;
-
     /**
      * Return the links of the list.
      *

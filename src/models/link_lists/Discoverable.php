@@ -35,29 +35,33 @@ trait Discoverable
     }
 
     /**
-     * Return the list of public collections attached to the given topic.
+     * Return the list of public collections attached to the given topic and
+     * containing at least one visible (i.e. not hidden) link.
      *
      * @return self[]
      */
-    public static function listPublicByTopicWithNumberLinks(
+    public static function listPublicByTopic(
         Topic $topic,
         int $pagination_offset,
         int $pagination_limit
     ): array {
         $sql = <<<'SQL'
-            SELECT c.*, COUNT(*) AS number_links
-            FROM collections c, collections_to_topics ct, links_to_collections lc, links l
+            SELECT c.*
+            FROM collections c, collections_to_topics ct
 
             WHERE c.id = ct.collection_id
-            AND c.id = lc.collection_id
-            AND l.id = lc.link_id
 
             AND c.type = 'collection'
             AND c.is_public = true
-            AND l.is_hidden = false
             AND ct.topic_id = :topic_id
+            AND EXISTS (
+                SELECT 1
+                FROM links_to_collections lc, links l
 
-            GROUP BY c.id
+                WHERE lc.collection_id = c.id
+                AND lc.link_id = l.id
+                AND l.is_hidden = false
+            )
 
             ORDER BY c.name
             OFFSET :offset
@@ -75,22 +79,28 @@ trait Discoverable
     }
 
     /**
-     * Count the public collections attached to the given topic.
+     * Count the public collections attached to the given topic and containing
+     * at least one visible (i.e. not hidden) link.
      */
     public static function countPublicByTopic(Topic $topic): int
     {
         $sql = <<<'SQL'
-            SELECT COUNT(DISTINCT c.id)
-            FROM collections c, collections_to_topics ct, links_to_collections lc, links l
+            SELECT COUNT(*)
+            FROM collections c, collections_to_topics ct
 
             WHERE c.id = ct.collection_id
-            AND c.id = lc.collection_id
-            AND l.id = lc.link_id
 
             AND c.type = 'collection'
             AND c.is_public = true
-            AND l.is_hidden = false
             AND ct.topic_id = :topic_id
+            AND EXISTS (
+                SELECT 1
+                FROM links_to_collections lc, links l
+
+                WHERE lc.collection_id = c.id
+                AND lc.link_id = l.id
+                AND l.is_hidden = false
+            )
         SQL;
 
         $database = Database::get();

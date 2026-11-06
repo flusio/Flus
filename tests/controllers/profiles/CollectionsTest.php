@@ -72,6 +72,143 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseNotContains($response, $collection_name);
     }
 
+    public function testShowDoesNotCountHiddenLinksForVisitors(): void
+    {
+        $user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
+            'is_public' => true,
+        ]);
+        $visible_link = LinkFactory::create([
+            'user_id' => $user->id,
+            'is_hidden' => false,
+        ]);
+        $hidden_link1 = LinkFactory::create([
+            'user_id' => $user->id,
+            'is_hidden' => true,
+        ]);
+        $hidden_link2 = LinkFactory::create([
+            'user_id' => $user->id,
+            'is_hidden' => true,
+        ]);
+        // Don't sync the publication frequency, or it would display "3 links
+        // per day" and the assertions on the number of links would be
+        // ambiguous.
+        $collection->addLinks(
+            [$visible_link, $hidden_link1, $hidden_link2],
+            sync_publication_frequency: false,
+        );
+
+        $response = $this->appRun('GET', "/p/{$user->id}/collections");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, '1 link');
+        $this->assertResponseNotContains($response, '3 links');
+    }
+
+    public function testShowDoesNotCountHiddenLinksForOtherUsers(): void
+    {
+        $this->login();
+        $owner = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $owner->id,
+            'is_public' => true,
+        ]);
+        $visible_link = LinkFactory::create([
+            'user_id' => $owner->id,
+            'is_hidden' => false,
+        ]);
+        $hidden_link1 = LinkFactory::create([
+            'user_id' => $owner->id,
+            'is_hidden' => true,
+        ]);
+        $hidden_link2 = LinkFactory::create([
+            'user_id' => $owner->id,
+            'is_hidden' => true,
+        ]);
+        // Don't sync the publication frequency, or it would display "3 links
+        // per day" and the assertions on the number of links would be
+        // ambiguous.
+        $collection->addLinks(
+            [$visible_link, $hidden_link1, $hidden_link2],
+            sync_publication_frequency: false,
+        );
+
+        $response = $this->appRun('GET', "/p/{$owner->id}/collections");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, '1 link');
+        $this->assertResponseNotContains($response, '3 links');
+    }
+
+    public function testShowCountsHiddenLinksForUsersTheCollectionIsSharedWith(): void
+    {
+        $user = $this->login();
+        $owner = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $owner->id,
+            'is_public' => true,
+        ]);
+        $visible_link = LinkFactory::create([
+            'user_id' => $owner->id,
+            'is_hidden' => false,
+        ]);
+        $hidden_link1 = LinkFactory::create([
+            'user_id' => $owner->id,
+            'is_hidden' => true,
+        ]);
+        $hidden_link2 = LinkFactory::create([
+            'user_id' => $owner->id,
+            'is_hidden' => true,
+        ]);
+        // Don't sync the publication frequency, or it would display "3 links
+        // per day" and the assertions on the number of links would be
+        // ambiguous.
+        $collection->addLinks(
+            [$visible_link, $hidden_link1, $hidden_link2],
+            sync_publication_frequency: false,
+        );
+        $collection->shareWith($user, 'read');
+
+        $response = $this->appRun('GET', "/p/{$owner->id}/collections");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, '3 links');
+    }
+
+    public function testShowCountsHiddenLinksForTheOwner(): void
+    {
+        $user = $this->login();
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
+            'is_public' => true,
+        ]);
+        $visible_link = LinkFactory::create([
+            'user_id' => $user->id,
+            'is_hidden' => false,
+        ]);
+        $hidden_link1 = LinkFactory::create([
+            'user_id' => $user->id,
+            'is_hidden' => true,
+        ]);
+        $hidden_link2 = LinkFactory::create([
+            'user_id' => $user->id,
+            'is_hidden' => true,
+        ]);
+        // Don't sync the publication frequency, or it would display "3 links
+        // per day" and the assertions on the number of links would be
+        // ambiguous.
+        $collection->addLinks(
+            [$visible_link, $hidden_link1, $hidden_link2],
+            sync_publication_frequency: false,
+        );
+
+        $response = $this->appRun('GET', "/p/{$user->id}/collections");
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, '3 links');
+    }
+
     public function testShowDoesNotDisplayPrivateCollectionsWithLinks(): void
     {
         $user = UserFactory::create();

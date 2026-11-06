@@ -89,6 +89,13 @@ class OpmlGenerator
 
         $collections = $user->collections();
         if (!$is_owner) {
+            // The access of a user to the private collections depends on
+            // their shares.
+            if ($context_user) {
+                models\link_lists\Preloader::for($collections)
+                    ->shares();
+            }
+
             $collections = array_filter(
                 $collections,
                 function (models\Collection $collection) use ($context_user): bool {
