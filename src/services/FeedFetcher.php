@@ -152,7 +152,7 @@ class FeedFetcher
         $link_urls_by_entry_ids = models\Link::listEntryIdsToUrlsByCollection($feed, $feed_entry_ids);
 
         $links_to_create = [];
-        $links_to_collections_to_create = [];
+        $links_to_lists_to_create = [];
 
         foreach ($entries as $index => $entry) {
             $url = $urls[$index];
@@ -190,12 +190,12 @@ class FeedFetcher
                 ]);
 
                 // we also update the publication date in case it changed
-                $link_to_collection = models\LinkToCollection::findBy([
+                $link_to_list = models\LinkToList::findBy([
                     'link_id' => $link_id,
                     'collection_id' => $feed->id,
                 ]);
-                if ($link_to_collection) {
-                    models\LinkToCollection::update($link_to_collection->id, [
+                if ($link_to_list) {
+                    models\LinkToList::update($link_to_list->id, [
                         'created_at' => $published_at,
                     ]);
                 }
@@ -225,15 +225,15 @@ class FeedFetcher
                 ];
                 $link_id = $link->id;
 
-                $link_to_collection = new models\LinkToCollection($link_id, $feed->id);
-                $link_to_collection->created_at = $published_at;
-                $links_to_collections_to_create[] = $link_to_collection;
+                $link_to_list = new models\LinkToList($link, $feed);
+                $link_to_list->created_at = $published_at;
+                $links_to_lists_to_create[] = $link_to_list;
             }
         }
 
         // We now can insert the links and links_to_collections via a bulkInsert
         models\Link::bulkInsert($links_to_create);
-        models\LinkToCollection::bulkInsert($links_to_collections_to_create);
+        models\LinkToList::bulkInsert($links_to_lists_to_create);
 
         $feed->syncPublicationFrequencyPerYear();
 

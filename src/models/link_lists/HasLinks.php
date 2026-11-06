@@ -3,7 +3,7 @@
 namespace App\models\link_lists;
 
 use App\models\Link;
-use App\models\LinkToCollection;
+use App\models\LinkToList;
 use Minz\Database;
 
 /**
@@ -47,7 +47,7 @@ trait HasLinks
      */
     public function hasLink(Link $link): bool
     {
-        return LinkToCollection::existsBy([
+        return LinkToList::existsBy([
             'link_id' => $link->id,
             'collection_id' => $this->id,
         ]);
@@ -60,7 +60,6 @@ trait HasLinks
      */
     public function addLinks(array $links, ?\DateTimeImmutable $at = null): void
     {
-        $link_ids = array_column($links, 'id');
-        LinkToCollection::attach($link_ids, [$this->id], $at);
+        LinkToList::attach($links, [$this], $at);
     }
 }

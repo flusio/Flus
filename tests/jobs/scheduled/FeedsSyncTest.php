@@ -240,9 +240,9 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
 
         $feeds_sync_job->perform();
 
-        $link_to_collection = models\LinkToCollection::take();
-        $this->assertNotNull($link_to_collection);
-        $this->assertSame(1617096360, $link_to_collection->created_at->getTimestamp());
+        $link_to_list = models\LinkToList::take();
+        $this->assertNotNull($link_to_list);
+        $this->assertSame(1617096360, $link_to_list->created_at->getTimestamp());
     }
 
     public function testPerformIgnoresFeedNotYetToFetch(): void
@@ -1002,12 +1002,12 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($new_url, $link->url);
         $this->assertSame($new_url, $link->title);
         $this->assertNull($link->fetched_at);
-        $link_to_collection = models\LinkToCollection::findBy([
+        $link_to_list = models\LinkToList::findBy([
             'link_id' => $link->id,
             'collection_id' => $feed->id,
         ]);
-        $this->assertNotNull($link_to_collection);
-        $this->assertSame(1617096360, $link_to_collection->created_at->getTimestamp());
+        $this->assertNotNull($link_to_list);
+        $this->assertSame(1617096360, $link_to_list->created_at->getTimestamp());
     }
 
     public function testPerformAbsolutizesLinks(): void

@@ -60,7 +60,7 @@ class AtomImportator
         $owner = $source->owner();
 
         $links_to_create = [];
-        $links_to_collections_to_create = [];
+        $links_to_lists_to_create = [];
 
         foreach ($entries as $index => $entry) {
             $url = $urls[$index];
@@ -90,14 +90,14 @@ class AtomImportator
 
             $link_ids_by_urls[$link->url] = $link->id;
 
-            $link_to_collection = new models\LinkToCollection($link->id, $source->id);
-            $link_to_collection->created_at = $published_at;
+            $link_to_list = new models\LinkToList($link, $source);
+            $link_to_list->created_at = $published_at;
 
-            $links_to_collections_to_create[] = $link_to_collection;
+            $links_to_lists_to_create[] = $link_to_list;
         }
 
         models\Link::bulkInsert($links_to_create);
-        models\LinkToCollection::bulkInsert($links_to_collections_to_create);
+        models\LinkToList::bulkInsert($links_to_lists_to_create);
 
         $source->syncPublicationFrequencyPerYear();
         $source->save();

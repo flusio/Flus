@@ -93,14 +93,15 @@ class Wallabag
         ]);
 
         // This will be used to check if URL has already been added by the user
-        $link_ids_by_urls = models\Link::listUrlsToIdsByUser($user);
+        $urls = array_column($items, 'url');
+        $links_by_url_hashes = models\Link::listByUserAndUrls($user, $urls);
 
         // This will store the items that we effectively need to create. We
         // don't create links, collections and their relation on the fly because
         // it would be too intensive. We rather prefer to insert them all at
         // once (see calls to `bulkInsert` below).
         $links_to_create = [];
-        $links_to_collections_to_create = [];
+        $links_to_lists_to_create = [];
         $urls_to_url_statuses_to_create = [];
         $notes = [];
 
@@ -118,8 +119,10 @@ class Wallabag
             }, $item['tags']);
             $tags = array_filter($tags);
 
-            if (isset($link_ids_by_urls[$url])) {
-                $link_id = $link_ids_by_urls[$url];
+            $url_hash = utils\Belt::hashUrl($url);
+
+            if (isset($links_by_url_hashes[$url_hash])) {
+                $link = $links_by_url_hashes[$url_hash];
             } else {
                 // The user didn't added this link yet, so we'll need to create
                 // it. First, initiate a new model
@@ -138,8 +141,7 @@ class Wallabag
 
                 $links_to_create[] = $link;
 
-                $link_ids_by_urls[$link->url] = $link->id;
-                $link_id = $link->id;
+                $links_by_url_hashes[$link->url_hash] = $link;
             }
 
             $created_at = $item['created_at'];
@@ -150,9 +152,9 @@ class Wallabag
                 $published_at = \Minz\Time::now();
             }
 
-            $link_to_collection = new models\LinkToCollection($link_id, $wallabag_collection->id);
-            $link_to_collection->created_at = $published_at;
-            $links_to_collections_to_create[] = $link_to_collection;
+            $link_to_list = new models\LinkToList($link, $wallabag_collection);
+            $link_to_list->created_at = $published_at;
+            $links_to_lists_to_create[$link->id] = $link_to_list;
 
             if (isset($urls_to_url_statuses_to_create[$url])) {
                 $url_status = $urls_to_url_statuses_to_create[$url];
@@ -178,7 +180,7 @@ class Wallabag
                 $content = implode(' ', $formatted_tags);
 
                 $note = new models\Note($user, $content);
-                $note->link_id = $link_id;
+                $note->link_id = $link->id;
                 $note->created_at = $published_at;
 
                 $notes[] = $note;
@@ -187,7 +189,7 @@ class Wallabag
 
         // Finally, let the big import (in DB) begin!
         models\Link::bulkInsert($links_to_create);
-        models\LinkToCollection::bulkInsert($links_to_collections_to_create);
+        models\LinkToList::bulkInsert($links_to_lists_to_create);
         models\UrlStatus::bulkInsert($urls_to_url_statuses_to_create);
         models\Note::bulkInsert($notes);
 

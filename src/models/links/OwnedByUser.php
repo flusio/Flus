@@ -439,23 +439,32 @@ trait OwnedByUser
     }
 
     /**
-     * Return the list of url ids indexed by urls for the given user.
+     * Return the links of the given user matching the given URLs, indexed by
+     * their URL hashes.
      *
-     * @return array<string, string>
+     * @param string[] $urls
+     * @param positive-int $chunk_size
+     *
+     * @return array<string, self>
      */
-    public static function listUrlsToIdsByUser(User $user): array
+    public static function listByUserAndUrls(User $user, array $urls, int $chunk_size = 1000): array
     {
-        $sql = <<<SQL
-            SELECT url, id FROM links
-            WHERE user_id = :user_id
-        SQL;
+        $url_hashes = array_map([Belt::class, 'hashUrl'], $urls);
+        $url_hashes = array_values(array_unique($url_hashes));
 
-        $database = Database::get();
-        $statement = $database->prepare($sql);
-        $statement->execute([
-            ':user_id' => $user->id,
-        ]);
+        $links_by_url_hashes = [];
 
-        return $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+        foreach (array_chunk($url_hashes, $chunk_size) as $chunk_url_hashes) {
+            $links = self::listBy([
+                'user_id' => $user->id,
+                'url_hash' => $chunk_url_hashes,
+            ]);
+
+            foreach ($links as $link) {
+                $links_by_url_hashes[$link->url_hash] = $link;
+            }
+        }
+
+        return $links_by_url_hashes;
     }
 }

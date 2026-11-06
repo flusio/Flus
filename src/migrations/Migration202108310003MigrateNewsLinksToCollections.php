@@ -18,20 +18,20 @@ class Migration202108310003MigrateNewsLinksToCollections
         $db_news_links = $statement->fetchAll();
 
         $cache_users = [];
-        $links_to_collections_to_create = [];
+        $links_to_lists_to_create = [];
 
         foreach ($db_news_links as $db_news_link) {
             // Get user info (news and read list ids) and cache these info
             $user_id = $db_news_link['user_id'];
             if (isset($cache_users[$user_id])) {
-                list($user, $news_id) = $cache_users[$user_id];
+                list($user, $journal) = $cache_users[$user_id];
             } else {
                 $user = models\User::find($user_id);
 
                 assert($user !== null);
 
-                $news_id = $user->journal()->id;
-                $cache_users[$user_id] = [$user, $news_id];
+                $journal = $user->journal();
+                $cache_users[$user_id] = [$user, $journal];
             }
 
             // Get a link with the same URL as the news link
@@ -67,8 +67,6 @@ class Migration202108310003MigrateNewsLinksToCollections
                 continue;
             }
 
-            $collection_id = $news_id;
-
             if ($published_at) {
                 $at = $published_at;
             } else {
@@ -79,14 +77,14 @@ class Migration202108310003MigrateNewsLinksToCollections
 
             assert($at !== false);
 
-            $link_to_collection = new models\LinkToCollection($link->id, $collection_id);
-            $link_to_collection->created_at = $at;
+            $link_to_list = new models\LinkToList($link, $journal);
+            $link_to_list->created_at = $at;
 
-            $links_to_collections_to_create[] = $link_to_collection;
+            $links_to_lists_to_create[] = $link_to_list;
         }
 
-        if ($links_to_collections_to_create) {
-            models\LinkToCollection::bulkInsert($links_to_collections_to_create);
+        if ($links_to_lists_to_create) {
+            models\LinkToList::bulkInsert($links_to_lists_to_create);
         }
 
         return $database->commit();

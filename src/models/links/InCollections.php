@@ -6,7 +6,7 @@ use App\models\Collection;
 use App\models\CollectionShare;
 use App\models\Feed;
 use App\models\LinkList;
-use App\models\LinkToCollection;
+use App\models\LinkToList;
 use App\models\Source;
 use App\models\User;
 use App\utils\Belt;
@@ -44,13 +44,25 @@ trait InCollections
         ?\DateTimeImmutable $at = null,
         bool $sync_publication_frequency = true,
     ): void {
-        $collection_ids = array_column($collections, 'id');
-        LinkToCollection::setCollections($this->id, $collection_ids, $at);
+        $previous_collections = Collection::listByLink($this);
+
+        $compare_ids = fn (Collection $c1, Collection $c2): int => strcmp($c1->id, $c2->id);
+        $collections_to_attach = array_udiff($collections, $previous_collections, $compare_ids);
+        $collections_to_detach = array_udiff($previous_collections, $collections, $compare_ids);
+
+        $database = Database::get();
+        $database->beginTransaction();
+
+        LinkToList::attach([$this], $collections_to_attach, $at);
+        LinkToList::detach([$this], $collections_to_detach);
+
+        $database->commit();
 
         $this->unmemoizeCollections();
 
         if ($sync_publication_frequency) {
-            foreach ($collections as $collection) {
+            $collections_to_sync = array_merge($collections_to_attach, $collections_to_detach);
+            foreach ($collections_to_sync as $collection) {
                 $collection->syncPublicationFrequencyPerYear();
                 $collection->save();
             }
@@ -67,8 +79,7 @@ trait InCollections
         ?\DateTimeImmutable $at = null,
         bool $sync_publication_frequency = true,
     ): void {
-        $collection_ids = array_column($collections, 'id');
-        LinkToCollection::attach([$this->id], $collection_ids, $at);
+        LinkToList::attach([$this], $collections, $at);
 
         $this->unmemoizeCollections();
 
@@ -100,8 +111,7 @@ trait InCollections
         array $collections,
         bool $sync_publication_frequency = true,
     ): void {
-        $collection_ids = array_column($collections, 'id');
-        LinkToCollection::detach([$this->id], $collection_ids);
+        LinkToList::detach([$this], $collections);
 
         $this->unmemoizeCollections();
 
