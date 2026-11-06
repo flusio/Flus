@@ -26,9 +26,7 @@ trait HasViews
     public function defaultView(array $options = []): View
     {
         $context_user = $options['context_user'] ?? null;
-        $memoize_key = $this->memoizeKeyFor('default_view', $context_user);
-
-        return $this->memoize($memoize_key, function () use ($context_user): View {
+        return $this->memoize(['default_view', $context_user], function () use ($context_user): View {
             return View::findOrBuildDefaultForStream($this, $context_user);
         });
     }
@@ -46,9 +44,7 @@ trait HasViews
     public function views(array $options = []): array
     {
         $context_user = $options['context_user'] ?? null;
-        $memoize_key = $this->memoizeKeyFor('views', $context_user);
-
-        return $this->memoize($memoize_key, function () use ($options): array {
+        return $this->memoize(['views', $context_user], function () use ($options): array {
             $views = View::listByStream($this);
 
             // listByStream() only returns the saved views: the default one has

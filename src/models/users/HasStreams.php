@@ -33,9 +33,7 @@ trait HasStreams
     {
         $is_private = $options['is_private'] ?? true;
 
-        $key = sprintf('streams_%d', $is_private);
-
-        return $this->memoize($key, function () use ($options): array {
+        return $this->memoize(['streams', $is_private], function () use ($options): array {
             $streams = Stream::listByUser($this, $options);
 
             return utils\Sorter::localeSort($streams, 'name');

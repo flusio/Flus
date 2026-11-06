@@ -322,7 +322,7 @@ trait OwnedByUser
 
     public function numberCollectionsForUser(User $user): int
     {
-        return $this->memoize("number_collections_{$user->id}", function () use ($user): int {
+        return $this->memoize(['number_collections', $user], function () use ($user): int {
             $numbers = self::countCollectionsForUserByLinks($user, [$this]);
             return $numbers[$this->url_hash] ?? 0;
         });
@@ -335,7 +335,7 @@ trait OwnedByUser
      */
     public function preloadNumberCollectionsForUser(User $user, int $number): void
     {
-        $this->memoizeValue("number_collections_{$user->id}", $number);
+        $this->memoizeValue(['number_collections', $user], $number);
     }
 
     /**

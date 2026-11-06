@@ -80,9 +80,7 @@ trait HasLinks
      */
     public function hasUnreadLinks(User $user): bool
     {
-        $memoize_key = $this->memoizeKeyFor('has_unread_links', $user);
-
-        return $this->memoize($memoize_key, function () use ($user): bool {
+        return $this->memoize(['has_unread_links', $user], function () use ($user): bool {
             $streams_with_unread = self::listWithUnreadLinks([$this], $user);
             return isset($streams_with_unread[$this->id]);
         });
@@ -96,8 +94,7 @@ trait HasLinks
      */
     public function preloadHasUnreadLinks(User $user, bool $has_unread_links): void
     {
-        $memoize_key = $this->memoizeKeyFor('has_unread_links', $user);
-        $this->memoizeValue($memoize_key, $has_unread_links);
+        $this->memoizeValue(['has_unread_links', $user], $has_unread_links);
     }
 
     /**

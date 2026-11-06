@@ -215,9 +215,7 @@ trait InLists
      */
     public function sharedWith(User $user, string $access_type = 'any'): bool
     {
-        $key = "shared_with_{$user->id}_{$access_type}";
-
-        return $this->memoize($key, function () use ($user, $access_type): bool {
+        return $this->memoize(['shared_with', $user, $access_type], function () use ($user, $access_type): bool {
             return (
                 Collection::existsForUserAndLink($user, $this) ||
                 CollectionShare::existsForUserAndLink($user, $this, $access_type)

@@ -176,7 +176,7 @@ trait HasReadingStatuses
      */
     private function urlStatusOfLink(Link $link): UrlStatus
     {
-        return $this->memoize("url_status_{$link->url_hash}", function () use ($link): UrlStatus {
+        return $this->memoize(['url_status', $link->url_hash], function () use ($link): UrlStatus {
             return UrlStatus::findOrBuild($this, $link->url);
         });
     }
@@ -191,7 +191,7 @@ trait HasReadingStatuses
     public function preloadUrlStatuses(array $url_statuses): void
     {
         foreach ($url_statuses as $url_status) {
-            $this->memoizeValue("url_status_{$url_status->url_hash}", $url_status);
+            $this->memoizeValue(['url_status', $url_status->url_hash], $url_status);
         }
     }
 
@@ -203,7 +203,7 @@ trait HasReadingStatuses
     private function unmemoizeUrlStatusesOfLinks(array $links): void
     {
         foreach ($links as $link) {
-            $this->unmemoize("url_status_{$link->url_hash}");
+            $this->unmemoize(['url_status', $link->url_hash]);
         }
     }
 }

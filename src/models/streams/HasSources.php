@@ -32,9 +32,7 @@ trait HasSources
     public function sources(array $options = []): array
     {
         $context_user = $options['context_user'] ?? null;
-        $memoize_key = $this->memoizeKeyFor('sources', $context_user);
-
-        return $this->memoize($memoize_key, function () use ($context_user): array {
+        return $this->memoize(['sources', $context_user], function () use ($context_user): array {
             $sources = Source::listByStream($this, [
                 'context_user' => $context_user,
             ]);

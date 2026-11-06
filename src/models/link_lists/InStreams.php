@@ -23,7 +23,7 @@ trait InStreams
      */
     public function countStreamsByUser(User $user): int
     {
-        return $this->memoize("count_streams_{$user->id}", function () use ($user): int {
+        return $this->memoize(['count_streams', $user], function () use ($user): int {
             $counts = StreamToFollow::countByUserAndSources($user, [$this]);
             return $counts[$this->id] ?? 0;
         });
@@ -36,7 +36,7 @@ trait InStreams
      */
     public function preloadCountStreamsByUser(User $user, int $count): void
     {
-        $this->memoizeValue("count_streams_{$user->id}", $count);
+        $this->memoizeValue(['count_streams', $user], $count);
     }
 
     /**

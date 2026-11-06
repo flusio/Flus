@@ -83,16 +83,6 @@ class Stream
     }
 
     /**
-     * Return a memoize key discriminating on the context user, e.g.
-     * "sources_<user id>", or "sources_anonymous" if no user is given.
-     */
-    protected function memoizeKeyFor(string $prefix, ?User $context_user): string
-    {
-        $suffix = $context_user ? $context_user->id : 'anonymous';
-        return "{$prefix}_{$suffix}";
-    }
-
-    /**
      * Return a tag URI that can be used as Atom id
      *
      * If a view is given, the tag URI identifies the feed of this view. The

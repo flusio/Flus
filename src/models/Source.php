@@ -106,7 +106,7 @@ abstract class Source extends LinkList
      */
     public function countLinksByUser(?User $user): int
     {
-        return $this->memoize(self::countLinksKey($user), function () use ($user): int {
+        return $this->memoize(['count_links', $user], function () use ($user): int {
             $hidden = auth\Access::can($user, 'viewHiddenLinks', $this);
             return Link::countByList($this, ['hidden' => $hidden]);
         });
@@ -120,16 +120,7 @@ abstract class Source extends LinkList
      */
     public function preloadCountLinksByUser(?User $user, int $count): void
     {
-        $this->memoizeValue(self::countLinksKey($user), $count);
-    }
-
-    /**
-     * Return the memoization key of the number of links of the source that
-     * the given user can view.
-     */
-    private static function countLinksKey(?User $user): string
-    {
-        return 'count_links_' . ($user ? $user->id : 'anonymous');
+        $this->memoizeValue(['count_links', $user], $count);
     }
 
     /**
