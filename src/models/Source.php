@@ -14,19 +14,16 @@ use Minz\Database;
  */
 abstract class Source extends LinkList
 {
-    use dao\MediaQueries;
     use link_lists\Followable;
     use link_lists\InStreams;
     use link_lists\Publishing;
+    use media\HasImage;
 
     #[Database\Column]
     public string $description = '';
 
     #[Database\Column]
     public bool $is_public = false;
-
-    #[Database\Column]
-    public ?string $image_filename = null;
 
     /**
      * Return the URL of the feed to subscribe to the source.

@@ -2,6 +2,7 @@
 
 namespace App\models;
 
+use App\models\database\BulkQueries;
 use App\utils;
 use Minz\Database;
 use Minz\Translatable;
@@ -14,9 +15,9 @@ use Minz\Validable;
 #[Database\Table(name: 'followed_collections')]
 class FollowedCollection
 {
-    use dao\BulkQueries;
-    use dao\MediaQueries;
+    use BulkQueries;
     use Database\Recordable;
+    use media\HasImage;
     use Validable;
     use utils\Memoizer;
 
@@ -50,9 +51,6 @@ class FollowedCollection
         message: new Translatable('The name must be less than {max} characters.'),
     )]
     public string $name = '';
-
-    #[Database\Column]
-    public ?string $image_filename = null;
 
     public function __construct(User $user, Source $source)
     {

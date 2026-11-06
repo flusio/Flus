@@ -21,7 +21,7 @@ trait Discoverable
      */
     public function topics(): array
     {
-        return Topic::listByCollectionId($this->id);
+        return Topic::listByCollection($this);
     }
 
     /**

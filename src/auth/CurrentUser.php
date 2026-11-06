@@ -119,7 +119,7 @@ class CurrentUser
      */
     public static function authenticate(string $session_token, string $scope): ?models\User
     {
-        $session = models\Session::findByTokenId($session_token, $scope);
+        $session = models\Session::findByToken($session_token, $scope);
 
         if (!$session) {
             return null;

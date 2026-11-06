@@ -2,6 +2,7 @@
 
 namespace App\models;
 
+use App\models\database\BulkQueries;
 use App\utils;
 use Minz\Database;
 use Minz\Translatable;
@@ -14,7 +15,7 @@ use Minz\Validable;
 #[Database\Table(name: 'notes')]
 class Note
 {
-    use dao\BulkQueries;
+    use BulkQueries;
     use Database\Recordable;
     use Database\Resource;
     use Validable;

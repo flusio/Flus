@@ -2,6 +2,7 @@
 
 namespace App\models;
 
+use App\models\database\BulkQueries;
 use App\utils;
 use Minz\Database;
 use Minz\Translatable;
@@ -21,7 +22,7 @@ use Minz\Validable;
 ])]
 abstract class LinkList
 {
-    use dao\BulkQueries;
+    use BulkQueries;
     use Database\Recordable;
     use Database\Resource;
     use link_lists\HasLinks;

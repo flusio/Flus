@@ -2,6 +2,7 @@
 
 namespace App\models;
 
+use App\models\database\BulkQueries;
 use App\utils;
 use Minz\Database;
 
@@ -12,8 +13,8 @@ use Minz\Database;
 #[Database\Table('url_statuses')]
 class UrlStatus
 {
+    use BulkQueries;
     use Database\Recordable;
-    use dao\BulkQueries;
 
     #[Database\Column]
     public int $id;
@@ -358,7 +359,7 @@ class UrlStatus
     }
 
     /**
-     * @see dao\BulkQueries::bulkInsertOnConflict
+     * @see BulkQueries::bulkInsertOnConflict
      *
      * @return literal-string
      */

@@ -16,7 +16,6 @@ use App\utils;
 #[Database\Table(name: 'sessions')]
 class Session
 {
-    use dao\Session;
     use Database\Recordable;
     use Database\Resource;
 
@@ -171,5 +170,72 @@ class Session
         $token->save();
 
         return true;
+    }
+
+    /**
+     * Return the session of the given scope attached to the given token, if
+     * the token is still valid (i.e. neither expired nor invalidated).
+     */
+    public static function findByToken(string $token, string $scope): ?self
+    {
+        $sql = <<<SQL
+            SELECT s.* FROM sessions s, tokens t
+            WHERE s.scope = :scope
+            AND t.token = s.token
+            AND t.token = :token
+            AND t.expired_at > :expired_at
+            AND t.invalidated_at IS NULL
+        SQL;
+
+        $now = \Minz\Time::now();
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute([
+            ':scope' => $scope,
+            ':token' => $token,
+            ':expired_at' => $now->format(Database\Column::DATETIME_FORMAT),
+        ]);
+
+        $result = $statement->fetch();
+        if (is_array($result)) {
+            return self::fromDatabaseRow($result);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Delete sessions that have expired (no token).
+     */
+    public static function deleteExpired(): bool
+    {
+        return self::deleteBy(['token' => null]);
+    }
+
+    /**
+     * Delete the sessions of the given user.
+     *
+     * @param ?self $except_session
+     *     To allow to reset all sessions except the current one.
+     */
+    public static function deleteByUser(User $user, ?self $except_session = null): bool
+    {
+        $sql = <<<'SQL'
+            DELETE FROM sessions
+            WHERE user_id = :user_id
+        SQL;
+        $values = [
+            ':user_id' => $user->id,
+        ];
+
+        if ($except_session) {
+            $sql .= ' AND id != :session_id';
+            $values[':session_id'] = $except_session->id;
+        }
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        return $statement->execute($values);
     }
 }

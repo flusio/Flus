@@ -1,6 +1,6 @@
 <?php
 
-namespace App\models\dao;
+namespace App\models\database;
 
 use Minz\Database;
 

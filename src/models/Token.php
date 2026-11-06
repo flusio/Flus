@@ -11,7 +11,6 @@ use Minz\Database;
 #[Database\Table(name: 'tokens', primary_key: 'token')]
 class Token
 {
-    use dao\Token;
     use Database\Recordable;
     use Database\Resource;
 
@@ -70,5 +69,22 @@ class Token
     public function expiresIn(int $number, string $unit): bool
     {
         return \Minz\Time::fromNow($number, $unit) >= $this->expired_at;
+    }
+
+    /**
+     * Delete tokens that have expired.
+     */
+    public static function deleteExpired(): bool
+    {
+        $sql = <<<SQL
+            DELETE FROM tokens
+            WHERE expired_at <= :now
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        return $statement->execute([
+            ':now' => \Minz\Time::now()->format(Database\Column::DATETIME_FORMAT),
+        ]);
     }
 }

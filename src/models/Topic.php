@@ -13,7 +13,6 @@ use Minz\Validable;
 #[Database\Table(name: 'topics')]
 class Topic
 {
-    use dao\Topic;
     use Database\Recordable;
     use Database\Resource;
     use Validable;
@@ -48,5 +47,29 @@ class Topic
     public function countPublicCollections(): int
     {
         return Collection::countPublicByTopic($this);
+    }
+
+    /**
+     * Return the list of topics attached to the given collection.
+     *
+     * @return self[]
+     */
+    public static function listByCollection(Collection $collection): array
+    {
+        $sql = <<<SQL
+            SELECT t.*
+            FROM topics t, collections_to_topics ct
+
+            WHERE t.id = ct.topic_id
+            AND ct.collection_id = :collection_id
+        SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute([
+            ':collection_id' => $collection->id,
+        ]);
+
+        return self::fromDatabaseRows($statement->fetchAll());
     }
 }

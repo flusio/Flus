@@ -2,6 +2,7 @@
 
 namespace App\models;
 
+use App\models\database\BulkQueries;
 use App\models\database\Pivot;
 use Minz\Database;
 
@@ -15,7 +16,7 @@ use Minz\Database;
 #[Database\Table(name: 'links_to_collections')]
 class LinkToList
 {
-    use dao\BulkQueries;
+    use BulkQueries;
     use Database\Recordable;
     use Pivot;
 

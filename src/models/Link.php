@@ -3,6 +3,7 @@
 namespace App\models;
 
 use App\auth;
+use App\models\database\BulkQueries;
 use App\utils;
 use Minz\Database;
 use Minz\Translatable;
@@ -17,8 +18,7 @@ use Minz\Validable;
 #[Database\Table(name: 'links')]
 class Link
 {
-    use dao\BulkQueries;
-    use dao\MediaQueries;
+    use BulkQueries;
     use Database\Recordable;
     use Database\Resource;
     use links\Annotable;
@@ -32,6 +32,7 @@ class Link
     use links\Readable;
     use links\Statistics;
     use links\Taggable;
+    use media\HasImage;
     use utils\Memoizer;
     use Validable;
 
@@ -74,9 +75,6 @@ class Link
         message: new Translatable('The reading time must be greater or equal to 0.'),
     )]
     public int $reading_time = 0;
-
-    #[Database\Column]
-    public ?string $image_filename = null;
 
     #[Database\Column]
     #[Validable\Length(

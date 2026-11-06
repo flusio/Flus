@@ -2,6 +2,7 @@
 
 namespace App\models;
 
+use App\models\database\BulkQueries;
 use App\models\database\Pivot;
 use Minz\Database;
 
@@ -12,7 +13,7 @@ use Minz\Database;
 #[Database\Table(name: 'streams_to_follows')]
 class StreamToFollow
 {
-    use dao\BulkQueries;
+    use BulkQueries;
     use Database\Recordable;
     use Pivot;
 

@@ -18,7 +18,7 @@ class Stream
     use Database\Recordable;
     use Database\Resource;
     use Validable;
-    use dao\MediaQueries;
+    use media\HasImage;
     use utils\Memoizer;
 
     public const NAME_MAX_LENGTH = 100;
@@ -47,9 +47,6 @@ class Stream
 
     #[Database\Column]
     public bool $display_unread_in_sidenav = true;
-
-    #[Database\Column]
-    public ?string $image_filename = null;
 
     #[Database\Column]
     public string $user_id;
