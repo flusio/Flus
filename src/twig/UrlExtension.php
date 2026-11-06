@@ -5,7 +5,7 @@ namespace App\twig;
 use Twig\Attribute\AsTwigFunction;
 
 /**
- * @phpstan-import-type MediaType from \App\services\Image
+ * @phpstan-import-type MediaType from \App\images\Storage
  */
 class UrlExtension
 {
@@ -39,7 +39,7 @@ class UrlExtension
             return \Minz\Template\TwigExtension::urlStatic("static/{$default}");
         }
 
-        $filepath = \App\services\Image::filepath($type, $filename);
+        $filepath = \App\images\Storage::filepath($type, $filename);
         $modification_time = @filemtime($filepath);
         $subpath = \App\utils\Belt::filenameToSubpath($filename);
         $file_url = \Minz\Url::path() . "/media/{$type}/{$subpath}/{$filename}";

@@ -3,8 +3,7 @@
 namespace App\controllers\collections;
 
 use App\forms;
-use App\models;
-use App\services;
+use App\images;
 use tests\factories\CollectionFactory;
 use tests\factories\CollectionShareFactory;
 use tests\factories\UserFactory;
@@ -161,7 +160,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $collection = $collection->reload();
         $expected_filename = hash_file('sha256', $image_filepath) . '.webp';
         $this->assertSame($expected_filename, $collection->image_filename);
-        $this->assertTrue(file_exists(services\Image::filepath('covers', $expected_filename)));
+        $this->assertTrue(file_exists(images\Storage::filepath('covers', $expected_filename)));
     }
 
     public function testUpdateWorksIfCollectionIsSharedWithWriteAccess(): void

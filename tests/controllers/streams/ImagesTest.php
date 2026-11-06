@@ -3,8 +3,7 @@
 namespace App\controllers\streams;
 
 use App\forms;
-use App\models;
-use App\services;
+use App\images;
 use tests\factories\StreamFactory;
 use tests\factories\UserFactory;
 
@@ -94,7 +93,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $stream = $stream->reload();
         $expected_filename = hash_file('sha256', $image_filepath) . '.webp';
         $this->assertSame($expected_filename, $stream->image_filename);
-        $this->assertTrue(file_exists(services\Image::filepath('covers', $expected_filename)));
+        $this->assertTrue(file_exists(images\Storage::filepath('covers', $expected_filename)));
     }
 
     public function testUpdateRedirectsIfNotConnected(): void

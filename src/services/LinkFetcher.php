@@ -3,6 +3,7 @@
 namespace App\services;
 
 use App\http;
+use App\images;
 use App\models;
 use App\utils;
 
@@ -90,10 +91,10 @@ class LinkFetcher
             $info['url_illustration'] !== null &&
             ($this->force_sync || $illustration_never_set)
         ) {
-            $image_service = new Image();
+            $image_storage = new images\Storage();
             try {
-                $link->image_filename = $image_service->storeFromUrl($info['url_illustration'], 'covers');
-            } catch (ImageError $e) {
+                $link->image_filename = $image_storage->storeFromUrl($info['url_illustration'], 'covers');
+            } catch (images\StorageError $e) {
                 $link->image_filename = '';
             }
         }

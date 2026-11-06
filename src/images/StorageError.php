@@ -1,16 +1,16 @@
 <?php
 
-namespace App\services;
+namespace App\images;
 
 /**
- * Exception raised by the Image service when an image cannot be obtained
+ * Exception raised by the Storage when an image cannot be obtained
  * (e.g. it cannot be fetched or read).
  *
- * @see \App\services\Image
+ * @see \App\images\Storage
  *
  * @author Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class ImageError extends \RuntimeException
+class StorageError extends \RuntimeException
 {
 }

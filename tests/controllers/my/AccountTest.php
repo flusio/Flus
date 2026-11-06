@@ -4,8 +4,8 @@ namespace App\controllers\my;
 
 use App\auth;
 use App\forms;
+use App\images;
 use App\models;
-use App\services;
 use App\utils;
 
 class AccountTest extends \PHPUnit\Framework\TestCase
@@ -229,7 +229,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
     {
         $image_filepath = \App\Configuration::$app_path . '/public/static/og-card.png';
         $avatar_filename = hash_file('sha256', $image_filepath) . '.webp';
-        $avatar_filepath = services\Image::filepath('avatars', $avatar_filename);
+        $avatar_filepath = images\Storage::filepath('avatars', $avatar_filename);
         @mkdir(dirname($avatar_filepath), 0755, true);
         copy($image_filepath, $avatar_filepath);
         /** @var string */

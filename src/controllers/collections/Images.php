@@ -5,8 +5,8 @@ namespace App\controllers\collections;
 use App\auth;
 use App\controllers\BaseController;
 use App\forms;
+use App\images\Storage as ImageStorage;
 use App\models;
-use App\services;
 use App\utils;
 use Minz\Request;
 use Minz\Response;
@@ -86,8 +86,8 @@ class Images extends BaseController
         // $form->image attribute is set.
         assert($image_file !== null);
 
-        $image_service = new services\Image();
-        $collection->image_filename = $image_service->storeFromFile($image_file, 'covers');
+        $image_storage = new ImageStorage();
+        $collection->image_filename = $image_storage->storeFromFile($image_file, 'covers');
         $collection->save();
 
         return Response::found(utils\RequestHelper::from($request));

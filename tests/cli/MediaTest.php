@@ -2,7 +2,7 @@
 
 namespace App\cli;
 
-use App\services;
+use App\images;
 use tests\factories\CollectionFactory;
 use tests\factories\FeedFactory;
 use tests\factories\LinkFactory;
@@ -10,7 +10,7 @@ use tests\factories\StreamFactory;
 use tests\factories\UserFactory;
 
 /**
- * @phpstan-import-type MediaType from services\Image
+ * @phpstan-import-type MediaType from images\Storage
  */
 class MediaTest extends \PHPUnit\Framework\TestCase
 {
@@ -28,7 +28,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
     public function testCleanDeletesUnusedFiles(): void
     {
         $image_filename = $this->createMediaFile('covers');
-        $cover_filepath = services\Image::filepath('covers', $image_filename);
+        $cover_filepath = images\Storage::filepath('covers', $image_filename);
         $subdir_name = substr($image_filename, 0, 3);
 
         $response = $this->appRun('CLI', '/media/clean');
@@ -57,7 +57,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
     public function testCleanKeepsFilesUsedByLinks(): void
     {
         $image_filename = $this->createMediaFile('covers');
-        $cover_filepath = services\Image::filepath('covers', $image_filename);
+        $cover_filepath = images\Storage::filepath('covers', $image_filename);
         $subdir_name = substr($image_filename, 0, 3);
         LinkFactory::create([
             'image_filename' => $image_filename,
@@ -86,7 +86,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
     public function testCleanKeepsFilesUsedByCollections(): void
     {
         $image_filename = $this->createMediaFile('covers');
-        $cover_filepath = services\Image::filepath('covers', $image_filename);
+        $cover_filepath = images\Storage::filepath('covers', $image_filename);
         $subdir_name = substr($image_filename, 0, 3);
         CollectionFactory::create([
             'image_filename' => $image_filename,
@@ -115,7 +115,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
     public function testCleanKeepsFilesUsedByStreams(): void
     {
         $image_filename = $this->createMediaFile('covers');
-        $cover_filepath = services\Image::filepath('covers', $image_filename);
+        $cover_filepath = images\Storage::filepath('covers', $image_filename);
         $subdir_name = substr($image_filename, 0, 3);
         StreamFactory::create([
             'image_filename' => $image_filename,
@@ -144,7 +144,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
     public function testCleanKeepsFilesUsedByFollows(): void
     {
         $image_filename = $this->createMediaFile('covers');
-        $cover_filepath = services\Image::filepath('covers', $image_filename);
+        $cover_filepath = images\Storage::filepath('covers', $image_filename);
         $subdir_name = substr($image_filename, 0, 3);
         $user = UserFactory::create();
         $feed = FeedFactory::create();
@@ -175,7 +175,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
     public function testCleanDeletesUnusedAvatars(): void
     {
         $avatar_filename = $this->createMediaFile('avatars');
-        $avatar_filepath = services\Image::filepath('avatars', $avatar_filename);
+        $avatar_filepath = images\Storage::filepath('avatars', $avatar_filename);
         $subdir_name = substr($avatar_filename, 0, 3);
 
         $response = $this->appRun('CLI', '/media/clean');
@@ -203,7 +203,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
     public function testCleanKeepsAvatarsUsedByUsers(): void
     {
         $avatar_filename = $this->createMediaFile('avatars');
-        $avatar_filepath = services\Image::filepath('avatars', $avatar_filename);
+        $avatar_filepath = images\Storage::filepath('avatars', $avatar_filename);
         $subdir_name = substr($avatar_filename, 0, 3);
         UserFactory::create([
             'avatar_filename' => $avatar_filename,
@@ -239,7 +239,7 @@ class MediaTest extends \PHPUnit\Framework\TestCase
     {
         $image_filepath = \App\Configuration::$app_path . '/public/static/og-card.png';
         $filename = hash_file('sha256', $image_filepath) . '.webp';
-        $filepath = services\Image::filepath($type, $filename);
+        $filepath = images\Storage::filepath($type, $filename);
         @mkdir(dirname($filepath), 0755, true);
         copy($image_filepath, $filepath);
         return $filename;

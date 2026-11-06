@@ -5,6 +5,7 @@ namespace App\controllers\my;
 use App\auth;
 use App\controllers\BaseController;
 use App\forms;
+use App\images;
 use App\models;
 use App\services;
 use App\utils;
@@ -102,8 +103,8 @@ class Account extends BaseController
             $avatar_filename &&
             !models\User::existsBy(['avatar_filename' => $avatar_filename])
         ) {
-            $image_service = new services\Image();
-            $image_service->remove('avatars', $avatar_filename);
+            $image_storage = new images\Storage();
+            $image_storage->remove('avatars', $avatar_filename);
         }
 
         utils\Notification::success(_('Your account and your data are now deleted.'));

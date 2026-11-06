@@ -2,14 +2,14 @@
 
 namespace App\cli;
 
-use Minz\Response;
+use App\images;
 use App\models;
-use App\services;
 use App\utils;
+use Minz\Response;
 
 /**
  * @phpstan-import-type ResponseGenerator from Response
- * @phpstan-import-type MediaType from services\Image
+ * @phpstan-import-type MediaType from images\Storage
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
@@ -116,7 +116,7 @@ class Media
             $file_names_to_delete = array_diff($file_names_on_fs, $file_names_from_db);
 
             foreach ($file_names_to_delete as $file_name) {
-                @unlink(services\Image::filepath($type, $file_name));
+                @unlink(images\Storage::filepath($type, $file_name));
                 $count_deleted = $count_deleted + 1;
                 yield Response::text(200, "Deleted file {$file_name}");
             }

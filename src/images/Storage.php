@@ -1,9 +1,8 @@
 <?php
 
-namespace App\services;
+namespace App\images;
 
 use App\http;
-use App\models;
 use App\utils;
 
 /**
@@ -20,7 +19,7 @@ use App\utils;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Image
+class Storage
 {
     /** @var ImageSize */
     public const DEFAULT_SIZE = [400, 400];
@@ -57,12 +56,12 @@ class Image
      * @param MediaType $type
      * @param ImageSize $size
      *
-     * @throws ImageError if the image cannot be fetched or read
+     * @throws StorageError if the image cannot be fetched or read
      */
     public function storeFromUrl(string $image_url, string $type, array $size = self::DEFAULT_SIZE): string
     {
         if (!$image_url) {
-            throw new ImageError('URL cannot be empty');
+            throw new StorageError('URL cannot be empty');
         }
 
         $hash = self::hash($image_url, $size);
@@ -75,11 +74,11 @@ class Image
         try {
             $response = $this->fetcher->get($image_url, type: 'image');
         } catch (http\FetcherError $e) {
-            throw new ImageError("Cannot fetch the image {$image_url}", previous: $e);
+            throw new StorageError("Cannot fetch the image {$image_url}", previous: $e);
         }
 
         if (!$response->success) {
-            throw new ImageError("Cannot fetch the image {$image_url} (HTTP {$response->status})");
+            throw new StorageError("Cannot fetch the image {$image_url} (HTTP {$response->status})");
         }
 
         return $this->save($type, $hash, $response->data, $size);
@@ -91,14 +90,14 @@ class Image
      * @param MediaType $type
      * @param ImageSize $size
      *
-     * @throws ImageError if the file cannot be read as an image
+     * @throws StorageError if the file cannot be read as an image
      */
     public function storeFromFile(\Minz\File $file, string $type, array $size = self::DEFAULT_SIZE): string
     {
         $data = $file->content();
 
         if ($data === false) {
-            throw new ImageError('Cannot read the file');
+            throw new StorageError('Cannot read the file');
         }
 
         $hash = self::hash($data, $size);
@@ -162,7 +161,7 @@ class Image
      * @param MediaType $type
      * @param ImageSize $size
      *
-     * @throws ImageError if the data cannot be read as an image
+     * @throws StorageError if the data cannot be read as an image
      * @throws \RuntimeException if the image cannot be saved
      */
     private function save(string $type, string $hash, string $data, array $size): string
@@ -170,9 +169,9 @@ class Image
         [$width, $height] = $size;
 
         try {
-            $image = models\Image::fromString($data);
+            $image = Image::fromString($data);
         } catch (\DomainException $e) {
-            throw new ImageError('Cannot read the data as an image', previous: $e);
+            throw new StorageError('Cannot read the data as an image', previous: $e);
         }
 
         $image->resize($width, $height);

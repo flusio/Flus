@@ -3,6 +3,7 @@
 namespace App\services;
 
 use App\http;
+use App\images;
 use App\models;
 use App\utils;
 
@@ -274,10 +275,10 @@ class FeedFetcher
                 return;
             }
 
-            $image_service = new Image();
+            $image_storage = new images\Storage();
             try {
-                $feed->image_filename = $image_service->storeFromUrl($url_illustration, 'covers');
-            } catch (ImageError $e) {
+                $feed->image_filename = $image_storage->storeFromUrl($url_illustration, 'covers');
+            } catch (images\StorageError $e) {
                 $feed->image_filename = '';
             }
             $feed->image_fetched_at = \Minz\Time::now();

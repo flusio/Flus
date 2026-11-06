@@ -3,8 +3,8 @@
 namespace App\controllers\links;
 
 use App\forms;
+use App\images;
 use App\models;
-use App\services;
 use tests\factories\LinkFactory;
 use tests\factories\UserFactory;
 
@@ -80,14 +80,14 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
         $link = $link->reload();
         $expected_filename = hash_file('sha256', $image_filepath) . '.webp';
         $this->assertSame($expected_filename, $link->image_filename);
-        $this->assertTrue(file_exists(services\Image::filepath('covers', $expected_filename)));
+        $this->assertTrue(file_exists(images\Storage::filepath('covers', $expected_filename)));
     }
 
     public function testUpdateKeepsTheImageOfCopiedLinks(): void
     {
         $previous_image_filepath = \App\Configuration::$app_path . '/public/static/og-card.png';
         $previous_image_filename = hash_file('sha256', $previous_image_filepath) . '.webp';
-        $previous_cover_filepath = services\Image::filepath('covers', $previous_image_filename);
+        $previous_cover_filepath = images\Storage::filepath('covers', $previous_image_filename);
         @mkdir(dirname($previous_cover_filepath), 0755, true);
         copy($previous_image_filepath, $previous_cover_filepath);
         $image_filepath = \App\Configuration::$app_path . '/public/static/default-card.png';

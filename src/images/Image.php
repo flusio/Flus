@@ -1,6 +1,6 @@
 <?php
 
-namespace App\models;
+namespace App\images;
 
 /**
  * Create and manipulate Webp images

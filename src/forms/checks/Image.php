@@ -2,7 +2,7 @@
 
 namespace App\forms\checks;
 
-use App\models;
+use App\images;
 use Minz\Translatable;
 use Minz\Validable;
 
@@ -83,7 +83,7 @@ class Image extends Validable\File
         }
 
         try {
-            models\Image::fromString($data);
+            images\Image::fromString($data);
         } catch (\DomainException $e) {
             $this->is_invalid_image = true;
             return false;

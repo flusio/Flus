@@ -5,8 +5,8 @@ namespace App\controllers\sources\follows;
 use App\auth;
 use App\controllers\BaseController;
 use App\forms;
+use App\images\Storage as ImageStorage;
 use App\models;
-use App\services;
 use App\utils;
 use Minz\Request;
 use Minz\Response;
@@ -98,8 +98,8 @@ class Images extends BaseController
         // $form->image attribute is set.
         assert($image_file !== null);
 
-        $image_service = new services\Image();
-        $follow->image_filename = $image_service->storeFromFile($image_file, 'covers');
+        $image_storage = new ImageStorage();
+        $follow->image_filename = $image_storage->storeFromFile($image_file, 'covers');
         $follow->save();
 
         return Response::found(utils\RequestHelper::from($request));

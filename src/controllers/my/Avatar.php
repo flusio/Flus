@@ -5,8 +5,8 @@ namespace App\controllers\my;
 use App\auth;
 use App\controllers\BaseController;
 use App\forms;
+use App\images;
 use App\models;
-use App\services;
 use Minz\Request;
 use Minz\Response;
 
@@ -71,8 +71,8 @@ class Avatar extends BaseController
 
         $previous_avatar_filename = $user->avatar_filename;
 
-        $image_service = new services\Image();
-        $user->avatar_filename = $image_service->storeFromFile($avatar_file, 'avatars');
+        $image_storage = new images\Storage();
+        $user->avatar_filename = $image_storage->storeFromFile($avatar_file, 'avatars');
         $user->save();
 
         // The file can be shared with other users (or be the same as the new
@@ -81,7 +81,7 @@ class Avatar extends BaseController
             $previous_avatar_filename &&
             !models\User::existsBy(['avatar_filename' => $previous_avatar_filename])
         ) {
-            $image_service->remove('avatars', $previous_avatar_filename);
+            $image_storage->remove('avatars', $previous_avatar_filename);
         }
 
         return Response::redirect('profile', ['id' => $user->id]);

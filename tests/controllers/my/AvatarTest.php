@@ -4,8 +4,7 @@ namespace App\controllers\my;
 
 use App\auth;
 use App\forms;
-use App\models;
-use App\services;
+use App\images;
 use tests\factories\UserFactory;
 
 class AvatarTest extends \PHPUnit\Framework\TestCase
@@ -58,13 +57,13 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
         $user = $user->reload();
         $expected_filename = hash_file('sha256', $image_filepath) . '.webp';
         $this->assertSame($expected_filename, $user->avatar_filename);
-        $this->assertTrue(file_exists(services\Image::filepath('avatars', $expected_filename)));
+        $this->assertTrue(file_exists(images\Storage::filepath('avatars', $expected_filename)));
     }
 
     public function testUpdateRemovesThePreviousAvatar(): void
     {
         $previous_avatar_filename = $this->createAvatarFile();
-        $previous_avatar_filepath = services\Image::filepath('avatars', $previous_avatar_filename);
+        $previous_avatar_filepath = images\Storage::filepath('avatars', $previous_avatar_filename);
         $image_filepath = \App\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login([
@@ -87,7 +86,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
     public function testUpdateKeepsThePreviousAvatarIfUsedByAnotherUser(): void
     {
         $previous_avatar_filename = $this->createAvatarFile();
-        $previous_avatar_filepath = services\Image::filepath('avatars', $previous_avatar_filename);
+        $previous_avatar_filepath = images\Storage::filepath('avatars', $previous_avatar_filename);
         $image_filepath = \App\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
         $user = $this->login([
@@ -304,7 +303,7 @@ class AvatarTest extends \PHPUnit\Framework\TestCase
     {
         $image_filepath = \App\Configuration::$app_path . '/public/static/og-card.png';
         $filename = hash_file('sha256', $image_filepath) . '.webp';
-        $filepath = services\Image::filepath('avatars', $filename);
+        $filepath = images\Storage::filepath('avatars', $filename);
         @mkdir(dirname($filepath), 0755, true);
         copy($image_filepath, $filepath);
         return $filename;

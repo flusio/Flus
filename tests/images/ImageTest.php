@@ -1,6 +1,6 @@
 <?php
 
-namespace App\models;
+namespace App\images;
 
 class ImageTest extends \PHPUnit\Framework\TestCase
 {
