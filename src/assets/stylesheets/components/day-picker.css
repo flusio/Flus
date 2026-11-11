@@ -85,7 +85,7 @@
 }
 
 .day-picker__day--month-start::after {
-    content: '';
+    content: "";
 
     position: absolute;
     top: 0;
@@ -151,7 +151,7 @@
  * exactly the edges of its cell. As the cells touch each other, the segments
  * join into one continuous line across the strip. */
 .day-picker__chart::after {
-    content: '';
+    content: "";
 
     position: absolute;
     right: calc(-1 * (var(--button-padding-x) + 1px));

@@ -9,7 +9,7 @@
  * scrolled in that direction (cf. refresh() in the scroller controller). */
 .scroller::before,
 .scroller::after {
-    content: '';
+    content: "";
 
     position: absolute;
     z-index: 2;
