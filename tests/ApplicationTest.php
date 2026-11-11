@@ -19,7 +19,7 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
         $request = new \Minz\Request('GET', '/');
 
         $application = new Application();
-        $response = $application->run($request);
+        $application->run($request);
 
         $this->assertSame('en_GB', utils\Locale::currentLocale());
     }
@@ -30,7 +30,7 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
         $request = new \Minz\Request('GET', '/');
 
         $application = new Application();
-        $response = $application->run($request);
+        $application->run($request);
 
         $this->assertSame('fr_FR', utils\Locale::currentLocale());
     }
@@ -43,7 +43,7 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
         $request = new \Minz\Request('GET', '/');
 
         $application = new Application();
-        $response = $application->run($request);
+        $application->run($request);
 
         $this->assertSame('fr_FR', utils\Locale::currentLocale());
     }
@@ -67,7 +67,7 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
             'session_token' => $token->token,
         ]);
         $application = new Application();
-        $response = $application->run($request);
+        $application->run($request);
 
         $current_user = auth\CurrentUser::get();
         $this->assertNotNull($current_user);
@@ -150,7 +150,7 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $application = new Application();
-        $response = $application->run($request);
+        $application->run($request);
 
         $token = $token->reload();
         $this->assertSame(

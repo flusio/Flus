@@ -84,7 +84,7 @@ class Image extends Validable\File
 
         try {
             images\Image::fromString($data);
-        } catch (\DomainException $e) {
+        } catch (\DomainException) {
             $this->is_invalid_image = true;
             return false;
         }

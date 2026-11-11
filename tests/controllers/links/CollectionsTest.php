@@ -31,7 +31,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $collection_1 = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
-        $collection_2 = CollectionFactory::create([
+        CollectionFactory::create([
             'user_id' => $user->id,
             'name' => $collection_name,
         ]);
@@ -47,8 +47,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     public function testIndexRendersCorrectlyWhenMarkAsReadIsSet(): void
     {
         $user = $this->login();
-        /** @var string */
-        $collection_name = $this->fake('words', 3, true);
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
@@ -253,8 +251,6 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     public function testIndexRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create();
-        /** @var string */
-        $collection_name = $this->fake('words', 3, true);
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
@@ -266,10 +262,8 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
     public function testIndexFailsIfLinkIsNotAccessible(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
-        /** @var string */
-        $collection_name = $this->fake('words', 3, true);
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
             'is_hidden' => true,
@@ -370,7 +364,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $content = '#foo #Bar';
 
-        $response = $this->appRun('POST', "/links/{$link->id}/collections", [
+        $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
             'collection_ids' => [$collection->id],
             'content' => $content,
@@ -609,7 +603,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfLinkIsNotAccessible(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $link = LinkFactory::create([
             'user_id' => $other_user->id,

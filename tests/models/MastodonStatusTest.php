@@ -115,7 +115,7 @@ class MastodonStatusTest extends \PHPUnit\Framework\TestCase
             'options' => $options,
         ]);
         $status = new MastodonStatus($account, $link);
-        $link_url = \Minz\Url::absoluteFor('link', ['id' => $link->id]);
+        \Minz\Url::absoluteFor('link', ['id' => $link->id]);
         $expected_content = <<<"TEXT"
             My title
 

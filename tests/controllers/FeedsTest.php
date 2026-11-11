@@ -61,7 +61,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
 
     public function testNewRendersCorrectly(): void
     {
-        $user = $this->login();
+        $this->login();
 
         $response = $this->appRun('GET', '/feeds/new');
 
@@ -100,7 +100,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateAutodetectsFeedUrls(): void
     {
-        $user = $this->login();
+        $this->login();
         $url = 'https://flus.fr/carnet/';
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
@@ -122,7 +122,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateRedirectsToLoginIfNotConnected(): void
     {
-        $user = UserFactory::create();
+        UserFactory::create();
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
 
@@ -137,7 +137,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfCsrfIsInvalid(): void
     {
-        $user = $this->login();
+        $this->login();
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
 
@@ -153,7 +153,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfUrlIsInvalid(): void
     {
-        $user = $this->login();
+        $this->login();
         $feed_url = 'ftp://flus.fr/carnet/feeds/all.atom.xml';
 
         $response = $this->appRun('POST', '/feeds/new', [
@@ -168,7 +168,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfUrlIsMissing(): void
     {
-        $user = $this->login();
+        $this->login();
         $feed_url = '';
 
         $response = $this->appRun('POST', '/feeds/new', [
@@ -183,7 +183,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfNoFeedsCanBeFound(): void
     {
-        $user = $this->login();
+        $this->login();
         /** @var string */
         $feed_url = $this->fake('url');
         $this->mockHttpWithResponse($feed_url, <<<TEXT

@@ -54,7 +54,7 @@ class ClearUrls
         // the patterns.
 
         $providers = self::loadClearUrlsProviders();
-        foreach ($providers as $provider_name => $provider) {
+        foreach ($providers as $provider) {
             // set default values so we don't have to check for their presence
             $provider = array_merge([
                 'urlPattern' => '',
@@ -130,10 +130,10 @@ class ClearUrls
                 return '';
             }
 
-            $parsed_url['scheme'] = $parsed_url['scheme'] ?? 'http';
-            $parsed_url['host'] = $parsed_url['host'] ?? '';
-            $parsed_url['query'] = $parsed_url['query'] ?? '';
-            $parsed_url['fragment'] = $parsed_url['fragment'] ?? '';
+            $parsed_url['scheme'] ??= 'http';
+            $parsed_url['host'] ??= '';
+            $parsed_url['query'] ??= '';
+            $parsed_url['fragment'] ??= '';
 
             $cleared_query = self::clearQuery($parsed_url['query'], $rules);
             $cleared_fragment = self::clearQuery($parsed_url['fragment'], $rules);
@@ -146,12 +146,12 @@ class ClearUrls
             }
             $rebuilt_url .= $parsed_url['path'] ?? '';
 
-            $had_empty_query = strpos($url, '?') !== false && $parsed_url['query'] === '';
+            $had_empty_query = str_contains($url, '?') && $parsed_url['query'] === '';
             if (!empty($cleared_query) || $had_empty_query) {
                 $rebuilt_url .= '?' . $cleared_query;
             }
 
-            $had_empty_fragment = strpos($url, '#') !== false && $parsed_url['fragment'] === '';
+            $had_empty_fragment = str_contains($url, '#') && $parsed_url['fragment'] === '';
             if (!empty($cleared_fragment) || $had_empty_fragment) {
                 $rebuilt_url .= '#' . $cleared_fragment;
             }
@@ -189,16 +189,17 @@ class ClearUrls
                 throw new \Exception($rules_path . ' file cannot be found.');
             }
 
-            $clear_urls_data = json_decode($clear_urls_file_content, true);
+            $raw_clear_urls_data = json_decode($clear_urls_file_content, true);
 
-            if (!is_array($clear_urls_data) || !isset($clear_urls_data['providers'])) {
+            if (!is_array($raw_clear_urls_data) || !isset($raw_clear_urls_data['providers'])) {
                 throw new \Exception(
                     $rules_path . ' file does not contain valid JSON.'
                 );
             }
 
             /** @var ClearUrlsData */
-            $clear_urls_data = $clear_urls_data;
+            $clear_urls_data = $raw_clear_urls_data;
+
             self::$clear_urls_data = $clear_urls_data;
         }
 

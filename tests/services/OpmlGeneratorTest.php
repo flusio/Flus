@@ -119,12 +119,12 @@ class OpmlGeneratorTest extends \PHPUnit\Framework\TestCase
     {
         $opml_generator = new OpmlGenerator();
         $user = UserFactory::create();
-        $public_stream = StreamFactory::create([
+        StreamFactory::create([
             'user_id' => $user->id,
             'name' => 'Public stream',
             'is_public' => true,
         ]);
-        $private_stream = StreamFactory::create([
+        StreamFactory::create([
             'user_id' => $user->id,
             'name' => 'Private stream',
             'is_public' => false,

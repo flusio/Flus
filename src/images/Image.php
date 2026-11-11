@@ -156,8 +156,8 @@ class Image
      */
     public static function resizeRectangle(array $initial_size, array $destination_size): array
     {
-        list($initial_width, $initial_height) = $initial_size;
-        list($destination_width, $destination_height) = $destination_size;
+        [$initial_width, $initial_height] = $initial_size;
+        [$destination_width, $destination_height] = $destination_size;
 
         $initial_ratio = $initial_width / $initial_height;
         $destination_ratio = $destination_width / $destination_height;

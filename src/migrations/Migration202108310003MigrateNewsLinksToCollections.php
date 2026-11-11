@@ -24,7 +24,7 @@ class Migration202108310003MigrateNewsLinksToCollections
             // Get user info (news and read list ids) and cache these info
             $user_id = $db_news_link['user_id'];
             if (isset($cache_users[$user_id])) {
-                list($user, $journal) = $cache_users[$user_id];
+                [$user, $journal] = $cache_users[$user_id];
             } else {
                 $user = models\User::find($user_id);
 

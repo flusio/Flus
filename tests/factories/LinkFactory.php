@@ -23,31 +23,19 @@ class LinkFactory extends Database\Factory
         $faker = \Faker\Factory::create();
 
         return [
-            'id' => function (): string {
-                return \Minz\Random::timebased();
-            },
+            'id' => fn(): string => \Minz\Random::timebased(),
 
-            'created_at' => function () use ($faker) {
-                return $faker->dateTime;
-            },
+            'created_at' => fn() => $faker->dateTime,
 
-            'title' => function () use ($faker) {
-                return $faker->words(3, true);
-            },
+            'title' => fn() => $faker->words(3, true),
 
-            'url' => function () use ($faker) {
-                return $faker->url;
-            },
+            'url' => fn() => $faker->url,
 
             'url_feeds' => [],
 
-            'is_hidden' => function () use ($faker) {
-                return $faker->boolean;
-            },
+            'is_hidden' => fn() => $faker->boolean,
 
-            'user_id' => function () {
-                return UserFactory::create()->id;
-            },
+            'user_id' => fn() => UserFactory::create()->id,
 
             'source_type' => '',
         ];

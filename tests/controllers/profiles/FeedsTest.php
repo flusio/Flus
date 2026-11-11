@@ -127,7 +127,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create();
         /** @var string */
         $link_title = $this->fake('words', 3, true);
-        $link = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'is_hidden' => false,
             'title' => $link_title,

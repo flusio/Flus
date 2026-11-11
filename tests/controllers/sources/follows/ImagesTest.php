@@ -51,7 +51,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
 
     public function testEditFailsIfSourceIsNotFollowed(): void
     {
-        $user = $this->login();
+        $this->login();
         $feed = FeedFactory::create([
             'is_public' => true,
         ]);
@@ -136,7 +136,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
     {
         $image_filepath = \App\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
-        $user = $this->login();
+        $this->login();
         $feed = FeedFactory::create([
             'is_public' => true,
             'image_filename' => null,

@@ -171,9 +171,7 @@ class View
 
         $has_supported_parameter = utils\ArrayHelper::any(
             $this->supportedUrlParameters(),
-            function (string $name) use ($url_parameters): bool {
-                return $url_parameters->has($name);
-            },
+            fn(string $name): bool => $url_parameters->has($name),
         );
 
         if ($has_supported_parameter) {
@@ -434,7 +432,7 @@ class View
         }
 
         $source_ids = $parameters->getArray('sources');
-        $source_ids = array_filter($source_ids, 'is_string');
+        $source_ids = array_filter($source_ids, is_string(...));
         $source_ids = array_intersect($source_ids, $stream_source_ids);
         $source_ids = array_unique($source_ids);
         sort($source_ids);

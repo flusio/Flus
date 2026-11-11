@@ -84,9 +84,7 @@ class HtmlSanitizer
         ?array $allowed_link_schemes = null,
         ?array $allowed_media_schemes = null,
     ) {
-        if ($allowed_elements === null) {
-            $allowed_elements = self::DEFAULT_ALLOWED_ELEMENTS;
-        }
+        $allowed_elements ??= self::DEFAULT_ALLOWED_ELEMENTS;
 
         $this->allowed_elements = $allowed_elements;
         $this->blocked_elements = $blocked_elements;

@@ -42,9 +42,7 @@ trait Taggable
         foreach ($tags as $tag) {
             $lower_tag = mb_strtolower($tag);
 
-            if (!isset($sanitized_tags[$lower_tag])) {
-                $sanitized_tags[$lower_tag] = $tag;
-            }
+            $sanitized_tags[$lower_tag] ??= $tag;
         }
 
         $this->tags = $sanitized_tags;

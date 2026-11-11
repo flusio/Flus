@@ -86,7 +86,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
     public function testIndexFailsIfCollectionDoesNotExist(): void
     {
         $user = $this->login();
-        $collection = CollectionFactory::create([
+        CollectionFactory::create([
             'user_id' => $user->id,
         ]);
 
@@ -97,7 +97,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
 
     public function testIndexFailsIfCollectionIsNotShared(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
@@ -148,7 +148,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
 
-        $response = $this->appRun('POST', "/collections/{$collection->id}/share", [
+        $this->appRun('POST', "/collections/{$collection->id}/share", [
             'csrf_token' => $this->csrfToken(forms\collections\ShareCollection::class),
             'user_id' => $other_user->id,
             'type' => 'read',
@@ -169,7 +169,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
 
-        $response = $this->appRun('POST', "/collections/{$collection->id}/share", [
+        $this->appRun('POST', "/collections/{$collection->id}/share", [
             'csrf_token' => $this->csrfToken(forms\collections\ShareCollection::class),
             'user_id' => \Minz\Url::absoluteFor('profile', ['id' => $other_user->id]),
             'type' => 'read',
@@ -192,7 +192,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection->shareWith($user, 'write');
 
-        $response = $this->appRun('POST', "/collections/{$collection->id}/share", [
+        $this->appRun('POST', "/collections/{$collection->id}/share", [
             'csrf_token' => $this->csrfToken(forms\collections\ShareCollection::class),
             'user_id' => $yet_another_user->id,
             'type' => 'read',
@@ -389,7 +389,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfCollectionIsNotShared(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $yet_another_user = UserFactory::create();
         $collection = CollectionFactory::create([
@@ -515,7 +515,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteFailsIfCollectionIsNotShared(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $yet_another_user = UserFactory::create();
         $collection = CollectionFactory::create([

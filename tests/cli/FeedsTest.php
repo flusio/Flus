@@ -189,7 +189,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'feed_url' => $feed_url,
         ]);
 
-        $response = $this->appRun('CLI', '/feeds/sync', [
+        $this->appRun('CLI', '/feeds/sync', [
             'id' => $feed->id,
         ]);
 
@@ -230,7 +230,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             </feed>
             TEXT);
 
-        $response = $this->appRun('CLI', '/feeds/sync', [
+        $this->appRun('CLI', '/feeds/sync', [
             'id' => $feed->id,
         ]);
 
@@ -274,7 +274,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             </feed>
             TEXT);
 
-        $response = $this->appRun('CLI', '/feeds/sync', [
+        $this->appRun('CLI', '/feeds/sync', [
             'id' => $feed->id,
             'nocache' => true,
         ]);

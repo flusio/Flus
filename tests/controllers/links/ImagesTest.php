@@ -47,7 +47,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
     public function testEditFailsIfLinkDoesNotExist(): void
     {
         $user = $this->login();
-        $link = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
         ]);
 

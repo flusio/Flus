@@ -24,7 +24,7 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
 
     public function testNewRendersCorrectly(): void
     {
-        $user = $this->login();
+        $this->login();
 
         $response = $this->appRun('GET', '/streams/new');
 
@@ -42,7 +42,7 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateCreatesStreamAndRedirects(): void
     {
-        $user = $this->login();
+        $this->login();
         /** @var string */
         $name = $this->fake('words', 3, true);
         /** @var string */
@@ -86,7 +86,7 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfCsrfIsInvalid(): void
     {
-        $user = $this->login();
+        $this->login();
         /** @var string */
         $name = $this->fake('words', 3, true);
         /** @var string */
@@ -105,7 +105,7 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfNameIsInvalid(): void
     {
-        $user = $this->login();
+        $this->login();
         /** @var string */
         $name = $this->fake('words', 100, true);
         /** @var string */
@@ -124,7 +124,7 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfNameIsMissing(): void
     {
-        $user = $this->login();
+        $this->login();
         /** @var string */
         $description = $this->fake('sentence');
 
@@ -255,7 +255,7 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
             $stream->addSource($feed);
         }
 
-        list($response, $count_queries) = $this->countSqlQueries(function () use ($stream): \Minz\Response {
+        [$response, $count_queries] = $this->countSqlQueries(function () use ($stream): \Minz\Response {
             $response = $this->appRun('GET', "/streams/{$stream->id}");
 
             // The templates are rendered lazily, so the response must be

@@ -101,7 +101,7 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
         $token = TokenFactory::create([
             'expired_at' => \Minz\Time::ago(1, 'day'),
         ]);
-        $session = SessionFactory::create([
+        SessionFactory::create([
             'user_id' => $user->id,
             'token' => $token->token,
             'scope' => 'browser',
@@ -120,7 +120,7 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
             'expired_at' => \Minz\Time::fromNow(1, 'day'),
             'invalidated_at' => \Minz\Time::now(),
         ]);
-        $session = SessionFactory::create([
+        SessionFactory::create([
             'user_id' => $user->id,
             'token' => $token->token,
             'scope' => 'browser',
@@ -138,7 +138,7 @@ class CurrentUserTest extends \PHPUnit\Framework\TestCase
         $token = TokenFactory::create([
             'expired_at' => \Minz\Time::fromNow(1, 'day'),
         ]);
-        $session = SessionFactory::create([
+        SessionFactory::create([
             'user_id' => $user->id,
             'token' => $token->token,
             'scope' => 'browser',

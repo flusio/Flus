@@ -32,7 +32,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
 
     public function testShowRendersCorrectly(): void
     {
-        $user = $this->login();
+        $this->login();
 
         $response = $this->appRun('GET', '/exportations');
 
@@ -44,7 +44,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
     public function testShowRendersCorrectlyIfAnExportationIsOngoing(): void
     {
         $user = $this->login();
-        $exportation = ExportationFactory::create([
+        ExportationFactory::create([
             'user_id' => $user->id,
             'status' => 'ongoing',
         ]);
@@ -59,7 +59,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
     public function testShowRendersCorrectlyIfAnExportationIsFinished(): void
     {
         $user = $this->login();
-        $exportation = ExportationFactory::create([
+        ExportationFactory::create([
             'user_id' => $user->id,
             'status' => 'finished',
         ]);
@@ -76,7 +76,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         /** @var string */
         $error = $this->fake('sentence');
-        $exportation = ExportationFactory::create([
+        ExportationFactory::create([
             'user_id' => $user->id,
             'status' => 'error',
             'error' => $error,
@@ -169,7 +169,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateRedirectsIfUserIsNotConnected(): void
     {
-        $user = UserFactory::create();
+        UserFactory::create();
 
         $response = $this->appRun('POST', '/exportations', [
             'csrf_token' => $this->csrfToken(forms\Exportation::class),
@@ -204,7 +204,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfCsrfIsInvalid(): void
     {
-        $user = $this->login();
+        $this->login();
 
         $response = $this->appRun('POST', '/exportations', [
             'csrf_token' => 'not the token',
@@ -248,7 +248,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create();
         $exportation_service = new services\DataExporter(\App\Configuration::$tmp_path);
         $filepath = $exportation_service->export($user);
-        $exportation = ExportationFactory::create([
+        ExportationFactory::create([
             'user_id' => $user->id,
             'status' => 'finished',
             'filepath' => $filepath,
@@ -264,7 +264,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $exportation_service = new services\DataExporter(\App\Configuration::$tmp_path);
         $filepath = $exportation_service->export($user);
-        $exportation = ExportationFactory::create([
+        ExportationFactory::create([
             'user_id' => $user->id,
             'status' => 'finished',
             'filepath' => $filepath,
@@ -280,7 +280,7 @@ class ExportationsTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $exportation_service = new services\DataExporter(\App\Configuration::$tmp_path);
-        $filepath = $exportation_service->export($user);
+        $exportation_service->export($user);
 
         $response = $this->appRun('GET', '/exportations/download');
 

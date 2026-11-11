@@ -56,8 +56,6 @@ class Notification
             'error' => self::popError(),
         ];
 
-        $notifications = array_filter($notifications);
-
-        return $notifications;
+        return array_filter($notifications);
     }
 }

@@ -162,7 +162,6 @@ class OpmlImportator
      * Return the list of xmlUrl by stream name of OPML outlines and their children.
      *
      * @param Outline[] $outlines
-     * @param string $parent_stream_name
      *
      * @return array<string, string[]>
      */
@@ -178,9 +177,7 @@ class OpmlImportator
             // Then, we merge the initial array with the array returned by the
             // outline.
             foreach ($outline_urls_by_streams as $stream_name => $urls) {
-                if (!isset($urls_by_streams[$stream_name])) {
-                    $urls_by_streams[$stream_name] = [];
-                }
+                $urls_by_streams[$stream_name] ??= [];
 
                 $urls_by_streams[$stream_name] = array_merge(
                     $urls_by_streams[$stream_name],
@@ -196,7 +193,6 @@ class OpmlImportator
      * Return the list of xmlUrl of an OPML outline and its children.
      *
      * @param Outline $outline
-     * @param string $parent_stream_name
      *
      * @return array<string, string[]>
      */
@@ -218,9 +214,7 @@ class OpmlImportator
             $urls_by_streams = $this->loadUrlsFromOutlines($outlines, $stream_name);
         }
 
-        if (!isset($urls_by_streams[$parent_stream_name])) {
-            $urls_by_streams[$parent_stream_name] = [];
-        }
+        $urls_by_streams[$parent_stream_name] ??= [];
 
         if (is_string($outline['xmlUrl'] ?? null)) {
             // The xmlUrl means it's a feed URL: we add it to the array

@@ -152,7 +152,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
             'subscription_expired_at' => \Minz\Time::now(),
         ]);
 
-        $response = $this->appRun('POST', '/my/account/validation/new', [
+        $this->appRun('POST', '/my/account/validation/new', [
             'csrf_token' => $this->csrfToken(forms\users\AccountValidation::class),
             't' => $token->token,
         ]);
@@ -272,7 +272,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
         $token = TokenFactory::create([
             'expired_at' => $expired_at,
         ]);
-        $user = $this->login([
+        $this->login([
             'email' => $email,
             'validated_at' => null,
             'validation_token' => $token->token,
@@ -297,9 +297,6 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
     {
         /** @var string */
         $email = $this->fake('email');
-        /** @var int */
-        $minutes = $this->fake('numberBetween', 1, 9000);
-        $expired_at = \Minz\Time::fromNow($minutes, 'minutes');
         $user = $this->login([
             'email' => $email,
             'validated_at' => null,
@@ -308,7 +305,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
 
         $number_tokens = models\Token::count();
 
-        $response = $this->appRun('POST', '/my/account/validation/email', [
+        $this->appRun('POST', '/my/account/validation/email', [
             'csrf_token' => $this->csrfToken(forms\users\ResendValidationEmail::class),
         ]);
 
@@ -332,7 +329,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
 
         $number_tokens = models\Token::count();
 
-        $response = $this->appRun('POST', '/my/account/validation/email', [
+        $this->appRun('POST', '/my/account/validation/email', [
             'csrf_token' => $this->csrfToken(forms\users\ResendValidationEmail::class),
         ]);
 
@@ -357,7 +354,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
 
         $number_tokens = models\Token::count();
 
-        $response = $this->appRun('POST', '/my/account/validation/email', [
+        $this->appRun('POST', '/my/account/validation/email', [
             'csrf_token' => $this->csrfToken(forms\users\ResendValidationEmail::class),
         ]);
 
@@ -368,7 +365,7 @@ class ValidationTest extends \PHPUnit\Framework\TestCase
 
     public function testResendEmailRedirectsSilentlyIfAlreadyValidated(): void
     {
-        $user = $this->login([
+        $this->login([
             'validated_at' => \Minz\Time::now(),
         ]);
 

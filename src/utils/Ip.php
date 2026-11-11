@@ -16,9 +16,7 @@ class Ip
             $result = preg_replace('/[\da-f]*:[\da-f]*$/', 'XXXX:XXXX', $ip);
         }
 
-        if ($result === null) {
-            $result = '';
-        }
+        $result ??= '';
 
         return $result;
     }

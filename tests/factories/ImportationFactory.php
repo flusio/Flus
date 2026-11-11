@@ -23,23 +23,15 @@ class ImportationFactory extends Database\Factory
         $faker = \Faker\Factory::create();
 
         return [
-            'created_at' => function () use ($faker) {
-                return $faker->dateTime;
-            },
+            'created_at' => fn() => $faker->dateTime,
 
-            'type' => function () use ($faker) {
-                return $faker->randomElement(models\Importation::VALID_TYPES);
-            },
+            'type' => fn() => $faker->randomElement(models\Importation::VALID_TYPES),
 
-            'status' => function () use ($faker) {
-                return $faker->randomElement(models\Importation::VALID_STATUSES);
-            },
+            'status' => fn() => $faker->randomElement(models\Importation::VALID_STATUSES),
 
             'options' => [],
 
-            'user_id' => function () {
-                return UserFactory::create()->id;
-            },
+            'user_id' => fn() => UserFactory::create()->id,
         ];
     }
 }

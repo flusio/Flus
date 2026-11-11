@@ -31,7 +31,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
     public function testGetLinksFindsNothingWithOnlyStopWords(): void
     {
         $user = UserFactory::create();
-        $link = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'title' => 'Le chat noir',
         ]);
@@ -53,7 +53,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'title' => 'Technology watch',
         ]);
-        $link_3 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'title' => 'Knitting for dummies',
         ]);
@@ -74,7 +74,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'title' => 'How to bake a cake',
         ]);
-        $link_2 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'title' => 'Technology watch',
         ]);
@@ -104,7 +104,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'title' => 'Technology watch',
         ]);
-        $link_3 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'title' => 'Knitting watch',
         ]);
@@ -125,7 +125,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'title' => 'Knitting watch',
         ]);
-        $link_2 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'title' => 'Watch and knitting',
         ]);
@@ -144,7 +144,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'title' => 'Technology watch',
         ]);
-        $link_2 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'title' => 'Knitting watch',
         ]);
@@ -180,7 +180,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'url' => 'https://example.com/a_b',
         ]);
-        $link_2 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'url' => 'https://example.com/a-b',
         ]);
@@ -197,7 +197,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
     public function testGetLinksCanExcludeByUrl(): void
     {
         $user = UserFactory::create();
-        $link_1 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'url' => 'https://example.com/article',
         ]);
@@ -220,7 +220,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'origin' => 'https://example.com',
         ]);
-        $link_2 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'origin' => 'https://example.org',
         ]);
@@ -235,7 +235,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
     public function testGetLinksCanExcludeByOrigin(): void
     {
         $user = UserFactory::create();
-        $link_1 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'origin' => 'https://example.com',
         ]);
@@ -258,7 +258,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'is_hidden' => true,
         ]);
-        $link_2 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'is_hidden' => false,
         ]);
@@ -273,7 +273,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
     public function testGetLinksCanExcludeHidden(): void
     {
         $user = UserFactory::create();
-        $link_1 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'is_hidden' => true,
         ]);
@@ -297,18 +297,18 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
             'fetched_at' => \Minz\Time::now(),
             'fetched_code' => 404,
         ]);
-        $link_up = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'fetched_at' => \Minz\Time::now(),
             'fetched_code' => 200,
         ]);
-        $link_marked_accessible = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'fetched_at' => \Minz\Time::now(),
             'fetched_code' => 404,
             'user_fetched_status' => 'ok',
         ]);
-        $link_not_fetched = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'fetched_at' => null,
         ]);
@@ -323,7 +323,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
     public function testGetLinksSearchesByUp(): void
     {
         $user = UserFactory::create();
-        $link_down = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'fetched_at' => \Minz\Time::now(),
             'fetched_code' => 404,
@@ -339,7 +339,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
             'fetched_code' => 404,
             'user_fetched_status' => 'ok',
         ]);
-        $link_not_fetched = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'fetched_at' => null,
         ]);
@@ -361,7 +361,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
             'fetched_at' => \Minz\Time::now(),
             'fetched_code' => 404,
         ]);
-        $link_up = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'fetched_at' => \Minz\Time::now(),
             'fetched_code' => 200,
@@ -386,7 +386,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
         $link_1 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_2 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
         ]);
         $link_1->addNote(new models\Note($user, 'A note'));
@@ -423,7 +423,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'tags' => ['foo' => 'foo'],
         ]);
-        $link_2 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'tags' => [],
         ]);
@@ -438,7 +438,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
     public function testGetLinksSearchesByNoTags(): void
     {
         $user = UserFactory::create();
-        $link_1 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'tags' => ['foo' => 'foo'],
         ]);
@@ -465,7 +465,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'created_at' => new \DateTimeImmutable('2026-03-31 23:59:59'),
         ]);
-        $link_3 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'created_at' => new \DateTimeImmutable('2026-04-01 00:00:00'),
         ]);
@@ -513,7 +513,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
     public function testGetLinksSearchesByDateWithOperator(): void
     {
         $user = UserFactory::create();
-        $link_1 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'created_at' => new \DateTimeImmutable('2026-03-23 12:00:00'),
         ]);
@@ -533,7 +533,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
     public function testGetLinksSearchesByDateRange(): void
     {
         $user = UserFactory::create();
-        $link_1 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'created_at' => new \DateTimeImmutable('2025-12-31 23:59:59'),
         ]);
@@ -541,7 +541,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'created_at' => new \DateTimeImmutable('2026-02-15 12:00:00'),
         ]);
-        $link_3 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'created_at' => new \DateTimeImmutable('2026-04-01 00:00:00'),
         ]);
@@ -561,7 +561,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'created_at' => new \DateTimeImmutable('2026-03-23 08:00:00'),
         ]);
-        $link_2 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'created_at' => new \DateTimeImmutable('2026-03-22 08:00:00'),
         ]);
@@ -576,7 +576,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
     public function testGetLinksSearchesByDuration(): void
     {
         $user = UserFactory::create();
-        $link_1 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'reading_time' => 5,
         ]);
@@ -595,7 +595,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
     public function testGetLinksSearchesByDurationRange(): void
     {
         $user = UserFactory::create();
-        $link_1 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'reading_time' => 4,
         ]);
@@ -607,7 +607,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'reading_time' => 15,
         ]);
-        $link_4 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'reading_time' => 16,
         ]);
@@ -630,7 +630,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
         $link_2 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_3 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
         ]);
         $link_1->addNote(new models\Note($user, 'A note about knitting'));
@@ -729,7 +729,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $tag = $this->fake('randomElement', $tags);
         $user = UserFactory::create();
-        $link = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'tags' => $tags,
         ]);
@@ -750,11 +750,11 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'tags' => ['foo'],
         ]);
-        $link2 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'tags' => ['foo', 'bar'],
         ]);
-        $link2 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'tags' => ['foo', 'bar', 'baz'],
         ]);
@@ -797,7 +797,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $title = $this->fake('sentence', 10, false);
         $user = UserFactory::create();
-        $link_1 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'created_at' => \Minz\Time::ago(3, 'days'),
             'title' => $title,
@@ -838,7 +838,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
             'created_at' => \Minz\Time::ago(2, 'days'),
             'title' => $title,
         ]);
-        $link_3 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'created_at' => \Minz\Time::ago(1, 'days'),
             'title' => $title,
@@ -860,7 +860,7 @@ class LinksSearcherTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $title = $this->fake('sentence', 10, false);
         $user = UserFactory::create();
-        $link = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'title' => $title,
         ]);

@@ -23,17 +23,11 @@ class MastodonAccountFactory extends Database\Factory
         $faker = \Faker\Factory::create();
 
         return [
-            'created_at' => function () use ($faker) {
-                return $faker->dateTime;
-            },
+            'created_at' => fn() => $faker->dateTime,
 
-            'mastodon_server_id' => function () {
-                return MastodonServerFactory::create()->id;
-            },
+            'mastodon_server_id' => fn() => MastodonServerFactory::create()->id,
 
-            'user_id' => function () {
-                return UserFactory::create()->id;
-            },
+            'user_id' => fn() => UserFactory::create()->id,
 
             'username' => '',
 

@@ -130,9 +130,7 @@ class MastodonThreads extends BaseController
 
             $previous_status = $mastodon_status;
 
-            if ($first_status === null) {
-                $first_status = $mastodon_status;
-            }
+            $first_status ??= $mastodon_status;
         }
 
         if ($first_status) {

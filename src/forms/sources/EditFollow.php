@@ -141,7 +141,7 @@ class EditFollow extends BaseForm
     {
         try {
             $this->selectedStreams();
-        } catch (\RuntimeException $e) {
+        } catch (\RuntimeException) {
             $this->addError(
                 'stream_ids',
                 'invalidStream',

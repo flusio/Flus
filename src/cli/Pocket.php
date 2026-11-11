@@ -103,8 +103,7 @@ class Pocket
             $tags = explode('|', $item['tags']);
             $tags = array_map(function (string $tag): string {
                 $tag = trim($tag);
-                $tag = str_replace(' ', '_', $tag);
-                return $tag;
+                return str_replace(' ', '_', $tag);
             }, $tags);
             $tags = array_filter($tags);
 
@@ -162,9 +161,7 @@ class Pocket
 
             // We create a note containing the list of tags if any.
             if (count($tags) > 0) {
-                $formatted_tags = array_map(function (string $tag): string {
-                    return "#{$tag}";
-                }, $tags);
+                $formatted_tags = array_map(fn(string $tag): string => "#{$tag}", $tags);
 
                 $content = implode(' ', $formatted_tags);
 

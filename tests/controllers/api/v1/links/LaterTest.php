@@ -45,7 +45,7 @@ class LaterTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfTheLinkDoesNotExist(): void
     {
-        $user = $this->login();
+        $this->login();
 
         $response = $this->apiRun('POST', '/api/v1/links/not-an-id/later');
 

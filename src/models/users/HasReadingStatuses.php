@@ -176,9 +176,10 @@ trait HasReadingStatuses
      */
     private function urlStatusOfLink(Link $link): UrlStatus
     {
-        return $this->memoize(['url_status', $link->url_hash], function () use ($link): UrlStatus {
-            return UrlStatus::findOrBuild($this, $link->url);
-        });
+        return $this->memoize(
+            ['url_status', $link->url_hash],
+            fn(): UrlStatus => UrlStatus::findOrBuild($this, $link->url)
+        );
     }
 
     /**

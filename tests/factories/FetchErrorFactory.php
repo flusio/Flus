@@ -23,25 +23,15 @@ class FetchErrorFactory extends Database\Factory
         $faker = \Faker\Factory::create();
 
         return [
-            'created_at' => function () use ($faker) {
-                return $faker->dateTime;
-            },
+            'created_at' => fn() => $faker->dateTime,
 
-            'url' => function () use ($faker) {
-                return $faker->url;
-            },
+            'url' => fn() => $faker->url,
 
-            'type' => function () use ($faker) {
-                return $faker->randomElement(['link', 'feed', 'image']);
-            },
+            'type' => fn() => $faker->randomElement(['link', 'feed', 'image']),
 
-            'code' => function () use ($faker) {
-                return $faker->randomElement([0, 404, 500]);
-            },
+            'code' => fn() => $faker->randomElement([0, 404, 500]),
 
-            'content' => function () use ($faker) {
-                return $faker->sentence;
-            },
+            'content' => fn() => $faker->sentence,
         ];
     }
 }

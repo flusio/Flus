@@ -49,7 +49,7 @@ class FollowTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfTheSourceDoesNotExist(): void
     {
-        $user = $this->login();
+        $this->login();
 
         $response = $this->apiRun('POST', '/api/v1/collections/not-an-id/follow');
 
@@ -99,7 +99,7 @@ class FollowTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteFailsIfTheSourceDoesNotExist(): void
     {
-        $user = $this->login();
+        $this->login();
 
         $response = $this->apiRun('DELETE', '/api/v1/collections/not-an-id/follow');
 

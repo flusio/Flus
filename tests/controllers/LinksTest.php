@@ -57,7 +57,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testIndexRendersResultsWhenQuery(): void
     {
-        $user = $this->login();
+        $this->login();
         /** @var string */
         $title_1 = $this->fakeUnique('words', 3, true);
         /** @var string */
@@ -82,7 +82,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testIndexRendersResultsWhenQueryCombinesWordsWithOr(): void
     {
-        $user = $this->login();
+        $this->login();
         /** @var string */
         $title_1 = $this->fakeUnique('words', 3, true);
         /** @var string */
@@ -324,7 +324,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testShowFailsIfTheLinkDoesNotExist(): void
     {
-        $user = $this->login();
+        $this->login();
 
         $response = $this->appRun('GET', '/links/not-a-valid-id');
 
@@ -333,7 +333,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testShowFailsIfUserDoesNotOwnThePrivateLink(): void
     {
-        $current_user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         /** @var string */
         $title = $this->fake('words', 3, true);
@@ -351,7 +351,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testNewRendersCorrectly(): void
     {
-        $user = $this->login();
+        $this->login();
 
         $response = $this->appRun('GET', '/links/new');
 
@@ -362,7 +362,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testNewPrefillsUrl(): void
     {
-        $user = $this->login();
+        $this->login();
         /** @var string */
         $url = $this->fake('url');
 
@@ -451,11 +451,11 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateAllowsToCreateHiddenLinks(): void
     {
-        $user = $this->login();
+        $this->login();
         $url = 'https://flus.fr/carnet/';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
 
-        $response = $this->appRun('POST', '/links/new', [
+        $this->appRun('POST', '/links/new', [
             'csrf_token' => $this->csrfToken(forms\links\NewLink::class),
             'url' => $url,
             'is_hidden' => true,
@@ -503,7 +503,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, models\Link::count());
 
-        $response = $this->appRun('POST', '/links/new', [
+        $this->appRun('POST', '/links/new', [
             'csrf_token' => $this->csrfToken(forms\links\NewLink::class),
             'url' => $url,
             'collection_ids' => [$collection->id],
@@ -531,7 +531,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, models\Link::count());
 
-        $response = $this->appRun('POST', '/links/new', [
+        $this->appRun('POST', '/links/new', [
             'csrf_token' => $this->csrfToken(forms\links\NewLink::class),
             'url' => $url,
             'collection_ids' => [$collection->id],
@@ -563,7 +563,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, models\Link::count());
 
-        $response = $this->appRun('POST', '/links/new', [
+        $this->appRun('POST', '/links/new', [
             'csrf_token' => $this->csrfToken(forms\links\NewLink::class),
             'url' => $url,
             'collection_ids' => [$collection_1->id, $collection_2->id],
@@ -640,7 +640,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateRedirectsIfNotConnected(): void
     {
-        $user = UserFactory::create();
+        UserFactory::create();
         $url = 'https://flus.fr/carnet/';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
 
@@ -655,7 +655,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfCsrfIsInvalid(): void
     {
-        $user = $this->login();
+        $this->login();
 
         $response = $this->appRun('POST', '/links/new', [
             'csrf_token' => 'not the token',
@@ -669,7 +669,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfUrlIsInvalid(): void
     {
-        $user = $this->login();
+        $this->login();
         /** @var string */
         $url = $this->fake('domainName');
         $url = 'ftp://' . $url;
@@ -686,7 +686,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfUrlIsMissing(): void
     {
-        $user = $this->login();
+        $this->login();
 
         $response = $this->appRun('POST', '/links/new', [
             'csrf_token' => $this->csrfToken(forms\links\NewLink::class),
@@ -699,7 +699,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfCollectionIdsContainsNotOwnedId(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
@@ -744,7 +744,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfCollectionIsNotShared(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
@@ -765,7 +765,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfNewCollectionNameIsInvalid(): void
     {
-        $user = $this->login();
+        $this->login();
         /** @var string */
         $collection_name = $this->fake('words', 100, true);
         $url = 'https://flus.fr/carnet/';
@@ -812,7 +812,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testEditFailsIfTheLinkDoesNotExist(): void
     {
-        $user = $this->login();
+        $this->login();
 
         $response = $this->appRun('GET', '/links/not-a-valid-id/edit');
 
@@ -821,7 +821,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testEditFailsIfUserDoesNotOwnTheLink(): void
     {
-        $current_user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
@@ -964,7 +964,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $old_title = $this->fake('words', 3, true);
         /** @var string */
         $new_title = $this->fake('words', 5, true);
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
@@ -1062,7 +1062,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteFailsIfLinkIsNotOwned(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $link = LinkFactory::create([
             'user_id' => $other_user->id,

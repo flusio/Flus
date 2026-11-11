@@ -51,7 +51,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
 
     public function testEditFailsIfGroupIsInaccessible(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         /** @var string */
         $group_name = $this->fake('text', 50);
@@ -70,7 +70,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         /** @var string */
         $group_name = $this->fake('text', 50);
-        $group = GroupFactory::create([
+        GroupFactory::create([
             'user_id' => $user->id,
             'name' => $group_name,
         ]);
@@ -92,7 +92,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'name' => $old_group_name,
         ]);
 
-        $response = $this->appRun('POST', "/groups/{$group->id}/edit", [
+        $this->appRun('POST', "/groups/{$group->id}/edit", [
             'csrf_token' => $this->csrfToken(forms\groups\Group::class),
             'name' => $new_group_name,
         ]);
@@ -145,7 +145,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfGroupIsInaccessible(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         /** @var string */
         $old_group_name = $this->fakeUnique('text', 50);
@@ -295,7 +295,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
 
-        $response = $this->appRun('POST', "/groups/{$group->id}/delete", [
+        $this->appRun('POST', "/groups/{$group->id}/delete", [
             'csrf_token' => $this->csrfToken(forms\groups\DeleteGroup::class),
         ]);
 
@@ -333,7 +333,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteFailsIfGroupIsInaccessible(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $group = GroupFactory::create([
             'user_id' => $other_user->id,

@@ -23,29 +23,17 @@ class SessionFactory extends Database\Factory
         $faker = \Faker\Factory::create();
 
         return [
-            'id' => function (): string {
-                return \Minz\Random::hex(32);
-            },
+            'id' => fn(): string => \Minz\Random::hex(32),
 
-            'created_at' => function () use ($faker) {
-                return $faker->dateTime;
-            },
+            'created_at' => fn() => $faker->dateTime,
 
-            'name' => function () use ($faker): string {
-                return "{$faker->word} on {$faker->word}";
-            },
+            'name' => fn(): string => "{$faker->word} on {$faker->word}",
 
-            'ip' => function () use ($faker) {
-                return $faker->ipv6;
-            },
+            'ip' => fn() => $faker->ipv6,
 
-            'user_id' => function () {
-                return UserFactory::create()->id;
-            },
+            'user_id' => fn() => UserFactory::create()->id,
 
-            'token' => function () {
-                return TokenFactory::create()->token;
-            },
+            'token' => fn() => TokenFactory::create()->token,
         ];
     }
 }

@@ -71,7 +71,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
     public function testListByUserCanExcludePrivateCollections(): void
     {
         $user = UserFactory::create();
-        $collection = CollectionFactory::create([
+        CollectionFactory::create([
             'user_id' => $user->id,
             'is_public' => false,
         ]);
@@ -86,7 +86,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
     public function testListByUserCanExcludeEmptyCollections(): void
     {
         $user = UserFactory::create();
-        $collection = CollectionFactory::create([
+        CollectionFactory::create([
             'user_id' => $user->id,
         ]);
 

@@ -144,7 +144,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteFailsIfTheLinkDoesNotExist(): void
     {
-        $user = $this->login();
+        $this->login();
 
         $response = $this->apiRun('DELETE', '/api/v1/journal/links/not-an-id');
 

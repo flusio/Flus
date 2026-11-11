@@ -6,7 +6,7 @@ namespace SpiderBits;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Response
+class Response implements \Stringable
 {
     public int $status;
 
@@ -165,7 +165,7 @@ class Response
     {
         try {
             $data = mb_convert_encoding($this->data, 'utf-8', $this->encoding());
-        } catch (\ValueError $exception) {
+        } catch (\ValueError) {
             $data = mb_convert_encoding($this->data, 'utf-8', 'utf-8');
         }
 
@@ -227,8 +227,7 @@ class Response
         }
 
         $charset = $matches['charset'];
-        $charset = trim($charset, '"');
-        return $charset;
+        return trim($charset, '"');
     }
 
     /**
@@ -240,9 +239,9 @@ class Response
      * @see https://httpwg.org/specs/rfc9111.html
      */
     public function getRetryAfter(
-        int $default_duration = 1 * 60 * 60,
-        int $min_duration = 1 * 60 * 15,
-        int $max_duration = 1 * 60 * 60 * 24 * 7,
+        int $default_duration = 60 * 60,
+        int $min_duration = 60 * 15,
+        int $max_duration = 60 * 60 * 24 * 7,
     ): \DateTimeImmutable {
         $age = $this->header('Age', '0');
         $expires = $this->header('Expires', '');
@@ -259,9 +258,7 @@ class Response
         } elseif ($expires) {
             $expired_at = self::parseHttpDate($expires);
 
-            if ($expired_at === null) {
-                $expired_at = \Minz\Time::now();
-            }
+            $expired_at ??= \Minz\Time::now();
 
             $expires_timestamp = $expired_at->getTimestamp();
             $now_timestamp = \Minz\Time::now()->getTimestamp();
@@ -302,7 +299,7 @@ class Response
             $part = trim($part);
 
             if (str_contains($part, '=')) {
-                list($directive, $value) = explode('=', $part, 2);
+                [$directive, $value] = explode('=', $part, 2);
             } else {
                 $directive = $part;
                 $value = true;

@@ -175,7 +175,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
             'validated_at' => \Minz\Time::now(),
         ]);
 
-        $response = $this->appRun('GET', '/my/account');
+        $this->appRun('GET', '/my/account');
 
         $user = $user->reload();
         $this->assertEquals($new_expired_at, $user->subscription_expired_at);
@@ -262,13 +262,13 @@ class AccountTest extends \PHPUnit\Framework\TestCase
     {
         /** @var string */
         $password = $this->fake('password');
-        $user = $this->login([
+        $this->login([
             'password_hash' => models\User::passwordHash($password),
         ]);
 
         $this->assertSame(1, models\Session::count());
 
-        $response = $this->appRun('POST', '/my/account/deletion', [
+        $this->appRun('POST', '/my/account/deletion', [
             'csrf_token' => $this->csrfToken(forms\users\DeleteAccount::class),
             'password' => $password,
         ]);

@@ -34,8 +34,9 @@ trait HasMastodonAccount
      */
     public function mastodonAccount(): MastodonAccount
     {
-        return $this->memoize('mastodon_account', function (): MastodonAccount {
-            return MastodonAccount::requireBy(['user_id' => $this->id]);
-        });
+        return $this->memoize(
+            'mastodon_account',
+            fn(): MastodonAccount => MastodonAccount::requireBy(['user_id' => $this->id])
+        );
     }
 }

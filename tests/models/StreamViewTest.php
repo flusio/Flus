@@ -1183,7 +1183,7 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $sources_and_counts = $stream_view->countedSources();
 
         $this->assertSame(1, count($sources_and_counts));
-        list($counted_source, $count) = $sources_and_counts[0];
+        [$counted_source, $count] = $sources_and_counts[0];
         $this->assertSame($source->id, $counted_source->id);
         $this->assertSame(2, $count);
     }
@@ -1302,7 +1302,7 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $sources_and_counts = $stream_view->countedSources();
 
         $this->assertSame(1, count($sources_and_counts));
-        list($counted_source, $count) = $sources_and_counts[0];
+        [$counted_source, $count] = $sources_and_counts[0];
         $this->assertSame($source->id, $counted_source->id);
         $this->assertSame(1, $count);
     }
@@ -1362,7 +1362,7 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $sources_and_counts = $stream_view->countedSources();
 
         $this->assertSame(1, count($sources_and_counts));
-        list($counted_source, $count) = $sources_and_counts[0];
+        [$counted_source, $count] = $sources_and_counts[0];
         $this->assertSame($source->id, $counted_source->id);
         $this->assertSame(1, $count);
     }

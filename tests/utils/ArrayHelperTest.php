@@ -8,9 +8,7 @@ class ArrayHelperTest extends \PHPUnit\Framework\TestCase
     {
         $array = [1, 2, 3, 4];
 
-        $result = ArrayHelper::find($array, function (int $value): bool {
-            return $value % 2 === 0;
-        });
+        $result = ArrayHelper::find($array, fn(int $value): bool => $value % 2 === 0);
 
         $this->assertSame(2, $result);
     }
@@ -19,9 +17,7 @@ class ArrayHelperTest extends \PHPUnit\Framework\TestCase
     {
         $array = ['foo' => 1, 'bar' => 2];
 
-        $result = ArrayHelper::find($array, function (int $value, mixed $key): bool {
-            return $key === 'bar';
-        });
+        $result = ArrayHelper::find($array, fn(int $value, mixed $key): bool => $key === 'bar');
 
         $this->assertSame(2, $result);
     }
@@ -34,9 +30,7 @@ class ArrayHelperTest extends \PHPUnit\Framework\TestCase
             new \DateTimeImmutable('2025-06-15'),
         ];
 
-        $result = ArrayHelper::find($array, function (\DateTimeImmutable $date) use ($threshold): bool {
-            return $date > $threshold;
-        });
+        $result = ArrayHelper::find($array, fn(\DateTimeImmutable $date): bool => $date > $threshold);
 
         $this->assertNull($result);
     }
@@ -45,9 +39,7 @@ class ArrayHelperTest extends \PHPUnit\Framework\TestCase
     {
         $array = [1, 2, 3];
 
-        $result = ArrayHelper::any($array, function (int $value): bool {
-            return $value % 2 === 0;
-        });
+        $result = ArrayHelper::any($array, fn(int $value): bool => $value % 2 === 0);
 
         $this->assertTrue($result);
     }
@@ -56,9 +48,7 @@ class ArrayHelperTest extends \PHPUnit\Framework\TestCase
     {
         $array = ['foo' => 1, 'bar' => 2];
 
-        $result = ArrayHelper::any($array, function (int $value, mixed $key): bool {
-            return $key === 'bar';
-        });
+        $result = ArrayHelper::any($array, fn(int $value, mixed $key): bool => $key === 'bar');
 
         $this->assertTrue($result);
     }
@@ -71,9 +61,7 @@ class ArrayHelperTest extends \PHPUnit\Framework\TestCase
             new \DateTimeImmutable('2025-06-15'),
         ];
 
-        $result = ArrayHelper::any($array, function (\DateTimeImmutable $date) use ($threshold): bool {
-            return $date > $threshold;
-        });
+        $result = ArrayHelper::any($array, fn(\DateTimeImmutable $date): bool => $date > $threshold);
 
         $this->assertFalse($result);
     }

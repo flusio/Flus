@@ -39,7 +39,7 @@ class Session extends Form
 
         try {
             $user = $this->user();
-        } catch (\RuntimeException $e) {
+        } catch (\RuntimeException) {
             $this->addError('@base', 'invalid_credentials', 'The credentials are invalid.');
             return;
         }

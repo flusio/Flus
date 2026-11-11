@@ -22,7 +22,7 @@ class AccountValidation extends BaseForm
         try {
             $token = $this->token();
             $user = $this->user();
-        } catch (\RuntimeException $e) {
+        } catch (\RuntimeException) {
             $this->addError(
                 '@base',
                 'unknown_token',

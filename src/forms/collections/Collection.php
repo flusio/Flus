@@ -92,7 +92,7 @@ class Collection extends BaseForm
     {
         try {
             $this->selectedTopics();
-        } catch (\RuntimeException $e) {
+        } catch (\RuntimeException) {
             $this->addError(
                 'topic_ids',
                 'invalidTopic',

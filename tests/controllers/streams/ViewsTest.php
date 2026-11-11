@@ -146,7 +146,7 @@ class ViewsTest extends \PHPUnit\Framework\TestCase
         ]);
         $not_a_source = CollectionFactory::create();
 
-        $response = $this->appRun('POST', "/streams/{$stream->id}/views/new", [
+        $this->appRun('POST', "/streams/{$stream->id}/views/new", [
             'csrf_token' => $this->csrfToken(forms\views\View::class),
             'name' => 'My view',
             'at' => \Minz\Time::relative('-3 days')->format('Y-m-d'),
@@ -186,7 +186,7 @@ class ViewsTest extends \PHPUnit\Framework\TestCase
         $expected_source_ids = [$source1->id, $source2->id];
         sort($expected_source_ids);
 
-        $response = $this->appRun('POST', "/streams/{$stream->id}/views/new", [
+        $this->appRun('POST', "/streams/{$stream->id}/views/new", [
             'csrf_token' => $this->csrfToken(forms\views\View::class),
             'name' => 'My view',
             'sources' => [$source2->id, $source1->id, $source2->id],
@@ -400,7 +400,7 @@ class ViewsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(0, models\View::count());
 
-        $response = $this->appRun('POST', "/streams/{$stream->id}/views/default/save", [
+        $this->appRun('POST', "/streams/{$stream->id}/views/default/save", [
             'csrf_token' => $this->csrfToken(forms\views\SaveView::class),
             'status' => 'unread',
         ]);
@@ -456,7 +456,7 @@ class ViewsTest extends \PHPUnit\Framework\TestCase
         ]);
         $not_a_source = CollectionFactory::create();
 
-        $response = $this->appRun('POST', "/streams/{$stream->id}/views/{$view->id}/save", [
+        $this->appRun('POST', "/streams/{$stream->id}/views/{$view->id}/save", [
             'csrf_token' => $this->csrfToken(forms\views\SaveView::class),
             'at' => \Minz\Time::relative('-3 days')->format('Y-m-d'),
             'days' => '99',
@@ -756,7 +756,7 @@ class ViewsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(0, models\View::count());
 
-        $response = $this->appRun('POST', "/streams/{$stream->id}/views/default/edit", [
+        $this->appRun('POST', "/streams/{$stream->id}/views/default/edit", [
             'csrf_token' => $this->csrfToken(forms\views\View::class),
             'name' => 'My main view',
         ]);

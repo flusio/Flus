@@ -47,8 +47,8 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
 
     public function testShowFailsIfTheSourceDoesNotExist(): void
     {
-        $user = $this->login();
-        $collection = CollectionFactory::create([
+        $this->login();
+        CollectionFactory::create([
             'user_id' => UserFactory::create()->id,
             'name' => 'My shares',
             'description' => 'My shared links',
@@ -65,7 +65,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
 
     public function testShowFailsIfPermissionIsNotGiven(): void
     {
-        $user = $this->login();
+        $this->login();
         $collection = CollectionFactory::create([
             'user_id' => UserFactory::create()->id,
             'name' => 'My shares',
@@ -83,7 +83,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
 
     public function testShowFailsIfNotConnected(): void
     {
-        $user = UserFactory::create();
+        UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => UserFactory::create()->id,
             'name' => 'My shares',

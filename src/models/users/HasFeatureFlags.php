@@ -26,15 +26,11 @@ trait HasFeatureFlags
 
     public function isBetaEnabled(): bool
     {
-        return $this->memoize('feature_flag_beta', function (): bool {
-            return FeatureFlag::isEnabled('beta', $this);
-        });
+        return $this->memoize('feature_flag_beta', fn(): bool => FeatureFlag::isEnabled('beta', $this));
     }
 
     public function isAlphaEnabled(): bool
     {
-        return $this->memoize('feature_flag_alpha', function (): bool {
-            return FeatureFlag::isEnabled('alpha', $this);
-        });
+        return $this->memoize('feature_flag_alpha', fn(): bool => FeatureFlag::isEnabled('alpha', $this));
     }
 }

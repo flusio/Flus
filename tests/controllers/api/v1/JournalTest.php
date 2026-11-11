@@ -96,7 +96,7 @@ class JournalTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $other_user = UserFactory::create();
-        $journal = $user->journal();
+        $user->journal();
         $link1 = LinkFactory::create([
             'user_id' => $other_user->id,
             'is_hidden' => false,
@@ -125,7 +125,7 @@ class JournalTest extends \PHPUnit\Framework\TestCase
     {
         $user = UserFactory::create();
         $other_user = UserFactory::create();
-        $journal = $user->journal();
+        $user->journal();
         $link1 = LinkFactory::create([
             'user_id' => $other_user->id,
             'is_hidden' => false,

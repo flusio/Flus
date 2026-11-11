@@ -51,7 +51,7 @@ class Wallabag
                 continue;
             }
 
-            $item = array_filter($item, fn ($key): bool => is_string($key), ARRAY_FILTER_USE_KEY);
+            $item = array_filter($item, is_string(...), ARRAY_FILTER_USE_KEY);
             $item_bag = new \Minz\ParameterBag($item);
 
             $tags = $item_bag->getArray('tags', []);
@@ -114,8 +114,7 @@ class Wallabag
 
             $tags = array_map(function (string $tag): string {
                 $tag = trim($tag);
-                $tag = str_replace(' ', '_', $tag);
-                return $tag;
+                return str_replace(' ', '_', $tag);
             }, $item['tags']);
             $tags = array_filter($tags);
 
@@ -173,9 +172,7 @@ class Wallabag
 
             // We create a note containing the list of tags if any.
             if (count($tags) > 0) {
-                $formatted_tags = array_map(function (string $tag): string {
-                    return "#{$tag}";
-                }, $tags);
+                $formatted_tags = array_map(fn(string $tag): string => "#{$tag}", $tags);
 
                 $content = implode(' ', $formatted_tags);
 

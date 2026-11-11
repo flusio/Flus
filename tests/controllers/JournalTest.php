@@ -81,7 +81,7 @@ class JournalTest extends \PHPUnit\Framework\TestCase
         ]);
         /** @var string */
         $collection_name = $this->fake('sentence');
-        $collection = CollectionFactory::create([
+        CollectionFactory::create([
             'user_id' => $other_user->id,
             'name' => $collection_name,
         ]);
@@ -102,10 +102,10 @@ class JournalTest extends \PHPUnit\Framework\TestCase
     public function testIndexRendersTipsIfNoCandidatesFlash(): void
     {
         $user = $this->login();
-        $journal = $user->journal();
+        $user->journal();
         /** @var string */
         $title = $this->fakeUnique('sentence');
-        $link = LinkFactory::create([
+        LinkFactory::create([
             'title' => $title,
             'user_id' => $user->id,
         ]);
@@ -270,9 +270,9 @@ class JournalTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateSetsFlashIfNoCandidates(): void
     {
-        $user = $this->login();
+        $this->login();
 
-        $response = $this->appRun('POST', '/journal', [
+        $this->appRun('POST', '/journal', [
             'csrf_token' => $this->csrfToken(forms\FillJournal::class),
         ]);
 
@@ -282,7 +282,7 @@ class JournalTest extends \PHPUnit\Framework\TestCase
     public function testCreateRedirectsIfNotConnected(): void
     {
         $user = UserFactory::create();
-        $journal = $user->journal();
+        $user->journal();
         $other_user = UserFactory::create();
         /** @var int */
         $days = $this->fake('numberBetween', 0, 2);
@@ -316,7 +316,7 @@ class JournalTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
-        $journal = $user->journal();
+        $user->journal();
         $other_user = UserFactory::create();
         /** @var int */
         $days = $this->fake('numberBetween', 0, 2);

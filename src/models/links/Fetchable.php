@@ -79,7 +79,7 @@ trait Fetchable
         }
 
         $retry_after = self::FETCHED_RETRIES_MIN_SECONDS;
-        $retry_after += pow($this->fetched_count - 1, self::FETCHED_RETRIES_EXPONENT);
+        $retry_after += ($this->fetched_count - 1) ** self::FETCHED_RETRIES_EXPONENT;
 
         return \Minz\Time::fromNow($retry_after, 'seconds');
     }

@@ -44,7 +44,7 @@ class Login extends BaseForm
 
         try {
             $user = $this->user();
-        } catch (\RuntimeException $e) {
+        } catch (\RuntimeException) {
             $this->addError(
                 'email',
                 'invalid_credentials',

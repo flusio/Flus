@@ -53,7 +53,7 @@ trait Pivot
         $with_created_at = property_exists(static::class, 'created_at');
 
         if ($with_created_at) {
-            $created_at = $created_at ?? \Minz\Time::now();
+            $created_at ??= \Minz\Time::now();
             $created_at = $created_at->format(Database\Column::DATETIME_FORMAT);
             $columns_statement = "{$model_column}, {$related_column}, created_at";
             $row_placeholder = '(?, ?, ?)';

@@ -22,7 +22,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
 
     public function testShowRendersCorrectly(): void
     {
-        $user = $this->login();
+        $this->login();
 
         $response = $this->appRun('GET', '/mastodon');
 
@@ -40,7 +40,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         $mastodon_server = MastodonServerFactory::create([
             'host' => $mastodon_host,
         ]);
-        $mastodon_account = MastodonAccountFactory::create([
+        MastodonAccountFactory::create([
             'user_id' => $user->id,
             'mastodon_server_id' => $mastodon_server->id,
             'access_token' => '',
@@ -120,7 +120,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         ]);
         /** @var string */
         $access_token = $this->fake('sha256');
-        $mastodon_account = MastodonAccountFactory::create([
+        MastodonAccountFactory::create([
             'mastodon_server_id' => $mastodon_server->id,
             'user_id' => $user->id,
             'access_token' => $access_token,
@@ -154,7 +154,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
 
     public function testRequestAccessFailsIfHostIsInvalid(): void
     {
-        $user = $this->login();
+        $this->login();
         $mastodon_host = 'not a valid host';
 
         $response = $this->appRun('POST', '/mastodon/request', [
@@ -171,7 +171,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
 
     public function testRequestAccessFailsIfHostFails(): void
     {
-        $user = $this->login();
+        $this->login();
         /** @var string */
         $mastodon_host = $this->fake('domainName');
         $mastodon_host = 'https://' . $mastodon_host;
@@ -200,7 +200,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
 
     public function testRequestAccessFailsIfHostReturnsNonJson(): void
     {
-        $user = $this->login();
+        $this->login();
         /** @var string */
         $mastodon_host = $this->fake('domainName');
         $mastodon_host = 'https://' . $mastodon_host;
@@ -227,7 +227,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
 
     public function testRequestAccessFailsIfHostIsUnreachable(): void
     {
-        $user = $this->login();
+        $this->login();
         /** @var string */
         $mastodon_host = $this->fake('domainName');
         $mastodon_host = 'https://' . $mastodon_host;
@@ -248,7 +248,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
 
     public function testRequestAccessFailsIfCsrfIsInvalid(): void
     {
-        $user = $this->login();
+        $this->login();
         /** @var string */
         $mastodon_host = $this->fake('domainName');
         $mastodon_host = 'https://' . $mastodon_host;
@@ -286,7 +286,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
 
     public function testAuthorizationRedirectsIfMastodonAccountDoesNotExist(): void
     {
-        $user = $this->login();
+        $this->login();
         /** @var string */
         $code = $this->fake('sha256');
 
@@ -447,7 +447,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
 
     public function testAuthorizeRedirectsIfMastodonAccountDoesNotExist(): void
     {
-        $user = $this->login();
+        $this->login();
         /** @var string */
         $code = $this->fake('sha256');
 
@@ -519,8 +519,6 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
             'mastodon_server_id' => $mastodon_server->id,
             'access_token' => '',
         ]);
-        /** @var string */
-        $access_token = $this->fake('sha256');
         $this->mockHttpWithResponse($access_token_endpoint, <<<TEXT
             HTTP/2 400
             Content-type: application/json
@@ -562,8 +560,6 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
             'mastodon_server_id' => $mastodon_server->id,
             'access_token' => '',
         ]);
-        /** @var string */
-        $access_token = $this->fake('sha256');
         $this->mockHttpWithResponse($access_token_endpoint, <<<TEXT
             HTTP/2 200
             Content-type: application/json
@@ -621,7 +617,6 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $mastodon_domain = $this->fake('domainName');
         $mastodon_host = 'https://' . $mastodon_domain;
-        $access_token_endpoint = $mastodon_host . '/oauth/token';
         $mastodon_server = MastodonServerFactory::create([
             'host' => $mastodon_host,
         ]);
@@ -794,7 +789,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
         $mastodon_server = MastodonServerFactory::create([
             'host' => $mastodon_host,
         ]);
-        $mastodon_account = MastodonAccountFactory::create([
+        MastodonAccountFactory::create([
             'user_id' => $user->id,
             'mastodon_server_id' => $mastodon_server->id,
             'access_token' => '',
@@ -818,7 +813,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
     public function testReconnectRedirectsIfAlreadyAuthorized(): void
     {
         $user = $this->login();
-        $mastodon_account = MastodonAccountFactory::create([
+        MastodonAccountFactory::create([
             'user_id' => $user->id,
             'access_token' => 'a token',
         ]);
@@ -832,7 +827,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
 
     public function testReconnectFailsIfMastodonAccountDoesNotExist(): void
     {
-        $user = $this->login();
+        $this->login();
 
         $response = $this->appRun('POST', '/mastodon/reconnect', [
             'csrf_token' => $this->csrfToken(forms\mastodon\ReconnectMastodonAccount::class),
@@ -844,7 +839,7 @@ class MastodonTest extends \PHPUnit\Framework\TestCase
     public function testReconnectFailsIfCsrfIsInvalid(): void
     {
         $user = $this->login();
-        $mastodon_account = MastodonAccountFactory::create([
+        MastodonAccountFactory::create([
             'user_id' => $user->id,
             'access_token' => '',
             'access_token_invalidated_at' => \Minz\Time::now(),

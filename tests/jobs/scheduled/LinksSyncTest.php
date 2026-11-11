@@ -91,7 +91,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
     {
         $url = 'https://flus.fr/carnet/';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
-        $link = LinkFactory::create([
+        LinkFactory::create([
             'url' => $url,
             'title' => $url,
             'fetched_at' => null,
@@ -119,7 +119,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
             Page not found
             TEXT
         );
-        $link = LinkFactory::create([
+        LinkFactory::create([
             'url' => $url,
             'title' => $url,
             'fetched_at' => null,
@@ -140,7 +140,7 @@ class LinksSyncTest extends \PHPUnit\Framework\TestCase
     {
         $url = 'https://flus.fr/carnet/';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
-        $link = LinkFactory::create([
+        LinkFactory::create([
             'url' => $url,
             'title' => $url,
             'fetched_at' => null,

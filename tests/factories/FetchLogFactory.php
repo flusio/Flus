@@ -23,21 +23,13 @@ class FetchLogFactory extends Database\Factory
         $faker = \Faker\Factory::create();
 
         return [
-            'created_at' => function () use ($faker) {
-                return $faker->dateTime;
-            },
+            'created_at' => fn() => $faker->dateTime,
 
-            'url' => function () use ($faker) {
-                return $faker->url;
-            },
+            'url' => fn() => $faker->url,
 
-            'host' => function () use ($faker) {
-                return $faker->domainName;
-            },
+            'host' => fn() => $faker->domainName,
 
-            'type' => function () use ($faker) {
-                return $faker->randomElement(['link', 'feed', 'image']);
-            }
+            'type' => fn() => $faker->randomElement(['link', 'feed', 'image'])
         ];
     }
 }

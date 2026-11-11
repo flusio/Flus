@@ -34,7 +34,7 @@ class FetchLog
     public string $type;
 
     #[Database\Column]
-    public ?string $ip;
+    public ?string $ip = null;
 
     /**
      * Create a log in DB for the given URL.

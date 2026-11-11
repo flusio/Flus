@@ -39,9 +39,7 @@ trait HasSources
 
             return utils\Sorter::localeSort(
                 $sources,
-                function (Source $source) use ($context_user): string {
-                    return $source->nameByUser($context_user);
-                }
+                fn(Source $source): string => $source->nameByUser($context_user)
             );
         });
     }

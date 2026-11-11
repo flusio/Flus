@@ -26,9 +26,10 @@ trait HasViews
     public function defaultView(array $options = []): View
     {
         $context_user = $options['context_user'] ?? null;
-        return $this->memoize(['default_view', $context_user], function () use ($context_user): View {
-            return View::findOrBuildDefaultForStream($this, $context_user);
-        });
+        return $this->memoize(
+            ['default_view', $context_user],
+            fn(): View => View::findOrBuildDefaultForStream($this, $context_user)
+        );
     }
 
     /**

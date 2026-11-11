@@ -141,10 +141,11 @@ class FileCache
             throw new CacheException("Cannot read the {$root_path} cache directory.");
         }
 
-        $root_subdirectory_names = array_filter($root_subdirectory_names, function (string $name): bool {
+        $root_subdirectory_names = array_filter(
+            $root_subdirectory_names,
             // Exclude files or dirs starting with a dot.
-            return $name[0] !== '.';
-        });
+            fn(string $name): bool => $name[0] !== '.'
+        );
 
         $ok = true;
 

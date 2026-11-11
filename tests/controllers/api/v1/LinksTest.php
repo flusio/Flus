@@ -50,7 +50,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $link1 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link2 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
         ]);
         $user->markAsRead($link1);
@@ -71,7 +71,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $link1 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $link2 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
         ]);
         $user->markAsReadLater($link1);
@@ -193,7 +193,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testIndexFailsIfPermissionIsNotGiven(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
@@ -259,8 +259,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testShowFailsIfTheLinkDoesNotExist(): void
     {
-        $user = $this->login();
-        $link = LinkFactory::create([
+        $this->login();
+        LinkFactory::create([
             'user_id' => UserFactory::create()->id,
             'is_hidden' => false,
         ]);
@@ -275,7 +275,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testShowFailsIfPermissionIsNotGiven(): void
     {
-        $user = $this->login();
+        $this->login();
         $link = LinkFactory::create([
             'user_id' => UserFactory::create()->id,
             'is_hidden' => true,
@@ -371,7 +371,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfPermissionIsNotGiven(): void
     {
-        $user = $this->login();
+        $this->login();
         $old_title = 'My link';
         $old_reading_time = 21;
         $new_title = 'The link';
@@ -465,7 +465,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteFailsIfPermissionIsNotGiven(): void
     {
-        $user = $this->login();
+        $this->login();
         $link = LinkFactory::create([
             'user_id' => UserFactory::create()->id,
         ]);
@@ -481,7 +481,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteFailsIfTheCollectionDoesNotExist(): void
     {
-        $user = $this->login();
+        $this->login();
         $link = LinkFactory::create([
             'user_id' => UserFactory::create()->id,
         ]);

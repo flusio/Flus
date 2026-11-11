@@ -90,7 +90,7 @@ class OwnedByUserTest extends \PHPUnit\Framework\TestCase
     public function testListByUserCanListSharedOnly(): void
     {
         $user = UserFactory::create();
-        $unshared_link_1 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'is_hidden' => false,
         ]);
@@ -129,7 +129,7 @@ class OwnedByUserTest extends \PHPUnit\Framework\TestCase
     public function testListByUserCanLimitResults(): void
     {
         $user = UserFactory::create();
-        $link_1 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'created_at' => \Minz\Time::ago(3, 'days'),
         ]);
@@ -162,7 +162,7 @@ class OwnedByUserTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'created_at' => \Minz\Time::ago(2, 'days'),
         ]);
-        $link_3 = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'created_at' => \Minz\Time::ago(1, 'days'),
         ]);

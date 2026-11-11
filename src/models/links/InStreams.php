@@ -57,8 +57,8 @@ trait InStreams
         }
 
         $user_of_statuses = self::needsUrlStatuses($options) ? $options['context_user'] : null;
-        list($sql_join, $parameters) = self::buildStreamJoin($user_of_statuses);
-        list($sql_where, $where_parameters) = self::buildStreamWhere($sources, $options);
+        [$sql_join, $parameters] = self::buildStreamJoin($user_of_statuses);
+        [$sql_where, $where_parameters] = self::buildStreamWhere($sources, $options);
         $parameters = array_merge($parameters, $where_parameters);
 
         $sql_limit = '';
@@ -128,8 +128,8 @@ trait InStreams
         }
 
         $user_of_statuses = $options['context_user'];
-        list($sql_join, $parameters) = self::buildStreamJoin($user_of_statuses);
-        list($sql_where, $where_parameters) = self::buildStreamWhere($sources, $options);
+        [$sql_join, $parameters] = self::buildStreamJoin($user_of_statuses);
+        [$sql_where, $where_parameters] = self::buildStreamWhere($sources, $options);
         $parameters = array_merge($parameters, $where_parameters);
 
         $parameters[':timezone'] = date_default_timezone_get();
@@ -212,8 +212,8 @@ trait InStreams
         }
 
         $user_of_statuses = self::needsUrlStatuses($options) ? $options['context_user'] : null;
-        list($sql_join, $parameters) = self::buildStreamJoin($user_of_statuses);
-        list($sql_where, $where_parameters) = self::buildStreamWhere($sources, $options);
+        [$sql_join, $parameters] = self::buildStreamJoin($user_of_statuses);
+        [$sql_where, $where_parameters] = self::buildStreamWhere($sources, $options);
         $parameters = array_merge($parameters, $where_parameters);
 
         $sql = <<<SQL
@@ -275,8 +275,8 @@ trait InStreams
             'created_before' => null,
         ];
 
-        list($sql_join, $parameters) = self::buildStreamJoin($user);
-        list($sql_where, $where_parameters) = self::buildStreamWhere($sources, $where_options);
+        [$sql_join, $parameters] = self::buildStreamJoin($user);
+        [$sql_where, $where_parameters] = self::buildStreamWhere($sources, $where_options);
         $parameters = array_merge($parameters, $where_parameters);
 
         $sql = <<<SQL
@@ -294,9 +294,10 @@ trait InStreams
 
         $source_ids_with_unread = array_column($statement->fetchAll(), 'source_id');
 
-        $sources = array_filter($sources, function (Source $source) use ($source_ids_with_unread): bool {
-            return in_array($source->id, $source_ids_with_unread, strict: true);
-        });
+        $sources = array_filter(
+            $sources,
+            fn(Source $source): bool => in_array($source->id, $source_ids_with_unread, strict: true)
+        );
 
         return array_values($sources);
     }
@@ -331,9 +332,7 @@ trait InStreams
             // none is left, no sources are returned rather than all of them.
             $selected_source_ids = array_column($selected_sources, 'id');
 
-            $sources = array_filter($sources, function (Source $source) use ($selected_source_ids): bool {
-                return in_array($source->id, $selected_source_ids);
-            });
+            $sources = array_filter($sources, fn(Source $source): bool => in_array($source->id, $selected_source_ids));
 
             return array_values($sources);
         }
@@ -465,7 +464,7 @@ trait InStreams
         // Create the search clause to limit the links matching the query.
         $search_clause = '';
         if ($options['query']) {
-            list($search_clause, $search_parameters) = LinksSearcher::buildWhereQuery(
+            [$search_clause, $search_parameters] = LinksSearcher::buildWhereQuery(
                 $options['query'],
                 alias: 'l',
                 date_field: 'lc.created_at',

@@ -198,7 +198,7 @@ class SubscriptionTest extends \PHPUnit\Framework\TestCase
             'validated_at' => \Minz\Time::now(),
         ]);
 
-        $response = $this->appRun('POST', '/my/account/subscription', [
+        $this->appRun('POST', '/my/account/subscription', [
             'csrf_token' => $this->csrfToken(forms\users\InitSubscription::class),
         ]);
 

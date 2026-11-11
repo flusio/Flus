@@ -137,7 +137,7 @@ class Link
         $this->source_resource_id = null;
 
         if ($origin) {
-            list($origin_type, $origin_id) = utils\OriginHelper::extractFromPath($origin);
+            [$origin_type, $origin_id] = utils\OriginHelper::extractFromPath($origin);
 
             if ($origin_type) {
                 $this->source_type = $origin_type;

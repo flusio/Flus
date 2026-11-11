@@ -350,9 +350,7 @@ class UrlStatus
         }
 
         foreach ($links as $link) {
-            if (!isset($url_statuses_by_hashes[$link->url_hash])) {
-                $url_statuses_by_hashes[$link->url_hash] = new self($user, $link->url);
-            }
+            $url_statuses_by_hashes[$link->url_hash] ??= new self($user, $link->url);
         }
 
         return $url_statuses_by_hashes;

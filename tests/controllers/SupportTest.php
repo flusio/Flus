@@ -19,7 +19,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
 
     public function testShowRendersCorrectly(): void
     {
-        $user = $this->login();
+        $this->login();
 
         $response = $this->appRun('GET', '/support');
 
@@ -30,7 +30,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
 
     public function testShowRendersSuccessParagraphIfMessageSent(): void
     {
-        $user = $this->login();
+        $this->login();
         \Minz\Flash::set('message_sent', true);
 
         $response = $this->appRun('GET', '/support');
@@ -53,7 +53,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
         $subject = $this->fake('sentence');
         /** @var string */
         $message = $this->fake('paragraph');
-        $user = $this->login([
+        $this->login([
             'email' => $email,
         ]);
 
@@ -91,7 +91,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
         $subject = $this->fake('sentence');
         /** @var string */
         $message = $this->fake('paragraph');
-        $user = $this->login([
+        $this->login([
             'email' => $email,
         ]);
         $endpoint_url = "{$bileto_url}/api/tickets";
@@ -127,7 +127,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
         $subject = $this->fake('sentence');
         /** @var string */
         $message = $this->fake('paragraph');
-        $user = UserFactory::create([
+        UserFactory::create([
             'email' => $email,
         ]);
 
@@ -150,7 +150,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
         $subject = $this->fake('sentence');
         /** @var string */
         $message = $this->fake('paragraph');
-        $user = $this->login([
+        $this->login([
             'email' => $email,
         ]);
 
@@ -174,7 +174,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
         $subject = '';
         /** @var string */
         $message = $this->fake('paragraph');
-        $user = $this->login([
+        $this->login([
             'email' => $email,
         ]);
 
@@ -198,7 +198,7 @@ class SupportTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $subject = $this->fake('sentence');
         $message = '';
-        $user = $this->login([
+        $this->login([
             'email' => $email,
         ]);
 

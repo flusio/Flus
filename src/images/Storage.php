@@ -31,9 +31,9 @@ class Storage
         $this->fetcher = new http\Fetcher(
             http_timeout: 10,
             http_max_size: 5 * 1024 * 1024,
-            default_cache_duration: 1 * 60 * 60 * 24 * 7,
-            min_cache_duration: 1 * 60 * 60 * 24 * 7,
-            max_cache_duration: 1 * 60 * 60 * 24 * 30,
+            default_cache_duration: 60 * 60 * 24 * 7,
+            min_cache_duration: 60 * 60 * 24 * 7,
+            max_cache_duration: 60 * 60 * 24 * 30,
             ignore_rate_limit: true,
         );
     }

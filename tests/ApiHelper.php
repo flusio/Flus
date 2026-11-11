@@ -53,9 +53,7 @@ trait ApiHelper
             '@input' => json_encode($parameters),
         ];
 
-        if (!isset($headers['Content-Type'])) {
-            $headers['Content-Type'] = 'application/json';
-        }
+        $headers['Content-Type'] ??= 'application/json';
 
         return self::appRun($method, $uri, $parameters, $headers, $cookies, $server);
     }
@@ -69,7 +67,7 @@ trait ApiHelper
     {
         $user = UserFactory::create($user_values);
 
-        $session = auth\CurrentUser::createApiSession($user, 'test app');
+        auth\CurrentUser::createApiSession($user, 'test app');
 
         return $user;
     }

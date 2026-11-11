@@ -23,27 +23,17 @@ class ViewFactory extends Database\Factory
         $faker = \Faker\Factory::create();
 
         return [
-            'id' => function (): string {
-                return \Minz\Random::timebased();
-            },
+            'id' => fn(): string => \Minz\Random::timebased(),
 
-            'created_at' => function () use ($faker) {
-                return $faker->dateTime;
-            },
+            'created_at' => fn() => $faker->dateTime,
 
-            'name' => function () use ($faker) {
-                return $faker->words(3, true);
-            },
+            'name' => fn() => $faker->words(3, true),
 
             'parameters' => [],
 
-            'user_id' => function () {
-                return UserFactory::create()->id;
-            },
+            'user_id' => fn() => UserFactory::create()->id,
 
-            'stream_id' => function () {
-                return StreamFactory::create()->id;
-            },
+            'stream_id' => fn() => StreamFactory::create()->id,
         ];
     }
 }

@@ -26,7 +26,7 @@ trait Altcha
         try {
             $altcha_service = new services\AltchaService();
             $verified = $altcha_service->verifySolution($this->altcha);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $verified = false;
         }
 

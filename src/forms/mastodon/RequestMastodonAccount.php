@@ -27,9 +27,7 @@ class RequestMastodonAccount extends BaseForm
 
     public function mastodonService(): services\Mastodon
     {
-        return $this->memoize('mastodon_service', function (): services\Mastodon {
-            return services\Mastodon::get($this->host);
-        });
+        return $this->memoize('mastodon_service', fn(): services\Mastodon => services\Mastodon::get($this->host));
     }
 
     public function mastodonAccount(): models\MastodonAccount

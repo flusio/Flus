@@ -28,9 +28,9 @@ trait Redirectable
     {
         $router = \Minz\Engine::router();
         try {
-            list($route, $parameters) = $router->match('GET', $this->redirect_to);
+            [$route, $parameters] = $router->match('GET', $this->redirect_to);
             return $route['name'] === $route_name;
-        } catch (Errors\RouteNotFoundError $error) {
+        } catch (Errors\RouteNotFoundError) {
             return false;
         }
     }

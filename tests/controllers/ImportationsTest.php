@@ -126,7 +126,7 @@ class ImportationsTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteFailsIfImportationIsNotOwned(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $importation = ImportationFactory::create([
             'user_id' => $other_user->id,

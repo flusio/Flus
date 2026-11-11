@@ -92,7 +92,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
 
     public function testIndexDoesNotListTheSourcesThatAreNotFollowed(): void
     {
-        $user = $this->login();
+        $this->login();
         /** @var string */
         $collection_name = $this->fake('words', 3, true);
         CollectionFactory::create([
@@ -135,7 +135,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             $stream->addSource($collection);
         }
 
-        list($response, $count_queries) = $this->countSqlQueries(function (): \Minz\Response {
+        [$response, $count_queries] = $this->countSqlQueries(function (): \Minz\Response {
             $response = $this->appRun('GET', '/sources');
 
             // The templates are rendered lazily, so the response must be
@@ -248,7 +248,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
 
     public function testShowRendersCorrectlyIfPublicAndDoesNotOwnTheLink(): void
     {
-        $user = $this->login();
+        $this->login();
         $owner = UserFactory::create();
         /** @var string */
         $link_title = $this->fake('words', 3, true);
@@ -393,7 +393,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
 
     public function testShowFailsIfPrivateAndNoSharedAccess(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,

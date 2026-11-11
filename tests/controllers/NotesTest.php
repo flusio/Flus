@@ -53,7 +53,7 @@ class NotesTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         /** @var string */
         $content = $this->fake('sentence');
-        $note = NoteFactory::create([
+        NoteFactory::create([
             'user_id' => $user->id,
             'content' => $content,
         ]);
@@ -65,7 +65,7 @@ class NotesTest extends \PHPUnit\Framework\TestCase
 
     public function testEditFailsIfUserHasNoAccessToNote(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         /** @var string */
         $content = $this->fake('sentence');
@@ -173,7 +173,7 @@ class NotesTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfUserHasNoAccessToNote(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         /** @var string */
         $old_content = $this->fakeUnique('sentence');
@@ -293,7 +293,7 @@ class NotesTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteFailsIfNoteIsNotOwned(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $note = NoteFactory::create([
             'user_id' => $other_user->id,

@@ -72,7 +72,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     public function testNewFailsIfCollectionDoesNotExist(): void
     {
         $user = $this->login();
-        $collection = CollectionFactory::create([
+        CollectionFactory::create([
             'user_id' => $user->id,
         ]);
 
@@ -83,7 +83,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testNewFailsIfCollectionIsNotShared(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
@@ -301,7 +301,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->login();
         $url = 'https://flus.fr/carnet/';
-        $collection = CollectionFactory::create([
+        CollectionFactory::create([
             'user_id' => $user->id,
         ]);
 
@@ -318,7 +318,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfCollectionIsNotShared(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $url = 'https://flus.fr/carnet/';
         $collection = CollectionFactory::create([

@@ -46,7 +46,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $email = 'alix@example.com';
         $password = 'secret';
         $app_name = '';
-        $user = UserFactory::create([
+        UserFactory::create([
             'email' => $email,
             'password_hash' => models\User::passwordHash($password),
         ]);
@@ -75,7 +75,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $email = 'alix@example.com';
         $password = 'secret';
         $app_name = 'My app';
-        $user = UserFactory::create([
+        UserFactory::create([
             'email' => $email,
             'password_hash' => models\User::passwordHash($password),
         ]);
@@ -104,7 +104,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $email = 'alix@example.com';
         $password = 'secret';
         $app_name = 'My app';
-        $user = UserFactory::create([
+        UserFactory::create([
             'email' => $email,
             'password_hash' => models\User::passwordHash($password),
         ]);
@@ -130,7 +130,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteInvalidatesCurrentSession(): void
     {
-        $user = $this->login();
+        $this->login();
         $session = auth\CurrentUser::session();
 
         $response = $this->apiRun('DELETE', '/api/v1/session');

@@ -40,9 +40,7 @@ class OpmlGenerator
         if (!$is_owner) {
             $streams = array_filter(
                 $streams,
-                function (models\Stream $stream) use ($context_user): bool {
-                    return auth\Access::can($context_user, 'view', $stream);
-                },
+                fn(models\Stream $stream): bool => auth\Access::can($context_user, 'view', $stream),
             );
         }
 
@@ -59,9 +57,7 @@ class OpmlGenerator
         if ($is_owner) {
             $no_stream_sources = array_filter(
                 $user->followedSources(),
-                function (models\Source $source) use ($sources_in_stream): bool {
-                    return !isset($sources_in_stream[$source->id]);
-                },
+                fn(models\Source $source): bool => !isset($sources_in_stream[$source->id]),
             );
         }
 
@@ -98,9 +94,7 @@ class OpmlGenerator
 
             $collections = array_filter(
                 $collections,
-                function (models\Collection $collection) use ($context_user): bool {
-                    return auth\Access::can($context_user, 'view', $collection);
-                },
+                fn(models\Collection $collection): bool => auth\Access::can($context_user, 'view', $collection),
             );
         }
 
@@ -153,14 +147,10 @@ class OpmlGenerator
         ]);
 
         return array_map(
-            function (array $sources) use ($context_user): array {
-                return utils\Sorter::localeSort(
-                    $sources,
-                    function (models\Source $source) use ($context_user): string {
-                        return $source->nameByUser($context_user);
-                    },
-                );
-            },
+            fn(array $sources): array => utils\Sorter::localeSort(
+                $sources,
+                fn(models\Source $source): string => $source->nameByUser($context_user),
+            ),
             $sources_by_streams,
         );
     }

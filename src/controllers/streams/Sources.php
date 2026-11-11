@@ -88,9 +88,7 @@ class Sources extends BaseController
         $suggested_sources = array_udiff(
             $followed_sources,
             $existing_sources,
-            function (models\Source $source1, models\Source $source2): int {
-                return $source1->id <=> $source2->id;
-            },
+            fn(models\Source $source1, models\Source $source2): int => $source1->id <=> $source2->id,
         );
 
         return Response::ok('streams/sources/edit.html.twig', [

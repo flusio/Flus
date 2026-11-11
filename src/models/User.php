@@ -45,7 +45,7 @@ class User
     public \DateTimeImmutable $created_at;
 
     #[Database\Column]
-    public ?string $subscription_account_id;
+    public ?string $subscription_account_id = null;
 
     #[Database\Column]
     public \DateTimeImmutable $subscription_expired_at;

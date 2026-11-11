@@ -56,7 +56,7 @@ class NotesTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfPermissionIsNotGiven(): void
     {
-        $user = $this->login();
+        $this->login();
         $old_content = 'My note';
         $new_content = 'The note';
         $note = NoteFactory::create([
@@ -135,7 +135,7 @@ class NotesTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteFailsIfPermissionIsNotGiven(): void
     {
-        $user = $this->login();
+        $this->login();
         $note = NoteFactory::create([
             'user_id' => UserFactory::create()->id,
         ]);

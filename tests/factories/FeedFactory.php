@@ -23,21 +23,13 @@ class FeedFactory extends Database\Factory
         $faker = \Faker\Factory::create();
 
         return [
-            'id' => function (): string {
-                return \Minz\Random::timebased();
-            },
+            'id' => fn(): string => \Minz\Random::timebased(),
 
-            'created_at' => function () use ($faker) {
-                return $faker->dateTime;
-            },
+            'created_at' => fn() => $faker->dateTime,
 
-            'name' => function () use ($faker) {
-                return $faker->words(3, true);
-            },
+            'name' => fn() => $faker->words(3, true),
 
-            'feed_url' => function () use ($faker) {
-                return $faker->url;
-            },
+            'feed_url' => fn() => $faker->url,
 
             'is_public' => true,
         ];

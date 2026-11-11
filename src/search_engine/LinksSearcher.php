@@ -42,7 +42,7 @@ class LinksSearcher
             $parameters[':limit'] = $pagination['limit'];
         }
 
-        list($query_statement, $query_parameters) = self::buildWhereQuery(
+        [$query_statement, $query_parameters] = self::buildWhereQuery(
             $query,
             alias: 'l',
             date_field: 'l.created_at',
@@ -77,7 +77,7 @@ class LinksSearcher
             ':user_id' => $user->id,
         ];
 
-        list($query_statement, $query_parameters) = self::buildWhereQuery(
+        [$query_statement, $query_parameters] = self::buildWhereQuery(
             $query,
             alias: 'l',
             date_field: 'l.created_at',

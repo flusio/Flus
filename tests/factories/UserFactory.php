@@ -23,33 +23,19 @@ class UserFactory extends Database\Factory
         $faker = \Faker\Factory::create();
 
         return [
-            'id' => function (): string {
-                return \Minz\Random::timebased();
-            },
+            'id' => fn(): string => \Minz\Random::timebased(),
 
-            'created_at' => function () use ($faker) {
-                return $faker->dateTime;
-            },
+            'created_at' => fn() => $faker->dateTime,
 
-            'validated_at' => function () use ($faker) {
-                return $faker->dateTime;
-            },
+            'validated_at' => fn() => $faker->dateTime,
 
-            'subscription_expired_at' => function () use ($faker) {
-                return $faker->dateTime;
-            },
+            'subscription_expired_at' => fn() => $faker->dateTime,
 
-            'username' => function () use ($faker) {
-                return $faker->name;
-            },
+            'username' => fn() => $faker->name,
 
-            'email' => function () use ($faker) {
-                return $faker->email;
-            },
+            'email' => fn() => $faker->email,
 
-            'password_hash' => function () use ($faker): string {
-                return models\User::passwordHash($faker->password);
-            },
+            'password_hash' => fn(): string => models\User::passwordHash($faker->password),
 
             // Force the value to facilitate the tests (i.e. we would have to
             // localize the tests as well, which would be painful)

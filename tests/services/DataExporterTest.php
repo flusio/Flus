@@ -33,7 +33,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
     public function setExportationsPath(): void
     {
         $tmp_path = \App\Configuration::$tmp_path;
-        $this->exportations_path = $tmp_path . '/' . md5((string) rand());
+        $this->exportations_path = $tmp_path . '/' . md5((string) random_int(0, mt_getrandmax()));
         @mkdir($this->exportations_path, 0777, true);
     }
 
@@ -51,7 +51,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
         $this->expectExceptionMessage('The path is not a directory');
 
         $tmp_path = \App\Configuration::$tmp_path;
-        $path = $tmp_path . '/' . md5((string) rand());
+        $path = $tmp_path . '/' . md5((string) random_int(0, mt_getrandmax()));
         touch($path);
 
         new DataExporter($path);

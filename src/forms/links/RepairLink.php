@@ -34,9 +34,7 @@ class RepairLink extends BaseForm
 
     public function urlCleared(): string
     {
-        return $this->memoize('url_cleared', function (): string {
-            return \SpiderBits\ClearUrls::clear($this->url);
-        });
+        return $this->memoize('url_cleared', fn(): string => \SpiderBits\ClearUrls::clear($this->url));
     }
 
     public function hasDetectedTrackers(): bool

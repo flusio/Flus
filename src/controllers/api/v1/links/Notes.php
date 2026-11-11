@@ -45,9 +45,7 @@ class Notes extends BaseController
             ]);
         }
 
-        return Response::json(200, array_map(function (models\Note $note): array {
-            return $note->toJson();
-        }, $link->notes()));
+        return Response::json(200, array_map(fn(models\Note $note): array => $note->toJson(), $link->notes()));
     }
 
     /**

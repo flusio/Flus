@@ -42,7 +42,7 @@ class Http
     {
         if ($parameters) {
             $parameters_query = http_build_query($parameters);
-            if (strpos($url, '?') === false) {
+            if (!str_contains($url, '?')) {
                 $url .= '?' . $parameters_query;
             } else {
                 $url .= '&' . $parameters_query;
@@ -139,15 +139,17 @@ class Http
             curl_setopt(
                 $curl_handle,
                 CURLOPT_PROGRESSFUNCTION,
-                function ($resource, $download_size, $downloaded, $upload_size, $uploaded) use ($max_size): int {
-                    return ($downloaded > $max_size) ? 1 : 0;
-                }
+                fn($resource, $download_size, $downloaded, $upload_size, $uploaded): int => (
+                    $downloaded > $max_size ? 1 : 0
+                )
             );
         }
 
-        $request_headers = array_map(function (string $name, string $value): string {
-            return "{$name}: {$value}";
-        }, array_keys($request_headers), $request_headers);
+        $request_headers = array_map(
+            fn(string $name, string $value): string => "{$name}: {$value}",
+            array_keys($request_headers),
+            $request_headers
+        );
         curl_setopt($curl_handle, CURLOPT_HTTPHEADER, $request_headers);
 
         $headers = '';

@@ -195,8 +195,6 @@ class Mastodon
      */
     public function getUsername(models\MastodonAccount $account): string
     {
-        $redirect_uri = \Minz\Url::absoluteFor('mastodon auth');
-
         $host = $this->server->host;
         $endpoint = $host . '/api/v1/accounts/verify_credentials';
 

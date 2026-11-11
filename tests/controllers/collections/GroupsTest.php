@@ -69,7 +69,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
     public function testEditFailsIfCollectionDoesNotExist(): void
     {
         $user = $this->login();
-        $collection = CollectionFactory::create([
+        CollectionFactory::create([
             'user_id' => $user->id,
         ]);
 
@@ -125,7 +125,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(0, models\Group::count());
 
-        $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
+        $this->appRun('POST', "/collections/{$collection->id}/group", [
             'csrf_token' => $this->csrfToken(forms\collections\EditCollectionGroup::class),
             'name' => $group_name,
         ]);
@@ -174,7 +174,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(1, models\Group::count());
 
-        $response = $this->appRun('POST', "/collections/{$collection->id}/group", [
+        $this->appRun('POST', "/collections/{$collection->id}/group", [
             'csrf_token' => $this->csrfToken(forms\collections\EditCollectionGroup::class),
             'name' => $group_name,
         ]);
@@ -208,7 +208,7 @@ class GroupsTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         /** @var string */
         $group_name = $this->fake('text', 50);
-        $collection = CollectionFactory::create([
+        CollectionFactory::create([
             'user_id' => $user->id,
         ]);
 

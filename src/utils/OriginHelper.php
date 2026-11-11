@@ -34,7 +34,7 @@ class OriginHelper
      */
     public static function extractFromPath(string $url_or_path): array
     {
-        list($origin_type, $origin_id) = self::parseFromPath($url_or_path);
+        [$origin_type, $origin_id] = self::parseFromPath($url_or_path);
 
         if (!$origin_type || !$origin_id) {
             return ['', null];

@@ -27,7 +27,7 @@ class Support extends BaseController
      */
     public function show(): Response
     {
-        $user = auth\CurrentUser::require();
+        auth\CurrentUser::require();
 
         $form = new forms\Support();
 

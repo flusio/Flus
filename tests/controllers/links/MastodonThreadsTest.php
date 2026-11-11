@@ -36,7 +36,7 @@ class MastodonThreadsTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $mastodon_account = MastodonAccountFactory::create([
+        MastodonAccountFactory::create([
             'user_id' => $user->id,
             'access_token' => 'a token',
         ]);
@@ -54,12 +54,12 @@ class MastodonThreadsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $content = 'This is the content of my note';
-        $note = NoteFactory::create([
+        NoteFactory::create([
             'link_id' => $link->id,
             'user_id' => $user->id,
             'content' => $content,
         ]);
-        $mastodon_account = MastodonAccountFactory::create([
+        MastodonAccountFactory::create([
             'user_id' => $user->id,
             'access_token' => 'a token',
             'options' => [
@@ -83,7 +83,7 @@ class MastodonThreadsTest extends \PHPUnit\Framework\TestCase
             'user_id' => UserFactory::create()->id,
             'is_hidden' => false,
         ]);
-        $mastodon_account = MastodonAccountFactory::create([
+        MastodonAccountFactory::create([
             'user_id' => $user->id,
             'access_token' => 'a token',
         ]);
@@ -109,7 +109,7 @@ class MastodonThreadsTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $mastodon_account = MastodonAccountFactory::create([
+        MastodonAccountFactory::create([
             'user_id' => $user->id,
             'access_token' => 'a token',
         ]);
@@ -122,7 +122,7 @@ class MastodonThreadsTest extends \PHPUnit\Framework\TestCase
     public function testNewFailsIfLinkDoesNotExist(): void
     {
         $user = $this->login();
-        $mastodon_account = MastodonAccountFactory::create([
+        MastodonAccountFactory::create([
             'user_id' => $user->id,
             'access_token' => 'a token',
         ]);
@@ -139,7 +139,7 @@ class MastodonThreadsTest extends \PHPUnit\Framework\TestCase
             'user_id' => UserFactory::create()->id,
             'is_hidden' => true,
         ]);
-        $mastodon_account = MastodonAccountFactory::create([
+        MastodonAccountFactory::create([
             'user_id' => $user->id,
             'access_token' => 'a token',
         ]);
@@ -155,7 +155,7 @@ class MastodonThreadsTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $mastodon_account = MastodonAccountFactory::create([
+        MastodonAccountFactory::create([
             'user_id' => $user->id,
             'access_token' => 'a token',
         ]);
@@ -196,7 +196,7 @@ class MastodonThreadsTest extends \PHPUnit\Framework\TestCase
             'user_id' => UserFactory::create()->id,
             'is_hidden' => false,
         ]);
-        $mastodon_account = MastodonAccountFactory::create([
+        MastodonAccountFactory::create([
             'user_id' => $user->id,
             'access_token' => 'a token',
         ]);
@@ -232,7 +232,7 @@ class MastodonThreadsTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $mastodon_account = MastodonAccountFactory::create([
+        MastodonAccountFactory::create([
             'user_id' => $user->id,
             'access_token' => 'a token',
         ]);
@@ -259,7 +259,7 @@ class MastodonThreadsTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $mastodon_account = MastodonAccountFactory::create([
+        MastodonAccountFactory::create([
             'user_id' => $user->id,
             'access_token' => 'a token',
         ]);
@@ -286,7 +286,7 @@ class MastodonThreadsTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $mastodon_account = MastodonAccountFactory::create([
+        MastodonAccountFactory::create([
             'user_id' => $user->id,
             'access_token' => 'a token',
         ]);
@@ -312,7 +312,7 @@ class MastodonThreadsTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfLinkDoesNotExist(): void
     {
         $user = $this->login();
-        $mastodon_account = MastodonAccountFactory::create([
+        MastodonAccountFactory::create([
             'user_id' => $user->id,
             'access_token' => 'a token',
         ]);
@@ -340,7 +340,7 @@ class MastodonThreadsTest extends \PHPUnit\Framework\TestCase
             'user_id' => UserFactory::create()->id,
             'is_hidden' => true,
         ]);
-        $mastodon_account = MastodonAccountFactory::create([
+        MastodonAccountFactory::create([
             'user_id' => $user->id,
             'access_token' => 'a token',
         ]);
@@ -367,7 +367,7 @@ class MastodonThreadsTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $mastodon_account = MastodonAccountFactory::create([
+        MastodonAccountFactory::create([
             'user_id' => $user->id,
             'access_token' => 'a token',
         ]);
@@ -384,7 +384,7 @@ class MastodonThreadsTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $mastodon_account = MastodonAccountFactory::create([
+        MastodonAccountFactory::create([
             'user_id' => $user->id,
             'access_token' => 'a token',
         ]);
@@ -401,7 +401,7 @@ class MastodonThreadsTest extends \PHPUnit\Framework\TestCase
     public function testCreatedFailsIfLinkDoesNotExist(): void
     {
         $user = $this->login();
-        $mastodon_account = MastodonAccountFactory::create([
+        MastodonAccountFactory::create([
             'user_id' => $user->id,
             'access_token' => 'a token',
         ]);
@@ -418,7 +418,7 @@ class MastodonThreadsTest extends \PHPUnit\Framework\TestCase
             'user_id' => UserFactory::create()->id,
             'is_hidden' => true,
         ]);
-        $mastodon_account = MastodonAccountFactory::create([
+        MastodonAccountFactory::create([
             'user_id' => $user->id,
             'access_token' => 'a token',
         ]);

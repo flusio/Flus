@@ -27,7 +27,7 @@ class ReadLater extends BaseController
      */
     public function new(Request $request): Response
     {
-        $user = auth\CurrentUser::require();
+        auth\CurrentUser::require();
 
         $form = new forms\links\NewLinkSimple();
 

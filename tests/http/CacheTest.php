@@ -33,7 +33,7 @@ class CacheTest extends \PHPUnit\Framework\TestCase
     {
         $this->freeze();
         $url = 'https://example.com';
-        $max_age = 1 * 60 * 60 * 24;
+        $max_age = 60 * 60 * 24;
         $raw_response = <<<TEXT
             HTTP/2 200
             Content-type: text/plain
@@ -56,8 +56,8 @@ class CacheTest extends \PHPUnit\Framework\TestCase
     {
         $this->freeze();
         $url = 'https://example.com';
-        $max_age = 1 * 60 * 60 * 24;
-        $age = 1 * 60 * 60;
+        $max_age = 60 * 60 * 24;
+        $age = 60 * 60;
         $raw_response = <<<TEXT
             HTTP/2 200
             Content-type: text/plain
@@ -191,7 +191,7 @@ class CacheTest extends \PHPUnit\Framework\TestCase
     {
         $this->freeze();
         $url = 'https://example.com';
-        $retry_after = 1 * 60 * 60 * 24;
+        $retry_after = 60 * 60 * 24;
         $raw_response = <<<TEXT
             HTTP/2 429
             Content-type: text/plain

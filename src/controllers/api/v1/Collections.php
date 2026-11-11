@@ -23,9 +23,10 @@ class Collections extends BaseController
     {
         $user = auth\CurrentUser::require();
 
-        return Response::json(200, array_map(function (models\Collection $collection) use ($user): array {
-            return $collection->toJson(context_user: $user);
-        }, $user->collections()));
+        return Response::json(200, array_map(
+            fn(models\Collection $collection): array => $collection->toJson(context_user: $user),
+            $user->collections()
+        ));
     }
 
     /**

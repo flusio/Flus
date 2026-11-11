@@ -431,7 +431,7 @@ trait OwnedByUser
      */
     public static function listByUserAndUrls(User $user, array $urls, int $chunk_size = 1000): array
     {
-        $url_hashes = array_map([Belt::class, 'hashUrl'], $urls);
+        $url_hashes = array_map(Belt::hashUrl(...), $urls);
         $url_hashes = array_values(array_unique($url_hashes));
 
         $links_by_url_hashes = [];

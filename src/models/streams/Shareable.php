@@ -76,12 +76,10 @@ trait Shareable
      */
     public function sharedWith(User $user): bool
     {
-        return $this->memoize(['shared_with', $user], function () use ($user): bool {
-            return StreamShare::existsBy([
-                'stream_id' => $this->id,
-                'user_id' => $user->id,
-            ]);
-        });
+        return $this->memoize(['shared_with', $user], fn(): bool => StreamShare::existsBy([
+            'stream_id' => $this->id,
+            'user_id' => $user->id,
+        ]));
     }
 
     /**

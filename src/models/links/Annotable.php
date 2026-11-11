@@ -21,9 +21,7 @@ trait Annotable
      */
     public function notes(): array
     {
-        return $this->memoize('notes', function (): array {
-            return Note::listByLink($this);
-        });
+        return $this->memoize('notes', fn(): array => Note::listByLink($this));
     }
 
     /**
@@ -94,11 +92,9 @@ trait Annotable
      */
     public function numberNotes(): int
     {
-        return $this->memoize('number_notes', function (): int {
-            return Note::countBy([
-                'link_id' => $this->id,
-            ]);
-        });
+        return $this->memoize('number_notes', fn(): int => Note::countBy([
+            'link_id' => $this->id,
+        ]));
     }
 
     /**

@@ -74,7 +74,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
     public function testEditFailsIfCollectionDoesNotExist(): void
     {
         $user = $this->login();
-        $collection = CollectionFactory::create([
+        CollectionFactory::create([
             'user_id' => $user->id,
         ]);
 
@@ -85,7 +85,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
 
     public function testEditFailsIfCollectionIsNotShared(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
@@ -152,7 +152,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
             'error' => UPLOAD_ERR_OK,
         ];
 
-        $response = $this->appRun('POST', "/collections/{$collection->id}/image", [
+        $this->appRun('POST', "/collections/{$collection->id}/image", [
             'csrf_token' => $this->csrfToken(forms\collections\EditCollectionImage::class),
             'image' => $file,
         ]);
@@ -248,7 +248,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
     {
         $image_filepath = \App\Configuration::$app_path . '/public/static/default-card.png';
         $tmp_filepath = $this->tmpCopyFile($image_filepath);
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,

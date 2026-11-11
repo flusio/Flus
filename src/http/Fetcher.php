@@ -23,9 +23,9 @@ class Fetcher
     public function __construct(
         private int $http_timeout = 10,
         private int $http_max_size = 20 * 1024 * 1024,
-        private int $default_cache_duration = 1 * 60 * 60,
-        private int $min_cache_duration = 1 * 60 * 15,
-        private int $max_cache_duration = 1 * 60 * 60 * 24 * 7,
+        private int $default_cache_duration = 60 * 60,
+        private int $min_cache_duration = 60 * 15,
+        private int $max_cache_duration = 60 * 60 * 24 * 7,
         private bool $ignore_cache = false,
         private bool $ignore_rate_limit = false,
         /** @var array<string, string> */

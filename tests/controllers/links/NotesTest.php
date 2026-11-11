@@ -89,7 +89,7 @@ class NotesTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfLinkIsNotOwned(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $link = LinkFactory::create([
             'user_id' => $other_user->id,

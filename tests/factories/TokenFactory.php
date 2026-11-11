@@ -23,17 +23,11 @@ class TokenFactory extends Database\Factory
         $faker = \Faker\Factory::create();
 
         return [
-            'token' => function (): string {
-                return \Minz\Random::hex(32);
-            },
+            'token' => fn(): string => \Minz\Random::hex(32),
 
-            'created_at' => function () use ($faker) {
-                return $faker->dateTime;
-            },
+            'created_at' => fn() => $faker->dateTime,
 
-            'expired_at' => function () use ($faker) {
-                return $faker->dateTime;
-            },
+            'expired_at' => fn() => $faker->dateTime,
         ];
     }
 }

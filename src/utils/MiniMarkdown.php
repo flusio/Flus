@@ -81,17 +81,17 @@ class MiniMarkdown extends \Parsedown
                 'tag' => $tag,
             ]);
 
-            return array(
+            return [
                 'extent' => strlen($tag) + 1,
-                'element' => array(
+                'element' => [
                     'name' => 'a',
                     'text' => "#{$tag}",
-                    'attributes' => array(
+                    'attributes' => [
                         'href' => $tag_url,
                         'class' => 'badge badge--tag',
-                    ),
-                ),
-            );
+                    ],
+                ],
+            ];
         } else {
             return null;
         }

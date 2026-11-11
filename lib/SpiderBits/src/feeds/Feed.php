@@ -82,7 +82,7 @@ class Feed
         try {
             self::fromText($feed_as_string);
             return true;
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return false;
         }
     }

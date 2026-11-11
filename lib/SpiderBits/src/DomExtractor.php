@@ -138,8 +138,6 @@ class DomExtractor
         // @see https://schema.org/docs/gs.html
         $duration_node = $dom->select('//*[@itemprop = "duration"]/attribute::content');
 
-        $duration_text = '';
-
         if ($duration_node) {
             $duration_text = $duration_node->text();
         } else {
@@ -160,7 +158,7 @@ class DomExtractor
                     $duration += 1;
                 }
                 return $duration;
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 // Do nothing and fallback to the other mode
             }
         }

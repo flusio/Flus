@@ -20,7 +20,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
 
     public function testShowRendersCorrectly(): void
     {
-        $user = $this->login();
+        $this->login();
         /** @var string */
         $url = $this->fake('url');
 
@@ -42,7 +42,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $existing_title = $this->fakeUnique('sentence');
         /** @var string */
         $default_title = $this->fakeUnique('sentence');
-        $existing_link = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'url' => $url,
             'title' => $existing_title,
@@ -64,14 +64,14 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $name = $this->fake('sentence');
         /** @var string */
         $feed_url = $this->fake('url');
-        $feed = FeedFactory::create([
+        FeedFactory::create([
             'is_public' => true,
             'name' => $name,
             'feed_url' => $feed_url,
         ]);
         /** @var string */
         $url = $this->fake('url');
-        $link = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'url' => $url,
             'url_feeds' => [$feed_url],
@@ -122,7 +122,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateCreatesFeedCollections(): void
     {
-        $user = $this->login();
+        $this->login();
         $url = 'https://flus.fr/carnet/';
         $url_feed = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
@@ -130,7 +130,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(0, models\Feed::count());
 
-        $response = $this->appRun('POST', '/links/search', [
+        $this->appRun('POST', '/links/search', [
             'csrf_token' => $this->csrfToken(forms\Search::class),
             'url' => $url,
         ]);
@@ -150,7 +150,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
         $url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
 
-        $response = $this->appRun('POST', '/links/search', [
+        $this->appRun('POST', '/links/search', [
             'csrf_token' => $this->csrfToken(forms\Search::class),
             'url' => $url,
         ]);
@@ -170,7 +170,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateDiscoversYoutubePlaylistFeed(): void
     {
-        $user = $this->login();
+        $this->login();
         $url = 'https://www.youtube.com/playlist?list=PLdhqndoLhA_7mQKanRpMGscqEgejpEWaJ';
         $this->mockHttpWithResponse($url, <<<TEXT
             HTTP/2 200
@@ -186,7 +186,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
             TEXT
         );
 
-        $response = $this->appRun('POST', '/links/search', [
+        $this->appRun('POST', '/links/search', [
             'csrf_token' => $this->csrfToken(forms\Search::class),
             'url' => $url,
         ]);
@@ -217,7 +217,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfCsrfIsInvalid(): void
     {
-        $user = $this->login();
+        $this->login();
         $url = 'https://github.com/flusio/Flus';
 
         $this->assertSame(0, models\Link::count());
@@ -234,7 +234,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfUrlIsInvalid(): void
     {
-        $user = $this->login();
+        $this->login();
         $url = '';
 
         $this->assertSame(0, models\Link::count());

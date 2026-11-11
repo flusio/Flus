@@ -53,7 +53,7 @@ class Lock
         $database = \Minz\Database::get();
         $statement = $database->prepare($sql);
 
-        $result = $statement->execute([
+        $statement->execute([
             ':key' => $lock->key,
             ':created_at' => $lock->created_at->format(Database\Column::DATETIME_FORMAT),
             ':expired_at' => $lock->expired_at->format(Database\Column::DATETIME_FORMAT),

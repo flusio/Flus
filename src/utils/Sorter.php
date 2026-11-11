@@ -27,7 +27,7 @@ class Sorter
     {
         $locale = Locale::currentLocale();
         $collator = new \Collator($locale);
-        usort($items, function ($item1, $item2) use ($collator, $property_or_callable) {
+        usort($items, function ($item1, $item2) use ($collator, $property_or_callable): int {
             if (is_callable($property_or_callable)) {
                 $value1 = $property_or_callable($item1);
                 $value2 = $property_or_callable($item2);

@@ -29,15 +29,13 @@ trait ShareRecipient
 
     public function user(): models\User
     {
-        return $this->memoize('user', function (): models\User {
-            return models\User::require($this->user_id);
-        });
+        return $this->memoize('user', fn(): models\User => models\User::require($this->user_id));
     }
 
     #[Form\OnHandleRequest]
     public function extractUserIdFromProfileUrl(Request $request): void
     {
-        list($origin_type, $origin_id) = utils\OriginHelper::extractFromPath($this->user_id);
+        [$origin_type, $origin_id] = utils\OriginHelper::extractFromPath($this->user_id);
 
         if ($origin_type === 'user' && $origin_id) {
             $this->user_id = $origin_id;

@@ -122,7 +122,7 @@ class OriginFormatter
         $types_and_ids_by_origins = [];
 
         foreach ($origins as $origin) {
-            list($origin_type, $origin_id) = utils\OriginHelper::parseFromPath($origin);
+            [$origin_type, $origin_id] = utils\OriginHelper::parseFromPath($origin);
 
             if (!$origin_type || !$origin_id) {
                 // The origin doesn't reference a model of the application: its
@@ -153,7 +153,7 @@ class OriginFormatter
         $collections_by_owner_ids = [];
 
         // Check the access permissions and memoize the model values.
-        foreach ($types_and_ids_by_origins as $origin => list($origin_type, $origin_id)) {
+        foreach ($types_and_ids_by_origins as $origin => [$origin_type, $origin_id]) {
             $model = $models_by_types[$origin_type][$origin_id] ?? null;
 
             // The access is checked here, so the memoized model is the one
@@ -204,7 +204,7 @@ class OriginFormatter
     private function modelFromOrigin(string $origin): models\User|models\Link|models\Source|null
     {
         return $this->memoize($origin, function () use ($origin): models\User|models\Link|models\Source|null {
-            list($origin_type, $origin_id) = utils\OriginHelper::parseFromPath($origin);
+            [$origin_type, $origin_id] = utils\OriginHelper::parseFromPath($origin);
 
             $model = null;
 

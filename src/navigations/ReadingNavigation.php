@@ -67,9 +67,7 @@ class ReadingNavigation extends BaseNavigation
         // Preload the unread dots.
         $streams_with_unread_dot = array_filter(
             array_merge($streams, $shared_streams),
-            function (models\Stream $stream): bool {
-                return $stream->display_unread_in_sidenav;
-            },
+            fn(models\Stream $stream): bool => $stream->display_unread_in_sidenav,
         );
 
         models\streams\Preloader::for($streams_with_unread_dot)->hasUnreadLinksFor($current_user);

@@ -70,7 +70,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfUrlIsInvalid(): void
     {
-        $user = $this->login();
+        $this->login();
         $url = 'about:newtab';
 
         $response = $this->apiRun('POST', '/api/v1/search', [
@@ -88,7 +88,7 @@ class SearchesTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfNotConnected(): void
     {
-        $user = UserFactory::create();
+        UserFactory::create();
         $url = 'https://flus.fr/carnet/';
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
 

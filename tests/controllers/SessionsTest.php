@@ -90,7 +90,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $email = $this->fake('email');
         /** @var string */
         $password = $this->fake('password');
-        $user = UserFactory::create([
+        UserFactory::create([
             'email' => $email,
             'password_hash' => models\User::passwordHash($password),
         ]);
@@ -126,7 +126,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(0, models\Session::count());
 
-        $response = $this->appRun(
+        $this->appRun(
             'POST',
             '/login',
             parameters: [
@@ -163,7 +163,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $email = $this->fake('email');
         /** @var string */
         $password = $this->fake('password');
-        $user = $this->login([
+        $this->login([
             'email' => $email,
             'password_hash' => models\User::passwordHash($password),
         ]);
@@ -186,7 +186,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $email = $this->fake('email');
         /** @var string */
         $password = $this->fake('password');
-        $user = UserFactory::create([
+        UserFactory::create([
             'email' => $email,
             'password_hash' => models\User::passwordHash($password),
         ]);
@@ -207,7 +207,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $email = $this->fake('email');
         /** @var string */
         $password = $this->fake('password');
-        $user = UserFactory::create([
+        UserFactory::create([
             'email' => $email,
             'password_hash' => models\User::passwordHash($password),
         ]);
@@ -255,7 +255,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $email = $this->fake('email');
         /** @var string */
         $password = $this->fake('password');
-        $user = UserFactory::create([
+        UserFactory::create([
             'email' => $email,
             'password_hash' => models\User::passwordHash($password),
         ]);
@@ -277,7 +277,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $email = $this->fake('email');
         /** @var string */
         $password = $this->fake('password');
-        $user = UserFactory::create([
+        UserFactory::create([
             'email' => $email,
             'password_hash' => models\User::passwordHash($password),
         ]);
@@ -299,7 +299,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $email = $this->fake('email');
         /** @var string */
         $password = $this->fake('password');
-        $user = UserFactory::create([
+        UserFactory::create([
             'email' => $email,
             'password_hash' => models\User::passwordHash($password),
         ]);
@@ -321,7 +321,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         $email = $this->fake('email');
         /** @var string */
         $password = $this->fake('password');
-        $user = UserFactory::create([
+        UserFactory::create([
             'email' => $email,
             'password_hash' => models\User::passwordHash($password),
         ]);
@@ -339,7 +339,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteDeletesCurrentSessionAndRedirectsToHome(): void
     {
-        $user = $this->login();
+        $this->login();
 
         $this->assertSame(1, models\Session::count());
 
@@ -354,7 +354,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteReturnsACookie(): void
     {
-        $user = $this->login();
+        $this->login();
 
         $this->assertSame(1, models\Session::count());
 

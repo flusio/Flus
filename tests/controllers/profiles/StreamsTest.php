@@ -18,7 +18,7 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create();
         /** @var string */
         $stream_name = $this->fake('words', 3, true);
-        $stream = StreamFactory::create([
+        StreamFactory::create([
             'user_id' => $user->id,
             'is_public' => true,
             'name' => $stream_name,
@@ -36,7 +36,7 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create();
         /** @var string */
         $stream_name = $this->fake('words', 3, true);
-        $stream = StreamFactory::create([
+        StreamFactory::create([
             'user_id' => $user->id,
             'is_public' => false,
             'name' => $stream_name,

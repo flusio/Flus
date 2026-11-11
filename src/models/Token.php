@@ -24,7 +24,7 @@ class Token
     public \DateTimeImmutable $expired_at;
 
     #[Database\Column]
-    public ?\DateTimeImmutable $invalidated_at;
+    public ?\DateTimeImmutable $invalidated_at = null;
 
     /**
      * Initialize a token valid for a certain amount of time.

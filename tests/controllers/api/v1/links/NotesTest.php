@@ -37,7 +37,7 @@ class NotesTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $note = NoteFactory::create([
+        NoteFactory::create([
             'user_id' => $user->id,
             'link_id' => $link->id,
         ]);
@@ -52,13 +52,13 @@ class NotesTest extends \PHPUnit\Framework\TestCase
 
     public function testIndexFailsIfPermissionIsNotGiven(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
             'is_hidden' => true,
         ]);
-        $note = NoteFactory::create([
+        NoteFactory::create([
             'user_id' => $other_user->id,
             'link_id' => $link->id,
         ]);
@@ -77,7 +77,7 @@ class NotesTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $note = NoteFactory::create([
+        NoteFactory::create([
             'user_id' => $user->id,
             'link_id' => $link->id,
         ]);
@@ -134,7 +134,7 @@ class NotesTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfPermissionIsNotGiven(): void
     {
-        $user = $this->login();
+        $this->login();
         $link = LinkFactory::create([
             'user_id' => UserFactory::create()->id,
         ]);
@@ -153,7 +153,7 @@ class NotesTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfTheLinkDoesNotExist(): void
     {
-        $user = $this->login();
+        $this->login();
         $content = 'My note';
 
         $response = $this->apiRun('POST', '/api/v1/links/not-an-id/notes', [

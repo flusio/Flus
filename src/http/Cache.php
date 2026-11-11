@@ -14,9 +14,9 @@ use SpiderBits\Response;
 class Cache extends AppCache\FileCache
 {
     public function __construct(
-        public readonly int $default_duration = 1 * 60 * 60,
-        public readonly int $min_duration = 1 * 60 * 15,
-        public readonly int $max_duration = 1 * 60 * 60 * 24 * 7,
+        public readonly int $default_duration = 60 * 60,
+        public readonly int $min_duration = 60 * 15,
+        public readonly int $max_duration = 60 * 60 * 24 * 7,
     ) {
         parent::__construct(namespace: 'http');
     }

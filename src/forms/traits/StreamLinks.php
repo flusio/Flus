@@ -45,9 +45,7 @@ trait StreamLinks
         $sources = [];
         if ($this->sources) {
             $sources = $stream->sources(['context_user' => $user]);
-            $sources = array_filter($sources, function (models\Source $source): bool {
-                return in_array($source->id, $this->sources);
-            });
+            $sources = array_filter($sources, fn(models\Source $source): bool => in_array($source->id, $this->sources));
             $sources = array_values($sources);
 
             if (!$sources) {

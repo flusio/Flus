@@ -31,9 +31,7 @@ trait InLists
      */
     public function collections(): array
     {
-        return $this->memoize('collections', function (): array {
-            return Collection::listByLink($this);
-        });
+        return $this->memoize('collections', fn(): array => Collection::listByLink($this));
     }
 
     /**
@@ -215,12 +213,13 @@ trait InLists
      */
     public function sharedWith(User $user, string $access_type = 'any'): bool
     {
-        return $this->memoize(['shared_with', $user, $access_type], function () use ($user, $access_type): bool {
-            return (
+        return $this->memoize(
+            ['shared_with', $user, $access_type],
+            fn(): bool => (
                 Collection::existsForUserAndLink($user, $this) ||
                 CollectionShare::existsForUserAndLink($user, $this, $access_type)
-            );
-        });
+            )
+        );
     }
 
     /**
@@ -398,7 +397,7 @@ trait InLists
         $statement = $database->prepare($sql);
         $statement->execute($parameters);
 
-        return array_map('intval', $statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+        return array_map(intval(...), $statement->fetchAll(\PDO::FETCH_KEY_PAIR));
     }
 
     /**
@@ -510,7 +509,7 @@ trait InLists
         array $urls,
         int $chunk_size = 500,
     ): array {
-        $url_hashes = array_unique(array_map([Belt::class, 'hashUrl'], $urls));
+        $url_hashes = array_unique(array_map(Belt::hashUrl(...), $urls));
         $link_ids_by_urls = [];
 
         foreach (array_chunk($url_hashes, $chunk_size) as $chunk_url_hashes) {

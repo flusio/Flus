@@ -46,18 +46,18 @@ class LinkFetcher
     {
         try {
             $info = $this->fetchUrl($link->url, $link->fetched_count);
-        } catch (http\RateLimitError $e) {
+        } catch (http\RateLimitError) {
             // In case of a rate limit error, try to fetch it again in the next
             // few minutes. Don't call $link->fetch() as we didn't even try to
             // get a result.
-            $link->fetched_retry_at = \Minz\Time::fromNow(rand(1, 5), 'minutes');
+            $link->fetched_retry_at = \Minz\Time::fromNow(random_int(1, 5), 'minutes');
             $link->save();
 
             return;
-        } catch (http\UnexpectedHttpError $e) {
+        } catch (http\UnexpectedHttpError) {
             $link->fetch(
                 code: 0,
-                retry_after: \Minz\Time::fromNow(rand(15, 60), 'minutes'),
+                retry_after: \Minz\Time::fromNow(random_int(15, 60), 'minutes'),
             );
             $link->save();
 
@@ -94,7 +94,7 @@ class LinkFetcher
             $image_storage = new images\Storage();
             try {
                 $link->image_filename = $image_storage->storeFromUrl($info['url_illustration'], 'covers');
-            } catch (images\StorageError $e) {
+            } catch (images\StorageError) {
                 $link->image_filename = '';
             }
         }

@@ -64,9 +64,7 @@ class Search extends BaseForm
 
                 // Deduplicate feeds with same names
                 foreach ($link_feeds as $feed) {
-                    if (!isset($feeds[$feed->name])) {
-                        $feeds[$feed->name] = $feed;
-                    }
+                    $feeds[$feed->name] ??= $feed;
                 }
             }
 

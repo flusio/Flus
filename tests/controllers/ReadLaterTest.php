@@ -19,7 +19,7 @@ class ReadLaterTest extends \PHPUnit\Framework\TestCase
 
     public function testNewRendersCorrectly(): void
     {
-        $user = $this->login();
+        $this->login();
 
         $response = $this->appRun('GET', '/read/later/new');
 
@@ -30,7 +30,7 @@ class ReadLaterTest extends \PHPUnit\Framework\TestCase
 
     public function testNewRedirectsIfNotConnected(): void
     {
-        $user = UserFactory::create();
+        UserFactory::create();
 
         $response = $this->appRun('GET', '/read/later/new');
 
@@ -110,7 +110,7 @@ class ReadLaterTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateRedirectsIfNotConnected(): void
     {
-        $user = UserFactory::create();
+        UserFactory::create();
         $url = 'https://flus.fr/carnet/';
 
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
@@ -126,7 +126,7 @@ class ReadLaterTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfCsrfIsInvalid(): void
     {
-        $user = $this->login();
+        $this->login();
         $url = 'https://flus.fr/carnet/';
 
         $this->mockHttpWithFixture($url, 'responses/flus.fr_carnet_index.html');
@@ -143,7 +143,7 @@ class ReadLaterTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfUrlIsInvalid(): void
     {
-        $user = $this->login();
+        $this->login();
         $url = 'an invalid URL';
 
         $response = $this->appRun('POST', '/read/later/new', [

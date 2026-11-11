@@ -54,9 +54,10 @@ class MastodonStatus
 
     public function account(): MastodonAccount
     {
-        return $this->memoize('mastodon_account', function (): MastodonAccount {
-            return MastodonAccount::require($this->mastodon_account_id);
-        });
+        return $this->memoize(
+            'mastodon_account',
+            fn(): MastodonAccount => MastodonAccount::require($this->mastodon_account_id)
+        );
     }
 
     public function setAccount(MastodonAccount $account): void
@@ -67,9 +68,7 @@ class MastodonStatus
 
     public function link(): Link
     {
-        return $this->memoize('link', function (): Link {
-            return Link::require($this->link_id);
-        });
+        return $this->memoize('link', fn(): Link => Link::require($this->link_id));
     }
 
     public function setLink(Link $link): void
@@ -102,11 +101,9 @@ class MastodonStatus
 
     public function reply(): ?MastodonStatus
     {
-        return $this->memoize('reply', function (): ?MastodonStatus {
-            return self::findBy([
-                'reply_to_id' => $this->id,
-            ]);
-        });
+        return $this->memoize('reply', fn(): ?MastodonStatus => self::findBy([
+            'reply_to_id' => $this->id,
+        ]));
     }
 
     public function isPosted(): bool

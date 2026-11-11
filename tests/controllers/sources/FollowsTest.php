@@ -122,7 +122,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
 
     public function testEditFailsIfSourceIsNotFollowed(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
@@ -190,7 +190,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
             'name' => 'Carnet de Flus',
             'is_public' => true,
         ]);
-        $follow = $user->follow($feed);
+        $user->follow($feed);
 
         $response = $this->appRun('POST', "/collections/{$feed->id}/follow/edit", [
             'csrf_token' => $this->csrfToken(forms\sources\EditFollow::class),
@@ -567,9 +567,9 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfSourceDoesNotExist(): void
     {
-        $user = $this->login();
+        $this->login();
         $owner = UserFactory::create();
-        $collection = CollectionFactory::create([
+        CollectionFactory::create([
             'user_id' => $owner->id,
             'is_public' => true,
         ]);
@@ -584,7 +584,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfUserHasNoAccess(): void
     {
-        $user = $this->login();
+        $this->login();
         $owner = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $owner->id,
@@ -601,7 +601,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfCsrfIsInvalid(): void
     {
-        $user = $this->login();
+        $this->login();
         $owner = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $owner->id,
@@ -811,7 +811,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteSelectedIgnoresNotFollowedSources(): void
     {
-        $user = $this->login();
+        $this->login();
         $owner = UserFactory::create();
         $source = CollectionFactory::create([
             'user_id' => $owner->id,
@@ -829,7 +829,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteSelectedDoesNotUnfollowSourcesOfOtherUsers(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $owner = UserFactory::create();
         $source = CollectionFactory::create([
@@ -978,7 +978,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateSelectedTimeFilterDoesNotChangeSourcesOfOtherUsers(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $owner = UserFactory::create();
         $source = CollectionFactory::create([

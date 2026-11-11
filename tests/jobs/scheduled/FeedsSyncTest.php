@@ -200,10 +200,6 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         /** @var string */
         $old_name = $this->fakeUnique('sentence');
-        /** @var string */
-        $expected_name = $this->fakeUnique('sentence');
-        /** @var string */
-        $expected_title = $this->fakeUnique('sentence');
         $feed = FeedFactory::create([
             'name' => $old_name,
             'feed_url' => $feed_url,
@@ -420,10 +416,6 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $link_url = 'https://flus.fr/carnet/nouveautes-mars-2021.html';
         /** @var string */
         $old_name = $this->fakeUnique('sentence');
-        /** @var string */
-        $expected_name = $this->fakeUnique('sentence');
-        /** @var string */
-        $expected_title = $this->fakeUnique('sentence');
         $feed = FeedFactory::create([
             'name' => $old_name,
             'feed_url' => $feed_url,
@@ -470,10 +462,6 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         /** @var string */
         $old_name = $this->fakeUnique('sentence');
-        /** @var string */
-        $expected_name = $this->fakeUnique('sentence');
-        /** @var string */
-        $expected_title = $this->fakeUnique('sentence');
         $feed = FeedFactory::create([
             'name' => $old_name,
             'feed_url' => $feed_url,
@@ -904,10 +892,6 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         /** @var string */
         $old_name = $this->fakeUnique('sentence');
-        /** @var string */
-        $expected_name = $this->fakeUnique('sentence');
-        /** @var string */
-        $expected_title = $this->fakeUnique('sentence');
         $feed = FeedFactory::create([
             'name' => $old_name,
             'feed_url' => $feed_url,

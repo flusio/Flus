@@ -72,7 +72,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
     public function testImportRegistersAnOpmlImportatorJobAndRedirects(): void
     {
         \App\Configuration::$jobs_adapter = 'database';
-        $user = $this->login();
+        $this->login();
         $opml_filepath = \App\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $tmp_filepath = $this->tmpCopyFile($opml_filepath);
         $file = [
@@ -114,7 +114,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
             'error' => UPLOAD_ERR_OK,
         ];
 
-        $response = $this->appRun('POST', '/sources/opml', [
+        $this->appRun('POST', '/sources/opml', [
             'csrf_token' => $this->csrfToken(forms\importations\OpmlImportation::class),
             'opml' => $file,
         ]);
@@ -180,7 +180,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
     public function testImportFailsIfCsrfIsInvalid(): void
     {
         \App\Configuration::$jobs_adapter = 'database';
-        $user = $this->login();
+        $this->login();
         $opml_filepath = \App\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $tmp_filepath = $this->tmpCopyFile($opml_filepath);
         $file = [
@@ -208,14 +208,9 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
     public function testImportFailsIfFileIsNotPassed(): void
     {
         \App\Configuration::$jobs_adapter = 'database';
-        $user = $this->login();
+        $this->login();
         $opml_filepath = \App\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
-        $tmp_filepath = $this->tmpCopyFile($opml_filepath);
-        $file = [
-            'name' => 'freshrss.opml.xml',
-            'tmp_name' => $tmp_filepath,
-            'error' => UPLOAD_ERR_OK,
-        ];
+        $this->tmpCopyFile($opml_filepath);
 
         $this->assertSame(0, models\Importation::count());
         $this->assertSame(0, \Minz\Job::count());
@@ -236,7 +231,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
     public function testImportFailsIfFileIsTooLarge(int $error): void
     {
         \App\Configuration::$jobs_adapter = 'database';
-        $user = $this->login();
+        $this->login();
         $opml_filepath = \App\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $tmp_filepath = $this->tmpCopyFile($opml_filepath);
         $file = [
@@ -262,7 +257,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
     public function testImportFailsIfFileFailedToUpload(int $error): void
     {
         \App\Configuration::$jobs_adapter = 'database';
-        $user = $this->login();
+        $this->login();
         $opml_filepath = \App\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $tmp_filepath = $this->tmpCopyFile($opml_filepath);
         $file = [
@@ -290,7 +285,7 @@ class OpmlTest extends \PHPUnit\Framework\TestCase
     public function testImportFailsIfIsUploadedFileReturnsFalse(): void
     {
         \App\Configuration::$jobs_adapter = 'database';
-        $user = $this->login();
+        $this->login();
         $opml_filepath = \App\Configuration::$app_path . '/tests/lib/SpiderBits/examples/freshrss.opml.xml';
         $tmp_filepath = $this->tmpCopyFile($opml_filepath);
         $file = [

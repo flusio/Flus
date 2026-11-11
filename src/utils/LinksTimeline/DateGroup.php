@@ -63,9 +63,7 @@ class DateGroup
     {
         return utils\Sorter::localeSort(
             $this->source_groups,
-            function (SourceGroup $sourceGroup) use ($user): string {
-                return $sourceGroup->source->nameByUser($user);
-            },
+            fn(SourceGroup $sourceGroup): string => $sourceGroup->source->nameByUser($user),
         );
     }
 

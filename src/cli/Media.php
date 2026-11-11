@@ -30,18 +30,16 @@ class Media
     {
         $count_deleted = 0;
 
-        $count_deleted += yield from $this->cleanType('covers', function (string $prefix): array {
-            return array_merge(
-                models\Link::listImageFilenamesStartingWith($prefix),
-                models\Source::listImageFilenamesStartingWith($prefix),
-                models\Stream::listImageFilenamesStartingWith($prefix),
-                models\Follow::listImageFilenamesStartingWith($prefix),
-            );
-        });
+        $count_deleted += yield from $this->cleanType('covers', fn(string $prefix): array => array_merge(
+            models\Link::listImageFilenamesStartingWith($prefix),
+            models\Source::listImageFilenamesStartingWith($prefix),
+            models\Stream::listImageFilenamesStartingWith($prefix),
+            models\Follow::listImageFilenamesStartingWith($prefix),
+        ));
 
-        $count_deleted += yield from $this->cleanType('avatars', function (string $prefix): array {
-            return models\User::listAvatarFilenamesStartingWith($prefix);
-        });
+        $count_deleted += yield from $this->cleanType('avatars', fn(string $prefix): array => (
+            models\User::listAvatarFilenamesStartingWith($prefix)
+        ));
 
         if ($count_deleted > 0) {
             yield Response::text(200, "{$count_deleted} files deleted.");
@@ -80,10 +78,11 @@ class Media
             throw new \Exception("Cannot read the {$type} directory.");
         }
 
-        $subdir_names_depth_1 = array_filter($subdir_names_depth_1, function (string $subdir_name): bool {
+        $subdir_names_depth_1 = array_filter(
+            $subdir_names_depth_1,
             // Exclude files or dirs starting with a dot.
-            return $subdir_name[0] !== '.';
-        });
+            fn(string $subdir_name): bool => $subdir_name[0] !== '.'
+        );
         // Reset the index keys of the array so calculation of progress will be
         // correct.
         $subdir_names_depth_1 = array_values($subdir_names_depth_1);
@@ -104,7 +103,7 @@ class Media
                 continue;
             }
 
-            $file_names_on_fs = array_map('basename', $file_paths_on_fs);
+            $file_names_on_fs = array_map(basename(...), $file_paths_on_fs);
 
             // get the list of file names starting with the same 3 characters
             // in database

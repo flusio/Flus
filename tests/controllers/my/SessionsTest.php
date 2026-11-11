@@ -86,7 +86,7 @@ class SessionsTest extends \PHPUnit\Framework\TestCase
         /** @var int */
         $minutes = $this->fake('numberBetween', 0, 15);
         $confirmed_at = \Minz\Time::ago($minutes, 'minutes');
-        $user = $this->login(confirmed_password_at: $confirmed_at);
+        $this->login(confirmed_password_at: $confirmed_at);
         $session = auth\CurrentUser::session();
 
         $response = $this->appRun('POST', "/my/sessions/{$session->id}/deletion", [

@@ -23,13 +23,9 @@ class CollectionToTopicFactory extends Database\Factory
         $faker = \Faker\Factory::create();
 
         return [
-            'collection_id' => function () {
-                return CollectionFactory::create()->id;
-            },
+            'collection_id' => fn() => CollectionFactory::create()->id,
 
-            'topic_id' => function () {
-                return TopicFactory::create()->id;
-            },
+            'topic_id' => fn() => TopicFactory::create()->id,
         ];
     }
 }

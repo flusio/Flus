@@ -132,7 +132,7 @@ class Sessions extends BaseController
      */
     public function delete(Request $request): Response
     {
-        $current_user = auth\CurrentUser::require();
+        auth\CurrentUser::require();
 
         $form = new forms\Logout();
         $form->handleRequest($request);

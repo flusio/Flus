@@ -108,9 +108,7 @@ trait HasFollows
 
         return utils\Sorter::localeSort(
             $sources,
-            function (Source $source): string {
-                return $source->nameByUser($this);
-            },
+            fn(Source $source): string => $source->nameByUser($this),
         );
     }
 }

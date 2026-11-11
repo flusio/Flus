@@ -23,17 +23,11 @@ class FeatureFlagFactory extends Database\Factory
         $faker = \Faker\Factory::create();
 
         return [
-            'created_at' => function () use ($faker) {
-                return $faker->dateTime;
-            },
+            'created_at' => fn() => $faker->dateTime,
 
-            'type' => function () use ($faker) {
-                return $faker->randomElement(models\FeatureFlag::VALID_TYPES);
-            },
+            'type' => fn() => $faker->randomElement(models\FeatureFlag::VALID_TYPES),
 
-            'user_id' => function () {
-                return UserFactory::create()->id;
-            },
+            'user_id' => fn() => UserFactory::create()->id,
         ];
     }
 }

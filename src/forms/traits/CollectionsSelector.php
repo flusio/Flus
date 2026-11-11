@@ -171,7 +171,7 @@ trait CollectionsSelector
     {
         try {
             $this->selectedCollections();
-        } catch (\RuntimeException $e) {
+        } catch (\RuntimeException) {
             $this->addError(
                 'collection_ids',
                 'invalidCollection',

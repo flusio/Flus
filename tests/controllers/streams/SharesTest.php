@@ -79,7 +79,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
 
     public function testIndexFailsIfUserDoesNotOwnTheStream(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $stream = StreamFactory::create([
             'user_id' => $other_user->id,
@@ -134,7 +134,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
 
-        $response = $this->appRun('POST', "/streams/{$stream->id}/share", [
+        $this->appRun('POST', "/streams/{$stream->id}/share", [
             'csrf_token' => $this->csrfToken(forms\streams\ShareStream::class),
             'user_id' => \Minz\Url::absoluteFor('profile', ['id' => $other_user->id]),
         ]);
@@ -258,7 +258,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfUserDoesNotOwnTheStream(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $yet_another_user = UserFactory::create();
         $stream = StreamFactory::create([
@@ -354,7 +354,7 @@ class SharesTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteFailsIfUserDoesNotOwnTheStream(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $yet_another_user = UserFactory::create();
         $stream = StreamFactory::create([

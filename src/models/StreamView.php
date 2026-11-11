@@ -117,9 +117,7 @@ class StreamView
 
         $this->sources = array_values(array_filter(
             $stream_sources,
-            function (Source $source) use ($selected_source_ids): bool {
-                return in_array($source->id, $selected_source_ids);
-            },
+            fn(Source $source): bool => in_array($source->id, $selected_source_ids),
         ));
     }
 

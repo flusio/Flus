@@ -23,21 +23,13 @@ class CollectionShareFactory extends Database\Factory
         $faker = \Faker\Factory::create();
 
         return [
-            'created_at' => function () use ($faker) {
-                return $faker->dateTime;
-            },
+            'created_at' => fn() => $faker->dateTime,
 
-            'user_id' => function () {
-                return UserFactory::create()->id;
-            },
+            'user_id' => fn() => UserFactory::create()->id,
 
-            'collection_id' => function () {
-                return CollectionFactory::create()->id;
-            },
+            'collection_id' => fn() => CollectionFactory::create()->id,
 
-            'type' => function () use ($faker) {
-                return $faker->randomElement(models\CollectionShare::VALID_TYPES);
-            },
+            'type' => fn() => $faker->randomElement(models\CollectionShare::VALID_TYPES),
         ];
     }
 }

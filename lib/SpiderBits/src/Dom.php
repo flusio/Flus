@@ -12,7 +12,7 @@ class Dom
 {
     private \DOMDocument $dom;
 
-    private ?string $xpath_query = null;
+    private ?string $xpath_query;
 
     /** @var ?\DOMNode[] */
     private ?array $nodes_selected = null;
@@ -67,7 +67,7 @@ class Dom
 
         try {
             return new self($this->dom, $xpath_query);
-        } catch (\DomainException $e) {
+        } catch (\DomainException) {
             return null;
         }
     }
@@ -91,7 +91,7 @@ class Dom
                     $node->parentNode->removeChild($node);
                 }
             }
-        } catch (\DomainException $e) {
+        } catch (\DomainException) {
         }
     }
 
@@ -164,10 +164,7 @@ class Dom
         }
 
         $nodes = iterator_to_array($nodes_selected);
-        $nodes = array_filter($nodes, function (\DOMNameSpaceNode|\DOMNode $node): bool {
-            return $node instanceof \DOMNode;
-        });
 
-        return $nodes;
+        return array_filter($nodes, fn(\DOMNameSpaceNode|\DOMNode $node): bool => $node instanceof \DOMNode);
     }
 }

@@ -60,7 +60,6 @@ class DataExporter
             $files["notes/{$link->id}.atom.xml"] = $this->generateLink($link);
         }
 
-        $now = \Minz\Time::now();
         $now_formatted = \Minz\Time::now()->format('Y-m-d_H\hi');
         $filepath = "{$this->exportations_path}/{$now_formatted}_{$user->id}_data.zip";
 
@@ -117,21 +116,18 @@ class DataExporter
     {
         $sources = $stream->sources(['context_user' => $user]);
 
-        $source_urls = array_map(function (models\Source $source): string {
-            return $source->feedUrl(direct: true);
-        }, $sources);
+        $source_urls = array_map(fn(models\Source $source): string => $source->feedUrl(direct: true), $sources);
 
-        $views = array_map(function (models\View $view): array {
-            return [
-                'name' => $view->name,
-                'is_default' => $view->is_default,
-                'parameters' => $view->parameters,
-            ];
-        }, models\View::listByStream($stream));
+        $views = array_map(fn(models\View $view): array => [
+            'name' => $view->name,
+            'is_default' => $view->is_default,
+            'parameters' => $view->parameters,
+        ], models\View::listByStream($stream));
 
-        $shares = array_map(function (models\StreamShare $share): string {
-            return \Minz\Url::absoluteFor('profile', ['id' => $share->user_id]);
-        }, $stream->shares());
+        $shares = array_map(
+            fn(models\StreamShare $share): string => \Minz\Url::absoluteFor('profile', ['id' => $share->user_id]),
+            $stream->shares()
+        );
 
         $json = json_encode([
             'id' => $stream->id,

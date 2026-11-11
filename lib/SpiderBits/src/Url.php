@@ -23,10 +23,10 @@ class Url
             return $url;
         }
 
-        if (strpos($url, '#') === 0) {
+        if (str_starts_with($url, '#')) {
             // If the URL starts by a hash, it should simply be added to the
             // base URL (by removing its own hash if any).
-            if (strpos($base_url, '#') !== false) {
+            if (str_contains($base_url, '#')) {
                 $base_url = strtok($base_url, '#');
             }
             return $base_url . $url;
@@ -39,17 +39,13 @@ class Url
             return $url;
         }
 
-        if (!isset($parsed_base_url['scheme'])) {
-            // Base URL should always be absolute, but in case it’s not, we
-            // rely on a default scheme
-            $parsed_base_url['scheme'] = 'http';
-        }
+        // Base URL should always be absolute, but in case it’s not, we
+        // rely on a default scheme
+        $parsed_base_url['scheme'] ??= 'http';
 
-        if (!isset($parsed_base_url['path'])) {
-            $parsed_base_url['path'] = '';
-        }
+        $parsed_base_url['path'] ??= '';
 
-        if (strpos($url, '//') === 0) {
+        if (str_starts_with($url, '//')) {
             // The initial URL protocol is relative to the base URL, but the
             // rest of the URL is already absolute.
             return $parsed_base_url['scheme'] . ':' . $url;
@@ -61,7 +57,7 @@ class Url
             $absolute_url .= ':' . $parsed_base_url['port'];
         }
 
-        if (strpos($url, '/') === 0) {
+        if (str_starts_with($url, '/')) {
             // If initial URL starts with a slash, it’s an absolute path
             $absolute_url .= $url;
         } else {
@@ -166,7 +162,7 @@ class Url
         $sanitized_url .= self::percentEncode($path);
         if (isset($parsed_url['query'])) {
             $sanitized_url .= '?' . self::percentRecodeQuery($parsed_url['query']);
-        } elseif (strpos($url, '?') !== false) {
+        } elseif (str_contains($url, '?')) {
             // If the initial URL had a `?` without query string, `parse_url()`
             // doesn't return the query component. We want to keep the question
             // mark though.
@@ -187,14 +183,10 @@ class Url
      * file to exist.
      *
      * @see https://www.php.net/manual/function.realpath.php
-     *
-     * @param string $path
-     *
-     * @return string
      */
     private static function normalizePath(string $path): string
     {
-        $realpath = array();
+        $realpath = [];
 
         // We just simulate browsing the path, segment by segment.
         $path_segments = explode('/', $path);

@@ -38,9 +38,7 @@ class StreamShare
      */
     public function user(): User
     {
-        return $this->memoize('user', function (): User {
-            return User::require($this->user_id);
-        });
+        return $this->memoize('user', fn(): User => User::require($this->user_id));
     }
 
     /**

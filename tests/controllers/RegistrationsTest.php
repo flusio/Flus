@@ -93,7 +93,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(0, models\Token::count());
 
-        $response = $this->appRun('POST', '/registration', [
+        $this->appRun('POST', '/registration', [
             'csrf_token' => $this->csrfToken(forms\Registration::class),
             'username' => $this->fake('name'),
             'email' => $this->fake('email'),
@@ -120,7 +120,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEmailsCount(0);
 
-        $response = $this->appRun('POST', '/registration', [
+        $this->appRun('POST', '/registration', [
             'csrf_token' => $this->csrfToken(forms\Registration::class),
             'username' => $this->fake('name'),
             'email' => $email,
@@ -147,7 +147,7 @@ class RegistrationsTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($user);
         $this->assertSame(0, models\Session::count());
 
-        $response = $this->appRun('POST', '/registration', [
+        $this->appRun('POST', '/registration', [
             'csrf_token' => $this->csrfToken(forms\Registration::class),
             'username' => $this->fake('name'),
             'email' => $email,

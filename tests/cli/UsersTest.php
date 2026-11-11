@@ -92,7 +92,7 @@ class UsersTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertSame(0, models\LinkList::count());
 
-        $response = $this->appRun('CLI', '/users/create', [
+        $this->appRun('CLI', '/users/create', [
             'username' => $this->fake('name'),
             'email' => $this->fake('email'),
             'password' => $this->fake('password'),
@@ -127,7 +127,7 @@ class UsersTest extends \PHPUnit\Framework\TestCase
     public function testExportCreatesTheDataFileAndRendersCorrectly(): void
     {
         $tmp_path = \App\Configuration::$tmp_path;
-        $current_path = $tmp_path . '/' . md5((string) rand());
+        $current_path = $tmp_path . '/' . md5((string) random_int(0, mt_getrandmax()));
         @mkdir($current_path, 0777, true);
         @chdir($current_path);
         $user = UserFactory::create();
@@ -148,7 +148,7 @@ class UsersTest extends \PHPUnit\Framework\TestCase
     public function testExportFailsIfUserDoesNotExist(): void
     {
         $tmp_path = \App\Configuration::$tmp_path;
-        $current_path = $tmp_path . '/' . md5((string) rand());
+        $current_path = $tmp_path . '/' . md5((string) random_int(0, mt_getrandmax()));
         @mkdir($current_path, 0777, true);
         @chdir($current_path);
         $user_id = \Minz\Random::hex(32);
@@ -209,7 +209,7 @@ class UsersTest extends \PHPUnit\Framework\TestCase
             'subscription_account_id' => null,
         ]);
 
-        $response = $this->appRun('CLI', '/users/validate', [
+        $this->appRun('CLI', '/users/validate', [
             'id' => $user->id,
         ]);
 
@@ -233,7 +233,7 @@ class UsersTest extends \PHPUnit\Framework\TestCase
             'validation_token' => $token->token,
         ]);
 
-        $response = $this->appRun('CLI', '/users/validate', [
+        $this->appRun('CLI', '/users/validate', [
             'id' => $user->id,
         ]);
 

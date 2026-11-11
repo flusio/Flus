@@ -23,25 +23,15 @@ class NoteFactory extends Database\Factory
         $faker = \Faker\Factory::create();
 
         return [
-            'id' => function (): string {
-                return \Minz\Random::hex(32);
-            },
+            'id' => fn(): string => \Minz\Random::hex(32),
 
-            'created_at' => function () use ($faker) {
-                return $faker->dateTime;
-            },
+            'created_at' => fn() => $faker->dateTime,
 
-            'content' => function () use ($faker) {
-                return $faker->paragraphs(3, true);
-            },
+            'content' => fn() => $faker->paragraphs(3, true),
 
-            'link_id' => function () {
-                return LinkFactory::create()->id;
-            },
+            'link_id' => fn() => LinkFactory::create()->id,
 
-            'user_id' => function () {
-                return UserFactory::create()->id;
-            },
+            'user_id' => fn() => UserFactory::create()->id,
         ];
     }
 }

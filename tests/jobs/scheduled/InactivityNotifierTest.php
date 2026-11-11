@@ -105,7 +105,6 @@ class InactivityNotifierTest extends \PHPUnit\Framework\TestCase
     public function testPerformIgnoresAlreadyNotifiedUsers(): void
     {
         $this->freeze();
-        $now = \Minz\Time::now();
         $job = new InactivityNotifier();
         $inactivity_months = 11;
         $notified_at = \Minz\Time::ago(1, 'month');
@@ -126,7 +125,6 @@ class InactivityNotifierTest extends \PHPUnit\Framework\TestCase
     public function testPerformIgnoresNotYetInactive(): void
     {
         $this->freeze();
-        $now = \Minz\Time::now();
         $job = new InactivityNotifier();
         $inactivity_months = 10;
         $notified_at = null;

@@ -23,21 +23,13 @@ class MastodonServerFactory extends Database\Factory
         $faker = \Faker\Factory::create();
 
         return [
-            'created_at' => function () use ($faker) {
-                return $faker->dateTime;
-            },
+            'created_at' => fn() => $faker->dateTime,
 
-            'host' => function () use ($faker): string {
-                return 'https://' . $faker->domainName;
-            },
+            'host' => fn(): string => 'https://' . $faker->domainName,
 
-            'client_id' => function () use ($faker) {
-                return $faker->sha256;
-            },
+            'client_id' => fn() => $faker->sha256,
 
-            'client_secret' => function () use ($faker) {
-                return $faker->sha256;
-            },
+            'client_secret' => fn() => $faker->sha256,
         ];
     }
 }

@@ -45,13 +45,13 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     public function testIndexFailsIfNotConnected(): void
     {
         $user = UserFactory::create();
-        $collection1 = CollectionFactory::create([
+        CollectionFactory::create([
             'user_id' => $user->id,
             'name' => 'My favourites',
             'description' => 'My favourite links',
             'is_public' => true,
         ]);
-        $collection2 = CollectionFactory::create([
+        CollectionFactory::create([
             'user_id' => $user->id,
             'name' => 'My shares',
             'description' => 'My shared links',
@@ -91,7 +91,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfNameIsMissing(): void
     {
-        $user = $this->login();
+        $this->login();
         $name = '';
         $description = 'A description';
         $is_public = true;
@@ -116,7 +116,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfNameIsTooLong(): void
     {
-        $user = $this->login();
+        $this->login();
         $name = str_repeat('a', models\Collection::NAME_MAX_LENGTH + 1);
         $description = 'A description';
         $is_public = true;
@@ -141,7 +141,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfNotConnected(): void
     {
-        $user = UserFactory::create();
+        UserFactory::create();
         $name = 'My collection';
         $description = 'A description';
         $is_public = true;
@@ -262,7 +262,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfPermissionIsNotGiven(): void
     {
-        $user = $this->login();
+        $this->login();
         $old_name = 'My collection';
         $old_description = 'A description';
         $old_is_public = true;
@@ -371,7 +371,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteFailsIfPermissionIsNotGiven(): void
     {
-        $user = $this->login();
+        $this->login();
         $collection = CollectionFactory::create([
             'user_id' => UserFactory::create()->id,
         ]);

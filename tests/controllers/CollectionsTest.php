@@ -29,7 +29,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
     public function testNewRendersCorrectly(): void
     {
-        $user = $this->login();
+        $this->login();
 
         $response = $this->appRun('GET', '/collections/new');
 
@@ -47,7 +47,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateCreatesCollectionAndRedirects(): void
     {
-        $user = $this->login();
+        $this->login();
         /** @var string */
         $name = $this->fake('words', 3, true);
         /** @var string */
@@ -72,13 +72,13 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateAllowsToCreatePublicCollections(): void
     {
-        $user = $this->login();
+        $this->login();
         /** @var string */
         $name = $this->fake('words', 3, true);
         /** @var string */
         $description = $this->fake('sentence');
 
-        $response = $this->appRun('POST', '/collections/new', [
+        $this->appRun('POST', '/collections/new', [
             'csrf_token' => $this->csrfToken(forms\collections\Collection::class),
             'name' => $name,
             'description' => $description,
@@ -92,14 +92,14 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateAllowsToAttachTopics(): void
     {
-        $user = $this->login();
+        $this->login();
         /** @var string */
         $name = $this->fake('words', 3, true);
         /** @var string */
         $description = $this->fake('sentence');
         $topic = TopicFactory::create();
 
-        $response = $this->appRun('POST', '/collections/new', [
+        $this->appRun('POST', '/collections/new', [
             'csrf_token' => $this->csrfToken(forms\collections\Collection::class),
             'name' => $name,
             'description' => $description,
@@ -130,7 +130,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfCsrfIsInvalid(): void
     {
-        $user = $this->login();
+        $this->login();
         /** @var string */
         $name = $this->fake('words', 3, true);
         /** @var string */
@@ -149,7 +149,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfNameIsInvalid(): void
     {
-        $user = $this->login();
+        $this->login();
         /** @var string */
         $name = $this->fake('words', 100, true);
         /** @var string */
@@ -168,7 +168,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfNameIsMissing(): void
     {
-        $user = $this->login();
+        $this->login();
         /** @var string */
         $description = $this->fake('sentence');
 
@@ -184,12 +184,12 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfTopicIdsIsInvalid(): void
     {
-        $user = $this->login();
+        $this->login();
         /** @var string */
         $name = $this->fake('words', 3, true);
         /** @var string */
         $description = $this->fake('sentence');
-        $topic = TopicFactory::create();
+        TopicFactory::create();
 
         $response = $this->appRun('POST', '/collections/new', [
             'csrf_token' => $this->csrfToken(forms\collections\Collection::class),
@@ -258,7 +258,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
     public function testEditFailsIfCollectionIsNotShared(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
@@ -339,7 +339,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'topic_id' => $old_topic->id,
         ]);
 
-        $response = $this->appRun('POST', "/collections/{$collection->id}/edit", [
+        $this->appRun('POST', "/collections/{$collection->id}/edit", [
             'csrf_token' => $this->csrfToken(forms\collections\Collection::class),
             'name' => $new_name,
             'description' => $new_description,
@@ -532,7 +532,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfCollectionDoesNotExist(): void
     {
-        $user = $this->login();
+        $this->login();
         /** @var string */
         $new_name = $this->fakeUnique('words', 3, true);
         /** @var string */
@@ -549,7 +549,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
     public function testUpdateFailsIfCollectionIsNotShared(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         /** @var string */
         $old_name = $this->fakeUnique('words', 3, true);
@@ -652,7 +652,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteFailsIfCollectionIsNotShared(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,

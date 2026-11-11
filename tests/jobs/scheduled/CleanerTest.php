@@ -730,7 +730,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
-        $link = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
         ]);
 

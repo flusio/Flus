@@ -54,7 +54,7 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         /** @var string */
         $url = $this->fake('url');
-        $link = LinkFactory::create([
+        LinkFactory::create([
             'user_id' => $user->id,
             'url' => $url,
         ]);
@@ -66,7 +66,7 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
 
     public function testNewFailsIfTheUserHasNoAccessToTheLink(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         /** @var string */
         $url = $this->fake('url');
@@ -369,7 +369,7 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfTheUserHasNoAccessToTheLink(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         /** @var string */
         $old_url = $this->fakeUnique('url');

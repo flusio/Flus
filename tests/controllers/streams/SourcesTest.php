@@ -89,7 +89,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
 
     public function testIndexRendersCorrectlyIfPublicAndNotOwned(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $stream = StreamFactory::create([
             'user_id' => $other_user->id,
@@ -186,7 +186,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
 
     public function testIndexFailsIfTheStreamDoesNotExist(): void
     {
-        $user = $this->login();
+        $this->login();
 
         $response = $this->appRun('GET', '/streams/unknown/sources');
 
@@ -195,7 +195,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
 
     public function testIndexFailsIfTheUserCannotViewTheStream(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $stream = StreamFactory::create([
             'user_id' => $other_user->id,
@@ -292,7 +292,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
 
     public function testEditFailsIfTheStreamDoesNotExist(): void
     {
-        $user = $this->login();
+        $this->login();
 
         $response = $this->appRun('GET', '/streams/unknown/sources/edit');
 
@@ -301,7 +301,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
 
     public function testEditFailsIfTheUserCannotUpdateTheStream(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         /** @var string */
         $stream_name = $this->fake('words', 3, true);
@@ -354,7 +354,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
 
     public function testNewFeedFailsIfTheStreamDoesNotExist(): void
     {
-        $user = $this->login();
+        $this->login();
 
         $response = $this->appRun('GET', '/streams/unknown/sources/feeds/new');
 
@@ -363,7 +363,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
 
     public function testNewFeedFailsIfTheUserCannotUpdateTheStream(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $stream = StreamFactory::create([
             'user_id' => $other_user->id,
@@ -468,7 +468,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFeedFailsIfTheStreamDoesNotExist(): void
     {
-        $user = $this->login();
+        $this->login();
         $feed_url = 'https://flus.fr/carnet/feeds/all.atom.xml';
         $this->mockHttpWithFixture($feed_url, 'responses/flus.fr_carnet_feeds_all.atom.xml');
 
@@ -483,7 +483,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFeedFailsIfTheUserCannotUpdateTheStream(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $stream = StreamFactory::create([
             'user_id' => $other_user->id,
@@ -665,7 +665,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
 
     public function testAddFailsIfTheUserCannotUpdateTheStream(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $stream = StreamFactory::create([
             'user_id' => $other_user->id,
@@ -786,7 +786,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
 
     public function testRemoveFailsIfTheStreamDoesNotExist(): void
     {
-        $user = $this->login();
+        $this->login();
         $source = FeedFactory::create([
             'is_public' => true,
         ]);
@@ -814,7 +814,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
 
     public function testRemoveFailsIfTheUserCannotUpdateTheStream(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $stream = StreamFactory::create([
             'user_id' => $other_user->id,
@@ -1149,7 +1149,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
 
     public function testRemoveAllFailsIfTheUserCannotUpdateTheStream(): void
     {
-        $user = $this->login();
+        $this->login();
         $other_user = UserFactory::create();
         $stream = StreamFactory::create([
             'user_id' => $other_user->id,

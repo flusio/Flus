@@ -49,7 +49,7 @@ class LockTest extends \PHPUnit\Framework\TestCase
     public function testAcquireWithExistingLock(): void
     {
         $this->freeze();
-        $existing_lock = Lock::acquire('lock key');
+        Lock::acquire('lock key');
 
         $lock = Lock::acquire('lock key');
 
@@ -59,7 +59,7 @@ class LockTest extends \PHPUnit\Framework\TestCase
     public function testAcquireWithExpiredLock(): void
     {
         $this->freeze();
-        $existing_lock = Lock::acquire('lock key', \Minz\Time::ago(1, 'hour'));
+        Lock::acquire('lock key', \Minz\Time::ago(1, 'hour'));
 
         $lock = Lock::acquire('lock key');
 

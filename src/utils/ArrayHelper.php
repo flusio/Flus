@@ -40,8 +40,6 @@ class ArrayHelper
      *
      * @param T[] $array
      * @param callable(T $value, mixed $key): bool $callback
-     *
-     * @return bool
      */
     public static function any(array $array, callable $callback): bool
     {
@@ -62,6 +60,6 @@ class ArrayHelper
      */
     public static function trim(array $strings): array
     {
-        return array_map('trim', $strings);
+        return array_map(trim(...), $strings);
     }
 }

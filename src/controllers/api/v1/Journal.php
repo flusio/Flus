@@ -32,9 +32,10 @@ class Journal extends BaseController
             ->urlStatusesFor($user)
             ->numberNotes();
 
-        return Response::json(200, array_map(function (models\Link $link) use ($user): array {
-            return $link->toJson(context_user: $user);
-        }, $links));
+        return Response::json(200, array_map(
+            fn(models\Link $link): array => $link->toJson(context_user: $user),
+            $links
+        ));
     }
 
     /**

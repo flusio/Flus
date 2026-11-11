@@ -189,7 +189,7 @@ class TopicsTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteFailsIfIdIsInvalid(): void
     {
-        $topic = TopicFactory::create();
+        TopicFactory::create();
 
         $response = $this->appRun('CLI', '/topics/delete', [
             'id' => 'not an id',

@@ -28,11 +28,9 @@ class AskResetPassword extends BaseForm
 
     public function user(): models\User
     {
-        return $this->memoize('user', function (): models\User {
-            return models\User::requireBy([
-                'email' => $this->email,
-            ]);
-        });
+        return $this->memoize('user', fn(): models\User => models\User::requireBy([
+            'email' => $this->email,
+        ]));
     }
 
     #[Validable\Check]
@@ -40,7 +38,7 @@ class AskResetPassword extends BaseForm
     {
         try {
             $this->user();
-        } catch (\Minz\Errors\MissingRecordError $error) {
+        } catch (\Minz\Errors\MissingRecordError) {
             $this->addError(
                 'email',
                 'missing_user',

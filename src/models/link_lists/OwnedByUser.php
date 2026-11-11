@@ -21,9 +21,7 @@ trait OwnedByUser
      */
     public function owner(): User
     {
-        return $this->memoize('owner', function (): User {
-            return User::require($this->user_id);
-        });
+        return $this->memoize('owner', fn(): User => User::require($this->user_id));
     }
 
     /**

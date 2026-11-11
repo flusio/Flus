@@ -29,9 +29,9 @@ class FeedFetcher
     {
         $this->fetcher = new http\Fetcher(
             http_timeout: $options['http_timeout'] ?? 20,
-            default_cache_duration: 1 * 60 * 60,
-            min_cache_duration: 1 * 60 * 60,
-            max_cache_duration: 1 * 60 * 60 * 24,
+            default_cache_duration: 60 * 60,
+            min_cache_duration: 60 * 60,
+            max_cache_duration: 60 * 60 * 24,
             ignore_cache: $options['ignore_cache'] ?? false,
             ignore_rate_limit: $options['ignore_rate_limit'] ?? false,
             headers: [
@@ -244,7 +244,7 @@ class FeedFetcher
         if (!$feed->image_fetched_at && $feed->feed_site_url) {
             try {
                 $response = $this->fetcher->get($feed->feed_site_url, type: 'link');
-            } catch (http\FetcherError $e) {
+            } catch (http\FetcherError) {
                 return;
             }
 
@@ -278,7 +278,7 @@ class FeedFetcher
             $image_storage = new images\Storage();
             try {
                 $feed->image_filename = $image_storage->storeFromUrl($url_illustration, 'covers');
-            } catch (images\StorageError $e) {
+            } catch (images\StorageError) {
                 $feed->image_filename = '';
             }
             $feed->image_fetched_at = \Minz\Time::now();
@@ -382,9 +382,10 @@ class FeedFetcher
         // Sort the entries by their publication dates (newest first). The
         // sort is stable, so the entries without publication date keep the
         // order of the feed.
-        uasort($entries, function ($entry1, $entry2) use ($now): int {
-            return ($entry2->published_at ?? $now) <=> ($entry1->published_at ?? $now);
-        });
+        uasort(
+            $entries,
+            fn($entry1, $entry2): int => ($entry2->published_at ?? $now) <=> ($entry1->published_at ?? $now)
+        );
 
         $kept_entries = [];
         foreach ($entries as $index => $entry) {

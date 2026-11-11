@@ -27,7 +27,7 @@ class Avatar extends BaseController
      */
     public function edit(Request $request): Response
     {
-        $user = auth\CurrentUser::require();
+        auth\CurrentUser::require();
 
         $form = new forms\users\EditAvatar();
 

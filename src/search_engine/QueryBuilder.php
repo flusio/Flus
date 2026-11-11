@@ -255,8 +255,8 @@ abstract class QueryBuilder
     protected function buildExprDate(string $field, string $value, bool $not): string
     {
         if (str_contains($value, '..')) {
-            list($from, $to) = explode('..', $value, 2);
-            list($start) = $this->parseDatePeriod($from);
+            [$from, $to] = explode('..', $value, 2);
+            [$start] = $this->parseDatePeriod($from);
             list(, $end) = $this->parseDatePeriod($to);
 
             $expr = $this->buildExprBetween($field, $start, $end);
@@ -265,7 +265,7 @@ abstract class QueryBuilder
             assert($result === 1);
 
             $operator = $matches['operator'];
-            list($start, $end) = $this->parseDatePeriod($matches['date']);
+            [$start, $end] = $this->parseDatePeriod($matches['date']);
 
             if ($operator === '>=') {
                 $expr = $this->buildExprCompare($field, '>=', $start);
@@ -334,7 +334,7 @@ abstract class QueryBuilder
     protected function buildExprNumber(string $field, string $value, bool $not): string
     {
         if (str_contains($value, '..')) {
-            list($from, $to) = explode('..', $value, 2);
+            [$from, $to] = explode('..', $value, 2);
 
             $expr = $this->buildExprBetween($field, intval($from), intval($to));
         } else {

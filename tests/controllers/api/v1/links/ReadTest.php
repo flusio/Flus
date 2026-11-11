@@ -45,7 +45,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateFailsIfTheLinkDoesNotExist(): void
     {
-        $user = $this->login();
+        $this->login();
 
         $response = $this->apiRun('POST', '/api/v1/links/not-an-id/read');
 
@@ -91,7 +91,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteFailsIfTheLinkIsNotOwned(): void
     {
-        $user = $this->login();
+        $this->login();
         $link = LinkFactory::create([
             'user_id' => UserFactory::create()->id,
         ]);
@@ -106,7 +106,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteFailsIfTheLinkDoesNotExist(): void
     {
-        $user = $this->login();
+        $this->login();
 
         $response = $this->apiRun('DELETE', '/api/v1/links/not-an-id/read');
 
