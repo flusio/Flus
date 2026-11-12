@@ -1,7 +1,13 @@
 #!/bin/bash
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-SCRIPT_PATH=$(dirname $(realpath -s $0))
-export COMPOSE_FILE=$SCRIPT_PATH/../development/docker-compose.yml
+SCRIPT_PATH=$(dirname "$(realpath -s "$0")")
+export COMPOSE_FILE="$SCRIPT_PATH/../development/docker-compose.yml"
 
-docker compose exec database psql -U postgres "$@"
+if [ -t 0 ]; then
+    TTY_OPTION=""
+else
+    TTY_OPTION="-T"
+fi
+
+docker compose exec $TTY_OPTION database psql -U postgres "$@"

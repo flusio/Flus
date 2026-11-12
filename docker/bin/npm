@@ -1,12 +1,18 @@
 #!/bin/bash
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-SCRIPT_PATH=$(dirname $(realpath -s $0))
-export COMPOSE_FILE=$SCRIPT_PATH/../development/docker-compose.yml
-export USER=$(id -u):$(id -g)
+SCRIPT_PATH=$(dirname "$(realpath -s "$0")")
+export COMPOSE_FILE="$SCRIPT_PATH/../development/docker-compose.yml"
+export USER="$(id -u):$(id -g)"
 
-if [ -z `docker compose ps -q bundler` ] || [ -z `docker ps -q --no-trunc | grep $(docker compose ps -q bundler)` ]; then
-    docker compose run --rm bundler npm "$@"
+if [ -t 0 ]; then
+    TTY_OPTION=""
 else
-    docker compose exec bundler npm "$@"
+    TTY_OPTION="-T"
+fi
+
+if [ -z "$(docker compose ps --status running -q bundler)" ]; then
+    docker compose run --rm $TTY_OPTION bundler npm "$@"
+else
+    docker compose exec $TTY_OPTION bundler npm "$@"
 fi
