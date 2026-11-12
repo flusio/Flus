@@ -65,7 +65,8 @@ trait HasLinks
      * the link is copied to the user links but it's not saved in database
      * yet! (created_at will be null then)
      *
-     * Order of links is not preserved!
+     * Order of links is not preserved, and only one link is returned per URL
+     * (i.e. calculated from url_hash).
      *
      * @param Link[] $links
      *
@@ -74,47 +75,37 @@ trait HasLinks
     public function obtainLinks(array $links): array
     {
         // First, dispatch the links in two lists: owned and not owned links.
+        // Both lists are indexed by url_hash so the same URL is not copied (or
+        // returned) several times.
         $owned_links = [];
         $not_owned_links = [];
         foreach ($links as $link) {
             if ($this->isOwningLink($link)) {
-                $owned_links[] = $link;
-            } else {
-                $not_owned_links[] = $link;
+                $owned_links[$link->url_hash] = $link;
+                unset($not_owned_links[$link->url_hash]);
+            } elseif (!isset($owned_links[$link->url_hash])) {
+                $not_owned_links[$link->url_hash] ??= $link;
             }
         }
 
-        if (count($owned_links) === count($links)) {
+        if (!$not_owned_links) {
             // All the links are owned, so we have nothing more to do
-            return $links;
+            return array_values($owned_links);
         }
 
         // Complete the owned_links list with links owned by the user, from the
         // database.
         $urls = array_column($not_owned_links, 'url');
-        $urls_hashes = array_map(\App\utils\Belt::hashUrl(...), $urls);
-        $related_links = Link::listBy([
-            'user_id' => $this->id,
-            'url_hash' => $urls_hashes,
-        ]);
-        $owned_links = array_merge($owned_links, $related_links);
-
-        if (count($owned_links) === count($links)) {
-            return $owned_links;
-        }
+        $related_links = Link::listByUserAndUrls($this, $urls);
+        $owned_links += $related_links;
 
         // The last not owned links must be copied to the current user. These
-        // links will not have created_at set because they are not present in
-        // the database: they must be saved!
-        $new_links = [];
-        $related_urls = array_column($related_links, 'url');
-        foreach ($not_owned_links as $link) {
-            if (!in_array($link->url, $related_urls)) {
-                $new_links[] = Link::copy($link, $this);
-            }
+        // links must be saved in the database!
+        foreach ($not_owned_links as $url_hash => $link) {
+            $owned_links[$url_hash] ??= Link::copy($link, $this);
         }
 
-        return array_merge($owned_links, $new_links);
+        return array_values($owned_links);
     }
 
     /**

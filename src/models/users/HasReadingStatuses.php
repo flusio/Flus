@@ -150,13 +150,13 @@ trait HasReadingStatuses
      */
     public function transferUrlStatus(Link $old_link, Link $new_link): void
     {
-        $old_url_status = UrlStatus::findOrBuild($this, $old_link->url);
+        $old_url_status = UrlStatus::findOrBuild($this, $old_link);
 
         if (!$old_url_status->isPersisted()) {
             return;
         }
 
-        $new_url_status = UrlStatus::findOrBuild($this, $new_link->url);
+        $new_url_status = UrlStatus::findOrBuild($this, $new_link);
         $new_url_status->created_at ??= $old_url_status->created_at;
         $new_url_status->read_at ??= $old_url_status->read_at;
         $new_url_status->read_later_at ??= $old_url_status->read_later_at;
@@ -178,7 +178,7 @@ trait HasReadingStatuses
     {
         return $this->memoize(
             ['url_status', $link->url_hash],
-            fn(): UrlStatus => UrlStatus::findOrBuild($this, $link->url)
+            fn(): UrlStatus => UrlStatus::findOrBuild($this, $link)
         );
     }
 

@@ -50,10 +50,17 @@ trait OwnedByUser
 
     /**
      * Copy a Link to the given user.
+     *
+     * The URL is kept as it is (i.e. it is not sanitized again) so the copy
+     * has the same url_hash as the original link, even if the URL has been
+     * sanitized with older rules.
      */
     public static function copy(self $link, User $user): self
     {
         $link_copied = new self($link->url, $user, false);
+
+        $link_copied->url = $link->url;
+        $link_copied->url_hash = $link->url_hash;
 
         $link_copied->title = $link->title;
         $link_copied->url_feeds = $link->url_feeds;

@@ -38,12 +38,12 @@ class AtomImportator
     }
 
     /**
-     * Import the feed into the collection.
+     * Import the feed into the source.
      */
-    public function importForCollection(models\Source $source): void
+    public function importForSource(models\Source $source): void
     {
         // Extract the URLs of the entries first, so we only load the existing
-        // links of the collection that match these entries.
+        // links of the source that match these entries.
         $entries = [];
         $urls = [];
 
@@ -56,17 +56,26 @@ class AtomImportator
             $urls[] = \SpiderBits\Url::sanitize($entry->link);
         }
 
-        $link_ids_by_urls = models\Link::listUrlsToIdsBySource($source, $urls);
+        $link_ids_by_url_hashes = models\Link::listUrlHashesToIdsBySource($source, $urls);
         $owner = $source->owner();
+
+        // Load the links already owned by the owner of the source (if any),
+        // so they are added to the source instead of being duplicated.
+        if ($owner) {
+            $owned_links_by_url_hashes = models\Link::listByUserAndUrls($owner, $urls);
+        } else {
+            $owned_links_by_url_hashes = [];
+        }
 
         $links_to_create = [];
         $links_to_lists_to_create = [];
 
         foreach ($entries as $index => $entry) {
             $url = $urls[$index];
+            $url_hash = utils\Belt::hashUrl($url);
 
-            if (isset($link_ids_by_urls[$url])) {
-                // The URL is already associated to the collection, we have
+            if (isset($link_ids_by_url_hashes[$url_hash])) {
+                // The URL is already associated to the source, we have
                 // nothing more to do.
                 continue;
             }
@@ -77,18 +86,23 @@ class AtomImportator
                 $published_at = \Minz\Time::now();
             }
 
-            // The URL is not associated to the collection in database yet,
-            // so we create a new link.
-            $link = new models\Link($url, $owner, false);
-            $entry_title = trim($entry->title);
-            if ($entry_title) {
-                $link->title = $entry_title;
+            if (isset($owned_links_by_url_hashes[$url_hash])) {
+                // The owner already has a link with this URL, so we reuse it.
+                $link = $owned_links_by_url_hashes[$url_hash];
+            } else {
+                // The URL is not known yet, so we create a new link.
+                $link = new models\Link($url, $owner, false);
+                $entry_title = trim($entry->title);
+                if ($entry_title) {
+                    $link->title = $entry_title;
+                }
+                $link->created_at = \Minz\Time::now();
+
+                $links_to_create[] = $link;
             }
-            $link->created_at = \Minz\Time::now();
 
-            $links_to_create[] = $link;
-
-            $link_ids_by_urls[$link->url] = $link->id;
+            $link_ids_by_url_hashes[$link->url_hash] = $link->id;
+            $owned_links_by_url_hashes[$link->url_hash] = $link;
 
             $link_to_list = new models\LinkToList($link, $source);
             $link_to_list->created_at = $published_at;
@@ -108,15 +122,28 @@ class AtomImportator
      */
     public function importReadLater(models\User $user): void
     {
-        $links_to_create = [];
-        $urls_to_url_statuses_to_create = [];
+        // Extract the URLs of the entries first, so we only load the existing
+        // links of the user that match these entries.
+        $entries = [];
+        $urls = [];
 
         foreach ($this->feed->entries as $entry) {
             if (!$entry->link) {
                 continue;
             }
 
-            $url = \SpiderBits\Url::sanitize($entry->link);
+            $entries[] = $entry;
+            $urls[] = \SpiderBits\Url::sanitize($entry->link);
+        }
+
+        $links_by_url_hashes = models\Link::listByUserAndUrls($user, $urls);
+
+        $links_to_create = [];
+        $url_statuses_to_create = [];
+
+        foreach ($entries as $index => $entry) {
+            $url = $urls[$index];
+            $url_hash = utils\Belt::hashUrl($url);
 
             if ($entry->published_at) {
                 $published_at = $entry->published_at;
@@ -124,11 +151,12 @@ class AtomImportator
                 $published_at = \Minz\Time::now();
             }
 
-            $link = $user->findOrBuildLink($url);
-
-            if (!$link->isPersisted()) {
-                // There is no link with the given URL in database yet and we
-                // want to create it.
+            if (isset($links_by_url_hashes[$url_hash])) {
+                // The owner already has a link with this URL, so we reuse it.
+                $link = $links_by_url_hashes[$url_hash];
+            } else {
+                // The URL is not known yet, so we create a new link.
+                $link = new models\Link($url, $user, false);
                 $entry_title = trim($entry->title);
                 if ($entry_title) {
                     $link->title = $entry_title;
@@ -136,20 +164,21 @@ class AtomImportator
                 $link->created_at = \Minz\Time::now();
 
                 $links_to_create[] = $link;
+                $links_by_url_hashes[$link->url_hash] = $link;
             }
 
-            if (isset($urls_to_url_statuses_to_create[$url])) {
-                $url_status = $urls_to_url_statuses_to_create[$url];
+            if (isset($url_statuses_to_create[$link->url_hash])) {
+                $url_status = $url_statuses_to_create[$link->url_hash];
             } else {
-                $url_status = new models\UrlStatus($user, $url);
+                $url_status = new models\UrlStatus($user, $link);
                 $url_status->created_at = $published_at;
             }
 
             $url_status->read_later_at = $published_at;
-            $urls_to_url_statuses_to_create[$url] = $url_status;
+            $url_statuses_to_create[$link->url_hash] = $url_status;
         }
 
         models\Link::bulkInsert($links_to_create);
-        models\UrlStatus::bulkInsert($urls_to_url_statuses_to_create);
+        models\UrlStatus::bulkInsert($url_statuses_to_create);
     }
 }

@@ -94,6 +94,7 @@ class Wallabag
 
         // This will be used to check if URL has already been added by the user
         $urls = array_column($items, 'url');
+        $urls = array_map(\SpiderBits\Url::sanitize(...), $urls);
         $links_by_url_hashes = models\Link::listByUserAndUrls($user, $urls);
 
         // This will store the items that we effectively need to create. We
@@ -106,7 +107,7 @@ class Wallabag
         $notes = [];
 
         foreach ($items as $item) {
-            $url = $item['url'];
+            $url = \SpiderBits\Url::sanitize($item['url']);
 
             if (!\SpiderBits\Url::isValid($url)) {
                 continue;
@@ -158,7 +159,7 @@ class Wallabag
             if (isset($urls_to_url_statuses_to_create[$url])) {
                 $url_status = $urls_to_url_statuses_to_create[$url];
             } else {
-                $url_status = new models\UrlStatus($user, $url);
+                $url_status = new models\UrlStatus($user, $link);
                 $url_status->created_at = $published_at;
             }
 

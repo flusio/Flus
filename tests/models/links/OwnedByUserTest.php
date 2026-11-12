@@ -47,6 +47,24 @@ class OwnedByUserTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Link::exists($link_3->id));
     }
 
+    public function testCopyKeepsUrlEvenIfNotSanitized(): void
+    {
+        $user = UserFactory::create();
+        // The URL is not sanitized with the current rules (the scheme should
+        // be lowercased).
+        $url = 'HTTPS://example.org/report';
+        $link = LinkFactory::create([
+            'user_id' => UserFactory::create()->id,
+            'url' => $url,
+        ]);
+
+        $copied_link = models\Link::copy($link, $user);
+
+        $this->assertSame($url, $copied_link->url);
+        $this->assertSame($link->url_hash, $copied_link->url_hash);
+        $this->assertSame($user->id, $copied_link->user_id);
+    }
+
     public function testListByUser(): void
     {
         $user = UserFactory::create();

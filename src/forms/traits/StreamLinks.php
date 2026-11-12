@@ -82,12 +82,6 @@ trait StreamLinks
             'created_before' => $this->before ?? \Minz\Time::now(),
         ]);
 
-        // Deduplicate the links by url_hash: a stream can list the same URL
-        // several times (e.g. two sources publishing the same link), while
-        // obtainLinks() would create duplicated user links (the index on
-        // (user_id, url_hash) is not unique).
-        $stream_links = array_values(array_column($stream_links, null, 'url_hash'));
-
         if (!$obtain_links) {
             return $stream_links;
         }

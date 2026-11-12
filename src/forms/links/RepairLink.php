@@ -46,4 +46,27 @@ class RepairLink extends BaseForm
     {
         return $this->options->getBoolean('display_mark_as_accessible_field');
     }
+
+    #[Validable\Check]
+    public function checkUrlIsNotAlreadyOwned(): void
+    {
+        $link = $this->optionAs('link', models\Link::class);
+
+        if ($this->url === $link->url) {
+            return;
+        }
+
+        $url_is_already_owned = models\Link::existsBy([
+            'user_id' => $link->user_id,
+            'url_hash' => utils\Belt::hashUrl($this->url),
+        ]);
+
+        if ($url_is_already_owned) {
+            $this->addError(
+                'url',
+                'already_owned',
+                _('You already have a link with this URL.'),
+            );
+        }
+    }
 }

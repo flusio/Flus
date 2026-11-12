@@ -282,7 +282,7 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
             'url' => $old_url,
         ]);
         $other_link = LinkFactory::create([
-            'user_id' => $user->id,
+            'user_id' => UserFactory::create()->id,
             'url' => $new_url,
         ]);
         $user->markAsReadLater($link);
@@ -436,6 +436,34 @@ class RepairingTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 400);
         $this->assertResponseTemplateName($response, 'links/repairing/new.html.twig');
         $this->assertResponseContains($response, 'The link is invalid.');
+        $link = $link->reload();
+        $this->assertSame($old_url, $link->url);
+    }
+
+    public function testCreateFailsIfTheUrlIsAlreadyOwned(): void
+    {
+        $user = $this->login();
+        /** @var string */
+        $old_url = $this->fakeUnique('url');
+        /** @var string */
+        $new_url = $this->fakeUnique('url');
+        $link = LinkFactory::create([
+            'user_id' => $user->id,
+            'url' => $old_url,
+        ]);
+        LinkFactory::create([
+            'user_id' => $user->id,
+            'url' => $new_url,
+        ]);
+
+        $response = $this->appRun('POST', "/links/{$link->id}/repair", [
+            'url' => $new_url,
+            'force_sync' => false,
+            'csrf_token' => $this->csrfToken(forms\links\RepairLink::class),
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'You already have a link with this URL.');
         $link = $link->reload();
         $this->assertSame($old_url, $link->url);
     }

@@ -495,29 +495,30 @@ trait InLists
     }
 
     /**
-     * Return the list of url ids indexed by urls for the given source.
+     * Return the list of link ids indexed by url hashes for the given source.
      *
-     * Only the links matching the given URLs are returned.
+     * Only the links matching the given URLs are returned. The URLs must be
+     * sanitized.
      *
      * @param string[] $urls
      * @param positive-int $chunk_size
      *
      * @return array<string, string>
      */
-    public static function listUrlsToIdsBySource(
+    public static function listUrlHashesToIdsBySource(
         Source $source,
         array $urls,
         int $chunk_size = 500,
     ): array {
         $url_hashes = array_unique(array_map(Belt::hashUrl(...), $urls));
-        $link_ids_by_urls = [];
+        $link_ids_by_url_hashes = [];
 
         foreach (array_chunk($url_hashes, $chunk_size) as $chunk_url_hashes) {
             $values_as_question_marks = array_fill(0, count($chunk_url_hashes), '?');
             $values_placeholder = implode(', ', $values_as_question_marks);
 
             $sql = <<<SQL
-                SELECT l.url, l.id FROM links l, links_to_collections lc
+                SELECT l.url_hash, l.id FROM links l, links_to_collections lc
                 WHERE lc.link_id = l.id
                 AND lc.collection_id = ?
                 AND l.url_hash IN ({$values_placeholder})
@@ -527,10 +528,10 @@ trait InLists
             $statement = $database->prepare($sql);
             $statement->execute([$source->id, ...$chunk_url_hashes]);
 
-            $link_ids_by_urls += $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+            $link_ids_by_url_hashes += $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
         }
 
-        return $link_ids_by_urls;
+        return $link_ids_by_url_hashes;
     }
 
     /**

@@ -3,7 +3,6 @@
 namespace App\models;
 
 use App\models\database\BulkQueries;
-use App\utils;
 use Minz\Database;
 
 /**
@@ -37,11 +36,10 @@ class UrlStatus
     #[Database\Column]
     public ?\DateTimeImmutable $dismissed_at = null;
 
-    public function __construct(User $user, string $url)
+    public function __construct(User $user, Link $link)
     {
-        $url = \SpiderBits\Url::sanitize($url);
         $this->user_id = $user->id;
-        $this->url_hash = utils\Belt::hashUrl($url);
+        $this->url_hash = $link->url_hash;
     }
 
     public function isRead(): bool
@@ -304,17 +302,17 @@ class UrlStatus
     }
 
     /**
-     * Return the existing UrlStatus for this user and url if any, or build one otherwise.
+     * Return the existing UrlStatus for this user and link if any, or build one otherwise.
      */
-    public static function findOrBuild(User $user, string $url): self
+    public static function findOrBuild(User $user, Link $link): self
     {
         $url_status = self::findBy([
             'user_id' => $user->id,
-            'url_hash' => utils\Belt::hashUrl($url),
+            'url_hash' => $link->url_hash,
         ]);
 
         if (!$url_status) {
-            $url_status = new self($user, $url);
+            $url_status = new self($user, $link);
         }
 
         return $url_status;
@@ -350,7 +348,7 @@ class UrlStatus
         }
 
         foreach ($links as $link) {
-            $url_statuses_by_hashes[$link->url_hash] ??= new self($user, $link->url);
+            $url_statuses_by_hashes[$link->url_hash] ??= new self($user, $link);
         }
 
         return $url_statuses_by_hashes;

@@ -73,10 +73,12 @@ class Belt
 
     /**
      * Return the sha256 hash of the given url.
+     *
+     * The URL is hashed as it is, the same way as the database computes the
+     * links.url_hash column.
      */
     public static function hashUrl(string $url): string
     {
-        $url = \SpiderBits\Url::sanitize($url);
         return hash('sha256', $url);
     }
 

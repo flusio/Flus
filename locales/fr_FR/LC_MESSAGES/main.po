@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-11-06 22:41+0100\n"
-"PO-Revision-Date: 2026-11-06 22:41+0100\n"
+"POT-Creation-Date: 2026-11-12 18:54+0100\n"
+"PO-Revision-Date: 2026-11-12 18:54+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -124,7 +124,7 @@ msgstr ""
 msgid "You already have an ongoing exportation."
 msgstr "Vous avez déjà une exportation en cours."
 
-#: forms/Login.php:51 forms/security/AskResetPassword.php:47
+#: forms/Login.php:51 forms/security/AskResetPassword.php:45
 msgid "We can’t find any account with this email address."
 msgstr "Nous ne trouvons pas de compte associé à cette adresse courriel."
 
@@ -207,6 +207,10 @@ msgstr "Aucun flux valide n’a été détecté à cette adresse."
 msgid "You already have an ongoing OPML importation."
 msgstr "Vous avez déjà une importation OPML en cours."
 
+#: forms/links/RepairLink.php:68
+msgid "You already have a link with this URL."
+msgstr "Vous avez déjà un lien avec cette URL."
+
 #: forms/mastodon/AuthorizeMastodonAccount.php:23
 msgid "The authorization code is missing."
 msgstr "Le code d’autorisation est manquant."
@@ -215,7 +219,7 @@ msgstr "Le code d’autorisation est manquant."
 msgid "The URL is invalid."
 msgstr "L’URL est invalide."
 
-#: forms/mastodon/RequestMastodonAccount.php:56
+#: forms/mastodon/RequestMastodonAccount.php:54
 msgid "You already have configured a Mastodon account."
 msgstr "Vous avez déjà configuré un compte Mastodon."
 
@@ -282,7 +286,7 @@ msgstr "La langue est obligatoire."
 msgid "The locale is invalid."
 msgstr "La langue est invalide."
 
-#: forms/traits/ShareRecipient.php:54 forms/traits/UnshareRecipient.php:32
+#: forms/traits/ShareRecipient.php:52 forms/traits/UnshareRecipient.php:32
 msgid "This user doesn’t exist."
 msgstr "Cet‧te utilisateur‧ice n’existe pas."
 
@@ -356,11 +360,11 @@ msgid "[%s] Your account will be deleted soon due to inactivity"
 msgstr "[%s] Votre compte sera bientôt supprimé pour cause d’inactivité"
 
 #: models/Follow.php:51 models/Group.php:34 models/LinkList.php:46
-#: models/Stream.php:38 models/View.php:68
+#: models/Stream.php:42 models/View.php:68
 msgid "The name must be less than {max} characters."
 msgstr "Le nom ne doit pas faire plus de {max} caractères."
 
-#: models/Group.php:30 models/LinkList.php:42 models/Stream.php:34
+#: models/Group.php:30 models/LinkList.php:42 models/Stream.php:38
 #: models/View.php:65
 msgid "The name is required."
 msgstr "Le nom est obligatoire."
@@ -434,11 +438,11 @@ msgstr "Le nom d’utilisateur·ice ne doit pas contenir le caractère ‘@’."
 msgid "The user is required."
 msgstr "L’utilisateur·ice est obligatoire."
 
-#: models/View.php:379
+#: models/View.php:377
 msgid "Main view"
 msgstr "Vue principale"
 
-#: models/View.php:471
+#: models/View.php:469
 msgid "A view with this name already exists, please choose another one."
 msgstr "Une vue avec ce nom existe déjà, veuillez choisir un autre nom."
 
@@ -536,23 +540,23 @@ msgstr "Sources"
 msgid "Explore"
 msgstr "Explorer"
 
-#: navigations/ReadingNavigation.php:78
+#: navigations/ReadingNavigation.php:76
 msgid "New stream"
 msgstr "Nouveau fil"
 
-#: navigations/ReadingNavigation.php:91
+#: navigations/ReadingNavigation.php:89
 msgid "Create a stream to get started."
 msgstr "Créez un fil pour commencer."
 
-#: navigations/ReadingNavigation.php:96
+#: navigations/ReadingNavigation.php:94
 msgid "Streams"
 msgstr "Fils"
 
-#: navigations/ReadingNavigation.php:109
+#: navigations/ReadingNavigation.php:107
 msgid "Shared streams"
 msgstr "Fils partagés"
 
-#: navigations/ReadingNavigation.php:119
+#: navigations/ReadingNavigation.php:117
 msgid "Has unread links from the last seven days"
 msgstr "Contient des liens non lus datant des sept derniers jours"
 
@@ -598,12 +602,12 @@ msgstr "Tech"
 msgid "%s on Twitter: %s"
 msgstr "%s sur Twitter : %s"
 
-#: services/OpmlGenerator.php:69
+#: services/OpmlGenerator.php:65
 #, php-format
 msgid "%s’s sources"
 msgstr "Sources de %s"
 
-#: services/OpmlGenerator.php:103
+#: services/OpmlGenerator.php:104
 #, php-format
 msgid "%s’s collections"
 msgstr "Collections de %s"

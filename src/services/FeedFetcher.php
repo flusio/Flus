@@ -149,7 +149,7 @@ class FeedFetcher
         $urls = array_intersect_key($urls, $entries);
         $feed_entry_ids = array_intersect_key($feed_entry_ids, $entries);
 
-        $link_ids_by_urls = models\Link::listUrlsToIdsBySource($feed, $urls);
+        $link_ids_by_url_hashes = models\Link::listUrlHashesToIdsBySource($feed, $urls);
         $link_urls_by_entry_ids = models\Link::listEntryIdsToUrlsByFeed($feed, $feed_entry_ids);
 
         $links_to_create = [];
@@ -157,9 +157,10 @@ class FeedFetcher
 
         foreach ($entries as $index => $entry) {
             $url = $urls[$index];
+            $url_hash = utils\Belt::hashUrl($url);
             $feed_entry_id = $feed_entry_ids[$index];
 
-            if (isset($link_ids_by_urls[$url])) {
+            if (isset($link_ids_by_url_hashes[$url_hash])) {
                 // The URL is already associated to the feed, we have
                 // nothing more to do.
                 continue;
@@ -219,7 +220,7 @@ class FeedFetcher
 
                 $links_to_create[$link->id] = $link;
 
-                $link_ids_by_urls[$link->url] = $link->id;
+                $link_ids_by_url_hashes[$link->url_hash] = $link->id;
                 $link_urls_by_entry_ids[$link->feed_entry_id] = [
                     'id' => $link->id,
                     'url' => $link->url,

@@ -83,6 +83,7 @@ class Repairing extends BaseController
         auth\Access::require($user, 'update', $link);
 
         $form = new forms\links\RepairLink(options: [
+            'link' => $link,
             'display_mark_as_accessible_field' => $link->isInaccessibleToServer(),
         ]);
         $form->handleRequest($request);
@@ -100,6 +101,7 @@ class Repairing extends BaseController
             $old_link = models\Link::copy($link, $user);
 
             $link->url = $form->url;
+            $link->url_hash = utils\Belt::hashUrl($link->url);
             $link->save();
 
             // Transfer the URL status so the link stays in the "read" and "to
