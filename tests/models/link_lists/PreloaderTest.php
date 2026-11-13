@@ -49,7 +49,7 @@ class PreloaderTest extends \PHPUnit\Framework\TestCase
         Preloader::for([$feed])->publishers();
 
         $this->assertSame([], $feed->publishers());
-        $this->assertNull($feed->owner());
+        $this->assertNull($feed->user());
     }
 
     public function testCountStreamsForPreloadsTheNumberOfStreams(): void

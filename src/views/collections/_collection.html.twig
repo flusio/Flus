@@ -14,7 +14,7 @@
 
         <div class="flow flow--small">
             <p class="text--oneline">
-                {% set by = t('By %s', [collection.owner.username]) %}
+                {% set by = t('By %s', [collection.user.username]) %}
 
                 {% if display_number_links %}
                     {% set count_links = collection.countLinksByUser(app.user) %}

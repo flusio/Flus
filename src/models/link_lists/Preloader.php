@@ -51,7 +51,7 @@ class Preloader
     }
 
     /**
-     * Preload the publishers of the collections, that is their owner followed
+     * Preload the publishers of the collections, that is their user followed
      * by the users having a write access to them.
      */
     public function publishers(): self
@@ -83,9 +83,9 @@ class Preloader
         }
 
         foreach ($collections as $collection) {
-            $owner = $users_by_ids[$collection->user_id];
+            $collection_user = $users_by_ids[$collection->user_id];
 
-            $collection->preloadOwner($owner);
+            $collection->preloadUser($collection_user);
 
             $writers = [];
 
@@ -97,7 +97,7 @@ class Preloader
 
             $writers = Sorter::localeSort($writers, 'username');
 
-            array_unshift($writers, $owner);
+            array_unshift($writers, $collection_user);
 
             $collection->preloadPublishers($writers);
         }

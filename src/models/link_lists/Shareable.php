@@ -26,7 +26,7 @@ trait Shareable
     public function publishers(): array
     {
         return $this->memoize('publishers', function (): array {
-            $owner = $this->owner();
+            $collection_user = $this->user();
 
             $publishers = [];
 
@@ -36,7 +36,7 @@ trait Shareable
                 }
             }
 
-            array_unshift($publishers, $owner);
+            array_unshift($publishers, $collection_user);
 
             return $publishers;
         });

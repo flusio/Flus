@@ -113,7 +113,7 @@ class StreamView
         // The selected sources are checked against the sources of the stream,
         // as seen by its *owner* to verify that they belong to the stream.
         $selected_source_ids = $url_parameters->getArray('sources');
-        $stream_sources = $stream->sources(['context_user' => $stream->owner()]);
+        $stream_sources = $stream->sources(['context_user' => $stream->user()]);
 
         $this->sources = array_values(array_filter(
             $stream_sources,

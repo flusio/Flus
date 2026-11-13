@@ -52,9 +52,9 @@ abstract class Source extends LinkList
     }
 
     /**
-     * Return the owner of the source, if any.
+     * Return the user who created the source, if any.
      */
-    public function owner(): ?User
+    public function user(): ?User
     {
         return null;
     }

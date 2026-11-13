@@ -18,7 +18,7 @@ abstract class ReadingStatusList
 
     abstract public function url(): string;
 
-    abstract public function owner(): User;
+    abstract public function user(): User;
 
     /**
      * @return Link[]

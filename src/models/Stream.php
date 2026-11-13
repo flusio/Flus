@@ -18,10 +18,10 @@ class Stream
     use Database\Resource;
     use Validable;
     use media\HasImage;
+    use streams\CreatedByUser;
     use streams\HasLinks;
     use streams\HasSources;
     use streams\HasViews;
-    use streams\OwnedByUser;
     use streams\Shareable;
     use utils\Memoizer;
 
@@ -55,7 +55,7 @@ class Stream
     public function __construct(User $user)
     {
         $this->id = \Minz\Random::timebased();
-        $this->setOwner($user);
+        $this->setUser($user);
     }
 
     public function name(): string
@@ -73,7 +73,7 @@ class Stream
      */
     public function descriptionAsHtml(): string
     {
-        $markdown = new utils\MiniMarkdown(context_user: $this->owner());
+        $markdown = new utils\MiniMarkdown(context_user: $this->user());
         return $markdown->text($this->description());
     }
 

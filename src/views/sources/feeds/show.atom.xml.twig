@@ -11,10 +11,10 @@
     <link href="{{ url_full('source feed', { id: source.id }) }}" rel="self" type="application/atom+xml" />
 
     <id>{{ source.tagUri }}</id>
-    {% set owner = source.owner %}
-    {% if owner %}
+    {% set source_user = source.user %}
+    {% if source_user %}
         <author>
-            <name>{{ owner.username }}</name>
+            <name>{{ source_user.username }}</name>
         </author>
     {% endif %}
     <generator>{{ app.user_agent }}</generator>

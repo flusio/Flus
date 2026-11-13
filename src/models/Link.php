@@ -21,12 +21,12 @@ class Link
     use BulkQueries;
     use Database\Recordable;
     use Database\Resource;
+    use links\AddedByUser;
     use links\Annotable;
     use links\Fetchable;
     use links\InLists;
     use links\InJournal;
     use links\InStreams;
-    use links\OwnedByUser;
     use links\Prunable;
     use links\Reachable;
     use links\Readable;
@@ -119,7 +119,7 @@ class Link
         $this->url = $url;
         $this->url_hash = utils\Belt::hashUrl($url);
         $this->is_hidden = $is_hidden;
-        $this->setOwner($user);
+        $this->setUser($user);
     }
 
     /**

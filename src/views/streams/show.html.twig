@@ -37,8 +37,8 @@
 {% block opengraph %}
     {{ include('layouts/_opengraph.html.twig', {
         title: stream.name,
-        description: t('A stream created by %s on %s.', [stream.owner.username, app.brand]),
-        locale: stream.owner.locale ?? app.locale,
+        description: t('A stream created by %s on %s.', [stream.user.username, app.brand]),
+        locale: stream.user.locale ?? app.locale,
         url: url_full('stream', { id: stream.id }),
         image: url_media_full('covers', stream.image_filename, 'stream-card.png'),
     }) }}
@@ -111,9 +111,9 @@
 
             <p>
                 {{ t('By') }}
-                <a class="username" href="{{ url('profile', { id: stream.owner.id }) }}">
-                    <img class="avatar avatar--mini" alt="" src="{{ url_avatar(stream.owner.avatar_filename) }}">
-                    {{- stream.owner.username -}}
+                <a class="username" href="{{ url('profile', { id: stream.user.id }) }}">
+                    <img class="avatar avatar--mini" alt="" src="{{ url_avatar(stream.user.avatar_filename) }}">
+                    {{- stream.user.username -}}
                 </a>
             </p>
 

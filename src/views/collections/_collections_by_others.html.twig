@@ -1,16 +1,16 @@
 <ul class="list--collections-others list list--nostyle flow flow--smaller">
     {% for collection in collections %}
         {% set other_link = collection.linkNotOwnedByUrl(app.user, link.url_hash) %}
-        {% set link_owner = other_link.owner %}
-        {% set collection_owner = collection.owner %}
-        {% if link_owner and collection_owner %}
+        {% set link_user = other_link.user %}
+        {% set collection_user = collection.user %}
+        {% if link_user and collection_user %}
             <li class="list__item" data-link-id="{{ other_link.id }}">
-                <img class="avatar" src="{{ url_avatar(link_owner.avatar_filename) }}" alt="">
+                <img class="avatar" src="{{ url_avatar(link_user.avatar_filename) }}" alt="">
 
-                {% if collection_owner.id === app.user.id %}
-                    {{ t('<strong>%s</strong> added this link to <strong>%s</strong>.', [link_owner.username | escape, collection.nameByUser(app.user) | escape]) | raw }}
+                {% if collection_user.id === app.user.id %}
+                    {{ t('<strong>%s</strong> added this link to <strong>%s</strong>.', [link_user.username | escape, collection.nameByUser(app.user) | escape]) | raw }}
                 {% else %}
-                    {{ t('<strong>%s</strong> added this link to <strong>%s</strong> (shared by %s).', [link_owner.username | escape, collection.nameByUser(app.user) | escape, collection_owner.username | escape]) | raw }}
+                    {{ t('<strong>%s</strong> added this link to <strong>%s</strong> (shared by %s).', [link_user.username | escape, collection.nameByUser(app.user) | escape, collection_user.username | escape]) | raw }}
                 {% endif %}
             </li>
         {% endif %}

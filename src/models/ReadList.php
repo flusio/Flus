@@ -11,7 +11,7 @@ use App\utils;
 class ReadList extends ReadingStatusList
 {
     public function __construct(
-        private readonly User $owner,
+        private readonly User $user,
     ) {
     }
 
@@ -30,9 +30,9 @@ class ReadList extends ReadingStatusList
         return \Minz\Url::absoluteFor('read list');
     }
 
-    public function owner(): User
+    public function user(): User
     {
-        return $this->owner;
+        return $this->user;
     }
 
     /**
@@ -40,12 +40,12 @@ class ReadList extends ReadingStatusList
      */
     public function links(?utils\Pagination $pagination = null): array
     {
-        return Link::listRead($this->owner, $pagination);
+        return Link::listRead($this->user, $pagination);
     }
 
     public function countLinks(): int
     {
-        return Link::countRead($this->owner);
+        return Link::countRead($this->user);
     }
 
     /**
@@ -56,7 +56,7 @@ class ReadList extends ReadingStatusList
     public function tagUri(): string
     {
         $host = \App\Configuration::$url_options['host'];
-        $date = $this->owner->created_at->format('Y-m-d');
-        return "tag:{$host},{$date}:{$this->owner->id}/read";
+        $date = $this->user->created_at->format('Y-m-d');
+        return "tag:{$host},{$date}:{$this->user->id}/read";
     }
 }

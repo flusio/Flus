@@ -8,10 +8,10 @@
     <link href="{{ link.url }}" rel="via" type="text/html" />
 
     <id>{{ link.tagUri }}</id>
-    {% set owner = link.owner %}
-    {% if owner %}
+    {% set link_user = link.user %}
+    {% if link_user %}
         <author>
-            <name>{{ owner.username }}</name>
+            <name>{{ link_user.username }}</name>
         </author>
     {% endif %}
     <generator>{{ app.user_agent }}</generator>

@@ -44,7 +44,7 @@ class Feeds extends BaseController
 
         auth\Access::require($user, 'view', $stream);
 
-        utils\Locale::setCurrentLocale($stream->owner()->locale);
+        utils\Locale::setCurrentLocale($stream->user()->locale);
 
         $view = null;
         $links_options = [

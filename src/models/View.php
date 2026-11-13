@@ -427,7 +427,7 @@ class View
         $stream_source_ids = [];
         $stream = $this->stream();
         if ($stream) {
-            $stream_sources = $stream->sources(['context_user' => $stream->owner()]);
+            $stream_sources = $stream->sources(['context_user' => $stream->user()]);
             $stream_source_ids = array_column($stream_sources, 'id');
         }
 
