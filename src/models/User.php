@@ -32,6 +32,7 @@ class User
     use users\HasPreferences;
     use users\HasReadingStatuses;
     use users\HasStreams;
+    use users\IsOwner;
     use users\Statistics;
     use utils\Memoizer;
     use Validable;

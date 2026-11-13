@@ -18,6 +18,7 @@ class Follow
     use BulkQueries;
     use Database\Recordable;
     use media\HasImage;
+    use ownership\Ownable;
     use Validable;
     use utils\Memoizer;
 

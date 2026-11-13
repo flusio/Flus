@@ -18,6 +18,7 @@ class Stream
     use Database\Resource;
     use Validable;
     use media\HasImage;
+    use ownership\Ownable;
     use streams\CreatedByUser;
     use streams\HasLinks;
     use streams\HasSources;

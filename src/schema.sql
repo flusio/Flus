@@ -58,6 +58,20 @@ CREATE TABLE users (
         DEFAULT date_trunc('second', NOW() + INTERVAL '1 month')
 );
 
+CREATE TABLE owners (
+    id TEXT PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL,
+    type TEXT NOT NULL,
+    user_id TEXT REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE,
+
+    CHECK (
+        (type = 'user' AND user_id IS NOT NULL)
+        OR (type = 'system' AND user_id IS NULL)
+    )
+);
+
+CREATE UNIQUE INDEX idx_owners_user_id ON owners(user_id);
+
 CREATE INDEX idx_users_email ON users(email);
 
 CREATE TABLE feature_flags (
@@ -146,6 +160,7 @@ CREATE TABLE collections (
     image_filename TEXT,
     image_fetched_at TIMESTAMPTZ,
     user_id TEXT REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE,
+    owner_id TEXT,
     group_id TEXT REFERENCES groups ON DELETE SET NULL ON UPDATE CASCADE,
     publication_frequency_per_year INTEGER NOT NULL DEFAULT 0,
 
@@ -196,6 +211,7 @@ CREATE TABLE links (
     url_hash TEXT GENERATED ALWAYS AS (encode(digest(url, 'sha256'), 'hex')) STORED,
 
     user_id TEXT REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE,
+    owner_id TEXT,
     source_id TEXT REFERENCES collections ON DELETE SET NULL ON UPDATE CASCADE
 );
 
@@ -245,6 +261,7 @@ CREATE TABLE followed_collections (
     name TEXT NOT NULL DEFAULT '',
     image_filename TEXT,
     user_id TEXT REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE,
+    owner_id TEXT,
     collection_id TEXT REFERENCES collections ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -261,7 +278,8 @@ CREATE TABLE streams (
     display_unread_in_sidenav BOOLEAN NOT NULL DEFAULT true,
     image_filename TEXT,
 
-    user_id TEXT REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE
+    user_id TEXT REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE,
+    owner_id TEXT
 );
 
 CREATE INDEX idx_streams_user_id ON streams(user_id);

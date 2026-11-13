@@ -33,6 +33,7 @@ class Link
     use links\Statistics;
     use links\Taggable;
     use media\HasImage;
+    use ownership\Ownable;
     use utils\Memoizer;
     use Validable;
 

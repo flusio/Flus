@@ -26,6 +26,7 @@ abstract class LinkList
     use Database\Recordable;
     use Database\Resource;
     use link_lists\HasLinks;
+    use ownership\Ownable;
     use utils\Memoizer;
     use Validable;
 
