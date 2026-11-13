@@ -76,10 +76,10 @@ class Sources extends BaseController
         }
 
         $can_update = auth\Access::can($user, 'update', $source);
+        $can_view_hidden_links = auth\Access::can($user, 'viewHiddenLinks', $source);
 
-        $access_is_shared = $user && $source->sharedWith($user);
         $number_links = models\Link::countByList($source, [
-            'hidden' => $can_update || $access_is_shared,
+            'hidden' => $can_view_hidden_links,
         ]);
         $number_per_page = $can_update ? 29 : 30; // the button to add a link counts for 1!
         $pagination_page = $request->parameters->getInteger('page', 1);
@@ -89,7 +89,7 @@ class Sources extends BaseController
         $topics = utils\Sorter::localeSort($topics, 'label');
 
         $links = $source->links([
-            'hidden' => $can_update || $access_is_shared,
+            'hidden' => $can_view_hidden_links,
             'offset' => $pagination->currentOffset(),
             'limit' => $pagination->numberPerPage(),
         ]);
