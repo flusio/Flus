@@ -11,12 +11,20 @@ namespace App\images;
 class Image
 {
     /**
-     * The maximum number of pixels of an image that can be loaded.
+     * The maximum number of pixels of an image that can be loaded, whatever
+     * the memory limit is.
      *
-     * GD needs about 5 bytes per pixel to load an image, so this limit
-     * prevents images from exhausting the memory.
+     * @see self::maxPixels
      */
     public const MAX_PIXELS = 25_000_000;
+
+    /**
+     * The approximate number of bytes per pixel that GD needs to load an image.
+     *
+     * A loaded image takes about 4 bytes per pixel, but decoding a PNG with
+     * transparency can need up to 8 bytes: we consider the worst case.
+     */
+    private const BYTES_PER_PIXEL = 8;
 
     private \GdImage $resource;
 
@@ -32,11 +40,33 @@ class Image
     }
 
     /**
+     * Return the maximum number of pixels available to load an image.
+     *
+     * It is deduced from the memory limit of PHP (without exceeding MAX_PIXELS),
+     * so that loading an image never needs more than three quarters of it. It
+     * should be enough to prevent images from exhausting the memory.
+     */
+    public static function maxPixels(): int
+    {
+        $memory_limit_bytes = ini_parse_quantity(ini_get('memory_limit'));
+
+        if ($memory_limit_bytes <= 0) {
+            // The memory is not limited.
+            return self::MAX_PIXELS;
+        }
+
+        $usable_memory_bytes = $memory_limit_bytes * 0.75;
+        $max_pixels = intval($usable_memory_bytes / self::BYTES_PER_PIXEL);
+
+        return min($max_pixels, self::MAX_PIXELS);
+    }
+
+    /**
      * Initialize an image from a string
      *
      * @throws \DomainException
      *     If the string cannot be read as an image, or if the image has more
-     *     than MAX_PIXELS pixels.
+     *     pixels than what maxPixels() allows.
      */
     public static function fromString(string $string_image): self
     {
@@ -48,7 +78,7 @@ class Image
 
         [$width, $height] = $size;
 
-        if ($width * $height > self::MAX_PIXELS) {
+        if ($width * $height > self::maxPixels()) {
             throw new \DomainException("The image is too large ({$width}x{$height}px)");
         }
 
