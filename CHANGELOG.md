@@ -1,5 +1,49 @@
 # Changelog of Flus
 
+## 2026-11-13 - v3.0.2
+
+### Features
+
+- Allow to filter streams' links by publication date ([a419d079](https://github.com/flusio/Flus/commit/a419d079))
+
+### Bug fixes
+
+- Avoid duplicating links ([9a93322a](https://github.com/flusio/Flus/commit/9a93322a))
+- Check images are not too large before saving them ([f94fb62e](https://github.com/flusio/Flus/commit/f94fb62e), [7a6e3c17](https://github.com/flusio/Flus/commit/7a6e3c17))
+- Wrap long tag labels ([01c9cfb2](https://github.com/flusio/Flus/commit/01c9cfb2))
+- Stop checking journal candidates after leaving the page ([afe823a4](https://github.com/flusio/Flus/commit/afe823a4))
+- Handle invalid `null` values in the API ([ab416936](https://github.com/flusio/Flus/commit/ab416936))
+
+### Maintenance
+
+- Update the dependencies ([d36fcc0c](https://github.com/flusio/Flus/commit/d36fcc0c), [72a21456](https://github.com/flusio/Flus/commit/72a21456), [e13181a5](https://github.com/flusio/Flus/commit/e13181a5), [e26699f9](https://github.com/flusio/Flus/commit/e26699f9), [4acf3e2f](https://github.com/flusio/Flus/commit/4acf3e2f))
+- Improve performance when getting journal candidates ([e237933c](https://github.com/flusio/Flus/commit/e237933c))
+- Improve performance when counting links in feeds ([ea1ba799](https://github.com/flusio/Flus/commit/ea1ba799))
+- Improve performance when cleaning media ([85a98a25](https://github.com/flusio/Flus/commit/85a98a25))
+- Add an index on `collections.feed_url` ([dff74a78](https://github.com/flusio/Flus/commit/dff74a78))
+- Add collection shares `NOT NULL` and index ([b712039f](https://github.com/flusio/Flus/commit/b712039f))
+
+### Documentation
+
+- Recommend to disable PostgreSQL JIT compilation ([2aa572e8](https://github.com/flusio/Flus/commit/2aa572e8))
+
+### Developers
+
+- Fix and homogenize the docker/bin scripts ([cadab1e1](https://github.com/flusio/Flus/commit/cadab1e1))
+- Refactor handling images ([cdde8d72](https://github.com/flusio/Flus/commit/cdde8d72), [af85ec38](https://github.com/flusio/Flus/commit/af85ec38), [536dabe1](https://github.com/flusio/Flus/commit/536dabe1))
+- Refactor building Memoizer keys ([e66a4f83](https://github.com/flusio/Flus/commit/e66a4f83))
+- Refactor the Collection model ([3a92be85](https://github.com/flusio/Flus/commit/3a92be85), [7caee897](https://github.com/flusio/Flus/commit/7caee897), [0dfb1432](https://github.com/flusio/Flus/commit/0dfb1432), [c1abb857](https://github.com/flusio/Flus/commit/c1abb857), [987c56d8](https://github.com/flusio/Flus/commit/987c56d8), [d2ee1382](https://github.com/flusio/Flus/commit/d2ee1382), [928b9bf5](https://github.com/flusio/Flus/commit/928b9bf5), [c95a1498](https://github.com/flusio/Flus/commit/c95a1498), [1ee36e9a](https://github.com/flusio/Flus/commit/1ee36e9a))
+- Refactor the User model ([8efdbf50](https://github.com/flusio/Flus/commit/8efdbf50), [ca6ce8f4](https://github.com/flusio/Flus/commit/ca6ce8f4))
+- Refactor Pivot models with a dedicated class ([01f68361](https://github.com/flusio/Flus/commit/01f68361), [e94d5efe](https://github.com/flusio/Flus/commit/e94d5efe), [6b034594](https://github.com/flusio/Flus/commit/6b034594), [6d22d18f](https://github.com/flusio/Flus/commit/6d22d18f))
+- Split Stream into several traits ([4b6bb49d](https://github.com/flusio/Flus/commit/4b6bb49d))
+- Always compute link publication date in `list` methods ([c6f0fa3b](https://github.com/flusio/Flus/commit/c6f0fa3b))
+- Move last classes from the dao folder ([51ba1c25](https://github.com/flusio/Flus/commit/51ba1c25))
+- Preload collection and stream shares ([fdfce922](https://github.com/flusio/Flus/commit/fdfce922))
+- Refactor getting link count in lists ([83953f01](https://github.com/flusio/Flus/commit/83953f01))
+- Move Fetchable trait under links ([b900dc08](https://github.com/flusio/Flus/commit/b900dc08))
+- Refactor checking access to hidden links ([1bc18019](https://github.com/flusio/Flus/commit/1bc18019))
+- Improve performance of `LinkList::sharedWith` ([edfe60fa](https://github.com/flusio/Flus/commit/edfe60fa))
+
 ## 2026-10-28 - v3.0.1
 
 ### Features
