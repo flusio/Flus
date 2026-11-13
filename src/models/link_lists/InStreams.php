@@ -68,6 +68,7 @@ trait InStreams
             WHERE c.id = fc.collection_id
             AND sf.follow_id = fc.id
             AND sf.stream_id = :stream_id
+            AND c.type IN ('collection', 'feed')
             AND {$visibility_clause}
         SQL;
 
@@ -122,6 +123,7 @@ trait InStreams
             WHERE c.id = fc.collection_id
             AND sf.follow_id = fc.id
             AND sf.stream_id IN ({$stream_ids_statement})
+            AND c.type IN ('collection', 'feed')
             AND {$visibility_clause}
         SQL;
 

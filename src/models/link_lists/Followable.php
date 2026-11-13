@@ -91,6 +91,7 @@ trait Followable
 
             WHERE fc.collection_id = c.id
             AND fc.user_id = :user_id
+            AND c.type IN ('collection', 'feed')
             AND {$visibility_clause}
         SQL;
 
