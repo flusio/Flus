@@ -121,6 +121,12 @@ class Link
         $this->url_hash = utils\Belt::hashUrl($url);
         $this->is_hidden = $is_hidden;
         $this->setUser($user);
+
+        if ($user) {
+            $this->setOwner($user->owner());
+        } else {
+            $this->setOwner(SystemOwner::get());
+        }
     }
 
     /**

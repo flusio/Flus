@@ -57,6 +57,7 @@ class Stream
     {
         $this->id = \Minz\Random::timebased();
         $this->setUser($user);
+        $this->setOwner($user->owner());
     }
 
     public function name(): string

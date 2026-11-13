@@ -58,6 +58,7 @@ class Follow
         $this->time_filter = 'normal';
         $this->user_id = $user->id;
         $this->collection_id = $source->id;
+        $this->setOwner($user->owner());
     }
 
     public static function findOrCreate(User $user, Source $source): self
@@ -67,6 +68,7 @@ class Follow
             'collection_id' => $source->id,
         ], [
             'time_filter' => 'normal',
+            'owner_id' => $user->owner()->id,
         ]);
     }
 

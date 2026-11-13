@@ -32,6 +32,8 @@ class FeedFactory extends Database\Factory
             'feed_url' => fn() => $faker->url,
 
             'is_public' => true,
+
+            'owner_id' => fn(): string => models\SystemOwner::get()->id,
         ];
     }
 }

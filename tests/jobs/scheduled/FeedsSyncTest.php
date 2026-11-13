@@ -104,8 +104,11 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($feed->image_fetched_at);
         $this->assertNotEmpty($feed->image_filename);
         $this->assertNull($feed->locked_at);
-        $links_number = count($feed->links());
-        $this->assertSame(3, $links_number);
+        $links = $feed->links();
+        $this->assertSame(3, count($links));
+        $this->assertSame(models\SystemOwner::ID, $links[0]->owner_id);
+        $this->assertSame(models\SystemOwner::ID, $links[1]->owner_id);
+        $this->assertSame(models\SystemOwner::ID, $links[2]->owner_id);
 
         $this->assertSame(3, http\FetchLog::count());
         $fetch_log1 = http\FetchLog::take(0);

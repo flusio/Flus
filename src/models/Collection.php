@@ -32,7 +32,8 @@ class Collection extends Source
         $collection->name = trim($name);
         $collection->description = trim($description);
         $collection->is_public = $is_public;
-        $collection->user_id = $user->id;
+        $collection->setUser($user);
+        $collection->setOwner($user->owner());
 
         return $collection;
     }

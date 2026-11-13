@@ -521,6 +521,7 @@ class FollowsTest extends \PHPUnit\Framework\TestCase
         $follow = models\Follow::take();
         $this->assertNotNull($follow);
         $this->assertSame($user->id, $follow->user_id);
+        $this->assertSame($user->owner()->id, $follow->owner_id);
         $this->assertSame($collection->id, $follow->collection_id);
     }
 

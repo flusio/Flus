@@ -95,6 +95,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($feed);
         $this->assertResponseCode($response, 302, "/collections/{$feed->id}");
         $this->assertSame($feed_url, $feed->feed_url);
+        $this->assertSame(models\SystemOwner::ID, $feed->owner_id);
         $this->assertTrue($user->isFollowing($feed));
     }
 

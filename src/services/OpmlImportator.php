@@ -63,6 +63,7 @@ class OpmlImportator
                     'user_id' => $user->id,
                 ], [
                     'id' => \Minz\Random::timebased(),
+                    'owner_id' => $user->owner()->id,
                 ]);
 
                 $stream_id = $stream->id;

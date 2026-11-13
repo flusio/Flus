@@ -728,10 +728,10 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
             'validation_token' => $token->token,
         ]);
         $collection = CollectionFactory::create([
-            'user_id' => $user->id,
+            'owner_id' => $user->owner()->id,
         ]);
         LinkFactory::create([
-            'user_id' => $user->id,
+            'owner_id' => $user->owner()->id,
         ]);
 
         $cleaner_job->perform();
@@ -768,10 +768,10 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
             'validation_token' => $token->token,
         ]);
         $collection = CollectionFactory::create([
-            'user_id' => $user->id,
+            'owner_id' => $user->owner()->id,
         ]);
         $link = LinkFactory::create([
-            'user_id' => $user->id,
+            'owner_id' => $user->owner()->id,
         ]);
 
         $cleaner_job->perform();

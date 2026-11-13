@@ -47,7 +47,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateCreatesCollectionAndRedirects(): void
     {
-        $this->login();
+        $user = $this->login();
         /** @var string */
         $name = $this->fake('words', 3, true);
         /** @var string */
@@ -68,6 +68,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($name, $collection->name);
         $this->assertSame($description, $collection->description);
         $this->assertFalse($collection->is_public);
+        $this->assertSame($user->owner()->id, $collection->owner_id);
     }
 
     public function testCreateAllowsToCreatePublicCollections(): void

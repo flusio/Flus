@@ -22,6 +22,7 @@ class Journal extends LinkList
         $this->name = _('Journal');
         $this->type = 'journal';
         $this->setUser($user);
+        $this->setOwner($user->owner());
     }
 
     /**

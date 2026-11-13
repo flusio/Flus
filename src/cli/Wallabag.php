@@ -90,6 +90,7 @@ class Wallabag
         ], [
             'id' => \Minz\Random::timebased(),
             'description' => _('All your links imported from wallabag.'),
+            'owner_id' => $user->owner()->id,
         ]);
 
         // This will be used to check if URL has already been added by the user
