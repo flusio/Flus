@@ -61,16 +61,29 @@ trait Shareable
      */
     public function shares(): array
     {
-        return $this->memoize('shares', function (): array {
-            $collection_shares = CollectionShare::listBy([
-                'collection_id' => $this->id,
-            ]);
+        return $this->memoize('shares_sorted', fn (): array => Sorter::localeSort(
+            $this->unsortedShares(),
+            fn (CollectionShare $share): string => $share->user()->username,
+        ));
+    }
 
-            return Sorter::localeSort(
-                $collection_shares,
-                fn (CollectionShare $share): string => $share->user()->username,
-            );
-        });
+    /**
+     * Return the shares of the collection, in no particular order.
+     *
+     * Unlike shares(), it doesn't load the users to sort the shares. It is
+     * better to use this method when only shares matter (e.g. to check an access).
+     *
+     * @return CollectionShare[]
+     */
+    private function unsortedShares(): array
+    {
+        if ($this->isMemoized('shares_sorted')) {
+            return $this->shares();
+        }
+
+        return $this->memoize('shares_unsorted', fn (): array => CollectionShare::listBy([
+            'collection_id' => $this->id,
+        ]));
     }
 
     /**
@@ -84,7 +97,7 @@ trait Shareable
      */
     public function preloadShares(array $shares): void
     {
-        $this->memoizeValue('shares', $shares);
+        $this->memoizeValue('shares_sorted', $shares);
     }
 
     /**
@@ -97,7 +110,7 @@ trait Shareable
         $collection_share = new CollectionShare($user, $this, $access_type);
         $collection_share->save();
 
-        $this->unmemoize('shares');
+        $this->unmemoizePrefixed('shares_');
         $this->unmemoizePrefixed('count_links_');
         $this->unmemoize('publishers');
     }
@@ -112,7 +125,7 @@ trait Shareable
             'user_id' => $user->id,
         ]);
 
-        $this->unmemoize('shares');
+        $this->unmemoizePrefixed('shares_');
         $this->unmemoizePrefixed('count_links_');
         $this->unmemoize('publishers');
     }
@@ -131,7 +144,7 @@ trait Shareable
     public function sharedWith(User $user, string $access_type = 'any'): bool
     {
         $existing_collection_share = ArrayHelper::find(
-            $this->shares(),
+            $this->unsortedShares(),
             fn (CollectionShare $collection_share): bool => $collection_share->user_id === $user->id,
         );
 
