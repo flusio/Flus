@@ -47,7 +47,7 @@ class StreamToFollow
         SQL;
 
         $parameters = [
-            'user_id' => $stream->owner()->id,
+            'user_id' => $stream->user()->id,
             'source_id' => $source->id,
             'stream_id' => $stream->id,
         ];
@@ -66,7 +66,7 @@ class StreamToFollow
 
     public static function findOrCreate(Stream $stream, Source $source): self
     {
-        $follow = Follow::findOrCreate($stream->owner(), $source);
+        $follow = Follow::findOrCreate($stream->user(), $source);
 
         return self::findOrCreateBy([
             'stream_id' => $stream->id,

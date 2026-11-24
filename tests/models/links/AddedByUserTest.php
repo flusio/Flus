@@ -9,7 +9,7 @@ use tests\factories\LinkFactory;
 use tests\factories\NoteFactory;
 use tests\factories\UserFactory;
 
-class OwnedByUserTest extends \PHPUnit\Framework\TestCase
+class AddedByUserTest extends \PHPUnit\Framework\TestCase
 {
     use \Minz\Tests\InitializerHelper;
     use \tests\FakerHelper;

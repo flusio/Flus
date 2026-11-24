@@ -6,31 +6,31 @@ use App\models\User;
 use Minz\Database;
 
 /**
- * Add the relation between a stream and the user who owns it.
+ * Add the relation between a stream and the user who created it.
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-trait OwnedByUser
+trait CreatedByUser
 {
     #[Database\Column]
     public string $user_id;
 
     /**
-     * Return the owner of the stream.
+     * Return the user who created the stream.
      */
-    public function owner(): User
+    public function user(): User
     {
-        return $this->memoize('owner', fn(): User => User::require($this->user_id));
+        return $this->memoize('user', fn(): User => User::require($this->user_id));
     }
 
     /**
-     * Set the owner of the stream.
+     * Set the user who created the stream.
      */
-    public function setOwner(User $user): void
+    public function setUser(User $user): void
     {
         $this->user_id = $user->id;
-        $this->memoizeValue('owner', $user);
+        $this->memoizeValue('user', $user);
     }
 
     /**

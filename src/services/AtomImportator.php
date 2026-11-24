@@ -57,12 +57,12 @@ class AtomImportator
         }
 
         $link_ids_by_url_hashes = models\Link::listUrlHashesToIdsBySource($source, $urls);
-        $owner = $source->owner();
+        $source_user = $source->user();
 
-        // Load the links already owned by the owner of the source (if any),
+        // Load the links already added by the user of the source (if any),
         // so they are added to the source instead of being duplicated.
-        if ($owner) {
-            $owned_links_by_url_hashes = models\Link::listByUserAndUrls($owner, $urls);
+        if ($source_user) {
+            $owned_links_by_url_hashes = models\Link::listByUserAndUrls($source_user, $urls);
         } else {
             $owned_links_by_url_hashes = [];
         }
@@ -87,11 +87,11 @@ class AtomImportator
             }
 
             if (isset($owned_links_by_url_hashes[$url_hash])) {
-                // The owner already has a link with this URL, so we reuse it.
+                // The user already has a link with this URL, so we reuse it.
                 $link = $owned_links_by_url_hashes[$url_hash];
             } else {
                 // The URL is not known yet, so we create a new link.
-                $link = new models\Link($url, $owner, false);
+                $link = new models\Link($url, $source_user, false);
                 $entry_title = trim($entry->title);
                 if ($entry_title) {
                     $link->title = $entry_title;
@@ -152,7 +152,7 @@ class AtomImportator
             }
 
             if (isset($links_by_url_hashes[$url_hash])) {
-                // The owner already has a link with this URL, so we reuse it.
+                // The user already has a link with this URL, so we reuse it.
                 $link = $links_by_url_hashes[$url_hash];
             } else {
                 // The URL is not known yet, so we create a new link.

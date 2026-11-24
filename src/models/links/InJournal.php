@@ -27,7 +27,7 @@ trait InJournal
     public static function listCandidatesForJournal(Journal $journal, int $max): array
     {
         $values = [
-            ':user_id' => $journal->owner()->id,
+            ':user_id' => $journal->user()->id,
             ':until_hard_limit' => \Minz\Time::ago(1, 'year')->format(Database\Column::DATETIME_FORMAT),
             ':until_strict' => \Minz\Time::ago(1, 'day')->format(Database\Column::DATETIME_FORMAT),
             ':until_normal' => \Minz\Time::ago(1, 'week')->format(Database\Column::DATETIME_FORMAT),
@@ -114,7 +114,7 @@ trait InJournal
     public static function anyCandidateForJournal(Journal $journal): bool
     {
         $values = [
-            ':user_id' => $journal->owner()->id,
+            ':user_id' => $journal->user()->id,
             ':until_hard_limit' => \Minz\Time::ago(1, 'year')->format(Database\Column::DATETIME_FORMAT),
             ':until_strict' => \Minz\Time::ago(1, 'day')->format(Database\Column::DATETIME_FORMAT),
             ':until_normal' => \Minz\Time::ago(1, 'week')->format(Database\Column::DATETIME_FORMAT),

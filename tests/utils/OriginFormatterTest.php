@@ -130,7 +130,7 @@ class OriginFormatterTest extends \PHPUnit\Framework\TestCase
         $formatter = new OriginFormatter($user);
         $origin = \Minz\Url::absoluteFor('source', ['id' => $collection->id]);
 
-        $collection_owner = $formatter->ownerFromOrigin($origin);
+        $collection_owner = $formatter->userFromOrigin($origin);
 
         $this->assertSame($owner->id, $collection_owner?->id);
     }
@@ -146,7 +146,7 @@ class OriginFormatterTest extends \PHPUnit\Framework\TestCase
         $formatter = new OriginFormatter($user);
         $origin = \Minz\Url::absoluteFor('source', ['id' => $collection->id]);
 
-        $collection_owner = $formatter->ownerFromOrigin($origin);
+        $collection_owner = $formatter->userFromOrigin($origin);
 
         $this->assertNull($collection_owner);
     }
@@ -159,7 +159,7 @@ class OriginFormatterTest extends \PHPUnit\Framework\TestCase
         $formatter = new OriginFormatter($user);
         $origin = \Minz\Url::absoluteFor('profile', ['id' => $other_user->id]);
 
-        $collection_owner = $formatter->ownerFromOrigin($origin);
+        $collection_owner = $formatter->userFromOrigin($origin);
 
         $this->assertNull($collection_owner);
     }
@@ -170,7 +170,7 @@ class OriginFormatterTest extends \PHPUnit\Framework\TestCase
         $formatter = new OriginFormatter($user);
         $origin = 'The Internet';
 
-        $collection_owner = $formatter->ownerFromOrigin($origin);
+        $collection_owner = $formatter->userFromOrigin($origin);
 
         $this->assertNull($collection_owner);
     }
@@ -226,7 +226,7 @@ class OriginFormatterTest extends \PHPUnit\Framework\TestCase
         $owner->remove();
 
         $this->assertSame('My collection', $formatter->labelFromOrigin($origin));
-        $this->assertSame('Alix', $formatter->ownerFromOrigin($origin)?->username);
+        $this->assertSame('Alix', $formatter->userFromOrigin($origin)?->username);
     }
 
     public function testPreloadOriginsLoadsTheOtherKindsOfOrigins(): void
@@ -279,7 +279,7 @@ class OriginFormatterTest extends \PHPUnit\Framework\TestCase
         // The collection is not preloaded, so the label falls back to the host
         // even though the collection still exists.
         $this->assertSame('test.flus.io', $formatter->labelFromOrigin($origin));
-        $this->assertNull($formatter->ownerFromOrigin($origin));
+        $this->assertNull($formatter->userFromOrigin($origin));
     }
 
     public function testInstanceReturnsTheSameFormatterForTheSameUser(): void

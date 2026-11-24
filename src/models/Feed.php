@@ -55,6 +55,7 @@ class Feed extends Source
         $feed->feed_url = \SpiderBits\Url::sanitize($feed_url);
         $feed->type = 'feed';
         $feed->is_public = true;
+        $feed->setOwner(SystemOwner::get());
 
         return $feed;
     }

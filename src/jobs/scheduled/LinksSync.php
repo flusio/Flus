@@ -66,9 +66,9 @@ class LinksSync extends \Minz\Job
                 continue;
             }
 
-            $owner = $link->owner();
-            if ($owner) {
-                utils\Locale::setCurrentLocale($owner->locale);
+            $link_user = $link->user();
+            if ($link_user) {
+                utils\Locale::setCurrentLocale($link_user->locale);
             }
 
             try {

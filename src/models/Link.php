@@ -21,18 +21,19 @@ class Link
     use BulkQueries;
     use Database\Recordable;
     use Database\Resource;
+    use links\AddedByUser;
     use links\Annotable;
     use links\Fetchable;
     use links\InLists;
     use links\InJournal;
     use links\InStreams;
-    use links\OwnedByUser;
     use links\Prunable;
     use links\Reachable;
     use links\Readable;
     use links\Statistics;
     use links\Taggable;
     use media\HasImage;
+    use ownership\Ownable;
     use utils\Memoizer;
     use Validable;
 
@@ -119,7 +120,13 @@ class Link
         $this->url = $url;
         $this->url_hash = utils\Belt::hashUrl($url);
         $this->is_hidden = $is_hidden;
-        $this->setOwner($user);
+        $this->setUser($user);
+
+        if ($user) {
+            $this->setOwner($user->owner());
+        } else {
+            $this->setOwner(SystemOwner::get());
+        }
     }
 
     /**

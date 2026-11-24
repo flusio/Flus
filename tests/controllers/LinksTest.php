@@ -444,6 +444,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('Carnet de Flus', $link->title);
         $this->assertSame(200, $link->fetched_code);
         $this->assertSame($user->id, $link->user_id);
+        $this->assertSame($user->owner()->id, $link->owner_id);
         $this->assertContains($collection->id, array_column($link->collections(), 'id'));
         $this->assertFalse($link->is_hidden);
         $this->assertResponseCode($response, 302, "/links/{$link->id}");

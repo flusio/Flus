@@ -13,7 +13,7 @@ use Minz\Database;
  */
 class Journal extends LinkList
 {
-    use link_lists\OwnedByUser;
+    use link_lists\CreatedByUser;
 
     public function __construct(User $user)
     {
@@ -21,7 +21,8 @@ class Journal extends LinkList
 
         $this->name = _('Journal');
         $this->type = 'journal';
-        $this->setOwner($user);
+        $this->setUser($user);
+        $this->setOwner($user->owner());
     }
 
     /**
@@ -55,7 +56,7 @@ class Journal extends LinkList
             return count($links);
         }
 
-        $user = $this->owner();
+        $user = $this->user();
         $links = Link::listCandidatesForJournal($this, $max);
 
         foreach ($links as $followed_link) {

@@ -13,8 +13,8 @@ use Minz\Database;
  */
 class Collection extends Source
 {
+    use link_lists\CreatedByUser;
     use link_lists\Discoverable;
-    use link_lists\OwnedByUser;
     use link_lists\Shareable;
 
     #[Database\Column]
@@ -32,7 +32,8 @@ class Collection extends Source
         $collection->name = trim($name);
         $collection->description = trim($description);
         $collection->is_public = $is_public;
-        $collection->user_id = $user->id;
+        $collection->setUser($user);
+        $collection->setOwner($user->owner());
 
         return $collection;
     }
@@ -60,7 +61,7 @@ class Collection extends Source
      */
     public function descriptionAsHtml(): string
     {
-        $markdown = new utils\MiniMarkdown(context_user: $this->owner());
+        $markdown = new utils\MiniMarkdown(context_user: $this->user());
         return $markdown->text($this->description);
     }
 

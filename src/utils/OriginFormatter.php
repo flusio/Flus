@@ -76,9 +76,9 @@ class OriginFormatter
     }
 
     /**
-     * Return the owner of the origin, if the origin is a collection.
+     * Return the user who added the origin, if the origin is a collection.
      */
-    public function ownerFromOrigin(string $origin): ?models\User
+    public function userFromOrigin(string $origin): ?models\User
     {
         $model = $this->modelFromOrigin($origin);
 
@@ -86,7 +86,7 @@ class OriginFormatter
             return null;
         }
 
-        return $model->owner();
+        return $model->user();
     }
 
     /**
@@ -107,7 +107,7 @@ class OriginFormatter
      *
      * Without this, rendering a list of links costs 2 queries per distinct
      * origin (its existence, then the model itself), plus one per link to load
-     * the owner of the origin.
+     * the user who added the origin.
      *
      * @param models\Link[] $links
      */
@@ -150,7 +150,7 @@ class OriginFormatter
             $models_by_types[$origin_type] = array_column($models, null, 'id');
         }
 
-        $collections_by_owner_ids = [];
+        $collections_by_user_ids = [];
 
         // Check the access permissions and memoize the model values.
         foreach ($types_and_ids_by_origins as $origin => [$origin_type, $origin_id]) {
@@ -165,35 +165,35 @@ class OriginFormatter
             }
 
             if ($model instanceof models\Collection) {
-                $collections_by_owner_ids[$model->user_id][] = $model;
+                $collections_by_user_ids[$model->user_id][] = $model;
             }
 
             $this->memoizeValue($origin, $model);
         }
 
-        // Don't forget to preload the owner values for the collections
-        $this->preloadOwners($collections_by_owner_ids);
+        // Don't forget to preload the user values for the collections
+        $this->preloadUsers($collections_by_user_ids);
     }
 
     /**
-     * Set the owners of the given collections, indexed by their user ids.
+     * Set the users of the given collections, indexed by their user ids.
      *
-     * @param array<string, models\Collection[]> $collections_by_owner_ids
+     * @param array<string, models\Collection[]> $collections_by_user_ids
      */
-    private function preloadOwners(array $collections_by_owner_ids): void
+    private function preloadUsers(array $collections_by_user_ids): void
     {
-        if (!$collections_by_owner_ids) {
+        if (!$collections_by_user_ids) {
             return;
         }
 
         $users = models\User::listBy([
-            'id' => array_keys($collections_by_owner_ids),
+            'id' => array_keys($collections_by_user_ids),
         ]);
-        $owners = array_column($users, null, 'id');
+        $users_by_ids = array_column($users, null, 'id');
 
-        foreach ($collections_by_owner_ids as $owner_id => $collections) {
+        foreach ($collections_by_user_ids as $user_id => $collections) {
             foreach ($collections as $collection) {
-                $collection->preloadOwner($owners[$owner_id]);
+                $collection->preloadUser($users_by_ids[$user_id]);
             }
         }
     }

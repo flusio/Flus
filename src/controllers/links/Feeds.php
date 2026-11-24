@@ -35,9 +35,9 @@ class Feeds extends BaseController
 
         auth\Access::require($user, 'view', $link);
 
-        $owner = $link->owner();
-        if ($owner) {
-            utils\Locale::setCurrentLocale($owner->locale);
+        $link_user = $link->user();
+        if ($link_user) {
+            utils\Locale::setCurrentLocale($link_user->locale);
         }
 
         return Response::ok('links/feeds/show.atom.xml.twig', [

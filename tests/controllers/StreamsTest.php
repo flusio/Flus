@@ -42,7 +42,7 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateCreatesStreamAndRedirects(): void
     {
-        $this->login();
+        $user = $this->login();
         /** @var string */
         $name = $this->fake('words', 3, true);
         /** @var string */
@@ -63,6 +63,7 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, "/streams/{$stream->id}/sources/edit");
         $this->assertSame($name, $stream->name);
         $this->assertSame($description, $stream->description);
+        $this->assertSame($user->owner()->id, $stream->owner_id);
         $this->assertFalse($stream->is_public);
         $this->assertTrue($stream->display_unread_in_sidenav);
     }

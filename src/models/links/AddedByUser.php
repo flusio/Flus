@@ -7,9 +7,9 @@ use App\utils\Belt;
 use Minz\Database;
 
 /**
- * Add the relation between a link and the user who owns it.
+ * Add the relation between a link and the user who added it.
  *
- * A link can have no owner: it is then a link that the server knows about, but
+ * A link can have no user: it is then a link that the server knows about, but
  * that nobody added to their own links.
  *
  * This trait requires utils\Memoizer.
@@ -17,7 +17,7 @@ use Minz\Database;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-trait OwnedByUser
+trait AddedByUser
 {
     #[Database\Column]
     public ?string $user_id = null;
@@ -26,7 +26,7 @@ trait OwnedByUser
      * Return a link with the given URL owned by the user. Any matching link
      * that already exists in the database is returned.
      *
-     * If no users are passed, the method looks for a link without any owner.
+     * If no users are passed, the method looks for a link without any user.
      *
      * The URL is sanitized before being searched, so you don't have to do it
      * yourself.
@@ -76,11 +76,11 @@ trait OwnedByUser
     }
 
     /**
-     * Return the owner of the link if any.
+     * Return the user who added the link, if any.
      */
-    public function owner(): ?User
+    public function user(): ?User
     {
-        return $this->memoize('owner', function (): ?User {
+        return $this->memoize('user', function (): ?User {
             if (!$this->user_id) {
                 return null;
             }
@@ -90,15 +90,15 @@ trait OwnedByUser
     }
 
     /**
-     * Set the owner of the link.
+     * Set the user who added the link.
      *
-     * The owner is memoized so it doesn't have to be loaded from the database
-     * by owner().
+     * The user is memoized so it doesn't have to be loaded from the database
+     * by user().
      */
-    public function setOwner(?User $user): void
+    public function setUser(?User $user): void
     {
         $this->user_id = $user?->id;
-        $this->memoizeValue('owner', $user);
+        $this->memoizeValue('user', $user);
     }
 
     /**

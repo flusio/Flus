@@ -46,7 +46,7 @@ class Feeds extends BaseController
             return Response::movedPermanently($source->feedUrl());
         }
 
-        utils\Locale::setCurrentLocale($source->owner()->locale);
+        utils\Locale::setCurrentLocale($source->user()->locale);
 
         $topics = $source->topics();
         $topics = utils\Sorter::localeSort($topics, 'label');

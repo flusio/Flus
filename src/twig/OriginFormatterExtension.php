@@ -25,10 +25,10 @@ class OriginFormatterExtension
         return self::getFormatter()->labelFromOrigin($origin);
     }
 
-    #[AsTwigFilter('origin_owner')]
-    public static function originOwner(string $origin): ?models\User
+    #[AsTwigFilter('origin_user')]
+    public static function originUser(string $origin): ?models\User
     {
-        return self::getFormatter()->ownerFromOrigin($origin);
+        return self::getFormatter()->userFromOrigin($origin);
     }
 
     private static function getFormatter(): utils\OriginFormatter

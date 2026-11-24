@@ -1,6 +1,6 @@
 {% extends 'layouts/application.html.twig' %}
 
-{% set owner = source.owner %}
+{% set source_user = source.user %}
 {% set source_name = source.nameByUser(app.user) %}
 {% set source_image_filename = source.imageFilenameByUser(app.user) %}
 {% set is_following = app.user and app.user.isFollowing(source) %}
@@ -21,7 +21,7 @@
     {% set opengraph_description = t('A feed from %s, on %s.', [source.feedWebsiteHost, app.brand]) %}
     {% set current_tab = 'reading' %}
 {% else %}
-    {% set opengraph_description = t('A collection created by %s on %s.', [owner.username, app.brand]) %}
+    {% set opengraph_description = t('A collection created by %s on %s.', [source_user.username, app.brand]) %}
     {% set current_tab = can_update ? 'links' : 'reading' %}
 {% endif %}
 
@@ -36,7 +36,7 @@
     {{ include('layouts/_opengraph.html.twig', {
         title: source_name,
         description: opengraph_description,
-        locale: owner?.locale ?? app.locale,
+        locale: source_user?.locale ?? app.locale,
         url: url_full('source', { id: source.id }),
         image: url_media_full('covers', source_image_filename, 'collection-card.png'),
     }) }}

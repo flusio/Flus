@@ -38,7 +38,7 @@ class Opml extends BaseController
 
         auth\Access::require($user, 'view', $stream);
 
-        utils\Locale::setCurrentLocale($stream->owner()->locale);
+        utils\Locale::setCurrentLocale($stream->user()->locale);
 
         $opml_generator = new services\OpmlGenerator();
         $opml = $opml_generator->renderStream($stream, [
