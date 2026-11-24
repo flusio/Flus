@@ -1,5 +1,19 @@
 # Changelog of Flus
 
+## unreleased
+
+### Migration notes
+
+After upgrading, please run the following command at a quiet moment:
+
+```console
+flus# sudo -u www-data php cli migrations owners
+```
+
+It prepares the database for organizations and can take a long time on large instances.
+If it fails, run it again: it resumes where it stopped.
+Running it is optional: Flus 3.1 will come with an automatic (but blocking) migration.
+
 ## 2026-11-13 - v3.0.2
 
 ### Features

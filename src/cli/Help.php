@@ -68,6 +68,7 @@ class Help
         $usage .= "      [--steps=INT]        The number of migrations to rollback\n";
         $usage .= "  migrations create        Create a new migration\n";
         $usage .= "      --name=TEXT          The name of the migration (only chars from A to Z and numbers)\n";
+        $usage .= "  migrations owners        Fill the owners of the contents (can be slow)\n";
         $usage .= "\n";
         $usage .= "  system                   Show information about the system\n";
         $usage .= "  system secret            Generate a secure key to be used as APP_SECRET_KEY\n";

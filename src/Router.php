@@ -383,6 +383,7 @@ class Router
         $router->addRoute('CLI', '/migrations/setup', 'Migrations#setup');
         $router->addRoute('CLI', '/migrations/rollback', 'Migrations#rollback');
         $router->addRoute('CLI', '/migrations/create', 'Migrations#create');
+        $router->addRoute('CLI', '/migrations/owners', 'Migrations#owners');
         $router->addRoute('CLI', '/migrations/reset', 'Migrations#reset');
 
         $router->addRoute('CLI', '/media/clean', 'Media#clean');
