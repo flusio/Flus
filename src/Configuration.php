@@ -6,8 +6,6 @@ namespace App;
  * @phpstan-type ConfigurationApplication array{
  *     'support_email': string,
  *     'brand': string,
- *     'version': string,
- *     'user_agent': string,
  *     'cache_path': string,
  *     'media_path': string,
  *     'demo': bool,

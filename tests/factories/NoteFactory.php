@@ -25,7 +25,7 @@ class NoteFactory extends Database\Factory
         return [
             'id' => fn(): string => \Minz\Random::hex(32),
 
-            'created_at' => fn() => $faker->dateTime,
+            'created_at' => fn(): \DateTimeImmutable => \DateTimeImmutable::createFromInterface($faker->dateTime),
 
             'content' => fn() => $faker->paragraphs(3, true),
 

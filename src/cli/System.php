@@ -24,7 +24,7 @@ class System
     public function show(): Response
     {
         $app_name = \App\Configuration::$app_name;
-        $app_version = \App\Configuration::$application['version'];
+        $app_version = \App\Configuration::$app_version;
         $demo_enabled = \App\Configuration::$application['demo'];
         $registrations_enabled = \App\Configuration::$application['registrations_opened'];
         $subscriptions_enabled = \App\Configuration::$application['subscriptions_enabled'];

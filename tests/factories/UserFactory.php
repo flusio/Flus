@@ -25,11 +25,13 @@ class UserFactory extends Database\Factory
         return [
             'id' => fn(): string => \Minz\Random::timebased(),
 
-            'created_at' => fn() => $faker->dateTime,
+            'created_at' => fn(): \DateTimeImmutable => \DateTimeImmutable::createFromInterface($faker->dateTime),
 
-            'validated_at' => fn() => $faker->dateTime,
+            'validated_at' => fn(): \DateTimeImmutable => \DateTimeImmutable::createFromInterface($faker->dateTime),
 
-            'subscription_expired_at' => fn() => $faker->dateTime,
+            'subscription_expired_at' => fn(): \DateTimeImmutable => (
+                \DateTimeImmutable::createFromInterface($faker->dateTime)
+            ),
 
             'username' => fn() => $faker->name,
 

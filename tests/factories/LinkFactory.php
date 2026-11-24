@@ -25,7 +25,7 @@ class LinkFactory extends Database\Factory
         return [
             'id' => fn(): string => \Minz\Random::timebased(),
 
-            'created_at' => fn() => $faker->dateTime,
+            'created_at' => fn(): \DateTimeImmutable => \DateTimeImmutable::createFromInterface($faker->dateTime),
 
             'title' => fn() => $faker->words(3, true),
 

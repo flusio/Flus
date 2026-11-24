@@ -13,8 +13,8 @@ class UserAgent
      */
     public static function get(): string
     {
-        // Include a link to the about page in the user agent
-        $user_agent = \App\Configuration::$application['user_agent'];
+        $app_version = \App\Configuration::$app_version;
+        $user_agent = "flus/{$app_version}";
 
         if (\App\Configuration::$environment === 'production') {
             $about_url = \Minz\Url::absoluteFor('about');

@@ -23,7 +23,7 @@ class MastodonServerFactory extends Database\Factory
         $faker = \Faker\Factory::create();
 
         return [
-            'created_at' => fn() => $faker->dateTime,
+            'created_at' => fn(): \DateTimeImmutable => \DateTimeImmutable::createFromInterface($faker->dateTime),
 
             'host' => fn(): string => 'https://' . $faker->domainName,
 

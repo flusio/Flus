@@ -23,7 +23,7 @@ class CollectionShareFactory extends Database\Factory
         $faker = \Faker\Factory::create();
 
         return [
-            'created_at' => fn() => $faker->dateTime,
+            'created_at' => fn(): \DateTimeImmutable => \DateTimeImmutable::createFromInterface($faker->dateTime),
 
             'user_id' => fn() => UserFactory::create()->id,
 

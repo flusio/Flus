@@ -25,9 +25,9 @@ class LockFactory extends Database\Factory
         return [
             'key' => fn(): string => \Minz\Random::hex(32),
 
-            'created_at' => fn() => $faker->dateTime,
+            'created_at' => fn(): \DateTimeImmutable => \DateTimeImmutable::createFromInterface($faker->dateTime),
 
-            'expired_at' => fn() => $faker->dateTime,
+            'expired_at' => fn(): \DateTimeImmutable => \DateTimeImmutable::createFromInterface($faker->dateTime),
         ];
     }
 }

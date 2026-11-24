@@ -7,7 +7,6 @@ $db_name = 'flus_development';
 $subscriptions_host = $dotenv->pop('APP_SUBSCRIPTIONS_HOST');
 
 $flus_version = trim(@file_get_contents($app_path . '/VERSION.txt')) . '-dev';
-$user_agent = "flus/{$flus_version}";
 
 $feeds_links_keep_minimum = max(0, intval($dotenv->pop('FEEDS_LINKS_KEEP_MINIMUM', '0')));
 $feeds_links_keep_maximum = max(0, intval($dotenv->pop('FEEDS_LINKS_KEEP_MAXIMUM', '0')));
@@ -26,10 +25,10 @@ $cleaner_work_mem = trim($dotenv->pop('DB_CLEANER_WORK_MEM', ''));
 
 $server_ips = array_map('trim', explode(',', $dotenv->pop('APP_SERVER_IPS', '')));
 
-$tmp_path = sys_get_temp_dir() . '/Flus/' . md5($flus_version);
-
 return [
     'app_name' => 'App',
+
+    'app_version' => $flus_version,
 
     'secret_key' => $dotenv->pop('APP_SECRET_KEY'),
 
@@ -44,8 +43,6 @@ return [
     'application' => [
         'support_email' => $dotenv->pop('APP_SUPPORT_EMAIL', ''),
         'brand' => $dotenv->pop('APP_BRAND', 'Flus'),
-        'version' => $flus_version,
-        'user_agent' => $user_agent,
         'cache_path' => $dotenv->pop('APP_CACHE_PATH', $app_path . '/cache'),
         'media_path' => $dotenv->pop('APP_MEDIA_PATH', $app_path . '/public/media'),
         'demo' => filter_var($dotenv->pop('APP_DEMO', false), FILTER_VALIDATE_BOOLEAN),
@@ -73,7 +70,6 @@ return [
     ],
 
     'data_path' => $dotenv->pop('APP_DATA_PATH', $app_path . '/data'),
-    'tmp_path' => $tmp_path,
 
     'database' => [
         'dsn' => "pgsql:host={$db_host};port={$db_port};dbname={$db_name}",

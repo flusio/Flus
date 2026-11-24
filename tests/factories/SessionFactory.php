@@ -25,7 +25,7 @@ class SessionFactory extends Database\Factory
         return [
             'id' => fn(): string => \Minz\Random::hex(32),
 
-            'created_at' => fn() => $faker->dateTime,
+            'created_at' => fn(): \DateTimeImmutable => \DateTimeImmutable::createFromInterface($faker->dateTime),
 
             'name' => fn(): string => "{$faker->word} on {$faker->word}",
 

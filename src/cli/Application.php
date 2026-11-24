@@ -51,7 +51,7 @@ class Application
         \Minz\Template\Twig::addGlobals([
             'app' => [
                 'brand' => \App\Configuration::$application['brand'],
-                'version' => \App\Configuration::$application['version'],
+                'version' => \App\Configuration::$app_version,
                 'user_agent' => utils\UserAgent::get(),
                 'bin' => $bin,
                 'command' => $command,

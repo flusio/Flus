@@ -14,10 +14,11 @@ $media_directory = $temporary_directory . '/media';
 @mkdir($media_directory, 0777, true);
 
 $flus_version = trim(@file_get_contents($app_path . '/VERSION.txt')) . '-test';
-$user_agent = "flus/{$flus_version}";
 
 return [
     'app_name' => 'App',
+
+    'app_version' => $flus_version,
 
     'secret_key' => $dotenv->pop('APP_SECRET_KEY'),
 
@@ -31,8 +32,6 @@ return [
     'application' => [
         'support_email' => $dotenv->pop('APP_SUPPORT_EMAIL', ''),
         'brand' => 'Flus',
-        'version' => $flus_version,
-        'user_agent' => $user_agent,
         'cache_path' => $cache_directory,
         'media_path' => $media_directory,
         'demo' => false,

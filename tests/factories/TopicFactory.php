@@ -25,7 +25,7 @@ class TopicFactory extends Database\Factory
         return [
             'id' => fn(): string => \Minz\Random::timebased(),
 
-            'created_at' => fn() => $faker->dateTime,
+            'created_at' => fn(): \DateTimeImmutable => \DateTimeImmutable::createFromInterface($faker->dateTime),
 
             'label' => fn() => $faker->word,
         ];

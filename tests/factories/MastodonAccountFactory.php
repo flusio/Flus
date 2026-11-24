@@ -23,7 +23,7 @@ class MastodonAccountFactory extends Database\Factory
         $faker = \Faker\Factory::create();
 
         return [
-            'created_at' => fn() => $faker->dateTime,
+            'created_at' => fn(): \DateTimeImmutable => \DateTimeImmutable::createFromInterface($faker->dateTime),
 
             'mastodon_server_id' => fn() => MastodonServerFactory::create()->id,
 

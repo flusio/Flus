@@ -23,7 +23,7 @@ class FeatureFlagFactory extends Database\Factory
         $faker = \Faker\Factory::create();
 
         return [
-            'created_at' => fn() => $faker->dateTime,
+            'created_at' => fn(): \DateTimeImmutable => \DateTimeImmutable::createFromInterface($faker->dateTime),
 
             'type' => fn() => $faker->randomElement(models\FeatureFlag::VALID_TYPES),
 
