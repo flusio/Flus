@@ -1,6 +1,6 @@
 # Changelog of Flus
 
-## unreleased
+## 2026-11-25 - v3.0.3
 
 ### Migration notes
 
@@ -13,6 +13,18 @@ flus# sudo -u www-data php cli migrations owners
 It prepares the database for organizations and can take a long time on large instances.
 If it fails, run it again: it resumes where it stopped.
 Running it is optional: Flus 3.1 will come with an automatic (but blocking) migration.
+
+### Maintenance
+
+- Provide a command to migrate owners asynchronously ([fa9fb314](https://github.com/flusio/Flus/commit/fa9fb314))
+- Save who stored a link in a collection ([ae6ecf6e](https://github.com/flusio/Flus/commit/ae6ecf6e))
+- Fix notes table's index names ([3b31747f](https://github.com/flusio/Flus/commit/3b31747f))
+
+### Developers
+
+- Introduce the concept of Owner ([142b6de7](https://github.com/flusio/Flus/commit/142b6de7))
+- Allow to pass any value to `Pivot::attach()` ([9bb17d3d](https://github.com/flusio/Flus/commit/9bb17d3d))
+- Update to Minz 2.5.0 ([3dcd823d](https://github.com/flusio/Flus/commit/3dcd823d))
 
 ## 2026-11-13 - v3.0.2
 
