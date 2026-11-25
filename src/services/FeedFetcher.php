@@ -227,7 +227,7 @@ class FeedFetcher
                 ];
                 $link_id = $link->id;
 
-                $link_to_list = new models\LinkToList($link, $feed);
+                $link_to_list = new models\LinkToList($link, $feed, by: null);
                 $link_to_list->created_at = $published_at;
                 $links_to_lists_to_create[] = $link_to_list;
             }

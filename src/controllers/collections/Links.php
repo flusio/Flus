@@ -104,7 +104,7 @@ class Links extends BaseController
             $link->save();
         }
 
-        $link->addCollection($collection);
+        $link->addCollection($collection, by: $user);
 
         return Response::found(utils\RequestHelper::from($request));
     }

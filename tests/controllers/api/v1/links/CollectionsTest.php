@@ -27,6 +27,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $link_collections = $link->collections();
         $this->assertSame(1, count($link_collections));
         $this->assertSame($collection->id, $link_collections[0]->id);
+        $this->assertSame($user->id, $collection->linkAddedBy($link)?->id);
     }
 
     public function testCreateFailsIfTheLinkIsNotOwned(): void
@@ -128,7 +129,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
-        $link->addCollection($collection);
+        $link->addCollection($collection, by: $user);
 
         $response = $this->apiRun('DELETE', "/api/v1/links/{$link->id}/collections/{$collection->id}");
 
@@ -140,13 +141,14 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
     public function testDeleteFailsIfTheLinkIsNotOwned(): void
     {
         $user = $this->login();
+        $other_user = UserFactory::create();
         $link = LinkFactory::create([
-            'user_id' => UserFactory::create()->id,
+            'user_id' => $other_user->id,
         ]);
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
-        $link->addCollection($collection);
+        $link->addCollection($collection, by: $other_user);
 
         $response = $this->apiRun('DELETE', "/api/v1/links/{$link->id}/collections/{$collection->id}");
 
@@ -183,7 +185,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'user_id' => UserFactory::create()->id,
         ]);
-        $link->addCollection($collection);
+        $link->addCollection($collection, by: $user);
 
         $response = $this->apiRun('DELETE', "/api/v1/links/{$link->id}/collections/{$collection->id}");
 
@@ -220,7 +222,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
-        $link->addCollection($collection);
+        $link->addCollection($collection, by: $user);
 
         $response = $this->apiRun('DELETE', "/api/v1/links/{$link->id}/collections/{$collection->id}");
 

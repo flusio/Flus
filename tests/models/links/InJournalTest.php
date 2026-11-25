@@ -44,8 +44,8 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
             'user_id' => $this->other_user->id,
             'is_public' => true,
         ]);
-        $collection->addLinks([$link1], at: $published_at1);
-        $collection->addLinks([$link2], at: $published_at2);
+        $collection->addLinks([$link1], by: $this->other_user, at: $published_at1);
+        $collection->addLinks([$link2], by: $this->other_user, at: $published_at2);
         $this->user->follow($collection);
 
         $links = models\Link::listCandidatesForJournal($this->user->journal(), max: 50);
@@ -73,7 +73,7 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
             'user_id' => $this->other_user->id,
             'is_public' => true,
         ]);
-        $collection->addLinks([$link], at: $published_at);
+        $collection->addLinks([$link], by: $this->other_user, at: $published_at);
         $this->user->follow($collection);
         CollectionShareFactory::create([
             'user_id' => $this->user->id,
@@ -103,7 +103,7 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
             'user_id' => $this->other_user->id,
             'is_public' => false,
         ]);
-        $collection->addLinks([$link], at: $published_at);
+        $collection->addLinks([$link], by: $this->other_user, at: $published_at);
         $this->user->follow($collection);
         CollectionShareFactory::create([
             'user_id' => $this->user->id,
@@ -138,7 +138,7 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
             'user_id' => $this->other_user->id,
             'is_public' => true,
         ]);
-        $collection->addLinks([$link], at: $published_at);
+        $collection->addLinks([$link], by: $this->other_user, at: $published_at);
         $follow = $this->user->follow($collection, time_filter: 'all');
         $follow->created_at = $followed_at;
         $follow->save();
@@ -168,8 +168,8 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
         $feed = FeedFactory::create([
             'is_public' => true,
         ]);
-        $feed->addLinks([$link1], at: $published_at1);
-        $feed->addLinks([$link2], at: $published_at2);
+        $feed->addLinks([$link1], by: null, at: $published_at1);
+        $feed->addLinks([$link2], by: null, at: $published_at2);
         $this->user->follow($feed);
 
         $links = models\Link::listCandidatesForJournal($this->user->journal(), max: 50);
@@ -197,7 +197,7 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
             'user_id' => $this->other_user->id,
             'is_public' => true,
         ]);
-        $collection->addLinks([$link], at: $published_at);
+        $collection->addLinks([$link], by: $this->other_user, at: $published_at);
         $this->user->follow($collection);
 
         $links = models\Link::listCandidatesForJournal($this->user->journal(), max: 50);
@@ -221,7 +221,7 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
             'user_id' => $this->other_user->id,
             'is_public' => true,
         ]);
-        $collection->addLinks([$link], at: $published_at);
+        $collection->addLinks([$link], by: $this->other_user, at: $published_at);
         $this->user->follow($collection, time_filter: 'strict');
 
         $links = models\Link::listCandidatesForJournal($this->user->journal(), max: 50);
@@ -244,7 +244,7 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
             'user_id' => $this->other_user->id,
             'is_public' => true,
         ]);
-        $collection->addLinks([$link], at: $published_at);
+        $collection->addLinks([$link], by: $this->other_user, at: $published_at);
         $this->user->follow($collection, time_filter: 'none');
 
         $links = models\Link::listCandidatesForJournal($this->user->journal(), max: 50);
@@ -268,7 +268,7 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
             'user_id' => $this->other_user->id,
             'is_public' => true,
         ]);
-        $collection->addLinks([$link], at: $published_at);
+        $collection->addLinks([$link], by: $this->other_user, at: $published_at);
         $this->user->follow($collection);
 
         $links = models\Link::listCandidatesForJournal($this->user->journal(), max: 50);
@@ -292,7 +292,7 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
             'user_id' => $this->other_user->id,
             'is_public' => false,
         ]);
-        $collection->addLinks([$link], at: $published_at);
+        $collection->addLinks([$link], by: $this->other_user, at: $published_at);
         $this->user->follow($collection);
 
         $links = models\Link::listCandidatesForJournal($this->user->journal(), max: 50);
@@ -319,7 +319,7 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
             'user_id' => $this->other_user->id,
             'is_public' => true,
         ]);
-        $collection->addLinks([$link], at: $published_at);
+        $collection->addLinks([$link], by: $this->other_user, at: $published_at);
         // This is only required while "read later" is handled via collections.
         $owned_link = $this->user->obtainLink($link);
         $owned_link->save();
@@ -350,7 +350,7 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
             'user_id' => $this->other_user->id,
             'is_public' => true,
         ]);
-        $collection->addLinks([$link], at: $published_at);
+        $collection->addLinks([$link], by: $this->other_user, at: $published_at);
         // This is only required while "read later" is handled via collections.
         $owned_link = $this->user->obtainLink($link);
         $owned_link->save();
@@ -381,7 +381,7 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
             'user_id' => $this->other_user->id,
             'is_public' => true,
         ]);
-        $collection->addLinks([$link], at: $published_at);
+        $collection->addLinks([$link], by: $this->other_user, at: $published_at);
         // This is only required while "read later" is handled via collections.
         $owned_link = $this->user->obtainLink($link);
         $owned_link->save();
@@ -414,7 +414,7 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
             'user_id' => $this->other_user->id,
             'is_public' => true,
         ]);
-        $collection->addLinks([$link], at: $published_at);
+        $collection->addLinks([$link], by: $this->user, at: $published_at);
         $this->user->follow($collection);
 
         $links = models\Link::listCandidatesForJournal($this->user->journal(), max: 50);
@@ -433,7 +433,7 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
             'user_id' => $this->other_user->id,
             'is_public' => true,
         ]);
-        $collection->addLinks([$link], at: $published_at);
+        $collection->addLinks([$link], by: $this->other_user, at: $published_at);
         $this->user->follow($collection);
 
         $result = models\Link::anyCandidateForJournal($this->user->journal());
@@ -452,7 +452,7 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
             'user_id' => $this->other_user->id,
             'is_public' => true,
         ]);
-        $collection->addLinks([$link], at: $published_at);
+        $collection->addLinks([$link], by: $this->other_user, at: $published_at);
         $this->user->follow($collection);
 
         $result = models\Link::anyCandidateForJournal($this->user->journal());
@@ -471,7 +471,7 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
             'user_id' => $this->other_user->id,
             'is_public' => true,
         ]);
-        $collection->addLinks([$link], at: $published_at);
+        $collection->addLinks([$link], by: $this->other_user, at: $published_at);
         $this->user->follow($collection, time_filter: 'none');
 
         $result = models\Link::anyCandidateForJournal($this->user->journal());
@@ -489,7 +489,7 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
         $feed = FeedFactory::create([
             'is_public' => true,
         ]);
-        $feed->addLinks([$link], at: $published_at);
+        $feed->addLinks([$link], by: null, at: $published_at);
         $this->user->follow($feed);
 
         $result = models\Link::anyCandidateForJournal($this->user->journal());
@@ -507,7 +507,7 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
         $feed = FeedFactory::create([
             'is_public' => true,
         ]);
-        $feed->addLinks([$link], at: $published_at);
+        $feed->addLinks([$link], by: null, at: $published_at);
         $this->user->follow($feed);
 
         $result = models\Link::anyCandidateForJournal($this->user->journal());

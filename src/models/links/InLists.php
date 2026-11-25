@@ -37,10 +37,13 @@ trait InLists
     /**
      * Set the link's collections.
      *
+     * The given user is the person who adds the link to the collections.
+     *
      * @param Collection[] $collections
      */
     public function setCollections(
         array $collections,
+        User $by,
         ?\DateTimeImmutable $at = null,
         bool $sync_publication_frequency = true,
     ): void {
@@ -50,7 +53,10 @@ trait InLists
             $this,
             $collections,
             $previous_collections,
-            ['created_at' => $at],
+            [
+                'created_at' => $at,
+                'user_id' => $by->id,
+            ],
         );
 
         $this->unmemoizeCollections();
@@ -67,14 +73,20 @@ trait InLists
     /**
      * Add the link to the collections.
      *
+     * The given user is the person who adds the link to the collections.
+     *
      * @param Collection[] $collections
      */
     public function addCollections(
         array $collections,
+        User $by,
         ?\DateTimeImmutable $at = null,
         bool $sync_publication_frequency = true,
     ): void {
-        LinkToList::attach([$this], $collections, ['created_at' => $at]);
+        LinkToList::attach([$this], $collections, [
+            'created_at' => $at,
+            'user_id' => $by->id,
+        ]);
 
         $this->unmemoizeCollections();
 
@@ -88,13 +100,16 @@ trait InLists
 
     /**
      * Add the link to a collection.
+     *
+     * The given user is the person who adds the link to the collection.
      */
     public function addCollection(
         Collection $collection,
+        User $by,
         ?\DateTimeImmutable $at = null,
         bool $sync_publication_frequency = true,
     ): void {
-        $this->addCollections([$collection], $at, $sync_publication_frequency);
+        $this->addCollections([$collection], $by, $at, $sync_publication_frequency);
     }
 
     /**

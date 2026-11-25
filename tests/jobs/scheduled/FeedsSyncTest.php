@@ -567,7 +567,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'feed_entry_id' => null,
             'created_at' => \Minz\Time::now(),
         ]);
-        $feed->addLinks([$link]);
+        $feed->addLinks([$link], by: null);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $this->cacheHttpResponse($feed_url, <<<TEXT
             HTTP/2 200 OK
@@ -680,7 +680,7 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'url' => 'https://flus.fr/carnet/nouveautes-mars-2021.html',
             'user_id' => null,
         ]);
-        $feed->addLinks([$link]);
+        $feed->addLinks([$link], by: null);
         UserFactory::create()->follow($feed);
         $this->mockHttpWithFixture('https://flus.fr/carnet/', 'responses/flus.fr_carnet_index.html');
         $this->cacheHttpResponse($feed_url, <<<TEXT
@@ -950,10 +950,11 @@ class FeedsSyncTest extends \PHPUnit\Framework\TestCase
             'feed_fetched_next_at' => \Minz\Time::now(),
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'url' => $old_url,
             'feed_entry_id' => $entry_id,
         ]);
-        $feed->addLinks([$link]);
+        $feed->addLinks([$link], by: null);
         $user = UserFactory::create([
             'validated_at' => \Minz\Time::now(),
         ]);

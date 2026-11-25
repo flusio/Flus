@@ -130,10 +130,11 @@ abstract class Source extends LinkList
      */
     public function addLinks(
         array $links,
+        ?User $by,
         ?\DateTimeImmutable $at = null,
         bool $sync_publication_frequency = true,
     ): void {
-        parent::addLinks($links, $at);
+        parent::addLinks($links, $by, $at);
 
         $this->unmemoizePrefixed('count_links_');
 

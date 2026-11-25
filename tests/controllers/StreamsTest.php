@@ -152,7 +152,7 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
             'title' => $link_title,
             'is_hidden' => false,
         ]);
-        $feed->addLinks([$link], at: \Minz\Time::now());
+        $feed->addLinks([$link], by: null, at: \Minz\Time::now());
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
@@ -182,7 +182,7 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
             'user_id' => null,
             'is_hidden' => false,
         ]);
-        $feed->addLinks([$link], at: \Minz\Time::now());
+        $feed->addLinks([$link], by: null, at: \Minz\Time::now());
         $stream = StreamFactory::create([
             'user_id' => $owner->id,
             'is_public' => true,
@@ -217,7 +217,7 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
             'title' => $link_title,
             'is_hidden' => false,
         ]);
-        $feed->addLinks([$link], at: \Minz\Time::now());
+        $feed->addLinks([$link], by: null, at: \Minz\Time::now());
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
@@ -252,7 +252,7 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
                 ]);
             }
 
-            $feed->addLinks($links, at: \Minz\Time::now());
+            $feed->addLinks($links, by: null, at: \Minz\Time::now());
             $stream->addSource($feed);
         }
 
@@ -287,7 +287,7 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
             'title' => $link_title,
             'is_hidden' => true,
         ]);
-        $feed->addLinks([$link], at: \Minz\Time::now());
+        $feed->addLinks([$link], by: null, at: \Minz\Time::now());
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
@@ -311,7 +311,7 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
             'title' => $link_title,
             'is_hidden' => false,
         ]);
-        $feed->addLinks([$link], at: \Minz\Time::now());
+        $feed->addLinks([$link], by: null, at: \Minz\Time::now());
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
@@ -337,7 +337,7 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
             'title' => $link_title,
             'is_hidden' => false,
         ]);
-        $feed->addLinks([$link], at: \Minz\Time::now());
+        $feed->addLinks([$link], by: null, at: \Minz\Time::now());
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
@@ -411,7 +411,7 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
             'title' => $link_title,
             'is_hidden' => false,
         ]);
-        $feed->addLinks([$link], at: \Minz\Time::now());
+        $feed->addLinks([$link], by: null, at: \Minz\Time::now());
         $stream = StreamFactory::create([
             'user_id' => $other_user->id,
             'is_public' => true,
@@ -438,7 +438,7 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
             'title' => $link_title,
             'is_hidden' => false,
         ]);
-        $feed->addLinks([$link], at: \Minz\Time::now());
+        $feed->addLinks([$link], by: null, at: \Minz\Time::now());
         $stream = StreamFactory::create([
             'user_id' => $user->id,
             'is_public' => true,
@@ -466,7 +466,7 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
             'title' => $link_title,
             'is_hidden' => false,
         ]);
-        $feed->addLinks([$link], at: \Minz\Time::now());
+        $feed->addLinks([$link], by: null, at: \Minz\Time::now());
         $stream = StreamFactory::create([
             'user_id' => $other_user->id,
             'is_public' => false,
@@ -498,7 +498,7 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
             'title' => $link_title,
             'is_hidden' => false,
         ]);
-        $collection->addLinks([$link], at: \Minz\Time::now());
+        $collection->addLinks([$link], by: $other_user, at: \Minz\Time::now());
         $stream = StreamFactory::create([
             'user_id' => $other_user->id,
             'is_public' => false,
@@ -531,20 +531,23 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'title' => $link_title_1,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => null,
             'title' => $link_title_2,
             'is_hidden' => false,
         ]);
         $link_3 = LinkFactory::create([
+            'user_id' => null,
             'title' => $link_title_3,
             'is_hidden' => false,
         ]);
-        $feed_1->addLinks([$link_1], at: \Minz\Time::now());
-        $feed_2->addLinks([$link_2], at: \Minz\Time::now());
-        $feed_3->addLinks([$link_3], at: \Minz\Time::now());
+        $feed_1->addLinks([$link_1], by: null, at: \Minz\Time::now());
+        $feed_2->addLinks([$link_2], by: null, at: \Minz\Time::now());
+        $feed_3->addLinks([$link_3], by: null, at: \Minz\Time::now());
         $stream = StreamFactory::create([
             'user_id' => $user->id,
         ]);
@@ -580,6 +583,7 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
             'is_public' => false,
         ]);
         $feed_link = LinkFactory::create([
+            'user_id' => null,
             'title' => $feed_link_title,
             'is_hidden' => false,
         ]);
@@ -588,8 +592,8 @@ class StreamsTest extends \PHPUnit\Framework\TestCase
             'title' => $collection_link_title,
             'is_hidden' => false,
         ]);
-        $feed->addLinks([$feed_link], at: \Minz\Time::now());
-        $collection->addLinks([$collection_link], at: \Minz\Time::now());
+        $feed->addLinks([$feed_link], by: null, at: \Minz\Time::now());
+        $collection->addLinks([$collection_link], by: $other_user, at: \Minz\Time::now());
         $stream = StreamFactory::create([
             'user_id' => $other_user->id,
             'is_public' => false,

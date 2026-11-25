@@ -28,7 +28,7 @@ class JournalTest extends \PHPUnit\Framework\TestCase
             'title' => $title,
             'user_id' => $user->id,
         ]);
-        $journal->addLinks([$link]);
+        $journal->addLinks([$link], by: $user);
 
         $response = $this->appRun('GET', '/journal');
 
@@ -58,7 +58,7 @@ class JournalTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'origin' => $origin,
         ]);
-        $journal->addLinks([$link]);
+        $journal->addLinks([$link], by: $user);
 
         $response = $this->appRun('GET', '/journal');
 
@@ -91,7 +91,7 @@ class JournalTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'origin' => $origin,
         ]);
-        $journal->addLinks([$link]);
+        $journal->addLinks([$link], by: $user);
 
         $response = $this->appRun('GET', '/journal');
 
@@ -127,7 +127,7 @@ class JournalTest extends \PHPUnit\Framework\TestCase
             'title' => $title,
             'user_id' => $user->id,
         ]);
-        $journal->addLinks([$link]);
+        $journal->addLinks([$link], by: $user);
 
         $response = $this->appRun('GET', '/journal');
 
@@ -145,7 +145,7 @@ class JournalTest extends \PHPUnit\Framework\TestCase
             'title' => $title,
             'user_id' => $user->id,
         ]);
-        $journal->addLinks([$link]);
+        $journal->addLinks([$link], by: $user);
 
         $response = $this->appRun('GET', '/journal');
 
@@ -172,7 +172,7 @@ class JournalTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $collection->addLinks([$link], at: $created_at);
+        $collection->addLinks([$link], by: $other_user, at: $created_at);
         $user->follow($collection);
 
         $response = $this->appRun('POST', '/journal', [
@@ -189,6 +189,7 @@ class JournalTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($link->title, $journal_link->title);
         $origin = \Minz\Url::absoluteFor('source', ['id' => $collection->id]);
         $this->assertSame($origin, $journal_link->origin);
+        $this->assertSame($user->id, $journal->linkAddedBy($journal_link)?->id);
     }
 
     public function testCreateGroupsLinksBySourcesGroups(): void
@@ -212,8 +213,8 @@ class JournalTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $collection->addLinks([$link1, $link2], at: \Minz\Time::ago(1, 'day'));
-        $collection->addLinks([$link3], at: \Minz\Time::ago(2, 'days'));
+        $collection->addLinks([$link1, $link2], by: $other_user, at: \Minz\Time::ago(1, 'day'));
+        $collection->addLinks([$link3], by: $other_user, at: \Minz\Time::ago(2, 'days'));
         $user->follow($collection);
 
         $response = $this->appRun('POST', '/journal', [
@@ -252,7 +253,7 @@ class JournalTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $collection->addLinks([$link], at: $created_at);
+        $collection->addLinks([$link], by: $other_user, at: $created_at);
         $user->follow($collection);
 
         $response = $this->appRun('POST', '/journal', [
@@ -298,7 +299,7 @@ class JournalTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $collection->addLinks([$link], at: $created_at);
+        $collection->addLinks([$link], by: $other_user, at: $created_at);
         $user->follow($collection);
 
         $response = $this->appRun('POST', '/journal', [
@@ -332,7 +333,7 @@ class JournalTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $collection->addLinks([$link], at: $created_at);
+        $collection->addLinks([$link], by: $other_user, at: $created_at);
         $user->follow($collection);
 
         $response = $this->appRun('POST', '/journal', [

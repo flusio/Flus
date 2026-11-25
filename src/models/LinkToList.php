@@ -32,10 +32,14 @@ class LinkToList
     #[Database\Column]
     public string $collection_id;
 
-    public function __construct(Link $link, LinkList $link_list)
+    #[Database\Column]
+    public ?string $user_id;
+
+    public function __construct(Link $link, LinkList $link_list, ?User $by)
     {
         $this->link_id = $link->id;
         $this->collection_id = $link_list->id;
+        $this->user_id = $by?->id;
     }
 
     public static function pivotColumns(): array

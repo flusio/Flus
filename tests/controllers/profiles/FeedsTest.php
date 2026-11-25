@@ -30,7 +30,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'title' => $link_title,
             'url' => $link_url,
         ]);
-        $collection->addLinks([$link]);
+        $collection->addLinks([$link], by: $user);
 
         $response = $this->appRun('GET', "/p/{$user->id}/feed.atom.xml");
 
@@ -63,7 +63,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'is_hidden' => false,
             'url' => $link_url,
         ]);
-        $collection->addLinks([$link]);
+        $collection->addLinks([$link], by: $user);
 
         $response = $this->appRun('GET', "/p/{$user->id}/feed.atom.xml", [
             'direct' => 'true',
@@ -92,7 +92,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'is_hidden' => true,
             'title' => $link_title,
         ]);
-        $collection->addLinks([$link]);
+        $collection->addLinks([$link], by: $user);
 
         $response = $this->appRun('GET', "/p/{$user->id}/feed.atom.xml");
 
@@ -114,7 +114,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'is_hidden' => false,
             'title' => $link_title,
         ]);
-        $collection->addLinks([$link]);
+        $collection->addLinks([$link], by: $user);
 
         $response = $this->appRun('GET', "/p/{$user->id}/feed.atom.xml");
 

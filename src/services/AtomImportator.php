@@ -104,7 +104,7 @@ class AtomImportator
             $link_ids_by_url_hashes[$link->url_hash] = $link->id;
             $owned_links_by_url_hashes[$link->url_hash] = $link;
 
-            $link_to_list = new models\LinkToList($link, $source);
+            $link_to_list = new models\LinkToList($link, $source, by: $source_user);
             $link_to_list->created_at = $published_at;
 
             $links_to_lists_to_create[] = $link_to_list;

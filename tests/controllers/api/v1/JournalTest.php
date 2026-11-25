@@ -25,8 +25,8 @@ class JournalTest extends \PHPUnit\Framework\TestCase
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $journal->addLinks([$link1], at: \Minz\Time::ago(5, 'minutes'));
-        $journal->addLinks([$link2], at: \Minz\Time::ago(10, 'minutes'));
+        $journal->addLinks([$link1], by: $user, at: \Minz\Time::ago(5, 'minutes'));
+        $journal->addLinks([$link2], by: $user, at: \Minz\Time::ago(10, 'minutes'));
 
         $response = $this->apiRun('GET', '/api/v1/journal');
 
@@ -54,7 +54,7 @@ class JournalTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'origin' => $origin,
         ]);
-        $journal->addLinks([$link]);
+        $journal->addLinks([$link], by: $user);
 
         $response = $this->apiRun('GET', '/api/v1/journal');
 
@@ -81,8 +81,8 @@ class JournalTest extends \PHPUnit\Framework\TestCase
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $journal->addLinks([$link1], at: \Minz\Time::ago(5, 'minutes'));
-        $journal->addLinks([$link2], at: \Minz\Time::ago(10, 'minutes'));
+        $journal->addLinks([$link1], by: $user, at: \Minz\Time::ago(5, 'minutes'));
+        $journal->addLinks([$link2], by: $user, at: \Minz\Time::ago(10, 'minutes'));
 
         $response = $this->apiRun('GET', '/api/v1/journal');
 
@@ -109,8 +109,8 @@ class JournalTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $link1->addCollection($collection);
-        $link2->addCollection($collection);
+        $link1->addCollection($collection, by: $other_user);
+        $link2->addCollection($collection, by: $other_user);
         $user->follow($collection);
 
         $response = $this->apiRun('POST', '/api/v1/journal');
@@ -138,8 +138,8 @@ class JournalTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $link1->addCollection($collection);
-        $link2->addCollection($collection);
+        $link1->addCollection($collection, by: $other_user);
+        $link2->addCollection($collection, by: $other_user);
         $user->follow($collection);
 
         $response = $this->apiRun('POST', '/api/v1/journal');

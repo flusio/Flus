@@ -23,11 +23,12 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => $collection->user_id,
             'title' => $link_title,
             'url' => $link_url,
             'is_hidden' => false,
         ]);
-        $collection->addLinks([$link]);
+        $collection->addLinks([$link], by: $collection->user());
 
         $response = $this->appRun('GET', "/collections/{$collection->id}/feed.atom.xml");
 
@@ -54,10 +55,11 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => $collection->user_id,
             'url' => $link_url,
             'is_hidden' => false,
         ]);
-        $collection->addLinks([$link]);
+        $collection->addLinks([$link], by: $collection->user());
 
         $response = $this->appRun('GET', "/collections/{$collection->id}/feed.atom.xml", [
             'direct' => true,
@@ -80,10 +82,11 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => $collection->user_id,
             'title' => $link_title,
             'is_hidden' => true,
         ]);
-        $collection->addLinks([$link]);
+        $collection->addLinks([$link], by: $collection->user());
 
         $response = $this->appRun('GET', "/collections/{$collection->id}/feed.atom.xml");
 
@@ -113,10 +116,11 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'is_public' => false,
         ]);
         $link = LinkFactory::create([
+            'user_id' => $collection->user_id,
             'title' => $link_title,
             'is_hidden' => false,
         ]);
-        $collection->addLinks([$link]);
+        $collection->addLinks([$link], by: $collection->user());
 
         $response = $this->appRun('GET', "/collections/{$collection->id}/feed.atom.xml");
 

@@ -95,7 +95,7 @@ class AddedByUserTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'is_public' => true,
         ]);
-        $collection->addLinks([$link], at: $published_at);
+        $collection->addLinks([$link], by: $user, at: $published_at);
 
         $links = models\Link::listByUser($user, [
             'unshared' => false,
@@ -132,9 +132,9 @@ class AddedByUserTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'is_public' => true,
         ]);
-        $public_collection->addLinks([$unshared_link_2]);
-        $private_collection->addLinks([$unshared_link_3]);
-        $public_collection->addLinks([$shared_link]);
+        $public_collection->addLinks([$unshared_link_2], by: $user);
+        $private_collection->addLinks([$unshared_link_3], by: $user);
+        $public_collection->addLinks([$shared_link], by: $user);
 
         $links = models\Link::listByUser($user, [
             'unshared' => false,
@@ -211,8 +211,8 @@ class AddedByUserTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'is_public' => true,
         ]);
-        $public_collection_1->addLinks([$link], at: $today);
-        $public_collection_2->addLinks([$link], at: $yesterday);
+        $public_collection_1->addLinks([$link], by: $user, at: $today);
+        $public_collection_2->addLinks([$link], by: $user, at: $yesterday);
 
         $links = models\Link::listByUser($user, [
             'unshared' => false,
@@ -249,10 +249,10 @@ class AddedByUserTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'is_public' => true,
         ]);
-        $public_collection_2->addLinks([$link_1], at: $three_days_ago);
-        $public_collection_1->addLinks([$link_2], at: $two_days_ago);
-        $public_collection_1->addLinks([$link_3], at: $yesterday);
-        $public_collection_1->addLinks([$link_1], at: $today);
+        $public_collection_2->addLinks([$link_1], by: $user, at: $three_days_ago);
+        $public_collection_1->addLinks([$link_2], by: $user, at: $two_days_ago);
+        $public_collection_1->addLinks([$link_3], by: $user, at: $yesterday);
+        $public_collection_1->addLinks([$link_1], by: $user, at: $today);
 
         $links = models\Link::listByUser($user, [
             'unshared' => false,
@@ -284,7 +284,7 @@ class AddedByUserTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
-        $collection->addLinks([$other_link]);
+        $collection->addLinks([$other_link], by: $other_user);
 
         $links = models\Link::listSuggestedFor($user, $link);
 
@@ -312,7 +312,7 @@ class AddedByUserTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
         ]);
-        $collection->addLinks([$other_link]);
+        $collection->addLinks([$other_link], by: $other_user);
         CollectionShareFactory::create([
             'user_id' => $user->id,
             'collection_id' => $collection->id,
@@ -363,7 +363,7 @@ class AddedByUserTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
-        $collection->addLinks([$other_link]);
+        $collection->addLinks([$other_link], by: $other_user);
 
         $links = models\Link::listSuggestedFor($user, $link);
 

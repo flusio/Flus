@@ -154,9 +154,9 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
             'owner_id' => $user->owner()->id,
         ]);
         $oldest_published_at = \Minz\Time::ago(5, 'days');
-        $kept_link->addCollection($collection, at: \Minz\Time::ago(1, 'hour'));
-        $duplicated_link->addCollection($collection, at: $oldest_published_at);
-        $duplicated_link->addCollection($other_collection, at: \Minz\Time::ago(3, 'days'));
+        $kept_link->addCollection($collection, by: $user, at: \Minz\Time::ago(1, 'hour'));
+        $duplicated_link->addCollection($collection, by: $user, at: $oldest_published_at);
+        $duplicated_link->addCollection($other_collection, by: $user, at: \Minz\Time::ago(3, 'days'));
         $note = NoteFactory::create([
             'link_id' => $duplicated_link->id,
             'user_id' => $user->id,

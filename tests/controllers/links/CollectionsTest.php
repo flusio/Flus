@@ -35,7 +35,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'name' => $collection_name,
         ]);
-        $collection_1->addLinks([$link]);
+        $collection_1->addLinks([$link], by: $user);
 
         $response = $this->appRun('GET', "/links/{$link->id}/collections");
 
@@ -80,8 +80,8 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $collection_owned = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
-        $collection_not_owned->addLinks([$link_not_owned]);
-        $collection_owned->addLinks([$link_owned]);
+        $collection_not_owned->addLinks([$link_not_owned], by: $other_user);
+        $collection_owned->addLinks([$link_owned], by: $user);
 
         $response = $this->appRun('GET', "/links/{$link_not_owned->id}/collections");
 
@@ -130,7 +130,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'url' => $url,
         ]);
-        $collection->addLinks([$other_link]);
+        $collection->addLinks([$other_link], by: $other_user);
         CollectionShareFactory::create([
             'user_id' => $other_user->id,
             'collection_id' => $collection->id,
@@ -160,7 +160,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $owner->id,
             'url' => $url,
         ]);
-        $collection->addLinks([$owner_link]);
+        $collection->addLinks([$owner_link], by: $owner);
         CollectionShareFactory::create([
             'user_id' => $user->id,
             'collection_id' => $collection->id,
@@ -213,7 +213,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
             'name' => $collection_name,
         ]);
-        $collection->addLinks([$link]);
+        $collection->addLinks([$link], by: $other_user);
 
         $response = $this->appRun('GET', "/links/{$link->id}/collections");
 
@@ -288,7 +288,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $collection_2 = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
-        $collection_1->addLinks([$link]);
+        $collection_1->addLinks([$link], by: $user);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
@@ -299,6 +299,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, "/links/{$link->id}/collections");
         $this->assertFalse($collection_1->hasLink($link));
         $this->assertTrue($collection_2->hasLink($link));
+        $this->assertSame($user->id, $collection_2->linkAddedBy($link)?->id);
         $link = $link->reload();
         $this->assertSame($is_hidden, $link->is_hidden);
     }
@@ -313,7 +314,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
-        $journal->addLinks([$link]);
+        $journal->addLinks([$link], by: $user);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
@@ -385,7 +386,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $user->markAsReadLater($link);
-        $collection->addLinks([$link]);
+        $collection->addLinks([$link], by: $user);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
@@ -417,7 +418,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $owned_collection = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
-        $other_collection->addLinks([$link]);
+        $other_collection->addLinks([$link], by: $other_user);
         $from = \Minz\Url::for('source', ['id' => $other_collection->id]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
@@ -455,13 +456,14 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
+            'user_id' => null,
             'url' => $url,
             'is_hidden' => false,
         ]);
         $owned_collection = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
-        $source->addLinks([$link]);
+        $source->addLinks([$link], by: null);
         $stream->addSource($source);
         $from = \Minz\Url::for('stream', ['id' => $stream->id]);
 
@@ -508,7 +510,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $owned_collection = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
-        $other_collection->addLinks([$link]);
+        $other_collection->addLinks([$link], by: $other_user);
         $from = \Minz\Url::for('source', ['id' => $other_collection->id]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
@@ -589,7 +591,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $collection_2 = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
-        $collection_1->addLinks([$link]);
+        $collection_1->addLinks([$link], by: $user);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),
@@ -615,7 +617,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         $collection_2 = CollectionFactory::create([
             'user_id' => $other_user->id,
         ]);
-        $collection_1->addLinks([$link]);
+        $collection_1->addLinks([$link], by: $other_user);
 
         $response = $this->appRun('POST', "/links/{$link->id}/collections", [
             'csrf_token' => $this->csrfToken(forms\links\EditLinkCollections::class),

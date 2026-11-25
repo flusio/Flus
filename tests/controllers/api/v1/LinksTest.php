@@ -29,8 +29,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'is_hidden' => false,
         ]);
-        $link1->addCollection($collection, at: \Minz\Time::ago(5, 'minutes'));
-        $link2->addCollection($collection, at: \Minz\Time::ago(10, 'minutes'));
+        $link1->addCollection($collection, by: $user, at: \Minz\Time::ago(5, 'minutes'));
+        $link2->addCollection($collection, by: $user, at: \Minz\Time::ago(10, 'minutes'));
 
         $response = $this->apiRun('GET', "/api/v1/links?collection={$collection->id}");
 
@@ -100,8 +100,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'is_hidden' => false,
         ]);
-        $link1->addCollection($collection, at: \Minz\Time::ago(5, 'minutes'));
-        $link2->addCollection($collection, at: \Minz\Time::ago(10, 'minutes'));
+        $link1->addCollection($collection, by: $user, at: \Minz\Time::ago(5, 'minutes'));
+        $link2->addCollection($collection, by: $user, at: \Minz\Time::ago(10, 'minutes'));
 
         $response = $this->apiRun('GET', "/api/v1/links?collection={$collection->id}&page=2&per_page=1");
 
@@ -129,8 +129,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_hidden' => false,
         ]);
-        $link1->addCollection($collection, at: \Minz\Time::ago(5, 'minutes'));
-        $link2->addCollection($collection, at: \Minz\Time::ago(10, 'minutes'));
+        $link1->addCollection($collection, by: $other_user, at: \Minz\Time::ago(5, 'minutes'));
+        $link2->addCollection($collection, by: $other_user, at: \Minz\Time::ago(10, 'minutes'));
 
         $response = $this->apiRun('GET', "/api/v1/links?collection={$collection->id}");
 
@@ -155,8 +155,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'is_hidden' => false,
         ]);
-        $link1->addCollection($collection, at: \Minz\Time::ago(5, 'minutes'));
-        $link2->addCollection($collection, at: \Minz\Time::ago(10, 'minutes'));
+        $link1->addCollection($collection, by: $user, at: \Minz\Time::ago(5, 'minutes'));
+        $link2->addCollection($collection, by: $user, at: \Minz\Time::ago(10, 'minutes'));
 
         $response = $this->apiRun('GET', '/api/v1/links?collection=not-an-id');
 
@@ -180,8 +180,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'is_hidden' => false,
         ]);
-        $link1->addCollection($collection, at: \Minz\Time::ago(5, 'minutes'));
-        $link2->addCollection($collection, at: \Minz\Time::ago(10, 'minutes'));
+        $link1->addCollection($collection, by: $user, at: \Minz\Time::ago(5, 'minutes'));
+        $link2->addCollection($collection, by: $user, at: \Minz\Time::ago(10, 'minutes'));
 
         $response = $this->apiRun('GET', "/api/v1/links?collection={$collection->id}&page=3&per_page=1");
 
@@ -207,8 +207,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_hidden' => false,
         ]);
-        $link1->addCollection($collection, at: \Minz\Time::ago(5, 'minutes'));
-        $link2->addCollection($collection, at: \Minz\Time::ago(10, 'minutes'));
+        $link1->addCollection($collection, by: $other_user, at: \Minz\Time::ago(5, 'minutes'));
+        $link2->addCollection($collection, by: $other_user, at: \Minz\Time::ago(10, 'minutes'));
 
         $response = $this->apiRun('GET', "/api/v1/links?collection={$collection->id}");
 
@@ -232,8 +232,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'is_hidden' => false,
         ]);
-        $link1->addCollection($collection, at: \Minz\Time::ago(5, 'minutes'));
-        $link2->addCollection($collection, at: \Minz\Time::ago(10, 'minutes'));
+        $link1->addCollection($collection, by: $user, at: \Minz\Time::ago(5, 'minutes'));
+        $link2->addCollection($collection, by: $user, at: \Minz\Time::ago(10, 'minutes'));
 
         $response = $this->apiRun('GET', "/api/v1/links?collection={$collection->id}");
 

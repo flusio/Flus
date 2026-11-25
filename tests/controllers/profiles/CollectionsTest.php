@@ -29,7 +29,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'is_hidden' => false,
         ]);
-        $link->addCollection($collection);
+        $link->addCollection($collection, by: $user);
 
         $response = $this->appRun('GET', "/p/{$user->id}/collections");
 
@@ -63,7 +63,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'is_hidden' => true,
         ]);
-        $link->addCollection($collection);
+        $link->addCollection($collection, by: $user);
 
         $response = $this->appRun('GET', "/p/{$user->id}/collections");
 
@@ -96,6 +96,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         // ambiguous.
         $collection->addLinks(
             [$visible_link, $hidden_link1, $hidden_link2],
+            by: $user,
             sync_publication_frequency: false,
         );
 
@@ -131,6 +132,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         // ambiguous.
         $collection->addLinks(
             [$visible_link, $hidden_link1, $hidden_link2],
+            by: $owner,
             sync_publication_frequency: false,
         );
 
@@ -166,6 +168,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         // ambiguous.
         $collection->addLinks(
             [$visible_link, $hidden_link1, $hidden_link2],
+            by: $owner,
             sync_publication_frequency: false,
         );
         $collection->shareWith($user, 'read');
@@ -200,6 +203,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
         // ambiguous.
         $collection->addLinks(
             [$visible_link, $hidden_link1, $hidden_link2],
+            by: $user,
             sync_publication_frequency: false,
         );
 
@@ -223,7 +227,7 @@ class CollectionsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'is_hidden' => false,
         ]);
-        $link->addCollection($collection);
+        $link->addCollection($collection, by: $user);
 
         $response = $this->appRun('GET', "/p/{$user->id}/collections");
 

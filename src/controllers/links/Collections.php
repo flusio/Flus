@@ -143,7 +143,7 @@ class Collections extends BaseController
             $link_collections[] = $collection;
         }
 
-        $link->setCollections($link_collections);
+        $link->setCollections($link_collections, by: $user);
 
         $note = $form->note();
         if ($note) {

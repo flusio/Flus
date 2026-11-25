@@ -31,9 +31,10 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: $date);
+        $source->addLinks([$link], by: null, at: $date);
         $stream->addSource($source);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/read", [
@@ -65,9 +66,10 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: $date);
+        $source->addLinks([$link], by: null, at: $date);
         $stream->addSource($source);
         $user->markAsDismissed($link);
 
@@ -91,9 +93,10 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: $date);
+        $source->addLinks([$link], by: null, at: $date);
         $stream->addSource($source);
         $user->markAsDismissed($link);
 
@@ -119,15 +122,16 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: $date);
+        $source->addLinks([$link], by: null, at: $date);
         $stream->addSource($source);
         $journal_link = LinkFactory::create([
             'user_id' => $user->id,
             'url' => $link->url,
         ]);
-        $journal->addLinks([$journal_link]);
+        $journal->addLinks([$journal_link], by: $user);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/read", [
             'csrf_token' => $this->csrfToken(forms\streams\MarkStreamAsRead::class),
@@ -151,13 +155,15 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link1], at: $date1);
-        $source->addLinks([$link2], at: $date2);
+        $source->addLinks([$link1], by: null, at: $date1);
+        $source->addLinks([$link2], by: null, at: $date2);
         $stream->addSource($source);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/read", [
@@ -183,17 +189,20 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link3 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link1], at: $date1);
-        $source->addLinks([$link2], at: $date2);
-        $source->addLinks([$link3], at: $date3);
+        $source->addLinks([$link1], by: null, at: $date1);
+        $source->addLinks([$link2], by: null, at: $date2);
+        $source->addLinks([$link3], by: null, at: $date3);
         $stream->addSource($source);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/read", [
@@ -225,17 +234,20 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link3 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source1->addLinks([$link1], at: $date);
-        $source2->addLinks([$link2], at: $date);
-        $source3->addLinks([$link3], at: $date);
+        $source1->addLinks([$link1], by: null, at: $date);
+        $source2->addLinks([$link2], by: null, at: $date);
+        $source3->addLinks([$link3], by: null, at: $date);
         $stream->addSource($source1);
         $stream->addSource($source2);
         $stream->addSource($source3);
@@ -267,9 +279,10 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => false,
         ]);
         $link = LinkFactory::create([
+            'user_id' => $other_user->id,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: $date);
+        $source->addLinks([$link], by: $other_user, at: $date);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/read", [
             'csrf_token' => $this->csrfToken(forms\streams\MarkStreamAsRead::class),
@@ -303,17 +316,20 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => false,
         ]);
         $stream_link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $other_stream_link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $private_link = LinkFactory::create([
+            'user_id' => $other_user->id,
             'is_hidden' => false,
         ]);
-        $stream_source->addLinks([$stream_link], at: $date);
-        $other_stream_source->addLinks([$other_stream_link], at: $date);
-        $private_source->addLinks([$private_link], at: $date);
+        $stream_source->addLinks([$stream_link], by: null, at: $date);
+        $other_stream_source->addLinks([$other_stream_link], by: null, at: $date);
+        $private_source->addLinks([$private_link], by: $other_user, at: $date);
         $stream->addSource($stream_source);
         $stream->addSource($other_stream_source);
         $stream->addSource($private_source);
@@ -342,12 +358,14 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link1, $link2], at: $date);
+        $source->addLinks([$link1, $link2], by: null, at: $date);
         $stream->addSource($source);
         $user->markAsReadLater($link1);
 
@@ -373,16 +391,18 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link1 = LinkFactory::create([
+            'user_id' => null,
             'title' => 'Why streams are better than foos?',
             'url' => 'https://example.com/article',
             'is_hidden' => false,
         ]);
         $link2 = LinkFactory::create([
+            'user_id' => null,
             'title' => 'Another subject',
             'url' => 'https://example.com/other',
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link1, $link2], at: $date);
+        $source->addLinks([$link1, $link2], by: null, at: $date);
         $stream->addSource($source);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/read", [
@@ -407,9 +427,10 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: $date);
+        $source->addLinks([$link], by: null, at: $date);
         $stream->addSource($source);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/read", [
@@ -433,14 +454,16 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
             'created_at' => \Minz\Time::ago(1, 'hour'),
         ]);
         $link2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
             'created_at' => \Minz\Time::fromNow(1, 'hour'),
         ]);
-        $source->addLinks([$link1, $link2], at: $date);
+        $source->addLinks([$link1, $link2], by: null, at: $date);
         $stream->addSource($source);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/read", [
@@ -469,15 +492,17 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         ]);
         $url = 'https://example.com/same-link';
         $link1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
             'url' => $url,
         ]);
         $link2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
             'url' => $url,
         ]);
-        $source1->addLinks([$link1], at: $date);
-        $source2->addLinks([$link2], at: $date);
+        $source1->addLinks([$link1], by: null, at: $date);
+        $source2->addLinks([$link2], by: null, at: $date);
         $stream->addSource($source1);
         $stream->addSource($source2);
 
@@ -505,9 +530,10 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: $date);
+        $source->addLinks([$link], by: null, at: $date);
         $stream->addSource($source);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/read", [
@@ -532,9 +558,10 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: $date);
+        $source->addLinks([$link], by: null, at: $date);
         $stream->addSource($source);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/read", [
@@ -559,9 +586,10 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: $date);
+        $source->addLinks([$link], by: null, at: $date);
         $stream->addSource($source);
         $stream->shareWith($user);
 
@@ -587,9 +615,10 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: $date);
+        $source->addLinks([$link], by: null, at: $date);
         $stream->addSource($source);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/read", [
@@ -612,9 +641,10 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: $date);
+        $source->addLinks([$link], by: null, at: $date);
         $stream->addSource($source);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/read", [
@@ -639,9 +669,10 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: $date);
+        $source->addLinks([$link], by: null, at: $date);
         $stream->addSource($source);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/read/later", [
@@ -671,13 +702,15 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link1], at: $date1);
-        $source->addLinks([$link2], at: $date2);
+        $source->addLinks([$link1], by: null, at: $date1);
+        $source->addLinks([$link2], by: null, at: $date2);
         $stream->addSource($source);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/read/later", [
@@ -701,9 +734,10 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: $date);
+        $source->addLinks([$link], by: null, at: $date);
         $stream->addSource($source);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/read/later", [
@@ -728,9 +762,10 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: $date);
+        $source->addLinks([$link], by: null, at: $date);
         $stream->addSource($source);
         $stream->shareWith($user);
 
@@ -756,9 +791,10 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: $date);
+        $source->addLinks([$link], by: null, at: $date);
         $stream->addSource($source);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/read/later", [
@@ -781,9 +817,10 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: $date);
+        $source->addLinks([$link], by: null, at: $date);
         $stream->addSource($source);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/read/later", [
@@ -808,9 +845,10 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: $date);
+        $source->addLinks([$link], by: null, at: $date);
         $stream->addSource($source);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/dismiss", [
@@ -839,15 +877,16 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: $date);
+        $source->addLinks([$link], by: null, at: $date);
         $stream->addSource($source);
         $journal_link = LinkFactory::create([
             'user_id' => $user->id,
             'url' => $link->url,
         ]);
-        $journal->addLinks([$journal_link]);
+        $journal->addLinks([$journal_link], by: $user);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/dismiss", [
             'csrf_token' => $this->csrfToken(forms\streams\MarkStreamAsDismissed::class),
@@ -871,13 +910,15 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link1], at: $date1);
-        $source->addLinks([$link2], at: $date2);
+        $source->addLinks([$link1], by: null, at: $date1);
+        $source->addLinks([$link2], by: null, at: $date2);
         $stream->addSource($source);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/dismiss", [
@@ -901,9 +942,10 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: $date);
+        $source->addLinks([$link], by: null, at: $date);
         $stream->addSource($source);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/dismiss", [
@@ -928,9 +970,10 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: $date);
+        $source->addLinks([$link], by: null, at: $date);
         $stream->addSource($source);
         $stream->shareWith($user);
 
@@ -956,9 +999,10 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: $date);
+        $source->addLinks([$link], by: null, at: $date);
         $stream->addSource($source);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/dismiss", [
@@ -981,9 +1025,10 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: $date);
+        $source->addLinks([$link], by: null, at: $date);
         $stream->addSource($source);
 
         $response = $this->appRun('POST', "/streams/{$stream->id}/dismiss", [

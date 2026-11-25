@@ -31,7 +31,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'url' => $link_url,
             'is_hidden' => false,
         ]);
-        $feed->addLinks([$link], at: \Minz\Time::now());
+        $feed->addLinks([$link], by: null, at: \Minz\Time::now());
         $stream = StreamFactory::create([
             'is_public' => true,
         ]);
@@ -66,7 +66,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'url' => $link_url,
             'is_hidden' => false,
         ]);
-        $feed->addLinks([$link], at: \Minz\Time::now());
+        $feed->addLinks([$link], by: null, at: \Minz\Time::now());
         $stream = StreamFactory::create([
             'is_public' => true,
         ]);
@@ -100,8 +100,8 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'user_id' => $collection_1->user_id,
             'is_hidden' => false,
         ]);
-        $collection_1->addLinks([$link], at: \Minz\Time::now());
-        $collection_2->addLinks([$link], at: \Minz\Time::now());
+        $collection_1->addLinks([$link], by: $user, at: \Minz\Time::now());
+        $collection_2->addLinks([$link], by: $user, at: \Minz\Time::now());
         $stream = StreamFactory::create([
             'is_public' => true,
         ]);
@@ -128,7 +128,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'title' => $link_title,
             'is_hidden' => false,
         ]);
-        $feed->addLinks([$link], at: \Minz\Time::ago(2, 'months'));
+        $feed->addLinks([$link], by: null, at: \Minz\Time::ago(2, 'months'));
         $stream = StreamFactory::create([
             'is_public' => true,
         ]);
@@ -152,7 +152,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'title' => $link_title,
             'is_hidden' => true,
         ]);
-        $feed->addLinks([$link], at: \Minz\Time::now());
+        $feed->addLinks([$link], by: null, at: \Minz\Time::now());
         $stream = StreamFactory::create([
             'is_public' => true,
         ]);
@@ -176,7 +176,7 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'title' => $link_title,
             'is_hidden' => false,
         ]);
-        $collection->addLinks([$link], at: \Minz\Time::now());
+        $collection->addLinks([$link], by: $collection->user(), at: \Minz\Time::now());
         $stream = StreamFactory::create([
             'is_public' => true,
         ]);
@@ -206,8 +206,8 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'title' => 'A study about the forest',
             'is_hidden' => false,
         ]);
-        $feed_1->addLinks([$link_1], at: \Minz\Time::now());
-        $feed_2->addLinks([$link_2], at: \Minz\Time::now());
+        $feed_1->addLinks([$link_1], by: null, at: \Minz\Time::now());
+        $feed_2->addLinks([$link_2], by: null, at: \Minz\Time::now());
         $stream = StreamFactory::create([
             'is_public' => true,
         ]);
@@ -249,8 +249,8 @@ class FeedsTest extends \PHPUnit\Framework\TestCase
             'title' => 'A study about the forest',
             'is_hidden' => false,
         ]);
-        $feed_1->addLinks([$link_1], at: \Minz\Time::now());
-        $feed_2->addLinks([$link_2], at: \Minz\Time::now());
+        $feed_1->addLinks([$link_1], by: null, at: \Minz\Time::now());
+        $feed_2->addLinks([$link_2], by: null, at: \Minz\Time::now());
         $stream = StreamFactory::create([
             'is_public' => true,
         ]);

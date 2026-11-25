@@ -28,7 +28,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $user->markAsReadLater($link);
-        $journal->addLinks([$link]);
+        $journal->addLinks([$link], by: $user);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsRead::class),
@@ -56,7 +56,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'url' => $url,
         ]);
         $other_user->markAsReadLater($link);
-        $other_collection->addLinks([$link]);
+        $other_collection->addLinks([$link], by: $other_user);
         $from = \Minz\Url::for('source', ['id' => $other_collection->id]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read", [
@@ -93,10 +93,11 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
             'url' => $url,
         ]);
-        $source->addLinks([$link]);
+        $source->addLinks([$link], by: null);
         $stream->addSource($source);
         $from = \Minz\Url::for('stream', ['id' => $stream->id]);
 
@@ -127,10 +128,11 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
+            'user_id' => $source->user_id,
             'is_hidden' => false,
             'url' => $url,
         ]);
-        $source->addLinks([$link]);
+        $source->addLinks([$link], by: $source->user());
         $from = \Minz\Url::absoluteFor('journal');
 
         $response = $this->appRun('POST', "/links/{$link->id}/read", [
@@ -158,7 +160,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $user->markAsReadLater($link);
-        $journal->addLinks([$link]);
+        $journal->addLinks([$link], by: $user);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsRead::class),
@@ -178,7 +180,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $user->markAsReadLater($link);
-        $journal->addLinks([$link]);
+        $journal->addLinks([$link], by: $user);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read", [
             'csrf_token' => 'not the token',
@@ -220,7 +222,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $journal->addLinks([$link]);
+        $journal->addLinks([$link], by: $user);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/later", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsReadLater::class),
@@ -246,7 +248,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_hidden' => false,
             'url' => $url,
         ]);
-        $other_collection->addLinks([$link]);
+        $other_collection->addLinks([$link], by: $other_user);
         $from = \Minz\Url::for('source', ['id' => $other_collection->id]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/later", [
@@ -281,10 +283,11 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         /** @var string */
         $url = $this->fake('url');
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
             'url' => $url,
         ]);
-        $source->addLinks([$link]);
+        $source->addLinks([$link], by: null);
         $stream->addSource($source);
         $from = \Minz\Url::for('stream', ['id' => $stream->id]);
 
@@ -313,7 +316,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $journal->addLinks([$link]);
+        $journal->addLinks([$link], by: $user);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/later", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsReadLater::class),
@@ -331,7 +334,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $journal->addLinks([$link]);
+        $journal->addLinks([$link], by: $user);
 
         $response = $this->appRun('POST', "/links/{$link->id}/read/later", [
             'csrf_token' => 'not the token',
@@ -372,7 +375,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $journal->addLinks([$link]);
+        $journal->addLinks([$link], by: $user);
 
         $response = $this->appRun('POST', "/links/{$link->id}/dismiss", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsDismissed::class),
@@ -427,7 +430,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'url' => $url,
         ]);
-        $journal->addLinks([$journal_link]);
+        $journal->addLinks([$journal_link], by: $user);
 
         $response = $this->appRun('POST', "/links/{$link->id}/dismiss", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsDismissed::class),
@@ -445,7 +448,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $journal->addLinks([$link]);
+        $journal->addLinks([$link], by: $user);
 
         $response = $this->appRun('POST', "/links/{$link->id}/dismiss", [
             'csrf_token' => $this->csrfToken(forms\links\MarkLinkAsDismissed::class),
@@ -463,7 +466,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $journal->addLinks([$link]);
+        $journal->addLinks([$link], by: $user);
 
         $response = $this->appRun('POST', "/links/{$link->id}/dismiss", [
             'csrf_token' => 'not the token',

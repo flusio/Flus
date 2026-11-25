@@ -191,6 +191,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($url, $link->url);
         $this->assertSame($user->id, $link->user_id);
         $this->assertContains($collection->id, array_column($link->collections(), 'id'));
+        $this->assertSame($user->id, $collection->linkAddedBy($link)?->id);
     }
 
     public function testCreateDoesNotCreateLinkIfItExists(): void

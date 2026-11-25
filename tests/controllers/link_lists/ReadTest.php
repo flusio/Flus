@@ -26,7 +26,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $user->markAsReadLater($link);
-        $journal->addLinks([$link]);
+        $journal->addLinks([$link], by: $user);
 
         $response = $this->appRun('POST', "/collections/{$journal->id}/read", [
             'csrf_token' => $this->csrfToken(forms\link_lists\MarkAsRead::class),
@@ -54,7 +54,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $collection->addLinks([$public_link, $hidden_link]);
+        $collection->addLinks([$public_link, $hidden_link], by: $other_user);
         $referer = \Minz\Url::for('source', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/read", [
@@ -87,7 +87,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $collection->addLinks([$link]);
+        $collection->addLinks([$link], by: $other_user);
         $collection->shareWith($user, 'read');
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/read", [
@@ -112,8 +112,8 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $journal->addLinks([$link1], at: new \DateTimeImmutable('2024-03-25'));
-        $journal->addLinks([$link2], at: new \DateTimeImmutable('2024-03-26'));
+        $journal->addLinks([$link1], by: $user, at: new \DateTimeImmutable('2024-03-25'));
+        $journal->addLinks([$link2], by: $user, at: new \DateTimeImmutable('2024-03-26'));
 
         $response = $this->appRun('POST', "/collections/{$journal->id}/read", [
             'csrf_token' => $this->csrfToken(forms\link_lists\MarkAsRead::class),
@@ -141,7 +141,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'source_id' => $collection2->id,
         ]);
-        $journal->addLinks([$link1, $link2]);
+        $journal->addLinks([$link1, $link2], by: $user);
 
         $response = $this->appRun('POST', "/collections/{$journal->id}/read", [
             'csrf_token' => $this->csrfToken(forms\link_lists\MarkAsRead::class),
@@ -162,7 +162,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $journal->addLinks([$link]);
+        $journal->addLinks([$link], by: $user);
 
         $response = $this->appRun('POST', "/collections/{$journal->id}/read", [
             'csrf_token' => $this->csrfToken(forms\link_lists\MarkAsRead::class),
@@ -185,7 +185,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => false,
         ]);
-        $collection->addLinks([$link]);
+        $collection->addLinks([$link], by: $other_user);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/read", [
             'csrf_token' => $this->csrfToken(forms\link_lists\MarkAsRead::class),
@@ -204,7 +204,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_hidden' => false,
         ]);
-        $journal->addLinks([$link]);
+        $journal->addLinks([$link], by: $other_user);
 
         $response = $this->appRun('POST', "/collections/{$journal->id}/read", [
             'csrf_token' => $this->csrfToken(forms\link_lists\MarkAsRead::class),
@@ -222,7 +222,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $journal->addLinks([$link]);
+        $journal->addLinks([$link], by: $user);
 
         $response = $this->appRun('POST', "/collections/{$journal->id}/read", [
             'csrf_token' => 'not the token',
@@ -242,7 +242,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $journal->addLinks([$link]);
+        $journal->addLinks([$link], by: $user);
 
         $response = $this->appRun('POST', "/collections/{$journal->id}/read/later", [
             'csrf_token' => $this->csrfToken(forms\link_lists\MarkAsReadLater::class),
@@ -269,7 +269,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $collection->addLinks([$public_link, $hidden_link]);
+        $collection->addLinks([$public_link, $hidden_link], by: $other_user);
         $referer = \Minz\Url::for('source', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/read/later", [
@@ -300,7 +300,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
         ]);
-        $collection->addLinks([$link]);
+        $collection->addLinks([$link], by: $other_user);
         $collection->shareWith($user, 'read');
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/read/later", [
@@ -325,8 +325,8 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $journal->addLinks([$link1], at: new \DateTimeImmutable('2024-03-25'));
-        $journal->addLinks([$link2], at: new \DateTimeImmutable('2024-03-26'));
+        $journal->addLinks([$link1], by: $user, at: new \DateTimeImmutable('2024-03-25'));
+        $journal->addLinks([$link2], by: $user, at: new \DateTimeImmutable('2024-03-26'));
 
         $response = $this->appRun('POST', "/collections/{$journal->id}/read/later", [
             'csrf_token' => $this->csrfToken(forms\link_lists\MarkAsReadLater::class),
@@ -354,7 +354,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'source_id' => $collection2->id,
         ]);
-        $journal->addLinks([$link1, $link2]);
+        $journal->addLinks([$link1, $link2], by: $user);
 
         $response = $this->appRun('POST', "/collections/{$journal->id}/read/later", [
             'csrf_token' => $this->csrfToken(forms\link_lists\MarkAsReadLater::class),
@@ -375,7 +375,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $journal->addLinks([$link]);
+        $journal->addLinks([$link], by: $user);
 
         $response = $this->appRun('POST', "/collections/{$journal->id}/read/later", [
             'csrf_token' => $this->csrfToken(forms\link_lists\MarkAsReadLater::class),
@@ -398,7 +398,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => false,
         ]);
-        $collection->addLinks([$link]);
+        $collection->addLinks([$link], by: $other_user);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/read/later", [
             'csrf_token' => $this->csrfToken(forms\link_lists\MarkAsReadLater::class),
@@ -415,7 +415,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $journal->addLinks([$link]);
+        $journal->addLinks([$link], by: $user);
 
         $response = $this->appRun('POST', "/collections/{$journal->id}/read/later", [
             'csrf_token' => 'not the token',
@@ -435,7 +435,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $journal->addLinks([$link]);
+        $journal->addLinks([$link], by: $user);
 
         $response = $this->appRun('POST', "/collections/{$journal->id}/dismiss", [
             'csrf_token' => $this->csrfToken(forms\link_lists\MarkAsDismissed::class),
@@ -462,7 +462,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $collection->addLinks([$public_link, $hidden_link]);
+        $collection->addLinks([$public_link, $hidden_link], by: $other_user);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/dismiss", [
             'csrf_token' => $this->csrfToken(forms\link_lists\MarkAsDismissed::class),
@@ -489,7 +489,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => true,
         ]);
-        $collection->addLinks([$link]);
+        $collection->addLinks([$link], by: $other_user);
         $collection->shareWith($user, 'read');
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/dismiss", [
@@ -515,8 +515,8 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link2 = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $journal->addLinks([$link1], at: new \DateTimeImmutable('2024-03-25'));
-        $journal->addLinks([$link2], at: new \DateTimeImmutable('2024-03-26'));
+        $journal->addLinks([$link1], by: $user, at: new \DateTimeImmutable('2024-03-25'));
+        $journal->addLinks([$link2], by: $user, at: new \DateTimeImmutable('2024-03-26'));
 
         $response = $this->appRun('POST', "/collections/{$journal->id}/dismiss", [
             'csrf_token' => $this->csrfToken(forms\link_lists\MarkAsDismissed::class),
@@ -544,7 +544,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'source_id' => $collection2->id,
         ]);
-        $journal->addLinks([$link1, $link2]);
+        $journal->addLinks([$link1, $link2], by: $user);
 
         $response = $this->appRun('POST', "/collections/{$journal->id}/dismiss", [
             'csrf_token' => $this->csrfToken(forms\link_lists\MarkAsDismissed::class),
@@ -565,7 +565,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $journal->addLinks([$link]);
+        $journal->addLinks([$link], by: $user);
 
         $response = $this->appRun('POST', "/collections/{$journal->id}/dismiss", [
             'csrf_token' => $this->csrfToken(forms\link_lists\MarkAsDismissed::class),
@@ -588,7 +588,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'is_public' => false,
         ]);
-        $collection->addLinks([$link]);
+        $collection->addLinks([$link], by: $other_user);
 
         $response = $this->appRun('POST', "/collections/{$collection->id}/dismiss", [
             'csrf_token' => $this->csrfToken(forms\link_lists\MarkAsDismissed::class),
@@ -605,7 +605,7 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $journal->addLinks([$link]);
+        $journal->addLinks([$link], by: $user);
 
         $response = $this->appRun('POST', "/collections/{$journal->id}/dismiss", [
             'csrf_token' => 'not the token',

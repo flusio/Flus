@@ -238,7 +238,7 @@ class Links extends BaseController
             $link_collections[] = $collection;
         }
 
-        $link->addCollections($link_collections);
+        $link->addCollections($link_collections, by: $user);
 
         if ($form->read_later) {
             $user->markAsReadLater($link);

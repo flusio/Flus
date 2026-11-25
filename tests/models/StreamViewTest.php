@@ -172,13 +172,15 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source_1->addLinks([$link_1], at: $date);
-        $source_2->addLinks([$link_2], at: $date);
+        $source_1->addLinks([$link_1], by: null, at: $date);
+        $source_2->addLinks([$link_2], by: null, at: $date);
         $stream->addSource($source_1);
         $stream->addSource($source_2);
         $stream_view = StreamView::buildFromRequest($stream, null, new \Minz\Request('GET', '/stream', [
@@ -202,9 +204,10 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: $other_date);
+        $source->addLinks([$link], by: null, at: $other_date);
         $stream->addSource($source);
         $stream_view = StreamView::buildFromRequest($stream, null, new \Minz\Request('GET', '/stream', [
             'at' => $date->format('Y-m-d'),
@@ -268,17 +271,20 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_3 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link_1], at: $date_1);
-        $source->addLinks([$link_2], at: $date_2);
-        $source->addLinks([$link_3], at: $date_3);
+        $source->addLinks([$link_1], by: null, at: $date_1);
+        $source->addLinks([$link_2], by: null, at: $date_2);
+        $source->addLinks([$link_3], by: null, at: $date_3);
         $stream->addSource($source);
         $stream_view = StreamView::buildFromRequest($stream, null, $request);
 
@@ -313,17 +319,20 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_3 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link_1], at: $date_1);
-        $source->addLinks([$link_2], at: $date_2);
-        $source->addLinks([$link_3], at: $date_3);
+        $source->addLinks([$link_1], by: null, at: $date_1);
+        $source->addLinks([$link_2], by: null, at: $date_2);
+        $source->addLinks([$link_3], by: null, at: $date_3);
         $stream->addSource($source);
         $stream_view = StreamView::buildFromRequest($stream, null, $request);
 
@@ -365,13 +374,15 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source_1->addLinks([$link_1], at: $date);
-        $source_2->addLinks([$link_2], at: $date);
+        $source_1->addLinks([$link_1], by: null, at: $date);
+        $source_2->addLinks([$link_2], by: null, at: $date);
         $stream->addSource($source_1);
         $stream->addSource($source_2);
         $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
@@ -404,15 +415,18 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_3 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link_1, $link_2, $link_3], at: $date);
+        $source->addLinks([$link_1, $link_2, $link_3], by: null, at: $date);
         $stream->addSource($source);
         $user->markAsRead($link_1);
         $user->markAsReadLater($link_2);
@@ -446,15 +460,18 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_3 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link_1, $link_2, $link_3], at: $date);
+        $source->addLinks([$link_1, $link_2, $link_3], by: null, at: $date);
         $stream->addSource($source);
         $user->markAsRead($link_1);
         $user->markAsReadLater($link_2);
@@ -488,15 +505,18 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_3 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link_1, $link_2, $link_3], at: $date);
+        $source->addLinks([$link_1, $link_2, $link_3], by: null, at: $date);
         $stream->addSource($source);
         $user->markAsRead($link_1);
         $user->markAsReadLater($link_2);
@@ -530,12 +550,14 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link_1, $link_2], at: $date);
+        $source->addLinks([$link_1, $link_2], by: null, at: $date);
         $stream->addSource($source);
         $user->markAsDismissed($link_1);
         $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
@@ -560,12 +582,14 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link_1, $link_2], at: $date);
+        $source->addLinks([$link_1, $link_2], by: null, at: $date);
         $stream->addSource($source);
         $user->markAsDismissed($link_1);
         $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
@@ -592,12 +616,14 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link_1, $link_2], at: $date);
+        $source->addLinks([$link_1, $link_2], by: null, at: $date);
         $stream->addSource($source);
         $user->markAsDismissed($link_1);
         $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
@@ -624,16 +650,18 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'title' => 'Why streams are better than foos?',
             'url' => 'https://example.com/article',
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => null,
             'title' => 'Another subject',
             'url' => 'https://example.com/other',
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link_1, $link_2], at: $date);
+        $source->addLinks([$link_1, $link_2], by: null, at: $date);
         $stream->addSource($source);
         $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
             'at' => $date->format('Y-m-d'),
@@ -658,16 +686,18 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'title' => 'Why streams are better than foos?',
             'url' => 'https://example.com/article',
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => null,
             'title' => 'Another subject',
             'url' => 'https://example.org/article',
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link_1, $link_2], at: $date);
+        $source->addLinks([$link_1, $link_2], by: null, at: $date);
         $stream->addSource($source);
         $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
             'at' => $date->format('Y-m-d'),
@@ -695,15 +725,17 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         // The creation dates are inverted compared to the publication dates,
         // to check that the search doesn't apply to the former.
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'created_at' => $other_date,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => null,
             'created_at' => $date,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link_1], at: $date);
-        $source->addLinks([$link_2], at: $other_date);
+        $source->addLinks([$link_1], by: null, at: $date);
+        $source->addLinks([$link_2], by: null, at: $other_date);
         $stream->addSource($source);
         $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
             'at' => $date->format('Y-m-d'),
@@ -730,9 +762,10 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: $other_date);
+        $source->addLinks([$link], by: null, at: $other_date);
         $stream->addSource($source);
         $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
             'at' => $date->format('Y-m-d'),
@@ -757,16 +790,18 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'fetched_at' => \Minz\Time::now(),
             'fetched_code' => 404,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => null,
             'fetched_at' => \Minz\Time::now(),
             'fetched_code' => 200,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link_1, $link_2], at: $date);
+        $source->addLinks([$link_1, $link_2], by: null, at: $date);
         $stream->addSource($source);
         $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
             'at' => $date->format('Y-m-d'),
@@ -796,13 +831,15 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source_1->addLinks([$link_1], at: $date);
-        $source_2->addLinks([$link_2], at: $date);
+        $source_1->addLinks([$link_1], by: null, at: $date);
+        $source_2->addLinks([$link_2], by: null, at: $date);
         $stream->addSource($source_1);
         $stream->addSource($source_2);
         $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
@@ -833,13 +870,15 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source_1->addLinks([$link_1], at: $date);
-        $source_2->addLinks([$link_2], at: $date);
+        $source_1->addLinks([$link_1], by: null, at: $date);
+        $source_2->addLinks([$link_2], by: null, at: $date);
         $stream->addSource($source_1);
         $stream->addSource($source_2);
         $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
@@ -873,13 +912,15 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
         $follow->name = 'My favourite reports';
         $follow->save();
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source_1->addLinks([$link_1], at: $date);
-        $source_2->addLinks([$link_2], at: $date);
+        $source_1->addLinks([$link_1], by: null, at: $date);
+        $source_2->addLinks([$link_2], by: null, at: $date);
         $stream->addSource($source_1);
         $stream->addSource($source_2);
         $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
@@ -910,13 +951,15 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source_1->addLinks([$link_1], at: $date);
-        $source_2->addLinks([$link_2], at: $date);
+        $source_1->addLinks([$link_1], by: null, at: $date);
+        $source_2->addLinks([$link_2], by: null, at: $date);
         $stream->addSource($source_1);
         $stream->addSource($source_2);
         $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
@@ -942,9 +985,10 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: $date);
+        $source->addLinks([$link], by: null, at: $date);
         $stream->addSource($source);
         $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
             'at' => $date->format('Y-m-d'),
@@ -978,13 +1022,15 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => $user->id,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => $other_user->id,
             'is_hidden' => false,
         ]);
-        $source_1->addLinks([$link_1], at: $date);
-        $source_2->addLinks([$link_2], at: $date);
+        $source_1->addLinks([$link_1], by: $user, at: $date);
+        $source_2->addLinks([$link_2], by: $other_user, at: $date);
         $stream->addSource($source_1);
         $stream->addSource($source_2);
         $stream_view = StreamView::buildFromRequest($stream, $user, $request);
@@ -1024,13 +1070,15 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => $other_user->id,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => $other_user->id,
             'is_hidden' => false,
         ]);
-        $source_1->addLinks([$link_1], at: $date);
-        $source_2->addLinks([$link_2], at: $date);
+        $source_1->addLinks([$link_1], by: $other_user, at: $date);
+        $source_2->addLinks([$link_2], by: $other_user, at: $date);
         $stream->addSource($source_1);
         $stream->addSource($source_2);
         $source_1->shareWith($user, 'read');
@@ -1065,12 +1113,14 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => $source->user_id,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => $source->user_id,
             'is_hidden' => true,
         ]);
-        $source->addLinks([$link_1, $link_2], at: $date);
+        $source->addLinks([$link_1, $link_2], by: $source->user(), at: $date);
         $stream->addSource($source);
         $stream_view = StreamView::buildFromRequest($stream, null, $request);
 
@@ -1106,13 +1156,15 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => false,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => $source_1->user_id,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => $source_2->user_id,
             'is_hidden' => false,
         ]);
-        $source_1->addLinks([$link_1], at: $date);
-        $source_2->addLinks([$link_2], at: $date);
+        $source_1->addLinks([$link_1], by: $source_1->user(), at: $date);
+        $source_2->addLinks([$link_2], by: $source_2->user(), at: $date);
         $stream->addSource($source_1);
         $stream->addSource($source_2);
         $stream_view = StreamView::buildFromRequest($stream, null, $request);
@@ -1146,9 +1198,10 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => false,
         ]);
         $link = LinkFactory::create([
+            'user_id' => $source->user_id,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: $date);
+        $source->addLinks([$link], by: $source->user(), at: $date);
         $stream->addSource($source);
         $stream_view = StreamView::buildFromRequest($stream, null, $request);
 
@@ -1168,12 +1221,14 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link_1, $link_2], at: $date);
+        $source->addLinks([$link_1, $link_2], by: null, at: $date);
         $stream->addSource($source);
         $user->markAsRead($link_1);
         $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
@@ -1199,15 +1254,18 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_3 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link_1, $link_2, $link_3], at: $date);
+        $source->addLinks([$link_1, $link_2, $link_3], by: null, at: $date);
         $stream->addSource($source);
         $user->markAsRead($link_1);
         $user->markAsReadLater($link_2);
@@ -1247,12 +1305,14 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link_1, $link_2], at: $date);
+        $source->addLinks([$link_1, $link_2], by: null, at: $date);
         $stream->addSource($source);
         $user->markAsDismissed($link_1);
         $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
@@ -1283,16 +1343,18 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'title' => 'Why streams are better than foos?',
             'url' => 'https://example.com/article',
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => null,
             'title' => 'Another subject',
             'url' => 'https://example.com/other',
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link_1, $link_2], at: $date);
+        $source->addLinks([$link_1, $link_2], by: null, at: $date);
         $stream->addSource($source);
         $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
             'at' => $date->format('Y-m-d'),
@@ -1321,13 +1383,15 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source_1->addLinks([$link_1], at: $date);
-        $source_2->addLinks([$link_2], at: $date);
+        $source_1->addLinks([$link_1], by: null, at: $date);
+        $source_2->addLinks([$link_2], by: null, at: $date);
         $stream->addSource($source_1);
         $stream->addSource($source_2);
         $user->markAsRead($link_2);
@@ -1350,9 +1414,10 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: $date);
+        $source->addLinks([$link], by: null, at: $date);
         $stream->addSource($source);
         $stream_view = StreamView::buildFromRequest($stream, null, new \Minz\Request('GET', '/stream', [
             'at' => $date->format('Y-m-d'),
@@ -1379,13 +1444,15 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source_1->addLinks([$link_1], at: $date);
-        $source_2->addLinks([$link_2], at: $other_date);
+        $source_1->addLinks([$link_1], by: null, at: $date);
+        $source_2->addLinks([$link_2], by: null, at: $other_date);
         $stream->addSource($source_1);
         $stream->addSource($source_2);
         $stream_view = StreamView::buildFromRequest($stream, null, new \Minz\Request('GET', '/stream', [
@@ -1407,9 +1474,10 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: $other_date);
+        $source->addLinks([$link], by: null, at: $other_date);
         $stream->addSource($source);
         $stream_view = StreamView::buildFromRequest($stream, null, new \Minz\Request('GET', '/stream', [
             'at' => $date->format('Y-m-d'),
@@ -1436,16 +1504,19 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'name' => 'Feed B',
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_3 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source_1->addLinks([$link_1, $link_2], at: $date);
-        $source_2->addLinks([$link_3], at: $date);
+        $source_1->addLinks([$link_1, $link_2], by: null, at: $date);
+        $source_2->addLinks([$link_3], by: null, at: $date);
         $stream->addSource($source_1);
         $stream->addSource($source_2);
         $stream_view = StreamView::buildFromRequest($stream, null, new \Minz\Request('GET', '/stream', [
@@ -1475,13 +1546,15 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => false,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => $source_2->user_id,
             'is_hidden' => false,
         ]);
-        $source_1->addLinks([$link_1], at: $date);
-        $source_2->addLinks([$link_2], at: $date);
+        $source_1->addLinks([$link_1], by: null, at: $date);
+        $source_2->addLinks([$link_2], by: $source_2->user(), at: $date);
         $stream->addSource($source_1);
         $stream->addSource($source_2);
         $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
@@ -1506,16 +1579,19 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_3 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link_1], at: $date_1);
-        $source->addLinks([$link_2, $link_3], at: $date_2);
+        $source->addLinks([$link_1], by: null, at: $date_1);
+        $source->addLinks([$link_2, $link_3], by: null, at: $date_2);
         $stream->addSource($source);
         $stream_view = StreamView::buildFromRequest($stream, null, new \Minz\Request('GET', '/stream', [
             'at' => $date_1->format('Y-m-d'),
@@ -1541,16 +1617,18 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'title' => 'Why streams are better than foos?',
             'url' => 'https://example.com/article',
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => null,
             'title' => 'Another subject',
             'url' => 'https://example.com/other',
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link_1, $link_2], at: $date);
+        $source->addLinks([$link_1, $link_2], by: null, at: $date);
         $stream->addSource($source);
         $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
             'at' => $date->format('Y-m-d'),
@@ -1575,12 +1653,14 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link_1, $link_2], at: $date);
+        $source->addLinks([$link_1, $link_2], by: null, at: $date);
         $stream->addSource($source);
         $user->markAsDismissed($link_1);
         $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
@@ -1605,15 +1685,18 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_3 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link_1, $link_2, $link_3], at: $date);
+        $source->addLinks([$link_1, $link_2, $link_3], by: null, at: $date);
         $stream->addSource($source);
         $user->markAsRead($link_1);
         $stream_view = StreamView::buildFromRequest($stream, $user, new \Minz\Request('GET', '/stream', [
@@ -1633,9 +1716,10 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: $date);
+        $source->addLinks([$link], by: null, at: $date);
         $stream->addSource($source);
         $stream_view = StreamView::buildFromRequest($stream, null, new \Minz\Request('GET', '/stream', [
             'at' => $date->format('Y-m-d'),
@@ -1658,16 +1742,19 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_3 = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link_1], at: $date_1);
-        $source->addLinks([$link_2, $link_3], at: $date_2);
+        $source->addLinks([$link_1], by: null, at: $date_1);
+        $source->addLinks([$link_2, $link_3], by: null, at: $date_2);
         $stream->addSource($source);
         $stream_view = StreamView::buildFromRequest($stream, null, new \Minz\Request('GET', '/stream', [
             'at' => $date_1->format('Y-m-d'),
@@ -1695,9 +1782,10 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
                 'is_public' => true,
             ]);
             $link = LinkFactory::create([
+                'user_id' => null,
                 'is_hidden' => false,
             ]);
-            $source->addLinks([$link], at: $date);
+            $source->addLinks([$link], by: null, at: $date);
             $stream->addSource($source);
             $stream_view = StreamView::buildFromRequest($stream, null, new \Minz\Request('GET', '/stream', [
                 'at' => $date->format('Y-m-d'),
@@ -1724,12 +1812,14 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => $source->user_id,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => $source->user_id,
             'is_hidden' => true,
         ]);
-        $source->addLinks([$link_1, $link_2], at: $date);
+        $source->addLinks([$link_1, $link_2], by: $source->user(), at: $date);
         $stream->addSource($source);
         $stream_view = StreamView::buildFromRequest($stream, null, new \Minz\Request('GET', '/stream', [
             'at' => $date->format('Y-m-d'),
@@ -1754,13 +1844,15 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => false,
         ]);
         $link_1 = LinkFactory::create([
+            'user_id' => $source_1->user_id,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'user_id' => $source_2->user_id,
             'is_hidden' => false,
         ]);
-        $source_1->addLinks([$link_1], at: $date);
-        $source_2->addLinks([$link_2], at: $date);
+        $source_1->addLinks([$link_1], by: $source_1->user(), at: $date);
+        $source_2->addLinks([$link_2], by: $source_2->user(), at: $date);
         $stream->addSource($source_1);
         $stream->addSource($source_2);
         $stream_view = StreamView::buildFromRequest($stream, null, new \Minz\Request('GET', '/stream', [
@@ -1781,14 +1873,16 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_created_before = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
             'created_at' => \Minz\Time::ago(1, 'hour'),
         ]);
         $link_created_after = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
             'created_at' => \Minz\Time::fromNow(1, 'hour'),
         ]);
-        $source->addLinks([$link_created_before, $link_created_after], at: $published_at);
+        $source->addLinks([$link_created_before, $link_created_after], by: null, at: $published_at);
         $stream->addSource($source);
 
         $links = $stream->links([
@@ -1808,14 +1902,16 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_created_before = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
             'created_at' => \Minz\Time::ago(1, 'hour'),
         ]);
         $link_created_after = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
             'created_at' => \Minz\Time::fromNow(1, 'hour'),
         ]);
-        $source->addLinks([$link_created_before, $link_created_after], at: $published_at);
+        $source->addLinks([$link_created_before, $link_created_after], by: null, at: $published_at);
         $stream->addSource($source);
 
         $links = $stream->links([

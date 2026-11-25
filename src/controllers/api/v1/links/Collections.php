@@ -58,7 +58,7 @@ class Collections extends BaseController
             ]);
         }
 
-        $link->addCollection($collection);
+        $link->addCollection($collection, by: $user);
 
         return Response::json(200, []);
     }

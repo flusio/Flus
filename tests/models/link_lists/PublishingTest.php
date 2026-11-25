@@ -14,8 +14,10 @@ class PublishingTest extends \PHPUnit\Framework\TestCase
     public function testSyncPublicationFrequencyPerYear(): void
     {
         $collection = CollectionFactory::create();
-        $link = LinkFactory::create();
-        $collection->addLinks([$link], at: \Minz\Time::ago(11, 'months'));
+        $link = LinkFactory::create([
+            'user_id' => $collection->user_id,
+        ]);
+        $collection->addLinks([$link], by: $collection->user(), at: \Minz\Time::ago(11, 'months'));
 
         $collection->syncPublicationFrequencyPerYear();
 
@@ -25,18 +27,30 @@ class PublishingTest extends \PHPUnit\Framework\TestCase
     public function testSyncPublicationFrequencyPerYearWithSeveralPublicationsOverTheYear(): void
     {
         $collection = CollectionFactory::create();
-        $link_1 = LinkFactory::create();
-        $link_2 = LinkFactory::create();
-        $link_3 = LinkFactory::create();
-        $link_4 = LinkFactory::create();
-        $link_5 = LinkFactory::create();
-        $link_6 = LinkFactory::create();
-        $collection->addLinks([$link_1], at: \Minz\Time::ago(1, 'month'));
-        $collection->addLinks([$link_2], at: \Minz\Time::ago(2, 'months'));
-        $collection->addLinks([$link_3], at: \Minz\Time::ago(3, 'months'));
-        $collection->addLinks([$link_4], at: \Minz\Time::ago(4, 'months'));
-        $collection->addLinks([$link_5], at: \Minz\Time::ago(5, 'months'));
-        $collection->addLinks([$link_6], at: \Minz\Time::ago(6, 'months'));
+        $link_1 = LinkFactory::create([
+            'user_id' => $collection->user_id,
+        ]);
+        $link_2 = LinkFactory::create([
+            'user_id' => $collection->user_id,
+        ]);
+        $link_3 = LinkFactory::create([
+            'user_id' => $collection->user_id,
+        ]);
+        $link_4 = LinkFactory::create([
+            'user_id' => $collection->user_id,
+        ]);
+        $link_5 = LinkFactory::create([
+            'user_id' => $collection->user_id,
+        ]);
+        $link_6 = LinkFactory::create([
+            'user_id' => $collection->user_id,
+        ]);
+        $collection->addLinks([$link_1], by: $collection->user(), at: \Minz\Time::ago(1, 'month'));
+        $collection->addLinks([$link_2], by: $collection->user(), at: \Minz\Time::ago(2, 'months'));
+        $collection->addLinks([$link_3], by: $collection->user(), at: \Minz\Time::ago(3, 'months'));
+        $collection->addLinks([$link_4], by: $collection->user(), at: \Minz\Time::ago(4, 'months'));
+        $collection->addLinks([$link_5], by: $collection->user(), at: \Minz\Time::ago(5, 'months'));
+        $collection->addLinks([$link_6], by: $collection->user(), at: \Minz\Time::ago(6, 'months'));
 
         $collection->syncPublicationFrequencyPerYear();
 
@@ -46,8 +60,10 @@ class PublishingTest extends \PHPUnit\Framework\TestCase
     public function testSyncPublicationFrequencyPerYearWithOnePublicationRightNow(): void
     {
         $collection = CollectionFactory::create();
-        $link = LinkFactory::create();
-        $collection->addLinks([$link], at: \Minz\Time::now());
+        $link = LinkFactory::create([
+            'user_id' => $collection->user_id,
+        ]);
+        $collection->addLinks([$link], by: $collection->user(), at: \Minz\Time::now());
 
         $collection->syncPublicationFrequencyPerYear();
 
@@ -66,8 +82,10 @@ class PublishingTest extends \PHPUnit\Framework\TestCase
     public function testSyncPublicationFrequencyPerYearWithNoPublicationsOverTheYear(): void
     {
         $collection = CollectionFactory::create();
-        $link = LinkFactory::create();
-        $collection->addLinks([$link], at: \Minz\Time::ago(13, 'months'));
+        $link = LinkFactory::create([
+            'user_id' => $collection->user_id,
+        ]);
+        $collection->addLinks([$link], by: $collection->user(), at: \Minz\Time::ago(13, 'months'));
 
         $collection->syncPublicationFrequencyPerYear();
 

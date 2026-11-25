@@ -231,12 +231,14 @@ CREATE TABLE links_to_collections (
     id BIGSERIAL PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,
     link_id TEXT REFERENCES links ON DELETE CASCADE ON UPDATE CASCADE,
-    collection_id TEXT REFERENCES collections ON DELETE CASCADE ON UPDATE CASCADE
+    collection_id TEXT REFERENCES collections ON DELETE CASCADE ON UPDATE CASCADE,
+    user_id TEXT REFERENCES users ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 CREATE UNIQUE INDEX idx_links_to_collections ON links_to_collections(link_id, collection_id);
 CREATE INDEX idx_links_to_collections_collection_id_created_at ON links_to_collections(collection_id, created_at);
 CREATE INDEX idx_links_to_collections_created_at ON links_to_collections(created_at);
+CREATE INDEX idx_links_to_collections_user_id ON links_to_collections(user_id) WHERE user_id IS NOT NULL;
 
 CREATE TABLE url_statuses (
     id BIGSERIAL PRIMARY KEY,

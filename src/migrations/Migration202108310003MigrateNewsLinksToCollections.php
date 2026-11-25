@@ -77,7 +77,7 @@ class Migration202108310003MigrateNewsLinksToCollections
 
             assert($at !== false);
 
-            $link_to_list = new models\LinkToList($link, $journal);
+            $link_to_list = new models\LinkToList($link, $journal, by: $user);
             $link_to_list->created_at = $at;
 
             $links_to_lists_to_create[] = $link_to_list;

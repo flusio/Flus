@@ -268,7 +268,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'user_id' => $current_user->id,
         ]);
-        $collection->addLinks([$link]);
+        $collection->addLinks([$link], by: $other_user);
 
         $response = $this->appRun('GET', "/links/{$link->id}");
 
@@ -292,7 +292,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $collection = CollectionFactory::create([
             'user_id' => $other_user->id,
         ]);
-        $collection->addLinks([$link]);
+        $collection->addLinks([$link], by: $other_user);
         CollectionShareFactory::create([
             'collection_id' => $collection->id,
             'user_id' => $current_user->id,
@@ -560,7 +560,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'url' => $url,
         ]);
-        $collection_1->addLinks([$link]);
+        $collection_1->addLinks([$link], by: $user);
 
         $this->assertSame(1, models\Link::count());
 
@@ -606,6 +606,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $link = models\Link::take();
         $this->assertNotNull($link);
         $this->assertContains($collection->id, array_column($link->collections(), 'id'));
+        $this->assertSame($user->id, $collection->linkAddedBy($link)?->id);
         $this->assertResponseCode($response, 302, "/links/{$link->id}");
     }
 
@@ -1033,7 +1034,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $user->id,
         ]);
-        $collection->addLinks([$link]);
+        $collection->addLinks([$link], by: $user);
         $from = \Minz\Url::absoluteFor('source', ['id' => $collection->id]);
 
         $response = $this->appRun('POST', "/links/{$link->id}/delete", [

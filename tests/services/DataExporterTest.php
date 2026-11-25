@@ -254,7 +254,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'url' => $link_url,
         ]);
-        $journal->addLinks([$link], at: $published_at);
+        $journal->addLinks([$link], by: $user, at: $published_at);
 
         $filepath = $data_exporter->export($user);
 
@@ -389,7 +389,7 @@ class DataExporterTest extends \PHPUnit\Framework\TestCase
             'url' => $link_url,
             'is_hidden' => true,
         ]);
-        $collection->addLinks([$link], at: $published_at);
+        $collection->addLinks([$link], by: $user, at: $published_at);
         CollectionToTopicFactory::create([
             'topic_id' => $topic->id,
             'collection_id' => $collection->id,

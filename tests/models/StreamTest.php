@@ -39,9 +39,10 @@ class StreamTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: \Minz\Time::now());
+        $source->addLinks([$link], by: null, at: \Minz\Time::now());
         $stream->addSource($source);
 
         $has_unread_links = $stream->hasUnreadLinks($user);
@@ -87,15 +88,18 @@ class StreamTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $read_link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $read_later_link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
         $dismissed_link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$read_link, $read_later_link, $dismissed_link], at: \Minz\Time::now());
+        $source->addLinks([$read_link, $read_later_link, $dismissed_link], by: null, at: \Minz\Time::now());
         $stream->addSource($source);
         $user->markAsRead($read_link);
         $user->markAsReadLater($read_later_link);
@@ -116,9 +120,10 @@ class StreamTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: \Minz\Time::ago(2, 'weeks'));
+        $source->addLinks([$link], by: null, at: \Minz\Time::ago(2, 'weeks'));
         $stream->addSource($source);
 
         $has_unread_links = $stream->hasUnreadLinks($user);
@@ -136,9 +141,10 @@ class StreamTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => true,
         ]);
-        $source->addLinks([$link], at: \Minz\Time::now());
+        $source->addLinks([$link], by: null, at: \Minz\Time::now());
         $stream->addSource($source);
 
         $has_unread_links = $stream->hasUnreadLinks($user);
@@ -158,9 +164,10 @@ class StreamTest extends \PHPUnit\Framework\TestCase
             'is_public' => false,
         ]);
         $link = LinkFactory::create([
+            'user_id' => $other_user->id,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: \Minz\Time::now());
+        $source->addLinks([$link], by: $other_user, at: \Minz\Time::now());
         $stream->addSource($source);
 
         $has_unread_links = $stream->hasUnreadLinks($user);
@@ -181,9 +188,10 @@ class StreamTest extends \PHPUnit\Framework\TestCase
         ]);
         $source->shareWith($user, 'read');
         $link = LinkFactory::create([
+            'user_id' => $other_user->id,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: \Minz\Time::now());
+        $source->addLinks([$link], by: $other_user, at: \Minz\Time::now());
         $stream->addSource($source);
 
         $has_unread_links = $stream->hasUnreadLinks($user);
@@ -208,9 +216,10 @@ class StreamTest extends \PHPUnit\Framework\TestCase
         ]);
         $source->shareWith($user, 'read');
         $link = LinkFactory::create([
+            'user_id' => $third_user->id,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: \Minz\Time::now());
+        $source->addLinks([$link], by: $third_user, at: \Minz\Time::now());
         $stream->addSource($source);
 
         $has_unread_links = $stream->hasUnreadLinks($user);
@@ -231,9 +240,10 @@ class StreamTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: \Minz\Time::now());
+        $source->addLinks([$link], by: null, at: \Minz\Time::now());
         $stream->addSource($source);
 
         $displays_unread_in_sidenav = $stream->displaysUnreadInSidenav($user);
@@ -252,9 +262,10 @@ class StreamTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: \Minz\Time::now());
+        $source->addLinks([$link], by: null, at: \Minz\Time::now());
         $stream->addSource($source);
 
         $has_unread_links = $stream->hasUnreadLinks($user);

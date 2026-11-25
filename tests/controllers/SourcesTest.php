@@ -192,7 +192,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'title' => $link_title,
         ]);
-        $collection->addLinks([$link]);
+        $collection->addLinks([$link], by: $user);
 
         $response = $this->appRun('GET', "/collections/{$collection->id}");
 
@@ -237,7 +237,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'title' => $link_title,
             'is_hidden' => false,
         ]);
-        $collection->addLinks([$link]);
+        $collection->addLinks([$link], by: $user);
 
         $response = $this->appRun('GET', "/collections/{$collection->id}");
 
@@ -261,7 +261,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'title' => $link_title,
             'is_hidden' => false,
         ]);
-        $collection->addLinks([$link]);
+        $collection->addLinks([$link], by: $owner);
 
         $response = $this->appRun('GET', "/collections/{$collection->id}");
 
@@ -284,7 +284,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'title' => $link_title,
         ]);
-        $collection->addLinks([$link]);
+        $collection->addLinks([$link], by: $other_user);
         CollectionShareFactory::create([
             'collection_id' => $collection->id,
             'user_id' => $user->id,
@@ -312,7 +312,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'user_id' => $other_user->id,
             'title' => $link_title,
         ]);
-        $collection->addLinks([$link]);
+        $collection->addLinks([$link], by: $other_user);
         CollectionShareFactory::create([
             'collection_id' => $collection->id,
             'user_id' => $user->id,
@@ -340,7 +340,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'title' => $link_title,
             'is_hidden' => true,
         ]);
-        $collection->addLinks([$link]);
+        $collection->addLinks([$link], by: $user);
 
         $response = $this->appRun('GET', "/collections/{$collection->id}");
 
@@ -373,7 +373,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'title' => $link_title,
         ]);
-        $collection->addLinks([$link]);
+        $collection->addLinks([$link], by: $user);
 
         $response = $this->appRun('GET', "/collections/{$collection->id}", [
             'page' => 0,
@@ -402,7 +402,7 @@ class SourcesTest extends \PHPUnit\Framework\TestCase
         $link = LinkFactory::create([
             'user_id' => $other_user->id,
         ]);
-        $collection->addLinks([$link]);
+        $collection->addLinks([$link], by: $other_user);
 
         $response = $this->appRun('GET', "/collections/{$collection->id}");
 

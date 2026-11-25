@@ -145,7 +145,7 @@ class Pocket
                 $published_at = \Minz\Time::now();
             }
 
-            $link_to_list = new models\LinkToList($link, $pocket_collection);
+            $link_to_list = new models\LinkToList($link, $pocket_collection, by: $user);
             $link_to_list->created_at = $published_at;
             $links_to_lists_to_create[$link->id] = $link_to_list;
 

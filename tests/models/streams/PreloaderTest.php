@@ -28,9 +28,10 @@ class PreloaderTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => null,
             'is_hidden' => false,
         ]);
-        $source->addLinks([$link], at: \Minz\Time::now());
+        $source->addLinks([$link], by: null, at: \Minz\Time::now());
         $stream->addSource($source);
 
         Preloader::for([$stream])->hasUnreadLinksFor($user);

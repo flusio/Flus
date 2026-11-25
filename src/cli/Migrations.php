@@ -287,10 +287,11 @@ class Migrations extends \Minz\Migration\Controller
         SQL;
 
         // Move the duplicates to the collections of the kept link. In a same
-        // collection, the oldest date is kept.
+        // collection, the oldest date is kept. The duplicates have the same
+        // owner, so their rows have the same user_id.
         $move_collections_statement = $database->prepare(<<<SQL
-            INSERT INTO links_to_collections (created_at, link_id, collection_id)
-            SELECT MIN(created_at), :kept_id, collection_id
+            INSERT INTO links_to_collections (created_at, link_id, collection_id, user_id)
+            SELECT MIN(created_at), :kept_id, collection_id, MIN(user_id)
             FROM links_to_collections
             WHERE link_id IN ({$duplicates_ids_clause})
             GROUP BY collection_id

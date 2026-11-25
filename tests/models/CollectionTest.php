@@ -22,7 +22,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
         ]);
         $link = LinkFactory::create(['user_id' => $user->id]);
-        $link->addCollections([$collection_1, $collection_2]);
+        $link->addCollections([$collection_1, $collection_2], by: $user);
 
         $collections = models\Collection::listByLink($link);
 
@@ -38,7 +38,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $user = UserFactory::create();
         $feed = FeedFactory::create();
         $link = LinkFactory::create(['user_id' => $user->id]);
-        $feed->addLinks([$link]);
+        $feed->addLinks([$link], by: null);
 
         $collections = models\Collection::listByLink($link);
 
@@ -107,7 +107,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'is_hidden' => true,
         ]);
-        $collection->addLinks([$link]);
+        $collection->addLinks([$link], by: $user);
 
         $collections = models\Collection::listByUser($user, [
             'with_visible_links' => true,
@@ -126,7 +126,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
             'user_id' => $user->id,
             'is_hidden' => false,
         ]);
-        $collection->addLinks([$link]);
+        $collection->addLinks([$link], by: $user);
 
         $collections = models\Collection::listByUser($user, [
             'with_visible_links' => true,

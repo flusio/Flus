@@ -102,8 +102,8 @@ class PreloaderTest extends \PHPUnit\Framework\TestCase
         $feed = FeedFactory::create();
         $link_in_two_collections = LinkFactory::create(['user_id' => $user->id]);
         $link_in_no_collection = LinkFactory::create(['user_id' => $user->id]);
-        $link_in_two_collections->addCollections([$collection_1, $collection_2]);
-        $feed->addLinks([$link_in_two_collections]);
+        $link_in_two_collections->addCollections([$collection_1, $collection_2], by: $user);
+        $feed->addLinks([$link_in_two_collections], by: null);
 
         Preloader::for([$link_in_two_collections, $link_in_no_collection])->collections();
 
@@ -125,8 +125,8 @@ class PreloaderTest extends \PHPUnit\Framework\TestCase
         ]);
         $link_1 = LinkFactory::create(['user_id' => $user->id]);
         $link_2 = LinkFactory::create(['user_id' => $user->id]);
-        $link_1->addCollection($collection);
-        $link_2->addCollection($collection);
+        $link_1->addCollection($collection, by: $user);
+        $link_2->addCollection($collection, by: $user);
 
         Preloader::for([$link_1, $link_2])->collections();
 
@@ -190,8 +190,8 @@ class PreloaderTest extends \PHPUnit\Framework\TestCase
         $link_in_two_collections = LinkFactory::create(['user_id' => $user->id]);
         $link_in_one_collection = LinkFactory::create(['user_id' => $user->id]);
         $link_in_no_collection = LinkFactory::create(['user_id' => $user->id]);
-        $link_in_two_collections->addCollections([$collection_1, $collection_2]);
-        $link_in_one_collection->addCollection($collection_1);
+        $link_in_two_collections->addCollections([$collection_1, $collection_2], by: $user);
+        $link_in_one_collection->addCollection($collection_1, by: $user);
 
         $links = [$link_in_two_collections, $link_in_one_collection, $link_in_no_collection];
         Preloader::for($links)->numberCollectionsFor($user);
@@ -214,7 +214,7 @@ class PreloaderTest extends \PHPUnit\Framework\TestCase
         $other_link = LinkFactory::create([
             'user_id' => $other_user->id,
         ]);
-        $other_link->addCollection($other_collection);
+        $other_link->addCollection($other_collection, by: $other_user);
         // The link of the user has the same URL, but is not in any collection.
         // url_hash is a generated column, so it is derived from the URL.
         $link = LinkFactory::create([

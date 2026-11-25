@@ -29,7 +29,7 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'is_hidden' => false,
             'title' => $link_title,
         ]);
-        $link->addCollection($collection);
+        $link->addCollection($collection, by: $user);
 
         $response = $this->appRun('GET', "/p/{$user->id}/links");
 
@@ -73,8 +73,8 @@ class LinksTest extends \PHPUnit\Framework\TestCase
             'title' => $link_title_without_tag,
             'tags' => [],
         ]);
-        $link_with_tag->addCollection($collection);
-        $link_without_tag->addCollection($collection);
+        $link_with_tag->addCollection($collection, by: $user);
+        $link_without_tag->addCollection($collection, by: $user);
 
         $response = $this->appRun('GET', "/p/{$user->id}/links", [
             'tag' => $tag,

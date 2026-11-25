@@ -79,7 +79,7 @@ class Journal extends LinkList
             $link->save();
 
             // And don't forget to add the link to the journal!
-            $this->addLinks([$link], at: $followed_link->published_at);
+            $this->addLinks([$link], by: $user, at: $followed_link->published_at);
         }
 
         Link::groupLinksBySources($this);

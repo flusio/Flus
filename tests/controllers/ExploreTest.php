@@ -28,9 +28,10 @@ class ExploreTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection->setTopics([$topic]);
         $link = LinkFactory::create([
+            'user_id' => $collection->user_id,
             'is_hidden' => false,
         ]);
-        $link->addCollection($collection);
+        $link->addCollection($collection, by: $collection->user());
 
         $response = $this->appRun('GET', "/explore?topic={$topic->id}");
 
@@ -72,9 +73,10 @@ class ExploreTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection->setTopics([$topic]);
         $link = LinkFactory::create([
+            'user_id' => $collection->user_id,
             'is_hidden' => true,
         ]);
-        $link->addCollection($collection);
+        $link->addCollection($collection, by: $collection->user());
 
         $response = $this->appRun('GET', "/explore?topic={$topic->id}");
 
@@ -95,9 +97,10 @@ class ExploreTest extends \PHPUnit\Framework\TestCase
         ]);
         $collection->setTopics([$topic]);
         $link = LinkFactory::create([
+            'user_id' => $collection->user_id,
             'is_hidden' => false,
         ]);
-        $link->addCollection($collection);
+        $link->addCollection($collection, by: $collection->user());
 
         $response = $this->appRun('GET', "/explore?topic={$topic->id}");
 
@@ -113,9 +116,10 @@ class ExploreTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link = LinkFactory::create([
+            'user_id' => $collection->user_id,
             'is_hidden' => false,
         ]);
-        $link->addCollection($collection);
+        $link->addCollection($collection, by: $collection->user());
 
         $response = $this->appRun('GET', '/explore');
 
