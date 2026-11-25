@@ -50,7 +50,7 @@ trait InLists
             $this,
             $collections,
             $previous_collections,
-            $at,
+            ['created_at' => $at],
         );
 
         $this->unmemoizeCollections();
@@ -74,7 +74,7 @@ trait InLists
         ?\DateTimeImmutable $at = null,
         bool $sync_publication_frequency = true,
     ): void {
-        LinkToList::attach([$this], $collections, $at);
+        LinkToList::attach([$this], $collections, ['created_at' => $at]);
 
         $this->unmemoizeCollections();
 

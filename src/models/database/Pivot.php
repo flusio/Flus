@@ -3,6 +3,7 @@
 namespace App\models\database;
 
 use Minz\Database;
+use Minz\Errors;
 
 /**
  * Manage a pivot table joining two other tables.
@@ -12,6 +13,8 @@ use Minz\Database;
  * of the related models.
  *
  * @phpstan-type PivotModel object{id: string|int}
+ *
+ * @phpstan-import-type ModelValues from Database\Recordable
  *
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
@@ -30,16 +33,26 @@ trait Pivot
      * Attach the related models to the models.
      *
      * The pairs that are already attached are kept as they are (i.e. with their
-     * attachment date).
+     * values).
+     *
+     * The values are inserted in the other columns of the table, with the same
+     * value for every row. If the model declares a created_at column
+     * of DateTimeImmutable type, it is set to the current time unless it is
+     * given in the values.
      *
      * @param PivotModel[] $models
      * @param PivotModel[] $related_models
+     * @param ModelValues $values
      * @param positive-int $chunk_size
+     *
+     * @throws Errors\DatabaseModelError
+     *     If the values include invalid parameters (undefined or computed
+     *     column, or bad format).
      */
     public static function attach(
         array $models,
         array $related_models,
-        ?\DateTimeImmutable $created_at = null,
+        array $values = [],
         int $chunk_size = 500,
     ): void {
         if (!$models || !$related_models) {
@@ -47,20 +60,26 @@ trait Pivot
             return;
         }
 
-        [$model_column, $related_column] = static::pivotColumns();
+        $columns = static::pivotColumns();
         $table_name = static::tableName();
 
-        $with_created_at = property_exists(static::class, 'created_at');
+        $database_columns = self::databaseColumns(include_computed: false);
 
-        if ($with_created_at) {
-            $created_at ??= \Minz\Time::now();
-            $created_at = $created_at->format(Database\Column::DATETIME_FORMAT);
-            $columns_statement = "{$model_column}, {$related_column}, created_at";
-            $row_placeholder = '(?, ?, ?)';
-        } else {
-            $columns_statement = "{$model_column}, {$related_column}";
-            $row_placeholder = '(?, ?)';
+        if (
+            isset($database_columns['created_at']) &&
+            $database_columns['created_at']['type'] === 'DateTimeImmutable'
+        ) {
+            $values['created_at'] ??= \Minz\Time::now();
         }
+
+        $values = Database\Helper::convertValuesToDatabase(static::class, $values);
+
+        $columns = array_merge($columns, array_keys($values));
+        $row_values = array_values($values);
+
+        $columns_statement = implode(', ', $columns);
+        $row_placeholder = array_fill(0, count($columns), '?');
+        $row_placeholder = '(' . implode(', ', $row_placeholder) . ')';
 
         $pairs = self::pivotPairs($models, $related_models);
 
@@ -68,16 +87,16 @@ trait Pivot
 
         foreach (array_chunk($pairs, $chunk_size) as $chunk_pairs) {
             $rows_placeholders = [];
-            $values = [];
+            $statement_values = [];
 
             foreach ($chunk_pairs as [$model_id, $related_id]) {
                 $rows_placeholders[] = $row_placeholder;
 
-                $values[] = $model_id;
-                $values[] = $related_id;
+                $statement_values[] = $model_id;
+                $statement_values[] = $related_id;
 
-                if ($with_created_at) {
-                    $values[] = $created_at;
+                foreach ($row_values as $value) {
+                    $statement_values[] = $value;
                 }
             }
 
@@ -90,7 +109,7 @@ trait Pivot
             SQL;
 
             $statement = $database->prepare($sql);
-            $statement->execute($values);
+            $statement->execute($statement_values);
         }
     }
 
@@ -141,6 +160,9 @@ trait Pivot
      * Attach the related models to the model, and detach the previous ones
      * that are not part of the related models anymore.
      *
+     * The values are inserted in the other columns of the attached rows (see
+     * attach()).
+     *
      * It returns the attached and the detached related models.
      *
      * @template TRelated of object{id: string|int}
@@ -148,14 +170,19 @@ trait Pivot
      * @param PivotModel $model
      * @param TRelated[] $related_models
      * @param TRelated[] $existing_related_models
+     * @param ModelValues $values
      *
      * @return array{TRelated[], TRelated[]}
+     *
+     * @throws Errors\DatabaseModelError
+     *     If the values include invalid parameters (undefined or computed
+     *     column, or bad format).
      */
     public static function set(
         object $model,
         array $related_models,
         array $existing_related_models,
-        ?\DateTimeImmutable $created_at = null,
+        array $values = [],
     ): array {
         $related_models_by_ids = array_column($related_models, null, 'id');
         $previous_related_models_by_ids = array_column($existing_related_models, null, 'id');
@@ -166,10 +193,15 @@ trait Pivot
         $database = \Minz\Database::get();
         $database->beginTransaction();
 
-        self::attach([$model], $models_to_attach, $created_at);
-        self::detach([$model], $models_to_detach);
+        try {
+            self::attach([$model], $models_to_attach, $values);
+            self::detach([$model], $models_to_detach);
 
-        $database->commit();
+            $database->commit();
+        } catch (\Throwable $exception) {
+            $database->rollBack();
+            throw $exception;
+        }
 
         return [$models_to_attach, $models_to_detach];
     }

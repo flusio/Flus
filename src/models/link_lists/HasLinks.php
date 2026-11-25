@@ -51,6 +51,6 @@ trait HasLinks
      */
     public function addLinks(array $links, ?\DateTimeImmutable $at = null): void
     {
-        LinkToList::attach($links, [$this], $at);
+        LinkToList::attach($links, [$this], ['created_at' => $at]);
     }
 }
