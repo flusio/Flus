@@ -8,7 +8,7 @@ PHP dependencies are managed with [Composer](https://getcomposer.org/).
 
 It’s using a personal PHP framework: [Minz](https://github.com/flusio/Minz).
 
-The only supported database is [PostgreSQL](https://www.postgresql.org/) 13+ because I use specific features from it.
+The only supported database is [PostgreSQL](https://www.postgresql.org/) 15+ because I use specific features from it.
 I will not add support for other databases.
 
 The asynchronous jobs, such as emails sending, are handled by a PHP script.

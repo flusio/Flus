@@ -1,5 +1,12 @@
 # Changelog of Flus
 
+## unreleased
+
+### Migration notes
+
+PostgreSQL 15 (or more) is now required to run Flus.
+Please check your version before updating Flus!
+
 ## 2026-11-25 - v3.0.3
 
 ### Migration notes

@@ -65,7 +65,7 @@ Most of the time, you can settle for <kbd>CTRL + C</kbd> (the Docker network and
 
 Here are some indicators if you’re not using Docker.
 
-First, make sure you have PHP 8.2+, Node 20 and a running PostgreSQL 13 with a user being able to create and drop a database.
+First, make sure you have PHP 8.2+, Node 20 and a running PostgreSQL 15+ with a user being able to create and drop a database.
 You also must install [the PHP `composer` dependency manager](https://getcomposer.org/).
 
 You might want to configure [browscap](https://www.php.net/manual/fr/misc.configuration.php#ini.browscap).
