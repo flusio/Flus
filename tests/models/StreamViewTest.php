@@ -415,14 +415,17 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_3 = LinkFactory::create([
+            'url' => 'https://example.com/3',
             'user_id' => null,
             'is_hidden' => false,
         ]);
@@ -460,14 +463,17 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_3 = LinkFactory::create([
+            'url' => 'https://example.com/3',
             'user_id' => null,
             'is_hidden' => false,
         ]);
@@ -505,14 +511,17 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_3 = LinkFactory::create([
+            'url' => 'https://example.com/3',
             'user_id' => null,
             'is_hidden' => false,
         ]);
@@ -550,10 +559,12 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => null,
             'is_hidden' => false,
         ]);
@@ -616,10 +627,12 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => null,
             'is_hidden' => false,
         ]);
@@ -1254,14 +1267,17 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_3 = LinkFactory::create([
+            'url' => 'https://example.com/3',
             'user_id' => null,
             'is_hidden' => false,
         ]);
@@ -1305,10 +1321,12 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => null,
             'is_hidden' => false,
         ]);
@@ -1383,10 +1401,12 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => null,
             'is_hidden' => false,
         ]);
@@ -1653,10 +1673,12 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => null,
             'is_hidden' => false,
         ]);
@@ -1685,14 +1707,17 @@ class StreamViewTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link_1 = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_2 = LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => null,
             'is_hidden' => false,
         ]);
         $link_3 = LinkFactory::create([
+            'url' => 'https://example.com/3',
             'user_id' => null,
             'is_hidden' => false,
         ]);

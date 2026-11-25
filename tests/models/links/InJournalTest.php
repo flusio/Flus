@@ -33,10 +33,12 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
         $published_at1 = \Minz\Time::ago(3, 'days');
         $published_at2 = \Minz\Time::ago(1, 'days');
         $link1 = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => $this->other_user->id,
             'is_hidden' => false,
         ]);
         $link2 = LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => $this->other_user->id,
             'is_hidden' => false,
         ]);
@@ -158,10 +160,12 @@ class InJournalTest extends \PHPUnit\Framework\TestCase
         $published_at1 = \Minz\Time::ago(3, 'days');
         $published_at2 = \Minz\Time::ago(1, 'days');
         $link1 = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => null,
             'is_hidden' => false,
         ]);
         $link2 = LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => null,
             'is_hidden' => false,
         ]);

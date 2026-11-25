@@ -98,10 +98,12 @@ class JournalTest extends \PHPUnit\Framework\TestCase
         $other_user = UserFactory::create();
         $user->journal();
         $link1 = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => $other_user->id,
             'is_hidden' => false,
         ]);
         $link2 = LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => $other_user->id,
             'is_hidden' => false,
         ]);

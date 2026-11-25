@@ -38,9 +38,11 @@ class LaterTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $journal = $user->journal();
         $link1 = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => $user->id,
         ]);
         $link2 = LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => $user->id,
         ]);
         $journal->addLinks([$link1], by: $user, at: new \DateTimeImmutable('2025-08-22'));
@@ -64,10 +66,12 @@ class LaterTest extends \PHPUnit\Framework\TestCase
         $journal = $user->journal();
         $collection = CollectionFactory::create();
         $link1 = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => $user->id,
             'source_id' => $collection->id,
         ]);
         $link2 = LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => $user->id,
         ]);
         $journal->addLinks([$link1, $link2], by: $user);

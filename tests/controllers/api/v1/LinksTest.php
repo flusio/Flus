@@ -48,9 +48,11 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->freeze();
         $user = $this->login();
         $link1 = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => $user->id,
         ]);
         LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => $user->id,
         ]);
         $user->markAsRead($link1);
@@ -69,9 +71,11 @@ class LinksTest extends \PHPUnit\Framework\TestCase
         $this->freeze();
         $user = $this->login();
         $link1 = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => $user->id,
         ]);
         LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => $user->id,
         ]);
         $user->markAsReadLater($link1);

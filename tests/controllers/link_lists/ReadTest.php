@@ -107,9 +107,11 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $journal = $user->journal();
         $link1 = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => $user->id,
         ]);
         $link2 = LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => $user->id,
         ]);
         $journal->addLinks([$link1], by: $user, at: new \DateTimeImmutable('2024-03-25'));
@@ -134,10 +136,12 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $collection1 = CollectionFactory::create();
         $collection2 = CollectionFactory::create();
         $link1 = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => $user->id,
             'source_id' => $collection1->id,
         ]);
         $link2 = LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => $user->id,
             'source_id' => $collection2->id,
         ]);
@@ -320,9 +324,11 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $journal = $user->journal();
         $link1 = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => $user->id,
         ]);
         $link2 = LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => $user->id,
         ]);
         $journal->addLinks([$link1], by: $user, at: new \DateTimeImmutable('2024-03-25'));
@@ -347,10 +353,12 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $collection1 = CollectionFactory::create();
         $collection2 = CollectionFactory::create();
         $link1 = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => $user->id,
             'source_id' => $collection1->id,
         ]);
         $link2 = LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => $user->id,
             'source_id' => $collection2->id,
         ]);
@@ -451,10 +459,12 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $other_user = UserFactory::create();
         $public_link = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => $other_user->id,
             'is_hidden' => false,
         ]);
         $hidden_link = LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => $other_user->id,
             'is_hidden' => true,
         ]);
@@ -510,9 +520,11 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $user = $this->login();
         $journal = $user->journal();
         $link1 = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => $user->id,
         ]);
         $link2 = LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => $user->id,
         ]);
         $journal->addLinks([$link1], by: $user, at: new \DateTimeImmutable('2024-03-25'));
@@ -537,10 +549,12 @@ class ReadTest extends \PHPUnit\Framework\TestCase
         $collection1 = CollectionFactory::create();
         $collection2 = CollectionFactory::create();
         $link1 = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => $user->id,
             'source_id' => $collection1->id,
         ]);
         $link2 = LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => $user->id,
             'source_id' => $collection2->id,
         ]);

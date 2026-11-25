@@ -137,10 +137,22 @@ class PreloaderTest extends \PHPUnit\Framework\TestCase
     public function testUrlStatusesForPreloadsTheStatusesOfTheUser(): void
     {
         $user = UserFactory::create();
-        $read_link = LinkFactory::create(['user_id' => $user->id]);
-        $read_later_link = LinkFactory::create(['user_id' => $user->id]);
-        $dismissed_link = LinkFactory::create(['user_id' => $user->id]);
-        $unknown_link = LinkFactory::create(['user_id' => $user->id]);
+        $read_link = LinkFactory::create([
+            'url' => 'https://example.com/1',
+            'user_id' => $user->id,
+        ]);
+        $read_later_link = LinkFactory::create([
+            'url' => 'https://example.com/2',
+            'user_id' => $user->id,
+        ]);
+        $dismissed_link = LinkFactory::create([
+            'url' => 'https://example.com/3',
+            'user_id' => $user->id,
+        ]);
+        $unknown_link = LinkFactory::create([
+            'url' => 'https://example.com/4',
+            'user_id' => $user->id,
+        ]);
         $user->markAsRead($read_link);
         $user->markAsReadLater($read_later_link);
         $user->markAsDismissed($dismissed_link);
@@ -187,9 +199,18 @@ class PreloaderTest extends \PHPUnit\Framework\TestCase
         $collection_2 = CollectionFactory::create([
             'user_id' => $user->id,
         ]);
-        $link_in_two_collections = LinkFactory::create(['user_id' => $user->id]);
-        $link_in_one_collection = LinkFactory::create(['user_id' => $user->id]);
-        $link_in_no_collection = LinkFactory::create(['user_id' => $user->id]);
+        $link_in_two_collections = LinkFactory::create([
+            'url' => 'https://example.com/1',
+            'user_id' => $user->id,
+        ]);
+        $link_in_one_collection = LinkFactory::create([
+            'url' => 'https://example.com/2',
+            'user_id' => $user->id,
+        ]);
+        $link_in_no_collection = LinkFactory::create([
+            'url' => 'https://example.com/3',
+            'user_id' => $user->id,
+        ]);
         $link_in_two_collections->addCollections([$collection_1, $collection_2], by: $user);
         $link_in_one_collection->addCollection($collection_1, by: $user);
 

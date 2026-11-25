@@ -155,10 +155,12 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link1 = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => null,
             'is_hidden' => false,
         ]);
         $link2 = LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => null,
             'is_hidden' => false,
         ]);
@@ -189,14 +191,17 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link1 = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => null,
             'is_hidden' => false,
         ]);
         $link2 = LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => null,
             'is_hidden' => false,
         ]);
         $link3 = LinkFactory::create([
+            'url' => 'https://example.com/3',
             'user_id' => null,
             'is_hidden' => false,
         ]);
@@ -234,14 +239,17 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link1 = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => null,
             'is_hidden' => false,
         ]);
         $link2 = LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => null,
             'is_hidden' => false,
         ]);
         $link3 = LinkFactory::create([
+            'url' => 'https://example.com/3',
             'user_id' => null,
             'is_hidden' => false,
         ]);
@@ -316,14 +324,17 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => false,
         ]);
         $stream_link = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => null,
             'is_hidden' => false,
         ]);
         $other_stream_link = LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => null,
             'is_hidden' => false,
         ]);
         $private_link = LinkFactory::create([
+            'url' => 'https://example.com/3',
             'user_id' => $other_user->id,
             'is_hidden' => false,
         ]);
@@ -358,10 +369,12 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link1 = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => null,
             'is_hidden' => false,
         ]);
         $link2 = LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => null,
             'is_hidden' => false,
         ]);
@@ -454,11 +467,13 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link1 = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => null,
             'is_hidden' => false,
             'created_at' => \Minz\Time::ago(1, 'hour'),
         ]);
         $link2 = LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => null,
             'is_hidden' => false,
             'created_at' => \Minz\Time::fromNow(1, 'hour'),
@@ -702,10 +717,12 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link1 = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => null,
             'is_hidden' => false,
         ]);
         $link2 = LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => null,
             'is_hidden' => false,
         ]);
@@ -910,10 +927,12 @@ class ReadTest extends \PHPUnit\Framework\TestCase
             'is_public' => true,
         ]);
         $link1 = LinkFactory::create([
+            'url' => 'https://example.com/1',
             'user_id' => null,
             'is_hidden' => false,
         ]);
         $link2 = LinkFactory::create([
+            'url' => 'https://example.com/2',
             'user_id' => null,
             'is_hidden' => false,
         ]);
