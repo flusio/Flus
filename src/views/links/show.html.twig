@@ -293,70 +293,54 @@
             </div>
         </div>
 
-        {% set notepad = link.notepad %}
+        {% set notes = link.notes %}
 
-        {% if notepad or can(app.user, 'update', link) %}
+        {% if notes or can(app.user, 'update', link) %}
             <div id="notepad" class="wrapper wrapper--small wrapper--center flow flow--large">
                 <h2 class="text--center">{{ t('Notepad') }}</h2>
 
-                {% if link.is_hidden %}
-                    <p class="text--secondary text--center">
-                        {{ t('This link being hidden, the notes are private.') }}
-                    </p>
-                {% endif %}
+                <div class="notepad">
+                    {% if notes %}
+                        <div class="notepad__notes">
+                            {% for note in notes %}
+                                {# The first note of each day keeps the anchor of the
+                                 # former notepad, grouped by days, so the URLs shared
+                                 # publicly don’t break. #}
+                                {% set date_iso = note.created_at.format('Y-m-d') %}
+                                {% if loop.first or notes[loop.index0 - 1].created_at.format('Y-m-d') != date_iso %}
+                                    <div id="notepad-{{ date_iso }}"></div>
+                                {% endif %}
 
-                {% if notepad %}
-                    {{ include('notes/_notepad.html.twig', { display_actions: true }) }}
-                {% else %}
-                    <p class="panel panel--grey panel--rounded panel--larger text--bolder text--center">
-                        {{ t('No notes have yet been taken.') }}
-                    </p>
-                {% endif %}
+                                {{ include('notes/_note.html.twig', { note: note, display_actions: true }) }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
 
-                {% if can(app.user, 'update', link) %}
-                    <form
-                        data-turbo-preserve-scroll
-                        method="post"
-                        action="{{ url('links/create note', { link_id: link.id }) }}"
-                        data-controller="autosave"
-                        data-action="turbo:submit-start@document->autosave#clear"
-                        class="flow"
-                    >
-                        {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+                    {% if can(app.user, 'update', link) %}
+                        <form
+                            data-turbo-preserve-scroll
+                            method="post"
+                            action="{{ url('links/create note', { link_id: link.id }) }}"
+                            data-controller="autosave"
+                            data-action="turbo:submit-start@document->autosave#clear"
+                            class="notepad__form flow"
+                        >
+                            {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
 
-                        <div class="form-group">
-                            <label for="content">
-                                {{ t('What do you retain from this content?') }}
-                            </label>
-
-                            {% if form.isInvalid('content') %}
-                                <p id="content-error" class="form-group__error">
-                                    {{ t('Error:') }}
-                                    {{ form.error('content') }}
-                                </p>
-                            {% endif %}
-
-                            {{ include('components/text_editor.html.twig', {
+                            {{ include('notes/_note_field.html.twig', {
                                 form: form,
+                                id: 'content',
                                 name: 'content',
-                                describedby: 'content-caption',
+                                label: t('What do you retain from this content?'),
                                 required: true,
+                                display_submit: true,
+                                display_privacy: link.is_hidden,
                             }) }}
 
-                            <p id="content-caption" class="form-group__caption">
-                                {{ t('You can format the content in Markdown and use #tags.') }}
-                            </p>
-                        </div>
-
-                        <div class="text--center">
-                            <button type="submit" class="button--primary button--big">
-                                {{ t('Add a note') }}
-                            </button>
-                        </div>
-
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}" />
-                    </form>
-                {% endif %}
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}" />
+                        </form>
+                    {% endif %}
+                </div>
             </div>
         {% endif %}
     </div>

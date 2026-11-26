@@ -1,0 +1,50 @@
+{% set required = required ?? false %}
+{% set display_submit = display_submit ?? false %}
+{% set display_privacy = display_privacy ?? false %}
+
+<div class="form-group">
+    <label for="{{ id }}" class="sr-only">
+        {{ label }}
+
+        {% if not required %}
+            {{ t('(optional)') }}
+        {% endif %}
+    </label>
+
+    {% if form.isInvalid(name) %}
+        <p id="{{ id }}-error" class="form-group__error">
+            {{ t('Error:') }}
+            {{ form.error(name) }}
+        </p>
+    {% endif %}
+
+    {{ include('components/text_editor.html.twig', {
+        form: form,
+        id: id,
+        name: name,
+        placeholder: label,
+        describedby: id ~ '-caption',
+        required: required,
+    }) }}
+
+    <div class="notepad__footer">
+        <p id="{{ id }}-caption" class="form-group__caption">
+            {{ t('Markdown and #tags supported.') }}
+        </p>
+
+        {% if display_submit %}
+            <div class="cols cols--always cols--center cols--gap-small">
+                {% if display_privacy %}
+                    <span class="notepad__privacy" title="{{ t('This link being hidden, the notes are private.') }}">
+                        {{ icon('eye-hide') }}
+                        {{ t('Private') }}
+                    </span>
+                {% endif %}
+
+                <button type="submit" class="button--primary">
+                    {{ t('Add a note') }}
+                </button>
+            </div>
+        {% endif %}
+    </div>
+</div>

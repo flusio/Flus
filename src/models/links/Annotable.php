@@ -37,23 +37,6 @@ trait Annotable
     }
 
     /**
-     * Return the notepad, containing the notes grouped by dates
-     *
-     * @return array<string, Note[]>
-     */
-    public function notepad(): array
-    {
-        $notepad = [];
-
-        foreach ($this->notes() as $note) {
-            $date_iso = $note->created_at->format('Y-m-d');
-            $notepad[$date_iso][] = $note;
-        }
-
-        return $notepad;
-    }
-
-    /**
      * Attach a new note to the link.
      */
     public function addNote(Note $note): void

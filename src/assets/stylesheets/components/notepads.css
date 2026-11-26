@@ -1,24 +1,43 @@
-.notepad__container {
+.notepad {
     background-color: var(--color-base);
     box-shadow: 0 1px 2px var(--color-box-shadow);
     border: 1px solid var(--color-grey-line);
     border-radius: var(--border-radius);
 }
 
-.notepad__header {
+.notepad__summary {
     padding: var(--space-small);
 
-    text-align: center;
+    color: var(--color-grey-text);
+    font-size: var(--font-size-small);
 
-    background-color: var(--color-grey-base);
-    border-bottom: 1px solid var(--color-grey-bg-subtle);
-    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    border-radius: var(--border-radius);
+
+    cursor: pointer;
+}
+
+.notepad__header {
+    padding: var(--space-smaller) var(--space-small);
+
+    color: var(--color-grey-text);
+    font-size: var(--font-size-small);
+}
+
+.notepad__meta {
+    display: inline-flex;
+    padding: var(--space-smaller) var(--space-small);
+
+    column-gap: var(--space-small);
+
+    flex-wrap: wrap;
+    align-items: center;
+
+    background-color: var(--color-grey-bg-subtle);
+    border-radius: 999px;
 }
 
 .notepad__date {
-    color: var(--color-grey-text);
-    font-size: var(--font-size-small);
-    font-weight: 600;
+    color: inherit;
     text-decoration: none;
 }
 
@@ -26,24 +45,12 @@
     text-decoration: underline dotted;
 }
 
-.notepad__note {
-    margin: var(--space-smaller);
-
-    border-radius: var(--border-radius);
-
-    transition: background-color 0.2s ease-in-out;
-}
-
-.notepad__note:has(.popup__opener:focus-visible),
-.notepad__note:has(.popup__opener[aria-expanded="true"]) {
-    background-color: var(--color-grey-base);
-}
-
 .notepad__content {
     overflow-x: hidden;
 
     overflow-wrap: break-word;
 
+    margin-top: calc(-1 * var(--space-small));
     padding: var(--space-small);
 }
 
@@ -53,4 +60,41 @@
 
 .notepad__content > *:last-child {
     margin-bottom: var(--space-smaller);
+}
+
+.notepad__form {
+    padding: var(--space-small);
+
+    background-color: var(--color-grey-base);
+    border-radius: var(--border-radius);
+}
+
+.notepad__notes + .notepad__form {
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+}
+
+.notepad__form .text-editor {
+    --input-border-color: var(--color-grey-line);
+}
+
+.notepad__form .sr-only + .text-editor {
+    margin-top: 0;
+}
+
+.notepad__form .form-group__caption {
+    color: var(--color-grey-text);
+}
+
+.notepad__footer {
+    display: flex;
+
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-small);
+}
+
+.notepad__privacy {
+    color: var(--color-grey-text);
+    font-size: var(--font-size-small);
 }

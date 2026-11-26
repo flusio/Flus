@@ -28,7 +28,6 @@
     flex-wrap: wrap;
     gap: var(--space-smaller);
 
-    background-color: var(--color-grey-base);
     border-bottom: 1px solid var(--input-border-color);
     border-radius: var(--border-radius) var(--border-radius) 0 0;
 
