@@ -7,6 +7,9 @@
 PostgreSQL 15 (or more) is now required to run Flus.
 Please check your version before updating Flus!
 
+It is now recommended to set the `FEEDS_LINKS_KEEP_MAXIMUM` environment variable in your `.env` file.
+The default value is 1000, but you’re free to adapt it, or comment the variable if you don’t want to limit the number of links per feed.
+
 ## 2026-11-25 - v3.0.3
 
 ### Migration notes
