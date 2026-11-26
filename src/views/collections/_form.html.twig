@@ -38,13 +38,33 @@
         />
     </div>
 
-    {{ include('components/text_editor.html.twig', {
-        form: form,
-        name: 'description',
-        label: t('What’s the purpose of this collection?'),
-        label_help: t('(optional)'),
-        caption: t('You can format the description in Markdown.'),
-    }) }}
+    <div class="form-group">
+        <label for="description">
+            {{ t('What’s the purpose of this collection?') }}
+
+            <span class="label__help">
+                {{ t('(optional)') }}
+            </span>
+        </label>
+
+        {% if form.isInvalid('description') %}
+            <p id="description-error" class="form-group__error">
+                {{ t('Error:') }}
+                {{ form.error('description') }}
+            </p>
+        {% endif %}
+
+        {{ include('components/text_editor.html.twig', {
+            form: form,
+            id: 'description',
+            name: 'description',
+            describedby: 'description-caption',
+        }) }}
+
+        <p id="description-caption" class="form-group__caption">
+            {{ t('You can format the description in Markdown.') }}
+        </p>
+    </div>
 
     {% set topics = form.topicsValues %}
     {% if topics %}

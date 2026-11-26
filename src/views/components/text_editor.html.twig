@@ -1,14 +1,17 @@
+{# A textarea topped by a toolbar inserting Markdown syntax (see the
+ # "text-editor" Stimulus controller).
+ #}
 {% types {
     form: '\\App\\forms\\BaseForm',
+    id: 'string',
     name: 'string',
-    label: 'string',
-    label_help: 'string',
-    caption: 'string',
+    placeholder: 'string',
+    describedby: 'string',
     required: 'boolean',
 } %}
 
-{% set label_help = label_help ?? '' %}
-{% set caption = caption ?? '' %}
+{% set placeholder = placeholder ?? '' %}
+{% set describedby = describedby ?? '' %}
 {% set required = required ?? false %}
 
 {% set tools = [
@@ -22,75 +25,51 @@
 ] %}
 
 <div
-    class="form-group"
+    class="text-editor"
     data-controller="text-editor"
     data-text-editor-bold-placeholder-value="{{ t('bold text') }}"
     data-text-editor-italic-placeholder-value="{{ t('italic text') }}"
     data-text-editor-link-placeholder-value="{{ t('link text') }}"
 >
-    <label for="{{ name }}">
-        {{ label }}
+    <div
+        class="text-editor__toolbar"
+        role="toolbar"
+        aria-label="{{ t('Formatting') }}"
+        aria-controls="{{ id }}"
+        data-text-editor-target="toolbar"
+        data-action="keydown->text-editor#navigate"
+    >
+        {% for tool in tools %}
+            <button
+                type="button"
+                class="button button--ghost button--icon"
+                title="{{ tool.label }}"
+                {% if tool.shortcut is defined %}
+                    aria-keyshortcuts="{{ tool.shortcut }}"
+                {% endif %}
+                data-action="text-editor#apply"
+                data-text-editor-format-param="{{ tool.format }}"
+            >
+                {{ icon(tool.icon) }}
 
-        {% if label_help %}
-            <span class="label__help">
-                {{ label_help }}
-            </span>
-        {% endif %}
-    </label>
-
-    {% if form.isInvalid(name) %}
-        <p id="{{ name }}-error" class="form-group__error">
-            {{ t('Error:') }}
-            {{ form.error(name) }}
-        </p>
-    {% endif %}
-
-    <div class="text-editor">
-        <div
-            class="text-editor__toolbar"
-            role="toolbar"
-            aria-label="{{ t('Formatting') }}"
-            aria-controls="{{ name }}"
-            data-text-editor-target="toolbar"
-            data-action="keydown->text-editor#navigate"
-        >
-            {% for tool in tools %}
-                <button
-                    type="button"
-                    class="button button--ghost button--icon"
-                    title="{{ tool.label }}"
-                    {% if tool.shortcut is defined %}
-                        aria-keyshortcuts="{{ tool.shortcut }}"
-                    {% endif %}
-                    data-action="text-editor#apply"
-                    data-text-editor-format-param="{{ tool.format }}"
-                >
-                    {{ icon(tool.icon) }}
-
-                    <span class="sr-only">{{ tool.label }}</span>
-                </button>
-            {% endfor %}
-        </div>
-
-        <textarea
-            id="{{ name }}"
-            name="{{ name }}"
-            {% if required %}required{% endif %}
-            data-text-editor-target="textarea"
-            data-action="text-editor#refresh input->autosave#save keydown->text-editor#shortcut keydown->text-editor#continueLine"
-            {% if caption %}
-                aria-describedby="{{ name }}-caption"
-            {% endif %}
-            {% if form.isInvalid(name) %}
-                aria-errormessage="{{ name }}-error"
-                aria-invalid="true"
-            {% endif %}
-        >{{ attribute(form, name) }}</textarea>
+                <span class="sr-only">{{ tool.label }}</span>
+            </button>
+        {% endfor %}
     </div>
 
-    {% if caption %}
-        <p id="{{ name }}-caption" class="form-group__caption">
-            {{ caption }}
-        </p>
-    {% endif %}
+    <textarea
+        id="{{ id }}"
+        name="{{ name }}"
+        {% if required %}required{% endif %}
+        {% if placeholder %}placeholder="{{ placeholder }}"{% endif %}
+        data-text-editor-target="textarea"
+        data-action="text-editor#refresh input->autosave#save keydown->text-editor#shortcut keydown->text-editor#continueLine"
+        {% if describedby %}
+            aria-describedby="{{ describedby }}"
+        {% endif %}
+        {% if form.isInvalid(name) %}
+            aria-errormessage="{{ id }}-error"
+            aria-invalid="true"
+        {% endif %}
+    >{{ attribute(form, name) }}</textarea>
 </div>

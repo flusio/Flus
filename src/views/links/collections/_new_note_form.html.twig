@@ -1,7 +1,26 @@
-{{ include('components/text_editor.html.twig', {
-    form: form,
-    name: 'content',
-    label: t('What do you retain from this content?'),
-    label_help: t('(optional)'),
-    caption: t('You can format the content in Markdown and use #tags.'),
-}) }}
+<div class="form-group">
+    <label for="content">
+        {{ t('What do you retain from this content?') }}
+
+        <span class="label__help">
+            {{ t('(optional)') }}
+        </span>
+    </label>
+
+    {% if form.isInvalid('content') %}
+        <p id="content-error" class="form-group__error">
+            {{ t('Error:') }}
+            {{ form.error('content') }}
+        </p>
+    {% endif %}
+
+    {{ include('components/text_editor.html.twig', {
+        form: form,
+        name: 'content',
+        describedby: 'content-caption',
+    }) }}
+
+    <p id="content-caption" class="form-group__caption">
+        {{ t('You can format the content in Markdown and use #tags.') }}
+    </p>
+</div>

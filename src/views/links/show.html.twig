@@ -324,13 +324,29 @@
                     >
                         {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
 
-                        {{ include('components/text_editor.html.twig', {
-                            form: form,
-                            name: 'content',
-                            label: t('What do you retain from this content?'),
-                            caption: t('You can format the content in Markdown and use #tags.'),
-                            required: true,
-                        }) }}
+                        <div class="form-group">
+                            <label for="content">
+                                {{ t('What do you retain from this content?') }}
+                            </label>
+
+                            {% if form.isInvalid('content') %}
+                                <p id="content-error" class="form-group__error">
+                                    {{ t('Error:') }}
+                                    {{ form.error('content') }}
+                                </p>
+                            {% endif %}
+
+                            {{ include('components/text_editor.html.twig', {
+                                form: form,
+                                name: 'content',
+                                describedby: 'content-caption',
+                                required: true,
+                            }) }}
+
+                            <p id="content-caption" class="form-group__caption">
+                                {{ t('You can format the content in Markdown and use #tags.') }}
+                            </p>
+                        </div>
 
                         <div class="text--center">
                             <button type="submit" class="button--primary button--big">
