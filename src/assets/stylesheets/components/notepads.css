@@ -70,7 +70,6 @@
 .notepad__form {
     padding: var(--space-small);
 
-    background-color: var(--color-grey-base);
     border-radius: var(--border-radius);
 }
 
@@ -79,6 +78,7 @@
 }
 
 .notepad__notes + .notepad__form {
+    border-top: 1px dotted var(--color-grey-line);
     border-radius: 0 0 var(--border-radius) var(--border-radius);
 }
 
