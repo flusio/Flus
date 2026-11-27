@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-11-27 10:21+0100\n"
-"PO-Revision-Date: 2026-11-27 10:23+0100\n"
+"POT-Creation-Date: 2026-11-27 10:37+0100\n"
+"PO-Revision-Date: 2026-11-27 10:37+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -777,12 +777,11 @@ msgstr "(max. %d caractères)"
 #: views/my/profile/edit.html.twig:51
 #: views/my/security/confirmation.html.twig:40
 #: views/my/security/show.html.twig:31 views/my/security/show.html.twig:59
-#: views/notes/_note_field.html.twig:16 views/notes/edit.html.twig:24
-#: views/passwords/edit.html.twig:31 views/passwords/forgot.html.twig:43
-#: views/registrations/new.html.twig:52 views/registrations/new.html.twig:80
-#: views/registrations/new.html.twig:114 views/registrations/new.html.twig:152
-#: views/sessions/new.html.twig:32 views/sessions/new.html.twig:67
-#: views/sources/follows/edit.html.twig:21
+#: views/notes/_note_field.html.twig:19 views/passwords/edit.html.twig:31
+#: views/passwords/forgot.html.twig:43 views/registrations/new.html.twig:52
+#: views/registrations/new.html.twig:80 views/registrations/new.html.twig:114
+#: views/registrations/new.html.twig:152 views/sessions/new.html.twig:32
+#: views/sessions/new.html.twig:67 views/sources/follows/edit.html.twig:21
 #: views/sources/follows/edit.html.twig:75
 #: views/sources/follows/edit.html.twig:166
 #: views/sources/follows/edit.html.twig:210 views/streams/_form.html.twig:20
@@ -797,7 +796,7 @@ msgid "What’s the purpose of this collection?"
 msgstr "Quelle est la raison d’être de cette collection ?"
 
 #: views/collections/_form.html.twig:46 views/my/security/show.html.twig:53
-#: views/notes/_note_field.html.twig:10 views/streams/_form.html.twig:46
+#: views/notes/_note_field.html.twig:13 views/streams/_form.html.twig:46
 msgid "(optional)"
 msgstr "(optionnel)"
 
@@ -830,7 +829,7 @@ msgid "What do you want to name the collection?"
 msgstr "Comment voulez-vous nommer la collection ?"
 
 #: views/collections/_selector.html.twig:54
-#: views/sources/_bulk_bar.html.twig:54
+#: views/notes/_note_field.html.twig:54 views/sources/_bulk_bar.html.twig:54
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -854,9 +853,8 @@ msgstr "Modification d’une collection"
 #: views/collections/groups/edit.html.twig:99 views/groups/edit.html.twig:43
 #: views/links/edit.html.twig:126 views/mastodon/show.html.twig:96
 #: views/my/preferences/edit.html.twig:202 views/my/profile/edit.html.twig:70
-#: views/my/security/show.html.twig:98 views/notes/edit.html.twig:44
-#: views/sources/follows/edit.html.twig:237 views/streams/edit.html.twig:9
-#: views/streams/views/edit.html.twig:12
+#: views/my/security/show.html.twig:98 views/sources/follows/edit.html.twig:237
+#: views/streams/edit.html.twig:9 views/streams/views/edit.html.twig:12
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
 
@@ -998,47 +996,47 @@ msgstr ""
 msgid "The minimum recommended dimensions are %sx%spx."
 msgstr "Les dimensions minimales recommandées sont de %sx%spx."
 
-#: views/components/text_editor.html.twig:18
+#: views/components/text_editor.html.twig:20
 msgid "Heading"
 msgstr "Titre"
 
-#: views/components/text_editor.html.twig:19
+#: views/components/text_editor.html.twig:21
 msgid "Bold"
 msgstr "Gras"
 
-#: views/components/text_editor.html.twig:20
+#: views/components/text_editor.html.twig:22
 msgid "Italic"
 msgstr "Italique"
 
-#: views/components/text_editor.html.twig:21
+#: views/components/text_editor.html.twig:23
 msgid "Link"
 msgstr "Lien"
 
-#: views/components/text_editor.html.twig:22
+#: views/components/text_editor.html.twig:24
 msgid "Bulleted list"
 msgstr "Liste à puces"
 
-#: views/components/text_editor.html.twig:23
+#: views/components/text_editor.html.twig:25
 msgid "Numbered list"
 msgstr "Liste numérotée"
 
-#: views/components/text_editor.html.twig:24
+#: views/components/text_editor.html.twig:26
 msgid "Quote"
 msgstr "Citation"
 
-#: views/components/text_editor.html.twig:30
+#: views/components/text_editor.html.twig:32
 msgid "bold text"
 msgstr "texte en gras"
 
-#: views/components/text_editor.html.twig:31
+#: views/components/text_editor.html.twig:33
 msgid "italic text"
 msgstr "texte en italique"
 
-#: views/components/text_editor.html.twig:32
+#: views/components/text_editor.html.twig:34
 msgid "link text"
 msgstr "texte du lien"
 
-#: views/components/text_editor.html.twig:37
+#: views/components/text_editor.html.twig:39
 msgid "Formatting"
 msgstr "Mise en forme"
 
@@ -1216,9 +1214,9 @@ msgid "New feed"
 msgstr "Nouveau flux"
 
 #: views/groups/_group.html.twig:20 views/links/_link.html.twig:260
-#: views/links/show.html.twig:269 views/notes/_note.html.twig:41
-#: views/profiles/layout.html.twig:81 views/sources/show.html.twig:187
-#: views/streams/show.html.twig:142
+#: views/links/show.html.twig:269 views/notes/_note_header.html.twig:26
+#: views/notes/_note_header.html.twig:31 views/profiles/layout.html.twig:81
+#: views/sources/show.html.twig:187 views/streams/show.html.twig:142
 msgid "Edit"
 msgstr "Modifier"
 
@@ -1309,8 +1307,8 @@ msgstr "hier"
 #: views/journal/index.html.twig:153 views/links/_link.html.twig:215
 #: views/links/_link.html.twig:221 views/links/_link_row.html.twig:102
 #: views/links/_link_row.html.twig:108 views/links/show.html.twig:237
-#: views/links/show.html.twig:241 views/notes/_note.html.twig:26
-#: views/notes/_note.html.twig:32 views/profiles/layout.html.twig:88
+#: views/links/show.html.twig:241 views/notes/_note_header.html.twig:41
+#: views/notes/_note_header.html.twig:47 views/profiles/layout.html.twig:88
 #: views/sources/index.html.twig:48 views/sources/show.html.twig:206
 #: views/streams/_timeline.html.twig:38 views/streams/_timeline.html.twig:93
 #: views/streams/_timeline.html.twig:137 views/streams/show.html.twig:160
@@ -1616,7 +1614,7 @@ msgid "Repair"
 msgstr "Réparer"
 
 #: views/links/_link.html.twig:284 views/links/show.html.twig:285
-#: views/notes/_note.html.twig:49 views/sources/show.html.twig:256
+#: views/notes/_note_header.html.twig:56 views/sources/show.html.twig:256
 #: views/streams/show.html.twig:182
 msgid "Delete"
 msgstr "Supprimer"
@@ -2077,6 +2075,10 @@ msgstr "Copier le lien externe"
 msgid "Copy link to Web feed"
 msgstr "Copier le lien du flux Web"
 
+#: views/links/show.html.twig:337
+msgid "Add a note"
+msgstr "Ajouter une note"
+
 #: views/mailers/base.html.twig:17 views/mailers/base.txt.twig:4
 msgid "Best regards,"
 msgstr "Bien à vous,"
@@ -2528,33 +2530,34 @@ msgstr "Toujours rien ? Avez-vous vérifié votre spam ?"
 msgid "Didn’t receive the email? Resend it"
 msgstr "Courriel non reçu ? Renvoyer"
 
-#: views/notes/_note.html.twig:52
-msgid "Are you sure that you want to delete this note?"
-msgstr "Êtes-vous sur·e de vouloir supprimer cette note ?"
-
-#: views/notes/_note_field.html.twig:32 views/notes/edit.html.twig:38
+#: views/notes/_note_field.html.twig:36
 msgid "Markdown and #tags supported."
 msgstr "Markdown et #tags acceptés."
 
-#: views/notes/_note_field.html.twig:38
+#: views/notes/_note_field.html.twig:42
 msgid "This link being hidden, the notes are private."
 msgstr "Ce lien étant masqué, les notes sont privées."
 
-#: views/notes/_note_field.html.twig:40
+#: views/notes/_note_field.html.twig:44
 msgid "Private"
 msgstr "Privée"
 
-#: views/notes/_note_field.html.twig:45
-msgid "Add a note"
-msgstr "Ajouter une note"
+#: views/notes/_note_header.html.twig:59
+msgid "Are you sure that you want to delete this note?"
+msgstr "Êtes-vous sur·e de vouloir supprimer cette note ?"
 
-#: views/notes/edit.html.twig:3
+#: views/notes/edit.html.twig:3 views/notes/edit.html.twig:6
+#: views/notes/edit.html.twig:11
 msgid "Note edition"
 msgstr "Modification d’une note"
 
-#: views/notes/edit.html.twig:19
+#: views/notes/edit.html.twig:32
 msgid "Your note"
 msgstr "Votre note"
+
+#: views/notes/edit.html.twig:36
+msgid "Save"
+msgstr "Enregistrer"
 
 #: views/onboarding/_continue.html.twig:2
 msgid "Continue"

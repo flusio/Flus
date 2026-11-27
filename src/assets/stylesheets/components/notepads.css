@@ -16,6 +16,11 @@
     cursor: pointer;
 }
 
+.notepad__note--editing {
+    background-color: var(--color-accent-base);
+    border-radius: var(--border-radius);
+}
+
 .notepad__header {
     padding: var(--space-smaller) var(--space-small);
 
@@ -69,6 +74,10 @@
     border-radius: var(--border-radius);
 }
 
+.notepad__note--editing .notepad__form {
+    background-color: transparent;
+}
+
 .notepad__notes + .notepad__form {
     border-radius: 0 0 var(--border-radius) var(--border-radius);
 }
@@ -97,4 +106,8 @@
 .notepad__privacy {
     color: var(--color-grey-text);
     font-size: var(--font-size-small);
+}
+
+.notepad turbo-frame {
+    display: block;
 }

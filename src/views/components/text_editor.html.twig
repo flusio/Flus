@@ -8,11 +8,13 @@
     placeholder: 'string',
     describedby: 'string',
     required: 'boolean',
+    autofocus: 'boolean',
 } %}
 
 {% set placeholder = placeholder ?? '' %}
 {% set describedby = describedby ?? '' %}
 {% set required = required ?? false %}
+{% set autofocus = autofocus ?? false %}
 
 {% set tools = [
     { format: 'heading', label: t('Heading'), icon: 'heading' },
@@ -61,6 +63,7 @@
         id="{{ id }}"
         name="{{ name }}"
         {% if required %}required{% endif %}
+        {% if autofocus %}autofocus{% endif %}
         {% if placeholder %}placeholder="{{ placeholder }}"{% endif %}
         data-text-editor-target="textarea"
         data-action="text-editor#refresh input->autosave#save keydown->text-editor#shortcut keydown->text-editor#continueLine"

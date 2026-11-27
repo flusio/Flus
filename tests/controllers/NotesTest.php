@@ -96,7 +96,7 @@ class NotesTest extends \PHPUnit\Framework\TestCase
             'csrf_token' => $this->csrfToken(forms\notes\EditNote::class),
         ]);
 
-        $this->assertResponseCode($response, 302, "/notes/{$note->id}/edit");
+        $this->assertResponseCode($response, 302, "/links/{$note->link_id}#note-{$note->id}");
         $note = $note->reload();
         $this->assertSame($new_content, $note->content);
     }
@@ -120,7 +120,7 @@ class NotesTest extends \PHPUnit\Framework\TestCase
             'csrf_token' => $this->csrfToken(forms\notes\EditNote::class),
         ]);
 
-        $this->assertResponseCode($response, 302, "/notes/{$note->id}/edit");
+        $this->assertResponseCode($response, 302, "/links/{$link->id}#note-{$note->id}");
         $note = $note->reload();
         $this->assertSame($new_content, $note->content);
         $link = $link->reload();

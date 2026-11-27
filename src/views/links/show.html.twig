@@ -311,7 +311,20 @@
                                     <div id="notepad-{{ date_iso }}"></div>
                                 {% endif %}
 
-                                {{ include('notes/_note.html.twig', { note: note, display_actions: true }) }}
+                                {# The frame targets _top, so the links in the content of
+                                 # the note don't load inside the frame. #}
+                                <turbo-frame
+                                    id="note-{{ note.id }}"
+                                    target="_top"
+                                    data-controller="frame-focus"
+                                    data-action="
+                                        submit->frame-focus#remember
+                                        turbo:before-frame-render->frame-focus#remember
+                                        turbo:frame-render->frame-focus#restore
+                                    "
+                                >
+                                    {{ include('notes/_note.html.twig', { note: note, display_actions: true }) }}
+                                </turbo-frame>
                             {% endfor %}
                         </div>
                     {% endif %}
@@ -334,6 +347,7 @@
                                 label: t('What do you retain from this content?'),
                                 required: true,
                                 display_submit: true,
+                                submit_label: t('Add a note'),
                                 display_privacy: link.is_hidden,
                             }) }}
 

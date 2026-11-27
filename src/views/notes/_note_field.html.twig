@@ -1,6 +1,9 @@
 {% set required = required ?? false %}
+{% set autofocus = autofocus ?? false %}
 {% set display_submit = display_submit ?? false %}
 {% set display_privacy = display_privacy ?? false %}
+{% set cancel_url = cancel_url ?? '' %}
+{% set cancel_turbo_frame = cancel_turbo_frame ?? '' %}
 
 <div class="form-group">
     <label for="{{ id }}" class="sr-only">
@@ -25,6 +28,7 @@
         placeholder: label,
         describedby: id ~ '-caption',
         required: required,
+        autofocus: autofocus,
     }) }}
 
     <div class="notepad__footer">
@@ -41,8 +45,18 @@
                     </span>
                 {% endif %}
 
+                {% if cancel_url %}
+                    <a
+                        class="button button--ghost"
+                        href="{{ cancel_url }}"
+                        {% if cancel_turbo_frame %}data-turbo-frame="{{ cancel_turbo_frame }}"{% endif %}
+                    >
+                        {{ t('Cancel') }}
+                    </a>
+                {% endif %}
+
                 <button type="submit" class="button--primary">
-                    {{ t('Add a note') }}
+                    {{ submit_label }}
                 </button>
             </div>
         {% endif %}

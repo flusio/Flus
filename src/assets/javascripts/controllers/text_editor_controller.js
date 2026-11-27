@@ -39,6 +39,13 @@ export default class extends Controller {
         textarea.style.resize = 'none';
         this.refresh();
 
+        // An autofocused textarea would get the caret at the start of its
+        // content: it is moved at the end so the user can complete the text.
+        if (textarea.autofocus) {
+            const end = textarea.value.length;
+            textarea.setSelectionRange(end, end);
+        }
+
         if (this.hasToolbarTarget) {
             this.buttons.forEach((button, index) => {
                 button.tabIndex = index === 0 ? 0 : -1;

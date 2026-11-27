@@ -1,51 +1,47 @@
-{% extends 'layouts/modal.html.twig' %}
+{% extends 'layouts/application.html.twig' %}
 
 {% block title %}{{ t('Note edition') }}{% endblock %}
 
+{% block back %}
+    {{ include('layouts/_back.html.twig', { title: t('Note edition') }) }}
+{% endblock %}
+
 {% block body %}
-    <div class="wrapper wrapper--small wrapper--center">
-        <form
-            data-turbo-preserve-scroll
-            method="post"
-            action="{{ url('update note', { id: note.id }) }}"
-            data-controller="autosave"
-            data-action="turbo:submit-start@document->autosave#clear"
-            class="flow"
-        >
-            {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
+    <div class="wrapper wrapper--small wrapper--center flow flow--large">
+        <h1 class="text--center">{{ t('Note edition') }}</h1>
 
-            <div class="form-group">
-                <label for="content">
-                    {{ t('Your note') }}
-                </label>
+        <div class="notepad">
+            <turbo-frame id="note-{{ note.id }}" target="_top">
+                <article class="notepad__note notepad__note--editing">
+                    {{ include('notes/_note_header.html.twig', { note: note }) }}
 
-                {% if form.isInvalid('content') %}
-                    <p id="content-error" class="form-group__error">
-                        {{ t('Error:') }}
-                        {{ form.error('content') }}
-                    </p>
-                {% endif %}
+                    <form
+                        method="post"
+                        action="{{ url('update note', { id: note.id }) }}"
+                        data-turbo-frame="note-{{ note.id }}"
+                        data-controller="autosave"
+                        data-action="turbo:submit-start@document->autosave#clear"
+                        class="notepad__form flow"
+                    >
+                        {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}
 
-                {{ include('components/text_editor.html.twig', {
-                    form: form,
-                    id: 'content',
-                    name: 'content',
-                    describedby: 'content-caption',
-                    required: true,
-                }) }}
+                        {{ include('notes/_note_field.html.twig', {
+                            form: form,
+                            id: 'note-' ~ note.id ~ '-content',
+                            name: 'content',
+                            label: t('Your note'),
+                            required: true,
+                            autofocus: true,
+                            display_submit: true,
+                            submit_label: t('Save'),
+                            cancel_url: url('link', { id: note.link_id }) ~ '#note-' ~ note.id,
+                            cancel_turbo_frame: 'note-' ~ note.id,
+                        }) }}
 
-                <p id="content-caption" class="form-group__caption">
-                    {{ t('Markdown and #tags supported.') }}
-                </p>
-            </div>
-
-            <div class="text--center">
-                <button type="submit" class="button--primary button--big">
-                    {{ t('Save changes') }}
-                </button>
-            </div>
-
-            <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}">
-        </form>
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token(form) }}">
+                    </form>
+                </article>
+            </turbo-frame>
+        </div>
     </div>
 {% endblock %}

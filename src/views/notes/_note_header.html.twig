@@ -1,0 +1,66 @@
+{% set display_actions = display_actions ?? false %}
+{% set note_user = note.user %}
+
+<header class="notepad__header cols cols--always cols--center cols--gap-smaller">
+    <div class="col--extend">
+        <p class="notepad__meta">
+            <a class="username" href="{{ url('profile', { id: note_user.id }) }}">
+                <img class="avatar avatar--mini" alt="" src="{{ url_avatar(note_user.avatar_filename) }}">
+                {{- note_user.username -}}
+            </a>
+
+            <a class="notepad__date" href="{{ url('link', { id: note.link_id }) }}#note-{{ note.id }}">
+                <time datetime="{{ note.created_at | date_iso }}">
+                    {{- d(note.created_at, 'd MMM y') }}, {{ note.created_at | format_time -}}
+                </time>
+            </a>
+        </p>
+    </div>
+
+    {% if display_actions and can(app.user, 'update', note) %}
+        <a
+            class="button button--ghost button--icon"
+            href="{{ url('edit note', { id: note.id }) }}"
+            data-turbo-frame="note-{{ note.id }}"
+            data-frame-focus-target="focus"
+            title="{{ t('Edit') }}"
+        >
+            {{ icon('pencil') }}
+
+            <span class="sr-only">
+                {{ t('Edit') }}
+            </span>
+        </a>
+    {% endif %}
+
+    {% if display_actions and can(app.user, 'delete', note) %}
+        <div>
+            {% embed 'components/popup.html.twig' with {
+                opener_class: 'button button--ghost button--icon',
+                position: 'right',
+                tooltip: t('Actions'),
+            } %}
+                {% block opener %}
+                    {{ icon('menu') }}
+
+                    <span class="sr-only">
+                        {{ t('Actions') }}
+                    </span>
+                {% endblock %}
+
+                {% block items %}
+                    {% import _self as item %}
+
+                    {{ item.action(
+                        url: url('delete note', { id: note.id }),
+                        label: t('Delete'),
+                        icon: 'trash',
+                        csrf: 'notes\\DeleteNote',
+                        confirm: t('Are you sure that you want to delete this note?'),
+                        preserve_scroll: true,
+                    ) }}
+                {% endblock %}
+            {% endembed %}
+        </div>
+    {% endif %}
+</header>

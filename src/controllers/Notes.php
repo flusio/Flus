@@ -55,7 +55,7 @@ class Notes extends BaseController
      *
      * @response 400
      *     If at least one of the parameters is invalid.
-     * @response 302 :from
+     * @response 302 /links/:link_id#note-:id
      *     On success.
      *
      * @throws auth\MissingCurrentUserError
@@ -88,7 +88,8 @@ class Notes extends BaseController
         $link = $note->link();
         $link->updateNote($note);
 
-        return Response::found(utils\RequestHelper::from($request));
+        $link_url = \Minz\Url::for('link', ['id' => $link->id]);
+        return Response::found("{$link_url}#note-{$note->id}");
     }
 
     /**
