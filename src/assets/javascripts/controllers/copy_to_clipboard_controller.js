@@ -8,6 +8,10 @@ export default class extends Controller {
         return ['copyable', 'feedback'];
     }
 
+    static values = {
+        format: { type: String, default: 'text' },
+    };
+
     copy () {
         let text;
         if (this.copyableTarget.hasAttribute('value')) {
@@ -16,7 +20,17 @@ export default class extends Controller {
             text = this.copyableTarget.textContent.trim();
         }
 
-        navigator.clipboard.writeText(text);
+        if (this.formatValue === 'html' && window.ClipboardItem) {
+            // The plain text version keeps the HTML source, so pasting in a
+            // field which doesn't accept rich text doesn't paste nothing.
+            const item = new ClipboardItem({
+                'text/html': new Blob([text], { type: 'text/html' }),
+                'text/plain': new Blob([text], { type: 'text/plain' }),
+            });
+            navigator.clipboard.write([item]);
+        } else {
+            navigator.clipboard.writeText(text);
+        }
 
         const oldFeedbackTargetText = this.feedbackTarget.innerHTML;
         this.feedbackTarget.innerHTML = icon('check') + ' ' + _('Copied');

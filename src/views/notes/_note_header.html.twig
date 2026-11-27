@@ -33,7 +33,7 @@
         </a>
     {% endif %}
 
-    {% if display_actions and can(app.user, 'delete', note) %}
+    {% if display_actions %}
         <div>
             {% embed 'components/popup.html.twig' with {
                 opener_class: 'button button--ghost button--icon',
@@ -51,14 +51,29 @@
                 {% block items %}
                     {% import _self as item %}
 
-                    {{ item.action(
-                        url: url('delete note', { id: note.id }),
-                        label: t('Delete'),
-                        icon: 'trash',
-                        csrf: 'notes\\DeleteNote',
-                        confirm: t('Are you sure that you want to delete this note?'),
-                        preserve_scroll: true,
+                    {{ item.clipboard(
+                        value: note.content,
+                        label: t('Copy as Markdown'),
                     ) }}
+
+                    {{ item.clipboard(
+                        value: note.contentAsHtml,
+                        label: t('Copy as HTML'),
+                        format: 'html',
+                    ) }}
+
+                    {% if can(app.user, 'delete', note) %}
+                        {{ item.separator() }}
+
+                        {{ item.action(
+                            url: url('delete note', { id: note.id }),
+                            label: t('Delete'),
+                            icon: 'trash',
+                            csrf: 'notes\\DeleteNote',
+                            confirm: t('Are you sure that you want to delete this note?'),
+                            preserve_scroll: true,
+                        ) }}
+                    {% endif %}
                 {% endblock %}
             {% endembed %}
         </div>

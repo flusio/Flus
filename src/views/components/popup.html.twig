@@ -208,9 +208,16 @@
 
 {#
  # A button copying the given value to the clipboard.
+ #
+ # With the `html` format, the value is copied both as HTML (pasted formatted
+ # in a rich text editor) and as plain text (pasted as source code elsewhere).
  #}
-{% macro clipboard(value, label, icon = 'copy-to-clipboard', attrs = {}) %}
-    <div role="none" data-controller="copy-to-clipboard">
+{% macro clipboard(value, label, icon = 'copy-to-clipboard', format = 'text', attrs = {}) %}
+    <div
+        role="none"
+        data-controller="copy-to-clipboard"
+        data-copy-to-clipboard-format-value="{{ format }}"
+    >
         <button
             type="button"
             class="popup__item"

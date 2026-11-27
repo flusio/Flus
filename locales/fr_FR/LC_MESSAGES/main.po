@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-11-27 10:37+0100\n"
-"PO-Revision-Date: 2026-11-27 10:37+0100\n"
+"POT-Creation-Date: 2026-11-27 10:44+0100\n"
+"PO-Revision-Date: 2026-11-27 10:45+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -36,7 +36,7 @@ msgstr "Ouvrir la liste"
 msgid " (public)"
 msgstr " (publique)"
 
-#: assets/javascripts/controllers/copy_to_clipboard_controller.js:22
+#: assets/javascripts/controllers/copy_to_clipboard_controller.js:36
 msgid "Copied"
 msgstr "Copié"
 
@@ -1614,7 +1614,7 @@ msgid "Repair"
 msgstr "Réparer"
 
 #: views/links/_link.html.twig:284 views/links/show.html.twig:285
-#: views/notes/_note_header.html.twig:56 views/sources/show.html.twig:256
+#: views/notes/_note_header.html.twig:70 views/sources/show.html.twig:256
 #: views/streams/show.html.twig:182
 msgid "Delete"
 msgstr "Supprimer"
@@ -2542,7 +2542,15 @@ msgstr "Ce lien étant masqué, les notes sont privées."
 msgid "Private"
 msgstr "Privée"
 
-#: views/notes/_note_header.html.twig:59
+#: views/notes/_note_header.html.twig:56
+msgid "Copy as Markdown"
+msgstr "Copier le Markdown"
+
+#: views/notes/_note_header.html.twig:61
+msgid "Copy as HTML"
+msgstr "Copier le HTML"
+
+#: views/notes/_note_header.html.twig:73
 msgid "Are you sure that you want to delete this note?"
 msgstr "Êtes-vous sur·e de vouloir supprimer cette note ?"
 
