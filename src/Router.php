@@ -168,6 +168,12 @@ class Router
         $router->addRoute('POST', '/collections/:id/dismiss', 'link_lists/Read#dismiss', 'dismiss link list');
         $router->addRoute('GET', '/collections/:id/share', 'collections/Shares#index', 'collection shares');
         $router->addRoute('POST', '/collections/:id/share', 'collections/Shares#create', 'share collection');
+        $router->addRoute(
+            'POST',
+            '/collections/:id/shares/:share_id',
+            'collections/Shares#update',
+            'update collection share',
+        );
         $router->addRoute('POST', '/collections/:id/unshare', 'collections/Shares#delete', 'unshare collection');
 
         $router->addRoute('GET', '/read', 'Read#index', 'read list');

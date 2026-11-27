@@ -434,6 +434,199 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($collection_share);
     }
 
+    public function testUpdateChangesShareType(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $collection_share = $collection->shareWith($other_user, 'read');
+
+        $response = $this->appRun('POST', "/collections/{$collection->id}/shares/{$collection_share->id}", [
+            'type' => 'write',
+            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionShare::class),
+        ]);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseTemplateName($response, 'collections/shares/index.html.twig');
+        $this->assertTrue($collection->sharedWith($other_user, 'write'));
+    }
+
+    public function testUpdateWorksIfCollectionIsSharedWithWriteAccess(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $yet_another_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
+        ]);
+        $collection->shareWith($user, 'write');
+        $collection_share = $collection->shareWith($yet_another_user, 'write');
+
+        $response = $this->appRun('POST', "/collections/{$collection->id}/shares/{$collection_share->id}", [
+            'type' => 'read',
+            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionShare::class),
+        ]);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertTrue($collection->sharedWith($yet_another_user, 'read'));
+        $this->assertFalse($collection->sharedWith($yet_another_user, 'write'));
+    }
+
+    public function testUpdateRedirectsToLoginIfNotConnected(): void
+    {
+        $user = UserFactory::create();
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $collection_share = $collection->shareWith($other_user, 'read');
+
+        $response = $this->appRun('POST', "/collections/{$collection->id}/shares/{$collection_share->id}", [
+            'type' => 'write',
+            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionShare::class),
+        ]);
+
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
+        $this->assertFalse($collection->sharedWith($other_user, 'write'));
+    }
+
+    public function testUpdateFailsIfCollectionDoesNotExist(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $collection_share = $collection->shareWith($other_user, 'read');
+
+        $response = $this->appRun('POST', "/collections/not-an-id/shares/{$collection_share->id}", [
+            'type' => 'write',
+            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionShare::class),
+        ]);
+
+        $this->assertResponseCode($response, 404);
+        $this->assertFalse($collection->sharedWith($other_user, 'write'));
+    }
+
+    public function testUpdateFailsIfShareDoesNotExist(): void
+    {
+        $user = $this->login();
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->appRun('POST', "/collections/{$collection->id}/shares/not-an-id", [
+            'type' => 'write',
+            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionShare::class),
+        ]);
+
+        $this->assertResponseCode($response, 404);
+    }
+
+    public function testUpdateFailsIfShareConcernsAnotherCollection(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $other_collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
+        ]);
+        $collection_share = $other_collection->shareWith($user, 'read');
+
+        $response = $this->appRun('POST', "/collections/{$collection->id}/shares/{$collection_share->id}", [
+            'type' => 'write',
+            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionShare::class),
+        ]);
+
+        $this->assertResponseCode($response, 404);
+        $this->assertFalse($other_collection->sharedWith($user, 'write'));
+    }
+
+    public function testUpdateFailsIfCollectionIsNotShared(): void
+    {
+        $this->login();
+        $other_user = UserFactory::create();
+        $yet_another_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
+            'is_public' => true,
+        ]);
+        $collection_share = $collection->shareWith($yet_another_user, 'read');
+
+        $response = $this->appRun('POST', "/collections/{$collection->id}/shares/{$collection_share->id}", [
+            'type' => 'write',
+            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionShare::class),
+        ]);
+
+        $this->assertResponseCode($response, 403);
+        $this->assertFalse($collection->sharedWith($yet_another_user, 'write'));
+    }
+
+    public function testUpdateFailsIfCollectionIsSharedWithReadAccess(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
+        ]);
+        $collection_share = $collection->shareWith($user, 'read');
+
+        $response = $this->appRun('POST', "/collections/{$collection->id}/shares/{$collection_share->id}", [
+            'type' => 'write',
+            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionShare::class),
+        ]);
+
+        $this->assertResponseCode($response, 403);
+        $this->assertFalse($collection->sharedWith($user, 'write'));
+    }
+
+    public function testUpdateFailsIfTypeIsInvalid(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $collection_share = $collection->shareWith($other_user, 'read');
+
+        $response = $this->appRun('POST', "/collections/{$collection->id}/shares/{$collection_share->id}", [
+            'type' => 'not a type',
+            'csrf_token' => $this->csrfToken(forms\collections\EditCollectionShare::class),
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseTemplateName($response, 'collections/shares/index.html.twig');
+        $error = utils\Notification::popError();
+        $this->assertSame('The type is invalid.', $error);
+        $this->assertTrue($collection->sharedWith($other_user, 'read'));
+        $this->assertFalse($collection->sharedWith($other_user, 'write'));
+    }
+
+    public function testUpdateFailsIfCsrfIsInvalid(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
+        ]);
+        $collection_share = $collection->shareWith($other_user, 'read');
+
+        $response = $this->appRun('POST', "/collections/{$collection->id}/shares/{$collection_share->id}", [
+            'type' => 'write',
+            'csrf_token' => 'not the token',
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseTemplateName($response, 'collections/shares/index.html.twig');
+        $error = utils\Notification::popError();
+        $this->assertStringContainsString('A security verification failed', $error);
+        $this->assertFalse($collection->sharedWith($other_user, 'write'));
+    }
+
     public function testDeleteDeletesCollectionShare(): void
     {
         $user = $this->login();

@@ -18,7 +18,7 @@
 
     opacity: 1;
 
-    transform: scaleX(1) scaleY(1);
+    transform: none;
     transition: visibility 0s linear 0s, opacity 0.2s 0s, transform 0.2s;
 }
 

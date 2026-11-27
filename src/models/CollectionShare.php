@@ -17,6 +17,7 @@ use Minz\Validable;
 class CollectionShare
 {
     use Database\Recordable;
+    use Database\Resource;
     use utils\Memoizer;
     use Validable;
 

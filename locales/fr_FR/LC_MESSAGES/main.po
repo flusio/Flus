@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-11-27 10:44+0100\n"
-"PO-Revision-Date: 2026-11-27 10:45+0100\n"
+"POT-Creation-Date: 2026-11-27 17:07+0100\n"
+"PO-Revision-Date: 2026-11-27 17:07+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -181,11 +181,11 @@ msgstr "L’une des thématiques associées n’existe pas."
 msgid "The file is required."
 msgstr "Le fichier est obligatoire."
 
-#: forms/collections/ShareCollection.php:24 models/CollectionShare.php:39
+#: forms/collections/ShareCollection.php:24 models/CollectionShare.php:40
 msgid "The type is required."
 msgstr "Le type est obligatoire."
 
-#: forms/collections/ShareCollection.php:28 models/CollectionShare.php:43
+#: forms/collections/ShareCollection.php:28 models/CollectionShare.php:44
 msgid "The type is invalid."
 msgstr "Le type est invalide."
 
@@ -390,7 +390,7 @@ msgstr "Le temps de lecture doit être supérieur ou égal à 0."
 msgid "The origin must be less than {max} characters."
 msgstr "L’origine ne doit pas faire plus de {max} caractères."
 
-#: models/Note.php:31
+#: models/Note.php:32
 msgid "The content is required."
 msgstr "Le contenu est obligatoire."
 
@@ -829,7 +829,7 @@ msgid "What do you want to name the collection?"
 msgstr "Comment voulez-vous nommer la collection ?"
 
 #: views/collections/_selector.html.twig:54
-#: views/notes/_note_field.html.twig:54 views/sources/_bulk_bar.html.twig:54
+#: views/notes/_note_field.html.twig:56 views/sources/_bulk_bar.html.twig:54
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -937,10 +937,14 @@ msgid "Copy and paste the <abbr>URL</abbr> of a user’s profile."
 msgstr "Copiez et collez l’<abbr>URL</abbr> du profil d’un‧e utilisateur‧ice."
 
 #: views/collections/shares/index.html.twig:80
+#: views/collections/shares/index.html.twig:140
+#: views/collections/shares/index.html.twig:156
 msgid "Read access"
 msgstr "Accès en lecture"
 
 #: views/collections/shares/index.html.twig:99
+#: views/collections/shares/index.html.twig:138
+#: views/collections/shares/index.html.twig:163
 msgid "Read and write access"
 msgstr "Accès en lecture et écriture"
 
@@ -969,15 +973,7 @@ msgstr ""
 msgid "Shared with:"
 msgstr "Partagée avec :"
 
-#: views/collections/shares/index.html.twig:135
-msgid "read only"
-msgstr "lecture seule"
-
-#: views/collections/shares/index.html.twig:137
-msgid "read / write"
-msgstr "lecture / écriture"
-
-#: views/collections/shares/index.html.twig:146
+#: views/collections/shares/index.html.twig:177
 #: views/streams/shares/index.html.twig:80
 msgid "Revoke"
 msgstr "Révoquer"
@@ -1849,7 +1845,7 @@ msgstr "Collections"
 msgid "You already annoted this link."
 msgstr "Vous avez déjà annoté ce lien."
 
-#: views/links/collections/index.html.twig:67 views/links/show.html.twig:334
+#: views/links/collections/index.html.twig:67 views/links/show.html.twig:350
 msgid "What do you retain from this content?"
 msgstr "Que retenez-vous de ce contenu ?"
 
@@ -2075,7 +2071,7 @@ msgstr "Copier le lien externe"
 msgid "Copy link to Web feed"
 msgstr "Copier le lien du flux Web"
 
-#: views/links/show.html.twig:337
+#: views/links/show.html.twig:353
 msgid "Add a note"
 msgstr "Ajouter une note"
 
@@ -2559,11 +2555,11 @@ msgstr "Êtes-vous sur·e de vouloir supprimer cette note ?"
 msgid "Note edition"
 msgstr "Modification d’une note"
 
-#: views/notes/edit.html.twig:32
+#: views/notes/edit.html.twig:35
 msgid "Your note"
 msgstr "Votre note"
 
-#: views/notes/edit.html.twig:36
+#: views/notes/edit.html.twig:39
 msgid "Save"
 msgstr "Enregistrer"
 

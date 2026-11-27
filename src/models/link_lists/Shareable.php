@@ -105,7 +105,7 @@ trait Shareable
      *
      * @param ShareType $access_type
      */
-    public function shareWith(User $user, string $access_type): void
+    public function shareWith(User $user, string $access_type): CollectionShare
     {
         $collection_share = new CollectionShare($user, $this, $access_type);
         $collection_share->save();
@@ -113,6 +113,8 @@ trait Shareable
         $this->unmemoizePrefixed('shares_');
         $this->unmemoizePrefixed('count_links_');
         $this->unmemoize('publishers');
+
+        return $collection_share;
     }
 
     /**
@@ -131,6 +133,17 @@ trait Shareable
     }
 
     /**
+     * Return the share of the collection with the given user, if any.
+     */
+    public function shareFor(User $user): ?CollectionShare
+    {
+        return ArrayHelper::find(
+            $this->unsortedShares(),
+            fn (CollectionShare $collection_share): bool => $collection_share->user_id === $user->id,
+        );
+    }
+
+    /**
      * Return whether the collections is shared with the given user.
      *
      * If $access_type is 'any' or 'read', the method returns true just if a
@@ -143,10 +156,7 @@ trait Shareable
      */
     public function sharedWith(User $user, string $access_type = 'any'): bool
     {
-        $existing_collection_share = ArrayHelper::find(
-            $this->unsortedShares(),
-            fn (CollectionShare $collection_share): bool => $collection_share->user_id === $user->id,
-        );
+        $existing_collection_share = $this->shareFor($user);
 
         if (!$existing_collection_share) {
             return false;

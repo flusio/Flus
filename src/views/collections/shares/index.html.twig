@@ -122,7 +122,7 @@
                 <ul class="list list--nostyle">
                     {% for collection_share in collection_shares %}
                         {% set user = collection_share.user %}
-                        <li class="list__item cols cols--always cols--center cols--gap">
+                        <li class="cols cols--always cols--center cols--gap-small">
                             <span class="col--extend">
                                 <a class="username" href="{{ url('profile', { id: user.id }) }}">
                                     <img class="avatar avatar--mini" src="{{ url_avatar(user.avatar_filename) }}" alt="">
@@ -130,16 +130,47 @@
                                 </a>
                             </span>
 
-                            <span class="line__item text--secondary">
-                                {% if collection_share.type === 'read' %}
-                                    {{ t('read only') }}
-                                {% else %}
-                                    {{ t('read / write') }}
-                                {% endif %}
-                            </span>
+                            {% embed 'components/popup.html.twig' with {
+                                drop_up: true,
+                            } %}
+                                {% block opener %}
+                                    {% if collection_share.type === 'write' %}
+                                        {{ t('Read and write access') }}
+                                    {% else %}
+                                        {{ t('Read access') }}
+                                    {% endif %}
+                                    {{ icon('angle-down') }}
+                                {% endblock %}
+
+                                {% block items %}
+                                    {% import _self as item %}
+
+                                    <form
+                                        role="none"
+                                        method="post"
+                                        action="{{ url('update collection share', { id: collection.id, share_id: collection_share.id }) }}"
+                                    >
+                                        {{ item.option(
+                                            name: 'type',
+                                            value: 'read',
+                                            label: t('Read access'),
+                                            current: collection_share.type === 'read',
+                                        ) }}
+
+                                        {{ item.option(
+                                            name: 'type',
+                                            value: 'write',
+                                            label: t('Read and write access'),
+                                            current: collection_share.type === 'write',
+                                        ) }}
+
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token('collections\\EditCollectionShare') }}">
+                                    </form>
+                                {% endblock %}
+                            {% endembed %}
 
                             <form class="line__item" method="post" action="{{ url('unshare collection', { id: collection.id }) }}">
-                                <button type="submit" class="button--small button--icon-mobile">
+                                <button type="submit" class="button--icon-mobile">
                                     {{ icon('times') }}
 
                                     <span class="no-mobile">
