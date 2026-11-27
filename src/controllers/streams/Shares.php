@@ -9,6 +9,7 @@ use App\models;
 use App\utils;
 use Minz\Request;
 use Minz\Response;
+use Minz\Template\TwigExtension;
 
 class Shares extends BaseController
 {
@@ -142,5 +143,57 @@ class Shares extends BaseController
                 'stream' => $stream,
             ]),
         ]);
+    }
+
+    /**
+     * Remove the access of the current user to the stream.
+     *
+     * @request_param string id
+     * @request_param string csrf_token
+     *
+     * @response 302 :from
+     * @flash error
+     *     If the CSRF token is invalid.
+     * @response 302 /streams/:id
+     * @flash notification.success
+     *     On success, if the user can still view the stream.
+     * @response 302 /journal
+     * @flash notification.success
+     *     On success, otherwise.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the stream doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the stream is not shared with the user.
+     */
+    public function leave(Request $request): Response
+    {
+        $user = auth\CurrentUser::require();
+        $stream = models\Stream::requireFromRequest($request);
+
+        auth\Access::require($user, 'leave', $stream);
+
+        $form = new forms\streams\LeaveStream();
+        $form->handleRequest($request);
+
+        if (!$form->validate()) {
+            utils\Notification::error($form->error('@base'));
+            return Response::found(utils\RequestHelper::from($request));
+        }
+
+        $stream->unshareWith($user);
+
+        utils\Notification::success(TwigExtension::translate(
+            'You left the stream “%s”.',
+            [$stream->name()],
+        ));
+
+        if (auth\Access::can($user, 'view', $stream)) {
+            return Response::redirect('stream', ['id' => $stream->id]);
+        }
+
+        return Response::redirect('journal');
     }
 }

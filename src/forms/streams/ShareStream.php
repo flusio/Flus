@@ -17,7 +17,7 @@ class ShareStream extends BaseForm
     protected function isRecipientOwner(models\User $user): bool
     {
         $stream = $this->optionAs('stream', models\Stream::class);
-        return $stream->user_id === $user->id;
+        return $user->isOwningStream($stream);
     }
 
     protected function isAlreadySharedWith(models\User $user): bool

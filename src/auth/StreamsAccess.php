@@ -20,7 +20,7 @@ class StreamsAccess
             return false;
         }
 
-        if ($user->id === $stream->user_id) {
+        if ($user->isOwningStream($stream)) {
             return true;
         }
 
@@ -33,7 +33,7 @@ class StreamsAccess
             return false;
         }
 
-        if ($user->id === $stream->user_id) {
+        if ($user->isOwningStream($stream)) {
             return true;
         }
 
@@ -42,11 +42,20 @@ class StreamsAccess
 
     public static function canUpdate(?models\User $user, models\Stream $stream): bool
     {
-        return $user && $user->id === $stream->user_id;
+        return $user && $user->isOwningStream($stream);
     }
 
     public static function canDelete(?models\User $user, models\Stream $stream): bool
     {
-        return $user && $user->id === $stream->user_id;
+        return $user && $user->isOwningStream($stream);
+    }
+
+    public static function canLeave(?models\User $user, models\Stream $stream): bool
+    {
+        if (!$user || $user->isOwningStream($stream)) {
+            return false;
+        }
+
+        return $stream->sharedWith($user);
     }
 }

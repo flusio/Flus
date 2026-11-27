@@ -175,6 +175,7 @@ class Router
             'update collection share',
         );
         $router->addRoute('POST', '/collections/:id/unshare', 'collections/Shares#delete', 'unshare collection');
+        $router->addRoute('POST', '/collections/:id/leave', 'collections/Shares#leave', 'leave collection');
 
         $router->addRoute('GET', '/read', 'Read#index', 'read list');
         $router->addRoute('GET', '/read/later', 'ReadLater#index', 'read later');
@@ -320,6 +321,7 @@ class Router
         $router->addRoute('GET', '/streams/:id/share', 'streams/Shares#index', 'stream shares');
         $router->addRoute('POST', '/streams/:id/share', 'streams/Shares#create', 'share stream');
         $router->addRoute('POST', '/streams/:id/unshare', 'streams/Shares#delete', 'unshare stream');
+        $router->addRoute('POST', '/streams/:id/leave', 'streams/Shares#leave', 'leave stream');
 
         // Explore
         $router->addRoute('GET', '/explore', 'Explore#show', 'explore');

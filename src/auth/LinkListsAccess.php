@@ -124,4 +124,17 @@ class LinkListsAccess
             $user->isOwningCollection($link_list)
         );
     }
+
+    public static function canLeave(?models\User $user, models\LinkList $link_list): bool
+    {
+        if (!$user || !($link_list instanceof models\Collection)) {
+            return false;
+        }
+
+        if ($user->isOwningCollection($link_list)) {
+            return false;
+        }
+
+        return $link_list->sharedWith($user);
+    }
 }

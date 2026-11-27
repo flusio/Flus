@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Flus\n"
-"POT-Creation-Date: 2026-11-27 17:07+0100\n"
-"PO-Revision-Date: 2026-11-27 17:07+0100\n"
+"POT-Creation-Date: 2026-11-27 17:11+0100\n"
+"PO-Revision-Date: 2026-11-27 17:12+0100\n"
 "Last-Translator: Marien Fressinaud <dev@marienfressinaud.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -86,6 +86,11 @@ msgstr "Le fil a été supprimé."
 msgid "The message could not be sent due to a server-side problem."
 msgstr "Le message n’a pas pu être envoyé à cause d’un problème côté serveur."
 
+#: controllers/collections/Shares.php:252
+#, php-format
+msgid "You left the collection “%s”."
+msgstr "Vous avez quitté la collection « %s »."
+
 #: controllers/my/Account.php:110
 msgid "Your account and your data are now deleted."
 msgstr "Votre compte et vos données sont désormais supprimées."
@@ -105,6 +110,11 @@ msgstr ""
 #: controllers/sources/Opml.php:77
 msgid "This file cannot be uploaded."
 msgstr "Ce fichier ne peut pas être téléversé."
+
+#: controllers/streams/Shares.php:189
+#, php-format
+msgid "You left the stream “%s”."
+msgstr "Vous avez quitté le fil « %s »."
 
 #: controllers/streams/Views.php:286
 msgid "The default view has been reset."
@@ -1610,8 +1620,8 @@ msgid "Repair"
 msgstr "Réparer"
 
 #: views/links/_link.html.twig:284 views/links/show.html.twig:285
-#: views/notes/_note_header.html.twig:70 views/sources/show.html.twig:256
-#: views/streams/show.html.twig:182
+#: views/notes/_note_header.html.twig:70 views/sources/show.html.twig:268
+#: views/streams/show.html.twig:194
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -3099,7 +3109,7 @@ msgstr "Vous n’avez encore partagé aucun fil public."
 msgid "This user didn’t share any public streams yet."
 msgstr "Cet·te utilisateur·ice n’a pas encore partagé de fil public."
 
-#: views/read_later/index.html.twig:45 views/sources/show.html.twig:280
+#: views/read_later/index.html.twig:45 views/sources/show.html.twig:292
 msgid "Add a link"
 msgstr "Ajouter un lien"
 
@@ -3552,7 +3562,19 @@ msgstr "Accès"
 msgid "Put in a group"
 msgstr "Placer dans un groupe"
 
+#: views/sources/show.html.twig:256
+msgid "Leave collection"
+msgstr "Quitter la collection"
+
 #: views/sources/show.html.twig:259
+msgid ""
+"You will no longer have access to this collection. To get it back, you will "
+"have to be invited again."
+msgstr ""
+"Vous n’aurez plus accès à cette collection. Pour le récupérer, il faudra que "
+"vous soyez invité·e à nouveau."
+
+#: views/sources/show.html.twig:271
 msgid ""
 "Are you sure that you want to delete this collection? You may lose the links "
 "that are attached only to this collection."
@@ -3560,7 +3582,7 @@ msgstr ""
 "Êtes-vous sur·e de vouloir supprimer cette collection ? Vous pourriez perdre "
 "les liens qui lui sont attachés."
 
-#: views/sources/show.html.twig:304
+#: views/sources/show.html.twig:316
 msgid "This collection is empty."
 msgstr "Cette collection est vide."
 
@@ -3771,7 +3793,19 @@ msgstr "Gérer les sources"
 msgid "Copy link to stream"
 msgstr "Copier le lien du fil"
 
+#: views/streams/show.html.twig:182
+msgid "Leave stream"
+msgstr "Quitter le fil"
+
 #: views/streams/show.html.twig:185
+msgid ""
+"You will no longer have access to this stream. To get it back, you will have "
+"to be invited again."
+msgstr ""
+"Vous n’aurez plus accès à ce fil. Pour le récupérer, il faudra que vous "
+"soyez invité·e à nouveau."
+
+#: views/streams/show.html.twig:197
 msgid "Are you sure that you want to delete this stream?"
 msgstr "Êtes-vous sur·e de vouloir supprimer ce fil ?"
 

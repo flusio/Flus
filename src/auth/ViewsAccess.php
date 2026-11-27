@@ -22,7 +22,7 @@ class ViewsAccess
             return false;
         }
 
-        if ($stream->user_id === $user->id) {
+        if ($user->isOwningStream($stream)) {
             // The owner of the stream can update all the views.
             return true;
         }

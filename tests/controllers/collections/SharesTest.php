@@ -788,4 +788,128 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('A security verification failed', $error);
         $this->assertTrue($collection->sharedWith($other_user));
     }
+
+    public function testLeaveRemovesAccessAndRedirects(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        /** @var string */
+        $name = $this->fake('words', 3, true);
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
+            'name' => $name,
+            'is_public' => false,
+        ]);
+        $collection->shareWith($user, 'read');
+
+        $response = $this->appRun('POST', "/collections/{$collection->id}/leave", [
+            'csrf_token' => $this->csrfToken(forms\collections\LeaveCollection::class),
+        ]);
+
+        $this->assertResponseCode($response, 302, '/links');
+        $this->assertFalse($collection->sharedWith($user));
+        $success = utils\Notification::popSuccess();
+        $this->assertSame("You left the collection “{$name}”.", $success);
+    }
+
+    public function testLeaveRedirectsToCollectionIfItIsPublic(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
+            'is_public' => true,
+        ]);
+        $collection->shareWith($user, 'read');
+
+        $response = $this->appRun('POST', "/collections/{$collection->id}/leave", [
+            'csrf_token' => $this->csrfToken(forms\collections\LeaveCollection::class),
+        ]);
+
+        $this->assertResponseCode($response, 302, "/collections/{$collection->id}");
+        $this->assertFalse($collection->sharedWith($user));
+    }
+
+    public function testLeaveRedirectsToLoginIfNotConnected(): void
+    {
+        $user = UserFactory::create();
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
+        ]);
+        $collection->shareWith($user, 'read');
+
+        $response = $this->appRun('POST', "/collections/{$collection->id}/leave", [
+            'csrf_token' => $this->csrfToken(forms\collections\LeaveCollection::class),
+        ]);
+
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
+        $this->assertTrue($collection->sharedWith($user));
+    }
+
+    public function testLeaveFailsIfCollectionDoesNotExist(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
+        ]);
+        $collection->shareWith($user, 'read');
+
+        $response = $this->appRun('POST', '/collections/not-an-id/leave', [
+            'csrf_token' => $this->csrfToken(forms\collections\LeaveCollection::class),
+        ]);
+
+        $this->assertResponseCode($response, 404);
+        $this->assertTrue($collection->sharedWith($user));
+    }
+
+    public function testLeaveFailsIfCollectionIsNotShared(): void
+    {
+        $this->login();
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
+            'is_public' => true,
+        ]);
+
+        $response = $this->appRun('POST', "/collections/{$collection->id}/leave", [
+            'csrf_token' => $this->csrfToken(forms\collections\LeaveCollection::class),
+        ]);
+
+        $this->assertResponseCode($response, 403);
+    }
+
+    public function testLeaveFailsIfUserOwnsTheCollection(): void
+    {
+        $user = $this->login();
+        $collection = CollectionFactory::create([
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->appRun('POST', "/collections/{$collection->id}/leave", [
+            'csrf_token' => $this->csrfToken(forms\collections\LeaveCollection::class),
+        ]);
+
+        $this->assertResponseCode($response, 403);
+    }
+
+    public function testLeaveFailsIfCsrfIsInvalid(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $collection = CollectionFactory::create([
+            'user_id' => $other_user->id,
+        ]);
+        $collection->shareWith($user, 'read');
+
+        $response = $this->appRun('POST', "/collections/{$collection->id}/leave", [
+            'csrf_token' => 'not the token',
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertTrue($collection->sharedWith($user));
+        $error = utils\Notification::popError();
+        $this->assertStringContainsString('A security verification failed', $error);
+    }
 }

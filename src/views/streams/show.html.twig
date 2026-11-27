@@ -174,6 +174,18 @@
                     icon: 'feed',
                 ) }}
 
+                {% if can(app.user, 'leave', stream) %}
+                    {{ item.separator() }}
+
+                    {{ item.action(
+                        url: url('leave stream', { id: stream.id }),
+                        label: t('Leave stream'),
+                        icon: 'logout',
+                        csrf: 'streams\\LeaveStream',
+                        confirm: t('You will no longer have access to this stream. To get it back, you will have to be invited again.'),
+                    ) }}
+                {% endif %}
+
                 {% if can(app.user, 'delete', stream) %}
                     {{ item.separator() }}
 

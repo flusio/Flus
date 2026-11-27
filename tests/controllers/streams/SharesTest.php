@@ -412,4 +412,128 @@ class SharesTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('A security verification failed', $error);
         $this->assertSame(1, models\StreamShare::count());
     }
+
+    public function testLeaveRemovesAccessAndRedirects(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        /** @var string */
+        $name = $this->fake('words', 3, true);
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+            'name' => $name,
+            'is_public' => false,
+        ]);
+        $stream->shareWith($user);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/leave", [
+            'csrf_token' => $this->csrfToken(forms\streams\LeaveStream::class),
+        ]);
+
+        $this->assertResponseCode($response, 302, '/journal');
+        $this->assertFalse($stream->sharedWith($user));
+        $success = utils\Notification::popSuccess();
+        $this->assertSame("You left the stream “{$name}”.", $success);
+    }
+
+    public function testLeaveRedirectsToStreamIfItIsPublic(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+            'is_public' => true,
+        ]);
+        $stream->shareWith($user);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/leave", [
+            'csrf_token' => $this->csrfToken(forms\streams\LeaveStream::class),
+        ]);
+
+        $this->assertResponseCode($response, 302, "/streams/{$stream->id}");
+        $this->assertFalse($stream->sharedWith($user));
+    }
+
+    public function testLeaveRedirectsToLoginIfNotConnected(): void
+    {
+        $user = UserFactory::create();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+        ]);
+        $stream->shareWith($user);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/leave", [
+            'csrf_token' => $this->csrfToken(forms\streams\LeaveStream::class),
+        ]);
+
+        $this->assertResponseCode($response, 302, '/login?redirect_to=%2F');
+        $this->assertTrue($stream->sharedWith($user));
+    }
+
+    public function testLeaveFailsIfStreamDoesNotExist(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+        ]);
+        $stream->shareWith($user);
+
+        $response = $this->appRun('POST', '/streams/not-an-id/leave', [
+            'csrf_token' => $this->csrfToken(forms\streams\LeaveStream::class),
+        ]);
+
+        $this->assertResponseCode($response, 404);
+        $this->assertTrue($stream->sharedWith($user));
+    }
+
+    public function testLeaveFailsIfStreamIsNotShared(): void
+    {
+        $this->login();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+            'is_public' => true,
+        ]);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/leave", [
+            'csrf_token' => $this->csrfToken(forms\streams\LeaveStream::class),
+        ]);
+
+        $this->assertResponseCode($response, 403);
+    }
+
+    public function testLeaveFailsIfUserOwnsTheStream(): void
+    {
+        $user = $this->login();
+        $stream = StreamFactory::create([
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/leave", [
+            'csrf_token' => $this->csrfToken(forms\streams\LeaveStream::class),
+        ]);
+
+        $this->assertResponseCode($response, 403);
+    }
+
+    public function testLeaveFailsIfCsrfIsInvalid(): void
+    {
+        $user = $this->login();
+        $other_user = UserFactory::create();
+        $stream = StreamFactory::create([
+            'user_id' => $other_user->id,
+        ]);
+        $stream->shareWith($user);
+
+        $response = $this->appRun('POST', "/streams/{$stream->id}/leave", [
+            'csrf_token' => 'not the token',
+        ]);
+
+        $this->assertResponseCode($response, 302, '/');
+        $this->assertTrue($stream->sharedWith($user));
+        $error = utils\Notification::popError();
+        $this->assertStringContainsString('A security verification failed', $error);
+    }
 }

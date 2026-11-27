@@ -248,6 +248,18 @@
                     ) }}
                 {% endif %}
 
+                {% if can(app.user, 'leave', source) %}
+                    {{ item.separator() }}
+
+                    {{ item.action(
+                        url: url('leave collection', { id: source.id }),
+                        label: t('Leave collection'),
+                        icon: 'logout',
+                        csrf: 'collections\\LeaveCollection',
+                        confirm: t('You will no longer have access to this collection. To get it back, you will have to be invited again.'),
+                    ) }}
+                {% endif %}
+
                 {% if can_delete %}
                     {{ item.separator() }}
 

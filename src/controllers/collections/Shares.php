@@ -9,6 +9,7 @@ use App\models;
 use App\utils;
 use Minz\Request;
 use Minz\Response;
+use Minz\Template\TwigExtension;
 
 class Shares extends BaseController
 {
@@ -205,5 +206,57 @@ class Shares extends BaseController
                 'collection' => $collection,
             ]),
         ]);
+    }
+
+    /**
+     * Remove the access of the current user to the collection.
+     *
+     * @request_param string id
+     * @request_param string csrf_token
+     *
+     * @response 302 :from
+     * @flash error
+     *     If the CSRF token is invalid.
+     * @response 302 /collections/:id
+     * @flash notification.success
+     *     On success, if the user can still view the collection.
+     * @response 302 /links
+     * @flash notification.success
+     *     On success, otherwise.
+     *
+     * @throws auth\MissingCurrentUserError
+     *     If the user is not connected.
+     * @throws \Minz\Errors\MissingRecordError
+     *     If the collection doesn't exist.
+     * @throws auth\AccessDeniedError
+     *     If the collection is not shared with the user.
+     */
+    public function leave(Request $request): Response
+    {
+        $user = auth\CurrentUser::require();
+        $collection = models\Collection::requireFromRequest($request);
+
+        auth\Access::require($user, 'leave', $collection);
+
+        $form = new forms\collections\LeaveCollection();
+        $form->handleRequest($request);
+
+        if (!$form->validate()) {
+            utils\Notification::error($form->error('@base'));
+            return Response::found(utils\RequestHelper::from($request));
+        }
+
+        $collection->unshareWith($user);
+
+        utils\Notification::success(TwigExtension::translate(
+            'You left the collection “%s”.',
+            [$collection->name()],
+        ));
+
+        if (auth\Access::can($user, 'view', $collection)) {
+            return Response::redirect('source', ['id' => $collection->id]);
+        }
+
+        return Response::redirect('links');
     }
 }

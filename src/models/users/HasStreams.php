@@ -19,6 +19,14 @@ trait HasStreams
     }
 
     /**
+     * Return whether the user owns the given stream.
+     */
+    public function isOwningStream(Stream $stream): bool
+    {
+        return $stream->user_id === $this->id;
+    }
+
+    /**
      * Return the list of streams owned by the user.
      *
      * @see Stream::listByUser
