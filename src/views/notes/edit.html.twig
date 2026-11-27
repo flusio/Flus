@@ -19,8 +19,11 @@
                         method="post"
                         action="{{ url('update note', { id: note.id }) }}"
                         data-turbo-frame="note-{{ note.id }}"
-                        data-controller="autosave"
-                        data-action="turbo:submit-start@document->autosave#clear"
+                        data-controller="autosave shortcuts"
+                        data-action="
+                            turbo:submit-start@document->autosave#clear
+                            keydown->shortcuts#handle
+                        "
                         class="notepad__form flow"
                     >
                         {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}

@@ -334,8 +334,11 @@
                             data-turbo-preserve-scroll
                             method="post"
                             action="{{ url('links/create note', { link_id: link.id }) }}"
-                            data-controller="autosave"
-                            data-action="turbo:submit-start@document->autosave#clear"
+                            data-controller="autosave shortcuts"
+                            data-action="
+                                turbo:submit-start@document->autosave#clear
+                                keydown->shortcuts#handle
+                            "
                             class="notepad__form flow"
                         >
                             {{ include('alerts/_error.html.twig', { message: form.error('@base') }) }}

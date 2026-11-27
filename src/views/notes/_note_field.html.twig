@@ -49,13 +49,20 @@
                     <a
                         class="button button--ghost"
                         href="{{ cancel_url }}"
+                        data-shortcuts-target="trigger"
+                        aria-keyshortcuts="Escape"
                         {% if cancel_turbo_frame %}data-turbo-frame="{{ cancel_turbo_frame }}"{% endif %}
                     >
                         {{ t('Cancel') }}
                     </a>
                 {% endif %}
 
-                <button type="submit" class="button--primary">
+                <button
+                    type="submit"
+                    class="button--primary"
+                    data-shortcuts-target="trigger"
+                    aria-keyshortcuts="Control+Enter Meta+Enter"
+                >
                     {{ submit_label }}
                 </button>
             </div>
