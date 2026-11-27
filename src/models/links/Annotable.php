@@ -41,7 +41,7 @@ trait Annotable
      */
     public function addNote(Note $note): void
     {
-        $note->link_id = $this->id;
+        $note->setLink($this);
         $note->save();
 
         $this->unmemoizeNotes();

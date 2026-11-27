@@ -18,6 +18,7 @@ class Note
     use BulkQueries;
     use Database\Recordable;
     use Database\Resource;
+    use utils\Memoizer;
     use Validable;
 
     #[Database\Column]
@@ -44,8 +45,8 @@ class Note
     public function __construct(User $user, string $content = '')
     {
         $this->id = \Minz\Random::hex(32);
-        $this->content = trim($content);
-        $this->user_id = $user->id;
+        $this->setContent($content);
+        $this->setUser($user);
     }
 
     /**
@@ -53,7 +54,16 @@ class Note
      */
     public function user(): User
     {
-        return User::require($this->user_id);
+        return $this->memoize('user', fn(): User => User::require($this->user_id));
+    }
+
+    /**
+     * Set the author of the note.
+     */
+    public function setUser(User $user): void
+    {
+        $this->user_id = $user->id;
+        $this->memoizeValue('user', $user);
     }
 
     /**
@@ -61,13 +71,16 @@ class Note
      */
     public function link(): Link
     {
-        $link = Link::find($this->link_id);
+        return $this->memoize('link', fn(): Link => Link::require($this->link_id));
+    }
 
-        if (!$link) {
-            throw new \Exception("Note #{$this->id} has invalid link.");
-        }
-
-        return $link;
+    /**
+     * Set the link of the note.
+     */
+    public function setLink(Link $link): void
+    {
+        $this->link_id = $link->id;
+        $this->memoizeValue('link', $link);
     }
 
     /**
@@ -97,8 +110,21 @@ class Note
      */
     public function contentAsHtml(): string
     {
-        $markdown = new utils\MiniMarkdown(context_user: $this->user());
-        return $markdown->text($this->content);
+        $user = $this->user();
+
+        return $this->memoize(['content_as_html', $user], function () use ($user): string {
+            $markdown = new utils\MiniMarkdown(context_user: $user);
+            return $markdown->text($this->content);
+        });
+    }
+
+    /**
+     * Set the content of the note (in Markdown).
+     */
+    public function setContent(string $content): void
+    {
+        $this->content = trim($content);
+        $this->unmemoizePrefixed('content_as_html');
     }
 
     /**

@@ -168,7 +168,7 @@ class Pocket
                 $content = implode(' ', $formatted_tags);
 
                 $note = new models\Note($user, $content);
-                $note->link_id = $link->id;
+                $note->setLink($link);
                 $note->created_at = $published_at;
 
                 $notes[] = $note;

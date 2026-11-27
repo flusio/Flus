@@ -15,6 +15,6 @@ use Minz\Request;
  */
 class EditNote extends BaseForm
 {
-    #[Form\Field(transform: 'trim')]
+    #[Form\Field(bind: 'setContent')]
     public string $content = '';
 }

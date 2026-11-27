@@ -13,6 +13,6 @@ use Minz\Form;
  */
 class Note extends Form
 {
-    #[Form\Field(transform: 'trim')]
+    #[Form\Field(bind: 'setContent')]
     public string $content;
 }
